@@ -45,6 +45,26 @@ and [GraphQL](https://docs.gitlab.com/ee/api/graphql/removed_items.html) depreca
 
 ## Announced in 15.10
 
+<div class="deprecation removal-160 breaking-change">
+
+### Deprecated Consul http metrics
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The Consul provided in the GitLab Omnibus package will no longer provide older deprecated Consul metrics starting in GitLab 16.0.
+
+In GitLab 14.0, [Consul was updated to 1.9.6](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5344),
+which deprecated some telemetry metrics from being at the `consul.http` path. In GitLab 16.0, the `consul.http` path will be removed.
+
+If you have monitoring that consumes Consul metrics, update them to use `consul.api.http` instead of `consul.http`.
+For more information, see [the deprecation notes for Consul 1.9.0](https://github.com/hashicorp/consul/releases/tag/v1.9.0).
+
+</div>
+
 <div class="deprecation removal-170 breaking-change">
 
 ### DingTalk OmniAuth provider

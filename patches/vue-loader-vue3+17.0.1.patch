@@ -1,0 +1,78 @@
+diff --git a/node_modules/vue-loader-vue3/dist/descriptorCache.js b/node_modules/vue-loader-vue3/dist/descriptorCache.js
+index 65a7318..ee425cd 100644
+--- a/node_modules/vue-loader-vue3/dist/descriptorCache.js
++++ b/node_modules/vue-loader-vue3/dist/descriptorCache.js
+@@ -2,7 +2,7 @@
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.getDescriptor = exports.setDescriptor = void 0;
+ const fs = require("fs");
+-const compiler_sfc_1 = require("vue/compiler-sfc");
++const compiler_sfc_1 = require("@vue/compiler-sfc");
+ const cache = new Map();
+ function setDescriptor(filename, entry) {
+     cache.set(cleanQuery(filename), entry);
+diff --git a/node_modules/vue-loader-vue3/dist/formatError.js b/node_modules/vue-loader-vue3/dist/formatError.js
+index b342426..ec51886 100644
+--- a/node_modules/vue-loader-vue3/dist/formatError.js
++++ b/node_modules/vue-loader-vue3/dist/formatError.js
+@@ -1,7 +1,7 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.formatError = void 0;
+-const compiler_sfc_1 = require("vue/compiler-sfc");
++const compiler_sfc_1 = require("@vue/compiler-sfc");
+ const chalk = require("chalk");
+ function formatError(err, source, file) {
+     const loc = err.loc;
+diff --git a/node_modules/vue-loader-vue3/dist/index.js b/node_modules/vue-loader-vue3/dist/index.js
+index 825b3af..263e908 100644
+--- a/node_modules/vue-loader-vue3/dist/index.js
++++ b/node_modules/vue-loader-vue3/dist/index.js
+@@ -5,7 +5,7 @@ const path = require("path");
+ const qs = require("querystring");
+ const loaderUtils = require("loader-utils");
+ const hash = require("hash-sum");
+-const compiler_sfc_1 = require("vue/compiler-sfc");
++const compiler_sfc_1 = require("@vue/compiler-sfc");
+ const select_1 = require("./select");
+ const hotReload_1 = require("./hotReload");
+ const cssModules_1 = require("./cssModules");
+diff --git a/node_modules/vue-loader-vue3/dist/resolveScript.js b/node_modules/vue-loader-vue3/dist/resolveScript.js
+index 31205c6..b15b390 100644
+--- a/node_modules/vue-loader-vue3/dist/resolveScript.js
++++ b/node_modules/vue-loader-vue3/dist/resolveScript.js
+@@ -2,7 +2,7 @@
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.resolveScript = exports.canInlineTemplate = void 0;
+ const util_1 = require("./util");
+-const compiler_sfc_1 = require("vue/compiler-sfc");
++const compiler_sfc_1 = require("@vue/compiler-sfc");
+ const clientCache = new WeakMap();
+ const serverCache = new WeakMap();
+ /**
+diff --git a/node_modules/vue-loader-vue3/dist/stylePostLoader.js b/node_modules/vue-loader-vue3/dist/stylePostLoader.js
+index f694d25..1d15be2 100644
+--- a/node_modules/vue-loader-vue3/dist/stylePostLoader.js
++++ b/node_modules/vue-loader-vue3/dist/stylePostLoader.js
+@@ -1,7 +1,7 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ const qs = require("querystring");
+-const compiler_sfc_1 = require("vue/compiler-sfc");
++const compiler_sfc_1 = require("@vue/compiler-sfc");
+ // This is a post loader that handles scoped CSS transforms.
+ // Injected right before css-loader by the global pitcher (../pitch.js)
+ // for any <style scoped> selection requests initiated from within vue files.
+diff --git a/node_modules/vue-loader-vue3/dist/templateLoader.js b/node_modules/vue-loader-vue3/dist/templateLoader.js
+index 78b603c..538f3ca 100644
+--- a/node_modules/vue-loader-vue3/dist/templateLoader.js
++++ b/node_modules/vue-loader-vue3/dist/templateLoader.js
+@@ -6,7 +6,7 @@ const formatError_1 = require("./formatError");
+ const descriptorCache_1 = require("./descriptorCache");
+ const resolveScript_1 = require("./resolveScript");
+ const util_1 = require("./util");
+-const compiler_sfc_1 = require("vue/compiler-sfc");
++const compiler_sfc_1 = require("@vue/compiler-sfc");
+ // Loader that compiles raw template into JavaScript functions.
+ // This is injected by the global pitcher (../pitch) for template
+ // selection requests initiated from vue files.

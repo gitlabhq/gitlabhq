@@ -8346,6 +8346,9 @@ msgstr ""
 msgid "CascadingSettings|cannot be nil when locking the attribute"
 msgstr ""
 
+msgid "Category"
+msgstr ""
+
 msgid "Cause identified"
 msgstr ""
 

@@ -7,7 +7,7 @@ module Gitlab
         class Result
           attr_reader :error
 
-          def initialize(config = nil, error: nil)
+          def initialize(config: nil, error: nil)
             @config = Array.wrap(config)
             @error = error
           end

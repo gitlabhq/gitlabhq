@@ -10,12 +10,16 @@ export const initAbuseReportsApp = () => {
   }
 
   const { abuseReportsData } = el.dataset;
-  const { reports, pagination } = convertObjectPropsToCamelCase(JSON.parse(abuseReportsData), {
-    deep: true,
-  });
+  const { categories, reports, pagination } = convertObjectPropsToCamelCase(
+    JSON.parse(abuseReportsData),
+    {
+      deep: true,
+    },
+  );
 
   return new Vue({
     el,
+    provide: { categories },
     render: (createElement) =>
       createElement(AbuseReportsApp, {
         props: {

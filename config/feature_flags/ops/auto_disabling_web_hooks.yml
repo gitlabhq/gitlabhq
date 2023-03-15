@@ -5,4 +5,5 @@ rollout_issue_url:
 milestone: '15.10'
 type: ops
 group: group::integrations
-default_enabled: true
+default_enabled: false # Keep this value as false, as feature should be disabled by default for self-managed
+                       # https://gitlab.com/gitlab-org/gitlab/-/issues/390157.

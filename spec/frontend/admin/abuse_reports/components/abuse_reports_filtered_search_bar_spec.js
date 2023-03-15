@@ -6,11 +6,13 @@ import {
   FILTERED_SEARCH_TOKENS,
   FILTERED_SEARCH_TOKEN_USER,
   FILTERED_SEARCH_TOKEN_STATUS,
+  FILTERED_SEARCH_TOKEN_CATEGORY,
   DEFAULT_SORT,
   SORT_OPTIONS,
 } from '~/admin/abuse_reports/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
+import { buildFilteredSearchCategoryToken } from '~/admin/abuse_reports/utils';
 
 jest.mock('~/lib/utils/url_utility', () => {
   const urlUtility = jest.requireActual('~/lib/utils/url_utility');
@@ -26,8 +28,12 @@ jest.mock('~/lib/utils/url_utility', () => {
 describe('AbuseReportsFilteredSearchBar', () => {
   let wrapper;
 
+  const CATEGORIES = ['spam', 'phishing'];
+
   const createComponent = () => {
-    wrapper = shallowMount(AbuseReportsFilteredSearchBar);
+    wrapper = shallowMount(AbuseReportsFilteredSearchBar, {
+      provide: { categories: CATEGORIES },
+    });
   };
 
   const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
@@ -39,11 +45,13 @@ describe('AbuseReportsFilteredSearchBar', () => {
   it('passes correct props to `FilteredSearchBar` component', () => {
     createComponent();
 
+    const categoryToken = buildFilteredSearchCategoryToken(CATEGORIES);
+
     expect(findFilteredSearchBar().props()).toMatchObject({
       namespace: 'abuse_reports',
       recentSearchesStorageKey: 'abuse_reports',
       searchInputPlaceholder: 'Filter reports',
-      tokens: FILTERED_SEARCH_TOKENS,
+      tokens: [...FILTERED_SEARCH_TOKENS, categoryToken],
       initialSortBy: DEFAULT_SORT,
       sortOptions: SORT_OPTIONS,
     });
@@ -113,6 +121,14 @@ describe('AbuseReportsFilteredSearchBar', () => {
       type: FILTERED_SEARCH_TOKEN_USER.type,
       value: { data: 'mr_abuser', operator: '=' },
     };
+    const STATUS_FILTER_TOKEN = {
+      type: FILTERED_SEARCH_TOKEN_STATUS.type,
+      value: { data: 'open', operator: '=' },
+    };
+    const CATEGORY_FILTER_TOKEN = {
+      type: FILTERED_SEARCH_TOKEN_CATEGORY.type,
+      value: { data: 'spam', operator: '=' },
+    };
 
     const createComponentAndFilter = (filterTokens, initialLocation) => {
       if (initialLocation) {
@@ -124,19 +140,14 @@ describe('AbuseReportsFilteredSearchBar', () => {
       findFilteredSearchBar().vm.$emit('onFilter', filterTokens);
     };
 
-    it('redirects with user query param', () => {
-      createComponentAndFilter([USER_FILTER_TOKEN]);
-      expect(redirectTo).toHaveBeenCalledWith('https://localhost/?user=mr_abuser');
-    });
-
-    it('redirects with status query param', () => {
-      const statusFilterToken = {
-        type: FILTERED_SEARCH_TOKEN_STATUS.type,
-        value: { data: 'open', operator: '=' },
-      };
-      createComponentAndFilter([statusFilterToken]);
-      expect(redirectTo).toHaveBeenCalledWith('https://localhost/?status=open');
-    });
+    it.each([USER_FILTER_TOKEN, STATUS_FILTER_TOKEN, CATEGORY_FILTER_TOKEN])(
+      'redirects with $type query param',
+      (filterToken) => {
+        createComponentAndFilter([filterToken]);
+        const { type, value } = filterToken;
+        expect(redirectTo).toHaveBeenCalledWith(`https://localhost/?${type}=${value.data}`);
+      },
+    );
 
     it('ignores search query param', () => {
       const searchFilterToken = { type: FILTERED_SEARCH_TERM, value: { data: 'ignored' } };

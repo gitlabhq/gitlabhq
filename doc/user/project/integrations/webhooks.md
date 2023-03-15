@@ -118,11 +118,16 @@ Endpoints should follow these best practices:
 - Never return `500` server error status responses if the event has been handled as this can cause the webhook to be [temporarily disabled](#failing-webhooks).
 - Invalid HTTP responses are treated as failed requests.
 
-### Failing webhooks
+## Failing webhooks
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60837) in GitLab 13.12 [with a flag](../../../administration/feature_flags.md) named `web_hooks_disable_failed`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/329849) in GitLab 15.7.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/329849) in GitLab 15.7. Feature flag `web_hooks_disable_failed` removed.
+> - [Disabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/390157) in GitLab 15.10 [with a flag](../../../administration/feature_flags.md) named `auto_disabling_web_hooks`.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `auto_disabling_web_hooks`.
+On GitLab.com, this feature is available.
 
 If a webhook fails repeatedly, it may be disabled automatically.
 

@@ -18,6 +18,7 @@ RSpec.describe Admin::AbuseReportsHelper, feature_category: :insider_threat do
         "total_items" => 1
       )
       expect(data['reports'].first).to include("category", "updated_at", "reported_user", "reporter")
+      expect(data['categories']).to match_array(AbuseReport.categories.keys)
     end
   end
 end

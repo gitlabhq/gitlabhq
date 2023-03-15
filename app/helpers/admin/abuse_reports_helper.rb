@@ -5,6 +5,7 @@ module Admin
     def abuse_reports_list_data(reports)
       {
         abuse_reports_data: {
+          categories: AbuseReport.categories.keys,
           reports: Admin::AbuseReportSerializer.new.represent(reports),
           pagination: {
             current_page: reports.current_page,

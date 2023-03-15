@@ -30,7 +30,7 @@ module Gitlab
           end
 
           def to_result
-            Yaml::Result.new(load!, error: nil)
+            Yaml::Result.new(config: load!, error: nil)
           rescue ::Gitlab::Config::Loader::FormatError => e
             Yaml::Result.new(error: e)
           end

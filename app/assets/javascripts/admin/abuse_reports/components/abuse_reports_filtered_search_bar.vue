@@ -8,16 +8,18 @@ import {
   SORT_OPTIONS,
   isValidSortKey,
 } from '~/admin/abuse_reports/constants';
+import { buildFilteredSearchCategoryToken } from '~/admin/abuse_reports/utils';
 
 export default {
   name: 'AbuseReportsFilteredSearchBar',
   components: { FilteredSearchBar },
-  tokens: FILTERED_SEARCH_TOKENS,
   sortOptions: SORT_OPTIONS,
+  inject: ['categories'],
   data() {
     return {
       initialFilterValue: [],
       initialSortBy: DEFAULT_SORT,
+      tokens: [...FILTERED_SEARCH_TOKENS, buildFilteredSearchCategoryToken(this.categories)],
     };
   },
   created() {
@@ -36,7 +38,7 @@ export default {
       this.initialSortBy = query.sort;
     }
 
-    const tokens = this.$options.tokens
+    const tokens = this.tokens
       .filter((token) => query[token.type])
       .map((token) => ({
         type: token.type,
@@ -90,7 +92,7 @@ export default {
 <template>
   <filtered-search-bar
     :namespace="$options.filteredSearchNamespace"
-    :tokens="$options.tokens"
+    :tokens="tokens"
     :recent-searches-storage-key="$options.recentSearchesStorageKey"
     :search-input-placeholder="__('Filter reports')"
     :initial-filter-value="initialFilterValue"

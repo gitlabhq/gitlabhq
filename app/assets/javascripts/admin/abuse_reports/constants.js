@@ -59,4 +59,13 @@ export const isValidSortKey = (key) =>
     (sort) => sort.sortDirection.ascending === key || sort.sortDirection.descending === key,
   );
 
+export const FILTERED_SEARCH_TOKEN_CATEGORY = {
+  type: 'category',
+  icon: 'label',
+  title: __('Category'),
+  token: BaseToken,
+  unique: true,
+  operators: OPERATORS_IS,
+};
+
 export const FILTERED_SEARCH_TOKENS = [FILTERED_SEARCH_TOKEN_USER, FILTERED_SEARCH_TOKEN_STATUS];
