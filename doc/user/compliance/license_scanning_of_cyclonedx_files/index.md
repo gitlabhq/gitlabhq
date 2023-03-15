@@ -121,6 +121,11 @@ in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/6571).
 
 Users can require approval for merge requests based on the licenses that are detected by configuring a [license approval policy](../license_approval_policies.md).
 
+## Running in an offline environment
+
+For self-managed GitLab instances in an environment with limited, restricted, or intermittent access to external resources through the internet, some adjustments are required to successfully scan
+CycloneDX reports for licenses. For more information, see the offline [quick start guide](../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database).
+
 ## Troubleshooting
 
 ### A CycloneDX file is not being scanned and appears to provide no results

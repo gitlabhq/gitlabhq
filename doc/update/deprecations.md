@@ -73,6 +73,26 @@ Review the details carefully before upgrading.
 From GitLab 16.0, when you search for environments with the API, you must use at least three characters. This change helps us ensure the scalability of the search operation.
 
 </div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Legacy Gitaly configuration method
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Gitaly configuration within Omnibus GitLab has been updated such that all Gitaly related configuration keys are in a single
+configuration structure that matches the standard Gitaly configuration. As such, the previous configuration structure is deprecated.
+
+The single configuration structure is available from GitLab 15.10, though backwards compatibility is maintained. Once removed, Gitaly must be configured using the single
+configuration structure. You should update the configuration of Gitaly at your earliest convenience.
+
+The change improves consistency between Omnibus GitLab and source installs and enables us to provide better documentation and tooling for both.
+
+</div>
 </div>
 
 <div class="announcement-milestone">

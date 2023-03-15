@@ -49,6 +49,10 @@ Not all group and project resources are copied. See list of copied resources bel
 - [Migrated group items](#migrated-group-items).
 - [Migrated project items](#migrated-project-items-beta).
 
+WARNING:
+Importing groups with projects is in [beta](../../../policy/alpha-beta-support.md#beta-features). This feature is not
+ready for production use.
+
 We invite you to leave your feedback about migrating by direct transfer in
 [the feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/284495).
 
@@ -143,10 +147,14 @@ role.
 
 1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them.
 1. Next to the groups you want to import, select either:
-   - **Import with projects**. Importing groups with projects is in [Beta](../../../policy/alpha-beta-support.md#beta-features). This feature is not ready for production use.
+   - **Import with projects**.
    - **Import without projects**.
 1. The **Status** column shows the import status of each group. If you leave the page open, it updates in real-time.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
+
+WARNING:
+Importing groups with projects is in [beta](../../../policy/alpha-beta-support.md#beta-features). This feature is not
+ready for production use.
 
 ### Group import history
 
@@ -236,7 +244,7 @@ specific project item is migrated:
 Any other project items are **not** migrated.
 
 WARNING:
-Migrating projects when migrating groups by direct transfer is in [Beta](../../../policy/alpha-beta-support.md#beta-features)
+Migrating projects when migrating groups by direct transfer is in [beta](../../../policy/alpha-beta-support.md#beta-features)
 and is not ready for production use.
 
 Project items that are migrated to the destination GitLab instance include:

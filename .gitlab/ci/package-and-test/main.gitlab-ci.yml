@@ -41,7 +41,8 @@ stages:
 
 .update-script:
   script:
-    - export QA_COMMAND="bundle exec gitlab-qa Test::Omnibus::UpdateFromPrevious $RELEASE $GITLAB_VERSION $UPDATE_TYPE -- $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
+    - !reference [.bundle-prefix]
+    - export QA_COMMAND="$BUNDLE_PREFIX gitlab-qa Test::Omnibus::UpdateFromPrevious $RELEASE $GITLAB_VERSION $UPDATE_TYPE -- $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
     - echo "Running - '$QA_COMMAND'"
     - eval "$QA_COMMAND"
 
@@ -64,10 +65,11 @@ stages:
     QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
     QA_INTERCEPT_REQUESTS: "true"
+    GITLAB_LICENSE_MODE: test
+    GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
+    # todo: remove in 16.1 milestone when not needed for backwards compatibility anymore
     EE_LICENSE: $QA_EE_LICENSE
     GITHUB_ACCESS_TOKEN: $QA_GITHUB_ACCESS_TOKEN
-    GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
-    GITLAB_LICENSE_MODE: test
 
 # ==========================================
 # Prepare stage

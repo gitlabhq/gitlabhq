@@ -376,13 +376,13 @@ module QA
 
       # Specifies the token that can be used for the GitHub API
       def github_access_token
-        ENV['GITHUB_ACCESS_TOKEN'].to_s.strip
+        ENV['QA_GITHUB_ACCESS_TOKEN'].to_s.strip
       end
 
       def require_github_access_token!
         return unless github_access_token.empty?
 
-        raise ArgumentError, "Please provide GITHUB_ACCESS_TOKEN"
+        raise ArgumentError, "Please provide QA_GITHUB_ACCESS_TOKEN"
       end
 
       def require_admin_access_token!
@@ -461,6 +461,16 @@ module QA
 
       def save_metrics_json?
         enabled?(ENV['QA_SAVE_TEST_METRICS'], default: false)
+      end
+
+      def ee_license
+        return ENV["QA_EE_LICENSE"] if ENV["QA_EE_LICENSE"]
+
+        ENV["EE_LICENSE"].tap do |license|
+          next unless license
+
+          Runtime::Logger.warn("EE_LICENSE environment variable is deprecated, please use QA_EE_LICENSE instead!")
+        end
       end
 
       def ee_activation_code

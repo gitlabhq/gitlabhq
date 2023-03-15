@@ -1,5 +1,5 @@
 @mixin active-toggle {
-  @include gl-bg-gray-50;
+  background-color: $gray-50 !important;
   mix-blend-mode: multiply;
 
   .gl-dark & {
@@ -61,7 +61,6 @@
       @include gl-bg-transparent;
       @include gl-border-none;
 
-
       &:hover,
       &:focus,
       &:active {
@@ -73,11 +72,6 @@
         @include gl-focus;
       }
     }
-
-    .gl-new-dropdown-toggle[aria-expanded='true'],
-    .gl-new-dropdown-custom-toggle[aria-expanded='true'] .user-bar-item {
-      @include active-toggle;
-    }
   }
 
   .counter .gl-icon {
@@ -86,9 +80,7 @@
 
   .counter:hover,
   .counter:focus,
-  .gl-new-dropdown-custom-toggle:hover .counter,
-  .gl-new-dropdown-custom-toggle:focus .counter,
-  .gl-new-dropdown-custom-toggle[aria-expanded='true'] .counter {
+  .counter[aria-expanded='true'] {
     background-color: $gray-50;
     border-color: transparent;
     box-shadow: none;
@@ -128,15 +120,17 @@
     }
   }
 
+  .gl-new-dropdown-toggle[aria-expanded='true'] {
+    @include active-toggle;
+  }
+
   .gl-new-dropdown-custom-toggle {
     .btn-with-notification {
       mix-blend-mode: unset; // Our tertiary buttons otherwise use another mix-blend mode, making border-color semi-transparent.
     }
 
-    &[aria-expanded='true'] {
-      .btn-with-notification {
-        @include active-toggle;
-      }
+    [aria-expanded='true'] {
+      @include active-toggle;
     }
   }
 }
