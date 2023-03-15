@@ -33,6 +33,8 @@ default:
 
 .ruby2-variables: &ruby2-variables
   RUBY_VERSION: "2.7"
+  OMNIBUS_GITLAB_RUBY2_BUILD: "true"
+  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY2"
 
 .default-branch-incident-variables: &default-branch-incident-variables
   CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
@@ -46,8 +48,8 @@ workflow:
     # If `$FORCE_GITLAB_CI` is set, create a pipeline.
     - if: '$FORCE_GITLAB_CI'
       variables:
-        <<: *ruby3-variables
-        PIPELINE_NAME: 'Ruby 3 forced pipeline'
+        <<: *ruby2-variables
+        PIPELINE_NAME: 'Ruby 2 forced pipeline'
     # As part of the process of creating RCs automatically, we update stable
     # branches with the changes of the most recent production deployment. The
     # merge requests used for this merge a branch release-tools/X into a stable
@@ -62,14 +64,14 @@ workflow:
         PIPELINE_NAME: 'Ruby 2 $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
     - if: '$CI_MERGE_REQUEST_LABELS =~ /Community contribution/'
       variables:
-        <<: *ruby3-variables
+        <<: *ruby2-variables
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
-        PIPELINE_NAME: 'Ruby 3 $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline (community contribution)'
+        PIPELINE_NAME: 'Ruby 2 $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline (community contribution)'
     # For (detached) merge request pipelines.
     - if: '$CI_MERGE_REQUEST_IID'
       variables:
-        <<: *ruby3-variables
-        PIPELINE_NAME: 'Ruby 3 $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
+        <<: *ruby2-variables
+        PIPELINE_NAME: 'Ruby 2 $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
     # For the scheduled pipelines, we set specific variables.
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
