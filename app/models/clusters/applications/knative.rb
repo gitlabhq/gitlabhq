@@ -136,16 +136,14 @@ module Clusters
         @api_groups ||= YAML.safe_load(File.read(Rails.root.join(API_GROUPS_PATH)))
       end
 
+      # Relied on application_prometheus which is now removed
       def install_knative_metrics
-        return [] unless cluster.application_prometheus&.available?
-
-        [Gitlab::Kubernetes::KubectlCmd.apply_file(METRICS_CONFIG)]
+        []
       end
 
+      # Relied on application_prometheus which is now removed
       def delete_knative_istio_metrics
-        return [] unless cluster.application_prometheus&.available?
-
-        [Gitlab::Kubernetes::KubectlCmd.delete("--ignore-not-found", "-f", METRICS_CONFIG)]
+        []
       end
     end
   end

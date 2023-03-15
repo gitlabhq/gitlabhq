@@ -40706,6 +40706,9 @@ msgstr ""
 msgid "Size limit per repository (MB)"
 msgstr ""
 
+msgid "Skip to main content"
+msgstr ""
+
 msgid "Skipped"
 msgstr ""
 

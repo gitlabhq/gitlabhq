@@ -106,11 +106,8 @@ ls:
     - echo -e "section_start:$( date +%s ):chat_reply\r\033[0K\n$( ls -la )\nsection_end:$( date +%s ):chat_reply\r\033[0K"
 ```
 
-## Example scripts
-
-The GitLab team maintains a repository of [common ChatOps scripts](https://gitlab.com/gitlab-com/chatops)
-they use to interact with GitLab.com.
-
 ## Related topics
 
 - Download the [official GitLab ChatOps icon](img/gitlab-chatops-icon.png).
+- The GitLab team maintains a [repository of common ChatOps scripts](https://gitlab.com/gitlab-com/chatops)
+  they use to interact with GitLab.com.

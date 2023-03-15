@@ -1,5 +1,6 @@
 <script>
-import { GlCollapse } from '@gitlab/ui';
+import { GlButton, GlCollapse } from '@gitlab/ui';
+import { __ } from '~/locale';
 import { isCollapsed, toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
 import UserBar from './user_bar.vue';
 import SidebarPortalTarget from './sidebar_portal_target.vue';
@@ -10,6 +11,7 @@ import SidebarMenu from './sidebar_menu.vue';
 
 export default {
   components: {
+    GlButton,
     GlCollapse,
     UserBar,
     ContextSwitcherToggle,
@@ -17,6 +19,9 @@ export default {
     HelpCenter,
     SidebarMenu,
     SidebarPortalTarget,
+  },
+  i18n: {
+    skipToMainContent: __('Skip to main content'),
   },
   props: {
     sidebarData: {
@@ -55,6 +60,13 @@ export default {
       :inert="isCollapased"
       tabindex="-1"
     >
+      <gl-button
+        class="super-sidebar-skip-to gl-sr-only-focusable gl-absolute gl-left-3 gl-right-3 gl-top-3"
+        href="#content-body"
+        variant="confirm"
+      >
+        {{ $options.i18n.skipToMainContent }}
+      </gl-button>
       <user-bar :sidebar-data="sidebarData" />
       <div class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden">
         <div class="gl-flex-grow-1 gl-overflow-auto">

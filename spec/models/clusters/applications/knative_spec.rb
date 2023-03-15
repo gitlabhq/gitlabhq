@@ -131,19 +131,6 @@ RSpec.describe Clusters::Applications::Knative do
     it 'does not install metrics for prometheus' do
       expect(subject.postinstall).to be_empty
     end
-
-    context 'with prometheus installed' do
-      let(:prometheus) { create(:clusters_applications_prometheus, :installed) }
-      let(:knative) { create(:clusters_applications_knative, cluster: prometheus.cluster) }
-
-      subject { knative.install_command }
-
-      it 'installs metrics' do
-        expect(subject.postinstall).not_to be_empty
-        expect(subject.postinstall.length).to be(1)
-        expect(subject.postinstall[0]).to eql("kubectl apply -f #{Clusters::Applications::Knative::METRICS_CONFIG}")
-      end
-    end
   end
 
   describe '#install_command' do

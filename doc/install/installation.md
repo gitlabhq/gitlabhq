@@ -45,12 +45,12 @@ If the highest number stable branch is unclear, check the [GitLab blog](https://
 
 ## Software requirements
 
-| Software           | Minimum version | Notes                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| ------------------ | --------------- |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [Ruby](#2-ruby)    | `2.7`           | From GitLab 13.6, Ruby 2.7 is required. Ruby 3.0 is not supported yet (see [the relevant epic](https://gitlab.com/groups/gitlab-org/-/epics/5149) for the current status). You must use the standard MRI implementation of Ruby. We love [JRuby](https://www.jruby.org/) and [Rubinius](https://github.com/rubinius/rubinius#the-rubinius-language-platform), but GitLab needs several Gems that have native extensions. |
-| [Go](#3-go)        | `1.18`          | From GitLab 15.6, Go 1.18 or later is required.                                                                                                                                                                                                                                                                                                                                                                          |
-| [Git](#git)        | `2.38.x`        | From GitLab 15.8, Git 2.38.x and later is required. It's highly recommended that you use the [Git version provided by Gitaly](#git).                                                                                                                                                                                                                                                                                     |
-| [Node.js](#4-node) | `16.15.0`       | From GitLab 15.7, Node.js 16.15.0 or later is required.                                                                                                                                                                                                                                                                                                                                                                  |
+| Software           | Minimum version | Notes                                                                                                                                                                                                                                                                                  |
+|:-------------------|:----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [Ruby](#2-ruby)    | `3.0.x`         | From GitLab 15.10, Ruby 3.0 is required. You must use the standard MRI implementation of Ruby. We love [JRuby](https://www.jruby.org/) and [Rubinius](https://github.com/rubinius/rubinius#the-rubinius-language-platform), but GitLab needs several Gems that have native extensions. |
+| [Go](#3-go)        | `1.18.x`        | From GitLab 15.6, Go 1.18 or later is required.                                                                                                                                                                                                                                        |
+| [Git](#git)        | `2.38.x`        | From GitLab 15.8, Git 2.38.x and later is required. It's highly recommended that you use the [Git version provided by Gitaly](#git).                                                                                                                                                   |
+| [Node.js](#4-node) | `16.15.0`       | From GitLab 15.7, Node.js 16.15.0 or later is required.                                                                                                                                                                                                                                |
 
 ## GitLab directory structure
 
@@ -223,8 +223,8 @@ Download Ruby and compile it:
 
 ```shell
 mkdir /tmp/ruby && cd /tmp/ruby
-curl --remote-name --location --progress-bar "https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.6.tar.gz"
-echo 'e7203b0cc09442ed2c08936d483f8ac140ec1c72e37bb5c401646b7866cb5d10 ruby-2.7.6.tar.gz' | sha256sum -c - && tar xzf ruby-2.7.6.tar.gz
+curl --remote-name --location --progress-bar "https://cache.ruby-lang.org/pub/ruby/3.0/ruby-3.0.5.tar.gz"
+echo '9afc6380a027a4fe1ae1a3e2eccb6b497b9c5ac0631c12ca56f9b7beb4848776 ruby-3.0.5.tar.gz' | sha256sum -c - && tar xzf ruby-3.0.5.tar.gz
 cd ruby-2.7.6
 
 ./configure --disable-install-rdoc --enable-shared
