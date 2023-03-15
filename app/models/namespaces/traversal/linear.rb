@@ -127,9 +127,13 @@ module Namespaces
         return super unless use_traversal_ids_for_root_ancestor?
 
         strong_memoize(:root_ancestor) do
-          if parent_id.nil?
+          if association(:parent).loaded? && parent.present?
+            # This case is possible when parent has not been persisted or we're inside a transaction.
+            parent.root_ancestor
+          elsif parent_id.nil?
+            # There is no parent, so we are the root ancestor.
             self
-          else
+          elsif traversal_ids.present?
             Namespace.find_by(id: traversal_ids.first)
           end
         end

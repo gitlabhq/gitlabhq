@@ -33,8 +33,7 @@ module QA
           delete_cluster
         end
 
-        # kas is hardcoded to staging since this test should only run in staging for now
-        def install_kubernetes_agent(agent_token)
+        def install_kubernetes_agent(agent_token:, kas_address:)
           install_helm
 
           shell <<~CMD.tr("\n", ' ')
@@ -45,7 +44,7 @@ module QA
               --create-namespace
               --set image.tag=#{Runtime::Env.gitlab_agentk_version}
               --set config.token=#{agent_token}
-              --set config.kasAddress=wss://kas.staging.gitlab.com
+              --set config.kasAddress=#{kas_address}
               --set config.kasHeaders="{Cookie: gitlab_canary=#{target_canary?}}"
           CMD
         end

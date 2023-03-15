@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class SwapTimelogsNoteIdToBigintForGitlabDotCom < Gitlab::Database::Migration[2.1]
+  include Gitlab::Database::MigrationHelpers::ConvertToBigint
+
   disable_ddl_transaction!
 
   TABLE_NAME = 'timelogs'
@@ -49,6 +51,6 @@ class SwapTimelogsNoteIdToBigintForGitlabDotCom < Gitlab::Database::Migration[2.
   private
 
   def should_run?
-    Gitlab.com? || Gitlab.dev_or_test_env?
+    com_or_dev_or_test_but_not_jh?
   end
 end

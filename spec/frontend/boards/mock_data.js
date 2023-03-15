@@ -918,6 +918,7 @@ export const epicBoardListQueryResponse = (totalWeight = 5) => ({
       __typename: 'EpicList',
       id: 'gid://gitlab/Boards::EpicList/3',
       metadata: {
+        epicsCount: 1,
         totalWeight,
       },
     },

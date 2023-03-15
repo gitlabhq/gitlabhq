@@ -187,17 +187,17 @@ table.supported-languages ul {
       <td>Y</td>
     </tr>
     <tr>
-      <td rowspan="2">Java</td>
+      <td rowspan="2">Java and Kotlin (not Android)<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-1">1</a></b></sup></td>
       <td rowspan="2">
         8 LTS,
         11 LTS,
-        13<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-1">1</a></b></sup>,
-        14<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-1">1</a></b></sup>,
-        15<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-1">1</a></b></sup>,
-        16<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-1">1</a></b></sup>,
+        13<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup>,
+        14<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup>,
+        15<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup>,
+        16<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup>,
         or 17 LTS
       </td>
-      <td><a href="https://gradle.org/">Gradle</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup></td>
+      <td><a href="https://gradle.org/">Gradle</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-3">3</a></b></sup></td>
       <td>
         <ul>
             <li><code>build.gradle</code></li>
@@ -295,15 +295,19 @@ table.supported-languages ul {
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-1"></a>
     <p>
-      Support for these versions of Java is deprecated and is planned to be removed in the GitLab 16.0 release. Additionally, these versions of Java are not supported by the FIPS-enabled image of <code>gemnasium-maven</code>. Official support is limited to LTS versions only. Although it may be possible to use Dependency Scanning with other versions by building a custom dependency scanning image, this approach is not officially supported by GitLab.
+      Support for Kotlin projects for Android is tracked in <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/336866">issue 336866</a>.
     </p>
   </li>
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-2"></a>
     <p>
-      Although Gradle with Java 8 is supported, there are other issues such that Android project builds are not supported at this time.
-      See the backlog issue <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/336866">Android support for Dependency
-      Scanning (gemnasium-maven)</a> for more details. Also, Gradle is not supported when <a href="https://docs.gitlab.com/ee/development/fips_compliance.html#enable-fips-mode">FIPS mode</a> is enabled.
+      Support for these versions of Java is deprecated and is planned to be removed in the GitLab 16.0 release. Additionally, these versions of Java are not supported by the FIPS-enabled image of <code>gemnasium-maven</code>. Official support is limited to LTS versions only. Although it may be possible to use Dependency Scanning with other versions by building a custom dependency scanning image, this approach is not officially supported by GitLab.
+    </p>
+  </li>
+  <li>
+    <a id="notes-regarding-supported-languages-and-package-managers-3"></a>
+    <p>
+      Gradle is not supported when <a href="https://docs.gitlab.com/ee/development/fips_compliance.html#enable-fips-mode">FIPS mode</a> is enabled.
     </p>
   </li>
   <li>

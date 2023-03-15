@@ -377,6 +377,18 @@ To solve this, you must change the source group path to include a non-numerical 
 
 - The [Groups API](../../../api/groups.md#update-group).
 
+#### Other `404` errors
+
+You can receive other `404` errors when importing a group, for example:
+
+```json
+"exception_message": "Unsuccessful response 404 from [FILTERED] Bo...",
+"exception_class": "BulkImports::NetworkError",
+```
+
+This error indicates a problem transferring from the _source_ instance. To solve this, check that you have met the [prerequisites](#prerequisites) on the source
+instance.
+
 ## Migrate groups by uploading an export file (deprecated)
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2888) in GitLab 13.0 as an experimental feature. May change in future releases.

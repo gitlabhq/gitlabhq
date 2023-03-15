@@ -30852,6 +30852,8 @@ CREATE UNIQUE INDEX index_merge_request_reviewers_on_merge_request_id_and_user_i
 
 CREATE INDEX index_merge_request_reviewers_on_user_id ON merge_request_reviewers USING btree (user_id);
 
+CREATE UNIQUE INDEX index_merge_request_user_mentions_note_id_convert_to_bigint ON merge_request_user_mentions USING btree (note_id_convert_to_bigint) WHERE (note_id_convert_to_bigint IS NOT NULL);
+
 CREATE UNIQUE INDEX index_merge_request_user_mentions_on_note_id ON merge_request_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
 
 CREATE INDEX index_merge_requests_closing_issues_on_issue_id ON merge_requests_closing_issues USING btree (issue_id);
@@ -35012,6 +35014,9 @@ ALTER TABLE ONLY issues
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_geo_event_log_on_geo_event_id FOREIGN KEY (geo_event_id) REFERENCES geo_events(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY merge_request_user_mentions
+    ADD CONSTRAINT fk_merge_request_user_mentions_note_id_convert_to_bigint FOREIGN KEY (note_id_convert_to_bigint) REFERENCES notes(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY path_locks
     ADD CONSTRAINT fk_path_locks_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

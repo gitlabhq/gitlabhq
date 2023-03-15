@@ -170,8 +170,13 @@ RSpec.describe 'Database schema', feature_category: :database do
           context 'columns ending with _id' do
             let(:column_names) { columns.map(&:name) }
             let(:column_names_with_id) { column_names.select { |column_name| column_name.ends_with?('_id') } }
-            let(:foreign_keys_columns) { all_foreign_keys.reject { |fk| fk.name&.end_with?("_p") }.map(&:column).uniq } # we can have FK and loose FK present at the same time
             let(:ignored_columns) { ignored_fk_columns(table) }
+            let(:foreign_keys_columns) do
+              all_foreign_keys
+                .reject { |fk| fk.name&.end_with?("_p") || fk.name&.end_with?("_id_convert_to_bigint") }
+                .map(&:column)
+                .uniq # we can have FK and loose FK present at the same time
+            end
 
             it 'do have the foreign keys' do
               expect(column_names_with_id - ignored_columns).to match_array(foreign_keys_columns)

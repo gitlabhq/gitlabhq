@@ -60,7 +60,7 @@ prerequisites for those imports.
 If you are importing from GitHub Enterprise to a self-managed GitLab instance:
 
 - You must first enable the [GitHub integration](../../../integration/github.md).
-- If GitLab is behind a HTTP/HTTPS proxy, you must populate the [allowlist for local requests](../../../security/webhooks.md#create-an-allowlist-for-local-requests)
+- If GitLab is behind an HTTP/HTTPS proxy, you must populate the [allowlist for local requests](../../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains)
   with `github.com` and `api.github.com` to solve the hostname. For more information, read the issue
   [Importing a GitHub project requires DNS resolution even when behind a proxy](https://gitlab.com/gitlab-org/gitlab/-/issues/37941).
 

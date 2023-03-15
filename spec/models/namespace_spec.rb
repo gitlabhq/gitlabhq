@@ -605,6 +605,17 @@ RSpec.describe Namespace, feature_category: :subgroups do
         expect(namespace.root_ancestor).to eq new_root
       end
     end
+
+    context 'within a transaction' do
+      # We would like traversal_ids to be defined within a transaction, but it's not possible yet.
+      # This spec exists to assert that the behavior is known.
+      it 'is not defined yet' do
+        Namespace.transaction do
+          group = create(:group)
+          expect(group.traversal_ids).to be_empty
+        end
+      end
+    end
   end
 
   context 'traversal scopes' do
@@ -2067,6 +2078,39 @@ RSpec.describe Namespace, feature_category: :subgroups do
         subject { group.parent_id = new_parent.id }
 
         include_examples 'updates root_ancestor'
+      end
+    end
+
+    context 'within a transaction' do
+      context 'with a persisted parent' do
+        let(:parent) { create(:group) }
+
+        it do
+          Namespace.transaction do
+            group = create(:group, parent: parent)
+            expect(group.root_ancestor).to eq parent
+          end
+        end
+      end
+
+      context 'with a non-persisted parent' do
+        let(:parent) { build(:group) }
+
+        it do
+          Namespace.transaction do
+            group = create(:group, parent: parent)
+            expect(group.root_ancestor).to eq parent
+          end
+        end
+      end
+
+      context 'without a parent' do
+        it do
+          Namespace.transaction do
+            group = create(:group)
+            expect(group.root_ancestor).to eq group
+          end
+        end
       end
     end
   end

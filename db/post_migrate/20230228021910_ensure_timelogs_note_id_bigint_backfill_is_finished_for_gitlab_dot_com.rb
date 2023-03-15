@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class EnsureTimelogsNoteIdBigintBackfillIsFinishedForGitlabDotCom < Gitlab::Database::Migration[2.1]
+  include Gitlab::Database::MigrationHelpers::ConvertToBigint
+
   restrict_gitlab_migration gitlab_schema: :gitlab_main
   disable_ddl_transaction!
 
@@ -22,6 +24,6 @@ class EnsureTimelogsNoteIdBigintBackfillIsFinishedForGitlabDotCom < Gitlab::Data
   private
 
   def should_run?
-    Gitlab.com? || Gitlab.dev_or_test_env?
+    com_or_dev_or_test_but_not_jh?
   end
 end

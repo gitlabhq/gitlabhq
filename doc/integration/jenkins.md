@@ -166,7 +166,7 @@ If you get this error message while configuring GitLab, the following are possib
 - GitLab is unable to reach your Jenkins instance at the address. If your GitLab instance is self-managed, try pinging the
   Jenkins instance at the domain provided on the GitLab instance.
 - The Jenkins instance is at a local address and is not included in the
-  [GitLab installation's allowlist](../security/webhooks.md#create-an-allowlist-for-local-requests).
+  [GitLab installation's allowlist](../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 - The credentials for the Jenkins instance do not have sufficient access or are invalid.
 - The **Enable authentication for `/project` end-point** checkbox is not selected in your [Jenkins plugin configuration](#configure-the-jenkins-server).
 

@@ -5,6 +5,7 @@ require 'mkmf'
 module QA
   module Service
     class KubernetesCluster
+      include Support::API
       include Service::Shellout
 
       attr_reader :api_url, :ca_certificate, :token, :rbac, :provider
@@ -36,7 +37,7 @@ module QA
       end
 
       def install_kubernetes_agent(agent_token)
-        @provider.install_kubernetes_agent(agent_token)
+        @provider.install_kubernetes_agent(agent_token: agent_token, kas_address: fetch_kas_address)
       end
 
       def create_secret(secret, secret_name)
@@ -71,6 +72,17 @@ module QA
 
       def fetch_api_url
         `kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}'`
+      end
+
+      def fetch_kas_address
+        api_client = Runtime::API::Client.new(:gitlab)
+
+        Support::Retrier.retry_until do
+          response = get(Runtime::API::Request.new(api_client, '/metadata').url)
+          body = parse_body(response)
+
+          body.dig(:kas, :externalUrl) || raise("Failed to fetch KAS address from #{body}")
+        end
       end
 
       def fetch_credentials

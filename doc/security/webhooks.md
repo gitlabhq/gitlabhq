@@ -5,10 +5,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, reference, howto
 ---
 
-# Webhooks and insecure internal web services **(FREE SELF)**
+# Filtering outbound requests **(FREE SELF)**
+
+To protect against the risk of data loss and exposure, GitLab administrators can now use outbound request filtering controls to restrict certain outbound requests made by the GitLab instance.
+
+## Secure webhooks and integrations
 
 Users with at least the Maintainer role can set up [webhooks](../user/project/integrations/webhooks.md) that are
-triggered when specific changes occur in a project. When triggered, a `POST` HTTP request is sent to a URL. A webhook is
+triggered when specific changes occur in a project or group. When triggered, a `POST` HTTP request is sent to a URL. A webhook is
 usually configured to send data to a specific external web service, which processes the data in an appropriate way.
 
 However, a webhook can be configured with a URL for an internal web service instead of an external web service.
@@ -32,9 +36,13 @@ that hosts the webhook including:
 Webhooks can be used to trigger destructive commands using web services that don't require authentication. These webhooks
 can get the GitLab server to make `POST` HTTP requests to endpoints that delete resources.
 
-## Allow webhook and service requests to local network
+### Allow requests to the local network from webhooks and integrations
 
-To prevent exploitation of insecure internal web services, all webhook requests to the following local network addresses are not allowed:
+Prerequisite:
+
+- You must have administrator access to the instance.
+
+To prevent exploitation of insecure internal web services, all webhook and integration requests to the following local network addresses are not allowed:
 
 - The current GitLab instance server address.
 - Private network addresses, including `127.0.0.1`, `::1`, `0.0.0.0`, `10.0.0.0/8`, `172.16.0.0/12`,
@@ -47,26 +55,61 @@ To allow access to these addresses:
 1. Expand **Outbound requests**.
 1. Select the **Allow requests to the local network from webhooks and integrations** checkbox.
 
-## Prevent system hook requests to local network
+### Prevent requests to the local network from system hooks
 
-[System hooks](../administration/system_hooks.md) are permitted to make requests to local network by default because
-they are set up by administrators. To prevent system hook requests to the local network:
+Prerequisite:
+
+- You must have administrator access to the instance.
+
+[System hooks](../administration/system_hooks.md) can make requests to the local network by default. To prevent system hook requests to the local network:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Network**.
 1. Expand **Outbound requests**.
 1. Clear the **Allow requests to the local network from system hooks** checkbox.
 
-## Create an allowlist for local requests
+## Block all requests
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44496) in GitLab 12.2
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377371) in GitLab 15.10 [with a flag](../administration/feature_flags.md) named `deny_all_requests_except_allowed`. Disabled by default.
 
-You can allow certain domains and IP addresses to be accessible to both system hooks and webhooks, even when local
-requests are forbidden. To add these domains to the allowlist:
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `deny_all_requests_except_allowed`.
+On GitLab.com, this feature is not available.
+
+Prerequisite:
+
+- You must have administrator access to the instance.
+
+To block all requests made by the GitLab Rails app:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Network**.
-1. Expand **Outbound requests** and add entries.
+1. Expand **Outbound requests**.
+1. Select the **Block all requests, except for IP addresses, IP ranges, and domain names defined in the allowlist** checkbox.
+
+When this checkbox is selected, requests to the following are still not blocked:
+
+- Core services like Geo, Git, GitLab Shell, Gitaly, PostgreSQL, and Redis
+- Object storage
+- IP addresses and domains in the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains)
+
+This setting is respected by GitLab Rails only, so other services like Gitaly can still make requests that break the rule.
+Additionally, [some areas of GitLab Rails](https://gitlab.com/groups/gitlab-org/-/epics/8029) do not respect outbound filtering rules.
+
+## Allow outbound requests to certain IP addresses and domains
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44496) in GitLab 12.2.
+
+Prerequisite:
+
+- You must have administrator access to the instance.
+
+To allow outbound requests to certain IP addresses and domains:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > Network**.
+1. Expand **Outbound requests**.
+1. In **Local IP addresses and domain names that hooks and integrations can access**, enter your IP addresses and domains.
 
 The entries can:
 
@@ -91,14 +134,34 @@ example.com;gitlab.example.com
 example.com:8080
 ```
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+When filtering outbound requests, you might encounter the following issues.
 
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+### Configured URLs are blocked
+
+You can only select the **Block all requests, except for IP addresses, IP ranges, and domain names defined in the allowlist** checkbox if no configured URLs would be blocked. Otherwise, you might get an error message that says the URL is blocked.
+
+If you can't enable this setting, do one of the following:
+
+- Disable the URL setting.
+- Configure another URL, or leave the URL setting empty.
+- Add the configured URL to the [allowlist](#allow-requests-to-the-local-network-from-webhooks-and-integrations).
+
+### Public runner releases URL is blocked
+
+Most GitLab instances have their `public_runner_releases_url` set to
+`https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-runner/releases`.
+You can't change or disable this setting in the Admin Area, which can prevent you from [blocking all requests](#block-all-requests).
+
+To enable the setting, use the [Rails console](../administration/operations/rails_console.md) to set `public_runner_releases_url` to the instance host:
+
+```ruby
+current_settings = ApplicationSetting.find_or_create_without_cache;
+ApplicationSettings::UpdateService.new(current_settings, nil, public_runner_releases_url: Gitlab.config.gitlab.base_url).execute
+```
+
+### GitLab subscription management is blocked
+
+When you [block all requests](#block-all-requests), [GitLab subscription management](../subscriptions/self_managed/index.md) also gets blocked.
+The workaround is to add `customers.gitlab.com:443` to the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).

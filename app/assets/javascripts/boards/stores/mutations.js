@@ -9,7 +9,9 @@ import * as mutationTypes from './mutation_types';
 const updateListItemsCount = ({ state, listId, value }) => {
   const list = state.boardLists[listId];
   if (state.issuableType === TYPE_EPIC) {
-    list.metadata.epicsCount += value;
+    const listItem = cloneDeep(state.boardLists[listId]);
+    listItem.metadataepicsCount += value;
+    Vue.set(state.boardLists[listId], listId, listItem);
   }
   Vue.set(state.boardLists, listId, { ...list });
 };
