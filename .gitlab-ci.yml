@@ -12,6 +12,7 @@ stages:
   - post-qa
   - pages
   - notify
+  - release-environments
 
 # always use `gitlab-org` runners, however
 # in cases where jobs require Docker-in-Docker, the job

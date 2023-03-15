@@ -1901,6 +1901,13 @@
       when: never
     - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable-ee$/'
 
+.releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env-patterns:
+  rules:
+    - if: '$CI_COMMIT_MESSAGE =~ /\[merge-train skip\]/'
+      when: never
+    - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable-ee$/'
+      changes: *setup-test-env-patterns
+
 .releases:rules:canonical-dot-com-security-gitlab-stable-branch-only:
   rules:
     - if: '$CI_COMMIT_MESSAGE =~ /\[merge-train skip\]/'
@@ -2295,3 +2302,14 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *feature-flag-development-config-patterns
       allow_failure: true  # See https://gitlab.com/gitlab-org/gitlab/-/issues/351136
+
+##############################
+# release-environments rules #
+##############################
+.release-environments:rules:start-release-environments-pipeline:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - !reference [".releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env-patterns", rules]
