@@ -36,6 +36,10 @@ export const searchQuery = (state) => {
 };
 
 export const scopedIssuesPath = (state) => {
+  if (state.searchContext?.project?.id && !state.searchContext?.project_metadata?.issues_path) {
+    return false;
+  }
+
   return (
     state.searchContext?.project_metadata?.issues_path ||
     state.searchContext?.group_metadata?.issues_path ||
@@ -54,7 +58,7 @@ export const scopedMRPath = (state) => {
 export const defaultSearchOptions = (state, getters) => {
   const userName = gon.current_username;
 
-  return [
+  const issues = [
     {
       html_id: 'default-issues-assigned',
       title: MSG_ISSUES_ASSIGNED_TO_ME,
@@ -65,6 +69,9 @@ export const defaultSearchOptions = (state, getters) => {
       title: MSG_ISSUES_IVE_CREATED,
       url: `${getters.scopedIssuesPath}/?author_username=${userName}`,
     },
+  ];
+
+  const mergeRequests = [
     {
       html_id: 'default-mrs-assigned',
       title: MSG_MR_ASSIGNED_TO_ME,
@@ -81,6 +88,7 @@ export const defaultSearchOptions = (state, getters) => {
       url: `${getters.scopedMRPath}/?author_username=${userName}`,
     },
   ];
+  return [...(getters.scopedIssuesPath ? issues : []), ...mergeRequests];
 };
 
 export const projectUrl = (state) => {

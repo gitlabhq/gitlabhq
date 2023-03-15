@@ -109,9 +109,6 @@ export default {
     isInvalidTag() {
       return !this.tag.digest;
     },
-    isDeleteDisabled() {
-      return this.disabled || !this.tag.canDelete;
-    },
   },
 };
 </script>
@@ -179,16 +176,16 @@ export default {
         </gl-sprintf>
       </span>
     </template>
-    <template #right-action>
+    <template v-if="tag.canDelete" #right-action>
       <gl-dropdown
-        :disabled="isDeleteDisabled"
+        :disabled="disabled"
         icon="ellipsis_v"
         :text="$options.i18n.MORE_ACTIONS_TEXT"
         :text-sr-only="true"
         category="tertiary"
         no-caret
         right
-        :class="{ 'gl-opacity-0 gl-pointer-events-none': isDeleteDisabled }"
+        :class="{ 'gl-opacity-0 gl-pointer-events-none': disabled }"
         data-testid="additional-actions"
         data-qa-selector="more_actions_menu"
       >

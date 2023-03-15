@@ -446,7 +446,7 @@ irb(main):001:0> require 'openssl'; OpenSSL.fips_mode
 
 ### Go
 
-Google maintains a [`dev.boringcrypto` branch](https://github.com/golang/go/tree/dev.boringcrypto) in the Golang compiler
+Google maintains a [`dev.boringcrypto` branch](https://github.com/golang/go/tree/dev.boringcrypto) in the Go compiler
 that makes it possible to statically link BoringSSL, a FIPS-validated module forked from OpenSSL.
 However, BoringSSL is not intended for public use.
 

@@ -9,17 +9,10 @@ class ScheduleMigrationForRemediation < Gitlab::Database::Migration[2.1]
   BATCH_SIZE = 5000
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :vulnerability_occurrences,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op as described in https://docs.gitlab.com/ee/development/database/batched_background_migrations.html
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :vulnerability_occurrences, :id, [])
+    # no-op as described in https://docs.gitlab.com/ee/development/database/batched_background_migrations.html
   end
 end

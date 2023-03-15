@@ -35,39 +35,39 @@ RSpec.describe "Private Project Pages Access", feature_category: :pages do
 
   describe "GET /projects/:id/pages_access" do
     context 'access depends on the level' do
-      where(:pages_access_level, :with_user, :expected_result) do
-        ProjectFeature::DISABLED   |   "admin"     |  403
-        ProjectFeature::DISABLED   |   "owner"     |  403
-        ProjectFeature::DISABLED   |   "master"    |  403
-        ProjectFeature::DISABLED   |   "developer" |  403
-        ProjectFeature::DISABLED   |   "reporter"  |  403
-        ProjectFeature::DISABLED   |   "guest"     |  403
-        ProjectFeature::DISABLED   |   "user"      |  404
-        ProjectFeature::DISABLED   |   nil         |  404
-        ProjectFeature::PUBLIC     |   "admin"     |  200
-        ProjectFeature::PUBLIC     |   "owner"     |  200
-        ProjectFeature::PUBLIC     |   "master"    |  200
-        ProjectFeature::PUBLIC     |   "developer" |  200
-        ProjectFeature::PUBLIC     |   "reporter"  |  200
-        ProjectFeature::PUBLIC     |   "guest"     |  200
-        ProjectFeature::PUBLIC     |   "user"      |  404
-        ProjectFeature::PUBLIC     |   nil         |  404
-        ProjectFeature::ENABLED    |   "admin"     |  200
-        ProjectFeature::ENABLED    |   "owner"     |  200
-        ProjectFeature::ENABLED    |   "master"    |  200
-        ProjectFeature::ENABLED    |   "developer" |  200
-        ProjectFeature::ENABLED    |   "reporter"  |  200
-        ProjectFeature::ENABLED    |   "guest"     |  200
-        ProjectFeature::ENABLED    |   "user"      |  404
-        ProjectFeature::ENABLED    |   nil         |  404
-        ProjectFeature::PRIVATE    |   "admin"     |  200
-        ProjectFeature::PRIVATE    |   "owner"     |  200
-        ProjectFeature::PRIVATE    |   "master"    |  200
-        ProjectFeature::PRIVATE    |   "developer" |  200
-        ProjectFeature::PRIVATE    |   "reporter"  |  200
-        ProjectFeature::PRIVATE    |   "guest"     |  200
-        ProjectFeature::PRIVATE    |   "user"      |  404
-        ProjectFeature::PRIVATE    |   nil         |  404
+      where(:pages_access_level, :with_user, :admin_mode, :expected_result) do
+        ProjectFeature::DISABLED   |   "admin"     | true  |  403
+        ProjectFeature::DISABLED   |   "owner"     | false |  403
+        ProjectFeature::DISABLED   |   "master"    | false |  403
+        ProjectFeature::DISABLED   |   "developer" | false |  403
+        ProjectFeature::DISABLED   |   "reporter"  | false |  403
+        ProjectFeature::DISABLED   |   "guest"     | false |  403
+        ProjectFeature::DISABLED   |   "user"      | false |  404
+        ProjectFeature::DISABLED   |   nil         | false |  404
+        ProjectFeature::PUBLIC     |   "admin"     | true  |  200
+        ProjectFeature::PUBLIC     |   "owner"     | false |  200
+        ProjectFeature::PUBLIC     |   "master"    | false |  200
+        ProjectFeature::PUBLIC     |   "developer" | false |  200
+        ProjectFeature::PUBLIC     |   "reporter"  | false |  200
+        ProjectFeature::PUBLIC     |   "guest"     | false |  200
+        ProjectFeature::PUBLIC     |   "user"      | false |  404
+        ProjectFeature::PUBLIC     |   nil         | false |  404
+        ProjectFeature::ENABLED    |   "admin"     | true  |  200
+        ProjectFeature::ENABLED    |   "owner"     | false |  200
+        ProjectFeature::ENABLED    |   "master"    | false |  200
+        ProjectFeature::ENABLED    |   "developer" | false |  200
+        ProjectFeature::ENABLED    |   "reporter"  | false |  200
+        ProjectFeature::ENABLED    |   "guest"     | false |  200
+        ProjectFeature::ENABLED    |   "user"      | false |  404
+        ProjectFeature::ENABLED    |   nil         | false |  404
+        ProjectFeature::PRIVATE    |   "admin"     | true  |  200
+        ProjectFeature::PRIVATE    |   "owner"     | false |  200
+        ProjectFeature::PRIVATE    |   "master"    | false |  200
+        ProjectFeature::PRIVATE    |   "developer" | false |  200
+        ProjectFeature::PRIVATE    |   "reporter"  | false |  200
+        ProjectFeature::PRIVATE    |   "guest"     | false |  200
+        ProjectFeature::PRIVATE    |   "user"      | false |  404
+        ProjectFeature::PRIVATE    |   nil         | false |  404
       end
 
       with_them do
@@ -77,7 +77,7 @@ RSpec.describe "Private Project Pages Access", feature_category: :pages do
         it "correct return value" do
           if !with_user.nil?
             user = public_send(with_user)
-            get api("/projects/#{project.id}/pages_access", user)
+            get api("/projects/#{project.id}/pages_access", user, admin_mode: admin_mode)
           else
             get api("/projects/#{project.id}/pages_access")
           end

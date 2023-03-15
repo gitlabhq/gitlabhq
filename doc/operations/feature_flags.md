@@ -297,11 +297,11 @@ For API content, see:
 - [Feature flags API](../api/feature_flags.md)
 - [Feature flag user lists API](../api/feature_flag_user_lists.md)
 
-### Golang application example
+### Go application example
 
-Here's an example of how to integrate feature flags in a Golang application:
+Here's an example of how to integrate feature flags in a Go application:
 
-```golang
+```go
 package main
 
 import (

@@ -12896,13 +12896,13 @@ CREATE SEQUENCE chat_teams_id_seq
 ALTER SEQUENCE chat_teams_id_seq OWNED BY chat_teams.id;
 
 CREATE TABLE ci_build_needs (
-    id integer NOT NULL,
+    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     name text NOT NULL,
     artifacts boolean DEFAULT true NOT NULL,
     optional boolean DEFAULT false NOT NULL,
     build_id bigint NOT NULL,
     partition_id bigint DEFAULT 100 NOT NULL,
-    id_convert_to_bigint bigint DEFAULT 0 NOT NULL
+    id bigint NOT NULL
 );
 
 CREATE SEQUENCE ci_build_needs_id_seq

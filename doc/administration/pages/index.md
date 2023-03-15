@@ -863,7 +863,7 @@ Incorrect configuration of these values may result in intermittent
 or persistent errors, or the Pages Daemon serving old content.
 
 NOTE:
-Expiry, interval and timeout flags use [Golang's duration formatting](https://pkg.go.dev/time#ParseDuration).
+Expiry, interval and timeout flags use [Go duration formatting](https://pkg.go.dev/time#ParseDuration).
 A duration string is a possibly signed sequence of decimal numbers,
 each with optional fraction and a unit suffix, such as `300ms`, `1.5h` or `2h45m`.
 Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`.

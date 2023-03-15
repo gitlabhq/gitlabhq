@@ -829,6 +829,21 @@ RSpec.describe SearchHelper, feature_category: :global_search do
         expect(header_search_context[:project_metadata]).to eq(project_metadata)
       end
 
+      context 'feature issues is not available' do
+        let(:feature_available) { false }
+        let(:project_metadata) { { mr_path: project_merge_requests_path(project) } }
+
+        before do
+          allow(project).to receive(:feature_available?).and_call_original
+          allow(project).to receive(:feature_available?).with(:issues, current_user).and_return(feature_available)
+        end
+
+        it 'adds the :project and :project-metadata correctly to hash' do
+          expect(header_search_context[:project]).to eq({ id: project.id, name: project.name })
+          expect(header_search_context[:project_metadata]).to eq(project_metadata)
+        end
+      end
+
       context 'with scope' do
         let(:scope) { 'issues' }
 

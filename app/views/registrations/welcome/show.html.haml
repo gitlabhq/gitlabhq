@@ -38,4 +38,5 @@
                 - if partial_exists? "registrations/welcome/button"
                   = render "registrations/welcome/button"
                 - else
-                  = f.submit _('Get started!'), class: 'btn-confirm gl-button btn btn-block gl-mb-0 gl-p-3', data: { qa_selector: 'get_started_button' }
+                  = render Pajamas::ButtonComponent.new(block: true, type: :submit, variant: :confirm, button_options: { class: 'gl-mb-0', data: { qa_selector: 'get_started_button' }}) do
+                    = _('Get started!')

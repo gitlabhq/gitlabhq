@@ -122,11 +122,8 @@ export default {
         @next-page="$emit('next-page')"
       >
         <template #default="{ first, item, isSelected, selectItem }">
-          <!-- `first` prop is used to decide whether to show the top border
-          for the first element. We want to show the top border only when
-          user has permission to bulk delete versions. -->
           <version-row
-            :first="canDestroy && first"
+            :first="first"
             :package-entity="item"
             :selected="isSelected(item)"
             @delete="setItemToBeDeleted(item)"

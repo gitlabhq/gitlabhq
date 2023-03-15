@@ -720,7 +720,7 @@ This error occurs when `praefect['database_port']` or `praefect['database_direct
 
 ## Profiling Gitaly
 
-Gitaly exposes several of the Golang built-in performance profiling tools on the Prometheus listen port. For example, if Prometheus is listening
+Gitaly exposes several of the Go built-in performance profiling tools on the Prometheus listen port. For example, if Prometheus is listening
 on port `9236` of the GitLab server:
 
 - Get a list of running `goroutines` and their backtraces:

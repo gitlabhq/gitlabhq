@@ -1,4 +1,4 @@
-import { GlButton, GlIcon, GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlDropdown, GlIcon, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import ImportActionsCell from '~/import_entities/import_groups/components/import_actions_cell.vue';
 
@@ -8,7 +8,6 @@ describe('import actions cell', () => {
   const createComponent = (props) => {
     wrapper = shallowMount(ImportActionsCell, {
       propsData: {
-        isProjectsImportEnabled: false,
         isFinished: false,
         isAvailableForImport: false,
         isInvalid: false,
@@ -22,10 +21,10 @@ describe('import actions cell', () => {
       createComponent({ isAvailableForImport: true });
     });
 
-    it('renders import button', () => {
-      const button = wrapper.findComponent(GlButton);
-      expect(button.exists()).toBe(true);
-      expect(button.text()).toBe('Import');
+    it('renders import dropdown', () => {
+      const dropdown = wrapper.findComponent(GlDropdown);
+      expect(dropdown.exists()).toBe(true);
+      expect(dropdown.props('text')).toBe('Import with projects');
     });
 
     it('does not render icon with a hint', () => {
@@ -38,10 +37,10 @@ describe('import actions cell', () => {
       createComponent({ isAvailableForImport: false, isFinished: true });
     });
 
-    it('renders re-import button', () => {
-      const button = wrapper.findComponent(GlButton);
-      expect(button.exists()).toBe(true);
-      expect(button.text()).toBe('Re-import');
+    it('renders re-import dropdown', () => {
+      const dropdown = wrapper.findComponent(GlDropdown);
+      expect(dropdown.exists()).toBe(true);
+      expect(dropdown.props('text')).toBe('Re-import with projects');
     });
 
     it('renders icon with a hint', () => {
@@ -53,25 +52,25 @@ describe('import actions cell', () => {
     });
   });
 
-  it('does not render import button when group is not available for import', () => {
+  it('does not render import dropdown when group is not available for import', () => {
     createComponent({ isAvailableForImport: false });
 
-    const button = wrapper.findComponent(GlButton);
-    expect(button.exists()).toBe(false);
+    const dropdown = wrapper.findComponent(GlDropdown);
+    expect(dropdown.exists()).toBe(false);
   });
 
-  it('renders import button as disabled when group is invalid', () => {
+  it('renders import dropdown as disabled when group is invalid', () => {
     createComponent({ isInvalid: true, isAvailableForImport: true });
 
-    const button = wrapper.findComponent(GlButton);
-    expect(button.props().disabled).toBe(true);
+    const dropdown = wrapper.findComponent(GlDropdown);
+    expect(dropdown.props().disabled).toBe(true);
   });
 
   it('emits import-group event when import button is clicked', () => {
     createComponent({ isAvailableForImport: true });
 
-    const button = wrapper.findComponent(GlButton);
-    button.vm.$emit('click');
+    const dropdown = wrapper.findComponent(GlDropdown);
+    dropdown.vm.$emit('click');
 
     expect(wrapper.emitted('import-group')).toHaveLength(1);
   });
@@ -81,10 +80,10 @@ describe('import actions cell', () => {
     ${false}   | ${'Import'}
     ${true}    | ${'Re-import'}
   `(
-    'when import projects is enabled, group is available for import and finish status is $status',
+    'group is available for import and finish status is $isFinished',
     ({ isFinished, expectedAction }) => {
       beforeEach(() => {
-        createComponent({ isProjectsImportEnabled: true, isAvailableForImport: true, isFinished });
+        createComponent({ isAvailableForImport: true, isFinished });
       });
 
       it('render import dropdown', () => {

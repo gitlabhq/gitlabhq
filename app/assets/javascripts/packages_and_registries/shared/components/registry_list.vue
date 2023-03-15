@@ -125,7 +125,7 @@ export default {
         :select-item="selectItem"
         :is-selected="isSelected"
         :item="item"
-        :first="index === 0"
+        :first="!hiddenDelete && index === 0"
       ></slot>
     </div>
 

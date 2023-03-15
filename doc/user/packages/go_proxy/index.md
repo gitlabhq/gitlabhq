@@ -74,7 +74,7 @@ go env -w GOPROXY='https://gitlab.example.com/api/v4/projects/1234/packages/go,h
 With this configuration, Go fetches dependencies in this order:
 
 1. Go attempts to fetch from the project-specific Go proxy.
-1. Go attempts to fetch from [proxy.golang.org](https://proxy.golang.org).
+1. Go attempts to fetch from [`proxy.golang.org`](https://proxy.golang.org).
 1. Go fetches directly with version control system operations (like `git clone`,
    `svn checkout`, and so on).
 

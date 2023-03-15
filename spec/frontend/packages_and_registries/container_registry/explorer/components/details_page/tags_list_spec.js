@@ -69,10 +69,10 @@ describe('Tags List', () => {
   });
 
   describe('registry list', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       mountComponent();
       fireFirstSortUpdate();
-      return waitForApolloRequestRender();
+      await waitForApolloRequestRender();
     });
 
     it('has a persisted search', () => {
@@ -94,6 +94,7 @@ describe('Tags List', () => {
         pagination: tagsPageInfo,
         items: tags,
         idProperty: 'name',
+        hiddenDelete: false,
       });
     });
 
@@ -182,12 +183,23 @@ describe('Tags List', () => {
     });
   });
 
-  describe('when the list of tags is empty', () => {
-    beforeEach(() => {
-      resolver = jest.fn().mockResolvedValue(imageTagsMock([]));
+  describe('when user does not have permission to delete list rows', () => {
+    it('sets registry list hiddenDelete prop to true', async () => {
+      resolver = jest.fn().mockResolvedValue(imageTagsMock({ canDelete: false }));
       mountComponent();
       fireFirstSortUpdate();
-      return waitForApolloRequestRender();
+      await waitForApolloRequestRender();
+
+      expect(findRegistryList().props('hiddenDelete')).toBe(true);
+    });
+  });
+
+  describe('when the list of tags is empty', () => {
+    beforeEach(async () => {
+      resolver = jest.fn().mockResolvedValue(imageTagsMock({ nodes: [] }));
+      mountComponent();
+      fireFirstSortUpdate();
+      await waitForApolloRequestRender();
     });
 
     it('does not show the loader', () => {

@@ -39,7 +39,7 @@ To learn about the reasoning behind our creation of `gitlab-sshd`, read the blog
 
 ### Gitaly touch points
 
-Gitaly is a Golang RPC service which handles all the `git` calls made by GitLab.
+Gitaly is a Go RPC service which handles all the `git` calls made by GitLab.
 GitLab is not exposed directly, and all traffic comes through Create: Source Code.
 For more information, read [Gitaly touch points](gitaly_touch_points.md).
 

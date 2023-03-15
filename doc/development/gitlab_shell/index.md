@@ -21,8 +21,8 @@ Ruby to build and test, but not to run.
 GitLab Shell runs on `port 22` on an Omnibus installation. To use a regular SSH
 service, configure it on an alternative port.
 
-Download and install the current version of Go from [golang.org](https://go.dev/dl/).
-We follow the [Golang Release Policy](https://golang.org/doc/devel/release.html#policy)
+Download and install the [current version of Go](https://go.dev/dl/).
+We follow the [Go Release Policy](https://go.dev/doc/devel/release#policy)
 and support:
 
 - The current stable version.

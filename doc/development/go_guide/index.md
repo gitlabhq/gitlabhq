@@ -216,7 +216,7 @@ When comparing expected and actual values in tests, use
 and others to improve readability when comparing structs, errors,
 large portions of text, or JSON documents:
 
-```golang
+```go
 type TestData struct {
     // ...
 }
@@ -291,7 +291,7 @@ easier to debug.
 
 For example:
 
-```golang
+```go
 // Wrap the error
 return nil, fmt.Errorf("get cache %s: %w", f.Name, err)
 
@@ -462,7 +462,7 @@ allocations.
 
 **Don't:**
 
-```golang
+```go
 var s2 []string
 for _, val := range s1 {
     s2 = append(s2, val)
@@ -471,7 +471,7 @@ for _, val := range s1 {
 
 **Do:**
 
-```golang
+```go
 s2 := make([]string, 0, len(s1))
 for _, val := range s1 {
     s2 = append(s2, val)
@@ -494,7 +494,7 @@ If the scanner report is small, less than 35 lines, then feel free to [inline th
 
 The [go-cmp](https://github.com/google/go-cmp) package should be used when comparing large structs in tests. It makes it possible to output a specific diff where the two structs differ, rather than seeing the whole of both structs printed out in the test logs. Here is a small example:
 
-```golang
+```go
 package main
 
 import (

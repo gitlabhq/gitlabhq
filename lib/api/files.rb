@@ -57,15 +57,11 @@ module API
       end
 
       def cache_client
-        if Feature.enabled?(:cache_client_with_metrics, user_project)
-          Gitlab::Cache::Client.build_with_metadata(
-            cache_identifier: 'API::Files#content_sha',
-            feature_category: :source_code_management,
-            backing_resource: :gitaly
-          )
-        else
-          Rails.cache
-        end
+        Gitlab::Cache::Client.build_with_metadata(
+          cache_identifier: 'API::Files#content_sha',
+          feature_category: :source_code_management,
+          backing_resource: :gitaly
+        )
       end
 
       def fetch_blame_range(blame_params)

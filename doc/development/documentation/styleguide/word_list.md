@@ -741,7 +741,7 @@ Do not use **limitations**. Use **known issues** instead.
 
 ## log in, log on
 
-Do not use **log in** or **log on**. Use [sign in](#sign-in) instead. If the user interface has **Log in**, you can use it.
+Do not use **log in** or **log on**. Use [sign in](#sign-in-sign-in) instead. If the user interface has **Log in**, you can use it.
 
 ## logged-in user, logged in user
 
@@ -1154,13 +1154,16 @@ Use **setup** as a noun, and **set up** as a verb. For example:
 - Your remote office setup is amazing.
 - To set up your remote office correctly, consider the ergonomics of your work area.
 
-## sign in
+## sign in, sign-in
 
-Use **sign in** or **sign in to**.
+Use **sign in** or **sign in to** as a verb to describe the action of signing in.
 
 Do not use **sign on** or **sign into**, or **log on**, **log in**, or **log into**.
 
 If the user interface has different words, use those.
+
+You can use **sign-in** as a noun or adjective. For example, **sign-in page** or
+**sign-in restrictions**.
 
 You can use **single sign-on**.
 

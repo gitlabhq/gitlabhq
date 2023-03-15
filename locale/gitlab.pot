@@ -7732,9 +7732,6 @@ msgstr ""
 msgid "BulkImport|Import is finished. Pick another name for re-import"
 msgstr ""
 
-msgid "BulkImport|Import selected"
-msgstr ""
-
 msgid "BulkImport|Import with projects"
 msgstr ""
 

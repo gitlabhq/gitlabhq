@@ -362,20 +362,10 @@ RSpec.configure do |config|
       ./spec/requests/api/deploy_tokens_spec.rb
       ./spec/requests/api/freeze_periods_spec.rb
       ./spec/requests/api/groups_spec.rb
-      ./spec/requests/api/issues/get_group_issues_spec.rb
-      ./spec/requests/api/issues/get_project_issues_spec.rb
-      ./spec/requests/api/issues/issues_spec.rb
-      ./spec/requests/api/issues/post_projects_issues_spec.rb
-      ./spec/requests/api/issues/put_projects_issues_spec.rb
       ./spec/requests/api/keys_spec.rb
       ./spec/requests/api/merge_requests_spec.rb
       ./spec/requests/api/namespaces_spec.rb
       ./spec/requests/api/notes_spec.rb
-      ./spec/requests/api/pages/internal_access_spec.rb
-      ./spec/requests/api/pages/pages_spec.rb
-      ./spec/requests/api/pages/private_access_spec.rb
-      ./spec/requests/api/pages/public_access_spec.rb
-      ./spec/requests/api/pages_domains_spec.rb
       ./spec/requests/api/personal_access_tokens/self_information_spec.rb
       ./spec/requests/api/personal_access_tokens_spec.rb
       ./spec/requests/api/project_export_spec.rb

@@ -107,10 +107,21 @@ describe('Registry List', () => {
         expect(findDeleteSelected().text()).toBe(component.i18n.deleteSelected);
       });
 
-      it('is hidden when hiddenDelete is true', () => {
-        mountComponent({ propsData: { ...defaultPropsData, hiddenDelete: true } });
+      describe('when hiddenDelete is true', () => {
+        beforeEach(() => {
+          mountComponent({ propsData: { ...defaultPropsData, hiddenDelete: true } });
+        });
 
-        expect(findDeleteSelected().exists()).toBe(false);
+        it('is hidden', () => {
+          expect(findDeleteSelected().exists()).toBe(false);
+        });
+
+        it('populates the first slot prop correctly', async () => {
+          expect(findScopedSlots().at(0).exists()).toBe(true);
+
+          // it's the first slot
+          expect(findScopedSlotFirstValue(0).text()).toBe('false');
+        });
       });
 
       it('is disabled when isLoading is true', () => {

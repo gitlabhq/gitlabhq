@@ -87,6 +87,9 @@ export default {
     tags() {
       return this.containerRepository?.tags?.nodes || [];
     },
+    hideBulkDelete() {
+      return !(this.containerRepository?.canDelete || false);
+    },
     tagsPageInfo() {
       return this.containerRepository?.tags?.pageInfo;
     },
@@ -97,9 +100,6 @@ export default {
         name: this.filters?.name,
         sort: this.sort,
       };
-    },
-    showMultiDeleteButton() {
-      return this.tags.some((tag) => tag.canDelete) && !this.isMobile;
     },
     hasNoTags() {
       return this.tags.length === 0;
@@ -186,6 +186,7 @@ export default {
       />
       <template v-else>
         <registry-list
+          :hidden-delete="hideBulkDelete"
           :title="listTitle"
           :pagination="tagsPageInfo"
           :items="tags"

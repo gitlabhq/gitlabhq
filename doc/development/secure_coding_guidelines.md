@@ -542,11 +542,11 @@ print(p.join('log', '/etc/passwd', ''))
 # renders the path to "/etc/passwd", which is not what we expect!
 ```
 
-#### Golang
+#### Go
 
-Golang has similar behavior with [`path.Clean`](https://pkg.go.dev/path#example-Clean). Remember that with many file systems, using `../../../../` traverses up to the root directory. Any remaining `../` are ignored. This example may give an attacker access to `/etc/passwd`:
+Go has similar behavior with [`path.Clean`](https://pkg.go.dev/path#example-Clean). Remember that with many file systems, using `../../../../` traverses up to the root directory. Any remaining `../` are ignored. This example may give an attacker access to `/etc/passwd`:
 
-```golang
+```go
 path.Clean("/../../etc/passwd")
 // renders the path to "etc/passwd"; the file path is relative to whatever the current directory is
 path.Clean("../../etc/passwd")
@@ -601,7 +601,7 @@ Go has built-in protections that usually prevent an attacker from successfully i
 
 Consider the following example:
 
-```golang
+```go
 package main
 
 import (
@@ -620,7 +620,7 @@ This echoes `"1; cat /etc/passwd"`.
 
 **Do not** use `sh`, as it bypasses internal protections:
 
-```golang
+```go
 out, _ = exec.Command("sh", "-c", "echo 1 | cat /etc/passwd").Output()
 ```
 
@@ -646,15 +646,15 @@ And the following cipher suites (according to the [RFC 8446](https://datatracker
 - `TLS_AES_128_GCM_SHA256`
 - `TLS_AES_256_GCM_SHA384`
 
-*Note*: **Golang** does [not support](https://github.com/golang/go/blob/go1.17/src/crypto/tls/cipher_suites.go#L676) all cipher suites with TLS 1.3.
+*Note*: **Go** does [not support](https://github.com/golang/go/blob/go1.17/src/crypto/tls/cipher_suites.go#L676) all cipher suites with TLS 1.3.
 
 ##### Implementation examples
 
 ##### TLS 1.3
 
-For TLS 1.3, **Golang** only supports [3 cipher suites](https://github.com/golang/go/blob/go1.17/src/crypto/tls/cipher_suites.go#L676), as such we only need to set the TLS version:
+For TLS 1.3, **Go** only supports [3 cipher suites](https://github.com/golang/go/blob/go1.17/src/crypto/tls/cipher_suites.go#L676), as such we only need to set the TLS version:
 
-```golang
+```go
 cfg := &tls.Config{
     MinVersion: tls.VersionTLS13,
 }
@@ -678,9 +678,9 @@ response = GitLab::HTTP.perform_request(Net::HTTP::Get, 'https://gitlab.com', ss
 
 ##### TLS 1.2
 
-**Golang** does support multiple cipher suites that we do not want to use with TLS 1.2. We need to explicitly list authorized ciphers:
+**Go** does support multiple cipher suites that we do not want to use with TLS 1.2. We need to explicitly list authorized ciphers:
 
-```golang
+```go
 func secureCipherSuites() []uint16 {
   return []uint16{
     tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
@@ -692,7 +692,7 @@ func secureCipherSuites() []uint16 {
 
 And then use `secureCipherSuites()` in `tls.Config`:
 
-```golang
+```go
 tls.Config{
   (...),
   CipherSuites: secureCipherSuites(),
@@ -920,7 +920,7 @@ end
 
 #### Go
 
-```golang
+```go
 // unzip INSECURELY extracts source zip file to destination.
 func unzip(src, dest string) error {
   r, err := zip.OpenReader(src)
@@ -1016,7 +1016,7 @@ end
 
 You are encouraged to use the secure archive utilities provided by [LabSec](https://gitlab.com/gitlab-com/gl-security/appsec/labsec) which will handle Zip Slip and other types of vulnerabilities for you. The LabSec utilities are also context aware which makes it possible to cancel or timeout extractions:
 
-```golang
+```go
 package main
 
 import "gitlab-com/gl-security/appsec/labsec/archive/zip"
@@ -1041,7 +1041,7 @@ func main() {
 
 In case the LabSec utilities do not fit your needs, here is an example for extracting a zip file with protection against Zip Slip attacks:
 
-```golang
+```go
 // unzip extracts source zip file to destination with protection against Zip Slip attacks.
 func unzip(src, dest string) error {
   r, err := zip.OpenReader(src)
@@ -1118,7 +1118,7 @@ end
 
 #### Go
 
-```golang
+```go
 // printZipContents INSECURELY prints contents of files in a zip file.
 func printZipContents(src string) error {
   r, err := zip.OpenReader(src)
@@ -1186,7 +1186,7 @@ You are encouraged to use the secure archive utilities provided by [LabSec](http
 
 In case the LabSec utilities do not fit your needs, here is an example for extracting a zip file with protection against symlink attacks:
 
-```golang
+```go
 // printZipContents prints contents of files in a zip file with protection against symlink attacks.
 func printZipContents(src string) error {
   r, err := zip.OpenReader(src)

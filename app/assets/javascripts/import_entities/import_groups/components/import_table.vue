@@ -1,7 +1,6 @@
 <script>
 import {
   GlAlert,
-  GlButton,
   GlDropdown,
   GlDropdownItem,
   GlEmptyState,
@@ -50,7 +49,6 @@ const DEFAULT_TD_CLASSES = 'gl-vertical-align-top!';
 export default {
   components: {
     GlAlert,
-    GlButton,
     GlDropdown,
     GlDropdownItem,
     GlEmptyState,
@@ -165,10 +163,6 @@ export default {
   ],
 
   computed: {
-    isProjectsImportEnabled() {
-      return Boolean(this.glFeatures.bulkImportProjects);
-    },
-
     groups() {
       return this.bulkImportSourceGroups?.nodes ?? [];
     },
@@ -707,11 +701,11 @@ export default {
             </gl-sprintf>
           </span>
           <gl-dropdown
-            v-if="isProjectsImportEnabled"
             :text="s__('BulkImport|Import with projects')"
             :disabled="!hasSelectedGroups"
             variant="confirm"
             category="primary"
+            data-testid="import-selected-groups-dropdown"
             class="gl-ml-4"
             split
             @click="importSelectedGroups({ migrateProjects: true })"
@@ -720,15 +714,6 @@ export default {
               {{ s__('BulkImport|Import without projects') }}
             </gl-dropdown-item>
           </gl-dropdown>
-          <gl-button
-            v-else
-            category="primary"
-            variant="confirm"
-            class="gl-ml-4"
-            :disabled="!hasSelectedGroups"
-            @click="importSelectedGroups"
-            >{{ s__('BulkImport|Import selected') }}</gl-button
-          >
           <span class="gl-ml-3">
             <gl-icon name="information-o" :size="12" class="gl-text-blue-600" />
             <gl-sprintf
@@ -804,7 +789,6 @@ export default {
           </template>
           <template #cell(actions)="{ item: group, index }">
             <import-actions-cell
-              :is-projects-import-enabled="isProjectsImportEnabled"
               :is-finished="group.flags.isFinished"
               :is-available-for-import="group.flags.isAvailableForImport"
               :is-invalid="group.flags.isInvalid"

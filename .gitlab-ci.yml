@@ -106,28 +106,28 @@ workflow:
     # For tags, create a pipeline.
     - if: '$CI_COMMIT_TAG'
       variables:
-        <<: *ruby2-variables
-        PIPELINE_NAME: 'Ruby 2 $CI_COMMIT_TAG tag pipeline'
+        <<: *ruby3-variables
+        PIPELINE_NAME: 'Ruby 3 $CI_COMMIT_TAG tag pipeline'
     # If `$GITLAB_INTERNAL` isn't set, don't create a pipeline.
     - if: '$GITLAB_INTERNAL == null'
       when: never
     # For stable, auto-deploy, and security branches, create a pipeline.
     - if: '$CI_COMMIT_BRANCH =~ /^[\d-]+-stable(-ee)?$/'
       variables:
-        <<: *ruby2-variables
+        <<: *ruby3-variables
         NOTIFY_PIPELINE_FAILURE_CHANNEL: "releases"
-        PIPELINE_NAME: 'Ruby 2 $CI_COMMIT_BRANCH branch pipeline'
+        PIPELINE_NAME: 'Ruby 3 $CI_COMMIT_BRANCH branch pipeline'
         CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
         BROKEN_BRANCH_INCIDENTS_PROJECT: "gitlab-org/release/tasks"
         BROKEN_BRANCH_INCIDENTS_PROJECT_TOKEN: "${BROKEN_STABLE_INCIDENTS_PROJECT_TOKEN}"
     - if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
       variables:
-        <<: *ruby2-variables
-        PIPELINE_NAME: 'Ruby 2 $CI_COMMIT_BRANCH branch pipeline'
+        <<: *ruby3-variables
+        PIPELINE_NAME: 'Ruby 3 $CI_COMMIT_BRANCH branch pipeline'
     - if: '$CI_COMMIT_BRANCH =~ /^security\//'
       variables:
-        <<: *ruby2-variables
-        PIPELINE_NAME: 'Ruby 2 $CI_COMMIT_BRANCH branch pipeline'
+        <<: *ruby3-variables
+        PIPELINE_NAME: 'Ruby 3 $CI_COMMIT_BRANCH branch pipeline'
 
 variables:
   PG_VERSION: "12"

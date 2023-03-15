@@ -257,13 +257,13 @@ Here are the steps to gate a new feature in Gitaly behind a feature flag.
 
 1. Create a package scoped flag name:
 
-   ```golang
+   ```go
    var findAllTagsFeatureFlag = "go-find-all-tags"
    ```
 
 1. Create a switch in the code using the `featureflag` package:
 
-   ```golang
+   ```go
    if featureflag.IsEnabled(ctx, findAllTagsFeatureFlag) {
      // go implementation
    } else {
@@ -273,7 +273,7 @@ Here are the steps to gate a new feature in Gitaly behind a feature flag.
 
 1. Create Prometheus metrics:
 
-   ```golang
+   ```go
    var findAllTagsRequests = prometheus.NewCounterVec(
      prometheus.CounterOpts{
        Name: "gitaly_find_all_tags_requests_total",
@@ -297,7 +297,7 @@ Here are the steps to gate a new feature in Gitaly behind a feature flag.
 
 1. Set headers in tests:
 
-   ```golang
+   ```go
    import (
      "google.golang.org/grpc/metadata"
 
