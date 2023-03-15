@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures, :clean_gitlab_redis_shared_state do
+RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures, :clean_gitlab_redis_shared_state,
+  feature_category: :container_registry do
   using RSpec::Parameterized::TableSyntax
   include ExclusiveLeaseHelpers
 

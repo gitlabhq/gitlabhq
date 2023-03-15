@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe EmailsOnPushWorker, :mailer do
+RSpec.describe EmailsOnPushWorker, :mailer, feature_category: :source_code_management do
   include EmailSpec::Matchers
 
   let_it_be(:project) { create(:project, :repository) }

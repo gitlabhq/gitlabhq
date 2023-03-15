@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::CreateExternalCrossReferenceWorker do
+RSpec.describe Integrations::CreateExternalCrossReferenceWorker, feature_category: :integrations do
   include AfterNextHelpers
   using RSpec::Parameterized::TableSyntax
 

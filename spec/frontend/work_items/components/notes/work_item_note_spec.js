@@ -198,10 +198,6 @@ describe('Work Item Note', () => {
         expect(findNoteActions().exists()).toBe(true);
       });
 
-      it('should not have the Avatar link for main thread inside the timeline-entry', () => {
-        expect(findAuthorAvatarLink().exists()).toBe(false);
-      });
-
       it('should have the reply button props', () => {
         expect(findNoteActions().props('showReply')).toBe(true);
       });
@@ -228,7 +224,7 @@ describe('Work Item Note', () => {
       });
     });
 
-    it('should display a dropdown if user has a permission to delete a note', () => {
+    it('should display the `Delete comment` dropdown item if user has a permission to delete a note', () => {
       createComponent({
         note: {
           ...mockWorkItemCommentNote,
@@ -237,12 +233,14 @@ describe('Work Item Note', () => {
       });
 
       expect(findDropdown().exists()).toBe(true);
+      expect(findDeleteNoteButton().exists()).toBe(true);
     });
 
-    it('should not display a dropdown if user has no permission to delete a note', () => {
+    it('should not display the `Delete comment` dropdown item if user has no permission to delete a note', () => {
       createComponent();
 
-      expect(findDropdown().exists()).toBe(false);
+      expect(findDropdown().exists()).toBe(true);
+      expect(findDeleteNoteButton().exists()).toBe(false);
     });
 
     it('should emit `deleteNote` event when delete note action is clicked', () => {

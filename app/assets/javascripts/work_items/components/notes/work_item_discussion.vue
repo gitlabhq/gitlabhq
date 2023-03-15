@@ -1,5 +1,6 @@
 <script>
-import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
+import { getLocationHash } from '~/lib/utils/url_utility';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ASC } from '~/notes/constants';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import DiscussionNotesRepliesWrapper from '~/notes/components/discussion_notes_replies_wrapper.vue';
@@ -11,8 +12,6 @@ import WorkItemAddNote from './work_item_add_note.vue';
 export default {
   components: {
     TimelineEntryItem,
-    GlAvatarLink,
-    GlAvatar,
     WorkItemNote,
     WorkItemAddNote,
     ToggleRepliesWidget,
@@ -50,6 +49,11 @@ export default {
       default: ASC,
       required: false,
     },
+    isModal: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -67,8 +71,17 @@ export default {
     author() {
       return this.note.author;
     },
+    noteId() {
+      return getIdFromGraphQLId(this.note.id);
+    },
     noteAnchorId() {
-      return `note_${this.note.id}`;
+      return `note_${this.noteId}`;
+    },
+    isTarget() {
+      return this.targetNoteHash === this.noteAnchorId;
+    },
+    targetNoteHash() {
+      return getLocationHash();
     },
     hasReplies() {
       return Boolean(this.replies?.length);
@@ -85,6 +98,9 @@ export default {
     shouldShowReplyForm() {
       return this.showForm || this.hasReplies;
     },
+    isOnlyCommentOfAThread() {
+      return !this.hasReplies && !this.showForm;
+    },
   },
   methods: {
     showReplyForm() {
@@ -93,6 +109,7 @@ export default {
       this.autofocus = true;
     },
     hideReplyForm() {
+      this.showForm = false;
       this.isExpanded = this.hasReplies;
       this.autofocus = false;
     },
@@ -117,78 +134,85 @@ export default {
 </script>
 
 <template>
+  <work-item-note
+    v-if="isOnlyCommentOfAThread"
+    :is-first-note="true"
+    :note="note"
+    :discussion-id="discussionId"
+    :has-replies="hasReplies"
+    :work-item-type="workItemType"
+    :is-modal="isModal"
+    :class="{ 'gl-mb-4': hasReplies }"
+    @startReplying="showReplyForm"
+    @deleteNote="$emit('deleteNote', note)"
+    @error="$emit('error', $event)"
+  />
   <timeline-entry-item
-    :id="noteAnchorId"
+    v-else
     :class="{ 'internal-note': note.internal }"
-    :data-note-id="note.id"
-    class="note note-wrapper note-comment gl-px-0"
+    :data-note-id="noteId"
+    class="note note-discussion gl-px-0"
   >
-    <div class="timeline-avatar gl-float-left">
-      <gl-avatar-link :href="author.webUrl">
-        <gl-avatar
-          :src="author.avatarUrl"
-          :entity-name="author.username"
-          :alt="author.name"
-          :size="32"
-        />
-      </gl-avatar-link>
-    </div>
-
     <div class="timeline-content">
-      <div class="discussion-body">
-        <div class="discussion-wrapper">
-          <div class="discussion-notes">
-            <ul class="notes">
-              <work-item-note
-                :is-first-note="true"
-                :note="note"
-                :discussion-id="discussionId"
-                :has-replies="hasReplies"
-                :work-item-type="workItemType"
-                :class="{ 'gl-mb-4': hasReplies }"
-                @startReplying="showReplyForm"
-                @deleteNote="$emit('deleteNote', note)"
-                @error="$emit('error', $event)"
-              />
-              <discussion-notes-replies-wrapper>
-                <toggle-replies-widget
-                  v-if="hasReplies"
-                  :collapsed="!isExpanded"
-                  :replies="replies"
-                  @toggle="toggleDiscussion({ discussionId })"
+      <div class="discussion">
+        <div class="discussion-body">
+          <div class="discussion-wrapper">
+            <div class="discussion-notes">
+              <ul class="notes">
+                <work-item-note
+                  :is-first-note="true"
+                  :note="note"
+                  :discussion-id="discussionId"
+                  :has-replies="hasReplies"
+                  :work-item-type="workItemType"
+                  :is-modal="isModal"
+                  :class="{ 'gl-mb-4': hasReplies }"
+                  @startReplying="showReplyForm"
+                  @deleteNote="$emit('deleteNote', note)"
+                  @error="$emit('error', $event)"
                 />
-                <template v-if="isExpanded">
-                  <template v-for="reply in replies">
-                    <work-item-note
-                      :key="threadKey(reply)"
+                <discussion-notes-replies-wrapper>
+                  <toggle-replies-widget
+                    v-if="hasReplies"
+                    :collapsed="!isExpanded"
+                    :replies="replies"
+                    @toggle="toggleDiscussion({ discussionId })"
+                  />
+                  <template v-if="isExpanded">
+                    <template v-for="reply in replies">
+                      <work-item-note
+                        :key="threadKey(reply)"
+                        :discussion-id="discussionId"
+                        :note="reply"
+                        :work-item-type="workItemType"
+                        :is-modal="isModal"
+                        @startReplying="showReplyForm"
+                        @deleteNote="$emit('deleteNote', reply)"
+                        @error="$emit('error', $event)"
+                      />
+                    </template>
+                    <work-item-note-replying v-if="isReplying" :body="replyingText" />
+                    <work-item-add-note
+                      v-if="shouldShowReplyForm"
+                      :notes-form="false"
+                      :autofocus="autofocus"
+                      :query-variables="queryVariables"
+                      :full-path="fullPath"
+                      :work-item-id="workItemId"
+                      :fetch-by-iid="fetchByIid"
                       :discussion-id="discussionId"
-                      :note="reply"
                       :work-item-type="workItemType"
-                      @startReplying="showReplyForm"
-                      @deleteNote="$emit('deleteNote', reply)"
+                      :sort-order="sortOrder"
+                      :add-padding="true"
+                      @cancelEditing="hideReplyForm"
+                      @replied="onReplied"
+                      @replying="onReplying"
                       @error="$emit('error', $event)"
                     />
                   </template>
-                  <work-item-note-replying v-if="isReplying" :body="replyingText" />
-                  <work-item-add-note
-                    v-if="shouldShowReplyForm"
-                    :autofocus="autofocus"
-                    :query-variables="queryVariables"
-                    :full-path="fullPath"
-                    :work-item-id="workItemId"
-                    :fetch-by-iid="fetchByIid"
-                    :discussion-id="discussionId"
-                    :work-item-type="workItemType"
-                    :sort-order="sortOrder"
-                    :add-padding="true"
-                    @cancelEditing="hideReplyForm"
-                    @replied="onReplied"
-                    @replying="onReplying"
-                    @error="$emit('error', $event)"
-                  />
-                </template>
-              </discussion-notes-replies-wrapper>
-            </ul>
+                </discussion-notes-replies-wrapper>
+              </ul>
+            </div>
           </div>
         </div>
       </div>

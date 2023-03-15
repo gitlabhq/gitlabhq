@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MigrateExternalDiffsWorker do
+RSpec.describe MigrateExternalDiffsWorker, feature_category: :code_review_workflow do
   let(:worker) { described_class.new }
   let(:diff) { create(:merge_request).merge_request_diff }
 

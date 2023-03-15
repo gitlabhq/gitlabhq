@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::DeleteSourceBranchWorker do
+RSpec.describe MergeRequests::DeleteSourceBranchWorker, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:merge_request) { create(:merge_request, author: user) }
 

@@ -23,7 +23,7 @@ import {
 
 jest.mock('~/lib/utils/url_utility', () => ({
   getParameterByName: jest.fn().mockReturnValue('main'),
-  mergeUrlParams: jest.fn().mockReturnValue('/branches?state=all&search=main'),
+  mergeUrlParams: jest.fn().mockReturnValue('/branches?state=all&search=%5Emain%24'),
   joinPaths: jest.fn(),
 }));
 
@@ -99,9 +99,12 @@ describe('View branch rules', () => {
   });
 
   it('renders matching branches link', () => {
+    const mergeUrlParams = jest.spyOn(util, 'mergeUrlParams');
     const matchingBranchesLink = findMatchingBranchesLink();
+
+    expect(mergeUrlParams).toHaveBeenCalledWith({ state: 'all', search: `^main$` }, '');
     expect(matchingBranchesLink.exists()).toBe(true);
-    expect(matchingBranchesLink.attributes().href).toBe('/branches?state=all&search=main');
+    expect(matchingBranchesLink.attributes().href).toBe('/branches?state=all&search=%5Emain%24');
   });
 
   it('renders a branch protection title', () => {

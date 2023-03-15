@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::AllIssuesCountService, :use_clean_rails_memory_store_caching do
+RSpec.describe Projects::AllIssuesCountService, :use_clean_rails_memory_store_caching, feature_category: :projects do
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, :public, namespace: group) }
   let_it_be(:banned_user) { create(:user, :banned) }

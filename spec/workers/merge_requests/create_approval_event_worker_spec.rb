@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::CreateApprovalEventWorker do
+RSpec.describe MergeRequests::CreateApprovalEventWorker, feature_category: :code_review_workflow do
   let!(:user) { create(:user) }
   let!(:project) { create(:project) }
   let!(:merge_request) { create(:merge_request, source_project: project) }

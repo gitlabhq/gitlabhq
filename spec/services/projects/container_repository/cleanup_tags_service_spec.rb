@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ContainerRepository::CleanupTagsService do
+RSpec.describe Projects::ContainerRepository::CleanupTagsService, feature_category: :container_registry do
   let_it_be_with_reload(:container_repository) { create(:container_repository) }
   let_it_be(:user) { container_repository.project.owner }
 

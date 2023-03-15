@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PagesDomainSslRenewalWorker do
+RSpec.describe PagesDomainSslRenewalWorker, feature_category: :pages do
   include LetsEncryptHelpers
 
   subject(:worker) { described_class.new }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkerContext do
+RSpec.describe WorkerContext, feature_category: :shared do
   let(:worker) do
     Class.new do
       def self.name

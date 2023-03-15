@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ResourceEvents::SyntheticMilestoneNotesBuilderService do
+RSpec.describe ResourceEvents::SyntheticMilestoneNotesBuilderService, feature_category: :team_planning do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
     let_it_be(:issue) { create(:issue, author: user) }

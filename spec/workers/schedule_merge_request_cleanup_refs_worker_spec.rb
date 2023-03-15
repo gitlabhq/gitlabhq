@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ScheduleMergeRequestCleanupRefsWorker do
+RSpec.describe ScheduleMergeRequestCleanupRefsWorker, feature_category: :code_review_workflow do
   subject(:worker) { described_class.new }
 
   describe '#perform' do

@@ -8,42 +8,52 @@ type: index, reference
 # Suggest changes **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25381) custom commit messages for suggestions in GitLab 13.9 [with a flag](../../../../administration/feature_flags.md) named `suggestions_custom_commit`. Disabled by default.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/297404) in GitLab 13.10.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/297404) in GitLab 13.10. Feature flag `suggestions_custom_commit` removed.
 
-As a reviewer, you're able to suggest code changes with a Markdown syntax in merge request
-diff threads. Then, the merge request author (or other users with appropriate
-[permission](../../../permissions.md)) can apply these suggestions.
-This action generates a commit in the merge request, authored by the user that suggested the changes.
+Reviewers can suggest code changes with a Markdown syntax in merge request diff threads.
+The merge request author (or other users with the appropriate role) can apply any or
+all of the suggestions from the GitLab UI. Applying suggestions adds a commit to the
+merge request, authored by the user who suggested the changes.
 
-1. Choose a line of code to be changed, add a new comment, then select
-   the **Insert suggestion** icon in the toolbar:
+## Create suggestions
 
-   ![Add a new comment](img/suggestion_button_v13_9.png)
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Merge requests** and find your merge request.
+1. On the secondary menu, select **Changes**.
+1. Find the line of code you want to change. Hover over the line number, and
+   select **Add a comment to this line** (**{comment}**).
+1. In the comment toolbar, select **Insert suggestion** (**{doc-code}**). GitLab
+   inserts a pre-populated code block into your comment, like this:
 
-1. In the comment, add your suggestion to the pre-populated code block:
+   ````markdown
+   ```suggestion:-0+0
+   The content of the line you selected is shown here.
+   ```
+   ````
 
-   ![Add a suggestion into a code block tagged properly](img/make_suggestion_v13_9.png)
-
+1. Edit the pre-populated code block to add your suggestion.
 1. Select either **Start a review** or **Add to review** to add your comment to a
    [review](index.md), or **Add comment now** to add the comment to the thread immediately.
 
-   The suggestion in the comment can be applied by the merge request author
-   directly from the merge request:
+## Apply suggestions
 
-   ![Apply suggestions](img/apply_suggestion_v13_9.png)
+The merge request author can apply suggested changes directly from the merge request:
 
-1. Optionally specify a custom commit message for individual suggestions (GitLab 13.9 and later) to
-   describe your change. If you don't specify it, the default commit message is used.
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Merge requests** and find your merge request.
+1. Find the comment containing the suggestion you want to apply.
+   - To apply suggestions individually, select **Apply suggestion**.
+   - To apply multiple suggestions in a single commit, select **Add suggestion to batch**.
+1. Optional. Provide a custom commit message to describe your change. If you don't provide a custom message, the default commit message is used.
+1. Select **Apply**.
 
-   ![Custom commit](img/custom_commit_v13_9.png)
+After a suggestion is applied:
 
-After the author applies a suggestion:
-
-1. The suggestion is marked as **Applied**.
-1. The thread is resolved.
-1. GitLab creates a new commit with the changes.
-1. If the user has the Developer role, GitLab pushes
-   the suggested change directly into the codebase in the merge request's branch.
+- The suggestion is marked as **Applied**.
+- The comment thread is resolved.
+- GitLab creates a new commit with the changes.
+- If the user has the Developer role, GitLab pushes
+  the suggested change directly into the codebase in the merge request's branch.
 
 ## Multi-line suggestions
 
@@ -74,13 +84,13 @@ To add a suggestion that includes a
 [fenced code block](../../../markdown.md#code-spans-and-blocks), wrap your suggestion
 in four backticks instead of three:
 
-~~~markdown
+`````markdown
 ````suggestion:-0+2
 ```shell
 git config --global receive.advertisepushoptions true
 ```
 ````
-~~~
+`````
 
 ![Output of a comment with a suggestion with a fenced code block](img/suggestion_code_block_output_v12_8.png)
 

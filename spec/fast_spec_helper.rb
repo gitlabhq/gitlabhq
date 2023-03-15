@@ -11,6 +11,8 @@ require_relative '../config/bundler_setup'
 ENV['GITLAB_ENV'] = 'test'
 ENV['IN_MEMORY_APPLICATION_SETTINGS'] = 'true'
 
+require './spec/deprecation_warnings'
+
 # Enable zero monkey patching mode before loading any other RSpec code.
 RSpec.configure(&:disable_monkey_patching!)
 

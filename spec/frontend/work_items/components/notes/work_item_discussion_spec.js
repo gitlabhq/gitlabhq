@@ -1,7 +1,5 @@
-import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
 import WorkItemNote from '~/work_items/components/notes/work_item_note.vue';
@@ -21,9 +19,6 @@ describe('Work Item Discussion', () => {
   let wrapper;
   const mockWorkItemId = 'gid://gitlab/WorkItem/625';
 
-  const findTimelineEntryItem = () => wrapper.findComponent(TimelineEntryItem);
-  const findAvatarLink = () => wrapper.findComponent(GlAvatarLink);
-  const findAvatar = () => wrapper.findComponent(GlAvatar);
   const findToggleRepliesWidget = () => wrapper.findComponent(ToggleRepliesWidget);
   const findAllThreads = () => wrapper.findAllComponents(WorkItemNote);
   const findThreadAtIndex = (index) => findAllThreads().at(index);
@@ -53,19 +48,6 @@ describe('Work Item Discussion', () => {
   describe('Default', () => {
     beforeEach(() => {
       createComponent();
-    });
-
-    it('Should be wrapped inside the timeline entry item', () => {
-      expect(findTimelineEntryItem().exists()).toBe(true);
-    });
-
-    it('should have the author avatar of the work item note', () => {
-      expect(findAvatarLink().exists()).toBe(true);
-      expect(findAvatarLink().attributes('href')).toBe(mockWorkItemCommentNote.author.webUrl);
-
-      expect(findAvatar().exists()).toBe(true);
-      expect(findAvatar().props('src')).toBe(mockWorkItemCommentNote.author.avatarUrl);
-      expect(findAvatar().props('entityName')).toBe(mockWorkItemCommentNote.author.username);
     });
 
     it('should not show the the toggle replies widget wrapper when no replies', () => {

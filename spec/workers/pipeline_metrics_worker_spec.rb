@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PipelineMetricsWorker do
+RSpec.describe PipelineMetricsWorker, feature_category: :continuous_integration do
   let(:project) { create(:project, :repository) }
 
   let!(:merge_request) do

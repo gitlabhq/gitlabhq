@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ScheduleMigrateExternalDiffsWorker do
+RSpec.describe ScheduleMigrateExternalDiffsWorker, feature_category: :code_review_workflow do
   include ExclusiveLeaseHelpers
 
   let(:worker) { described_class.new }

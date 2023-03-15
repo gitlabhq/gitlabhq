@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::StuckBuilds::DropScheduledWorker do
+RSpec.describe Ci::StuckBuilds::DropScheduledWorker, feature_category: :continuous_integration do
   include ExclusiveLeaseHelpers
 
   let(:worker)     { described_class.new }

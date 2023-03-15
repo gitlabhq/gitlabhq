@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::ImportReleaseAttachmentsWorker do
+RSpec.describe Gitlab::GithubImport::ImportReleaseAttachmentsWorker, feature_category: :importers do
   subject(:worker) { described_class.new }
 
   describe '#import' do

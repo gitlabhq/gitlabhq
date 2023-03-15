@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::AppleTargetPlatformDetectorService do
+RSpec.describe Projects::AppleTargetPlatformDetectorService, feature_category: :projects do
   let_it_be(:project) { build(:project) }
 
   subject { described_class.new(project).execute }

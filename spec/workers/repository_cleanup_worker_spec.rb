@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RepositoryCleanupWorker do
+RSpec.describe RepositoryCleanupWorker, feature_category: :source_code_management do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 

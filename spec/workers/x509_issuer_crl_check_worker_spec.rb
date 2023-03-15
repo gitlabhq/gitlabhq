@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe X509IssuerCrlCheckWorker do
+RSpec.describe X509IssuerCrlCheckWorker, feature_category: :source_code_management do
   subject(:worker) { described_class.new }
 
   let(:project) { create(:project, :public, :repository) }

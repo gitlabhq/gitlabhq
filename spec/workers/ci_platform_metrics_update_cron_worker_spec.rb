@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CiPlatformMetricsUpdateCronWorker, type: :worker do
+RSpec.describe CiPlatformMetricsUpdateCronWorker, type: :worker, feature_category: :continuous_integration do
   describe '#perform' do
     subject { described_class.new.perform }
 

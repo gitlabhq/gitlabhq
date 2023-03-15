@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::InactiveProjectsDeletionNotificationWorker do
+RSpec.describe Projects::InactiveProjectsDeletionNotificationWorker, feature_category: :compliance_management do
   describe "#perform" do
     subject(:worker) { described_class.new }
 

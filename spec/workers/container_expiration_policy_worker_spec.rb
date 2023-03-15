@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ContainerExpirationPolicyWorker do
+RSpec.describe ContainerExpirationPolicyWorker, feature_category: :container_registry do
   include ExclusiveLeaseHelpers
 
   let(:worker) { described_class.new }

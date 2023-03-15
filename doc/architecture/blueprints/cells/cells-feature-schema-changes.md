@@ -1,8 +1,8 @@
 ---
 stage: enablement
-group: pods
+group: cells
 comments: false
-description: 'Pods: Schema changes'
+description: 'Cells: Schema changes'
 ---
 
 DISCLAIMER:
@@ -15,15 +15,15 @@ release, and timing of any products, features, or functionality remain at the
 sole discretion of GitLab Inc.
 
 This document is a work-in-progress and represents a very early state of the
-Pods design. Significant aspects are not documented, though we expect to add
-them in the future. This is one possible architecture for Pods, and we intend to
+Cells design. Significant aspects are not documented, though we expect to add
+them in the future. This is one possible architecture for Cells, and we intend to
 contrast this with alternatives before deciding which approach to implement.
 This documentation will be kept even if we decide not to implement this so that
 we can document the reasons for not choosing this approach.
 
-# Pods: Schema changes
+# Cells: Schema changes
 
-When we introduce multiple Pods that own their own databases this will
+When we introduce multiple Cells that own their own databases this will
 complicate the process of making schema changes to Postgres and Elasticsearch.
 Today we already need to be careful to make changes comply with our zero
 downtime deployments. For example,
@@ -33,10 +33,10 @@ reduce the number of merge requests needed, but these will be complicated when
 we are dealing with deploying multiple rails applications that will be at
 different versions at any one time. This problem will be particularly tricky to
 solve for shared databases like our plan to share the `users` related tables
-among all Pods.
+among all Cells.
 
-A key benefit of Pods may be that it allows us to run different
-customers on different versions of GitLab. We may choose to update our own pod
+A key benefit of Cells may be that it allows us to run different
+customers on different versions of GitLab. We may choose to update our own cell
 before all our customers giving us even more flexibility than our current
 canary architecture. But doing this means that schema changes need to have even
 more versions of backward compatibility support which could slow down

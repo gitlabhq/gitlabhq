@@ -1664,7 +1664,6 @@ class Project < ApplicationRecord
 
   def disabled_integrations
     disabled_integrations = []
-    disabled_integrations << 'apple_app_store' unless Feature.enabled?(:apple_app_store_integration, self)
     disabled_integrations << 'google_play' unless Feature.enabled?(:google_play_integration, self)
     disabled_integrations
   end

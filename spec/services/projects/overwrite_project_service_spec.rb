@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::OverwriteProjectService do
+RSpec.describe Projects::OverwriteProjectService, feature_category: :projects do
   include ProjectForksHelper
 
   let(:user) { create(:user) }

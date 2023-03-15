@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CronjobQueue do
+RSpec.describe CronjobQueue, feature_category: :shared do
   let(:worker) do
     Class.new do
       def self.name

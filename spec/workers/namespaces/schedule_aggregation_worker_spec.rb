@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespaces::ScheduleAggregationWorker, '#perform', :clean_gitlab_redis_shared_state do
+RSpec.describe Namespaces::ScheduleAggregationWorker, '#perform', :clean_gitlab_redis_shared_state, feature_category: :source_code_management do
   let(:group) { create(:group) }
 
   subject(:worker) { described_class.new }

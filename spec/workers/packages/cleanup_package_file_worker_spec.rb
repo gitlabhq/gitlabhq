@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::CleanupPackageFileWorker do
+RSpec.describe Packages::CleanupPackageFileWorker, feature_category: :package_registry do
   let_it_be_with_reload(:package) { create(:package) }
 
   let(:worker) { described_class.new }

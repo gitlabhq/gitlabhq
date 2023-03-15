@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe LimitedCapacity::Worker, :clean_gitlab_redis_queues, :aggregate_failures do
+RSpec.describe LimitedCapacity::Worker, :clean_gitlab_redis_queues, :aggregate_failures, feature_category: :shared do
   let(:worker_class) do
     Class.new do
       def self.name

@@ -1703,6 +1703,8 @@ export const mockWorkItemNotesResponse = {
                       systemNoteIconName: 'link',
                       createdAt: '2022-11-14T04:18:59Z',
                       lastEditedAt: null,
+                      url:
+                        'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37?iid_path=true#note_199',
                       lastEditedBy: null,
                       system: true,
                       internal: false,
@@ -1746,6 +1748,8 @@ export const mockWorkItemNotesResponse = {
                       systemNoteIconName: 'clock',
                       createdAt: '2022-11-14T04:18:59Z',
                       lastEditedAt: null,
+                      url:
+                        'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37?iid_path=true#note_201',
                       lastEditedBy: null,
                       system: true,
                       internal: false,
@@ -1788,6 +1792,8 @@ export const mockWorkItemNotesResponse = {
                       systemNoteIconName: 'weight',
                       createdAt: '2022-11-25T07:16:20Z',
                       lastEditedAt: null,
+                      url:
+                        'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37?iid_path=true#note_202',
                       lastEditedBy: null,
                       system: true,
                       internal: false,
@@ -1890,6 +1896,8 @@ export const mockWorkItemNotesByIidResponse = {
                             systemNoteIconName: 'link',
                             createdAt: '2022-11-14T04:18:59Z',
                             lastEditedAt: null,
+                            url:
+                              'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37?iid_path=true#note_191',
                             lastEditedBy: null,
                             system: true,
                             internal: false,
@@ -1935,6 +1943,8 @@ export const mockWorkItemNotesByIidResponse = {
                             systemNoteIconName: 'clock',
                             createdAt: '2022-11-14T04:18:59Z',
                             lastEditedAt: null,
+                            url:
+                              'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37?iid_path=true#note_191',
                             lastEditedBy: null,
                             system: true,
                             internal: false,
@@ -1981,6 +1991,8 @@ export const mockWorkItemNotesByIidResponse = {
                             systemNoteIconName: 'iteration',
                             createdAt: '2022-11-14T04:19:00Z',
                             lastEditedAt: null,
+                            url:
+                              'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37?iid_path=true#note_191',
                             lastEditedBy: null,
                             system: true,
                             internal: false,
@@ -2081,6 +2093,8 @@ export const mockMoreWorkItemNotesResponse = {
                       systemNoteIconName: 'link',
                       createdAt: '2022-11-14T04:18:59Z',
                       lastEditedAt: null,
+                      url:
+                        'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37?iid_path=true#note_191',
                       lastEditedBy: null,
                       system: true,
                       internal: false,
@@ -2124,6 +2138,8 @@ export const mockMoreWorkItemNotesResponse = {
                       systemNoteIconName: 'clock',
                       createdAt: '2022-11-14T04:18:59Z',
                       lastEditedAt: null,
+                      url:
+                        'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37?iid_path=true#note_191',
                       lastEditedBy: null,
                       system: true,
                       internal: false,
@@ -2166,6 +2182,8 @@ export const mockMoreWorkItemNotesResponse = {
                       systemNoteIconName: 'weight',
                       createdAt: '2022-11-25T07:16:20Z',
                       lastEditedAt: null,
+                      url:
+                        'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37?iid_path=true#note_191',
                       lastEditedBy: null,
                       system: true,
                       internal: false,
@@ -2227,6 +2245,7 @@ export const createWorkItemNoteResponse = {
                 systemNoteIconName: null,
                 createdAt: '2023-01-25T04:49:46Z',
                 lastEditedAt: null,
+                url: 'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37?iid_path=true#note_191',
                 lastEditedBy: null,
                 discussion: {
                   id: 'gid://gitlab/Discussion/c872ba2d7d3eb780d2255138d67ca8b04f65b122',
@@ -2274,6 +2293,7 @@ export const mockWorkItemCommentNote = {
   systemNoteIconName: false,
   createdAt: '2022-11-25T07:16:20Z',
   lastEditedAt: null,
+  url: 'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37?iid_path=true#note_191',
   lastEditedBy: null,
   system: false,
   internal: false,
@@ -2353,6 +2373,8 @@ export const mockWorkItemNotesResponseWithComments = {
                       systemNoteIconName: null,
                       createdAt: '2023-01-12T07:47:40Z',
                       lastEditedAt: null,
+                      url:
+                        'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37?iid_path=true#note_191',
                       lastEditedBy: null,
                       discussion: {
                         id: 'gid://gitlab/Discussion/2bb1162fd0d39297d1a68fdd7d4083d3780af0f3',
@@ -2387,6 +2409,8 @@ export const mockWorkItemNotesResponseWithComments = {
                       systemNoteIconName: null,
                       createdAt: '2023-01-18T09:09:54Z',
                       lastEditedAt: null,
+                      url:
+                        'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37?iid_path=true#note_191',
                       lastEditedBy: null,
                       discussion: {
                         id: 'gid://gitlab/Discussion/2bb1162fd0d39297d1a68fdd7d4083d3780af0f3',
@@ -2428,6 +2452,8 @@ export const mockWorkItemNotesResponseWithComments = {
                       systemNoteIconName: 'weight',
                       createdAt: '2022-11-25T07:16:20Z',
                       lastEditedAt: null,
+                      url:
+                        'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37?iid_path=true#note_191',
                       lastEditedBy: null,
                       system: false,
                       internal: false,
@@ -2479,6 +2505,7 @@ export const workItemNotesCreateSubscriptionResponse = {
       systemNoteIconName: 'weight',
       createdAt: '2022-11-25T07:16:20Z',
       lastEditedAt: null,
+      url: 'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37?iid_path=true#note_191',
       lastEditedBy: null,
       system: true,
       internal: false,
@@ -2493,6 +2520,7 @@ export const workItemNotesCreateSubscriptionResponse = {
               systemNoteIconName: 'weight',
               createdAt: '2022-11-25T07:16:20Z',
               lastEditedAt: null,
+              url: 'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37?iid_path=true#note_191',
               lastEditedBy: null,
               system: true,
               internal: false,
@@ -2554,6 +2582,7 @@ export const workItemNotesUpdateSubscriptionResponse = {
       systemNoteIconName: 'pencil',
       createdAt: '2022-11-25T07:16:20Z',
       lastEditedAt: null,
+      url: 'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37?iid_path=true#note_191',
       lastEditedBy: null,
       system: true,
       internal: false,

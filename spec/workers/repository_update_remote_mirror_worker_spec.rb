@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RepositoryUpdateRemoteMirrorWorker, :clean_gitlab_redis_shared_state do
+RSpec.describe RepositoryUpdateRemoteMirrorWorker, :clean_gitlab_redis_shared_state, feature_category: :source_code_management do
   let_it_be(:remote_mirror) { create(:remote_mirror) }
 
   let(:scheduled_time) { Time.current - 5.minutes }

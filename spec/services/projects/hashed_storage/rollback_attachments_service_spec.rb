@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::HashedStorage::RollbackAttachmentsService do
+RSpec.describe Projects::HashedStorage::RollbackAttachmentsService, feature_category: :projects do
   subject(:service) { described_class.new(project: project, old_disk_path: project.disk_path, logger: nil) }
 
   let(:project) { create(:project, :repository, skip_disk_validation: true) }

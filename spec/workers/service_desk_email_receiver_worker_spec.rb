@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe ServiceDeskEmailReceiverWorker, :mailer do
+RSpec.describe ServiceDeskEmailReceiverWorker, :mailer, feature_category: :service_desk do
   describe '#perform' do
     let(:worker) { described_class.new }
     let(:email) { fixture_file('emails/service_desk_custom_address.eml') }

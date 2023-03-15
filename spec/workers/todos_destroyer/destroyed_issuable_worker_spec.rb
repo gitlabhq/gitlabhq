@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TodosDestroyer::DestroyedIssuableWorker do
+RSpec.describe TodosDestroyer::DestroyedIssuableWorker, feature_category: :team_planning do
   let(:job_args) { [1, 'MergeRequest'] }
 
   it 'calls the Todos::Destroy::DestroyedIssuableService' do

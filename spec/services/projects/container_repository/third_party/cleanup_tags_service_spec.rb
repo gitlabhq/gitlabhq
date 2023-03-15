@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ContainerRepository::ThirdParty::CleanupTagsService, :clean_gitlab_redis_cache do
+RSpec.describe Projects::ContainerRepository::ThirdParty::CleanupTagsService, :clean_gitlab_redis_cache, feature_category: :container_registry do
   using RSpec::Parameterized::TableSyntax
 
   include_context 'for a cleanup tags service'

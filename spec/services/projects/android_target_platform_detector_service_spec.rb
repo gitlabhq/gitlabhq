@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::AndroidTargetPlatformDetectorService do
+RSpec.describe Projects::AndroidTargetPlatformDetectorService, feature_category: :projects do
   let_it_be(:project) { build(:project) }
 
   subject { described_class.new(project).execute }

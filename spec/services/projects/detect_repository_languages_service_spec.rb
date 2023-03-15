@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::DetectRepositoryLanguagesService, :clean_gitlab_redis_shared_state do
+RSpec.describe Projects::DetectRepositoryLanguagesService, :clean_gitlab_redis_shared_state, feature_category: :projects do
   let_it_be(:project, reload: true) { create(:project, :repository) }
 
   subject { described_class.new(project) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Snippets::RepositoryValidationService do
+RSpec.describe Snippets::RepositoryValidationService, feature_category: :source_code_management do
   describe '#execute' do
     let_it_be(:user)    { create(:user) }
     let_it_be(:snippet) { create(:personal_snippet, :empty_repo, author: user) }

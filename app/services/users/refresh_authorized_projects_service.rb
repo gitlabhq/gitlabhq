@@ -92,3 +92,5 @@ module Users
     end
   end
 end
+
+Users::RefreshAuthorizedProjectsService.prepend_mod

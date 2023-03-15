@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IncidentManagement::ProcessAlertWorkerV2 do
+RSpec.describe IncidentManagement::ProcessAlertWorkerV2, feature_category: :incident_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:settings) { create(:project_incident_management_setting, project: project, create_issue: true) }
 

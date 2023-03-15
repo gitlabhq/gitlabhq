@@ -1,5 +1,14 @@
+$avatar-icon-size: 2rem;
+$avatar-m-top: 0.5rem;
+$avatar-m-ratio: 2;
+$avatar-m-left: $avatar-m-top * $avatar-m-ratio;
+
 $system-note-icon-size: 1.5rem;
 $system-note-svg-size: 1rem;
+$icon-size-diff: $avatar-icon-size - $system-note-icon-size;
+
+$system-note-icon-m-top: $avatar-m-top + $icon-size-diff - 0.1rem;
+$system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
 @mixin vertical-line($left) {
   &::before {
@@ -122,7 +131,7 @@ $system-note-svg-size: 1rem;
             background-color: $white;
 
             .timeline-content:not(.flash-container) {
-              padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
+              padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 18px;
             }
 
             .timeline-discussion-body-footer {
@@ -600,8 +609,8 @@ $system-note-svg-size: 1rem;
       }
 
       .timeline-entry-inner .timeline-icon {
-        margin-top: $grid-size;
-        margin-left: 14px;
+        margin-top: $system-note-icon-m-top;
+        margin-left: $system-note-icon-m-left;
       }
     }
   }
@@ -1143,7 +1152,7 @@ $system-note-svg-size: 1rem;
     }
 
     .timeline-avatar {
-      margin: $gl-padding-8 0 0 $gl-padding;
+      margin: $avatar-m-top 0 0 $avatar-m-left;
     }
   }
 

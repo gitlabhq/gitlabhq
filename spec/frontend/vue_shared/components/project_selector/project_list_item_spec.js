@@ -1,57 +1,49 @@
-import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import { GlButton } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import mockProjects from 'test_fixtures_static/projects.json';
 import { trimText } from 'helpers/text_helper';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import ProjectListItem from '~/vue_shared/components/project_selector/project_list_item.vue';
 
 describe('ProjectListItem component', () => {
-  const Component = Vue.extend(ProjectListItem);
   let wrapper;
-  let vm;
-  let options;
 
   const project = JSON.parse(JSON.stringify(mockProjects))[0];
 
-  beforeEach(() => {
-    options = {
+  const createWrapper = ({ propsData } = {}) => {
+    wrapper = shallowMountExtended(ProjectListItem, {
       propsData: {
         project,
         selected: false,
+        ...propsData,
       },
-    };
+    });
+  };
+
+  const findProjectNamespace = () => wrapper.findByTestId('project-namespace');
+  const findProjectName = () => wrapper.findByTestId('project-name');
+
+  it.each([true, false])('renders a checkmark correctly when selected === "%s"', (selected) => {
+    createWrapper({
+      propsData: {
+        selected,
+      },
+    });
+
+    expect(wrapper.findByTestId('selected-icon').exists()).toBe(selected);
   });
 
-  afterEach(() => {
-    wrapper.vm.$destroy();
-  });
+  it(`emits a "clicked" event when the button is clicked`, () => {
+    createWrapper();
 
-  it('does not render a check mark icon if selected === false', () => {
-    wrapper = shallowMount(Component, options);
+    expect(wrapper.emitted('click')).toBeUndefined();
+    wrapper.findComponent(GlButton).vm.$emit('click');
 
-    expect(wrapper.find('.js-selected-icon').exists()).toBe(false);
-  });
-
-  it('renders a check mark icon if selected === true', () => {
-    options.propsData.selected = true;
-
-    wrapper = shallowMount(Component, options);
-
-    expect(wrapper.find('.js-selected-icon').exists()).toBe(true);
-  });
-
-  it(`emits a "clicked" event when clicked`, () => {
-    wrapper = shallowMount(Component, options);
-    ({ vm } = wrapper);
-
-    jest.spyOn(vm, '$emit').mockImplementation(() => {});
-    wrapper.vm.onClick();
-
-    expect(wrapper.vm.$emit).toHaveBeenCalledWith('click');
+    expect(wrapper.emitted('click')).toHaveLength(1);
   });
 
   it(`renders the project avatar`, () => {
-    wrapper = shallowMount(Component, options);
+    createWrapper();
     const avatar = wrapper.findComponent(ProjectAvatar);
 
     expect(avatar.exists()).toBe(true);
@@ -63,48 +55,73 @@ describe('ProjectListItem component', () => {
   });
 
   it(`renders a simple namespace name with a trailing slash`, () => {
-    options.propsData.project.name_with_namespace = 'a / b';
-
-    wrapper = shallowMount(Component, options);
-    const renderedNamespace = trimText(wrapper.find('.js-project-namespace').text());
+    createWrapper({
+      propsData: {
+        project: {
+          ...project,
+          name_with_namespace: 'a / b',
+        },
+      },
+    });
+    const renderedNamespace = trimText(findProjectNamespace().text());
 
     expect(renderedNamespace).toBe('a /');
   });
 
   it(`renders a properly truncated namespace with a trailing slash`, () => {
-    options.propsData.project.name_with_namespace = 'a / b / c / d / e / f';
-
-    wrapper = shallowMount(Component, options);
-    const renderedNamespace = trimText(wrapper.find('.js-project-namespace').text());
+    createWrapper({
+      propsData: {
+        project: {
+          ...project,
+          name_with_namespace: 'a / b / c / d / e / f',
+        },
+      },
+    });
+    const renderedNamespace = trimText(findProjectNamespace().text());
 
     expect(renderedNamespace).toBe('a / ... / e /');
   });
 
   it(`renders a simple namespace name of a GraphQL project`, () => {
-    options.propsData.project.name_with_namespace = undefined;
-    options.propsData.project.nameWithNamespace = 'test';
-
-    wrapper = shallowMount(Component, options);
-    const renderedNamespace = trimText(wrapper.find('.js-project-namespace').text());
+    createWrapper({
+      propsData: {
+        project: {
+          ...project,
+          name_with_namespace: undefined,
+          nameWithNamespace: 'test',
+        },
+      },
+    });
+    const renderedNamespace = trimText(findProjectNamespace().text());
 
     expect(renderedNamespace).toBe('test /');
   });
 
   it(`renders the project name`, () => {
-    options.propsData.project.name = 'my-test-project';
-
-    wrapper = shallowMount(Component, options);
-    const renderedName = trimText(wrapper.find('.js-project-name').text());
+    createWrapper({
+      propsData: {
+        project: {
+          ...project,
+          name: 'my-test-project',
+        },
+      },
+    });
+    const renderedName = trimText(findProjectName().text());
 
     expect(renderedName).toBe('my-test-project');
   });
 
   it(`renders the project name with highlighting in the case of a search query match`, () => {
-    options.propsData.project.name = 'my-test-project';
-    options.propsData.matcher = 'pro';
-
-    wrapper = shallowMount(Component, options);
-    const renderedName = trimText(wrapper.find('.js-project-name').html());
+    createWrapper({
+      propsData: {
+        project: {
+          ...project,
+          name: 'my-test-project',
+        },
+        matcher: 'pro',
+      },
+    });
+    const renderedName = trimText(findProjectName().html());
     const expected = 'my-test-<b>p</b><b>r</b><b>o</b>ject';
 
     expect(renderedName).toContain(expected);
@@ -112,11 +129,16 @@ describe('ProjectListItem component', () => {
 
   it('prevents search query and project name XSS', () => {
     const alertSpy = jest.spyOn(window, 'alert');
-    options.propsData.project.name = "my-xss-pro<script>alert('XSS');</script>ject";
-    options.propsData.matcher = "pro<script>alert('XSS');</script>";
-
-    wrapper = shallowMount(Component, options);
-    const renderedName = trimText(wrapper.find('.js-project-name').html());
+    createWrapper({
+      propsData: {
+        project: {
+          ...project,
+          name: "my-xss-pro<script>alert('XSS');</script>ject",
+        },
+        matcher: "pro<script>alert('XSS');</script>",
+      },
+    });
+    const renderedName = trimText(findProjectName().html());
     const expected = 'my-xss-project';
 
     expect(renderedName).toContain(expected);

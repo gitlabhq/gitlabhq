@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ImportExport::RelationExportService do
+RSpec.describe Projects::ImportExport::RelationExportService, feature_category: :importers do
   using RSpec::Parameterized::TableSyntax
 
   subject(:service) { described_class.new(relation_export, 'jid') }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RepositoryCheckQueue do
+RSpec.describe RepositoryCheckQueue, feature_category: :source_code_management do
   let(:worker) do
     Class.new do
       def self.name

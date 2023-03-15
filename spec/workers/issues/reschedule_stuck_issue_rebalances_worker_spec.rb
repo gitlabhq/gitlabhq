@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::RescheduleStuckIssueRebalancesWorker, :clean_gitlab_redis_shared_state do
+RSpec.describe Issues::RescheduleStuckIssueRebalancesWorker, :clean_gitlab_redis_shared_state, feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
 

@@ -174,5 +174,43 @@ RSpec.describe Sidebars::Projects::Menus::InfrastructureMenu, feature_category: 
         it { is_expected.to be_nil }
       end
     end
+
+    describe 'AWS' do
+      let(:item_id) { :aws }
+
+      it_behaves_like 'access rights checks'
+
+      context 'when feature flag is turned off globally' do
+        before do
+          stub_feature_flags(cloudseed_aws: false)
+        end
+
+        it { is_expected.to be_nil }
+
+        context 'when feature flag is enabled for specific project' do
+          before do
+            stub_feature_flags(cloudseed_aws: project)
+          end
+
+          it_behaves_like 'access rights checks'
+        end
+
+        context 'when feature flag is enabled for specific group' do
+          before do
+            stub_feature_flags(cloudseed_aws: project.group)
+          end
+
+          it_behaves_like 'access rights checks'
+        end
+
+        context 'when feature flag is enabled for specific project' do
+          before do
+            stub_feature_flags(cloudseed_aws: user)
+          end
+
+          it_behaves_like 'access rights checks'
+        end
+      end
+    end
   end
 end

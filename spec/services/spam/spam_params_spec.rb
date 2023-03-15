@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Spam::SpamParams do
+RSpec.describe Spam::SpamParams, feature_category: :instance_resiliency do
   shared_examples 'constructs from a request' do
     it 'constructs from a request' do
       expected = ::Spam::SpamParams.new(

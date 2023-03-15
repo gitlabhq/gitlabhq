@@ -9,6 +9,7 @@ fragment WorkItemNote on Note {
   systemNoteIconName
   createdAt
   lastEditedAt
+  url
   lastEditedBy {
     ...User
     webPath

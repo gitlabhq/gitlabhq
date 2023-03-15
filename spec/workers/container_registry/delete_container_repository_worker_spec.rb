@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ContainerRegistry::DeleteContainerRepositoryWorker, :aggregate_failures do
+RSpec.describe ContainerRegistry::DeleteContainerRepositoryWorker, :aggregate_failures, feature_category: :container_registry do
   let_it_be_with_reload(:container_repository) { create(:container_repository) }
   let_it_be(:second_container_repository) { create(:container_repository) }
 

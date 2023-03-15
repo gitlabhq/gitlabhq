@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::FinalizeProjectStatisticsRefreshWorker do
+RSpec.describe Projects::FinalizeProjectStatisticsRefreshWorker, feature_category: :projects do
   let_it_be(:record) { create(:project_build_artifacts_size_refresh, :finalizing) }
 
   describe '#perform' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AuthorizedProjectUpdate::ProjectRecalculateWorker do
+RSpec.describe AuthorizedProjectUpdate::ProjectRecalculateWorker, feature_category: :system_access do
   include ExclusiveLeaseHelpers
 
   let_it_be(:project) { create(:project) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Terraform::States::DestroyWorker do
+RSpec.describe Terraform::States::DestroyWorker, feature_category: :infrastructure_as_code do
   let(:state) { create(:terraform_state) }
 
   describe '#perform' do

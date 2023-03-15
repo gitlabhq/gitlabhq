@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::DailyBuildGroupReportResultsWorker do
+RSpec.describe Ci::DailyBuildGroupReportResultsWorker, feature_category: :code_testing do
   describe '#perform' do
     let!(:pipeline) { create(:ci_pipeline) }
 

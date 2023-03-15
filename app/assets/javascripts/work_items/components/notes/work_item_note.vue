@@ -1,9 +1,12 @@
 <script>
 import { GlAvatarLink, GlAvatar, GlDropdown, GlDropdownItem, GlTooltipDirective } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
+import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
 import { updateDraft, clearDraft } from '~/lib/utils/autosave';
 import { renderMarkdown } from '~/notes/utils';
+import { getLocationHash } from '~/lib/utils/url_utility';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import EditedAt from '~/issues/show/components/edited.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import NoteBody from '~/work_items/components/notes/work_item_note_body.vue';
@@ -17,6 +20,7 @@ export default {
   i18n: {
     moreActionsText: __('More actions'),
     deleteNoteText: __('Delete comment'),
+    copyLinkText: __('Copy link'),
   },
   components: {
     TimelineEntryItem,
@@ -52,6 +56,11 @@ export default {
       type: String,
       required: true,
     },
+    isModal: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -64,8 +73,9 @@ export default {
     },
     entryClass() {
       return {
-        'note note-wrapper note-comment gl-mb-4': true,
-        'gl-p-2 gl-mt-3 gl-pl-3': !this.isFirstNote,
+        'note note-wrapper note-comment': true,
+        target: this.isTarget,
+        'inner-target': this.isTarget && !this.isFirstNote,
       };
     },
     showReply() {
@@ -74,7 +84,6 @@ export default {
     noteHeaderClass() {
       return {
         'note-header': true,
-        'gl-pt-2': !this.isFirstNote,
       };
     },
     autosaveKey() {
@@ -86,6 +95,18 @@ export default {
     },
     hasAdminPermission() {
       return this.note.userPermissions.adminNote;
+    },
+    noteAnchorId() {
+      return `note_${getIdFromGraphQLId(this.note.id)}`;
+    },
+    isTarget() {
+      return this.targetNoteHash === this.noteAnchorId;
+    },
+    targetNoteHash() {
+      return getLocationHash();
+    },
+    noteUrl() {
+      return this.note.url;
     },
     hasAwardEmojiPermission() {
       return this.note.userPermissions.awardEmoji;
@@ -128,13 +149,19 @@ export default {
         Sentry.captureException(error);
       }
     },
+    notifyCopyDone() {
+      if (this.isModal) {
+        navigator.clipboard.writeText(this.noteUrl);
+      }
+      toast(__('Link copied to clipboard.'));
+    },
   },
 };
 </script>
 
 <template>
-  <timeline-entry-item :class="entryClass">
-    <div v-if="!isFirstNote" :key="note.id" class="timeline-avatar gl-float-left">
+  <timeline-entry-item :id="noteAnchorId" :class="entryClass">
+    <div :key="note.id" class="timeline-avatar gl-float-left">
       <gl-avatar-link :href="author.webUrl">
         <gl-avatar
           :src="author.avatarUrl"
@@ -151,18 +178,23 @@ export default {
       :autosave-key="autosaveKey"
       :initial-value="note.body"
       :comment-button-text="__('Save comment')"
-      :class="{ 'gl-pl-8': !isFirstNote }"
       @cancelEditing="isEditing = false"
       @submitForm="updateNote"
     />
-    <div v-else class="timeline-content-inner" data-testid="note-wrapper">
+    <div v-else class="timeline-content" data-testid="note-wrapper">
       <div :class="noteHeaderClass">
-        <note-header :author="author" :created-at="note.createdAt" :note-id="note.id">
+        <note-header
+          :author="author"
+          :created-at="note.createdAt"
+          :note-id="note.id"
+          :note-url="note.url"
+        >
           <span v-if="note.createdAt" class="d-none d-sm-inline">&middot;</span>
         </note-header>
         <div class="gl-display-inline-flex">
           <note-actions
             :show-award-emoji="hasAwardEmojiPermission"
+            :note-url="noteUrl"
             :show-reply="showReply"
             :show-edit="hasAdminPermission"
             :note-id="note.id"
@@ -170,9 +202,7 @@ export default {
             @startEditing="startEditing"
             @error="($event) => $emit('error', $event)"
           />
-          <!-- v-if condition should be moved to "delete" dropdown item as soon as we implement copying the link -->
           <gl-dropdown
-            v-if="hasAdminPermission"
             v-gl-tooltip
             icon="ellipsis_v"
             text-sr-only
@@ -182,7 +212,11 @@ export default {
             category="tertiary"
             no-caret
           >
+            <gl-dropdown-item :data-clipboard-text="noteUrl" @click="notifyCopyDone">
+              <span>{{ $options.i18n.copyLinkText }}</span>
+            </gl-dropdown-item>
             <gl-dropdown-item
+              v-if="hasAdminPermission"
               variant="danger"
               data-testid="delete-note-action"
               @click="$emit('deleteNote')"

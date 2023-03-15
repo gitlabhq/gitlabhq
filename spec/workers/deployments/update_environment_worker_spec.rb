@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Deployments::UpdateEnvironmentWorker do
+RSpec.describe Deployments::UpdateEnvironmentWorker, feature_category: :continuous_delivery do
   subject(:worker) { described_class.new }
 
   context 'when successful deployment' do

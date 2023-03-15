@@ -53,7 +53,8 @@ class Import::GithubController < Import::BaseController
         render json: { imported_projects: serialized_imported_projects,
                        provider_repos: serialized_provider_repos,
                        incompatible_repos: serialized_incompatible_repos,
-                       page_info: client_repos_response[:page_info] }
+                       page_info: client_repos_response[:page_info],
+                       provider_repo_count: client_repos_response[:count] }
       end
 
       format.html do
@@ -108,6 +109,14 @@ class Import::GithubController < Import::BaseController
     end
 
     render json: canceled
+  end
+
+  def counts
+    render json: {
+      owned: client_proxy.count_repos_by('owned', current_user.id),
+      collaborated: client_proxy.count_repos_by('collaborated', current_user.id),
+      organization: client_proxy.count_repos_by('organization', current_user.id)
+    }
   end
 
   protected

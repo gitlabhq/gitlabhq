@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::DropPipelineWorker do
+RSpec.describe Ci::DropPipelineWorker, feature_category: :continuous_integration do
   include AfterNextHelpers
 
   let(:pipeline) { create(:ci_pipeline, :running) }

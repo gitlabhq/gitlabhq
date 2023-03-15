@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Spam::HamService do
+RSpec.describe Spam::HamService, feature_category: :instance_resiliency do
   let_it_be(:user) { create(:user) }
 
   let!(:spam_log) { create(:spam_log, user: user, submitted_as_ham: false) }

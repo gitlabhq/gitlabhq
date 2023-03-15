@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProtectedBranches::DestroyService do
+RSpec.describe ProtectedBranches::DestroyService, feature_category: :compliance_management do
   shared_examples 'execute with entity' do
     subject(:service) { described_class.new(entity, user) }
 

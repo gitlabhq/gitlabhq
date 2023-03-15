@@ -1430,6 +1430,28 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  context 'infrastructure aws feature' do
+    %w(guest reporter developer).each do |role|
+      context role do
+        let(:current_user) { send(role) }
+
+        it 'disallows managing aws' do
+          expect_disallowed(:admin_project_aws)
+        end
+      end
+    end
+
+    %w(maintainer owner).each do |role|
+      context role do
+        let(:current_user) { send(role) }
+
+        it 'allows managing aws' do
+          expect_allowed(:admin_project_aws)
+        end
+      end
+    end
+  end
+
   describe 'design permissions' do
     include DesignManagementTestHelpers
 

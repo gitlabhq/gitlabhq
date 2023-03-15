@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Spam::AkismetService do
+RSpec.describe Spam::AkismetService, feature_category: :instance_resiliency do
   let(:fake_akismet_client) { double(:akismet_client) }
   let(:ip) { '1.2.3.4' }
   let(:user_agent) { 'some user_agent' }

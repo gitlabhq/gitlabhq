@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Metrics::Dashboard::SyncDashboardsWorker do
+RSpec.describe Metrics::Dashboard::SyncDashboardsWorker, feature_category: :metrics do
   include MetricsDashboardHelpers
   subject(:worker) { described_class.new }
 

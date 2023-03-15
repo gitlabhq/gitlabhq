@@ -26,3 +26,6 @@ search for regular expressions. Since it allows searching for regular
 expressions, certain special characters will require escaping. Backslash can
 escape special characters and wrapping in double quotes can be used for phrase
 searches.
+
+To understand the possible filtering options, see the
+[Zoekt query syntax](https://github.com/sourcegraph/zoekt/blob/main/doc/query_syntax.md).

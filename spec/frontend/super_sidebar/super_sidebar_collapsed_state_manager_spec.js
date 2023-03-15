@@ -31,9 +31,10 @@ const pageHasCollapsedClass = (hasClass) => {
 describe('Super Sidebar Collapsed State Manager', () => {
   beforeEach(() => {
     setHTMLFixture(`
-      <button class="js-super-sidebar-toggle"></button>
-      <div class="page-with-super-sidebar"></div>
-      <aside class="super-sidebar"></aside>
+      <div class="page-with-super-sidebar">
+        <aside class="super-sidebar"></aside>
+        <button class="js-super-sidebar-toggle"></button>
+      </div>
     `);
   });
 
@@ -72,6 +73,29 @@ describe('Super Sidebar Collapsed State Manager', () => {
         }
       },
     );
+
+    describe('focus', () => {
+      it.each`
+        collapsed | isUserAction
+        ${false}  | ${true}
+        ${false}  | ${false}
+        ${true}   | ${true}
+        ${true}   | ${false}
+      `(
+        'when collapsed is $collapsed, isUserAction is $isUserAction',
+        ({ collapsed, isUserAction }) => {
+          const sidebar = findSidebar();
+          jest.spyOn(sidebar, 'focus');
+          toggleSuperSidebarCollapsed(collapsed, false, isUserAction);
+
+          if (!collapsed && isUserAction) {
+            expect(sidebar.focus).toHaveBeenCalled();
+          } else {
+            expect(sidebar.focus).not.toHaveBeenCalled();
+          }
+        },
+      );
+    });
   });
 
   describe('initSuperSidebarCollapsedState', () => {
@@ -106,9 +130,10 @@ describe('Super Sidebar Collapsed State Manager', () => {
       'toggle click sets page class to `page-with-super-sidebar-collapsed` when windowWidth is $windowWidth and cookie value is $cookie',
       ({ windowWidth, cookie, hasClass }) => {
         setHTMLFixture(`
-          <button class="js-super-sidebar-toggle"></button>
-          <div class="page-with-super-sidebar ${cookie ? SIDEBAR_COLLAPSED_CLASS : ''}"></div>
-          <aside class="super-sidebar"></aside>
+          <div class="page-with-super-sidebar ${cookie ? SIDEBAR_COLLAPSED_CLASS : ''}">
+            <aside class="super-sidebar"></aside>
+            <button class="js-super-sidebar-toggle"></button>
+          </div>
         `);
         jest.spyOn(bp, 'windowWidth').mockReturnValue(windowWidth);
         getCookie.mockReturnValue(cookie);

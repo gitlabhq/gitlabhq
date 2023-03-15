@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TasksToBeDone::CreateWorker do
+RSpec.describe TasksToBeDone::CreateWorker, feature_category: :onboarding do
   let_it_be(:member_task) { create(:member_task, tasks: MemberTask::TASKS.values) }
   let_it_be(:current_user) { create(:user) }
 

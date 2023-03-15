@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProtectedBranches::ApiService do
+RSpec.describe ProtectedBranches::ApiService, feature_category: :compliance_management do
   shared_examples 'execute with entity' do
     it 'creates a protected branch with prefilled defaults' do
       expect(::ProtectedBranches::CreateService).to receive(:new).with(

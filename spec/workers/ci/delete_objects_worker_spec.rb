@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::DeleteObjectsWorker do
+RSpec.describe Ci::DeleteObjectsWorker, feature_category: :continuous_integration do
   let(:worker) { described_class.new }
 
   it { expect(described_class.idempotent?).to be_truthy }

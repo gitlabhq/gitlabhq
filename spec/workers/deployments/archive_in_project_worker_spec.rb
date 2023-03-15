@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Deployments::ArchiveInProjectWorker do
+RSpec.describe Deployments::ArchiveInProjectWorker, feature_category: :continuous_delivery do
   subject { described_class.new.perform(deployment&.project_id) }
 
   describe '#perform' do

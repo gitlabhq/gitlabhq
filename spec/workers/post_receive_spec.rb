@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PostReceive do
+RSpec.describe PostReceive, feature_category: :source_code_management do
   include AfterNextHelpers
 
   let(:changes) do

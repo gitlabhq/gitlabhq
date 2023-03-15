@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IncidentManagement::CloseIncidentWorker do
+RSpec.describe IncidentManagement::CloseIncidentWorker, feature_category: :incident_management do
   subject(:worker) { described_class.new }
 
   describe '#perform' do

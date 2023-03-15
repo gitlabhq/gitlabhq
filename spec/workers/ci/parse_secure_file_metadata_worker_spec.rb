@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ParseSecureFileMetadataWorker do
+RSpec.describe Ci::ParseSecureFileMetadataWorker, feature_category: :mobile_devops do
   describe '#perform' do
     include_examples 'an idempotent worker' do
       let(:secure_file) { create(:ci_secure_file) }

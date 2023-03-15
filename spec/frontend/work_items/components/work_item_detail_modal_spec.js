@@ -90,6 +90,7 @@ describe('WorkItemDetailModal component', () => {
       workItemId: defaultPropsData.workItemId,
       workItemParentId: defaultPropsData.issueGid,
       workItemIid: null,
+      modal: null,
     });
   });
 

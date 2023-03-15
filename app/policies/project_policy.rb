@@ -414,6 +414,7 @@ class ProjectPolicy < BasePolicy
     prevent(:read_pod_logs)
     prevent(:read_prometheus)
     prevent(:admin_project_google_cloud)
+    prevent(:admin_project_aws)
   end
 
   rule { infrastructure_disabled | terraform_state_disabled }.policy do
@@ -540,6 +541,7 @@ class ProjectPolicy < BasePolicy
     enable :create_project_runners
     enable :update_runners_registration_token
     enable :admin_project_google_cloud
+    enable :admin_project_aws
     enable :admin_secure_files
     enable :read_upload
     enable :destroy_upload

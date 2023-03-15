@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ImportExport::RelationExportWorker, type: :worker do
+RSpec.describe Projects::ImportExport::RelationExportWorker, type: :worker, feature_category: :importers do
   let(:project_relation_export) { create(:project_relation_export) }
   let(:job_args) { [project_relation_export.id] }
 

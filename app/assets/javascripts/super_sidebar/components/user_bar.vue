@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     collapseSidebar() {
-      toggleSuperSidebarCollapsed(true, true);
+      toggleSuperSidebarCollapsed(true, true, true);
     },
   },
 };

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Security::CiConfiguration::ContainerScanningCreateService, :snowplow do
+RSpec.describe Security::CiConfiguration::ContainerScanningCreateService, :snowplow, feature_category: :container_scanning do
   subject(:result) { described_class.new(project, user).execute }
 
   let(:branch_name) { 'set-container-scanning-config-1' }

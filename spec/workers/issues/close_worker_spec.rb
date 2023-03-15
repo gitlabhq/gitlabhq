@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Issues::CloseWorker do
+RSpec.describe Issues::CloseWorker, feature_category: :team_planning do
   describe "#perform" do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :public, :repository) }

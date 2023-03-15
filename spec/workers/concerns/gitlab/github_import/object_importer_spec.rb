@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures do
+RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, feature_category: :importers do
   let(:worker) do
     Class.new do
       def self.name

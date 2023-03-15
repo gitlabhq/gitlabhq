@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Operations::UpdateService do
+RSpec.describe Projects::Operations::UpdateService, feature_category: :projects do
   let_it_be_with_refind(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 

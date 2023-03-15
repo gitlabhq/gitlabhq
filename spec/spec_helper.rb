@@ -7,9 +7,7 @@ if $LOADED_FEATURES.include?(File.expand_path('fast_spec_helper.rb', __dir__))
   abort 'Aborting...'
 end
 
-# Enable deprecation warnings by default and make them more visible
-# to developers to ease upgrading to newer Ruby versions.
-Warning[:deprecated] = true unless ENV.key?('SILENCE_DEPRECATIONS')
+require './spec/deprecation_warnings'
 
 require './spec/deprecation_toolkit_env'
 DeprecationToolkitEnv.configure!

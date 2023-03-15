@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Projects::LfsPointers::LfsDownloadService do
+RSpec.describe Projects::LfsPointers::LfsDownloadService, feature_category: :source_code_management do
   include StubRequests
 
   let_it_be(:project) { create(:project) }

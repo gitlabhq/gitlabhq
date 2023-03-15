@@ -1,35 +1,35 @@
 ---
 stage: enablement
-group: pods
+group: cells
 comments: false
-description: 'Pods: Git Access'
+description: 'Cells: Git Access'
 ---
 
 This document is a work-in-progress and represents a very early state of the
-Pods design. Significant aspects are not documented, though we expect to add
-them in the future. This is one possible architecture for Pods, and we intend to
+Cells design. Significant aspects are not documented, though we expect to add
+them in the future. This is one possible architecture for Cells, and we intend to
 contrast this with alternatives before deciding which approach to implement.
 This documentation will be kept even if we decide not to implement this so that
 we can document the reasons for not choosing this approach.
 
-# Pods: Git Access
+# Cells: Git Access
 
-This document describes impact of Pods architecture on all Git access (over HTTPS and SSH)
+This document describes impact of Cells architecture on all Git access (over HTTPS and SSH)
 patterns providing explanation of how potentially those features should be changed
-to work well with Pods.
+to work well with Cells.
 
 ## 1. Definition
 
 Git access is done through out the application. It can be an operation performed by the system
 (read Git repository) or by user (create a new file via Web IDE, `git clone` or `git push` via command line).
 
-The Pods architecture defines that all Git repositories will be local to the Pod,
-so no repository could be shared with another Pod.
+The Cells architecture defines that all Git repositories will be local to the Cell,
+so no repository could be shared with another Cell.
 
-The Pods architecture will require that any Git operation done can only be handled by a Pod holding
+The Cells architecture will require that any Git operation done can only be handled by a Cell holding
 the data. It means that any operation either via Web interface, API, or GraphQL needs to be routed
-to the correct Pod. It means that any `git clone` or `git push` operation can only be performed
-in a context of a Pod.
+to the correct Cell. It means that any `git clone` or `git push` operation can only be performed
+in a context of a Cell.
 
 ## 2. Data flow
 
@@ -130,7 +130,7 @@ sequenceDiagram
 
 ## 3. Proposal
 
-The Pods stateless router proposal requires that any ambiguous path (that is not routable)
+The Cells stateless router proposal requires that any ambiguous path (that is not routable)
 will be made to be routable. It means that at least the following paths will have to be updated
 do introduce a routable entity (project, group, or organization).
 
@@ -148,7 +148,7 @@ Where:
 
 ## 4. Evaluation
 
-Supporting Git repositories if a Pod can access only its own repositories does not appear to be complex.
+Supporting Git repositories if a Cell can access only its own repositories does not appear to be complex.
 
 The one major complication is supporting snippets, but this likely falls in the same category as for the approach
 to support user's personal namespaces.
@@ -159,5 +159,5 @@ to support user's personal namespaces.
 
 ## 4.2. Cons
 
-1. The sharing of repositories objects is limited to the given Pod and Gitaly node.
-1. The across-Pods forks are likely impossible to be supported (discover: how this work today across different Gitaly node).
+1. The sharing of repositories objects is limited to the given Cell and Gitaly node.
+1. The across-Cells forks are likely impossible to be supported (discover: how this work today across different Gitaly node).

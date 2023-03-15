@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe ObjectPool::DestroyWorker do
+RSpec.describe ObjectPool::DestroyWorker, feature_category: :shared do
   describe '#perform' do
     context 'when no pool is in the database' do
       it "doesn't raise an error" do

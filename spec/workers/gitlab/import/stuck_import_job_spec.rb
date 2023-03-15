@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Import::StuckImportJob do
+RSpec.describe Gitlab::Import::StuckImportJob, feature_category: :importers do
   let_it_be(:project) { create(:project, :import_started, import_source: 'foo/bar') }
 
   let(:worker) do

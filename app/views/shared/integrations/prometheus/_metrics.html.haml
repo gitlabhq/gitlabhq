@@ -9,19 +9,20 @@
 
 .col-lg-9
   .card.js-panel-monitored-metrics{ data: { active_metrics: active_common_project_prometheus_metrics_path(project, :json), metrics_help_path: help_page_path('user/project/integrations/prometheus_library/index') } }
-    .card-header
-      %strong
-        = s_('PrometheusService|Common metrics')
-      = gl_badge_tag 0, nil, class: 'js-monitored-count'
-    .card-body
-      .loading-metrics.js-loading-metrics
-        %p.m-3
-          = gl_loading_icon(inline: true, css_class: 'metrics-load-spinner')
-          = s_('PrometheusService|Finding and configuring metrics...')
-      .empty-metrics.hidden.js-empty-metrics
-        %p.text-tertiary.m-3
-          = s_('PrometheusService|Waiting for your first deployment to an environment to find common metrics')
-      %ul.list-unstyled.metrics-list.hidden.js-metrics-list
+    = render Pajamas::CardComponent.new(body_options: { class: 'gl-p-0' }) do |c|
+      - c.header do
+        %strong
+          = s_('PrometheusService|Common metrics')
+          = gl_badge_tag 0, nil, class: 'js-monitored-count'
+      - c.body do
+        .loading-metrics.js-loading-metrics
+          %p.m-3
+            = gl_loading_icon(inline: true, css_class: 'metrics-load-spinner')
+            = s_('PrometheusService|Finding and configuring metrics...')
+        .empty-metrics.hidden.js-empty-metrics
+          %p.text-tertiary.m-3
+            = s_('PrometheusService|Waiting for your first deployment to an environment to find common metrics')
+        %ul.list-unstyled.metrics-list.hidden.js-metrics-list
 
   .card.hidden.js-panel-missing-env-vars
     .card-header

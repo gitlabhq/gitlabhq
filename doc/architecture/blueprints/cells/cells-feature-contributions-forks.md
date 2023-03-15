@@ -1,18 +1,18 @@
 ---
 stage: enablement
-group: pods
+group: cells
 comments: false
-description: 'Pods: Contributions: Forks'
+description: 'Cells: Contributions: Forks'
 ---
 
 This document is a work-in-progress and represents a very early state of the
-Pods design. Significant aspects are not documented, though we expect to add
-them in the future. This is one possible architecture for Pods, and we intend to
+Cells design. Significant aspects are not documented, though we expect to add
+them in the future. This is one possible architecture for Cells, and we intend to
 contrast this with alternatives before deciding which approach to implement.
 This documentation will be kept even if we decide not to implement this so that
 we can document the reasons for not choosing this approach.
 
-# Pods: Contributions: Forks
+# Cells: Contributions: Forks
 
 [Forking workflow](../../../user/project/repository/forking_workflow.md) allows users
 to copy existing project sources into their own namespace of choice (personal or group).
@@ -40,10 +40,10 @@ Forks enable:
 - consider all forks to be unveted which reduces risks of leaking secrets, or any other information
   tied with the project
 
-The forking model is problematic in Pods architecture for following reasons:
+The forking model is problematic in Cells architecture for following reasons:
 
-- Forks are clones of existing repositories, forks could be created across different organizations, Pods and Gitaly shards.
-- User can create merge request and contribute back to upstream project, this upstream project might in a different organization and Pod.
+- Forks are clones of existing repositories, forks could be created across different organizations, Cells and Gitaly shards.
+- User can create merge request and contribute back to upstream project, this upstream project might in a different organization and Cell.
 - The merge request CI pipeline is to executed in a context of source project, but presented in a context of target project.
 
 ## 2. Data flow
@@ -52,19 +52,19 @@ The forking model is problematic in Pods architecture for following reasons:
 
 ### 3.1. Intra-Cluster forks
 
-This proposal makes us to implement forks as a intra-ClusterPod forks where communication is done via API
-between all trusted Pods of a cluster:
+This proposal makes us to implement forks as a intra-ClusterCell forks where communication is done via API
+between all trusted Cells of a cluster:
 
 - Forks when created, they are created always in context of user choice of group.
 - Forks are isolated from Organization.
 - Organization or group owner could disable forking across organizations or forking in general.
 - When a Merge Request is created it is created in context of target project, referencing
-  external project on another Pod.
+  external project on another Cell.
 - To target project the merge reference is transfered that is used for presenting information
   in context of target project.
 - CI pipeline is fetched in context of source project as it-is today, the result is fetched into
   Merge Request of target project.
-- The Pod holding target project internally uses GraphQL to fetch status of source project
+- The Cell holding target project internally uses GraphQL to fetch status of source project
   and include in context of the information for merge request.
 
 Upsides:

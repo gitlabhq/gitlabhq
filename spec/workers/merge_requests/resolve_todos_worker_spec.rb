@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::ResolveTodosWorker do
+RSpec.describe MergeRequests::ResolveTodosWorker, feature_category: :code_review_workflow do
   include AfterNextHelpers
 
   let_it_be(:merge_request) { create(:merge_request) }

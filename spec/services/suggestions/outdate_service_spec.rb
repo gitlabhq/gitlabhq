@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Suggestions::OutdateService do
+RSpec.describe Suggestions::OutdateService, feature_category: :code_suggestions do
   describe '#execute' do
     let(:merge_request) { create(:merge_request) }
     let(:project) { merge_request.target_project }

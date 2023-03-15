@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Rubygems::ExtractionWorker, type: :worker do
+RSpec.describe Packages::Rubygems::ExtractionWorker, type: :worker, feature_category: :package_registry do
   describe '#perform' do
     let_it_be(:package) { create(:rubygems_package, :processing) }
 

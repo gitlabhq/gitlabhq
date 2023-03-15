@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProtectedTags::CreateService do
+RSpec.describe ProtectedTags::CreateService, feature_category: :compliance_management do
   let(:project) { create(:project) }
   let(:user) { project.first_owner }
   let(:params) do

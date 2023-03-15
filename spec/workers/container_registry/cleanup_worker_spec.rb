@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ContainerRegistry::CleanupWorker, :aggregate_failures do
+RSpec.describe ContainerRegistry::CleanupWorker, :aggregate_failures, feature_category: :container_registry do
   let(:worker) { described_class.new }
 
   describe '#perform' do

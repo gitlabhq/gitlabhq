@@ -68,6 +68,11 @@ export default {
       required: false,
       default: false,
     },
+    noteUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -85,6 +90,8 @@ export default {
       return this.expanded ? 'chevron-up' : 'chevron-down';
     },
     noteTimestampLink() {
+      if (this.noteUrl) return this.noteUrl;
+
       return this.noteId ? `#note_${getIdFromGraphQLId(this.noteId)}` : undefined;
     },
     hasAuthor() {

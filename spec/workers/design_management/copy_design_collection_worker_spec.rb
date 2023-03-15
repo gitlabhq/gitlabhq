@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DesignManagement::CopyDesignCollectionWorker, :clean_gitlab_redis_shared_state do
+RSpec.describe DesignManagement::CopyDesignCollectionWorker, :clean_gitlab_redis_shared_state, feature_category: :design_management do
   describe '#perform' do
     let_it_be(:user) { create(:user) }
     let_it_be(:issue) { create(:issue) }

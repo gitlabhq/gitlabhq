@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MembersDestroyer::UnassignIssuablesWorker do
+RSpec.describe MembersDestroyer::UnassignIssuablesWorker, feature_category: :user_management do
   let_it_be(:group) { create(:group, :private) }
   let_it_be(:user, reload: true) { create(:user) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe StuckCiJobsWorker do
+RSpec.describe StuckCiJobsWorker, feature_category: :continuous_integration do
   include ExclusiveLeaseHelpers
 
   let(:worker)     { described_class.new }

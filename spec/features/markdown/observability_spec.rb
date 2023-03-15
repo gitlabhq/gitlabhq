@@ -6,13 +6,14 @@ RSpec.describe 'Observability rendering', :js, feature_category: :metrics do
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, :repository, group: group) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:observable_url) { "https://observe.gitlab.com/#{group.id}/some-dashboard" }
-
+  let_it_be(:observable_url) { "https://www.gitlab.com/groups/#{group.path}/-/observability/explore?observability_path=/explore?foo=bar" }
+  let_it_be(:expected_observable_url) { "https://observe.gitlab.com/-/#{group.id}/explore?foo=bar" }
   let_it_be(:expected) do
-    %(<iframe src="#{observable_url}?theme=light&amp;kiosk=inline-embed" frameborder="0")
+    %(<iframe src="#{expected_observable_url}&amp;theme=light&amp;kiosk=inline-embed" frameborder="0")
   end
 
   before do
+    stub_config_setting(url: "https://www.gitlab.com")
     group.add_developer(user)
     sign_in(user)
   end

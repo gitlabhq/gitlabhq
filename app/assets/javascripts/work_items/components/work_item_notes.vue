@@ -2,6 +2,7 @@
 import { GlSkeletonLoader, GlModal } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { __ } from '~/locale';
+import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import { TYPENAME_DISCUSSION, TYPENAME_NOTE } from '~/graphql_shared/constants';
 import SystemNote from '~/work_items/components/notes/system_note.vue';
 import WorkItemNotesActivityHeader from '~/work_items/components/notes/work_item_notes_activity_header.vue';
@@ -18,6 +19,7 @@ import {
   updateCacheAfterCreatingNote,
   updateCacheAfterDeletingNote,
 } from '~/work_items/graphql/cache_utils';
+import { getLocationHash } from '~/lib/utils/url_utility';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
 import WorkItemHistoryOnlyFilterNote from '~/work_items/components/notes/work_item_history_only_filter_note.vue';
 import workItemNoteCreatedSubscription from '~/work_items/graphql/notes/work_item_note_created.subscription.graphql';
@@ -59,6 +61,11 @@ export default {
       required: true,
     },
     fetchByIid: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isModal: {
       type: Boolean,
       required: false,
       default: false,
@@ -130,6 +137,9 @@ export default {
     commentsDisabled() {
       return this.discussionFilter === WORK_ITEM_NOTES_FILTER_ONLY_HISTORY;
     },
+    targetNoteHash() {
+      return getLocationHash();
+    },
   },
   apollo: {
     workItemNotes: {
@@ -165,6 +175,12 @@ export default {
 
         if (this.hasNextPage) {
           this.fetchMoreNotes();
+        } else if (this.targetNoteHash) {
+          if (this.isModal) {
+            this.$emit('has-notes');
+          } else {
+            scrollToTargetOnResize();
+          }
         }
       },
       subscribeToMore: [
@@ -325,7 +341,6 @@ export default {
             v-bind="workItemCommentFormProps"
             @error="$emit('error', $event)"
           />
-
           <template v-for="discussion in notesArray">
             <system-note
               v-if="isSystemNote(discussion)"
@@ -341,6 +356,7 @@ export default {
                 :work-item-id="workItemId"
                 :fetch-by-iid="fetchByIid"
                 :work-item-type="workItemType"
+                :is-modal="isModal"
                 @deleteNote="showDeleteNoteModal($event, discussion)"
                 @error="$emit('error', $event)"
               />
@@ -352,6 +368,7 @@ export default {
             v-bind="workItemCommentFormProps"
             @error="$emit('error', $event)"
           />
+
           <work-item-history-only-filter-note
             v-if="commentsDisabled"
             @changeFilter="filterDiscussions"

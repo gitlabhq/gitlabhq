@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RemoveUnreferencedLfsObjectsWorker do
+RSpec.describe RemoveUnreferencedLfsObjectsWorker, feature_category: :source_code_management do
   let(:worker) { described_class.new }
 
   describe '#perform' do

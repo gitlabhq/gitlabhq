@@ -75,6 +75,10 @@ RSpec.describe Import::GithubController, 'routing' do
   it 'to #cancel_all' do
     expect(post('/import/github/cancel_all')).to route_to('import/github#cancel_all')
   end
+
+  it 'to #counts' do
+    expect(get('/import/github/counts')).to route_to('import/github#counts')
+  end
 end
 
 # personal_access_token_import_gitea POST     /import/gitea/personal_access_token(.:format)                                                 import/gitea#personal_access_token

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RemoveExpiredGroupLinksWorker do
+RSpec.describe RemoveExpiredGroupLinksWorker, feature_category: :system_access do
   describe '#perform' do
     context 'ProjectGroupLinks' do
       let!(:expired_project_group_link) { create(:project_group_link, expires_at: 1.hour.ago) }

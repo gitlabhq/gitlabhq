@@ -1,18 +1,18 @@
 ---
 stage: enablement
-group: pods
+group: cells
 comments: false
-description: 'Pods: GitLab Pages'
+description: 'Cells: GitLab Pages'
 ---
 
 This document is a work-in-progress and represents a very early state of the
-Pods design. Significant aspects are not documented, though we expect to add
-them in the future. This is one possible architecture for Pods, and we intend to
+Cells design. Significant aspects are not documented, though we expect to add
+them in the future. This is one possible architecture for Cells, and we intend to
 contrast this with alternatives before deciding which approach to implement.
 This documentation will be kept even if we decide not to implement this so that
 we can document the reasons for not choosing this approach.
 
-# Pods: GitLab Pages
+# Cells: GitLab Pages
 
 > TL;DR
 

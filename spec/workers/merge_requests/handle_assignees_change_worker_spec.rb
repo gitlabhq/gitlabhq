@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::HandleAssigneesChangeWorker do
+RSpec.describe MergeRequests::HandleAssigneesChangeWorker, feature_category: :code_review_workflow do
   include AfterNextHelpers
 
   let_it_be(:merge_request) { create(:merge_request) }

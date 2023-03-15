@@ -188,6 +188,26 @@ it 'avoids N+1 Redis calls to forks_count key' do
 end
 ```
 
+You also can use special matchers `exceed_redis_calls_limit` and
+`exceed_redis_command_calls_limit` to define an upper limit for
+a number of Redis calls:
+
+```ruby
+it 'avoids N+1 Redis calls' do
+  control = RedisCommands::Recorder.new { visit_page }
+
+  expect(control).not_to exceed_redis_calls_limit(1)
+end
+```
+
+```ruby
+it 'avoids N+1 sadd Redis calls' do
+  control = RedisCommands::Recorder.new { visit_page }
+
+  expect(control).not_to exceed_redis_command_calls_limit(:sadd, 1)
+end
+```
+
 These tests can help to identify N+1 problems related to Redis calls,
 and make sure that the fix for them works as expected.
 

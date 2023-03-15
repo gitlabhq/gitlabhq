@@ -52,7 +52,7 @@ export default {
     <div
       class="gl-display-flex gl-align-items-center gl-flex-wrap project-namespace-name-container"
     >
-      <gl-icon v-if="selected" class="js-selected-icon" name="mobile-issue-close" />
+      <gl-icon v-if="selected" data-testid="selected-icon" name="mobile-issue-close" />
       <project-avatar
         :project-id="project.id"
         :project-avatar-url="projectAvatarUrl"
@@ -61,16 +61,18 @@ export default {
       />
       <div
         v-if="truncatedNamespace"
+        data-testid="project-namespace"
         :title="projectNameWithNamespace"
-        class="text-secondary text-truncate js-project-namespace"
+        class="text-secondary text-truncate"
       >
         {{ truncatedNamespace }}
         <span v-if="truncatedNamespace" class="text-secondary">/&nbsp;</span>
       </div>
       <div
         v-safe-html="highlightedProjectName"
+        data-testid="project-name"
         :title="project.name"
-        class="js-project-name text-truncate"
+        class="text-truncate"
       ></div>
     </div>
   </gl-button>

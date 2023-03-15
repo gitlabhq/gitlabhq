@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::SystemNotes::IssuablesService do
+RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning do
   include ProjectForksHelper
 
   let_it_be(:group)   { create(:group) }

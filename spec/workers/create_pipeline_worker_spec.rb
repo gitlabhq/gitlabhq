@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CreatePipelineWorker do
+RSpec.describe CreatePipelineWorker, feature_category: :continuous_integration do
   describe '#perform' do
     let(:worker) { described_class.new }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Onboarding::IssueCreatedWorker, '#perform' do
+RSpec.describe Onboarding::IssueCreatedWorker, '#perform', feature_category: :onboarding do
   let_it_be(:issue) { create(:issue) }
 
   let(:namespace) { issue.project.namespace }

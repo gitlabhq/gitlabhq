@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineArtifacts::ExpireArtifactsWorker do
+RSpec.describe Ci::PipelineArtifacts::ExpireArtifactsWorker, feature_category: :build_artifacts do
   let(:worker) { described_class.new }
 
   describe '#perform' do

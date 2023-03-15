@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Environments::AutoStopWorker do
+RSpec.describe Environments::AutoStopWorker, feature_category: :continuous_delivery do
   include CreateEnvironmentsHelpers
 
   subject { worker.perform(environment_id) }

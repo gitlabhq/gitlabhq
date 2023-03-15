@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RefDeleteUnlockArtifactsWorker do
+RSpec.describe Ci::RefDeleteUnlockArtifactsWorker, feature_category: :build_artifacts do
   describe '#perform' do
     subject(:perform) { worker.perform(project_id, user_id, ref) }
 

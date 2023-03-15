@@ -600,7 +600,8 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
                       endCursor
                       hasNextPage
                       hasPreviousPage
-                  }
+                  },
+                  repositoryCount
               }
           }
         TEXT
@@ -703,6 +704,34 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
             .and_raise(error_class, 'execution expired')
 
           expect { client.search_repos_by_name_graphql('test') }.to raise_error(error_class, 'execution expired')
+        end
+      end
+    end
+
+    describe '#count_repos_by_relation_type_graphql' do
+      relation_types = {
+        'owned' => ' in:name is:public,private user:user',
+        'collaborated' => ' in:name is:public,private repo:repo1 repo:repo2',
+        'organization' => 'org:org1 org:org2'
+      }
+
+      relation_types.each do |relation_type, expected_query|
+        expected_graphql_params = "type: REPOSITORY, query: \"#{expected_query}\""
+        expected_graphql =
+          <<-TEXT
+          {
+            search(#{expected_graphql_params}) {
+              repositoryCount
+            }
+          }
+          TEXT
+
+        it 'returns count by relation_type' do
+          expect(client.octokit).to receive(:post).with(
+            '/graphql', { query: expected_graphql }.to_json
+          )
+
+          client.count_repos_by_relation_type_graphql(relation_type: relation_type)
         end
       end
     end

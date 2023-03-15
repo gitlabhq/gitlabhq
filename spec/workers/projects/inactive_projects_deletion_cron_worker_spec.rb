@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::InactiveProjectsDeletionCronWorker do
+RSpec.describe Projects::InactiveProjectsDeletionCronWorker, feature_category: :compliance_management do
   include ProjectHelpers
 
   shared_examples 'worker is running for more than 4 minutes' do

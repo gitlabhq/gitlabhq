@@ -16,7 +16,6 @@
 
     .row
       .form-group.col-md-9
-        = f.label :topics, _('Topics'), class: 'label-bold'
         .js-topics-selector{ data: { hidden_input_id: hidden_topics_field_id } }
         = f.hidden_field :topics, value: @project.topic_list.join(', '), id: hidden_topics_field_id
 

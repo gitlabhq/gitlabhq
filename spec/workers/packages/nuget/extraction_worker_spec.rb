@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Nuget::ExtractionWorker, type: :worker do
+RSpec.describe Packages::Nuget::ExtractionWorker, type: :worker, feature_category: :package_registry do
   describe '#perform' do
     let!(:package) { create(:nuget_package) }
     let(:package_file) { package.package_files.first }

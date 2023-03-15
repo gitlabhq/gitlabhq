@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::HashedStorage::RollbackService do
+RSpec.describe Projects::HashedStorage::RollbackService, feature_category: :projects do
   let(:project) { create(:project, :empty_repo, :wiki_repo) }
   let(:logger) { double }
   let!(:project_attachment) { build(:file_uploader, project: project) }

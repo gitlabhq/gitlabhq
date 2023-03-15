@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::JiraImport::Stage::ImportIssuesWorker do
+RSpec.describe Gitlab::JiraImport::Stage::ImportIssuesWorker, feature_category: :importers do
   include JiraIntegrationHelpers
 
   let_it_be(:user) { create(:user) }

@@ -115,6 +115,11 @@ export default {
       required: false,
       default: null,
     },
+    modal: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   data() {
     const workItemId = getParameterByName('work_item_id');
@@ -453,6 +458,9 @@ export default {
         Sentry.captureException(error);
       }
     },
+    updateHasNotes() {
+      this.$emit('has-notes');
+    },
     updateUrl(modalWorkItem) {
       const params = this.fetchByIid
         ? { work_item_iid: modalWorkItem?.iid }
@@ -707,8 +715,10 @@ export default {
             :full-path="fullPath"
             :fetch-by-iid="fetchByIid"
             :work-item-type="workItemType"
+            :is-modal="isModal"
             class="gl-pt-5"
             @error="updateError = $event"
+            @has-notes="updateHasNotes"
           />
         </template>
         <gl-empty-state

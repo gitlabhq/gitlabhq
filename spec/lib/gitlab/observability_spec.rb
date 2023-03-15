@@ -31,21 +31,120 @@ RSpec.describe Gitlab::Observability, feature_category: :error_tracking do
     end
   end
 
-  describe '.valid_observability_url?' do
-    it 'returns true if url is a valid observability url' do
-      expect(described_class.valid_observability_url?('https://observe.gitlab.com')).to eq(true)
-      expect(described_class.valid_observability_url?('https://observe.gitlab.com:443')).to eq(true)
-      expect(described_class.valid_observability_url?('https://observe.gitlab.com/foo/bar')).to eq(true)
-      expect(described_class.valid_observability_url?('https://observe.gitlab.com/123/456')).to eq(true)
+  describe '.build_full_url' do
+    let_it_be(:group) { build_stubbed(:group, id: 123) }
+    let(:observability_url) { described_class.observability_url }
+
+    it 'returns the full observability url for the given params' do
+      url = described_class.build_full_url(group, '/foo?bar=baz', '/')
+      expect(url).to eq("https://observe.gitlab.com/-/123/foo?bar=baz")
     end
 
-    it 'returns false if url is a not valid observability url' do
-      expect(described_class.valid_observability_url?('http://observe.gitlab.com')).to eq(false)
-      expect(described_class.valid_observability_url?('https://observe.gitlab.com:81')).to eq(false)
-      expect(described_class.valid_observability_url?('https://foo.observe.gitlab.com')).to eq(false)
-      expect(described_class.valid_observability_url?('https://www.gitlab.com')).to eq(false)
-      expect(described_class.valid_observability_url?('foo@@@@bar/1/')).to eq(false)
-      expect(described_class.valid_observability_url?('foo bar')).to eq(false)
+    it 'handles missing / from observability_path' do
+      url = described_class.build_full_url(group, 'foo?bar=baz', '/')
+      expect(url).to eq("https://observe.gitlab.com/-/123/foo?bar=baz")
+    end
+
+    it 'sanitises observability_path' do
+      url = described_class.build_full_url(group, "/test?groupId=<script>alert('attack!')</script>", '/')
+      expect(url).to eq("https://observe.gitlab.com/-/123/test?groupId=alert('attack!')")
+    end
+
+    context 'when observability_path is missing' do
+      it 'builds the url with the fallback_path' do
+        url = described_class.build_full_url(group, nil, '/fallback')
+        expect(url).to eq("https://observe.gitlab.com/-/123/fallback")
+      end
+
+      it 'defaults to / if fallback_path is also missing' do
+        url = described_class.build_full_url(group, nil, nil)
+        expect(url).to eq("https://observe.gitlab.com/-/123/")
+      end
+    end
+  end
+
+  describe '.embeddable_url' do
+    before do
+      stub_config_setting(url: "https://www.gitlab.com")
+      # Can't use build/build_stubbed as we want the routes to be generated as well
+      create(:group, path: 'test-path', id: 123)
+    end
+
+    context 'when URL is valid' do
+      where(:input, :expected) do
+        [
+          [
+            "https://www.gitlab.com/groups/test-path/-/observability/explore?observability_path=%2Fexplore%3FgroupId%3D14485840%26left%3D%255B%2522now-1h%2522,%2522now%2522,%2522new-sentry.gitlab.net%2522,%257B%257D%255D",
+            "https://observe.gitlab.com/-/123/explore?groupId=14485840&left=%5B%22now-1h%22,%22now%22,%22new-sentry.gitlab.net%22,%7B%7D%5D"
+          ],
+          [
+            "https://www.gitlab.com/groups/test-path/-/observability/explore?observability_path=/goto/foo",
+            "https://observe.gitlab.com/-/123/goto/foo"
+          ]
+        ]
+      end
+
+      with_them do
+        it 'returns an embeddable observability url' do
+          expect(described_class.embeddable_url(input)).to eq(expected)
+        end
+      end
+    end
+
+    context 'when URL is invalid' do
+      where(:input) do
+        [
+          # direct links to observe.gitlab.com
+          "https://observe.gitlab.com/-/123/explore",
+          'https://observe.gitlab.com/v1/auth/start',
+
+          # invalid GitLab URL
+          "not a link",
+          "https://foo.bar/groups/test-path/-/observability/explore?observability_path=/explore",
+          "http://www.gitlab.com/groups/test-path/-/observability/explore?observability_path=/explore",
+          "https://www.gitlab.com:123/groups/test-path/-/observability/explore?observability_path=/explore",
+          "https://www.gitlab.com@example.com/groups/test-path/-/observability/explore?observability_path=/explore",
+          "https://www.gitlab.com/groups/test-path/-/observability/explore?observability_path=@example.com",
+
+          # invalid group/controller/actions
+          "https://www.gitlab.com/groups/INVALID_GROUP/-/observability/explore?observability_path=/explore",
+          "https://www.gitlab.com/groups/test-path/-/INVALID_CONTROLLER/explore?observability_path=/explore",
+          "https://www.gitlab.com/groups/test-path/-/observability/INVALID_ACTION?observability_path=/explore",
+
+          # invalid observablity path
+          "https://www.gitlab.com/groups/test-path/-/observability/explore",
+          "https://www.gitlab.com/groups/test-path/-/observability/explore?missing_observability_path=/explore",
+          "https://www.gitlab.com/groups/test-path/-/observability/explore?observability_path=/not_embeddable",
+          "https://www.gitlab.com/groups/test-path/-/observability/explore?observability_path=/datasources",
+          "https://www.gitlab.com/groups/test-path/-/observability/explore?observability_path=not a valid path"
+        ]
+      end
+
+      with_them do
+        it 'returns nil' do
+          expect(described_class.embeddable_url(input)).to be_nil
+        end
+      end
+
+      it 'returns nil if the path detection throws an error' do
+        test_url = "https://www.gitlab.com/groups/test-path/-/observability/explore"
+        allow(Rails.application.routes).to receive(:recognize_path).with(test_url) {
+                                             raise ActionController::RoutingError, 'test'
+                                           }
+        expect(described_class.embeddable_url(test_url)).to be_nil
+      end
+
+      it 'returns nil if parsing observaboility path throws an error' do
+        observability_path = 'some-path'
+        test_url = "https://www.gitlab.com/groups/test-path/-/observability/explore?observability_path=#{observability_path}"
+
+        allow(URI).to receive(:parse).and_call_original
+        allow(URI).to receive(:parse).with(observability_path) {
+                        raise URI::InvalidURIError, 'test'
+                      }
+
+        expect(described_class.embeddable_url(test_url)).to be_nil
+      end
     end
   end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::SystemNotes::TimeTrackingService do
+RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_planning do
   let_it_be(:author)  { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
 

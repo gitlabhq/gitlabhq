@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Snippets::UpdateStatisticsService do
+RSpec.describe Snippets::UpdateStatisticsService, feature_category: :source_code_management do
   describe '#execute' do
     subject { described_class.new(snippet).execute }
 

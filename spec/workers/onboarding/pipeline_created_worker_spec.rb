@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Onboarding::PipelineCreatedWorker, '#perform' do
+RSpec.describe Onboarding::PipelineCreatedWorker, '#perform', feature_category: :onboarding do
   let_it_be(:ci_pipeline) { create(:ci_pipeline) }
 
   it_behaves_like 'records an onboarding progress action', :pipeline_created do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Deployments::LinkMergeRequestWorker do
+RSpec.describe Deployments::LinkMergeRequestWorker, feature_category: :continuous_delivery do
   subject(:worker) { described_class.new }
 
   describe '#perform' do

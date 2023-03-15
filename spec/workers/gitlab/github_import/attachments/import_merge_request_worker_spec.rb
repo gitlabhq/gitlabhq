@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Attachments::ImportMergeRequestWorker do
+RSpec.describe Gitlab::GithubImport::Attachments::ImportMergeRequestWorker, feature_category: :importers do
   subject(:worker) { described_class.new }
 
   describe '#import' do

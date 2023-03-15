@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe WebHookWorker do
+RSpec.describe WebHookWorker, feature_category: :integrations do
   include AfterNextHelpers
 
   let_it_be(:project_hook) { create(:project_hook) }

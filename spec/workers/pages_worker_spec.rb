@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PagesWorker, :sidekiq_inline do
+RSpec.describe PagesWorker, :sidekiq_inline, feature_category: :pages do
   let_it_be(:ci_build) { create(:ci_build) }
 
   context 'when called with the deploy action' do

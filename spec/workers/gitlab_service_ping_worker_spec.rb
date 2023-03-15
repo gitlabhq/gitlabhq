@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state do
+RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state, feature_category: :service_ping do
   let(:payload) { { recorded_at: Time.current.rfc3339 } }
 
   before do

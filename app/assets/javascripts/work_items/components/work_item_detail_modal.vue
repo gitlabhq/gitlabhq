@@ -1,10 +1,12 @@
 <script>
 import { GlAlert, GlModal } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import deleteWorkItemFromTaskMutation from '../graphql/delete_task_from_work_item.mutation.graphql';
 import deleteWorkItemMutation from '../graphql/delete_work_item.mutation.graphql';
 
 export default {
+  WORK_ITEM_DETAIL_MODAL_ID: 'work-item-detail-modal',
   i18n: {
     errorMessage: s__('WorkItem|Something went wrong when deleting the task. Please try again.'),
   },
@@ -51,6 +53,8 @@ export default {
       error: undefined,
       updatedWorkItemId: null,
       updatedWorkItemIid: null,
+      isModalShown: false,
+      hasNotes: false,
     };
   },
   computed: {
@@ -59,6 +63,13 @@ export default {
     },
     displayedWorkItemIid() {
       return this.updatedWorkItemIid || this.workItemIid;
+    },
+  },
+  watch: {
+    hasNotes(newVal) {
+      if (newVal && this.isModalShown) {
+        scrollToTargetOnResize({ containerId: this.$options.WORK_ITEM_DETAIL_MODAL_ID });
+      }
     },
   },
   methods: {
@@ -128,6 +139,7 @@ export default {
       this.updatedWorkItemId = null;
       this.updatedWorkItemIid = null;
       this.error = '';
+      this.isModalShown = false;
       this.$emit('close');
     },
     hide() {
@@ -144,6 +156,12 @@ export default {
       this.updatedWorkItemIid = workItem.iid;
       this.$emit('update-modal', $event, workItem);
     },
+    onModalShow() {
+      this.isModalShown = true;
+    },
+    updateHasNotes() {
+      this.hasNotes = true;
+    },
   },
 };
 </script>
@@ -151,13 +169,15 @@ export default {
 <template>
   <gl-modal
     ref="modal"
+    static
     hide-footer
     size="lg"
-    modal-id="work-item-detail-modal"
+    :modal-id="$options.WORK_ITEM_DETAIL_MODAL_ID"
     header-class="gl-p-0 gl-pb-2!"
     scrollable
-    data-testid="work-item-detail-modal"
+    :data-testid="$options.WORK_ITEM_DETAIL_MODAL_ID"
     @hide="closeModal"
+    @shown="onModalShow"
   >
     <gl-alert v-if="error" variant="danger" @dismiss="error = false">
       {{ error }}
@@ -172,6 +192,7 @@ export default {
       @close="hide"
       @deleteWorkItem="deleteWorkItem"
       @update-modal="updateModal"
+      @has-notes="updateHasNotes"
     />
   </gl-modal>
 </template>

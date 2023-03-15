@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespaces::ProcessSyncEventsWorker do
+RSpec.describe Namespaces::ProcessSyncEventsWorker, feature_category: :pods do
   let!(:group1) { create(:group) }
   let!(:group2) { create(:group) }
   let!(:group3) { create(:group) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UploadChecksumWorker do
+RSpec.describe UploadChecksumWorker, feature_category: :geo_replication do
   describe '#perform' do
     subject { described_class.new }
 

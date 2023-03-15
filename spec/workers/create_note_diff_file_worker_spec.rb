@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CreateNoteDiffFileWorker do
+RSpec.describe CreateNoteDiffFileWorker, feature_category: :code_review_workflow do
   describe '#perform' do
     let(:diff_note) { create(:diff_note_on_merge_request) }
 

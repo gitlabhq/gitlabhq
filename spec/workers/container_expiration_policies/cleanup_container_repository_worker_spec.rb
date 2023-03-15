@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
+RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker, feature_category: :container_registry do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:repository, refind: true) { create(:container_repository, :cleanup_scheduled, expiration_policy_started_at: 1.month.ago) }

@@ -18,6 +18,49 @@ info: To determine the technical writer assigned to the Stage/Group associated w
   [EE features list](https://about.gitlab.com/features/).
 <!-- markdownlint-enable MD044 -->
 
+## SaaS only feature
+
+Use the following guidelines when you develop a feature that is only applicable for SaaS (for example, a CustomersDot integration).
+
+1. It is recommended you use an application setting. This enables
+   granular settings so that each SaaS instance can switch things according to
+   their need.
+1. If application setting is not possible, helpers such as `Gitlab.com?` can be
+   used. However, this comes with drawbacks as listed in the epic to
+   [remove these helpers](https://gitlab.com/groups/gitlab-org/-/epics/7374).
+   1. Consider performance and availability impact on other SaaS instances. For example,
+      [GitLab JH overrides](https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/lib/jh/gitlab/saas.rb)
+      SaaS helpers, so that it returns true for `Gitlab.com?`.
+
+### Simulate a SaaS instance
+
+If you're developing locally and need your instance to simulate the SaaS (GitLab.com)
+version of the product:
+
+1. Export this environment variable:
+
+   ```shell
+   export GITLAB_SIMULATE_SAAS=1
+   ```
+
+   There are many ways to pass an environment variable to your local GitLab instance.
+   For example, you can create an `env.runit` file in the root of your GDK with the above snippet.
+
+1. Enable **Allow use of licensed EE features** to make licensed EE features available to projects
+   only if the project namespace's plan includes the feature.
+
+   1. Visit **Admin > Settings > General**.
+   1. Expand **Account and limit**.
+   1. Select the **Allow use of licensed EE features** checkbox.
+   1. Select **Save changes**.
+
+1. Ensure the group you want to test the EE feature for is actually using an EE plan:
+   1. On the top bar, select **Main menu > Admin**.
+   1. On the left sidebar, select **Overview > Groups**.
+   1. Identify the group you want to modify, and select **Edit**.
+   1. Scroll to **Permissions and group features**. For **Plan**, select `Ultimate`.
+   1. Select **Save changes**.
+
 ## Implement a new EE feature
 
 If you're developing a GitLab Premium or GitLab Ultimate licensed feature, use these steps to
@@ -136,35 +179,6 @@ To do so:
    ```shell
    bin/rspec spec/features/<path_to_your_spec>
    ```
-
-### Simulate a SaaS instance
-
-If you're developing locally and need your instance to simulate the SaaS (GitLab.com)
-version of the product:
-
-1. Export this environment variable:
-
-   ```shell
-   export GITLAB_SIMULATE_SAAS=1
-   ```
-
-   There are many ways to pass an environment variable to your local GitLab instance.
-   For example, you can create an `env.runit` file in the root of your GDK with the above snippet.
-
-1. Enable **Allow use of licensed EE features** to make licensed EE features available to projects
-   only if the project namespace's plan includes the feature.
-
-    1. Visit **Admin > Settings > General**.
-    1. Expand **Account and limit**.
-    1. Select the **Allow use of licensed EE features** checkbox.
-    1. Click **Save changes**.
-
-1. Ensure that the group for which you want to test the EE feature, is actually using an EE plan:
-   1. On the top bar, select **Main menu > Admin**.
-   1. On the left sidebar, select **Overview > Groups**.
-   1. Identify the group you want to modify, and select **Edit**.
-   1. Scroll to **Permissions and group features**. For **Plan**, select `Ultimate`.
-   1. Select **Save changes**.
 
 ### Run CI pipelines in a FOSS context
 

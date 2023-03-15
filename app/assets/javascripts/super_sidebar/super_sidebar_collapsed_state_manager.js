@@ -19,12 +19,12 @@ export const isDesktopBreakpoint = () => bp.windowWidth() >= breakpoints.xl;
 
 export const getCollapsedCookie = () => getCookie(SIDEBAR_COLLAPSED_COOKIE) === 'true';
 
-export const toggleSuperSidebarCollapsed = (collapsed, saveCookie) => {
+export const toggleSuperSidebarCollapsed = (collapsed, saveCookie, isUserAction) => {
   const sidebar = findSidebar();
   sidebar.ariaHidden = collapsed;
   sidebar.inert = collapsed;
 
-  if (!collapsed) sidebar.focus();
+  if (!collapsed && isUserAction) sidebar.focus();
 
   findPage().classList.toggle(SIDEBAR_COLLAPSED_CLASS, collapsed);
 
@@ -43,7 +43,7 @@ export const initSuperSidebarCollapsedState = () => {
 export const bindSuperSidebarCollapsedEvents = () => {
   findToggles().forEach((elem) => {
     elem.addEventListener('click', () => {
-      toggleSuperSidebarCollapsed(!isCollapsed(), true);
+      toggleSuperSidebarCollapsed(!isCollapsed(), true, true);
     });
   });
 

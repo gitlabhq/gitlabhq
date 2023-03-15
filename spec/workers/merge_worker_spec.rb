@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeWorker do
+RSpec.describe MergeWorker, feature_category: :source_code_management do
   describe "remove source branch" do
     let!(:merge_request) { create(:merge_request, source_branch: "markdown") }
     let!(:source_project) { merge_request.source_project }

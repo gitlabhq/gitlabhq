@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DestroyPagesDeploymentsWorker do
+RSpec.describe DestroyPagesDeploymentsWorker, feature_category: :pages do
   subject(:worker) { described_class.new }
 
   let(:project) { create(:project) }

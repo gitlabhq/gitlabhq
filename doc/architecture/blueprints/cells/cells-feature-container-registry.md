@@ -1,18 +1,18 @@
 ---
 stage: enablement
-group: pods
+group: cells
 comments: false
-description: 'Pods: Container Registry'
+description: 'Cells: Container Registry'
 ---
 
 This document is a work-in-progress and represents a very early state of the
-Pods design. Significant aspects are not documented, though we expect to add
-them in the future. This is one possible architecture for Pods, and we intend to
+Cells design. Significant aspects are not documented, though we expect to add
+them in the future. This is one possible architecture for Cells, and we intend to
 contrast this with alternatives before deciding which approach to implement.
 This documentation will be kept even if we decide not to implement this so that
 we can document the reasons for not choosing this approach.
 
-# Pods: Container Registry
+# Cells: Container Registry
 
 GitLab Container Registry is a feature allowing to store Docker Container Images
 in GitLab. You can read about GitLab integration [here](../../../user/packages/container_registry/index.md).
@@ -52,7 +52,7 @@ The main identifiable problems are:
 
 - the authentication request (`https://gitlab.com/jwt/auth`) that is processed by GitLab.com
 - the `https://registry.gitlab.com` that is run by external service and uses it's own data store
-- the data deduplication, the Pods architecture with registry run in a Pod would reduce
+- the data deduplication, the Cells architecture with registry run in a Cell would reduce
   efficiency of data storage
 
 ## 2. Data flow
@@ -96,18 +96,18 @@ curl \
 
 ## 3. Proposal
 
-### 3.1. Shard Container Registry separately to Pods architecture
+### 3.1. Shard Container Registry separately to Cells architecture
 
 Due to it's architecture it extensive architecture and in general highly scalable
 horizontal architecture it should be evaluated if the GitLab Container Registry
-should be run not in Pod, but in a Cluster and be scaled independently.
+should be run not in Cell, but in a Cluster and be scaled independently.
 
 This might be easier, but would definitely not offer the same amount of data isolation.
 
-### 3.2. Run Container Registry within a Pod
+### 3.2. Run Container Registry within a Cell
 
 It appears that except `/jwt/auth` which would likely have to be processed by Router
-(to decode `scope`) the container registry could be run as a local service of a Pod.
+(to decode `scope`) the container registry could be run as a local service of a Cell.
 
 The actual data at least in case of GitLab.com is not forwarded via registry,
 but rather served directly from Object Storage / CDN.
@@ -116,12 +116,12 @@ Its design encodes container repository image in a URL that is easily routable.
 It appears that we could re-use the same stateless Router service in front of Container Registry
 to serve manifests and blobs redirect.
 
-The only downside is increased complexity of managing standalone registry for each Pod,
+The only downside is increased complexity of managing standalone registry for each Cell,
 but this might be desired approach.
 
 ## 4. Evaluation
 
-There do not seem any theoretical problems with running GitLab Container Registry in a Pod.
+There do not seem any theoretical problems with running GitLab Container Registry in a Cell.
 Service seems that can be easily made routable to work well.
 
 The practical complexities are around managing complex service from infrastructure side.

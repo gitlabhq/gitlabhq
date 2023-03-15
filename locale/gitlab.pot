@@ -1944,6 +1944,9 @@ msgstr ""
 msgid "APIFuzzing|folder/openapi.json"
 msgstr ""
 
+msgid "AWS"
+msgstr ""
+
 msgid "AWS Access Key"
 msgstr ""
 
@@ -25739,6 +25742,9 @@ msgstr ""
 msgid "Link copied"
 msgstr ""
 
+msgid "Link copied to clipboard."
+msgstr ""
+
 msgid "Link does not exist"
 msgstr ""
 
@@ -34339,6 +34345,12 @@ msgid "ProjectSettings|This setting is applied on the server level but has been 
 msgstr ""
 
 msgid "ProjectSettings|This setting will be applied to all projects unless overridden by an admin."
+msgstr ""
+
+msgid "ProjectSettings|Topics"
+msgstr ""
+
+msgid "ProjectSettings|Topics are publicly visible even on private projects. Do not include sensitive information in topic names. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "ProjectSettings|Transfer project"

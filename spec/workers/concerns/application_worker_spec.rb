@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationWorker do
+RSpec.describe ApplicationWorker, feature_category: :shared do
   # We depend on the lazy-load characteristic of rspec. If the worker is loaded
   # before setting up, it's likely to go wrong. Consider this catcha:
   # before do

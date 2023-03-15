@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PropagateIntegrationGroupWorker do
+RSpec.describe PropagateIntegrationGroupWorker, feature_category: :integrations do
   describe '#perform' do
     let_it_be(:group) { create(:group) }
     let_it_be(:another_group) { create(:group) }

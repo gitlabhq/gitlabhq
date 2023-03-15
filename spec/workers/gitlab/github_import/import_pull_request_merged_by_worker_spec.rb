@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::ImportPullRequestMergedByWorker do
+RSpec.describe Gitlab::GithubImport::ImportPullRequestMergedByWorker, feature_category: :importers do
   it { is_expected.to include_module(Gitlab::GithubImport::ObjectImporter) }
 
   describe '#representation_class' do

@@ -11,6 +11,7 @@ module Sidebars
           add_item(kubernetes_menu_item)
           add_item(terraform_menu_item)
           add_item(google_cloud_menu_item)
+          add_item(aws_menu_item)
 
           true
         end
@@ -83,6 +84,24 @@ module Sidebars
             super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
             active_routes: { controller: :terraform },
             item_id: :terraform
+          )
+        end
+
+        def aws_menu_item
+          enabled_for_user = Feature.enabled?(:cloudseed_aws, context.current_user)
+          enabled_for_group = Feature.enabled?(:cloudseed_aws, context.project.group)
+          enabled_for_project = Feature.enabled?(:cloudseed_aws, context.project)
+          feature_is_enabled = enabled_for_user || enabled_for_group || enabled_for_project
+          user_has_permissions = can?(context.current_user, :admin_project_aws, context.project)
+
+          return ::Sidebars::NilMenuItem.new(item_id: :cloudseed_aws) unless feature_is_enabled && user_has_permissions
+
+          ::Sidebars::MenuItem.new(
+            title: _('AWS'),
+            link: '#',
+            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
+            item_id: :aws,
+            active_routes: { controller: '' }
           )
         end
 

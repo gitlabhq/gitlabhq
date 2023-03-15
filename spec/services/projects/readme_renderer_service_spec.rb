@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ReadmeRendererService, '#execute' do
+RSpec.describe Projects::ReadmeRendererService, '#execute', feature_category: :projects do
   using RSpec::Parameterized::TableSyntax
 
   subject(:service) { described_class.new(project, nil, opts) }

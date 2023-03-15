@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SystemNotes::BaseService do
+RSpec.describe SystemNotes::BaseService, feature_category: :projects do
   let(:noteable) { double }
   let(:project) { double }
   let(:author) { double }

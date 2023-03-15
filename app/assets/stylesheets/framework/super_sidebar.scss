@@ -36,6 +36,10 @@
   width: $super-sidebar-width;
   z-index: $super-sidebar-z-index;
 
+  &:focus {
+    @include gl-focus;
+  }
+
   &.super-sidebar-loading {
     transform: translate3d(-100%, 0, 0);
 

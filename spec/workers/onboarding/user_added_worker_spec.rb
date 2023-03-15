@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Onboarding::UserAddedWorker, '#perform' do
+RSpec.describe Onboarding::UserAddedWorker, '#perform', feature_category: :onboarding do
   let_it_be(:namespace) { create(:group) }
 
   subject { described_class.new.perform(namespace.id) }

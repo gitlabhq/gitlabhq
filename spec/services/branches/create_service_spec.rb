@@ -108,7 +108,7 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching, feature_
 
         control = RedisCommands::Recorder.new(pattern: ':branch_names:') { subject }
 
-        expect(control.by_command(:sadd).count).to eq(1)
+        expect(control).not_to exceed_redis_command_calls_limit(:sadd, 1)
       end
     end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::RecordTargetPlatformsService, '#execute' do
+RSpec.describe Projects::RecordTargetPlatformsService, '#execute', feature_category: :projects do
   let_it_be(:project) { create(:project) }
 
   let(:detector_service) { Projects::AppleTargetPlatformDetectorService }

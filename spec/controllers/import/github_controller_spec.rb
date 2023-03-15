@@ -139,7 +139,7 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         expect_next_instance_of(Gitlab::GithubImport::Clients::Proxy) do |client|
           expect(client).to receive(:repos)
             .with(expected_filter, expected_options)
-            .and_return({ repos: [], page_info: {} })
+            .and_return({ repos: [], page_info: {}, count: 0 })
         end
 
         get :status, params: params, format: :json
@@ -149,6 +149,7 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         expect(json_response['provider_repos'].size).to eq 0
         expect(json_response['incompatible_repos'].size).to eq 0
         expect(json_response['page_info']).to eq({})
+        expect(json_response['provider_repo_count']).to eq(0)
       end
     end
 
@@ -475,6 +476,28 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         expect(json_response).to eq([])
         expect(other_user_project.import_status).to eq('started')
       end
+    end
+  end
+
+  describe 'GET counts' do
+    let(:expected_result) do
+      {
+        'owned' => 3,
+        'collaborated' => 2,
+        'organization' => 1
+      }
+    end
+
+    it 'returns repos count by type' do
+      expect_next_instance_of(Gitlab::GithubImport::Clients::Proxy) do |client_proxy|
+        expect(client_proxy).to receive(:count_repos_by).with('owned', user.id).and_return(3)
+        expect(client_proxy).to receive(:count_repos_by).with('collaborated', user.id).and_return(2)
+        expect(client_proxy).to receive(:count_repos_by).with('organization', user.id).and_return(1)
+      end
+
+      get :counts
+
+      expect(json_response).to eq(expected_result)
     end
   end
 end

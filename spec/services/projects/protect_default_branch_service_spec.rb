@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ProtectDefaultBranchService do
+RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_code_management do
   let(:service) { described_class.new(project) }
   let(:project) { create(:project) }
 

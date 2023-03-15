@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectCacheWorker do
+RSpec.describe ProjectCacheWorker, feature_category: :source_code_management do
   include ExclusiveLeaseHelpers
 
   let_it_be(:project) { create(:project, :repository) }

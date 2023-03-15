@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::TransferService do
+RSpec.describe Projects::TransferService, feature_category: :projects do
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
   let_it_be(:group_integration) { create(:integrations_slack, :group, group: group, webhook: 'http://group.slack.com') }

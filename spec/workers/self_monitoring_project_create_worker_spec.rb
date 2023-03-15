@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SelfMonitoringProjectCreateWorker do
+RSpec.describe SelfMonitoringProjectCreateWorker, feature_category: :projects do
   describe '#perform' do
     let(:service_class) { Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService }
     let(:service) { instance_double(service_class) }

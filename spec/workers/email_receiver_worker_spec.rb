@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe EmailReceiverWorker, :mailer do
+RSpec.describe EmailReceiverWorker, :mailer, feature_category: :team_planning do
   let(:raw_message) { fixture_file('emails/valid_reply.eml') }
 
   context "when reply by email is enabled" do

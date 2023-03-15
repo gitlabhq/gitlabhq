@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespaces::InProductMarketingEmailsWorker, '#perform', unless: Gitlab.ee? do
+RSpec.describe Namespaces::InProductMarketingEmailsWorker, '#perform', unless: Gitlab.ee?, feature_category: :experimentation_activation do
   # Running this in EE would call the overridden method, which can't be tested in CE.
   # The EE code is covered in a separate EE spec.
 

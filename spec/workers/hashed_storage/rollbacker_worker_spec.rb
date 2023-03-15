@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe HashedStorage::RollbackerWorker do
+RSpec.describe HashedStorage::RollbackerWorker, feature_category: :source_code_management do
   subject(:worker) { described_class.new }
 
   let(:projects) { create_list(:project, 2, :empty_repo) }

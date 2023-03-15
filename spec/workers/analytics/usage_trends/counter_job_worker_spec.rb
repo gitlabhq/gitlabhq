@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Analytics::UsageTrends::CounterJobWorker do
+RSpec.describe Analytics::UsageTrends::CounterJobWorker, feature_category: :devops_reports do
   let_it_be(:user_1) { create(:user) }
   let_it_be(:user_2) { create(:user) }
 

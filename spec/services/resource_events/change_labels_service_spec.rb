@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 # feature category is shared among plan(issues, epics), monitor(incidents), create(merge request) stages
-RSpec.describe ResourceEvents::ChangeLabelsService, feature_category: :shared do
+RSpec.describe ResourceEvents::ChangeLabelsService, feature_category: :team_planning do
   let_it_be(:project) { create(:project) }
   let_it_be(:author)  { create(:user) }
   let_it_be(:issue) { create(:issue, project: project) }

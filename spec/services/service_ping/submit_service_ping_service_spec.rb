@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ServicePing::SubmitService do
+RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
   include StubRequests
   include UsageDataHelpers
 

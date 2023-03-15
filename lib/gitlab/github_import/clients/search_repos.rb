@@ -5,15 +5,23 @@ module Gitlab
     module Clients
       module SearchRepos
         def search_repos_by_name_graphql(name, options = {})
-          with_retry do
-            octokit.post(
-              '/graphql',
-              { query: graphql_search_repos_body(name, options) }.to_json
-            ).to_h
-          end
+          graphql_request(graphql_search_repos_body(name, options))
+        end
+
+        def count_repos_by_relation_type_graphql(options)
+          graphql_request(count_by_relation_type_query(options))
         end
 
         private
+
+        def graphql_request(query)
+          with_retry do
+            octokit.post(
+              '/graphql',
+              { query: query }.to_json
+            ).to_h
+          end
+        end
 
         def graphql_search_repos_body(name, options)
           query = search_repos_query(name, options)
@@ -37,7 +45,8 @@ module Gitlab
                       endCursor
                       hasNextPage
                       hasPreviousPage
-                  }
+                  },
+                  repositoryCount
               }
           }
           TEXT
@@ -56,7 +65,11 @@ module Gitlab
         end
 
         def organization_repos_query(search_string, options)
-          "#{search_string} org:#{options[:organization_login]}"
+          if options[:organization_login].present?
+            "#{search_string} org:#{options[:organization_login]}"
+          else
+            organizations_subquery
+          end
         end
 
         def collaborated_repos_query(search_string)
@@ -86,6 +99,18 @@ module Gitlab
           each_object(:organizations)
             .map { |org| "org:#{org[:login]}" }
             .join(' ')
+        end
+
+        def count_by_relation_type_query(options)
+          query = search_repos_query(nil, options)
+          query = "query: \"#{query}\""
+          <<-TEXT
+          {
+            search(type: REPOSITORY, #{query}) {
+              repositoryCount
+            }
+          }
+          TEXT
         end
       end
     end

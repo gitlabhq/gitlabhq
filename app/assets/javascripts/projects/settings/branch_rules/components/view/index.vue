@@ -123,7 +123,7 @@ export default {
         : this.$options.i18n.branchNameOrPattern;
     },
     matchingBranchesLinkHref() {
-      return mergeUrlParams({ state: 'all', search: this.branch }, this.branchesPath);
+      return mergeUrlParams({ state: 'all', search: `^${this.branch}$` }, this.branchesPath);
     },
     matchingBranchesLinkTitle() {
       const total = this.matchingBranchesCount;

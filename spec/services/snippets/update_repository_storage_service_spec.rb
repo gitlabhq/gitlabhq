@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Snippets::UpdateRepositoryStorageService do
+RSpec.describe Snippets::UpdateRepositoryStorageService, feature_category: :source_code_management do
   subject { described_class.new(repository_storage_move) }
 
   describe "#execute" do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::UpdateTwoFactorRequirementForMembersWorker do
+RSpec.describe Groups::UpdateTwoFactorRequirementForMembersWorker, feature_category: :system_access do
   let_it_be(:group) { create(:group) }
 
   let(:worker) { described_class.new }

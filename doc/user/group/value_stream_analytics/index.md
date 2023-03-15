@@ -7,7 +7,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Value stream analytics for groups **(PREMIUM)**
 
-Value stream analytics provides metrics about each stage of your software development process.
+Value stream analytics measures the time it takes to go from an idea to production. It also helps businesses:
+
+- Visualize their end-to-end DevSecOps workstreams.
+- Identify and solve inefficiencies.
+- Optimize their workstreams to deliver more value, faster.
 
 A **value stream** is the entire work process that delivers value to customers. For example,
 the [DevOps lifecycle](https://about.gitlab.com/stages-devops-lifecycle/) is a value stream that starts
