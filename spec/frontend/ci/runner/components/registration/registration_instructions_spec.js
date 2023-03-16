@@ -16,12 +16,9 @@ import {
 } from '~/ci/runner/constants';
 import { runnerForRegistration } from '../../mock_data';
 
-const AUTH_TOKEN = 'AUTH_TOKEN';
+const MOCK_TOKEN = 'MOCK_TOKEN';
 
-const mockRunner = {
-  ...runnerForRegistration.data.runner,
-  ephemeralAuthenticationToken: AUTH_TOKEN,
-};
+const mockRunner = runnerForRegistration.data.runner;
 
 describe('RegistrationInstructions', () => {
   let wrapper;
@@ -34,6 +31,7 @@ describe('RegistrationInstructions', () => {
     wrapper = shallowMountExtended(RegistrationInstructions, {
       propsData: {
         runner: mockRunner,
+        token: MOCK_TOKEN,
         platform: DEFAULT_PLATFORM,
         ...props,
       },
@@ -94,13 +92,13 @@ describe('RegistrationInstructions', () => {
       command: [
         'gitlab-runner register',
         `  --url ${TEST_HOST}`,
-        `  --registration-token ${AUTH_TOKEN}`,
+        `  --registration-token ${MOCK_TOKEN}`,
         `  --description '${mockRunner.description}'`,
       ],
       prompt: '$',
     });
-    expect(step1.find('code').text()).toBe(AUTH_TOKEN);
-    expect(step1.findComponent(ClipboardButton).props('text')).toBe(AUTH_TOKEN);
+    expect(step1.find('[data-testid="runner-token"]').text()).toBe(MOCK_TOKEN);
+    expect(step1.findComponent(ClipboardButton).props('text')).toBe(MOCK_TOKEN);
   });
 
   it('renders step 1 in loading state', () => {
@@ -112,6 +110,25 @@ describe('RegistrationInstructions', () => {
 
     expect(step1.findComponent(GlSkeletonLoader).exists()).toBe(true);
     expect(step1.find('code').exists()).toBe(false);
+    expect(step1.findComponent(ClipboardButton).exists()).toBe(false);
+  });
+
+  it('render step 1 after token is not visible', () => {
+    createComponent({
+      token: undefined,
+    });
+
+    const step1 = findStepAt(0);
+
+    expect(step1.findComponent(CliCommand).props()).toEqual({
+      command: [
+        'gitlab-runner register',
+        `  --url ${TEST_HOST}`,
+        `  --description '${mockRunner.description}'`,
+      ],
+      prompt: '$',
+    });
+    expect(step1.find('[data-testid="runner-token"]').exists()).toBe(false);
     expect(step1.findComponent(ClipboardButton).exists()).toBe(false);
   });
 

@@ -27,7 +27,7 @@ module ResourceAccessTokens
 
       unless member.persisted?
         delete_failed_user(user)
-        return error("Could not provision #{Gitlab::Access.human_access(access_level).downcase} access to project access token")
+        return error("Could not provision #{Gitlab::Access.human_access(access_level.to_i).downcase} access to the access token. ERROR: #{member.errors.full_messages.to_sentence}")
       end
 
       token_response = create_personal_access_token(user)

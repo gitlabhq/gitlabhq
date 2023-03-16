@@ -13775,7 +13775,7 @@ CREATE TABLE ci_runners (
     maximum_timeout integer,
     runner_type smallint NOT NULL,
     token_encrypted character varying,
-    public_projects_minutes_cost_factor double precision DEFAULT 0.0 NOT NULL,
+    public_projects_minutes_cost_factor double precision DEFAULT 1.0 NOT NULL,
     private_projects_minutes_cost_factor double precision DEFAULT 1.0 NOT NULL,
     config jsonb DEFAULT '{}'::jsonb NOT NULL,
     executor_type smallint,

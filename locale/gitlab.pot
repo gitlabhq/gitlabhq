@@ -4768,6 +4768,9 @@ msgstr ""
 msgid "Analytics|Code"
 msgstr ""
 
+msgid "Analytics|Column Chart"
+msgstr ""
+
 msgid "Analytics|Configure Dashboard Project"
 msgstr ""
 
@@ -14984,6 +14987,9 @@ msgid "Diffs|Something went wrong while fetching diff lines."
 msgstr ""
 
 msgid "Diffs|with %{additions} and %{deletions}"
+msgstr ""
+
+msgid "Dimension"
 msgstr ""
 
 msgid "Direct member"
@@ -37816,7 +37822,10 @@ msgstr ""
 msgid "Runners|Tags control which type of jobs a runner can handle. By tagging a runner, you make sure shared runners only handle the jobs they are equipped to run."
 msgstr ""
 
-msgid "Runners|The %{boldStart}runner token%{boldEnd} %{token} displays %{boldStart}only for a short time%{boldEnd}, and is stored in the %{codeStart}config.toml%{codeEnd} after you create the runner. It will not be visible once the runner is registered."
+msgid "Runners|The %{boldStart}runner token%{boldEnd} %{token} displays %{boldStart}only for a short time%{boldEnd}, and is stored in the %{codeStart}config.toml%{codeEnd} after you register the runner. It will not be visible once the runner is registered."
+msgstr ""
+
+msgid "Runners|The %{boldStart}runner token%{boldEnd} is no longer visible, it is stored in the %{codeStart}config.toml%{codeEnd} if you have registered the runner."
 msgstr ""
 
 msgid "Runners|The project, group or instance where the runner was registered. Instance runners are always owned by Administrator."

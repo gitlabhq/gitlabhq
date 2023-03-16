@@ -59,8 +59,29 @@ RSpec.describe Gitlab::Ci::Badge::Release::Template do
   end
 
   describe '#value_width' do
-    it 'has a fixed value width' do
+    it 'returns the default value width' do
       expect(template.value_width).to eq 54
+    end
+
+    it 'returns custom value width' do
+      value_width = 100
+      badge = Gitlab::Ci::Badge::Release::LatestRelease.new(project, user, opts: { value_width: value_width })
+
+      expect(described_class.new(badge).value_width).to eq value_width
+    end
+
+    it 'returns VALUE_WIDTH_DEFAULT if the custom value_width supplied is greater than permissible limit' do
+      value_width = 250
+      badge = Gitlab::Ci::Badge::Release::LatestRelease.new(project, user, opts: { value_width: value_width })
+
+      expect(described_class.new(badge).value_width).to eq 54
+    end
+
+    it 'returns VALUE_WIDTH_DEFAULT if value_width is not a number' do
+      value_width = "string"
+      badge = Gitlab::Ci::Badge::Release::LatestRelease.new(project, user, opts: { value_width: value_width })
+
+      expect(described_class.new(badge).value_width).to eq 54
     end
   end
 

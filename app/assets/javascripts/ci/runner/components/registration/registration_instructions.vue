@@ -27,6 +27,11 @@ export default {
       required: false,
       default: null,
     },
+    token: {
+      type: String,
+      required: false,
+      default: null,
+    },
     platform: {
       type: String,
       required: true,
@@ -53,11 +58,18 @@ export default {
       }
       return s__('Runners|Register runner');
     },
-    token() {
-      return this.runner?.ephemeralAuthenticationToken;
-    },
     status() {
       return this.runner?.status;
+    },
+    tokenMessage() {
+      if (this.token) {
+        return s__(
+          'Runners|The %{boldStart}runner token%{boldEnd} %{token} displays %{boldStart}only for a short time%{boldEnd}, and is stored in the %{codeStart}config.toml%{codeEnd} after you register the runner. It will not be visible once the runner is registered.',
+        );
+      }
+      return s__(
+        'Runners|The %{boldStart}runner token%{boldEnd} is no longer visible, it is stored in the %{codeStart}config.toml%{codeEnd} if you have registered the runner.',
+      );
     },
     commandPrompt() {
       return commandPrompt({ platform: this.platform });
@@ -116,15 +128,9 @@ export default {
         <cli-command :prompt="commandPrompt" :command="registerCommand" />
         <p>
           <gl-icon name="information-o" class="gl-text-blue-600!" />
-          <gl-sprintf
-            :message="
-              s__(
-                'Runners|The %{boldStart}runner token%{boldEnd} %{token} displays %{boldStart}only for a short time%{boldEnd}, and is stored in the %{codeStart}config.toml%{codeEnd} after you create the runner. It will not be visible once the runner is registered.',
-              )
-            "
-          >
+          <gl-sprintf :message="tokenMessage">
             <template #token>
-              <code>{{ token }}</code>
+              <code data-testid="runner-token">{{ token }}</code>
               <clipboard-button
                 :text="token"
                 :title="__('Copy')"

@@ -185,7 +185,7 @@ RSpec.describe Users::CalloutsHelper do
     end
   end
 
-  describe '#web_hook_disabled_dismissed?' do
+  describe '#web_hook_disabled_dismissed?', feature_category: :integrations do
     context 'without a project' do
       it 'is false' do
         expect(helper).not_to be_web_hook_disabled_dismissed(nil)
@@ -194,50 +194,12 @@ RSpec.describe Users::CalloutsHelper do
 
     context 'with a project' do
       let_it_be(:project) { create(:project) }
+      let(:factory) { :project_callout }
+      let(:container_key) { :project }
+      let(:container) { project }
+      let(:key) { "web_hooks:last_failure:project-#{project.id}" }
 
-      context 'the web-hook failure callout has never been dismissed' do
-        it 'is false' do
-          expect(helper).not_to be_web_hook_disabled_dismissed(project)
-        end
-      end
-
-      context 'the web-hook failure callout has been dismissed', :freeze_time do
-        before do
-          create(:project_callout,
-                 feature_name: described_class::WEB_HOOK_DISABLED,
-                 user: user,
-                 project: project,
-                 dismissed_at: 1.week.ago)
-        end
-
-        it 'is true' do
-          expect(helper).to be_web_hook_disabled_dismissed(project)
-        end
-
-        context 'when there was an older failure', :clean_gitlab_redis_shared_state do
-          let(:key) { "web_hooks:last_failure:project-#{project.id}" }
-
-          before do
-            Gitlab::Redis::SharedState.with { |r| r.set(key, 1.month.ago.iso8601) }
-          end
-
-          it 'is true' do
-            expect(helper).to be_web_hook_disabled_dismissed(project)
-          end
-        end
-
-        context 'when there has been a more recent failure', :clean_gitlab_redis_shared_state do
-          let(:key) { "web_hooks:last_failure:project-#{project.id}" }
-
-          before do
-            Gitlab::Redis::SharedState.with { |r| r.set(key, 1.day.ago.iso8601) }
-          end
-
-          it 'is false' do
-            expect(helper).not_to be_web_hook_disabled_dismissed(project)
-          end
-        end
-      end
+      include_examples 'CalloutsHelper#web_hook_disabled_dismissed shared examples'
     end
   end
 end

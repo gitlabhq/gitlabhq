@@ -403,8 +403,6 @@ The `id` should not collide with any other analyzers or scanners another integra
 
 ##### Scan Primary Identifiers
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `sec_mark_dropped_findings_as_resolved`. Disabled by default.
-
 The `scan.primary_identifiers` field is an optional field containing an array of
 [primary identifiers](../../user/application_security/terminology/index.md#primary-identifier)).
 This is an exhaustive list of all rulesets for which the analyzer performed the scan.
@@ -413,7 +411,7 @@ Even when the [`Vulnerabilities`](#vulnerabilities) array for a given scan may b
 should contain the complete list of potential identifiers to inform the Rails application of which
 rules were executed.
 
-When populated, the Rails application automatically resolves previously detected vulnerabilities as no
+When populated, the Rails application [may automatically resolve previously detected vulnerabilities](../../user/application_security/iac_scanning/index.md#automatic-vulnerability-resolution) as no
 longer relevant when their primary identifier is not included.
 
 ##### Name, message, and description

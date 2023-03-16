@@ -127,9 +127,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
           end
         end
 
-        context 'when user specifies an access level' do
-          let_it_be(:params) { { access_level: Gitlab::Access::DEVELOPER } }
-
+        shared_examples 'bot with access level' do
           it 'adds the bot user with the specified access level in the resource' do
             response = subject
             access_token = response.payload[:access_token]
@@ -137,6 +135,18 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
 
             expect(resource.members.developers.map(&:user_id)).to include(bot_user.id)
           end
+        end
+
+        context 'when user specifies an access level' do
+          let_it_be(:params) { { access_level: Gitlab::Access::DEVELOPER } }
+
+          it_behaves_like 'bot with access level'
+        end
+
+        context 'with DEVELOPER access_level, in string format' do
+          let_it_be(:params) { { access_level: Gitlab::Access::DEVELOPER.to_s } }
+
+          it_behaves_like 'bot with access level'
         end
 
         context 'when user is external' do
@@ -227,17 +237,31 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
           let_it_be(:bot_user) { create(:user, :project_bot) }
 
           let(:unpersisted_member) { build(:project_member, source: resource, user: bot_user) }
-          let(:error_message) { 'Could not provision maintainer access to project access token' }
+          let(:error_message) { 'Could not provision maintainer access to the access token. ERROR: error message' }
 
           before do
             allow_next_instance_of(ResourceAccessTokens::CreateService) do |service|
               allow(service).to receive(:create_user).and_return(bot_user)
               allow(service).to receive(:create_membership).and_return(unpersisted_member)
             end
+
+            allow(unpersisted_member).to receive_message_chain(:errors, :full_messages, :to_sentence)
+              .and_return('error message')
           end
 
-          it_behaves_like 'token creation fails'
-          it_behaves_like 'correct error message'
+          context 'with MAINTAINER access_level, in integer format' do
+            let_it_be(:params) { { access_level: Gitlab::Access::MAINTAINER } }
+
+            it_behaves_like 'token creation fails'
+            it_behaves_like 'correct error message'
+          end
+
+          context 'with MAINTAINER access_level, in string format' do
+            let_it_be(:params) { { access_level: Gitlab::Access::MAINTAINER.to_s } }
+
+            it_behaves_like 'token creation fails'
+            it_behaves_like 'correct error message'
+          end
         end
       end
 

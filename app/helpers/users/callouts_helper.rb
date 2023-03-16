@@ -61,7 +61,7 @@ module Users
     end
 
     def web_hook_disabled_dismissed?(object)
-      return false unless object.class < WebHooks::HasWebHooks
+      return false unless object.is_a?(::WebHooks::HasWebHooks)
 
       user_dismissed?(WEB_HOOK_DISABLED, object.last_webhook_failure, object: object)
     end

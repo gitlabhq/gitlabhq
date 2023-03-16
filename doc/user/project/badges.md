@@ -117,6 +117,10 @@ time with the `?order_by` query parameter.
 https://gitlab.example.com/<namespace>/<project>/-/badges/release.svg?order_by=release_at
 ```
 
+You can change the width of the release name field by using the `value_width` parameter ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113615) in GitLab 15.10).
+The value must be between 1 and 200, and the default value is 54.
+If you set an out of range value, GitLab automatically adjusts it to the default value.
+
 ## Project badges
 
 Badges can be added to a project by Maintainers or Owners, and are visible on the project's overview page.

@@ -17,11 +17,17 @@ merge request, authored by the user who suggested the changes.
 
 ## Create suggestions
 
-1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Merge requests** and find your merge request.
 1. On the secondary menu, select **Changes**.
-1. Find the line of code you want to change. Hover over the line number, and
-   select **Add a comment to this line** (**{comment}**).
+1. Find the lines of code you want to change.
+   - To select a single line:
+     - Hover over the line number, and
+       select **Add a comment to this line** (**{comment}**).
+   - To select multiple lines:
+     1. Hover over the line number, and select **Add a comment to this line** (**{comment}**).
+     1. Select and drag your selection until all desired lines are included. To
+        learn more, see [Multi-line suggestions](#multi-line-suggestions).
 1. In the comment toolbar, select **Insert suggestion** (**{doc-code}**). GitLab
    inserts a pre-populated code block into your comment, like this:
 
@@ -35,27 +41,7 @@ merge request, authored by the user who suggested the changes.
 1. Select either **Start a review** or **Add to review** to add your comment to a
    [review](index.md), or **Add comment now** to add the comment to the thread immediately.
 
-## Apply suggestions
-
-The merge request author can apply suggested changes directly from the merge request:
-
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Merge requests** and find your merge request.
-1. Find the comment containing the suggestion you want to apply.
-   - To apply suggestions individually, select **Apply suggestion**.
-   - To apply multiple suggestions in a single commit, select **Add suggestion to batch**.
-1. Optional. Provide a custom commit message to describe your change. If you don't provide a custom message, the default commit message is used.
-1. Select **Apply**.
-
-After a suggestion is applied:
-
-- The suggestion is marked as **Applied**.
-- The comment thread is resolved.
-- GitLab creates a new commit with the changes.
-- If the user has the Developer role, GitLab pushes
-  the suggested change directly into the codebase in the merge request's branch.
-
-## Multi-line suggestions
+### Multi-line suggestions
 
 > [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/232339) in GitLab 13.11: suggestions in multi-line comments also become multi-line.
 
@@ -78,7 +64,27 @@ Suggestions for multiple lines are limited to 100 lines _above_ and 100
 lines _below_ the commented diff line. This allows for up to 200 changed lines per
 suggestion.
 
-## Code block nested in suggestions
+## Apply suggestions
+
+The merge request author can apply suggested changes directly from the merge request:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Merge requests** and find your merge request.
+1. Find the comment containing the suggestion you want to apply.
+   - To apply suggestions individually, select **Apply suggestion**.
+   - To apply multiple suggestions in a single commit, select **Add suggestion to batch**.
+1. Optional. Provide a custom commit message to describe your change. If you don't provide a custom message, the default commit message is used.
+1. Select **Apply**.
+
+After a suggestion is applied:
+
+- The suggestion is marked as **Applied**.
+- The comment thread is resolved.
+- GitLab creates a new commit with the changes.
+- If the user has the Developer role, GitLab pushes
+  the suggested change directly into the codebase in the merge request's branch.
+
+## Nest code blocks in suggestions
 
 To add a suggestion that includes a
 [fenced code block](../../../markdown.md#code-spans-and-blocks), wrap your suggestion
@@ -96,46 +102,44 @@ git config --global receive.advertisepushoptions true
 
 ## Configure the commit message for applied suggestions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13086) in GitLab 12.7.
+GitLab uses a default commit message when applying suggestions. This message
+supports placeholders, and can be changed. For example, the default message
+`Apply %{suggestions_count} suggestion(s) to %{files_count} file(s)` renders
+like this if you apply three suggestions to two different files:
 
-GitLab uses a default commit message
-when applying suggestions: `Apply %{suggestions_count} suggestion(s) to %{files_count} file(s)`
+```plaintext
+Apply 3 suggestion(s) to 2 file(s)
+```
 
-<!-- vale gitlab.BadPlurals = NO -->
+Merge requests created from forks use the template defined in the target project.
 
-For example, consider that a user applied 3 suggestions to 2 different files, the
-default commit message is: **Apply 3 suggestion(s) to 2 file(s)**
+To meet your project's needs, you can customize these messages and include other
+placeholder variables:
 
-<!-- vale gitlab.BadPlurals = YES -->
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Merge requests**.
+1. Scroll to **Merge suggestions**, and alter the text to meet your needs.
+   See [Supported variables](#supported-variables) for a list of placeholders
+   you can use in this message.
 
-These commit messages can be customized to follow any guidelines you might have.
-To do so, expand the **Merge requests** tab within your project's **General**
-settings and change the **Merge suggestions** text:
+### Supported variables
 
-![Custom commit message for applied suggestions](img/suggestions_custom_commit_messages_v14_7.png)
-
-You can also use following variables besides static text:
+The template for commit messages for applied suggestions supports these variables:
 
 | Variable               | Description | Output example |
 |------------------------|-------------|----------------|
 | `%{branch_name}`       | The name of the branch to which suggestions were applied. | `my-feature-branch` |
-| `%{files_count}`       | The number of files to which suggestions were applied.| **2** |
+| `%{files_count}`       | The number of files to which suggestions were applied.| `2` |
 | `%{file_paths}`        | The paths of the file to which suggestions were applied. Paths are separated by commas.| `docs/index.md, docs/about.md` |
 | `%{project_path}`      | The project path. | `my-group/my-project` |
-| `%{project_name}`      | The human-readable name of the project. | **My Project** |
-| `%{suggestions_count}` | The number of suggestions applied.| **3** |
+| `%{project_name}`      | The human-readable name of the project. | `My Project` |
+| `%{suggestions_count}` | The number of suggestions applied.| `3` |
 | `%{username}`          | The username of the user applying suggestions. | `user_1` |
-| `%{user_full_name}`    | The full name of the user applying suggestions. | **User 1** |
+| `%{user_full_name}`    | The full name of the user applying suggestions. | `User 1` |
 
 For example, to customize the commit message to output
-**Addresses user_1's review**, set the custom text to
+`Addresses user_1's review`, set the custom text to
 `Addresses %{username}'s review`.
-
-For merge requests created from forks, GitLab uses the template defined in target project.
-
-NOTE:
-Custom commit messages for each applied suggestion is
-introduced by [#25381](https://gitlab.com/gitlab-org/gitlab/-/issues/25381).
 
 ## Batch suggestions
 

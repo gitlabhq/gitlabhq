@@ -23,7 +23,16 @@ import RegistrationInstructions from '~/ci/runner/components/registration/regist
 import PlatformsDrawer from '~/ci/runner/components/registration/platforms_drawer.vue';
 import { runnerForRegistration } from '../mock_data';
 
-const mockRunner = runnerForRegistration.data.runner;
+const MOCK_TOKEN = 'MOCK_TOKEN';
+
+const mockRunner = {
+  ...runnerForRegistration.data.runner,
+  ephemeralAuthenticationToken: MOCK_TOKEN,
+};
+const mockRunnerWithoutToken = {
+  ...runnerForRegistration.data.runner,
+  ephemeralAuthenticationToken: undefined,
+};
 const mockRunnerId = `${getIdFromGraphQLId(mockRunner.id)}`;
 const mockRunnersPath = '/admin/runners';
 
@@ -71,31 +80,34 @@ describe('AdminRegisterRunnerApp', () => {
       await waitForPromises();
     });
 
-    it('loads runner', () => {
-      expect(mockRunnerQuery).toHaveBeenCalledWith({ id: mockRunner.id });
-    });
+    describe('when runner token is available', () => {
+      it('loads runner', () => {
+        expect(mockRunnerQuery).toHaveBeenCalledWith({ id: mockRunner.id });
+      });
 
-    it('shows registration instructions', () => {
-      expect(findRegistrationInstructions().props()).toEqual({
-        loading: false,
-        platform: DEFAULT_PLATFORM,
-        runner: mockRunner,
+      it('shows registration instructions', () => {
+        expect(findRegistrationInstructions().props()).toEqual({
+          loading: false,
+          platform: DEFAULT_PLATFORM,
+          runner: mockRunnerWithoutToken,
+          token: MOCK_TOKEN,
+        });
+      });
+
+      it('configures platform drawer', () => {
+        expect(findPlatformsDrawer().props()).toEqual({
+          open: false,
+          platform: DEFAULT_PLATFORM,
+        });
+      });
+
+      it('shows runner list button', () => {
+        expect(findBtn().attributes('href')).toEqual(mockRunnersPath);
+        expect(findBtn().props('variant')).toEqual('confirm');
       });
     });
 
-    it('configures platform drawer', () => {
-      expect(findPlatformsDrawer().props()).toEqual({
-        open: false,
-        platform: DEFAULT_PLATFORM,
-      });
-    });
-
-    it('shows runner list button', () => {
-      expect(findBtn().attributes('href')).toEqual(mockRunnersPath);
-      expect(findBtn().props('variant')).toEqual('confirm');
-    });
-
-    describe('polling for changes in status', () => {
+    describe('polling for changes', () => {
       it('fetches data', () => {
         expect(mockRunnerQuery).toHaveBeenCalledTimes(1);
       });
@@ -120,6 +132,35 @@ describe('AdminRegisterRunnerApp', () => {
 
         await waitForPolling();
         expect(mockRunnerQuery).toHaveBeenCalledTimes(2);
+      });
+
+      it('when token is no longer visible in the API, it is still visible in the UI', async () => {
+        mockRunnerQuery.mockResolvedValue({
+          data: {
+            runner: mockRunnerWithoutToken,
+          },
+        });
+
+        await waitForPolling();
+
+        expect(findRegistrationInstructions().props('token')).toBe(MOCK_TOKEN);
+      });
+
+      it('when runner is not available (e.g. deleted), the UI does not update', async () => {
+        mockRunnerQuery.mockResolvedValue({
+          data: {
+            runner: null,
+          },
+        });
+
+        await waitForPolling();
+
+        expect(findRegistrationInstructions().props()).toEqual({
+          loading: false,
+          platform: DEFAULT_PLATFORM,
+          runner: mockRunnerWithoutToken,
+          token: MOCK_TOKEN,
+        });
       });
     });
   });
@@ -194,6 +235,7 @@ describe('AdminRegisterRunnerApp', () => {
       expect(findRegistrationInstructions().props()).toEqual({
         loading: true,
         runner: null,
+        token: null,
         platform: DEFAULT_PLATFORM,
       });
     });

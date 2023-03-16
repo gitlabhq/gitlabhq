@@ -98,6 +98,16 @@ RSpec.describe Projects::BadgesController do
         expect(response.body).to include('123')
       end
     end
+
+    if badge_type == :release
+      context 'when value_width param is used' do
+        it 'sets custom value width' do
+          get_badge(badge_type, value_width: '123')
+
+          expect(response.body).to include('123')
+        end
+      end
+    end
   end
 
   shared_examples 'a badge resource' do |badge_type|
@@ -186,7 +196,7 @@ RSpec.describe Projects::BadgesController do
       namespace_id: project.namespace.to_param,
       project_id: project,
       ref: pipeline.ref
-    }.merge(args.slice(:style, :key_text, :key_width, :ignore_skipped))
+    }.merge(args.slice(:style, :key_text, :key_width, :value_width, :ignore_skipped))
 
     get badge, params: params, format: :svg
   end

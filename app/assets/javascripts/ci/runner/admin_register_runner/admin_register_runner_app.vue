@@ -37,6 +37,7 @@ export default {
     return {
       platform: getParameterByName(PARAM_KEY_PLATFORM) || DEFAULT_PLATFORM,
       runner: null,
+      token: null,
       isDrawerOpen: false,
     };
   },
@@ -47,6 +48,17 @@ export default {
         return {
           id: convertToGraphQLId(TYPENAME_CI_RUNNER, this.runnerId),
         };
+      },
+      manual: true,
+      result({ data }) {
+        if (data?.runner) {
+          const { ephemeralAuthenticationToken, ...runner } = data.runner;
+          this.runner = runner;
+
+          // The token is available in the API for a limited amount of time
+          // preserve its original value if it is missing after polling.
+          this.token = ephemeralAuthenticationToken || this.token;
+        }
       },
       error(error) {
         createAlert({ message: I18N_FETCH_ERROR });
@@ -82,6 +94,7 @@ export default {
   <div>
     <registration-instructions
       :runner="runner"
+      :token="token"
       :platform="platform"
       :loading="$apollo.queries.runner.loading"
       @toggleDrawer="onToggleDrawer"
