@@ -4,7 +4,7 @@ import Vue from 'vue';
 import Api from '~/api';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
-import { TYPE_ISSUE } from '~/issues/constants';
+import { STATUS_CLOSED, STATUS_REOPENED, TYPE_ISSUE } from '~/issues/constants';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
@@ -406,7 +406,7 @@ export const emitStateChangedEvent = ({ getters }, data) => {
   const event = new CustomEvent(EVENT_ISSUABLE_VUE_APP_CHANGE, {
     detail: {
       data,
-      isClosed: getters.openState === constants.CLOSED,
+      isClosed: getters.openState === STATUS_CLOSED,
     },
   });
 
@@ -414,9 +414,9 @@ export const emitStateChangedEvent = ({ getters }, data) => {
 };
 
 export const toggleIssueLocalState = ({ commit }, newState) => {
-  if (newState === constants.CLOSED) {
+  if (newState === STATUS_CLOSED) {
     commit(types.CLOSE_ISSUE);
-  } else if (newState === constants.REOPENED) {
+  } else if (newState === STATUS_REOPENED) {
     commit(types.REOPEN_ISSUE);
   }
 };

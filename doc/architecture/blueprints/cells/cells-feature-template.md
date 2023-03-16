@@ -1,6 +1,6 @@
 ---
 stage: enablement
-group: cells
+group: Tenant Scale
 comments: false
 description: 'Cells: Problem A'
 ---

@@ -703,8 +703,10 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/cascading_settings.md @jglassman1
 /doc/development/chatops_on_gitlabcom.md @phillipwells
 /doc/development/cicd/ @marcel.amirault
+/doc/development/cicd/cicd_tables.md @drcatherinepope
 /doc/development/cicd/index.md @drcatherinepope
 /doc/development/code_intelligence/ @aqualls
+/doc/development/code_owners/ @aqualls
 /doc/development/contributing/ @sselhorn
 /doc/development/database/ @aqualls
 /doc/development/database/filtering_by_label.md @msedlakjakubowski
@@ -721,7 +723,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/fe_guide/graphql.md @sselhorn
 /doc/development/fe_guide/merge_request_widget_extensions.md @aqualls
 /doc/development/fe_guide/source_editor.md @aqualls
-/doc/development/fe_guide/view_component.md @rdickenson
+/doc/development/fe_guide/view_component.md @sselhorn
 /doc/development/feature_categorization/ @sselhorn
 /doc/development/feature_development.md @sselhorn
 /doc/development/feature_flags/ @sselhorn
@@ -752,8 +754,9 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/maintenance_mode.md @axil
 /doc/development/merge_request_concepts/ @aqualls
 /doc/development/migration_style_guide.md @aqualls
-/doc/development/navigation_sidebar.md @rdickenson
+/doc/development/navigation_sidebar.md @sselhorn
 /doc/development/omnibus.md @axil
+/doc/development/organization/ @lciutacu
 /doc/development/packages/ @marcel.amirault
 /doc/development/pages/ @ashrafkhamis
 /doc/development/permissions.md @jglassman1
@@ -776,7 +779,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/work_items.md @msedlakjakubowski
 /doc/development/work_items_widgets.md @msedlakjakubowski
 /doc/development/workhorse/ @aqualls
-/doc/development/workspace/ @sselhorn
 /doc/downgrade_ee_to_ce/ @axil
 /doc/drawers/ @ashrafkhamis
 /doc/gitlab-basics/ @aqualls
@@ -818,12 +820,12 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/subscriptions/gitlab_dedicated/ @drcatherinepope
 /doc/topics/authentication/ @jglassman1
 /doc/topics/autodevops/ @phillipwells
-/doc/topics/awesome_co.md @rdickenson
+/doc/topics/awesome_co.md @sselhorn
 /doc/topics/git/ @aqualls
 /doc/topics/gitlab_flow.md @aqualls
 /doc/topics/offline/ @axil
 /doc/topics/plan_and_track.md @msedlakjakubowski
-/doc/topics/your_work.md @rdickenson
+/doc/topics/your_work.md @sselhorn
 /doc/tutorials/ @kpaizee
 /doc/update/ @axil
 /doc/update/background_migrations.md @aqualls
@@ -905,12 +907,17 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/namespace/ @lciutacu
 /doc/user/okrs.md @msedlakjakubowski
 /doc/user/operations_dashboard/ @phillipwells
+/doc/user/organization/ @lciutacu
 /doc/user/packages/ @marcel.amirault
 /doc/user/permissions.md @jglassman1
 /doc/user/product_analytics/ @lciutacu
-/doc/user/profile/ @jglassman1
+/doc/user/profile/account/ @jglassman1
 /doc/user/profile/contributions_calendar.md @lciutacu
+/doc/user/profile/index.md @jglassman1
 /doc/user/profile/notifications.md @msedlakjakubowski
+/doc/user/profile/personal_access_tokens.md @jglassman1
+/doc/user/profile/saved_replies.md @aqualls
+/doc/user/profile/user_passwords.md @jglassman1
 /doc/user/project/autocomplete_characters.md @aqualls
 /doc/user/project/badges.md @lciutacu
 /doc/user/project/changelogs.md @aqualls
@@ -975,7 +982,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/tasks.md @msedlakjakubowski
 /doc/user/todos.md @msedlakjakubowski
 /doc/user/usage_quotas.md @fneill
-/doc/user/workspace/ @lciutacu
 # End rake-managed-docs-block
 
 [Authentication and Authorization]

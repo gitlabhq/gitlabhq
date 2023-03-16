@@ -1,7 +1,7 @@
-import { states } from './constants';
+import { STATUS_OPEN } from '~/issues/constants';
 
 export default () => ({
   isLoading: false,
   mergeRequests: [],
-  state: states.opened,
+  state: STATUS_OPEN,
 });

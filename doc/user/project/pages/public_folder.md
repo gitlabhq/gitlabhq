@@ -98,7 +98,7 @@ example:
 next export -o public
 ```
 
-### Nuxt.js
+## Nuxt.js
 
 NOTE:
 GitLab Pages supports only static sites.

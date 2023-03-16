@@ -177,9 +177,6 @@ export default {
         this.toggleResolvedStatus();
       }
     },
-    onCreateNoteError(err) {
-      this.$emit('create-note-error', err);
-    },
     hideForm() {
       this.isFormRendered = false;
     },
@@ -300,10 +297,10 @@ export default {
         :note="firstNote"
         :markdown-preview-path="markdownPreviewPath"
         :is-resolving="isResolving"
+        :is-discussion="true"
         :noteable-id="noteableId"
         :class="{ 'gl-bg-blue-50': isDiscussionActive }"
         @delete-note="showDeleteNoteConfirmationModal($event)"
-        @error="$emit('update-note-error', $event)"
       >
         <template v-if="isLoggedIn && discussion.resolvable" #resolve-discussion>
           <gl-button
@@ -345,9 +342,9 @@ export default {
         :markdown-preview-path="markdownPreviewPath"
         :is-resolving="isResolving"
         :noteable-id="noteableId"
+        :is-discussion="false"
         :class="{ 'gl-bg-blue-50': isDiscussionActive }"
         @delete-note="showDeleteNoteConfirmationModal($event)"
-        @error="$emit('update-note-error', $event)"
       />
       <li
         v-show="isReplyPlaceholderVisible"
@@ -370,8 +367,8 @@ export default {
             :markdown-preview-path="markdownPreviewPath"
             :noteable-id="noteableId"
             :discussion-id="discussion.id"
+            :is-discussion="false"
             @note-submit-complete="onDone"
-            @note-submit-failure="onCreateNoteError"
             @cancel-form="hideForm"
           >
             <template v-if="discussion.resolvable" #resolve-checkbox>

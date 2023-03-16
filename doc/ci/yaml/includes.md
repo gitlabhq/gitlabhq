@@ -371,7 +371,7 @@ In `include` sections in your `.gitlab-ci.yml` file, you can use:
 - [Project variables](../variables/index.md#for-a-project).
 - [Group variables](../variables/index.md#for-a-group).
 - [Instance variables](../variables/index.md#for-an-instance).
-- Project [predefined variables](../variables/predefined_variables.md).
+- Project [predefined variables](../variables/predefined_variables.md) (`CI_PROJECT_*`).
 - In GitLab 14.2 and later, the `$CI_COMMIT_REF_NAME` [predefined variable](../variables/predefined_variables.md).
 
   When used in `include`, the `CI_COMMIT_REF_NAME` variable returns the full
@@ -383,15 +383,7 @@ In GitLab 14.5 and later, you can also use:
 - [Trigger variables](../triggers/index.md#pass-cicd-variables-in-the-api-call).
 - [Scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule).
 - [Manual pipeline run variables](../pipelines/index.md#run-a-pipeline-manually).
-- Pipeline [predefined variables](../variables/predefined_variables.md).
-
-  YAML files are parsed before the pipeline is created, so the following pipeline predefined variables
-  are **not** available:
-
-  - `CI_PIPELINE_ID`
-  - `CI_PIPELINE_URL`
-  - `CI_PIPELINE_IID`
-  - `CI_PIPELINE_CREATED_AT`
+- The `CI_PIPELINE_SOURCE` and `CI_PIPELINE_TRIGGERED` [predefined variables](../variables/predefined_variables.md).
 
 For example:
 

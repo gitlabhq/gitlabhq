@@ -310,6 +310,9 @@
 .models-patterns: &models-patterns
   - "{,ee/,jh/}{app/models}/**/*"
 
+.decomposed-db-models-patterns: &decomposed-db-models-patterns
+  - "{,ee/,jh/}app/models/{ci,geo}/**/*"
+
 .lib-gitlab-patterns: &lib-gitlab-patterns
   - "{,ee/,jh/}lib/{,ee/,jh/}gitlab/**/*"
 
@@ -1262,6 +1265,8 @@
     - <<: *if-merge-request-labels-run-single-db
     - <<: *if-merge-request
       changes: *db-patterns
+    - <<: *if-merge-request
+      changes: *decomposed-db-models-patterns
     - <<: *if-default-branch-schedule-nightly
 
 .rails:rules:db:check-migrations-single-db:
@@ -1269,12 +1274,16 @@
     - <<: *if-merge-request-labels-run-single-db
     - <<: *if-merge-request
       changes: *db-patterns
+    - <<: *if-merge-request
+      changes: *decomposed-db-models-patterns
 
 .rails:rules:single-db-ci-connection:
   rules:
     - <<: *if-merge-request-labels-run-single-db
     - <<: *if-merge-request
       changes: *db-patterns
+    - <<: *if-merge-request
+      changes: *decomposed-db-models-patterns
     - <<: *if-default-branch-schedule-nightly
 
 .rails:rules:db:check-migrations-single-db-ci-connection:
@@ -1282,6 +1291,8 @@
     - <<: *if-merge-request-labels-run-single-db
     - <<: *if-merge-request
       changes: *db-patterns
+    - <<: *if-merge-request
+      changes: *decomposed-db-models-patterns
 
 .rails:rules:db-backup:
   rules:

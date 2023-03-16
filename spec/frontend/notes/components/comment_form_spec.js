@@ -9,6 +9,7 @@ import Autosave from '~/autosave';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { createAlert } from '~/alert';
+import { STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import CommentForm from '~/notes/components/comment_form.vue';
@@ -481,7 +482,7 @@ describe('issue_comment_form component', () => {
             it(`makes an API call to open it`, () => {
               mountComponent({
                 noteableType,
-                noteableData: { ...noteableDataMock, state: constants.OPENED },
+                noteableData: { ...noteableDataMock, state: STATUS_OPEN },
                 mountFunction: mount,
               });
 
@@ -495,7 +496,7 @@ describe('issue_comment_form component', () => {
             it(`shows an error when the API call fails`, async () => {
               mountComponent({
                 noteableType,
-                noteableData: { ...noteableDataMock, state: constants.OPENED },
+                noteableData: { ...noteableDataMock, state: STATUS_OPEN },
                 mountFunction: mount,
               });
 
@@ -516,7 +517,7 @@ describe('issue_comment_form component', () => {
             it('makes an API call to close it', () => {
               mountComponent({
                 noteableType,
-                noteableData: { ...noteableDataMock, state: constants.CLOSED },
+                noteableData: { ...noteableDataMock, state: STATUS_CLOSED },
                 mountFunction: mount,
               });
 
@@ -531,7 +532,7 @@ describe('issue_comment_form component', () => {
           it(`shows an error when the API call fails`, async () => {
             mountComponent({
               noteableType,
-              noteableData: { ...noteableDataMock, state: constants.CLOSED },
+              noteableData: { ...noteableDataMock, state: STATUS_CLOSED },
               mountFunction: mount,
             });
 

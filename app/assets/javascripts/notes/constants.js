@@ -1,3 +1,4 @@
+import { STATUS_CLOSED, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
 import { __ } from '~/locale';
 
 export const DISCUSSION_NOTE = 'DiscussionNote';
@@ -6,10 +7,6 @@ export const DISCUSSION = 'discussion';
 export const NOTE = 'note';
 export const SYSTEM_NOTE = 'systemNote';
 export const COMMENT = 'comment';
-export const OPENED = 'opened';
-export const REOPENED = 'reopened';
-export const CLOSED = 'closed';
-export const MERGED = 'merged';
 export const ISSUE_NOTEABLE_TYPE = 'Issue';
 export const EPIC_NOTEABLE_TYPE = 'Epic';
 export const MERGE_REQUEST_NOTEABLE_TYPE = 'MergeRequest';
@@ -43,13 +40,19 @@ export const DISCUSSION_FILTER_TYPES = {
 
 export const toggleStateErrorMessage = {
   Epic: {
-    [CLOSED]: __('Something went wrong while reopening the epic. Please try again later.'),
-    [OPENED]: __('Something went wrong while closing the epic. Please try again later.'),
-    [REOPENED]: __('Something went wrong while closing the epic. Please try again later.'),
+    [STATUS_CLOSED]: __('Something went wrong while reopening the epic. Please try again later.'),
+    [STATUS_OPEN]: __('Something went wrong while closing the epic. Please try again later.'),
+    [STATUS_REOPENED]: __('Something went wrong while closing the epic. Please try again later.'),
   },
   MergeRequest: {
-    [CLOSED]: __('Something went wrong while reopening the merge request. Please try again later.'),
-    [OPENED]: __('Something went wrong while closing the merge request. Please try again later.'),
-    [REOPENED]: __('Something went wrong while closing the merge request. Please try again later.'),
+    [STATUS_CLOSED]: __(
+      'Something went wrong while reopening the merge request. Please try again later.',
+    ),
+    [STATUS_OPEN]: __(
+      'Something went wrong while closing the merge request. Please try again later.',
+    ),
+    [STATUS_REOPENED]: __(
+      'Something went wrong while closing the merge request. Please try again later.',
+    ),
   },
 };

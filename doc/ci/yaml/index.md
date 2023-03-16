@@ -159,6 +159,8 @@ The time limit to resolve all files is 30 seconds.
 
 **Additional details**:
 
+- Only [certain CI/CD variables](includes.md#use-variables-with-include) can be used
+  with `include` keywords.
 - Use merging to customize and override included CI/CD configurations with local
 - You can override included configuration by having the same job name or global keyword
   in the `.gitlab-ci.yml` file. The two configurations are merged together, and the
@@ -226,8 +228,7 @@ use `include:project` and `include:file`.
   The YAML files must have the `.yml` or `.yaml` extension.
 - `include:ref`: Optional. The ref to retrieve the file from. Defaults to the `HEAD` of the project
   when not specified.
-
-You can use [certain CI/CD variables](includes.md#use-variables-with-include).
+- You can use [certain CI/CD variables](includes.md#use-variables-with-include).
 
 **Example of `include:project`**:
 

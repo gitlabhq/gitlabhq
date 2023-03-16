@@ -54,8 +54,7 @@ If the highest number stable branch is unclear, check the [GitLab blog](https://
 
 ## GitLab directory structure
 
-This is the main directory structure you end up with following the instructions
-of this page:
+When following the instructions on this page, you create this directory structure:
 
 ```plaintext
 |-- home

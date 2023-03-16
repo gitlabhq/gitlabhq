@@ -276,7 +276,7 @@ to clean up orphaned artifacts.
 ### Migrating from object storage to local storage
 
 To migrate back to local storage, you must
-[selectively disable the artifacts storage](object_storage.md#selectively-disabling-object-storage).
+[selectively disable the artifacts storage](object_storage.md#disable-object-storage-for-specific-features).
 
 ## Expiring artifacts
 

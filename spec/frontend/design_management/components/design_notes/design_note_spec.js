@@ -171,14 +171,6 @@ describe('Design note component', () => {
         expect(findReplyForm().exists()).toBe(false);
         expect(findNoteContent().exists()).toBe(true);
       });
-
-      it('emits error on failure', async () => {
-        const mockError = 'error';
-        findReplyForm().vm.$emit('note-submit-failure', mockError);
-
-        await nextTick();
-        expect(wrapper.emitted('error')).toEqual([[mockError]]);
-      });
     });
   });
 

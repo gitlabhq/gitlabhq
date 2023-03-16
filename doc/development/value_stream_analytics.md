@@ -65,7 +65,7 @@ of the stage. Stages are configurable by the user within the pairing rules defin
   IDs are identical.
   - The stage event hash ID is later used to store the aggregated data in partitioned database tables.
 
-Historically, value stream analytics defined [7 stages](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/analytics/cycle_analytics/default_stages.rb)
+Historically, value stream analytics defined [six stages](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/analytics/cycle_analytics/default_stages.rb)
 which are always available to the end-users regardless of the subscription.
 
 ### Value streams

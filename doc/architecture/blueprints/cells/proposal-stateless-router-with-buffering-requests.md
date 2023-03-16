@@ -1,8 +1,8 @@
 ---
 stage: enablement
-group: pods
+group: Tenant Scale
 comments: false
-description: 'Pods Stateless Router Proposal'
+description: 'Cells Stateless Router Proposal'
 ---
 
 This document is a work-in-progress and represents a very early state of the

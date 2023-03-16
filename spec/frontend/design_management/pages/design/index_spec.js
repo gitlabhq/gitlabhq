@@ -16,7 +16,6 @@ import * as utils from '~/design_management/utils/design_management_utils';
 import {
   DESIGN_NOT_FOUND_ERROR,
   DESIGN_VERSION_NOT_EXIST_ERROR,
-  ADD_IMAGE_DIFF_NOTE_ERROR,
 } from '~/design_management/utils/error_messages';
 import {
   DESIGN_TRACKING_PAGE_NAME,
@@ -75,7 +74,6 @@ describe('Design management design index page', () => {
 
   const findDesignReplyForm = () => wrapper.findComponent(DesignReplyForm);
   const findSidebar = () => wrapper.findComponent(DesignSidebar);
-  const findAlert = () => wrapper.findComponent(GlAlert);
   const findDesignPresentation = () => wrapper.findComponent(DesignPresentation);
 
   function createComponent(
@@ -255,23 +253,6 @@ describe('Design management design index page', () => {
       mockDesignVariables,
     );
     expect(findDesignReplyForm().exists()).toBe(false);
-  });
-
-  it('sets error message when form submission fails', async () => {
-    createComponent(
-      { loading: false },
-      {
-        data: {
-          design,
-          annotationCoordinates,
-        },
-      },
-    );
-
-    findDesignReplyForm().vm.$emit('note-submit-failure');
-
-    await nextTick();
-    expect(findAlert().text()).toBe(ADD_IMAGE_DIFF_NOTE_ERROR);
   });
 
   it('closes the form and clears the comment on canceling form', async () => {

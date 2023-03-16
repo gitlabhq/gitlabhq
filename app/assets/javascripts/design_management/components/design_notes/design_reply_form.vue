@@ -1,5 +1,5 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlAlert } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 import Autosave from '~/autosave';
@@ -7,6 +7,12 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
+import {
+  ADD_DISCUSSION_COMMENT_ERROR,
+  ADD_IMAGE_DIFF_NOTE_ERROR,
+  UPDATE_IMAGE_DIFF_NOTE_ERROR,
+  UPDATE_NOTE_ERROR,
+} from '../../utils/error_messages';
 
 export default {
   name: 'DesignReplyForm',
@@ -23,6 +29,7 @@ export default {
   components: {
     MarkdownField,
     GlButton,
+    GlAlert,
   },
   props: {
     designNoteMutation: {
@@ -40,6 +47,11 @@ export default {
       default: '',
     },
     isNewComment: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    isDiscussion: {
       type: Boolean,
       required: false,
       default: true,
@@ -65,6 +77,7 @@ export default {
       saving: false,
       noteUpdateDirty: false,
       isLoggedIn: isLoggedIn(),
+      errorMessage: '',
     };
   },
   computed: {
@@ -126,13 +139,19 @@ export default {
           .then((response) => {
             this.$emit('note-submit-complete', response);
           })
-          .catch((errors) => {
-            this.$emit('note-submit-failure', errors);
+          .catch(() => {
+            this.errorMessage = this.getErrorMessage();
           })
           .finally(() => {
             this.saving = false;
           });
       }
+    },
+    getErrorMessage() {
+      if (this.isNewComment) {
+        return this.isDiscussion ? ADD_IMAGE_DIFF_NOTE_ERROR : ADD_DISCUSSION_COMMENT_ERROR;
+      }
+      return this.isDiscussion ? UPDATE_IMAGE_DIFF_NOTE_ERROR : UPDATE_NOTE_ERROR;
     },
     cancelComment() {
       if (this.hasValue && this.noteUpdateDirty) {
@@ -183,6 +202,11 @@ export default {
 
 <template>
   <form class="new-note common-note-form" @submit.prevent>
+    <div v-if="errorMessage" class="gl-pb-3">
+      <gl-alert variant="danger" @dismiss="errorMessage = null">
+        {{ errorMessage }}
+      </gl-alert>
+    </div>
     <markdown-field
       :markdown-preview-path="markdownPreviewPath"
       :enable-autocomplete="true"

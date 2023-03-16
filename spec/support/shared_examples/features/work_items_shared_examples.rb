@@ -1,5 +1,20 @@
 # frozen_string_literal: true
 
+RSpec.shared_examples 'work items title' do
+  let(:title_selector) { '[data-testid="work-item-title"]' }
+
+  it 'successfully shows and changes the title of the work item' do
+    expect(work_item.reload.title).to eq work_item.title
+
+    find(title_selector).set("Work item title")
+    find(title_selector).native.send_keys(:return)
+
+    wait_for_requests
+
+    expect(work_item.reload.title).to eq 'Work item title'
+  end
+end
+
 RSpec.shared_examples 'work items status' do
   let(:state_selector) { '[data-testid="work-item-state-select"]' }
 
@@ -39,7 +54,6 @@ RSpec.shared_examples 'work items assignees' do
     # submit and simulate blur to save
     send_keys(:enter)
     find("body").click
-
     wait_for_requests
 
     expect(work_item.assignees).to include(user)
@@ -47,6 +61,8 @@ RSpec.shared_examples 'work items assignees' do
 end
 
 RSpec.shared_examples 'work items labels' do
+  let(:label_title_selector) { '[data-testid="labels-title"]' }
+
   it 'successfully assigns a label' do
     label = create(:label, project: work_item.project, title: "testing-label")
 
@@ -55,8 +71,7 @@ RSpec.shared_examples 'work items labels' do
 
     # submit and simulate blur to save
     send_keys(:enter)
-    find("body").click
-
+    find(label_title_selector).click
     wait_for_requests
 
     expect(work_item.labels).to include(label)
@@ -137,5 +152,29 @@ RSpec.shared_examples 'work items invite members' do
     page.within invite_modal_selector do
       expect(page).to have_content("You're inviting members to the #{work_item.project.name} project")
     end
+  end
+end
+
+RSpec.shared_examples 'work items milestone' do
+  def set_milestone(milestone_dropdown, milestone_text)
+    milestone_dropdown.click
+
+    find('[data-testid="work-item-milestone-dropdown"] .gl-form-input', visible: true).send_keys "\"#{milestone_text}\""
+    wait_for_requests
+
+    click_button(milestone_text)
+    wait_for_requests
+  end
+
+  let(:milestone_dropdown_selector) { '[data-testid="work-item-milestone-dropdown"]' }
+
+  it 'searches and sets or removes milestone for the work item' do
+    set_milestone(find(milestone_dropdown_selector), milestone.title)
+
+    expect(page.find(milestone_dropdown_selector)).to have_text(milestone.title)
+
+    set_milestone(find(milestone_dropdown_selector), 'No milestone')
+
+    expect(page.find(milestone_dropdown_selector)).to have_text('Add to milestone')
   end
 end

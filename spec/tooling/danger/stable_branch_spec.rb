@@ -177,17 +177,34 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         it_behaves_like 'bypassing when flaky test or docs only'
       end
 
-      context 'when no package-and-test job is found' do
+      context 'when no package-and-test bridge is found' do
         let(:pipeline_bridges_response) { nil }
 
         it_behaves_like 'with a failure', described_class::NEEDS_PACKAGE_AND_TEST_MESSAGE
         it_behaves_like 'bypassing when flaky test or docs only'
       end
 
-      context 'when package-and-test job is being created' do
+      context 'when package-and-test bridge is created' do
         let(:pipeline_bridge_state) { 'created' }
 
         it_behaves_like 'with a warning', described_class::WARN_PACKAGE_AND_TEST_MESSAGE
+        it_behaves_like 'bypassing when flaky test or docs only'
+      end
+
+      context 'when package-and-test bridge has been canceled and no downstream pipeline is generated' do
+        let(:pipeline_bridge_state) { 'canceled' }
+
+        let(:pipeline_bridges_response) do
+          [
+            {
+              'name' => 'e2e:package-and-test',
+              'status' => pipeline_bridge_state,
+              'downstream_pipeline' => nil
+            }
+          ]
+        end
+
+        it_behaves_like 'with a failure', described_class::NEEDS_PACKAGE_AND_TEST_MESSAGE
         it_behaves_like 'bypassing when flaky test or docs only'
       end
 

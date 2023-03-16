@@ -49,6 +49,11 @@ export default {
       required: false,
       default: '',
     },
+    isDiscussion: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     noteableId: {
       type: String,
       required: true,
@@ -188,9 +193,9 @@ export default {
       :mutation-variables="mutationVariables"
       :value="note.body"
       :is-new-comment="false"
+      :is-discussion="isDiscussion"
       :noteable-id="noteableId"
       class="gl-mt-5"
-      @note-submit-failure="$emit('error', $event)"
       @note-submit-complete="onDone"
       @cancel-form="hideForm"
     />

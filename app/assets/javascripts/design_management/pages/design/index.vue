@@ -33,12 +33,9 @@ import {
   getPageLayoutElement,
 } from '../../utils/design_management_utils';
 import {
-  ADD_DISCUSSION_COMMENT_ERROR,
-  ADD_IMAGE_DIFF_NOTE_ERROR,
   UPDATE_IMAGE_DIFF_NOTE_ERROR,
   DESIGN_NOT_FOUND_ERROR,
   DESIGN_VERSION_NOT_EXIST_ERROR,
-  UPDATE_NOTE_ERROR,
   TOGGLE_TODO_ERROR,
   DELETE_NOTE_ERROR,
   designDeletionError,
@@ -261,17 +258,8 @@ export default {
       this.errorMessage = message;
       if (e) throw e;
     },
-    onCreateImageDiffNoteError(e) {
-      this.onError(ADD_IMAGE_DIFF_NOTE_ERROR, e);
-    },
-    onUpdateNoteError(e) {
-      this.onError(UPDATE_NOTE_ERROR, e);
-    },
     onDeleteNoteError(e) {
       this.onError(DELETE_NOTE_ERROR, e);
-    },
-    onDesignDiscussionError(e) {
-      this.onError(ADD_DISCUSSION_COMMENT_ERROR, e);
     },
     onUpdateImageDiffNoteError(e) {
       this.onError(UPDATE_IMAGE_DIFF_NOTE_ERROR, e);
@@ -400,9 +388,6 @@ export default {
       :resolved-discussions-expanded="resolvedDiscussionsExpanded"
       :markdown-preview-path="markdownPreviewPath"
       :is-loading="isLoading"
-      @onDesignDiscussionError="onDesignDiscussionError"
-      @onCreateImageDiffNoteError="onCreateImageDiffNoteError"
-      @updateNoteError="onUpdateNoteError"
       @deleteNoteError="onDeleteNoteError"
       @resolveDiscussionError="onResolveDiscussionError"
       @toggleResolvedComments="toggleResolvedComments"
@@ -416,8 +401,8 @@ export default {
           :mutation-variables="mutationVariables"
           :markdown-preview-path="markdownPreviewPath"
           :noteable-id="design.id"
+          :is-discussion="true"
           @note-submit-complete="addImageDiffNoteToStore"
-          @note-submit-failure="onCreateImageDiffNoteError"
           @cancel-form="closeCommentForm"
         />
       </template>

@@ -272,7 +272,7 @@ To migrate back to local storage:
    ```
 
 1. Edit `/etc/gitlab/gitlab.rb` and
-   [disable object storage](../object_storage.md#selectively-disabling-object-storage)
+   [disable object storage](../object_storage.md#disable-object-storage-for-specific-features)
    for LFS objects:
 
    ```ruby

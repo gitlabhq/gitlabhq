@@ -1,3 +1,4 @@
+import { GlAlert } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import Autosave from '~/autosave';
@@ -5,6 +6,12 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import createNoteMutation from '~/design_management/graphql/mutations/create_note.mutation.graphql';
 import DesignReplyForm from '~/design_management/components/design_notes/design_reply_form.vue';
+import {
+  ADD_DISCUSSION_COMMENT_ERROR,
+  ADD_IMAGE_DIFF_NOTE_ERROR,
+  UPDATE_IMAGE_DIFF_NOTE_ERROR,
+  UPDATE_NOTE_ERROR,
+} from '~/design_management/utils/error_messages';
 import {
   mockNoteSubmitSuccessMutationResponse,
   mockNoteSubmitFailureMutationResponse,
@@ -20,6 +27,7 @@ describe('Design reply form component', () => {
   const findTextarea = () => wrapper.find('textarea');
   const findSubmitButton = () => wrapper.findComponent({ ref: 'submitButton' });
   const findCancelButton = () => wrapper.findComponent({ ref: 'cancelButton' });
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   const mockNoteableId = 'gid://gitlab/DesignManagement::Design/6';
   const mockComment = 'New comment';
@@ -44,7 +52,12 @@ describe('Design reply form component', () => {
   };
   const mutationHandler = jest.fn().mockResolvedValue();
 
-  function createComponent({ props = {}, mountOptions = {}, mutation = mutationHandler } = {}) {
+  function createComponent({
+    props = {},
+    mountOptions = {},
+    data = {},
+    mutation = mutationHandler,
+  } = {}) {
     wrapper = mount(DesignReplyForm, {
       propsData: {
         designNoteMutation: createNoteMutation,
@@ -59,6 +72,11 @@ describe('Design reply form component', () => {
         $apollo: {
           mutate: mutation,
         },
+      },
+      data() {
+        return {
+          ...data,
+        };
       },
     });
   }
@@ -218,28 +236,39 @@ describe('Design reply form component', () => {
       ]);
     });
 
-    it('emits error when mutation fails', async () => {
-      const mockMutationVariables = {
-        noteableId: mockNoteableId,
-        discussionId: mockDiscussionId,
-      };
+    it('shows error message when mutation fails', async () => {
       const failedMutation = jest.fn().mockRejectedValue(mockNoteSubmitFailureMutationResponse);
       createComponent({
         props: {
           designNoteMutation: createNoteMutation,
-          mutationVariables: mockMutationVariables,
           value: mockComment,
         },
         mutation: failedMutation,
+        data: {
+          errorMessage: 'error',
+        },
       });
 
       findSubmitButton().vm.$emit('click');
 
       await waitForPromises();
-      expect(wrapper.emitted('note-submit-failure')).toEqual([
-        [mockNoteSubmitFailureMutationResponse],
-      ]);
+      expect(findAlert().exists()).toBe(true);
     });
+
+    it.each`
+      isDiscussion | isNewComment | errorMessage
+      ${true}      | ${true}      | ${ADD_IMAGE_DIFF_NOTE_ERROR}
+      ${true}      | ${false}     | ${UPDATE_IMAGE_DIFF_NOTE_ERROR}
+      ${false}     | ${true}      | ${ADD_DISCUSSION_COMMENT_ERROR}
+      ${false}     | ${false}     | ${UPDATE_NOTE_ERROR}
+    `(
+      'return proper error message on error in case of isDiscussion is $isDiscussion and isNewComment is $isNewComment',
+      async ({ isDiscussion, isNewComment, errorMessage }) => {
+        createComponent({ props: { isDiscussion, isNewComment } });
+
+        expect(wrapper.vm.getErrorMessage()).toBe(errorMessage);
+      },
+    );
 
     it('emits cancelForm event on Escape key if text was not changed', () => {
       createComponent();

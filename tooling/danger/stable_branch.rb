@@ -102,7 +102,7 @@ module Tooling
         if bridge['status'] == 'created'
           bridge['status']
         else
-          bridge.fetch('downstream_pipeline').fetch('status')
+          bridge.fetch('downstream_pipeline')&.fetch('status')
         end
       end
 

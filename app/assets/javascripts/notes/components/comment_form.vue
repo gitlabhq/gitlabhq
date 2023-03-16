@@ -7,6 +7,7 @@ import Autosave from '~/autosave';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { createAlert } from '~/alert';
 import { badgeState } from '~/issuable/components/status_box.vue';
+import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
 import { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import {
   capitalizeFirstCharacter,
@@ -104,7 +105,7 @@ export default {
       return this.getNoteableData.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE;
     },
     isOpen() {
-      return this.openState === constants.OPENED || this.openState === constants.REOPENED;
+      return this.openState === STATUS_OPEN || this.openState === STATUS_REOPENED;
     },
     canCreateNote() {
       return this.getNoteableData.current_user.can_create_note;
@@ -152,7 +153,7 @@ export default {
     canToggleIssueState() {
       return (
         this.getNoteableData.current_user.can_update &&
-        this.openState !== constants.MERGED &&
+        this.openState !== STATUS_MERGED &&
         !this.closedAndLocked
       );
     },
@@ -184,7 +185,7 @@ export default {
   mounted() {
     // jQuery is needed here because it is a custom event being dispatched with jQuery.
     $(document).on('issuable:change', (e, isClosed) => {
-      this.toggleIssueLocalState(isClosed ? constants.CLOSED : constants.REOPENED);
+      this.toggleIssueLocalState(isClosed ? STATUS_CLOSED : STATUS_REOPENED);
     });
 
     this.initAutoSave();
