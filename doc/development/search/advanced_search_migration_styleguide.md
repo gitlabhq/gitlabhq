@@ -240,6 +240,12 @@ defer it to another release if there is risk of important data loss.
 
 Follow these best practices for best results:
 
+- Order all migrations for each document type so that any migrations that use
+  [`Elastic::MigrationUpdateMappingsHelper`](#elasticmigrationupdatemappingshelper)
+  are executed before migrations that use the
+  [`Elastic::MigrationBackfillHelper`](#elasticmigrationbackfillhelper). This avoids
+  reindexing the same documents multiple times if all of the migrations are unapplied
+  and reduces the backfill time.
 - When working in batches, keep the batch size under 9,000 documents.
   The bulk indexer is set to run every minute and process a batch
   of 10,000 documents. This way, the bulk indexer has time to

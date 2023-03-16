@@ -35,6 +35,9 @@ describe('New Deploy Token', () => {
         createNewTokenPath,
         tokenType,
       },
+      stubs: {
+        GlFormCheckbox,
+      },
     });
   };
 
@@ -57,7 +60,7 @@ describe('New Deploy Token', () => {
 
     it('should show the read registry scope', () => {
       const checkbox = wrapper.findAllComponents(GlFormCheckbox).at(1);
-      expect(checkbox.text()).toBe('read_registry');
+      expect(checkbox.text()).toContain('read_registry');
     });
 
     function submitTokenThenCheck() {
@@ -208,6 +211,34 @@ describe('New Deploy Token', () => {
         .replyOnce(HTTP_STATUS_OK, { username: 'test token username', token: 'test token' });
 
       return submitTokenThenCheck();
+    });
+  });
+
+  describe('help text for write_package_registry scope', () => {
+    const findWriteRegistryScopeCheckbox = () => wrapper.findAllComponents(GlFormCheckbox).at(4);
+
+    describe('with project tokenType', () => {
+      beforeEach(() => {
+        wrapper = factory();
+      });
+
+      it('should show the correct help text', () => {
+        expect(findWriteRegistryScopeCheckbox().text()).toContain(
+          'Allows read, write and delete access to the package registry.',
+        );
+      });
+    });
+
+    describe('with group tokenType', () => {
+      beforeEach(() => {
+        wrapper = factory({ tokenType: 'group' });
+      });
+
+      it('should show the correct help text', () => {
+        expect(findWriteRegistryScopeCheckbox().text()).toContain(
+          'Allows read and write access to the package registry.',
+        );
+      });
     });
   });
 });

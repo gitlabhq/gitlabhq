@@ -1249,7 +1249,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         it { is_expected.to be_allowed(:create_package) }
         it { is_expected.to be_allowed(:read_package) }
         it { is_expected.to be_allowed(:read_project) }
-        it { is_expected.to be_disallowed(:destroy_package) }
+        it { is_expected.to be_allowed(:destroy_package) }
 
         it_behaves_like 'package access with repository disabled'
       end

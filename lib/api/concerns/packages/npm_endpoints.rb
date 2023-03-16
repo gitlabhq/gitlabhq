@@ -60,6 +60,7 @@ module API
               ]
               tags %w[npm_packages]
             end
+            route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
             get 'dist-tags', format: false, requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
               package_name = params[:package_name]
 
@@ -91,6 +92,7 @@ module API
                 ]
                 tags %w[npm_packages]
               end
+              route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
               put format: false do
                 package_name = params[:package_name]
                 version = env['api.request.body']
@@ -122,6 +124,7 @@ module API
                 ]
                 tags %w[npm_packages]
               end
+              route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
               delete format: false do
                 package_name = params[:package_name]
                 tag = params[:tag]

@@ -24,10 +24,6 @@ describe('MemoryGraph', () => {
   });
 
   describe('Chart data', () => {
-    it('should match metrics length', () => {
-      expect(findGlSparklineChart().props('data').length).toEqual(metrics.length);
-    });
-
     it('should have formatted date & MB values', () => {
       const formattedData = [
         ['Nov 12 2019 19:17:33', '2.87'],

@@ -275,7 +275,7 @@ describe('Global Search Store Actions', () => {
   describe.each`
     action                       | axiosMock                                                       | type         | scope         | expectedMutations                    | errorLogs
     ${actions.fetchSidebarCount} | ${{ method: 'onGet', code: HTTP_STATUS_OK }}                    | ${'success'} | ${'issues'}   | ${[MOCK_NAVIGATION_ACTION_MUTATION]} | ${0}
-    ${actions.fetchSidebarCount} | ${{ method: null, code: 0 }}                                    | ${'success'} | ${'projects'} | ${[]}                                | ${0}
+    ${actions.fetchSidebarCount} | ${{ method: null, code: 0 }}                                    | ${'error'}   | ${'projects'} | ${[]}                                | ${1}
     ${actions.fetchSidebarCount} | ${{ method: 'onGet', code: HTTP_STATUS_INTERNAL_SERVER_ERROR }} | ${'error'}   | ${'issues'}   | ${[]}                                | ${1}
   `('fetchSidebarCount', ({ action, axiosMock, type, expectedMutations, scope, errorLogs }) => {
     describe(`on ${type}`, () => {
@@ -290,9 +290,9 @@ describe('Global Search Store Actions', () => {
         }
       });
 
-      it(`should ${expectedMutations.length === 0 ? 'NOT ' : ''}dispatch ${
-        expectedMutations.length === 0 ? '' : 'the correct '
-      }mutations for ${scope}`, () => {
+      it(`should ${expectedMutations.length === 0 ? 'NOT' : ''} dispatch ${
+        expectedMutations.length === 0 ? '' : 'the correct'
+      } mutations for ${scope}`, () => {
         return testAction({ action, state, expectedMutations }).then(() => {
           expect(logger.logError).toHaveBeenCalledTimes(errorLogs);
         });

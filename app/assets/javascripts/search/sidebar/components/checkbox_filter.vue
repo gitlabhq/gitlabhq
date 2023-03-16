@@ -20,9 +20,6 @@ export default {
   computed: {
     ...mapState(['query']),
     ...mapGetters(['queryLanguageFilters']),
-    scope() {
-      return this.query.scope;
-    },
     dataFilters() {
       return Object.values(this.filtersData?.filters || []);
     },

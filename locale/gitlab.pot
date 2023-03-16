@@ -14163,6 +14163,9 @@ msgstr ""
 msgid "DeployTokens|Allows read and write access to the package registry."
 msgstr ""
 
+msgid "DeployTokens|Allows read, write and delete access to the package registry."
+msgstr ""
+
 msgid "DeployTokens|Allows read-only access to registry images."
 msgstr ""
 

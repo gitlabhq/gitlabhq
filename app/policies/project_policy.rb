@@ -791,6 +791,7 @@ class ProjectPolicy < BasePolicy
   rule { write_package_registry_deploy_token }.policy do
     enable :create_package
     enable :read_package
+    enable :destroy_package
     enable :read_project
   end
 
