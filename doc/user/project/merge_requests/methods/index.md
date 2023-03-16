@@ -228,5 +228,4 @@ workflow that requires frequent rebases.
 
 ## Related topics
 
-- [Commits history](../commits.md)
 - [Squash and merge](../squash_and_merge.md)

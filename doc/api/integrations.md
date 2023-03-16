@@ -1596,6 +1596,43 @@ Get MockCI integration settings for a project.
 GET /projects/:id/integrations/mock-ci
 ```
 
+## Squash TM
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337855) in GitLab 15.10.
+
+Update [Squash TM](https://www.squashtest.com/product-squash-tm?lang=en) requirements when GitLab issues are modified.
+
+### Create/Edit Squash TM integration
+
+Set Squash TM integration settings for a project.
+
+```plaintext
+PUT /projects/:id/integrations/squash-tm
+```
+
+Parameters:
+
+| Parameter               | Type   | Required | Description                   |
+|-------------------------|--------|----------|-------------------------------|
+| `url`                   | string | yes      | URL of the Squash TM webhook. |
+| `token`                 | string | no       | Optional token                |
+
+### Disable Squash TM integration
+
+Disable the Squash TM integration for a project. Integration settings are preserved.
+
+```plaintext
+DELETE /projects/:id/integrations/squash-tm
+```
+
+### Get Squash TM integration settings
+
+Get Squash TM integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/squash-tm
+```
+
 ## YouTrack
 
 YouTrack issue tracker

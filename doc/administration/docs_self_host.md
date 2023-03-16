@@ -74,7 +74,7 @@ To run the GitLab product documentation website in a Docker container:
      docker-compose up -d
      ```
 
-1. Visit `http://0.0.0.0:4000` to view the documentation website and verify that 
+1. Visit `http://0.0.0.0:4000` to view the documentation website and verify that
    it works.
 1. [Redirect the help links to the new Docs site](#redirect-the-help-links-to-the-new-docs-site).
 

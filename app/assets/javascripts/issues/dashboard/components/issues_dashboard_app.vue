@@ -9,7 +9,6 @@ import {
   CREATED_DESC,
   defaultTypeTokenOptions,
   i18n,
-  PAGE_SIZE,
   PARAM_STATE,
   UPDATED_DESC,
   urlSortParams,
@@ -49,7 +48,7 @@ import {
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import { IssuableListTabs } from '~/vue_shared/issuable/list/constants';
+import { DEFAULT_PAGE_SIZE, IssuableListTabs } from '~/vue_shared/issuable/list/constants';
 import getIssuesCountsQuery from '../queries/get_issues_counts.query.graphql';
 import { AutocompleteCache } from '../utils';
 
@@ -386,14 +385,14 @@ export default {
     handleNextPage() {
       this.pageParams = {
         afterCursor: this.pageInfo.endCursor,
-        firstPageSize: PAGE_SIZE,
+        firstPageSize: DEFAULT_PAGE_SIZE,
       };
       scrollUp();
     },
     handlePreviousPage() {
       this.pageParams = {
         beforeCursor: this.pageInfo.startCursor,
-        lastPageSize: PAGE_SIZE,
+        lastPageSize: DEFAULT_PAGE_SIZE,
       };
       scrollUp();
     },

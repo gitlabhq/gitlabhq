@@ -2187,6 +2187,24 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
+    context 'Duo Auth' do
+      context 'when enabled via GitLab settings' do
+        before do
+          allow(::Gitlab.config.duo_auth).to receive(:enabled).and_return(true)
+        end
+
+        it { expect(user.two_factor_otp_enabled?).to eq(true) }
+      end
+
+      context 'when disabled via GitLab settings' do
+        before do
+          allow(::Gitlab.config.duo_auth).to receive(:enabled).and_return(false)
+        end
+
+        it { expect(user.two_factor_otp_enabled?).to eq(false) }
+      end
+    end
+
     context 'FortiTokenCloud' do
       context 'when enabled via GitLab settings' do
         before do

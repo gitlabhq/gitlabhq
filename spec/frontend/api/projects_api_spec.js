@@ -7,7 +7,6 @@ import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('~/api/projects_api.js', () => {
   let mock;
-  let originalGon;
 
   const projectId = 1;
   const setfullPathProjectSearch = (value) => {
@@ -17,13 +16,11 @@ describe('~/api/projects_api.js', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
-    originalGon = window.gon;
     window.gon = { api_version: 'v7', features: { fullPathProjectSearch: true } };
   });
 
   afterEach(() => {
     mock.restore();
-    window.gon = originalGon;
   });
 
   describe('getProjects', () => {

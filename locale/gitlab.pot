@@ -41552,6 +41552,18 @@ msgstr ""
 msgid "Squash commits when merge request is accepted."
 msgstr ""
 
+msgid "SquashTmIntegration|Secret token (optional)"
+msgstr ""
+
+msgid "SquashTmIntegration|Squash TM webhook URL"
+msgstr ""
+
+msgid "SquashTmIntegration|Update Squash TM requirements when GitLab issues are modified."
+msgstr ""
+
+msgid "SquashTmIntegration|Update Squash TM requirements when GitLab issues are modified. %{docs_link}"
+msgstr ""
+
 msgid "Stack trace"
 msgstr ""
 

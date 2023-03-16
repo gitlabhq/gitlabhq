@@ -15,11 +15,6 @@ const dummyApiVersion = 'v3000';
 const dummyProjectId = 1;
 const fileSizeLimit = 5;
 const dummyUrlRoot = '/gitlab';
-const dummyGon = {
-  api_version: dummyApiVersion,
-  relative_url_root: dummyUrlRoot,
-};
-let originalGon;
 const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${dummyProjectId}/secure_files`;
 
 describe('SecureFilesList', () => {
@@ -28,15 +23,16 @@ describe('SecureFilesList', () => {
   let trackingSpy;
 
   beforeEach(() => {
-    originalGon = window.gon;
     trackingSpy = mockTracking(undefined, undefined, jest.spyOn);
-    window.gon = { ...dummyGon };
+    window.gon = {
+      api_version: dummyApiVersion,
+      relative_url_root: dummyUrlRoot,
+    };
   });
 
   afterEach(() => {
     mock.restore();
     unmockTracking();
-    window.gon = originalGon;
   });
 
   const createWrapper = (admin = true, props = {}) => {

@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Ci::RunnerMachineBuild, model: true, feature_category: :runner_fleet do
+  let_it_be(:runner) { create(:ci_runner) }
+  let_it_be(:runner_machine) { create(:ci_runner_machine, runner: runner) }
+  let_it_be(:build) { create(:ci_build, runner_machine: runner_machine) }
+
   it { is_expected.to belong_to(:build) }
   it { is_expected.to belong_to(:runner_machine) }
 
@@ -52,6 +56,45 @@ RSpec.describe Ci::RunnerMachineBuild, model: true, feature_category: :runner_fl
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:ci_runner_machine) }
       let!(:model) { create(:ci_runner_machine_build, runner_machine: parent) }
+    end
+  end
+
+  describe '.for_build' do
+    subject(:for_build) { described_class.for_build(build_id) }
+
+    context 'with valid build_id' do
+      let(:build_id) { build.id }
+
+      it { is_expected.to contain_exactly(described_class.find_by_build_id(build_id)) }
+    end
+
+    context 'with valid build_ids' do
+      let(:build2) { create(:ci_build, runner_machine: runner_machine) }
+      let(:build_id) { [build, build2] }
+
+      it { is_expected.to eq(described_class.where(build_id: build_id)) }
+    end
+
+    context 'with non-existeng build_id' do
+      let(:build_id) { non_existing_record_id }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
+  describe '.pluck_runner_machine_id_and_build_id' do
+    subject { scope.pluck_build_id_and_runner_machine_id }
+
+    context 'with default scope' do
+      let(:scope) { described_class }
+
+      it { is_expected.to eq({ build.id => runner_machine.id }) }
+    end
+
+    context 'with scope excluding build' do
+      let(:scope) { described_class.where(build_id: non_existing_record_id) }
+
+      it { is_expected.to be_empty }
     end
   end
 end

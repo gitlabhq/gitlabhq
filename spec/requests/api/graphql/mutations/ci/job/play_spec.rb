@@ -18,7 +18,7 @@ RSpec.describe 'JobPlay', feature_category: :continuous_integration do
 
   let(:mutation) do
     graphql_mutation(:job_play, variables,
-                     <<-QL
+      <<-QL
                        errors
                        job {
                          id
@@ -28,7 +28,7 @@ RSpec.describe 'JobPlay', feature_category: :continuous_integration do
                            }
                          }
                        }
-                     QL
+      QL
     )
   end
 

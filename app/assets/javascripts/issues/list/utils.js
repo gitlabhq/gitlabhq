@@ -16,6 +16,7 @@ import {
   TOKEN_TYPE_HEALTH,
   TOKEN_TYPE_LABEL,
 } from '~/vue_shared/components/filtered_search_bar/constants';
+import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 import {
   ALTERNATIVE_FILTER,
   API_PARAM,
@@ -35,7 +36,6 @@ import {
   MILESTONE_DUE_ASC,
   MILESTONE_DUE_DESC,
   NORMAL_FILTER,
-  PAGE_SIZE,
   PARAM_ASSIGNEE_ID,
   POPULARITY_ASC,
   POPULARITY_DESC,
@@ -56,7 +56,7 @@ import {
 
 export const getInitialPageParams = (
   pageSize,
-  firstPageSize = pageSize ?? PAGE_SIZE,
+  firstPageSize = pageSize ?? DEFAULT_PAGE_SIZE,
   lastPageSize,
   afterCursor,
   beforeCursor,

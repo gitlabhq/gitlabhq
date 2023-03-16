@@ -31,11 +31,6 @@ import { proxyDetailsQuery, proxyData, pagination, proxyManifests } from './mock
 const dummyApiVersion = 'v3000';
 const dummyGrouptId = 1;
 const dummyUrlRoot = '/gitlab';
-const dummyGon = {
-  api_version: dummyApiVersion,
-  relative_url_root: dummyUrlRoot,
-};
-let originalGon;
 const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${dummyGrouptId}/dependency_proxy/cache`;
 
 Vue.use(VueApollo);
@@ -89,15 +84,16 @@ describe('DependencyProxyApp', () => {
   beforeEach(() => {
     resolver = jest.fn().mockResolvedValue(proxyDetailsQuery());
 
-    originalGon = window.gon;
-    window.gon = { ...dummyGon };
+    window.gon = {
+      api_version: dummyApiVersion,
+      relative_url_root: dummyUrlRoot,
+    };
 
     mock = new MockAdapter(axios);
     mock.onDelete(expectedUrl).reply(HTTP_STATUS_ACCEPTED, {});
   });
 
   afterEach(() => {
-    window.gon = originalGon;
     mock.restore();
   });
 

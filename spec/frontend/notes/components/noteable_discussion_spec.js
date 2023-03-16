@@ -22,7 +22,6 @@ jest.mock('~/behaviors/markdown/render_gfm');
 describe('noteable_discussion component', () => {
   let store;
   let wrapper;
-  let originalGon;
 
   beforeEach(() => {
     window.mrTabs = {};
@@ -163,15 +162,6 @@ describe('noteable_discussion component', () => {
   });
 
   describe('signout widget', () => {
-    beforeEach(() => {
-      originalGon = { ...window.gon };
-      window.gon = window.gon || {};
-    });
-
-    afterEach(() => {
-      window.gon = originalGon;
-    });
-
     describe('user is logged in', () => {
       beforeEach(() => {
         window.gon.current_user_id = userDataMock.id;

@@ -128,6 +128,7 @@
 {"name":"dry-logic","version":"1.1.0","platform":"ruby","checksum":"eca4b39084c9d22778144b7e4cf8db20e8bab7de6d89deb220d20a9fde60b69d"},
 {"name":"dry-types","version":"1.4.0","platform":"ruby","checksum":"68003bb0db3077fecd0270f4ae486a82ee76bab6d666fdc4e094380a67c9a1df"},
 {"name":"dumb_delegator","version":"1.0.0","platform":"ruby","checksum":"ff5e411816d2d8ad8e260b269e712ae3839dddb0f9f8e18d3b1a3fe08f6d2e94"},
+{"name":"duo_api","version":"1.3.0","platform":"ruby","checksum":"87c9830e190fad32fdb086b023f555a3cf5cd4d6708a992f7a32efb2ce206176"},
 {"name":"e2mmap","version":"0.1.0","platform":"ruby","checksum":"45ee6bba2d97a7d91ee0885774261feee87e28c598355df31e93b56196ec0f59"},
 {"name":"ecma-re-validator","version":"0.3.0","platform":"ruby","checksum":"66a95bd8c2b0641baf1fbf9bd355a0dcf13c82c6883f6f496a722420a8b6e0d7"},
 {"name":"ed25519","version":"1.3.0","platform":"java","checksum":"8e5d2f8a5325c7a463d61d1a48406ce54074c610f3dccd889e6532c9527a3894"},

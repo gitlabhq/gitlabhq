@@ -481,11 +481,6 @@ describe('Blob content viewer component', () => {
         repository: { empty },
       } = projectMock;
 
-      afterEach(() => {
-        delete gon.current_user_id;
-        delete gon.current_username;
-      });
-
       it('renders component', async () => {
         window.gon.current_user_id = 1;
         window.gon.current_username = 'root';

@@ -67,7 +67,6 @@ function createComponent(options = {}) {
 }
 
 describe('UserToken', () => {
-  const originalGon = window.gon;
   const currentUserLength = 1;
   let mock;
   let wrapper;
@@ -79,7 +78,6 @@ describe('UserToken', () => {
   });
 
   afterEach(() => {
-    window.gon = originalGon;
     mock.restore();
   });
 

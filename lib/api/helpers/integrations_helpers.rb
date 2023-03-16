@@ -917,6 +917,20 @@ module API
               type: String,
               desc: 'The product ID of ZenTao project'
             }
+          ],
+          'squash-tm' => [
+            {
+              required: true,
+              name: :url,
+              type: String,
+              desc: 'The Squash TM webhook URL'
+            },
+            {
+              required: false,
+              name: :token,
+              type: String,
+              desc: 'The secret token'
+            }
           ]
         }
       end
@@ -955,6 +969,7 @@ module API
           ::Integrations::Redmine,
           ::Integrations::Slack,
           ::Integrations::SlackSlashCommands,
+          ::Integrations::SquashTm,
           ::Integrations::Teamcity,
           ::Integrations::Youtrack,
           ::Integrations::Zentao

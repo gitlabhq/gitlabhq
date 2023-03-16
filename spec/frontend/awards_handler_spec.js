@@ -6,10 +6,8 @@ import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_fra
 import loadAwardsHandler from '~/awards_handler';
 
 window.gl = window.gl || {};
-window.gon = window.gon || {};
 
 let awardsHandler = null;
-const urlRoot = gon.relative_url_root;
 
 describe('AwardsHandler', () => {
   useFakeRequestAnimationFrame();
@@ -95,9 +93,6 @@ describe('AwardsHandler', () => {
   });
 
   afterEach(() => {
-    // restore original url root value
-    gon.relative_url_root = urlRoot;
-
     clearEmojiMock();
 
     // Undo what we did to the shared <body>

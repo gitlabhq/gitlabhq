@@ -26,7 +26,6 @@ const actions = {
 describe('BoardContent', () => {
   let wrapper;
   let fakeApollo;
-  window.gon = {};
 
   const defaultState = {
     isShowingEpicsSwimlanes: false,

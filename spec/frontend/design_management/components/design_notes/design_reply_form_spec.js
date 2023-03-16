@@ -22,7 +22,6 @@ jest.mock('~/autosave');
 
 describe('Design reply form component', () => {
   let wrapper;
-  let originalGon;
 
   const findTextarea = () => wrapper.find('textarea');
   const findSubmitButton = () => wrapper.findComponent({ ref: 'submitButton' });
@@ -82,12 +81,10 @@ describe('Design reply form component', () => {
   }
 
   beforeEach(() => {
-    originalGon = window.gon;
     window.gon.current_user_id = 1;
   });
 
   afterEach(() => {
-    window.gon = originalGon;
     confirmAction.mockReset();
   });
 

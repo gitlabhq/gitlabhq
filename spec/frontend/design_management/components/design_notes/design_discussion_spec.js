@@ -27,7 +27,6 @@ const defaultMockDiscussion = {
 const DEFAULT_TODO_COUNT = 2;
 
 describe('Design discussions component', () => {
-  const originalGon = window.gon;
   let wrapper;
 
   const findDesignNotes = () => wrapper.findAllComponents(DesignNote);
@@ -97,7 +96,6 @@ describe('Design discussions component', () => {
   });
 
   afterEach(() => {
-    window.gon = originalGon;
     confirmAction.mockReset();
   });
 

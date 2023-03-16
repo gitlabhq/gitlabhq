@@ -28,6 +28,7 @@ class User < ApplicationRecord
   include UpdateHighestRole
   include HasUserType
   include Gitlab::Auth::Otp::Fortinet
+  include Gitlab::Auth::Otp::DuoAuth
   include RestrictedSignup
   include StripAttribute
   include EachBatch
@@ -1068,7 +1069,8 @@ class User < ApplicationRecord
   def two_factor_otp_enabled?
     otp_required_for_login? ||
     forti_authenticator_enabled?(self) ||
-    forti_token_cloud_enabled?(self)
+    forti_token_cloud_enabled?(self) ||
+    duo_auth_enabled?(self)
   end
 
   def two_factor_webauthn_enabled?

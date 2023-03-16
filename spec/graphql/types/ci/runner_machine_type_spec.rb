@@ -10,9 +10,9 @@ RSpec.describe GitlabSchema.types['CiRunnerMachine'], feature_category: :runner_
   it 'contains attributes related to a runner machine' do
     expected_fields = %w[
       architecture_name contacted_at created_at executor_name id ip_address platform_name revision
-      runner status version
+      runner status system_id version
     ]
 
-    expect(described_class).to include_graphql_fields(*expected_fields)
+    expect(described_class).to have_graphql_fields(*expected_fields)
   end
 end

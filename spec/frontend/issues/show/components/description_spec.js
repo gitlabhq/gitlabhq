@@ -48,7 +48,6 @@ const workItemTypesQueryHandler = jest.fn().mockResolvedValue(projectWorkItemTyp
 
 describe('Description component', () => {
   let wrapper;
-  let originalGon;
 
   Vue.use(VueApollo);
 
@@ -87,7 +86,6 @@ describe('Description component', () => {
   }
 
   beforeEach(() => {
-    originalGon = window.gon;
     window.gon = { sprite_icons: mockSpriteIcons };
 
     setWindowLocation(TEST_HOST);
@@ -103,8 +101,6 @@ describe('Description component', () => {
   });
 
   afterAll(() => {
-    window.gon = originalGon;
-
     $('.issuable-meta .flash-container').remove();
   });
 

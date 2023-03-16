@@ -1,14 +1,10 @@
-/* eslint-disable no-return-assign */
 import $ from 'jquery';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import syntaxHighlight from '~/syntax_highlight';
 
 describe('Syntax Highlighter', () => {
   const stubUserColorScheme = (value) => {
-    if (window.gon == null) {
-      window.gon = {};
-    }
-    return (window.gon.user_color_scheme = value);
+    window.gon.user_color_scheme = value;
   };
 
   // We have to bind `document.querySelectorAll` to `document` to not mess up the fn's context

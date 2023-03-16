@@ -564,11 +564,8 @@ describe('CE IssuesListApp component', () => {
     });
 
     describe('when all tokens are available', () => {
-      const originalGon = window.gon;
-
       beforeEach(() => {
         window.gon = {
-          ...originalGon,
           current_user_id: mockCurrentUser.id,
           current_user_fullname: mockCurrentUser.name,
           current_username: mockCurrentUser.username,
@@ -582,10 +579,6 @@ describe('CE IssuesListApp component', () => {
             isSignedIn: true,
           },
         });
-      });
-
-      afterEach(() => {
-        window.gon = originalGon;
       });
 
       it('renders all tokens alphabetically', () => {

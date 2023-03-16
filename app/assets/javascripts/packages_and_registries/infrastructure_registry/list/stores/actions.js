@@ -3,11 +3,11 @@ import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { DELETE_PACKAGE_ERROR_MESSAGE } from '~/packages_and_registries/shared/constants';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
+import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 import {
   FETCH_PACKAGES_LIST_ERROR_MESSAGE,
   DELETE_PACKAGE_SUCCESS_MESSAGE,
   DEFAULT_PAGE,
-  DEFAULT_PAGE_SIZE,
   MISSING_DELETE_PATH_ERROR,
   TERRAFORM_SEARCH_TYPE,
 } from '../constants';

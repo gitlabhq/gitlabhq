@@ -1015,18 +1015,12 @@ describe('DiffsStoreActions', () => {
   describe('setShowWhitespace', () => {
     const endpointUpdateUser = 'user/prefs';
     let putSpy;
-    let gon;
 
     beforeEach(() => {
       putSpy = jest.spyOn(axios, 'put');
-      gon = window.gon;
 
       mock.onPut(endpointUpdateUser).reply(HTTP_STATUS_OK, {});
       jest.spyOn(eventHub, '$emit').mockImplementation();
-    });
-
-    afterEach(() => {
-      window.gon = gon;
     });
 
     it('commits SET_SHOW_WHITESPACE', () => {

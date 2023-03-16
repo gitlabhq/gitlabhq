@@ -35,6 +35,10 @@ module Types
         Types::Ci::RunnerStatusEnum,
         null: false,
         description: 'Status of the runner machine.'
+      field :system_id, GraphQL::Types::String,
+        null: false,
+        description: 'System ID associated with the runner machine.',
+        method: :system_xid
       field :version, GraphQL::Types::String, null: true, description: 'Version of the runner.'
 
       def executor_name

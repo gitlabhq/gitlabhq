@@ -1016,6 +1016,12 @@ Settings['forti_token_cloud'] ||= Settingslogic.new({})
 Settings.forti_token_cloud['enabled'] = false if Settings.forti_token_cloud['enabled'].nil?
 
 #
+# DuoAuth
+#
+Settings['duo_auth'] ||= Settingslogic.new({})
+Settings.duo_auth['enabled'] = false if Settings.duo_auth['enabled'].nil?
+
+#
 # Extra customization
 #
 Settings['extra'] ||= Settingslogic.new({})

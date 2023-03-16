@@ -5,20 +5,17 @@ import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('~/api/tags_api.js', () => {
   let mock;
-  let originalGon;
 
   const projectId = 1;
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
-    originalGon = window.gon;
     window.gon = { api_version: 'v7' };
   });
 
   afterEach(() => {
     mock.restore();
-    window.gon = originalGon;
   });
 
   describe('getTag', () => {

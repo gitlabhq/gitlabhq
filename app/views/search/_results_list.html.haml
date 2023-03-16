@@ -2,7 +2,7 @@
   = render partial: "search/results/timeout"
 - elsif @search_results.respond_to?(:failed?) && @search_results.failed?
   = render partial: "search/results/error"
-- elsif @search_objects.to_a.empty?
+- elsif @search_objects.blank?
   = render partial: "search/results/empty"
 - else
   .gl-md-pl-5

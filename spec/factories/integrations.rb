@@ -274,6 +274,15 @@ FactoryBot.define do
     service_account_key { File.read('spec/fixtures/service_account.json') }
   end
 
+  factory :squash_tm_integration, class: 'Integrations::SquashTm' do
+    project
+    active { true }
+    type { 'Integrations::SquashTm' }
+
+    url { 'https://url-to-squash.com' }
+    token { 'squash_tm_token' }
+  end
+
   # this is for testing storing values inside properties, which is deprecated and will be removed in
   # https://gitlab.com/gitlab-org/gitlab/issues/29404
   trait :without_properties_callback do

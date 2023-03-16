@@ -31,6 +31,45 @@ Although a user can be a member of more than one group, each user account can be
 provisioned by only one group. As a result, a user is considered an enterprise
 user under one top-level group only.
 
+## Verified domains for groups
+
+The following automated processes use [verified domains](../project/pages/custom_domains_ssl_tls_certification/index.md) to run:
+
+- [Bypass email confirmation for provisioned users](#bypass-email-confirmation-for-provisioned-users).
+
+### Set up a verified domain
+
+Prerequisites:
+
+- A project with [GitLab Pages](../project/pages/index.md), served under the default Pages domain `*.gitlab.io`.
+- A custom domain name `example.com` or subdomain `subdomain.example.com`.
+- Access to your domain's server control panel to set up a DNS `TXT` record to verify your domain's ownership.
+
+Setting up a verified domain is similar to [setting up a custom domain on GitLab Pages](../project/pages/custom_domains_ssl_tls_certification/index.md). However, you must:
+
+- Only configure the DNS `TXT` record to verify the domain's ownership.
+- Ignore instructions for the `A`, `CNAME`, and `ALIAS` records.
+
+1. [Add a custom domain](../project/pages/custom_domains_ssl_tls_certification/index.md#1-add-a-custom-domain) for the matching email domain.
+   - The domain must match the email domain exactly. For example, if your email is `username@example.com`, verify the `example.com` domain.
+1. [Get a verification code](../project/pages/custom_domains_ssl_tls_certification/index.md#2-get-the-verification-code).
+1. [Set up the DNS `TXT`](../project/pages/custom_domains_ssl_tls_certification/index.md#3-set-up-dns-records) for your custom domain.
+1. [Verify the domain's ownership](../project/pages/custom_domains_ssl_tls_certification/index.md#4-verify-the-domains-ownership).
+1. Optional. [Add more domain aliases](../project/pages/custom_domains_ssl_tls_certification/index.md#add-more-domain-aliases).
+
+### View domains in group
+
+To view all configured domains in your group:
+
+1. On the top bar, select **Main menu > Groups** and find your top-level group.
+1. On the left sidebar, select **Settings > Domain Verification**.
+
+You then see:
+
+- A list of added domains.
+- The domains' status of **Verified** or **Unverified**.
+- The project where the domain has been configured.
+
 ## Manage enterprise users in a namespace
 
 A top-level Owner of a namespace on a paid plan can retrieve information about and

@@ -52,7 +52,7 @@ import {
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import { IssuableListTabs } from '~/vue_shared/issuable/list/constants';
+import { DEFAULT_PAGE_SIZE, IssuableListTabs } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
@@ -62,7 +62,6 @@ import {
   i18n,
   ISSUE_REFERENCE,
   MAX_LIST_SIZE,
-  PAGE_SIZE,
   PARAM_FIRST_PAGE_SIZE,
   PARAM_LAST_PAGE_SIZE,
   PARAM_PAGE_AFTER,
@@ -184,7 +183,7 @@ export default {
       showBulkEditSidebar: false,
       sortKey: CREATED_DESC,
       state: STATUS_OPEN,
-      pageSize: PAGE_SIZE,
+      pageSize: DEFAULT_PAGE_SIZE,
     };
   },
   apollo: {
@@ -453,7 +452,7 @@ export default {
       return this.issues.length > 0 && (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage);
     },
     showPageSizeControls() {
-      return this.currentTabCount > PAGE_SIZE;
+      return this.currentTabCount > DEFAULT_PAGE_SIZE;
     },
     sortOptions() {
       return getSortOptions({

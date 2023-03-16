@@ -177,7 +177,6 @@ describe('Monitoring store actions', () => {
     });
 
     it('dispatches when feature metricsDashboardAnnotations is on', () => {
-      const origGon = window.gon;
       window.gon = { features: { metricsDashboardAnnotations: true } };
 
       return testAction(
@@ -190,9 +189,7 @@ describe('Monitoring store actions', () => {
           { type: 'fetchDashboard' },
           { type: 'fetchAnnotations' },
         ],
-      ).then(() => {
-        window.gon = origGon;
-      });
+      );
     });
   });
 

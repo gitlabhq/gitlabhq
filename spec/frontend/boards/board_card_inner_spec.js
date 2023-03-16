@@ -312,10 +312,6 @@ describe('Board card component', () => {
         });
       });
 
-      afterEach(() => {
-        global.gon.default_avatar_url = null;
-      });
-
       it('displays defaults avatar if users avatar is null', () => {
         expect(wrapper.find('.board-card-assignee img').exists()).toBe(true);
         expect(wrapper.find('.board-card-assignee img').attributes('src')).toBe(

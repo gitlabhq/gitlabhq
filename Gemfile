@@ -600,3 +600,5 @@ install_if -> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.0.0") } do
   # BufferedIO patch
   gem 'net-protocol', '~> 0.1.3'
 end
+
+gem 'duo_api', '~> 1.3'

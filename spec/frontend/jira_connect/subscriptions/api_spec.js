@@ -17,7 +17,6 @@ jest.mock('~/jira_connect/subscriptions/utils', () => ({
 
 describe('JiraConnect API', () => {
   let axiosMock;
-  let originalGon;
   let response;
 
   const mockAddPath = 'addPath';
@@ -29,13 +28,11 @@ describe('JiraConnect API', () => {
 
   beforeEach(() => {
     axiosMock = new MockAdapter(axiosInstance);
-    originalGon = window.gon;
     window.gon = { api_version: 'v4' };
   });
 
   afterEach(() => {
     axiosMock.restore();
-    window.gon = originalGon;
     response = null;
   });
 

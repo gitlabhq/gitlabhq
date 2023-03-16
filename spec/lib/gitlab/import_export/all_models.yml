@@ -570,6 +570,7 @@ project:
 - external_wiki_integration
 - mock_ci_integration
 - mock_monitoring_integration
+- squash_tm_integration
 - forked_to_members
 - forked_from_project
 - forks

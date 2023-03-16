@@ -252,12 +252,10 @@ describe('IDE services', () => {
 
   describe('pingUsage', () => {
     let mock;
-    let relativeUrlRoot;
     const TEST_RELATIVE_URL_ROOT = 'blah-blah';
 
     beforeEach(() => {
       jest.spyOn(axios, 'post');
-      relativeUrlRoot = gon.relative_url_root;
       gon.relative_url_root = TEST_RELATIVE_URL_ROOT;
 
       mock = new MockAdapter(axios);
@@ -265,7 +263,6 @@ describe('IDE services', () => {
 
     afterEach(() => {
       mock.restore();
-      gon.relative_url_root = relativeUrlRoot;
     });
 
     it('posts to usage endpoint', () => {

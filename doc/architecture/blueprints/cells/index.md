@@ -179,7 +179,7 @@ Cells is a fundamental architecture change that impacts other sections and stage
 Based on discussions with other groups the net impact of introducing Cells and a new entity called organizations is mostly neutral. It may slow down development in some areas. We did not discover major blockers for other teams.
 
 1. We need to resolve naming conflicts (proposal is TBD)
-1. Cells requires introducing Organizations. Organizations are a new entity **above** top-level groups. Because this is a new entity, it may impact the ability to consolidate settings for Group::Organization and influence their decision on [how to approach introducing a an organization](https://gitlab.com/gitlab-org/gitlab/-/issues/376285#approach-2-workspace-is-built-on-top-of-top-level-groups)
+1. Cells requires introducing Organizations. Organizations are a new entity **above** top-level groups. Because this is a new entity, it may impact the ability to consolidate settings for Group::Organization and influence their decision on [how to approach introducing a an organization](https://gitlab.com/gitlab-org/gitlab/-/issues/376285#approach-2-organization-is-built-on-top-of-top-level-groups)
 1. Organizations may make it slightly easier for Fulfillment to realize their billing plans.
 
 ### Impact on Group::Organization

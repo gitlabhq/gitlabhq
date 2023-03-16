@@ -201,7 +201,7 @@ Example commit message template that can be used on your machine that embodies t
 To make sure that your merge request can be approved, please ensure that it meets
 the contribution acceptance criteria below:
 
-1. The change is as small as possible. 
+1. The change is as small as possible.
 1. If the merge request contains more than 500 changes:
    - Explain the reason
    - Mention a maintainer

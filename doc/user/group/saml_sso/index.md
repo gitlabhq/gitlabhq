@@ -435,7 +435,7 @@ convert the information to XML. An example SAML response is shown here.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238461) in GitLab 15.4.
 
 By default, users provisioned with SAML or SCIM are sent a verification email to verify their identity. Instead, you can
-[configure GitLab with a custom domain](../../project/pages/custom_domains_ssl_tls_certification/index.md) and GitLab
+[configure GitLab with a custom domain](../../enterprise_user/index.md#set-up-a-verified-domain) and GitLab
 automatically confirms user accounts. Users still receive an
 [enterprise user](../../enterprise_user/index.md) welcome email. Confirmation is
 bypassed for users:

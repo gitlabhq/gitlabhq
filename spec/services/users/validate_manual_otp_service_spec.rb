@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::ValidateManualOtpService do
+RSpec.describe Users::ValidateManualOtpService, feature_category: :system_access do
   let_it_be(:user) { create(:user) }
 
   let(:otp_code) { 42 }
@@ -32,6 +32,20 @@ RSpec.describe Users::ValidateManualOtpService do
 
       validate
     end
+
+    it 'handles unexpected error' do
+      error_message = "boom!"
+
+      expect_next_instance_of(::Gitlab::Auth::Otp::Strategies::FortiAuthenticator::ManualOtp) do |strategy|
+        expect(strategy).to receive(:validate).with(otp_code).once.and_raise(StandardError, error_message)
+      end
+      expect(Gitlab::ErrorTracking).to receive(:log_exception)
+
+      result = validate
+
+      expect(result[:status]).to eq(:error)
+      expect(result[:message]).to eq(error_message)
+    end
   end
 
   context 'FortiTokenCloud' do
@@ -49,16 +63,23 @@ RSpec.describe Users::ValidateManualOtpService do
     end
   end
 
-  context 'unexpected error' do
+  context 'DuoAuth' do
     before do
-      stub_feature_flags(forti_authenticator: user)
-      allow(::Gitlab.config.forti_authenticator).to receive(:enabled).and_return(true)
+      allow(::Gitlab.config.duo_auth).to receive(:enabled).and_return(true)
     end
 
-    it 'returns error' do
+    it 'calls DuoAuth strategy' do
+      expect_next_instance_of(::Gitlab::Auth::Otp::Strategies::DuoAuth::ManualOtp) do |strategy|
+        expect(strategy).to receive(:validate).with(otp_code).once
+      end
+
+      validate
+    end
+
+    it "handles unexpected error" do
       error_message = "boom!"
 
-      expect_next_instance_of(::Gitlab::Auth::Otp::Strategies::FortiAuthenticator::ManualOtp) do |strategy|
+      expect_next_instance_of(::Gitlab::Auth::Otp::Strategies::DuoAuth::ManualOtp) do |strategy|
         expect(strategy).to receive(:validate).with(otp_code).once.and_raise(StandardError, error_message)
       end
       expect(Gitlab::ErrorTracking).to receive(:log_exception)

@@ -62,7 +62,7 @@ During onboarding, you can specify an AWS KMS encryption key stored in your own 
 
 GitLab Dedicated offers the following [compliance certifications](https://about.gitlab.com/security/):
 
-- SOC 2 Type 1 Report (Security and Confidentiality criteria) 
+- SOC 2 Type 1 Report (Security and Confidentiality criteria)
 - ISO/IEC 27001:2013
 - ISO/IEC 27017:2015
 - ISO/IEC 27018:2019

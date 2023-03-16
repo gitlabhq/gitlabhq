@@ -34,7 +34,6 @@ describe('Snippet header component', () => {
   let mock;
   let mockApollo;
 
-  const originalRelativeUrlRoot = gon.relative_url_root;
   const reportAbusePath = '/-/snippets/42/mark_as_spam';
   const canReportSpam = true;
 
@@ -129,7 +128,6 @@ describe('Snippet header component', () => {
   afterEach(() => {
     mockApollo = null;
     mock.restore();
-    gon.relative_url_root = originalRelativeUrlRoot;
   });
 
   it('renders itself', () => {

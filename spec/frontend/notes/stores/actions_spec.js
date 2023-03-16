@@ -1453,10 +1453,6 @@ describe('Actions Notes Store', () => {
   describe('fetchDiscussions', () => {
     const discussion = { notes: [] };
 
-    afterEach(() => {
-      window.gon = {};
-    });
-
     it('updates the discussions and dispatches `updateResolvableDiscussionsCounts`', () => {
       axiosMock.onAny().reply(HTTP_STATUS_OK, { discussion });
       return testAction(

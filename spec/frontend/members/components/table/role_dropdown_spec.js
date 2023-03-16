@@ -70,15 +70,8 @@ describe('RoleDropdown', () => {
   const findDropdownToggle = () => wrapper.find('button[aria-haspopup="menu"]');
   const findDropdown = () => wrapper.findComponent(GlDropdown);
 
-  let originalGon;
-
   beforeEach(() => {
-    originalGon = window.gon;
     gon.features = { showOverageOnRolePromotion: true };
-  });
-
-  afterEach(() => {
-    window.gon = originalGon;
   });
 
   describe('when dropdown is open', () => {

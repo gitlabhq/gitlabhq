@@ -16,7 +16,6 @@ const RELATIVE_URL_ROOT = '/gitlab';
 
 describe('IDE store file actions', () => {
   let mock;
-  let originalGon;
   let store;
   let router;
 
@@ -24,9 +23,7 @@ describe('IDE store file actions', () => {
     stubPerformanceWebAPI();
 
     mock = new MockAdapter(axios);
-    originalGon = window.gon;
     window.gon = {
-      ...window.gon,
       relative_url_root: RELATIVE_URL_ROOT,
     };
 
@@ -44,7 +41,6 @@ describe('IDE store file actions', () => {
 
   afterEach(() => {
     mock.restore();
-    window.gon = originalGon;
   });
 
   describe('closeFile', () => {

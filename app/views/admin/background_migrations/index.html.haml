@@ -5,7 +5,7 @@
   .gl-flex-grow-1
     %h3= s_('BackgroundMigrations|Background Migrations')
     %p.light.gl-mb-0
-      - learnmore_link = help_page_path('user/admin_area/monitoring/background_migrations')
+      - learnmore_link = help_page_path('update/background_migrations')
       - learnmore_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: learnmore_link }
       = html_escape(s_('BackgroundMigrations|Background migrations are used to perform data migrations whenever a migration exceeds the time limits in our guidelines. %{linkStart}Learn more%{linkEnd}')) % { linkStart: learnmore_link_start, linkEnd: '</a>'.html_safe }
 

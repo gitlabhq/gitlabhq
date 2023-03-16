@@ -91,7 +91,6 @@ describe('MrWidgetOptions', () => {
     // eslint-disable-next-line @gitlab/vtu-no-explicit-wrapper-destroy
     wrapper.destroy();
     gl.mrWidgetData = {};
-    gon.features = {};
   });
 
   const createComponent = (mrData = mockData, options = {}, data = {}, fullMount = true) => {
@@ -1266,10 +1265,6 @@ describe('MrWidgetOptions', () => {
     });
 
     describe('widget container', () => {
-      afterEach(() => {
-        delete window.gon.features.refactorSecurityExtension;
-      });
-
       it('should not be displayed when the refactor_security_extension feature flag is turned off', () => {
         createComponent();
         expect(findWidgetContainer().exists()).toBe(false);

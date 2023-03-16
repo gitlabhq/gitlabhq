@@ -285,3 +285,29 @@ To resolve this issue on GitLab self-managed, follow one of the solutions below,
     - Contact the [Jira Software Cloud support](https://support.atlassian.com/jira-software-cloud/) and ask to trigger a new installed lifecycle event for the GitLab for Jira Cloud app in your namespace.
   - In all GitLab versions:
     - Re-install the GitLab for Jira Cloud app. This might remove all already synced development panel data.
+
+## Security considerations
+
+The GitLab for Jira Cloud app connects GitLab and Jira, as data must be shared between the two applications and access must be granted in both directions.
+
+## Access to GitLab through OAuth
+
+GitLab does not share an access token with Jira. However, users must authenticate via OAuth to configure the app.
+
+An access token is retrieved via [PKCE](https://www.rfc-editor.org/rfc/rfc7636) OAuth flow, and stored only on the client side.
+The app-frontend that initializes the OAuth flow is a JavaScript application, which is loaded from GitLab through an iframe on Jira.
+
+The OAuth application requires the `api` scope that grants complete read/write access to the API, including to all groups and projects, the container registry, and the package registry.
+However, the GitLab for Jira Cloud app only uses this access to:
+
+- Display namespaces to be linked.
+- Link namespaces.
+
+Access through OAuth is only needed for the time a user configures the GitLab for Jira Cloud app. For more information, see [Access token expiration](../oauth_provider.md#access-token-expiration).
+
+## Access to Jira through access token
+
+Jira shares an access token with GitLab to authenticate and authorize data pushes to Jira.
+As part of the app installation process, Jira sends a handshake request to GitLab containing the access token.
+The handshake is signed with an [asymmetric JWT](https://developer.atlassian.com/cloud/jira/platform/understanding-jwt-for-connect-apps/)
+and the access token is stored encrypted with `AES256-GCM` on GitLab.

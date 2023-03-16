@@ -42,7 +42,7 @@ For self-managed GitLab, before you can use GitLab for your Terraform state file
 
 - An administrator must [set up Terraform state storage](../../../administration/terraform_state.md).
 - You must enable the **Infrastructure** menu for your project. Go to **Settings > General**,
-  expand **Visibility, project features, permissions**, and under **Operations**, turn on the toggle.
+  expand **Visibility, project features, permissions**, and under **Infrastructure**, turn on the toggle.
 
 ## Initialize a Terraform state as a backend by using GitLab CI/CD
 

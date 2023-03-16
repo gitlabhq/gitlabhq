@@ -68,10 +68,6 @@ describe('Dropdown User', () => {
         '/gitlab_directory/-/autocomplete/users.json',
       );
     });
-
-    afterEach(() => {
-      window.gon = {};
-    });
   });
 
   describe('hideCurrentUser', () => {

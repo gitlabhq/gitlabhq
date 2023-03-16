@@ -29,7 +29,6 @@ const $route = {
 const mutate = jest.fn().mockResolvedValue();
 
 describe('Design management design sidebar component', () => {
-  const originalGon = window.gon;
   let wrapper;
 
   const findDiscussions = () => wrapper.findAllComponents(DesignDiscussion);
@@ -65,10 +64,6 @@ describe('Design management design sidebar component', () => {
 
   beforeEach(() => {
     window.gon = { current_user_id: 1 };
-  });
-
-  afterEach(() => {
-    window.gon = originalGon;
   });
 
   it('renders participants', () => {

@@ -14,5 +14,13 @@ module Ci
 
     validates :build, presence: true
     validates :runner_machine, presence: true
+
+    scope :for_build, ->(build_id) { where(build_id: build_id) }
+
+    def self.pluck_build_id_and_runner_machine_id
+      select(:build_id, :runner_machine_id)
+        .pluck(:build_id, :runner_machine_id)
+        .to_h
+    end
   end
 end

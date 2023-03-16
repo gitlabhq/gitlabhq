@@ -17,7 +17,6 @@ import UserAvatarList from '~/vue_shared/components/user_avatar/user_avatar_list
 Vue.use(VueApollo);
 
 describe('MRWidget approvals summary', () => {
-  const originalUserId = gon.current_user_id;
   let wrapper;
 
   const createComponent = (data = approvedByCurrentUser) => {
@@ -29,10 +28,6 @@ describe('MRWidget approvals summary', () => {
   };
 
   const findAvatars = () => wrapper.findComponent(UserAvatarList);
-
-  afterEach(() => {
-    gon.current_user_id = originalUserId;
-  });
 
   describe('when approved', () => {
     beforeEach(async () => {

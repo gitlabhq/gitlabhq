@@ -11,8 +11,6 @@ import '~/commons/bootstrap';
 function factory(routeArg) {
   Vue.use(VueRouter);
 
-  window.gon = { sprite_icons: '' };
-
   const router = createRouter('/');
   if (routeArg !== undefined) {
     router.push(routeArg);
@@ -36,10 +34,6 @@ function factory(routeArg) {
 }
 
 describe('Design management router', () => {
-  afterEach(() => {
-    window.location.hash = '';
-  });
-
   describe.each([['/'], [{ name: DESIGNS_ROUTE_NAME }]])('root route', (routeArg) => {
     it('pushes home component', () => {
       const wrapper = factory(routeArg);

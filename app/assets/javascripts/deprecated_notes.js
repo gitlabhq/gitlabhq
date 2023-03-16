@@ -53,9 +53,9 @@ const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
 const REGEX_QUICK_ACTIONS = /^\/\w+.*$/gm;
 
 export default class Notes {
-  static initialize(notes_url, note_ids, last_fetched_at, view, enableGFM) {
+  static initialize(notes_url, last_fetched_at, view, enableGFM) {
     if (!this.instance) {
-      this.instance = new Notes(notes_url, note_ids, last_fetched_at, view, enableGFM);
+      this.instance = new Notes(notes_url, last_fetched_at, view, enableGFM);
     }
   }
 
@@ -63,7 +63,7 @@ export default class Notes {
     return this.instance;
   }
 
-  constructor(notes_url, note_ids, last_fetched_at, view, enableGFM = defaultAutocompleteConfig) {
+  constructor(notes_url, last_fetched_at, view, enableGFM = defaultAutocompleteConfig) {
     this.updateTargetButtons = this.updateTargetButtons.bind(this);
     this.updateComment = this.updateComment.bind(this);
     this.visibilityChange = this.visibilityChange.bind(this);
@@ -85,9 +85,9 @@ export default class Notes {
     this.postComment = this.postComment.bind(this);
     this.clearAlertWrapper = this.clearAlert.bind(this);
     this.onHashChange = this.onHashChange.bind(this);
+    this.note_ids = [];
 
     this.notes_url = notes_url;
-    this.note_ids = note_ids;
     this.enableGFM = enableGFM;
     // Used to keep track of updated notes while people are editing things
     this.updatedNotesTrackingMap = {};
@@ -449,8 +449,6 @@ export default class Notes {
         return;
       }
 
-      this.note_ids.push(noteEntity.id);
-
       if ($notesList.length) {
         $notesList.find('.system-note.being-posted').remove();
       }
@@ -497,7 +495,6 @@ export default class Notes {
     if (!Notes.isNewNote(noteEntity, this.note_ids)) {
       return;
     }
-    this.note_ids.push(noteEntity.id);
 
     const form =
       $form || $(`.js-discussion-note-form[data-discussion-id="${noteEntity.discussion_id}"]`);
@@ -745,7 +742,7 @@ export default class Notes {
 
     $noteAvatar.append($targetNoteBadge);
     this.revertNoteEditForm($targetNote);
-    renderGFM($noteEntityEl.get(0));
+    renderGFM(Notes.getNodeToRender($noteEntityEl));
     // Find the note's `li` element by ID and replace it with the updated HTML
     const $note_li = $(`.note-row-${noteEntity.id}`);
 
@@ -1396,8 +1393,28 @@ export default class Notes {
   /**
    * Check if note does not exist on page
    */
-  static isNewNote(noteEntity, noteIds) {
-    return $.inArray(noteEntity.id, noteIds) === -1;
+  static isNewNote(noteEntity, note_ids) {
+    if (note_ids.length === 0) {
+      Notes.loadNotesIds(note_ids);
+    }
+    const isNewEntry = $.inArray(noteEntity.id, note_ids) === -1;
+    if (isNewEntry) {
+      note_ids.push(noteEntity.id);
+    }
+    return isNewEntry;
+  }
+
+  /**
+   * Load notes ids
+   */
+  static loadNotesIds(note_ids) {
+    const $notesList = $('.main-notes-list').children();
+    for (const $noteItem of $notesList) {
+      if (Notes.isNodeTypeElement($noteItem)) {
+        const noteId = parseInt($noteItem.id.split('_')[1], 10);
+        note_ids.push(noteId);
+      }
+    }
   }
 
   /**
@@ -1422,7 +1439,7 @@ export default class Notes {
     const $note = $(noteHtml);
 
     $note.addClass('fade-in-full');
-    renderGFM($note.get(0));
+    renderGFM(Notes.getNodeToRender($note));
     $notesList.append($note);
     return $note;
   }
@@ -1431,9 +1448,18 @@ export default class Notes {
     const $updatedNote = $(noteHtml);
 
     $updatedNote.addClass('fade-in');
-    renderGFM($updatedNote.get(0));
+    renderGFM(Notes.getNodeToRender($updatedNote));
     $note.replaceWith($updatedNote);
     return $updatedNote;
+  }
+
+  static getNodeToRender($note) {
+    for (const $item of $note) {
+      if (Notes.isNodeTypeElement($item)) {
+        return $item;
+      }
+    }
+    return '';
   }
 
   /**
@@ -1828,5 +1854,12 @@ export default class Notes {
       });
 
     return $closeBtn.text($closeBtn.data('originalText'));
+  }
+
+  /**
+   * Function to check if node is element to avoid comment and text
+   */
+  static isNodeTypeElement($node) {
+    return $node.nodeType === Node.ELEMENT_NODE;
   }
 }

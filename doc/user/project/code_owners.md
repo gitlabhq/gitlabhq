@@ -385,6 +385,10 @@ model/db   @database
 README.md  @docs
 ```
 
+## Technical Resources
+
+[Code Owners development guidelines](../../../ee/development/code_owners/index.md)
+
 ## Troubleshooting
 
 ### Approvals shown as optional

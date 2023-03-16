@@ -11722,6 +11722,7 @@ CI/CD variables for a GitLab instance.
 | <a id="cijobrefpath"></a>`refPath` | [`String`](#string) | Path to the ref. |
 | <a id="cijobretried"></a>`retried` | [`Boolean`](#boolean) | Indicates that the job has been retried. |
 | <a id="cijobretryable"></a>`retryable` | [`Boolean!`](#boolean) | Indicates the job can be retried. |
+| <a id="cijobrunnermachine"></a>`runnerMachine` **{warning-solid}** | [`CiRunnerMachine`](#cirunnermachine) | **Introduced** in 15.11. This feature is in Alpha. It can be changed or removed at any time. Runner machine assigned to the job. |
 | <a id="cijobscheduledat"></a>`scheduledAt` | [`Time`](#time) | Schedule for the build. |
 | <a id="cijobschedulingtype"></a>`schedulingType` | [`String`](#string) | Type of job scheduling. Value is `dag` if the job uses the `needs` keyword, and `stage` otherwise. |
 | <a id="cijobshortsha"></a>`shortSha` | [`String!`](#string) | Short SHA1 ID of the commit. |
@@ -11946,6 +11947,7 @@ Returns [`CiRunnerStatus!`](#cirunnerstatus).
 | <a id="cirunnermachinerevision"></a>`revision` | [`String`](#string) | Revision of the runner. |
 | <a id="cirunnermachinerunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner configuration for the runner machine. |
 | <a id="cirunnermachinestatus"></a>`status` | [`CiRunnerStatus!`](#cirunnerstatus) | Status of the runner machine. |
+| <a id="cirunnermachinesystemid"></a>`systemId` | [`String!`](#string) | System ID associated with the runner machine. |
 | <a id="cirunnermachineversion"></a>`version` | [`String`](#string) | Version of the runner. |
 
 ### `CiSecureFileRegistry`
@@ -22787,6 +22789,15 @@ Mode of a commit action.
 | <a id="commitencodingbase64"></a>`BASE64` | Base64 encoding. |
 | <a id="commitencodingtext"></a>`TEXT` | Text encoding. |
 
+### `ComplianceFrameworkPresenceFilter`
+
+ComplianceFramework of a project for filtering.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="complianceframeworkpresencefilterany"></a>`ANY` | Any compliance framework is assigned. |
+| <a id="complianceframeworkpresencefilternone"></a>`NONE` | No compliance framework is assigned. |
+
 ### `ComplianceViolationReason`
 
 Reason for the compliance violation.
@@ -24181,6 +24192,7 @@ State of a Sentry error.
 | <a id="servicetypeshimo_service"></a>`SHIMO_SERVICE` | ShimoService type. |
 | <a id="servicetypeslack_service"></a>`SLACK_SERVICE` | SlackService type. |
 | <a id="servicetypeslack_slash_commands_service"></a>`SLACK_SLASH_COMMANDS_SERVICE` | SlackSlashCommandsService type. |
+| <a id="servicetypesquash_tm_service"></a>`SQUASH_TM_SERVICE` | SquashTmService type. |
 | <a id="servicetypeteamcity_service"></a>`TEAMCITY_SERVICE` | TeamcityService type. |
 | <a id="servicetypeunify_circuit_service"></a>`UNIFY_CIRCUIT_SERVICE` | UnifyCircuitService type. |
 | <a id="servicetypewebex_teams_service"></a>`WEBEX_TEAMS_SERVICE` | WebexTeamsService type. |
@@ -26102,6 +26114,7 @@ Attributes for defining a CI/CD variable.
 | ---- | ---- | ----------- |
 | <a id="complianceframeworkfiltersid"></a>`id` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | ID of the compliance framework. |
 | <a id="complianceframeworkfiltersnot"></a>`not` | [`NegatedComplianceFrameworkFilters`](#negatedcomplianceframeworkfilters) | Negated compliance framework filter input. |
+| <a id="complianceframeworkfilterspresencefilter"></a>`presenceFilter` | [`ComplianceFrameworkPresenceFilter`](#complianceframeworkpresencefilter) | Checks presence of compliance framework of the project, "none" and "any" values are supported. |
 
 ### `ComplianceFrameworkInput`
 

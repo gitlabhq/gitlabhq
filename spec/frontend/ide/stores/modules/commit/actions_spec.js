@@ -57,7 +57,6 @@ describe('IDE commit module actions', () => {
 
   afterEach(() => {
     unmockTracking();
-    delete gon.api_version;
     mock.restore();
   });
 
@@ -85,17 +84,10 @@ describe('IDE commit module actions', () => {
   });
 
   describe('updateBranchName', () => {
-    let originalGon;
-
     beforeEach(() => {
-      originalGon = window.gon;
-      window.gon = { current_username: 'johndoe' };
+      window.gon.current_username = 'johndoe';
 
       store.state.currentBranchId = 'main';
-    });
-
-    afterEach(() => {
-      window.gon = originalGon;
     });
 
     it('updates store with new branch name', async () => {

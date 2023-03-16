@@ -34,11 +34,11 @@ As ClickHouse has already been selected for use at GitLab, our main goal now is 
 The following are links to proposals in the form of blueprints that address technical challenges to using ClickHouse across a wide variety of features.
 
 1. Scalable data ingestion pipeline.
-    - How do we ingest large volumes of data from GitLab into ClickHouse either directly or by replicating existing data? 
+    - How do we ingest large volumes of data from GitLab into ClickHouse either directly or by replicating existing data?
 1. Supporting ClickHouse for self-managed installations.
     - For which use-cases and scales does it make sense to run ClickHouse for self-managed and what are the associated costs?
     - How can we best support self-managed installation of ClickHouse for different types/sizes of environments?
-    - Consider using the [Opstrace ClickHouse operator](https://gitlab.com/gitlab-org/opstrace/opstrace/-/tree/main/clickhouse-operator) as the basis for a canonical distribution. 
+    - Consider using the [Opstrace ClickHouse operator](https://gitlab.com/gitlab-org/opstrace/opstrace/-/tree/main/clickhouse-operator) as the basis for a canonical distribution.
     - Consider exposing Clickhouse backend as [GitLab Plus](https://gitlab.com/groups/gitlab-org/-/epics/308) to combine benefits of using self-managed instance and GitLab-managed database.
     - Should we develop abstractions for querying and data ingestion to avoid requiring ClickHouse for small-scale installations?
 1. Abstraction layer for features to leverage both ClickHouse or PostreSQL.

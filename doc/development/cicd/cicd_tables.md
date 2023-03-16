@@ -27,7 +27,7 @@ so the best solution is to create the tables using raw SQL:
         id bigint NOT NULL,
         partition_id bigint NOT NULL,
         build_id bigint NOT NULL,
-        PRIMARY KEY (partition_id, id),
+        PRIMARY KEY (id, partition_id),
         CONSTRAINT fk_bb490f12fe_p FOREIGN KEY (partition_id, build_id)
            REFERENCES ci_builds(partition_id, id)
            ON UPDATE CASCADE ON DELETE CASCADE
@@ -51,6 +51,8 @@ When creating the routing table:
 - Each new table needs a `partition_id` column and its value must equal
   the value from the related association. In this example, that is `ci_builds`. All resources
   belonging to a pipeline share the same `partition_id` value.
+- The primary key must have the columns ordered this way to allow efficient
+  search only by `id`.
 - The foreign key constraint must include the `ON UPDATE CASCADE` option because
   the `partition_id` value should be able to update it for re-balancing the
   partitions.

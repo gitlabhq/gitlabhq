@@ -63,35 +63,6 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
       expect(gitlab_shell.repository_exists?('default', old_project_repository_path)).to be(false)
       expect(gitlab_shell.repository_exists?('default', old_repository_path)).to be(false)
     end
-
-    context ':repack_after_shard_migration feature flag disabled' do
-      before do
-        stub_feature_flags(repack_after_shard_migration: false)
-      end
-
-      it 'does not enqueue a GC run' do
-        expect { subject.execute }
-          .not_to change { Projects::GitGarbageCollectWorker.jobs.count }
-      end
-    end
-
-    context ':repack_after_shard_migration feature flag enabled' do
-      before do
-        stub_feature_flags(repack_after_shard_migration: true)
-      end
-
-      it 'does not enqueue a GC run if housekeeping is disabled' do
-        stub_application_setting(housekeeping_enabled: false)
-
-        expect { subject.execute }
-          .not_to change { Projects::GitGarbageCollectWorker.jobs.count }
-      end
-
-      it 'enqueues a GC run' do
-        expect { subject.execute }
-          .to change { Projects::GitGarbageCollectWorker.jobs.count }.by(1)
-      end
-    end
   end
 
   context 'when the filesystems are the same' do

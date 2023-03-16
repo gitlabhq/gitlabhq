@@ -337,21 +337,15 @@ describe('IssuesDashboardApp component', () => {
       username: 'root',
       avatar_url: 'avatar/url',
     };
-    const originalGon = window.gon;
 
     beforeEach(() => {
       window.gon = {
-        ...originalGon,
         current_user_id: mockCurrentUser.id,
         current_user_fullname: mockCurrentUser.name,
         current_username: mockCurrentUser.username,
         current_user_avatar_url: mockCurrentUser.avatar_url,
       };
       mountComponent();
-    });
-
-    afterEach(() => {
-      window.gon = originalGon;
     });
 
     it('renders all tokens alphabetically', () => {

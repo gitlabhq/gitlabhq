@@ -6,12 +6,7 @@ import { isNavigatingAway } from '~/lib/utils/is_navigating_away';
 jest.mock('~/lib/utils/is_navigating_away');
 
 describe('getSuppressNetworkErrorsDuringNavigationLink', () => {
-  const originalGon = window.gon;
   let subscription;
-
-  beforeEach(() => {
-    window.gon = originalGon;
-  });
 
   afterEach(() => {
     if (subscription) {

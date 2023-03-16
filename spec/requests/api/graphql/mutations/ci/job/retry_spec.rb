@@ -16,12 +16,12 @@ RSpec.describe 'JobRetry', feature_category: :continuous_integration do
       id: job.to_global_id.to_s
     }
     graphql_mutation(:job_retry, variables,
-                     <<-QL
+      <<-QL
                        errors
                        job {
                          id
                        }
-                     QL
+      QL
     )
   end
 
@@ -57,12 +57,12 @@ RSpec.describe 'JobRetry', feature_category: :continuous_integration do
       }
 
       graphql_mutation(:job_retry, variables,
-                      <<-QL
+        <<-QL
                         errors
                         job {
                           id
                         }
-                      QL
+        QL
       )
     end
 

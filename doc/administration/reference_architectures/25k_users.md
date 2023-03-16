@@ -1809,7 +1809,7 @@ Updates to example must be made at:
 
    # Redis
    ## Redis connection details
-   ## First cluster that will host the cache
+   ## First cluster that will host the cache data
    gitlab_rails['redis_cache_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_FIRST_CLUSTER>@gitlab-redis-cache'
 
    gitlab_rails['redis_cache_sentinels'] = [
@@ -1818,22 +1818,11 @@ Updates to example must be made at:
      {host: '10.6.0.53', port: 26379},
    ]
 
-   ## Second cluster that will host the persistent queues, shared state, and actioncable
-   gitlab_rails['redis_queues_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'
-   gitlab_rails['redis_shared_state_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'
-   gitlab_rails['redis_actioncable_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'
+   ## Second cluster that hosts all other persistent data
+   redis['master_name'] = 'gitlab-redis-persistent'
+   redis['master_password'] = '<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>'
 
-   gitlab_rails['redis_queues_sentinels'] = [
-     {host: '10.6.0.61', port: 26379},
-     {host: '10.6.0.62', port: 26379},
-     {host: '10.6.0.63', port: 26379},
-   ]
-   gitlab_rails['redis_shared_state_sentinels'] = [
-     {host: '10.6.0.61', port: 26379},
-     {host: '10.6.0.62', port: 26379},
-     {host: '10.6.0.63', port: 26379},
-   ]
-   gitlab_rails['redis_actioncable_sentinels'] = [
+   gitlab_rails['redis_sentinels'] = [
      {host: '10.6.0.61', port: 26379},
      {host: '10.6.0.62', port: 26379},
      {host: '10.6.0.63', port: 26379},
@@ -1996,7 +1985,7 @@ On each node perform the following:
    gitlab_rails['auto_migrate'] = false
 
    ## Redis connection details
-   ## First cluster that will host the cache
+   ## First cluster that will host the cache data
    gitlab_rails['redis_cache_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_FIRST_CLUSTER>@gitlab-redis-cache'
 
    gitlab_rails['redis_cache_sentinels'] = [
@@ -2005,22 +1994,11 @@ On each node perform the following:
      {host: '10.6.0.53', port: 26379},
    ]
 
-   ## Second cluster that will host the queues, shared state, and actionable
-   gitlab_rails['redis_queues_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'
-   gitlab_rails['redis_shared_state_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'
-   gitlab_rails['redis_actioncable_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'
+   ## Second cluster that hosts all other persistent data
+   redis['master_name'] = 'gitlab-redis-persistent'
+   redis['master_password'] = '<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>'
 
-   gitlab_rails['redis_queues_sentinels'] = [
-     {host: '10.6.0.61', port: 26379},
-     {host: '10.6.0.62', port: 26379},
-     {host: '10.6.0.63', port: 26379},
-   ]
-   gitlab_rails['redis_shared_state_sentinels'] = [
-     {host: '10.6.0.61', port: 26379},
-     {host: '10.6.0.62', port: 26379},
-     {host: '10.6.0.63', port: 26379},
-   ]
-   gitlab_rails['redis_actioncable_sentinels'] = [
+   gitlab_rails['redis_sentinels'] = [
      {host: '10.6.0.61', port: 26379},
      {host: '10.6.0.62', port: 26379},
      {host: '10.6.0.63', port: 26379},

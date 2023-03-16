@@ -1167,6 +1167,16 @@ production: &base
     # client_id: 'YOUR_FORTI_TOKEN_CLOUD_CLIENT_ID'
     # client_secret: 'YOUR_FORTI_TOKEN_CLOUD_CLIENT_SECRET'
 
+  # Duo Auth settings
+  duo_auth:
+    # Allow using Duo as an OTP provider
+    enabled: false
+
+    # Client ID and Secret to access Duo's API
+    # integration_key: 'YOUR_DUO_INTEGRATION_KEY'
+    # secret_key: 'YOUR_DUO_SECRET_KEY'
+    # hostname: 'YOUR_DUO_API_FQDN'
+
   # Shared file storage settings
   shared:
     # path: /mnt/gitlab # Default: shared

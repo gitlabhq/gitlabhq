@@ -22,12 +22,7 @@ describe('highlightCurrentUser', () => {
 
   describe('without current user', () => {
     beforeEach(() => {
-      window.gon = window.gon || {};
       window.gon.current_user_id = null;
-    });
-
-    afterEach(() => {
-      delete window.gon.current_user_id;
     });
 
     it('does not highlight the user', () => {
@@ -41,12 +36,7 @@ describe('highlightCurrentUser', () => {
 
   describe('with current user', () => {
     beforeEach(() => {
-      window.gon = window.gon || {};
       window.gon.current_user_id = 2;
-    });
-
-    afterEach(() => {
-      delete window.gon.current_user_id;
     });
 
     it('highlights current user', () => {

@@ -15,7 +15,6 @@ const mockOverlayData = {
 };
 
 describe('Design management design presentation component', () => {
-  const originalGon = window.gon;
   let wrapper;
 
   function createComponent(
@@ -112,10 +111,6 @@ describe('Design management design presentation component', () => {
 
   beforeEach(() => {
     window.gon = { current_user_id: 1 };
-  });
-
-  afterEach(() => {
-    window.gon = originalGon;
   });
 
   it('renders image and overlay when image provided', async () => {

@@ -99,7 +99,6 @@ describe('Sidebar assignees widget', () => {
 
   afterEach(() => {
     fakeApollo = null;
-    delete gon.current_username;
   });
 
   describe('with passed initial assignees', () => {

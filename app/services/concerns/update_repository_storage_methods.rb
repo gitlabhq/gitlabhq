@@ -28,10 +28,7 @@ module UpdateRepositoryStorageMethods
       track_repository(destination_storage_name)
     end
 
-    unless same_filesystem?
-      remove_old_paths
-      enqueue_housekeeping
-    end
+    remove_old_paths unless same_filesystem?
 
     repository_storage_move.finish_cleanup!
 
@@ -93,10 +90,6 @@ module UpdateRepositoryStorageMethods
         nil
       ).remove
     end
-  end
-
-  def enqueue_housekeeping
-    # no-op
   end
 
   def wait_for_pushes(type)

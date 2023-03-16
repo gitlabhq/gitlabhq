@@ -6,22 +6,18 @@ import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 describe('Api', () => {
   const dummyApiVersion = 'v3000';
   const dummyUrlRoot = '/gitlab';
-  const dummyGon = {
-    api_version: dummyApiVersion,
-    relative_url_root: dummyUrlRoot,
-  };
-  let originalGon;
   let mock;
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    originalGon = window.gon;
-    window.gon = { ...dummyGon };
+    window.gon = {
+      api_version: dummyApiVersion,
+      relative_url_root: dummyUrlRoot,
+    };
   });
 
   afterEach(() => {
     mock.restore();
-    window.gon = originalGon;
   });
 
   describe('packages', () => {

@@ -485,6 +485,10 @@
   - 1
 - - sbom_reports
   - 1
+- - search_namespace_index_integrity
+  - 1
+- - search_project_index_integrity
+  - 1
 - - security_auto_fix
   - 1
 - - security_orchestration_policy_rule_schedule_namespace

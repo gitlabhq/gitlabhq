@@ -165,14 +165,8 @@ describe('Filters actions', () => {
   });
 
   describe('fetchAuthors', () => {
-    let restoreVersion;
     beforeEach(() => {
-      restoreVersion = gon.api_version;
       gon.api_version = 'v1';
-    });
-
-    afterEach(() => {
-      gon.api_version = restoreVersion;
     });
 
     describe('success', () => {
@@ -305,15 +299,9 @@ describe('Filters actions', () => {
 
   describe('fetchAssignees', () => {
     describe('success', () => {
-      let restoreVersion;
       beforeEach(() => {
         mock.onAny().replyOnce(HTTP_STATUS_OK, filterUsers);
-        restoreVersion = gon.api_version;
         gon.api_version = 'v1';
-      });
-
-      afterEach(() => {
-        gon.api_version = restoreVersion;
       });
 
       it('dispatches RECEIVE_ASSIGNEES_SUCCESS with received data and groupEndpoint set', () => {
@@ -350,15 +338,9 @@ describe('Filters actions', () => {
     });
 
     describe('error', () => {
-      let restoreVersion;
       beforeEach(() => {
         mock.onAny().replyOnce(HTTP_STATUS_SERVICE_UNAVAILABLE);
-        restoreVersion = gon.api_version;
         gon.api_version = 'v1';
-      });
-
-      afterEach(() => {
-        gon.api_version = restoreVersion;
       });
 
       it('dispatches RECEIVE_ASSIGNEES_ERROR and groupEndpoint set', () => {

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe NotesHelper do
+RSpec.describe NotesHelper, feature_category: :team_planning do
   include RepoHelpers
 
   let_it_be(:owner) { create(:owner) }
@@ -220,6 +220,17 @@ RSpec.describe NotesHelper do
           expect(helper.discussion_path(discussion)).to eq(project_commit_path(project, commit, anchor: "note_#{discussion.first_note.id}"))
         end
       end
+    end
+  end
+
+  describe '#initial_notes_data' do
+    it 'return initial notes data for issuable' do
+      autocomplete = '/autocomplete/users'
+      @project = project
+      @noteable = create(:issue, project: @project)
+
+      expect(helper.initial_notes_data(autocomplete).keys).to match_array(%i[notesUrl now diffView enableGFM])
+      expect(helper.initial_notes_data(autocomplete)[:enableGFM].keys).to match(%i[emojis members issues mergeRequests vulnerabilities epics milestones labels])
     end
   end
 

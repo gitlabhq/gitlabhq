@@ -33,7 +33,6 @@ import {
 
 export const ISSUE_REFERENCE = /^#\d+$/;
 export const MAX_LIST_SIZE = 10;
-export const PAGE_SIZE = 20;
 export const PARAM_ASSIGNEE_ID = 'assignee_id';
 export const PARAM_FIRST_PAGE_SIZE = 'first_page_size';
 export const PARAM_LAST_PAGE_SIZE = 'last_page_size';

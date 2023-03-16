@@ -269,7 +269,7 @@ module Packages
 
       # used by ExclusiveLeaseGuard
       def lease_key
-        "packages:debian:generate_distribution_service:distribution:#{@distribution.id}"
+        "packages:debian:generate_distribution_service:#{@distribution.class.container_type}_distribution:#{@distribution.id}"
       end
 
       # used by ExclusiveLeaseGuard

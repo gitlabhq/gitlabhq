@@ -94,7 +94,6 @@ describe('Snippet Edit app', () => {
   let mutateSpy;
 
   const relativeUrlRoot = '/foo/';
-  const originalRelativeUrlRoot = gon.relative_url_root;
 
   beforeEach(() => {
     stubPerformanceWebAPI();
@@ -106,10 +105,6 @@ describe('Snippet Edit app', () => {
 
     gon.relative_url_root = relativeUrlRoot;
     jest.spyOn(urlUtils, 'redirectTo').mockImplementation();
-  });
-
-  afterEach(() => {
-    gon.relative_url_root = originalRelativeUrlRoot;
   });
 
   const findBlobActions = () => wrapper.findComponent(SnippetBlobActionsEdit);
