@@ -52,7 +52,6 @@ describe('Work items root component', () => {
       workItemId: 'gid://gitlab/WorkItem/1',
       workItemParentId: null,
       workItemIid: '1',
-      modal: null,
     });
   });
 

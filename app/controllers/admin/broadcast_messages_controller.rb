@@ -72,7 +72,7 @@ module Admin
 
     def preview
       @broadcast_message = BroadcastMessage.new(broadcast_message_params)
-      render partial: 'admin/broadcast_messages/preview'
+      render plain: render_broadcast_message(@broadcast_message), status: :ok
     end
 
     protected

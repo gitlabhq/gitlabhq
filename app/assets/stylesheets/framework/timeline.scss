@@ -31,6 +31,7 @@
   &:not(.note-form).internal-note .timeline-content,
   &:not(.note-form).draft-note .timeline-content {
     background-color: $orange-50 !important;
+    border-radius: 3px;
   }
 
   .timeline-entry-inner {

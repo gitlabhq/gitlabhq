@@ -80,10 +80,10 @@ To enable DAST to run automatically, either:
 
 - Enable [Auto DAST](../../../topics/autodevops/stages.md#auto-dast) (provided
   by [Auto DevOps](../../../topics/autodevops/index.md)).
-- [Edit the `.gitlab.ci.yml` file manually](#edit-the-gitlabciyml-file-manually).
-- [Use an automatically configured merge request](#configure-dast-using-the-ui).
+- [Edit the `.gitlab.ci.yml` file manually](#edit-the-gitlab-ciyml-file-manually).
+- [Configure DAST using the UI](#configure-dast-using-the-ui).
 
-#### Edit the `.gitlab.ci.yml` file manually
+#### Edit the `.gitlab-ci.yml` file manually
 
 In this method you manually edit the existing `.gitlab-ci.yml` file. Use this method if your GitLab CI/CD configuration file is complex.
 

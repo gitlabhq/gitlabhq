@@ -49,6 +49,18 @@ compile-production-assets:
   after_script:
     - rm -f /etc/apt/sources.list.d/google*.list  # We don't need to update Chrome here
 
+compile-production-assets-esbuild:
+  allow_failure: true
+  extends:
+    - .compile-assets-base
+    - .frontend:rules:compile-production-assets
+  variables:
+    NODE_ENV: "production"
+    RAILS_ENV: "production"
+    WEBPACK_USE_ESBUILD_LOADER: "true"
+  after_script:
+    - rm -f /etc/apt/sources.list.d/google*.list  # We don't need to update Chrome here
+
 compile-test-assets:
   extends:
     - .compile-assets-base
@@ -60,6 +72,14 @@ compile-test-assets:
       - node_modules/@gitlab/svgs/dist/icons.json  # app/helpers/icons_helper.rb uses this file
       - "${WEBPACK_COMPILE_LOG_PATH}"
     when: always
+
+compile-test-assets-esbuild:
+  allow_failure: true
+  extends:
+    - .compile-assets-base
+    - .frontend:rules:compile-test-assets
+  variables:
+    WEBPACK_USE_ESBUILD_LOADER: "true"
 
 compile-test-assets as-if-foss:
   extends:

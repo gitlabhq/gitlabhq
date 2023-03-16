@@ -32,16 +32,16 @@ module Gitlab
 
         connection.execute(
           <<~SQL
-              DELETE FROM internal_ids WHERE id IN (#{sub_batch.select(:id).to_sql})
-        SQL
+            DELETE FROM internal_ids WHERE id IN (#{sub_batch.select(:id).to_sql})
+          SQL
         )
       end
 
       def create_namespace_scoped_records(sub_batch)
         # Creates a corresponding namespace scoped record for every `issues` usage scoped to a project.
-        # On conflict there is nothing to do as it means the record was already created when
-        # a new issue is created with the newlly namespace scoped Issue model, see Issue#has_internal_id
-        # definition.
+        # On conflict it means the record was already created when a new issue is created with the
+        # newly namespace scoped Issue model, see Issue#has_internal_id definition. In which case to
+        # make sure we have the namespace_id scoped record set to the greatest of the two last_values.
         created_records_ids = connection.execute(
           <<~SQL
               INSERT INTO internal_ids (usage, last_value, namespace_id)
@@ -49,12 +49,13 @@ module Gitlab
                 FROM internal_ids
                 INNER JOIN projects ON projects.id = internal_ids.project_id
                 WHERE internal_ids.id IN(#{sub_batch.select(:id).to_sql})
-              ON CONFLICT (usage, namespace_id) WHERE namespace_id IS NOT NULL DO NOTHING
+              ON CONFLICT (usage, namespace_id) WHERE namespace_id IS NOT NULL
+              DO UPDATE SET last_value = GREATEST(EXCLUDED.last_value, internal_ids.last_value)
               RETURNING id;
-        SQL
+          SQL
         )
 
-        log_info("Created internal_ids records", ids: created_records_ids.field_values('id'))
+        log_info("Created/updated internal_ids records", ids: created_records_ids.field_values('id'))
       end
 
       def log_info(message, **extra)

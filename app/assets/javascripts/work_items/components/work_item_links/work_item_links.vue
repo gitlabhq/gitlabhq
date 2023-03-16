@@ -334,11 +334,11 @@ export default {
       </gl-dropdown>
     </template>
     <template #body>
-      <gl-loading-icon v-if="isLoading" color="dark" class="gl-my-3" />
+      <gl-loading-icon v-if="isLoading" color="dark" class="gl-my-2" />
 
       <template v-else>
         <div v-if="isChildrenEmpty && !isShownAddForm && !error" data-testid="links-empty">
-          <p class="gl-mb-0 gl-text-gray-500">
+          <p class="gl-px-3 gl-py-2 gl-mb-0 gl-text-gray-500">
             {{ $options.i18n.emptyStateMessage }}
           </p>
         </div>

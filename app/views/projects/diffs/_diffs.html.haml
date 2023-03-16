@@ -3,7 +3,7 @@
 - can_create_note = !@diff_notes_disabled && can?(current_user, :create_note, diffs.project)
 - diff_page_context = local_assigns.fetch(:diff_page_context, nil)
 - load_diff_files_async = Feature.enabled?(:async_commit_diff_files, @project) && diff_page_context == "is-commit"
-- paginate_diffs = local_assigns.fetch(:paginate_diffs, false) && !load_diff_files_async
+- paginate_diffs = local_assigns.fetch(:paginate_diffs, false)
 - paginate_diffs_per_page = local_assigns.fetch(:paginate_diffs_per_page, nil)
 - page = local_assigns.fetch(:page, nil)
 - diff_files = conditionally_paginate_diff_files(diffs, paginate: paginate_diffs, page: page, per: paginate_diffs_per_page)
@@ -32,7 +32,7 @@
 
 .files{ data: { can_create_note: can_create_note } }
   - if load_diff_files_async
-    - url = url_for(safe_params.merge(action: 'diff_files'))
+    - url = url_for(safe_params.merge(action: 'diff_files', page: page))
     .js-diffs-batch{ data: { diff_files_path: url } }
       = gl_loading_icon(size: "md", css_class: "gl-mt-4")
   - else

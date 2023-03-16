@@ -201,8 +201,7 @@ RSpec.describe Ci::UnlockArtifactsService, feature_category: :continuous_integra
     describe '#unlock_job_artifacts_query' do
       subject { described_class.new(pipeline.project, pipeline.user).unlock_job_artifacts_query(pipeline_ids) }
 
-      context 'when running on a ref before a pipeline' do
-        let(:before_pipeline) { pipeline }
+      context 'when given a single pipeline ID' do
         let(:pipeline_ids) { [older_pipeline.id] }
 
         it 'produces the expected SQL string' do
@@ -226,8 +225,7 @@ RSpec.describe Ci::UnlockArtifactsService, feature_category: :continuous_integra
         end
       end
 
-      context 'when running on just the ref' do
-        let(:before_pipeline) { nil }
+      context 'when given multiple pipeline IDs' do
         let(:pipeline_ids) { [older_pipeline.id, newer_pipeline.id, pipeline.id] }
 
         it 'produces the expected SQL string' do

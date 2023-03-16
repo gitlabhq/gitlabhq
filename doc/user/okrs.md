@@ -115,6 +115,26 @@ To edit an OKR:
 1. Optional. To edit the description, select the edit icon (**{pencil}**), make your changes, and
    select **Save**.
 
+## View OKR system notes
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) to feature flag named `work_items_mvc` in GitLab 15.8. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 15.10.
+> - Changing activity sort order [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) in GitLab 15.8.
+> - Filtering activity [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389971) in GitLab 15.10.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 15.10.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+You can view all the system notes related to the task. By default they are sorted by **Oldest first**.
+You can always change the sorting order to **Newest first**, which is remembered across sessions.
+
+## Comments and threads
+
+You can add [comments](discussions/index.md) and reply to threads in tasks.
+
 ## Assign users
 
 To show who is responsible for an OKR, you can assign users to it.

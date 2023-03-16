@@ -190,9 +190,9 @@ module FilteredSearchHelpers
 
   ##
   # For use with gl-filtered-search
-  def select_tokens(*args, submit: false)
+  def select_tokens(*args, submit: false, input_text: 'Search')
     within '[data-testid="filtered-search-input"]' do
-      find_field('Search').click
+      find_field(input_text).click
 
       args.each do |token|
         # Move mouse away to prevent invoking tooltips on usernames, which blocks the search input
@@ -228,6 +228,13 @@ module FilteredSearchHelpers
 
   def click_token_segment(value)
     find('.gl-filtered-search-token-segment', text: value).click
+  end
+
+  def toggle_sort_direction
+    page.within('.vue-filtered-search-bar-container .sort-dropdown-container') do
+      page.find("button[title^='Sort direction']").click
+      wait_for_requests
+    end
   end
 
   def expect_visible_suggestions_list

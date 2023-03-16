@@ -96,7 +96,7 @@ module API
           # the heartbeat should be triggered.
           if heartbeat_runner
             job.runner&.heartbeat(get_runner_ip)
-            job.runner_machine&.heartbeat(get_runner_ip)
+            job.runner_machine&.heartbeat(get_runner_ip) if Feature.enabled?(:runner_machine_heartbeat)
           end
 
           job

@@ -1,1 +1,5 @@
-= render partial: 'projects/diffs/file', collection: diffs.diff_files, as: :diff_file, locals: { project: diffs.project, environment: environment, diff_page_context: 'is-commit' }
+- diff_files = conditionally_paginate_diff_files(diffs, paginate: true, page: params[:page], per: Projects::CommitController::COMMIT_DIFFS_PER_PAGE)
+
+= render partial: 'projects/diffs/file', collection: diff_files, as: :diff_file, locals: { project: diffs.project, environment: environment, diff_page_context: 'is-commit' }
+
+= paginate(diff_files, theme: "gitlab", params: { action: :show })

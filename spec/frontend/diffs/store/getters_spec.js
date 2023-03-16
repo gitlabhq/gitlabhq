@@ -288,6 +288,19 @@ describe('Diffs Module Getters', () => {
     });
   });
 
+  describe('isTreePathLoaded', () => {
+    it.each`
+      desc                                         | loaded   | path             | bool
+      ${'the file exists and has been loaded'}     | ${true}  | ${'path/tofile'} | ${true}
+      ${'the file exists and has not been loaded'} | ${false} | ${'path/tofile'} | ${false}
+      ${'the file does not exist'}                 | ${false} | ${'tofile/path'} | ${false}
+    `('returns $bool when $desc', ({ loaded, path, bool }) => {
+      localState.treeEntries['path/tofile'] = { diffLoaded: loaded };
+
+      expect(getters.isTreePathLoaded(localState)(path)).toBe(bool);
+    });
+  });
+
   describe('allBlobs', () => {
     it('returns an array of blobs', () => {
       localState.treeEntries = {

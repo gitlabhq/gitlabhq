@@ -200,6 +200,10 @@ On subsequent visits, new and existing users can access groups either:
 
 For role information, see the [Group SAML](index.md#user-access-and-management) page.
 
+### Passwords for users created through SCIM for GitLab groups
+
+GitLab requires passwords for all user accounts. For more information on how GitLab generates passwords for users created through SCIM for GitLab groups, see [generated passwords for users created through integrated authentication](../../../security/passwords_for_integrated_authentication_methods.md).
+
 ### Link SCIM and SAML identities
 
 If [group SAML](index.md) is configured and you have an existing GitLab.com account, users can link their SCIM and SAML

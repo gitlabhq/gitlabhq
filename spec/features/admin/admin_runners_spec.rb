@@ -491,6 +491,29 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
     end
   end
 
+  describe "Runner create page", :js do
+    before do
+      visit new_admin_runner_path
+    end
+
+    context 'when runner is saved' do
+      before do
+        fill_in s_('Runners|Runner description'), with: 'runner-foo'
+        fill_in s_('Runners|Tags'), with: 'tag1'
+        click_on _('Submit')
+        wait_for_requests
+      end
+
+      it 'navigates to registration page and opens install instructions drawer' do
+        expect(page.find('[data-testid="alert-success"]')).to have_content(s_('Runners|Runner created.'))
+        expect(current_url).to match(register_admin_runner_path(Ci::Runner.last))
+
+        click_on 'How do I install GitLab Runner?'
+        expect(page.find('[data-testid="runner-platforms-drawer"]')).to have_content('gitlab-runner install')
+      end
+    end
+  end
+
   describe "Runner show page", :js do
     let_it_be(:runner) do
       create(

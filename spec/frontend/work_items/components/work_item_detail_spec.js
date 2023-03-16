@@ -99,7 +99,6 @@ describe('WorkItemDetail component', () => {
     subscriptionHandler = titleSubscriptionHandler,
     confidentialityMock = [updateWorkItemMutation, jest.fn()],
     error = undefined,
-    workItemsMvcEnabled = false,
     workItemsMvc2Enabled = false,
   } = {}) => {
     const handlers = [
@@ -123,7 +122,6 @@ describe('WorkItemDetail component', () => {
       },
       provide: {
         glFeatures: {
-          workItemsMvc: workItemsMvcEnabled,
           workItemsMvc2: workItemsMvc2Enabled,
         },
         hasIssueWeightsFeature: true,
@@ -746,19 +744,8 @@ describe('WorkItemDetail component', () => {
   });
 
   describe('notes widget', () => {
-    it('does not render notes by default', async () => {
+    it('renders notes by default', async () => {
       createComponent();
-      await waitForPromises();
-
-      expect(findNotesWidget().exists()).toBe(false);
-    });
-
-    it('renders notes when the work_items_mvc flag is on', async () => {
-      const notesWorkItem = workItemResponseFactory({
-        notesWidgetPresent: true,
-      });
-      const handler = jest.fn().mockResolvedValue(notesWorkItem);
-      createComponent({ workItemsMvcEnabled: true, handler });
       await waitForPromises();
 
       expect(findNotesWidget().exists()).toBe(true);

@@ -1986,6 +1986,9 @@ msgstr ""
 msgid "Abuse reports notification email"
 msgstr ""
 
+msgid "AbuseReports|No reports found"
+msgstr ""
+
 msgid "Accept invitation"
 msgstr ""
 
@@ -50428,9 +50431,6 @@ msgstr ""
 msgid "Your membership in %{group} no longer expires."
 msgstr ""
 
-msgid "Your message here"
-msgstr ""
-
 msgid "Your name"
 msgstr ""
 
@@ -51222,6 +51222,9 @@ msgid "ciReport|There was an error fetching the codequality report."
 msgstr ""
 
 msgid "ciReport|There was an error reverting the dismissal. Please try again."
+msgstr ""
+
+msgid "ciReport|There was an error reverting the dismissal: %{error}"
 msgstr ""
 
 msgid "ciReport|This report contains all Code Quality issues in the source branch."

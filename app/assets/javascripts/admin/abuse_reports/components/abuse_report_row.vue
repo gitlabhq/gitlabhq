@@ -29,7 +29,7 @@ export default {
 </script>
 
 <template>
-  <list-item>
+  <list-item data-testid="abuse-report-row">
     <template #left-primary>
       <div class="gl-font-weight-normal" data-testid="title">{{ title }}</div>
     </template>

@@ -19,6 +19,8 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
     # Ensure that undiffable.md is in .gitattributes
     project.repository.copy_gitattributes(branch)
     visit project_commit_path(project, project.commit(branch))
+
+    wait_for_requests
   end
 
   def file_container(filename)
@@ -222,10 +224,16 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
     let(:branch) { 'expand-collapse-files' }
 
     # safe-files -> 100 | safe-lines -> 5000 | commit-files -> 105
-    it 'does collapsing from the safe number of files to the end on small files' do
-      expect(page).to have_link('Expand all')
+    it 'does collapsing from the safe number of files to the end on small files', :aggregate_failures do
+      expect(page).not_to have_link('Expand all')
+      expect(page).to have_selector('.diff-content', count: 20)
+      expect(page).to have_selector('.diff-collapsed', count: 0)
 
-      expect(page).to have_selector('.diff-content', count: 105)
+      visit project_commit_path(project, project.commit(branch), page: 6)
+      wait_for_requests
+
+      expect(page).to have_link('Expand all')
+      expect(page).to have_selector('.diff-content', count: 5)
       expect(page).to have_selector('.diff-collapsed', count: 5)
 
       %w(file-95.txt file-96.txt file-97.txt file-98.txt file-99.txt).each do |filename|

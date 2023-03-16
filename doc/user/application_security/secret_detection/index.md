@@ -141,12 +141,12 @@ To enable Secret Detection, either:
 
 - Enable [Auto DevOps](../../../topics/autodevops/index.md), which includes [Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection).
 
-- [Edit the `.gitlab.ci.yml` file manually](#edit-the-gitlabciyml-file-manually). Use this method if
-  your `.gitlab-ci.yml` file is complex.
+- [Edit the `.gitlab.ci.yml` file manually](#edit-the-gitlab-ciyml-file-manually). Use this method
+  if your `.gitlab-ci.yml` file is complex.
 
 - [Use an automatically configured merge request](#use-an-automatically-configured-merge-request).
 
-### Edit the `.gitlab.ci.yml` file manually
+### Edit the `.gitlab-ci.yml` file manually
 
 This method requires you to manually edit the existing `.gitlab-ci.yml` file. Use this method if
 your GitLab CI/CD configuration file is complex.
@@ -180,9 +180,9 @@ the `.gitlab-ci.yml` file. You then merge the merge request to enable Secret Det
 NOTE:
 This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration
 file. If you have a complex GitLab configuration file it may not be parsed successfully, and an
-error may occur. In that case, use the [manual](#edit-the-gitlabciyml-file-manually) method instead.
+error may occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manually) method instead.
 
-To enable Secret Detection automatically:
+To enable Secret Detection:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security and Compliance > Security configuration**.

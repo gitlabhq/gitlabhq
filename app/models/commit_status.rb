@@ -10,6 +10,7 @@ class CommitStatus < Ci::ApplicationRecord
   include TaggableQueries
 
   self.table_name = 'ci_builds'
+  self.primary_key = :id
   partitionable scope: :pipeline
 
   belongs_to :user

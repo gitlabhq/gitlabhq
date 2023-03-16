@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlPagination } from '@gitlab/ui';
+import { GlEmptyState, GlPagination } from '@gitlab/ui';
 import { queryToObject, objectToQuery } from '~/lib/utils/url_utility';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import AbuseReportsApp from '~/admin/abuse_reports/components/app.vue';
@@ -11,6 +11,7 @@ describe('AbuseReportsApp', () => {
   let wrapper;
 
   const findFilteredSearchBar = () => wrapper.findComponent(AbuseReportsFilteredSearchBar);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findAbuseReportRows = () => wrapper.findAllComponents(AbuseReportRow);
   const findPagination = () => wrapper.findComponent(GlPagination);
 
@@ -33,7 +34,17 @@ describe('AbuseReportsApp', () => {
   it('renders one AbuseReportRow for each abuse report', () => {
     createComponent();
 
+    expect(findEmptyState().exists()).toBe(false);
     expect(findAbuseReportRows().length).toBe(mockAbuseReports.length);
+  });
+
+  it('renders empty state when there are no reports', () => {
+    createComponent({
+      abuseReports: [],
+      pagination: { currentPage: 1, perPage: 20, totalItems: 0 },
+    });
+
+    expect(findEmptyState().exists()).toBe(true);
   });
 
   describe('pagination', () => {

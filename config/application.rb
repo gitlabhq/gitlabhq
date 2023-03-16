@@ -32,7 +32,6 @@ module Gitlab
     # Rails 6.1
     config.action_dispatch.cookies_same_site_protection = nil # New default is :lax
     ActiveSupport.utc_to_local_returns_utc_offset_times = false
-    config.action_controller.urlsafe_csrf_tokens = false
     config.action_view.preload_links_header = false
 
     # Rails 5.2

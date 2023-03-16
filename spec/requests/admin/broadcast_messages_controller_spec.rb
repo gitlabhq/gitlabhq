@@ -8,6 +8,7 @@ RSpec.describe Admin::BroadcastMessagesController, :enable_admin_mode, feature_c
 
   let_it_be(:invalid_broadcast_message) { { broadcast_message: { message: '' } } }
   let_it_be(:test_message) { 'you owe me a new acorn' }
+  let_it_be(:test_preview) { '<p>Hello, world!</p>' }
 
   before do
     sign_in(create(:admin))
@@ -23,11 +24,11 @@ RSpec.describe Admin::BroadcastMessagesController, :enable_admin_mode, feature_c
   end
 
   describe 'POST /preview' do
-    it 'renders preview partial' do
+    it 'renders preview html' do
       post preview_admin_broadcast_messages_path, params: { broadcast_message: { message: "Hello, world!" } }
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(response.body).to render_template(:_preview)
+      expect(response.body).to eq(test_preview)
     end
   end
 

@@ -36,6 +36,8 @@ You can create comments in places like:
 - Issues
 - Merge requests
 - Snippets
+- Tasks
+- OKRs
 
 Each object can have as many as 5,000 comments.
 

@@ -97,7 +97,7 @@ export default {
         "
       >
         <template #link="{ content }">
-          <gl-link @click="toggleDrawer">{{ content }}</gl-link>
+          <gl-link data-testid="runner-install-link" @click="toggleDrawer">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
     </p>

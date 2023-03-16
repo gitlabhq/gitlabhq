@@ -88,6 +88,7 @@ export default {
     :open="open"
     :header-height="drawerHeightOffset"
     :z-index="$options.DRAWER_Z_INDEX"
+    data-testid="runner-platforms-drawer"
     @close="onClose"
   >
     <template #title>

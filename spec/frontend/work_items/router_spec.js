@@ -75,6 +75,7 @@ describe('Work items router', () => {
         WorkItemWeight: true,
         WorkItemIteration: true,
         WorkItemHealthStatus: true,
+        WorkItemNotes: true,
       },
     });
   };

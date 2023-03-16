@@ -289,3 +289,22 @@ label {
 .input-group-text {
   max-height: $input-height;
 }
+
+.add-issuable-form-input-wrapper {
+  &.focus {
+    border-color: var(--gray-700, $gray-700);
+
+    input {
+      @include gl-shadow-none;
+    }
+  }
+
+  .gl-show-field-errors &.form-control:not(textarea) {
+    height: auto;
+  }
+}
+
+.add-issuable-form-input-wrapper.focus,
+.issue-token-remove-button:focus {
+  @include gl-focus;
+}

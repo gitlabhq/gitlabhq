@@ -115,11 +115,6 @@ export default {
       required: false,
       default: null,
     },
-    modal: {
-      type: Object,
-      required: false,
-      default: null,
-    },
   },
   data() {
     const workItemId = getParameterByName('work_item_id');
@@ -707,20 +702,16 @@ export default {
           @removeChild="removeChild"
           @show-modal="openInModal"
         />
-        <template v-if="workItemsMvcEnabled">
-          <work-item-notes
-            v-if="workItemNotes"
-            :work-item-id="workItem.id"
-            :query-variables="queryVariables"
-            :full-path="fullPath"
-            :fetch-by-iid="fetchByIid"
-            :work-item-type="workItemType"
-            :is-modal="isModal"
-            class="gl-pt-5"
-            @error="updateError = $event"
-            @has-notes="updateHasNotes"
-          />
-        </template>
+        <work-item-notes
+          v-if="workItemNotes"
+          :work-item-id="workItem.id"
+          :query-variables="queryVariables"
+          :full-path="fullPath"
+          :fetch-by-iid="fetchByIid"
+          :work-item-type="workItemType"
+          class="gl-pt-5"
+          @error="updateError = $event"
+        />
         <gl-empty-state
           v-if="error"
           :title="$options.i18n.fetchErrorTitle"

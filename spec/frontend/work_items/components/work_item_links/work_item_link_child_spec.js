@@ -111,6 +111,24 @@ describe('WorkItemLinkChild', () => {
       expect(titleEl.text()).toBe(workItemTask.title);
     });
 
+    describe('renders item title correctly for relative instance', () => {
+      beforeEach(() => {
+        window.gon = { relative_url_root: '/test' };
+        createComponent();
+        titleEl = wrapper.findByTestId('item-title');
+      });
+
+      it('renders item title with correct href', () => {
+        expect(titleEl.attributes('href')).toBe(
+          '/test/gitlab-org/gitlab-test/-/work_items/4?iid_path=true',
+        );
+      });
+
+      it('renders item title with correct text', () => {
+        expect(titleEl.text()).toBe(workItemTask.title);
+      });
+    });
+
     it.each`
       action                  | event          | emittedEvent
       ${'doing mouseover on'} | ${'mouseover'} | ${'mouseover'}
@@ -147,6 +165,8 @@ describe('WorkItemLinkChild', () => {
       expect(metadataEl.props()).toMatchObject({
         metadataWidgets: workItemObjectiveMetadataWidgets,
       });
+
+      expect(wrapper.find('[data-testid="links-child"]').classes()).toContain('gl-py-3');
     });
 
     it('does not render item metadata component when item has no metadata present', () => {
@@ -156,6 +176,8 @@ describe('WorkItemLinkChild', () => {
       });
 
       expect(findMetadataComponent().exists()).toBe(false);
+
+      expect(wrapper.find('[data-testid="links-child"]').classes()).toContain('gl-py-0');
     });
   });
 

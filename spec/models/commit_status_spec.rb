@@ -33,6 +33,7 @@ RSpec.describe CommitStatus do
   it { is_expected.to respond_to :running? }
   it { is_expected.to respond_to :pending? }
   it { is_expected.not_to be_retried }
+  it { expect(described_class.primary_key).to eq('id') }
 
   describe '#author' do
     subject { commit_status.author }

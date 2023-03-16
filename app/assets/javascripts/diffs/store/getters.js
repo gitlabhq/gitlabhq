@@ -90,6 +90,12 @@ export const getDiffFileDiscussions = (state, getters, rootState, rootGetters) =
 export const getDiffFileByHash = (state) => (fileHash) =>
   state.diffFiles.find((file) => file.file_hash === fileHash);
 
+export function isTreePathLoaded(state) {
+  return (path) => {
+    return Boolean(state.treeEntries[path]?.diffLoaded);
+  };
+}
+
 export const flatBlobsList = (state) =>
   Object.values(state.treeEntries).filter((f) => f.type === 'blob');
 

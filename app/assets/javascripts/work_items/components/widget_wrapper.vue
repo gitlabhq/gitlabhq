@@ -73,7 +73,7 @@ export default {
     <div
       v-if="isOpen"
       class="gl-bg-gray-10 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
-      :class="{ 'gl-px-5 gl-py-4': !error }"
+      :class="{ 'gl-p-3': !error }"
       data-testid="widget-body"
     >
       <slot name="body"></slot>

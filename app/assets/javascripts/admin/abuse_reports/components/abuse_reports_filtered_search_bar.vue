@@ -102,6 +102,7 @@ export default {
     :initial-filter-value="initialFilterValue"
     :initial-sort-by="initialSortBy"
     :sort-options="$options.sortOptions"
+    data-testid="abuse-reports-filtered-search-bar"
     @onFilter="handleFilter"
     @onSort="handleSort"
   />
