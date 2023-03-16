@@ -120,10 +120,6 @@
   }
 }
 
-.milestone-detail {
-  border-bottom: 1px solid var(--border-color, $border-color);
-}
-
 @include media-breakpoint-down(md) {
   .milestone-actions {
     @include clearfix();

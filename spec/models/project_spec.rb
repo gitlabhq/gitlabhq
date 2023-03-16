@@ -6114,7 +6114,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it 'executes hooks which were backed off and are no longer backed off' do
       project = create(:project)
       hook = create(:project_hook, project: project, push_events: true)
-      WebHook::FAILURE_THRESHOLD.succ.times { hook.backoff! }
+      WebHooks::AutoDisabling::FAILURE_THRESHOLD.succ.times { hook.backoff! }
 
       expect_any_instance_of(ProjectHook).to receive(:async_execute).once
 

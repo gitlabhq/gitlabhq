@@ -1443,7 +1443,7 @@ Updates to example must be made at:
       },
       # Praefect Virtual Storage config
       # Name of storage hash must match storage name in git_data_dirs on GitLab
-      # server ('praefect') and in git_data_dirs on Gitaly nodes ('gitaly-1')
+      # server ('praefect') and in gitaly['configuration'][:storage] on Gitaly nodes ('gitaly-1')
       virtual_storage: [
          {
             # ...
@@ -1535,7 +1535,7 @@ to restrict access to the Gitaly server. Another option is to
 
 For configuring Gitaly you should note the following:
 
-- `git_data_dirs` should be configured to reflect the storage path for the specific Gitaly node
+- `gitaly['configuration'][:storage]` should be configured to reflect the storage path for the specific Gitaly node
 - `auth_token` should be the same as `praefect_internal_token`
 
 The following IPs will be used as an example:
@@ -1584,20 +1584,6 @@ Updates to example must be made at:
    # Gitaly
    gitaly['enable'] = true
 
-   # Make Gitaly accept connections on all network interfaces. You must use
-   # firewalls to restrict access to this address/port.
-   # Comment out following line if you only want to support TLS connections
-   gitaly['listen_addr'] = "0.0.0.0:8075"
-
-   # Gitaly Auth Token
-   # Should be the same as praefect_internal_token
-   gitaly['auth_token'] = '<praefect_internal_token>'
-
-   # Gitaly Pack-objects cache
-   # Recommended to be enabled for improved performance but can notably increase disk I/O
-   # Refer to https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#pack-objects-cache for more info
-   gitaly['pack_objects_cache_enabled'] = true
-
    # Configure the Consul agent
    consul['enable'] = true
    ## Enable service discovery for Prometheus
@@ -1612,9 +1598,29 @@ Updates to example must be made at:
       retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13),
    }
 
-   # Set the network addresses that the exporters will listen on for monitoring
+   # Set the network address that the node exporter will listen on for monitoring
    node_exporter['listen_address'] = '0.0.0.0:9100'
-   gitaly['prometheus_listen_addr'] = '0.0.0.0:9236'
+
+   gitaly['configuration'] = {
+      # Make Gitaly accept connections on all network interfaces. You must use
+      # firewalls to restrict access to this address/port.
+      # Comment out following line if you only want to support TLS connections
+      listen_addr: '0.0.0.0:8075',
+      # Set the network address that Gitaly will listen on for monitoring
+      prometheus_listen_addr: '0.0.0.0:9236',
+      auth: {
+         # Gitaly Auth Token
+         # Should be the same as praefect_internal_token
+         token: '<praefect_internal_token>',
+      },
+      pack_objects_cache: {
+         # Gitaly Pack-objects cache
+         # Recommended to be enabled for improved performance but can notably increase disk I/O
+         # Refer to https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#pack-objects-cache for more info
+         enabled: true,
+      },
+   }
+
    #
    # END user configuration
    ```
@@ -1623,31 +1629,43 @@ Updates to example must be made at:
    - On Gitaly node 1:
 
      ```ruby
-     git_data_dirs({
-       "gitaly-1" => {
-         "path" => "/var/opt/gitlab/git-data"
-        }
-     })
+     gitaly['configuration'] = {
+        # ...
+        storage: [
+           {
+              name: 'gitaly-1',
+              path: '/var/opt/gitlab/git-data',
+           },
+        ],
+     }
      ```
 
    - On Gitaly node 2:
 
      ```ruby
-     git_data_dirs({
-       "gitaly-2" => {
-         "path" => "/var/opt/gitlab/git-data"
-        }
-     })
+     gitaly['configuration'] = {
+        # ...
+        storage: [
+           {
+              name: 'gitaly-2',
+              path: '/var/opt/gitlab/git-data',
+           },
+        ],
+     }
      ```
 
    - On Gitaly node 3:
 
      ```ruby
-     git_data_dirs({
-       "gitaly-3" => {
-         "path" => "/var/opt/gitlab/git-data"
-        }
-     })
+     gitaly['configuration'] = {
+        # ...
+        storage: [
+           {
+              name: 'gitaly-3',
+              path: '/var/opt/gitlab/git-data',
+           },
+        ],
+     }
      ```
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace

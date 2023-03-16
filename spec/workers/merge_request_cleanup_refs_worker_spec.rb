@@ -30,12 +30,12 @@ RSpec.describe MergeRequestCleanupRefsWorker, feature_category: :code_review_wor
           expect(cleanup_schedule.completed_at).to be_nil
         end
 
-        context "and cleanup schedule has already failed #{described_class::FAILURE_THRESHOLD} times" do
-          let(:failed_count) { described_class::FAILURE_THRESHOLD }
+        context "and cleanup schedule has already failed #{WebHooks::AutoDisabling::FAILURE_THRESHOLD} times" do
+          let(:failed_count) { WebHooks::AutoDisabling::FAILURE_THRESHOLD }
 
           it 'marks the cleanup schedule as failed and track the failure' do
             expect(cleanup_schedule.reload).to be_failed
-            expect(cleanup_schedule.failed_count).to eq(described_class::FAILURE_THRESHOLD + 1)
+            expect(cleanup_schedule.failed_count).to eq(failed_count + 1)
             expect(cleanup_schedule.completed_at).to be_nil
           end
         end

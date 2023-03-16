@@ -175,7 +175,7 @@ disabled_until: disabled_until)
 
     context 'when we have exhausted the grace period' do
       before do
-        hook.update!(recent_failures: WebHook::FAILURE_THRESHOLD)
+        hook.update!(recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD)
       end
 
       context 'when the hook is permanently disabled' do
@@ -264,7 +264,7 @@ disabled_until: disabled_until)
     end
 
     it 'allows FAILURE_THRESHOLD initial failures before we back-off' do
-      WebHook::FAILURE_THRESHOLD.times do
+      WebHooks::AutoDisabling::FAILURE_THRESHOLD.times do
         hook.backoff!
         expect(hook).not_to be_temporarily_disabled
       end
@@ -275,7 +275,7 @@ disabled_until: disabled_until)
 
     context 'when hook has been told to back off' do
       before do
-        hook.update!(recent_failures: WebHook::FAILURE_THRESHOLD)
+        hook.update!(recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD)
         hook.backoff!
       end
 
@@ -344,7 +344,7 @@ disabled_until: disabled_until)
 
     context 'when hook has been backed off' do
       before do
-        hook.update!(recent_failures: WebHook::FAILURE_THRESHOLD + 1)
+        hook.update!(recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD + 1)
         hook.disabled_until = 1.hour.from_now
       end
 

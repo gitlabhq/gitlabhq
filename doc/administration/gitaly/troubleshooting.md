@@ -358,7 +358,7 @@ server to keep them synchronized.
 
 ### Gitaly not listening on new address after reconfiguring
 
-When updating the `gitaly['listen_addr']` or `gitaly['prometheus_listen_addr']` values, Gitaly may
+When updating the `gitaly['configuration'][:listen_addr]` or `gitaly['configuration'][:prometheus_listen_addr]` values, Gitaly may
 continue to listen on the old address after a `sudo gitlab-ctl reconfigure`.
 
 When this occurs, run `sudo gitlab-ctl restart` to resolve the issue. This should no longer be
@@ -692,7 +692,7 @@ praefect sql-migrate: OK (applied 21 migrations)
 
 This indicates that the virtual storage name used in the
 [Praefect configuration](praefect.md#praefect) does not match the storage name used in
-[`git_data_dirs` setting](praefect.md#gitaly) for GitLab.
+[`gitaly['configuration'][:storage][<index>][:name]` setting](praefect.md#gitaly) for GitLab.
 
 Resolve this by matching the virtual storage names used in Praefect and GitLab configuration.
 

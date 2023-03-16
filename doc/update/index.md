@@ -264,6 +264,11 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 15.10.0
+
+- Gitaly configuration changes significantly in Omnibus GitLab 16.0. You can begin migrating to the new structure in Omnibus GitLab 15.10 while backwards compatibility is
+  maintained in the lead up to Omnibus GitLab 16.0. [Read more about this change](#gitaly-omnibus-gitlab-configuration-structure-change).
+
 ### 15.9.0
 
 - **Upgrade to patch release 15.9.3 or later**. This provides fixes for two database migration bugs:
@@ -1464,6 +1469,163 @@ Organizations that are already running earlier patch levels of GitLab 15.6, 15.7
 If you have already upgraded to GitLab 15.9 following these instructions, your instance will not be affected by this bug, and you don't need to apply the 15.9.x patch when it is released.
 
 See [issue 393216](https://gitlab.com/gitlab-org/gitlab/-/issues/393216) for more information.
+
+### Gitaly: Omnibus GitLab configuration structure change
+
+Gitaly configuration structure in Omnibus GitLab [changes](https://gitlab.com/gitlab-org/gitaly/-/issues/4467) in GitLab 16.0 to be consistent with the Gitaly configuration
+structure used in source installs.
+
+As a result of this change, a single hash under `gitaly['configuration']` holds most Gitaly
+configuration. Some `gitaly['..']` configuration options will continue to be used by Omnibus GitLab 16.0 and later:
+
+- `enable`
+- `dir`
+- `log_directory`
+- `bin_path`
+- `env_directory`
+- `env`
+- `open_files_ulimit`
+- `consul_service_name`
+- `consul_service_meta`
+
+Migrate by moving your existing configuration under the new structure. The new structure is supported from Omnibus GitLab 15.10.
+
+The new structure is documented below with the old keys described in a comment above the new keys. When applying the new structure to your configuration:
+
+1. Replace the `...` with the value from the old key.
+1. Skip any keys you haven't configured a value for previously.
+1. Remove the old keys from the configuration once migrated.
+1. Optional but recommended. Include a trailing comma for all hash keys so the hash remains valid when keys are re-ordered or additional keys are added.
+
+  ```ruby
+gitaly['configuration'] = {
+  # gitaly['socket_path']
+  socket_path: ...,
+  # gitaly['runtime_dir']
+  runtime_dir: ...,
+  # gitaly['listen_addr']
+  listen_addr: ...,
+  # gitaly['prometheus_listen_addr']
+  prometheus_listen_addr: ...,
+  # gitaly['tls_listen_addr']
+  tls_listen_addr: ...,
+  tls: {
+    # gitaly['certificate_path']
+    certificate_path: ...,
+    # gitaly['key_path']
+    key_path: ...,
+  },
+  # gitaly['graceful_restart_timeout']
+  graceful_restart_timeout: ...,
+  logging: {
+    # gitaly['logging_level']
+    level: ...,
+    # gitaly['logging_format']
+    format: ...,
+    # gitaly['logging_sentry_dsn']
+    sentry_dsn: ...,
+    # gitaly['logging_ruby_sentry_dsn']
+    ruby_sentry_dsn: ...,
+    # gitaly['logging_sentry_environment']
+    sentry_environment: ...,
+    # gitaly['log_directory']
+    dir: ...,
+  },
+  prometheus: {
+    # gitaly['prometheus_grpc_latency_buckets']. The old value was configured as a string
+    # such as '[0, 1, 2]'. The new value must be an array like [0, 1, 2].
+    grpc_latency_buckets: ...,
+  },
+  auth: {
+    # gitaly['auth_token']
+    token: ...,
+    # gitaly['auth_transitioning']
+    transitioning: ...,
+  },
+  git: {
+    # gitaly['git_catfile_cache_size']
+    catfile_cache_size: ...,
+    # gitaly['git_bin_path']
+    bin_path: ...,
+    # gitaly['use_bundled_git']
+    use_bundled_binaries: ...,
+    # gitaly['gpg_signing_key_path']
+    signing_key: ...,
+    # gitaly['gitconfig']. This is still an array but the type of the elements have changed.
+    config: [
+      {
+        # Previously the elements contained 'section', and 'subsection' in addition to 'key'. Now
+        # these all should be concatenated into just 'key', separated by dots. For example,
+        # {section: 'first', subsection: 'middle', key: 'last', value: 'value'}, should become
+        # {key: 'first.middle.last', value: 'value'}.
+        key: ...,
+        value: ...,
+      },
+    ],
+  },
+  'gitaly-ruby': {
+    # gitaly['ruby_max_rss']
+    max_rss: ...,
+    # gitaly['ruby_graceful_restart_timeout']
+    graceful_restart_timeout: ...,
+    # gitaly['ruby_restart_delay']
+    restart_delay: ...,
+    # gitaly['ruby_num_workers']
+    num_workers: ...,
+  },
+  # gitaly['storage']. While the structure is the same, the string keys in the array elements
+  # should be replaced by symbols as elsewhere. {'key' => 'value'}, should become {key: 'value'}.
+  storage: ...,
+  hooks: {
+    # gitaly['custom_hooks_dir']
+    custom_hooks_dir: ...,
+  },
+  daily_maintenance: {
+    # gitaly['daily_maintenance_disabled']
+    disabled: ...,
+    # gitaly['daily_maintenance_start_hour']
+    start_hour: ...,
+    # gitaly['daily_maintenance_start_minute']
+    start_minute: ...,
+    # gitaly['daily_maintenance_duration']
+    duration: ...,
+    # gitaly['daily_maintenance_storages']
+    storages: ...,
+  },
+  cgroups: {
+    # gitaly['cgroups_mountpoint']
+    mountpoint: ...,
+    # gitaly['cgroups_hierarchy_root']
+    hierarchy_root: ...,
+    # gitaly['cgroups_memory_bytes']
+    memory_bytes: ...,
+    # gitaly['cgroups_cpu_shares']
+    cpu_shares: ...,
+    repositories: {
+      # gitaly['cgroups_repositories_count']
+      count: ...,
+      # gitaly['cgroups_repositories_memory_bytes']
+      memory_bytes: ...,
+      # gitaly['cgroups_repositories_cpu_shares']
+      cpu_shares: ...,
+    }
+  },
+  # gitaly['concurrency']. While the structure is the same, the string keys in the array elements
+  # should be replaced by symbols as elsewhere. {'key' => 'value'}, should become {key: 'value'}.
+  concurrency: ...,
+  # gitaly['rate_limiting']. While the structure is the same, the string keys in the array elements
+  # should be replaced by symbols as elsewhere. {'key' => 'value'}, should become {key: 'value'}.
+  rate_limiting: ...,
+  pack_objects_cache: {
+    # gitaly['pack_objects_cache_enabled']
+    enabled: ...,
+    # gitaly['pack_objects_cache_dir']
+    dir: ...,
+    # gitaly['pack_objects_cache_max_age']
+    max_age: ...,
+  }
+}
+```
 
 ### Praefect: Omnibus GitLab configuration structure change
 

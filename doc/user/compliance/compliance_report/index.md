@@ -174,7 +174,7 @@ passing in an optional value to the `commit_sha` query parameter.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `compliance_frameworks_report`.
-On GitLab.com, this feature is not available.
+On GitLab.com, this feature is available.
 
 With compliance frameworks report, you can see the compliance frameworks that are applied to projects in a group. Each row of the report shows:
 

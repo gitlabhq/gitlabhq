@@ -201,7 +201,10 @@ To use an external Prometheus server:
    postgres_exporter['listen_address'] = '0.0.0.0:9187'
 
    # Gitaly nodes
-   gitaly['prometheus_listen_addr'] = "0.0.0.0:9236"
+   gitaly['configuration'] = {
+      # ...
+      prometheus_listen_addr: '0.0.0.0:9236',
+   }
    ```
 
 1. Install and set up a dedicated Prometheus instance, if necessary, using the [official installation instructions](https://prometheus.io/docs/prometheus/latest/installation/).

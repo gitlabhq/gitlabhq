@@ -221,11 +221,17 @@ apply more than one:
   1. Modify the GitLab instance's
      [`gitlab.rb`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/13.5.1+ee.0/files/gitlab-config-template/gitlab.rb.template#L1435-1455) file:
 
-     ```shell
-     gitaly['gitconfig'] = [
-       # Set the http.postBuffer size, in bytes
-       {key: "http.postBuffer", value: "524288000"},
-     ]
+     ```ruby
+     gitaly['configuration'] = {
+       # ...
+       git: {
+         # ...
+         config: [
+           # Set the http.postBuffer size, in bytes
+           {key: "http.postBuffer", value: "524288000"},
+         ],
+       },
+     }
      ```
 
   1. After applying this change, apply the configuration change:

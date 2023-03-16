@@ -223,11 +223,36 @@ include:  # Execute individual project's configuration (if project contains .git
 The `rules` configuration in the `include` definition avoids circular inclusion in case the compliance pipeline must be able to run in the host project itself.
 You can leave it out if your compliance pipeline only ever runs in labeled projects.
 
-#### Compliance pipelines and custom pipeline configurations
+#### Compliance pipelines and custom pipeline configuration hosted externally
 
-Compliance pipelines don't run when an included project pipeline uses an external
-[custom CI/CD configuration file](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file). For more information, see
-[issue 393960](https://gitlab.com/gitlab-org/gitlab/-/issues/393960).
+The example above assumes that all projects host their pipeline configuration in the same project.
+If any projects use [configuration hosted externally to the project](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file):
+
+- The `include` section in the example compliance pipeline configuration must be adjusted.
+  For example, using [`include:rules`](../../ci/yaml/includes.md#use-rules-with-include):
+
+  ```yaml
+  include:
+    # If the custom path variables are defined, include the project's external config file.
+    - project: '$PROTECTED_PIPELINE_CI_PROJECT_PATH'
+      file: '$PROTECTED_PIPELINE_CI_CONFIG_PATH'
+      ref: '$PROTECTED_PIPELINE_CI_REF'
+      rules:
+        - if: $PROTECTED_PIPELINE_CI_PROJECT_PATH && $PROTECTED_PIPELINE_CI_CONFIG_PATH && $PROTECTED_PIPELINE_CI_REF
+    # If any custom path variable is not defined, include the project's internal config file as normal.
+    - project: '$CI_PROJECT_PATH'
+      file: '$CI_CONFIG_PATH'
+      ref: '$CI_COMMIT_SHA'
+      rules:
+        - if: $PROTECTED_PIPELINE_CI_PROJECT_PATH == null || $PROTECTED_PIPELINE_CI_CONFIG_PATH == null || $PROTECTED_PIPELINE_CI_REF == null
+  ```
+
+- [CI/CD variables](../../ci/variables/index.md) must be added to projects with external
+  pipeline configuration. In this example:
+
+  - `PROTECTED_PIPELINE_CI_PROJECT_PATH`: The path to the project hosting the configuration file, for example `group/subgroup/project`.
+  - `PROTECTED_PIPELINE_CI_CONFIG_PATH`: The path to the configuration file in the project, for example `path/to/.gitlab-ci.yml`.
+  - `PROTECTED_PIPELINE_CI_REF`: The ref to use when retrieving the configuration file, for example `main`.
 
 #### Compliance pipelines in merge requests originating in project forks
 

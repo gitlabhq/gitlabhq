@@ -10440,7 +10440,7 @@ msgstr "Сертифікат Kubernetes, що використовується �
 msgid "ClusterIntegration|The URL used to access the Kubernetes API."
 msgstr "URL-адреса, що використовується для доступу до Kubernetes API."
 
-msgid "ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd} or reach out to GitLab support."
+msgid "ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent Kubernetes%{linkEnd}. Contact GitLab Support if you have any additional questions."
 msgstr "Інтеграція Kubernetes на основі сертифікатів застаріла та буде вимкнена наприкінці лютого 2023 року. Будь ласка, %{linkStart}мігруйте на агент GitLab для Kubernetes%{linkEnd} або зверніться до служби підтримки GitLab."
 
 msgid "ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}."

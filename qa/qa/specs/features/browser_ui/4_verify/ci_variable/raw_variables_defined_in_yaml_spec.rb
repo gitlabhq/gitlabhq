@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Verify', :runner do
-    describe 'Pipeline with raw variables in YAML', product_group: :pipeline_authoring do
+    describe 'Pipeline with raw variables in YAML', product_group: :pipeline_security do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
       let(:pipeline_job_name) { 'rspec' }
 

@@ -6,12 +6,6 @@ class WebHook < ApplicationRecord
 
   InterpolationError = Class.new(StandardError)
 
-  MAX_FAILURES = 100
-  FAILURE_THRESHOLD = 3 # three strikes
-  EXCEEDED_FAILURE_THRESHOLD = FAILURE_THRESHOLD + 1
-  INITIAL_BACKOFF = 1.minute
-  MAX_BACKOFF = 1.day
-  BACKOFF_GROWTH_FACTOR = 2.0
   SECRET_MASK = '************'
 
   attr_encrypted :token,

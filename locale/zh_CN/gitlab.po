@@ -9948,7 +9948,7 @@ msgstr "用于对群集进行身份验证的 Kubernetes 证书。"
 msgid "ClusterIntegration|The URL used to access the Kubernetes API."
 msgstr "用于访问 Kubernetes API 的 URL。"
 
-msgid "ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd} or reach out to GitLab support."
+msgid "ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent Kubernetes%{linkEnd}. Contact GitLab Support if you have any additional questions."
 msgstr "基于证书的 Kubernetes 集成已被弃用，将于 2023 年 2 月关闭，请%{linkStart}迁移到适用于 Kubernetes 的代理%{linkEnd}或联系技术支持。"
 
 msgid "ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}."

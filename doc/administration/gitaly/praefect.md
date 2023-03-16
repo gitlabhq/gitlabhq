@@ -638,7 +638,7 @@ Updates to example must be made at:
 
    ```ruby
    # Name of storage hash must match storage name in git_data_dirs on GitLab
-   # server ('default') and in git_data_dirs on Gitaly nodes ('gitaly-1')
+   # server ('default') and in gitaly['configuration'][:storage][INDEX][:name] on Gitaly nodes ('gitaly-1')
    praefect['configuration'] = {
       # ...
       virtual_storage: [
@@ -894,10 +894,10 @@ because we rely on Praefect to route operations correctly.
 
 Particular attention should be shown to:
 
-- The `gitaly['auth_token']` configured in this section must match the `token` value under
-  `praefect['configuration'][:virtual_storage][<index>][:node][<index>][:token]` on the Praefect node. This value was
+- The `gitaly['configuration'][:auth][:token]` configured in this section must match the `token`
+  value under `praefect['configuration'][:virtual_storage][<index>][:node][<index>][:token]` on the Praefect node. This value was
   set in the [previous section](#praefect). This document uses the placeholder `PRAEFECT_INTERNAL_TOKEN` throughout.
-- The storage names in `git_data_dirs` configured in this section must match the
+- The storage names in `gitaly['configuration'][:storage]` configured in this section must match the
   storage names under `praefect['configuration'][:virtual_storage]` on the Praefect node. This
   was set in the [previous section](#praefect). This document uses `gitaly-1`,
   `gitaly-2`, and `gitaly-3` as Gitaly storage names.
@@ -939,13 +939,16 @@ For more information on Gitaly server configuration, see our
    `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   # Make Gitaly accept connections on all network interfaces.
-   # Use firewalls to restrict access to this address/port.
-   gitaly['listen_addr'] = '0.0.0.0:8075'
-
-   # Enable Prometheus metrics access to Gitaly. You must use firewalls
-   # to restrict access to this address/port.
-   gitaly['prometheus_listen_addr'] = '0.0.0.0:9236'
+   gitaly['configuration'] = {
+      # ...
+      #
+      # Make Gitaly accept connections on all network interfaces.
+      # Use firewalls to restrict access to this address/port.
+      listen_addr: '0.0.0.0:8075',
+      # Enable Prometheus metrics access to Gitaly. You must use firewalls
+      # to restrict access to this address/port.
+      prometheus_listen_addr: '0.0.0.0:9236',
+   }
    ```
 
 1. Configure a strong `auth_token` for **Gitaly** by editing
@@ -954,7 +957,13 @@ For more information on Gitaly server configuration, see our
    nodes.
 
    ```ruby
-   gitaly['auth_token'] = 'PRAEFECT_INTERNAL_TOKEN'
+   gitaly['configuration'] = {
+      # ...
+      auth: {
+         # ...
+         token: 'PRAEFECT_INTERNAL_TOKEN',
+      },
+   }
    ```
 
 1. Configure the GitLab Shell secret token, which is needed for `git push` operations. Either:
@@ -983,13 +992,13 @@ For more information on Gitaly server configuration, see our
    gitlab_rails['internal_api_url'] = 'http://GITLAB_HOST'
    ```
 
-1. Configure the storage location for Git data by setting `git_data_dirs` in
+1. Configure the storage location for Git data by setting `gitaly['configuration'][:storage]` in
    `/etc/gitlab/gitlab.rb`. Each Gitaly node should have a unique storage name
    (such as `gitaly-1`).
 
-   Instead of configuring `git_data_dirs` uniquely for each Gitaly node, it is
+   Instead of configuring `gitaly['configuration'][:storage]` uniquely for each Gitaly node, it is
    often easier to have include the configuration for all Gitaly nodes on every
-   Gitaly node. You can do this because the Praefect `virtual_storages`
+   Gitaly node. You can do this because the Praefect `virtual_storage`
    configuration maps each storage name (such as `gitaly-1`) to a specific node, and
    requests are routed accordingly. This means every Gitaly node in your fleet
    can share the same configuration.
@@ -998,17 +1007,23 @@ For more information on Gitaly server configuration, see our
    # You can include the data dirs for all nodes in the same config, because
    # Praefect will only route requests according to the addresses provided in the
    # prior step.
-   git_data_dirs({
-     "gitaly-1" => {
-       "path" => "/var/opt/gitlab/git-data"
-     },
-     "gitaly-2" => {
-       "path" => "/var/opt/gitlab/git-data"
-     },
-     "gitaly-3" => {
-       "path" => "/var/opt/gitlab/git-data"
-     }
-   })
+   gitaly['configuration'] = {
+      # ...
+      storage: [
+        {
+          name: 'gitaly-1',
+          path: '/var/opt/gitlab/git-data',
+        },
+        {
+          name: 'gitaly-2',
+          path: '/var/opt/gitlab/git-data',
+        },
+        {
+          name: 'gitaly-3',
+          path: '/var/opt/gitlab/git-data',
+        },
+      ],
+   }
    ```
 
 1. Save the changes to `/etc/gitlab/gitlab.rb` and

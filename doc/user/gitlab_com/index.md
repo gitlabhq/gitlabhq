@@ -176,7 +176,7 @@ varies by format:
 | Generic      | 5 GB       |
 | Helm         | 5 MB       |
 | Maven        | 5 GB       |
-| npm:         | 5 GB       |
+| npm          | 5 GB       |
 | NuGet        | 5 GB       |
 | PyPI         | 5 GB       |
 | Terraform    | 1 GB       |

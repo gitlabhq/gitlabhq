@@ -10112,7 +10112,7 @@ msgstr "Le certificat Kubernetes utilisé pour s'authentifier auprès de la grap
 msgid "ClusterIntegration|The URL used to access the Kubernetes API."
 msgstr "L'URL utilisée pour accéder à l'API Kubernetes."
 
-msgid "ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd} or reach out to GitLab support."
+msgid "ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent Kubernetes%{linkEnd}. Contact GitLab Support if you have any additional questions."
 msgstr "L'intégration Kubernetes basée sur un certificat est désormais obsolète et sera désactivée à la fin du mois de février 2023. Veuillez %{linkStart}migrer vers l'agent GitLab pour Kubernetes%{linkEnd} ou contacter le support GitLab."
 
 msgid "ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}."
