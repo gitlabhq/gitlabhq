@@ -360,7 +360,6 @@ RSpec.configure do |config|
       ./spec/requests/api/broadcast_messages_spec.rb
       ./spec/requests/api/deploy_keys_spec.rb
       ./spec/requests/api/deploy_tokens_spec.rb
-      ./spec/requests/api/freeze_periods_spec.rb
       ./spec/requests/api/groups_spec.rb
       ./spec/requests/api/keys_spec.rb
       ./spec/requests/api/merge_requests_spec.rb

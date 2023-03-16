@@ -12,14 +12,12 @@ RSpec.describe API::FreezePeriods, feature_category: :continuous_delivery do
   let(:last_freeze_period) { project.freeze_periods.last }
 
   describe 'GET /projects/:id/freeze_periods' do
+    let_it_be(:path) { "/projects/#{project.id}/freeze_periods" }
+
     context 'when the user is the admin' do
       let!(:freeze_period) { create(:ci_freeze_period, project: project, created_at: 2.days.ago) }
 
-      it 'returns 200 HTTP status' do
-        get api("/projects/#{project.id}/freeze_periods", admin)
-
-        expect(response).to have_gitlab_http_status(:ok)
-      end
+      it_behaves_like 'GET request permissions for admin mode when admin', :not_found
     end
 
     context 'when the user is the maintainer' do
@@ -31,36 +29,26 @@ RSpec.describe API::FreezePeriods, feature_category: :continuous_delivery do
         let!(:freeze_period_1) { create(:ci_freeze_period, project: project, created_at: 2.days.ago) }
         let!(:freeze_period_2) { create(:ci_freeze_period, project: project, created_at: 1.day.ago) }
 
-        it 'returns 200 HTTP status' do
-          get api("/projects/#{project.id}/freeze_periods", user)
+        it 'returns freeze_periods ordered by created_at ascending', :aggregate_failures do
+          get api(path, user)
 
           expect(response).to have_gitlab_http_status(:ok)
-        end
-
-        it 'returns freeze_periods ordered by created_at ascending' do
-          get api("/projects/#{project.id}/freeze_periods", user)
-
           expect(json_response.count).to eq(2)
           expect(freeze_period_ids).to eq([freeze_period_1.id, freeze_period_2.id])
         end
 
         it 'matches response schema' do
-          get api("/projects/#{project.id}/freeze_periods", user)
+          get api(path, user)
 
           expect(response).to match_response_schema('public_api/v4/freeze_periods')
         end
       end
 
       context 'when there are no freeze_periods' do
-        it 'returns 200 HTTP status' do
-          get api("/projects/#{project.id}/freeze_periods", user)
+        it 'returns 200 HTTP status with empty response', :aggregate_failures do
+          get api(path, user)
 
           expect(response).to have_gitlab_http_status(:ok)
-        end
-
-        it 'returns an empty response' do
-          get api("/projects/#{project.id}/freeze_periods", user)
-
           expect(json_response).to be_empty
         end
       end
@@ -75,28 +63,21 @@ RSpec.describe API::FreezePeriods, feature_category: :continuous_delivery do
         create(:ci_freeze_period, project: project)
       end
 
-      it 'responds 403 Forbidden' do
-        get api("/projects/#{project.id}/freeze_periods", user)
-
-        expect(response).to have_gitlab_http_status(:forbidden)
+      context 'and responds 403 Forbidden' do
+        it_behaves_like 'GET request permissions for admin mode when user', :forbidden do
+          let(:current_user) { user }
+        end
       end
     end
 
     context 'when user is not a project member' do
-      it 'responds 404 Not Found' do
-        get api("/projects/#{project.id}/freeze_periods", user)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
+      it_behaves_like 'GET request permissions for admin mode when user', :not_found
 
       context 'when project is public' do
         let(:project) { create(:project, :public) }
+        let(:path) { "/projects/#{project.id}/freeze_periods" }
 
-        it 'responds 403 Forbidden' do
-          get api("/projects/#{project.id}/freeze_periods", user)
-
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end
+        it_behaves_like 'GET request permissions for admin mode when user', :forbidden
       end
     end
   end
@@ -107,14 +88,12 @@ RSpec.describe API::FreezePeriods, feature_category: :continuous_delivery do
         create(:ci_freeze_period, project: project)
       end
 
+      let(:path) { "/projects/#{project.id}/freeze_periods/#{freeze_period.id}" }
+
       context 'when the user is the admin' do
         let!(:freeze_period) { create(:ci_freeze_period, project: project, created_at: 2.days.ago) }
 
-        it 'responds 200 OK' do
-          get api("/projects/#{project.id}/freeze_periods/#{freeze_period.id}", admin)
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
+        it_behaves_like 'GET request permissions for admin mode when admin', :not_found
       end
 
       context 'when the user is the maintainer' do
@@ -122,15 +101,10 @@ RSpec.describe API::FreezePeriods, feature_category: :continuous_delivery do
           project.add_maintainer(user)
         end
 
-        it 'responds 200 OK' do
-          get api("/projects/#{project.id}/freeze_periods/#{freeze_period.id}", user)
+        it 'returns a freeze period', :aggregate_failures do
+          get api(path, user)
 
           expect(response).to have_gitlab_http_status(:ok)
-        end
-
-        it 'returns a freeze period' do
-          get api("/projects/#{project.id}/freeze_periods/#{freeze_period.id}", user)
-
           expect(json_response).to include(
             'id' => freeze_period.id,
             'freeze_start' => freeze_period.freeze_start,
@@ -139,7 +113,7 @@ RSpec.describe API::FreezePeriods, feature_category: :continuous_delivery do
         end
 
         it 'matches response schema' do
-          get api("/projects/#{project.id}/freeze_periods/#{freeze_period.id}", user)
+          get api(path, user)
 
           expect(response).to match_response_schema('public_api/v4/freeze_period')
         end
@@ -150,28 +124,26 @@ RSpec.describe API::FreezePeriods, feature_category: :continuous_delivery do
           project.add_guest(user)
         end
 
-        it 'responds 403 Forbidden' do
-          get api("/projects/#{project.id}/freeze_periods/#{freeze_period.id}", user)
-
-          expect(response).to have_gitlab_http_status(:forbidden)
+        context 'and responds 403 Forbidden' do
+          it_behaves_like 'GET request permissions for admin mode when user' do
+            let(:current_user) { user }
+          end
         end
 
         context 'when project is public' do
           let(:project) { create(:project, :public) }
 
-          context 'when freeze_period exists' do
-            it 'responds 403 Forbidden' do
-              get api("/projects/#{project.id}/freeze_periods/#{freeze_period.id}", user)
-
-              expect(response).to have_gitlab_http_status(:forbidden)
+          context 'and responds 403 Forbidden when freeze_period exists' do
+            it_behaves_like 'GET request permissions for admin mode when user' do
+              let(:current_user) { user }
             end
           end
 
-          context 'when freeze_period does not exist' do
-            it 'responds 403 Forbidden' do
-              get api("/projects/#{project.id}/freeze_periods/0", user)
+          context 'and responds 403 Forbidden when freeze_period does not exist' do
+            let(:path) { "/projects/#{project.id}/freeze_periods/0" }
 
-              expect(response).to have_gitlab_http_status(:forbidden)
+            it_behaves_like 'GET request permissions for admin mode when user' do
+              let(:current_user) { user }
             end
           end
         end
@@ -188,15 +160,13 @@ RSpec.describe API::FreezePeriods, feature_category: :continuous_delivery do
       }
     end
 
-    subject { post api("/projects/#{project.id}/freeze_periods", api_user), params: params }
+    let(:path) { "/projects/#{project.id}/freeze_periods" }
+
+    subject { post api(path, api_user), params: params }
 
     context 'when the user is the admin' do
-      let(:api_user) { admin }
-
-      it 'accepts the request' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:created)
+      it_behaves_like 'POST request permissions for admin mode when admin', :not_found do
+        let(:current_user) { admin }
       end
     end
 
@@ -212,7 +182,7 @@ RSpec.describe API::FreezePeriods, feature_category: :continuous_delivery do
           expect(response).to have_gitlab_http_status(:created)
         end
 
-        it 'creates a new freeze period' do
+        it 'creates a new freeze period', :aggregate_failures do
           expect do
             subject
           end.to change { Ci::FreezePeriod.count }.by(1)
@@ -268,10 +238,10 @@ RSpec.describe API::FreezePeriods, feature_category: :continuous_delivery do
         project.add_developer(user)
       end
 
-      it 'responds 403 Forbidden' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:forbidden)
+      context 'and responds 403 Forbidden' do
+        it_behaves_like 'POST request permissions for admin mode when user' do
+          let(:current_user) { user }
+        end
       end
     end
 
@@ -280,28 +250,22 @@ RSpec.describe API::FreezePeriods, feature_category: :continuous_delivery do
         project.add_reporter(user)
       end
 
-      it 'responds 403 Forbidden' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:forbidden)
+      context 'and responds 403 Forbidden' do
+        it_behaves_like 'POST request permissions for admin mode when user' do
+          let(:current_user) { user }
+        end
       end
     end
 
     context 'when user is not a project member' do
-      it 'responds 403 Forbidden' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:not_found)
+      context 'and responds 403 Forbidden' do
+        it_behaves_like 'POST request permissions for admin mode when user', :not_found
       end
 
       context 'when project is public' do
         let(:project) { create(:project, :public) }
 
-        it 'responds 403 Forbidden' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end
+        it_behaves_like 'POST request permissions for admin mode when user', :forbidden
       end
     end
   end
@@ -309,17 +273,12 @@ RSpec.describe API::FreezePeriods, feature_category: :continuous_delivery do
   describe 'PUT /projects/:id/freeze_periods/:freeze_period_id' do
     let(:params) { { freeze_start: '0 22 * * 5', freeze_end: '5 4 * * sun' } }
     let!(:freeze_period) { create :ci_freeze_period, project: project }
+    let(:path) { "/projects/#{project.id}/freeze_periods/#{freeze_period.id}" }
 
-    subject { put api("/projects/#{project.id}/freeze_periods/#{freeze_period.id}", api_user), params: params }
+    subject { put api(path, api_user), params: params }
 
     context 'when user is the admin' do
-      let(:api_user) { admin }
-
-      it 'accepts the request' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-      end
+      it_behaves_like 'PUT request permissions for admin mode when admin', :not_found
     end
 
     context 'when user is the maintainer' do
@@ -367,27 +326,23 @@ RSpec.describe API::FreezePeriods, feature_category: :continuous_delivery do
         project.add_reporter(user)
       end
 
-      it 'responds 403 Forbidden' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:forbidden)
+      context 'and responds 403 Forbidden' do
+        it_behaves_like 'PUT request permissions for admin mode when user' do
+          let(:current_user) { user }
+        end
       end
     end
 
     context 'when user is not a project member' do
-      it 'responds 404 Not Found' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:not_found)
+      context 'and responds 404 Not Found' do
+        it_behaves_like 'PUT request permissions for admin mode when user', :not_found
       end
 
       context 'when project is public' do
         let(:project) { create(:project, :public) }
 
-        it 'responds 403 Forbidden' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:forbidden)
+        context 'and responds 403 Forbidden' do
+          it_behaves_like 'PUT request permissions for admin mode when user'
         end
       end
     end
@@ -396,17 +351,12 @@ RSpec.describe API::FreezePeriods, feature_category: :continuous_delivery do
   describe 'DELETE /projects/:id/freeze_periods/:freeze_period_id' do
     let!(:freeze_period) { create :ci_freeze_period, project: project }
     let(:freeze_period_id) { freeze_period.id }
+    let(:path) { "/projects/#{project.id}/freeze_periods/#{freeze_period_id}" }
 
-    subject { delete api("/projects/#{project.id}/freeze_periods/#{freeze_period_id}", api_user) }
+    subject { delete api(path, api_user) }
 
     context 'when user is the admin' do
-      let(:api_user) { admin }
-
-      it 'accepts the request' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:no_content)
-      end
+      it_behaves_like 'DELETE request permissions for admin mode when admin', failed_status_code: :not_found
     end
 
     context 'when user is the maintainer' do
@@ -442,27 +392,23 @@ RSpec.describe API::FreezePeriods, feature_category: :continuous_delivery do
         project.add_reporter(user)
       end
 
-      it 'responds 403 Forbidden' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:forbidden)
+      context 'and responds 403 Forbidden' do
+        it_behaves_like 'DELETE request permissions for admin mode when user' do
+          let(:current_user) { user }
+        end
       end
     end
 
     context 'when user is not a project member' do
-      it 'responds 404 Not Found' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:not_found)
+      context 'and responds 404 Not Found' do
+        it_behaves_like 'DELETE request permissions for admin mode when user', :not_found
       end
 
       context 'when project is public' do
         let(:project) { create(:project, :public) }
 
-        it 'responds 403 Forbidden' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:forbidden)
+        context 'and responds 403 Forbidden' do
+          it_behaves_like 'DELETE request permissions for admin mode when user'
         end
       end
     end

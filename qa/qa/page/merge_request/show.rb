@@ -245,6 +245,17 @@ module QA
           has_element?(:merge_button)
         end
 
+        def has_no_merge_button?
+          refresh
+
+          has_no_element?(:merge_button)
+        end
+
+        RSpec::Matchers.define :have_merge_button do
+          match(&:has_merge_button?)
+          match_when_negated(&:has_no_merge_button?)
+        end
+
         def has_pipeline_status?(text)
           # Pipelines can be slow, so we wait a bit longer than the usual 10 seconds
           wait_until(max_duration: 120, sleep_interval: 5, reload: true) do

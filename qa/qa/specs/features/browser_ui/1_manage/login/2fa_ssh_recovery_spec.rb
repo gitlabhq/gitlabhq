@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Manage', :reliable, :requires_admin, :skip_live_env, product_group: :system_access do
+  context 'Manage', :reliable, :requires_admin, :skip_live_env, product_group: :authentication_and_authorization do
     describe '2FA' do
       let!(:user) { Resource::User.fabricate_via_api! }
       let!(:user_api_client) { Runtime::API::Client.new(:gitlab, user: user) }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :smoke, :mobile, product_group: :system_access do
+  RSpec.describe 'Manage', :smoke, :mobile, product_group: :authentication_and_authorization do
     describe 'basic user login' do
       it 'user logs in using basic credentials and logs out', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347880' do
         Flow::Login.sign_in

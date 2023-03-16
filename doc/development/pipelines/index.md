@@ -392,6 +392,8 @@ to detect, and fail if any changes introduced in the merge request has zero cove
 The `rspec:undercoverage` job obtains coverage data from the `rspec:coverage`
 job.
 
+If the `rspec:undercoverage` job detects missing coverage due to a CE method being overridden in EE, add the `pipeline:run-as-if-foss` label to the merge request and start a new pipeline.
+
 In the event of an emergency, or false positive from this job, add the
 `pipeline:skip-undercoverage` label to the merge request to allow this job to
 fail.

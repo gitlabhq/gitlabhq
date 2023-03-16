@@ -4,7 +4,7 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Back up GitLab
+# Back up GitLab **(FREE SELF)**
 
 GitLab provides a command line interface to back up your entire instance,
 including:
