@@ -15,8 +15,7 @@ Depending on your needs, you might want to use a [deploy token](../deploy_tokens
 |------------------|-------------|--------------|
 | Sharing          | Shareable between multiple projects, even those in different groups. | Belong to a project or group. |
 | Source           | Public SSH key generated on an external host. | Generated on your GitLab instance, and is provided to users only at creation time. |
-| Validity         | Valid as long as it's registered and enabled, and the user that created it exists. | Can be given an expiration date. |
-| Registry access  | Cannot access a package registry. | Can read from and write to a package registry. |
+| Accessible resources  | Git repository over SSH | Git repository over HTTP, package registry, and container registry. |
 
 Deploy keys can't be used for Git operations if [external authorization](../../admin_area/settings/external_authorization.md) is enabled.
 
@@ -41,16 +40,23 @@ A deploy key is given a permission level when it is created:
 You can change a deploy key's permission level after creating it. Changing a project deploy key's
 permissions only applies for the current project.
 
-When a read-write deploy key is used to push a commit, GitLab checks if the creator of the
-deploy key has permission to access the resource.
-
-For example:
+Although a deploy key is a secret that isn't associated with a specific user,
+GitLab authorizes the creator of the deploy key if the Git-command triggers additional processes. For example:
 
 - When a deploy key is used to push a commit to a [protected branch](../protected_branches.md),
   the _creator_ of the deploy key must have access to the branch.
 - When a deploy key is used to push a commit that triggers a CI/CD pipeline, the _creator_ of the
   deploy key must have access to the CI/CD resources, including protected environments and secret
   variables.
+
+## Security implications
+
+The intended use case for deploy keys is for non-human interaction with GitLab, for example: an automated script running on a server in your organization.
+As with all sensitive information, you should ensure only those who need access to the secret can read it.
+For human interactions, use credentials tied to users such as Personal Access Tokens.
+
+To help detect a potential secret leak, you can use the
+[Audit Event](../../../administration/audit_event_streaming.md#example-payloads-for-ssh-events-with-deploy-key) feature.
 
 ## View deploy keys
 

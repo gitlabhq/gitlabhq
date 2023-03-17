@@ -24,6 +24,8 @@
           = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5'}) do |c|
             = c.body do
               = _('The secret is only available when you create the application or renew the secret.')
+        = render 'shared/doorkeeper/applications/update_form', path: renew_path
+
     %tr
       %td
         = _('Callback URL')
