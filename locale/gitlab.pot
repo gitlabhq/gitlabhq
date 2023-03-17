@@ -34182,6 +34182,9 @@ msgstr ""
 msgid "ProjectSettings|Leave empty to use default template."
 msgstr ""
 
+msgid "ProjectSettings|Make sure this pattern does not contradict the %{link_start}Push rules &gt; Branch name%{link_end} setting."
+msgstr ""
+
 msgid "ProjectSettings|Manage who can see the project in the public access directory."
 msgstr ""
 
@@ -35492,6 +35495,9 @@ msgid "PushRules|All committed filenames cannot match this %{wiki_syntax_link_st
 msgstr ""
 
 msgid "PushRules|Branch name"
+msgstr ""
+
+msgid "PushRules|Check %{link_start}Branch defaults &gt; Branch name templates%{link_end} for potential conflicts."
 msgstr ""
 
 msgid "PushRules|Check whether the commit author is a GitLab user"

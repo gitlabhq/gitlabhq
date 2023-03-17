@@ -3,7 +3,7 @@
 - emails_disabled = @project.emails_disabled?
 - cache_enabled = Feature.enabled?(:cache_home_panel, @project, type: :development)
 
-.project-home-panel.js-show-on-project-root.gl-my-5{ class: [("empty-project" if empty_repo)] }
+.project-home-panel.js-show-on-project-root.gl-mt-2.gl-mb-5{ class: [("empty-project" if empty_repo)] }
   .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-sm-flex-direction-column.gl-mb-3.gl-gap-5
     .home-panel-title-row.gl-display-flex.gl-align-items-center
       %div{ class: 'avatar-container rect-avatar s64 home-panel-avatar gl-flex-shrink-0 gl-w-11 gl-h-11 gl-mr-3! float-none' }

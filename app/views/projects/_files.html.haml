@@ -8,7 +8,7 @@
   - add_page_startup_api_call project_blob_path(@project, tree_join(@ref, readme_path), viewer: "rich", format: "json")
 
 #tree-holder.tree-holder.clearfix.js-per-page{ data: { blame_per_page: Projects::BlameService::PER_PAGE } }
-  .info-well.gl-display-none.gl-sm-display-flex.project-last-commit.gl-flex-direction-column
+  .info-well.gl-display-none.gl-sm-display-flex.project-last-commit.gl-flex-direction-column.gl-mt-2
     #js-last-commit.gl-m-auto
       = gl_loading_icon(size: 'md')
     #js-code-owners

@@ -14,7 +14,7 @@ module Types
             type: GraphQL::Types::String,
             null: false,
             description: 'Human readable representation for this access level.',
-            hash_key: 'humanize'
+            method: 'humanize'
     end
   end
 end

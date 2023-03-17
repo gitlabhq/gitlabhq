@@ -958,6 +958,8 @@ class Repository
   end
 
   def merged_to_root_ref?(branch_or_name)
+    return unless head_commit
+
     branch = Gitlab::Git::Branch.find(self, branch_or_name)
 
     if branch
@@ -970,7 +972,7 @@ class Repository
   end
 
   def root_ref_sha
-    @root_ref_sha ||= commit(root_ref).sha
+    @root_ref_sha ||= head_commit.sha
   end
 
   # If this method is not provided a set of branch names to check merge status,

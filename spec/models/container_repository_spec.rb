@@ -799,6 +799,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       freeze_time do
         expect { subject }
           .to change { repository.expiration_policy_started_at }.from(nil).to(Time.zone.now)
+          .and change { repository.expiration_policy_cleanup_status }.from('cleanup_unscheduled').to('cleanup_ongoing')
           .and change { repository.last_cleanup_deleted_tags_count }.from(10).to(nil)
       end
     end

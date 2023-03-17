@@ -68,7 +68,7 @@ Prerequisite:
 1. Expand **Outbound requests**.
 1. Clear the **Allow requests to the local network from system hooks** checkbox.
 
-## Block all requests
+## Filter requests
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377371) in GitLab 15.10 [with a flag](../administration/feature_flags.md) named `deny_all_requests_except_allowed`. Disabled by default.
 
@@ -80,7 +80,7 @@ Prerequisite:
 
 - You must have administrator access to the instance.
 
-To block all requests made by the GitLab Rails app:
+To filter requests by blocking many requests:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Network**.
@@ -89,12 +89,13 @@ To block all requests made by the GitLab Rails app:
 
 When this checkbox is selected, requests to the following are still not blocked:
 
-- Core services like Geo, Git, GitLab Shell, Gitaly, PostgreSQL, and Redis
-- Object storage
-- IP addresses and domains in the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains)
+- Core services like Geo, Git, GitLab Shell, Gitaly, PostgreSQL, and Redis.
+- Object storage.
+- IP addresses and domains in the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 
-This setting is respected by GitLab Rails only, so other services like Gitaly can still make requests that break the rule.
-Additionally, [some areas of GitLab Rails](https://gitlab.com/groups/gitlab-org/-/epics/8029) do not respect outbound filtering rules.
+This setting is respected by the main GitLab application only, so other services like Gitaly can still make requests that break the rule.
+Additionally, [some areas of GitLab](https://gitlab.com/groups/gitlab-org/-/epics/8029) do not respect outbound filtering
+rules.
 
 ## Allow outbound requests to certain IP addresses and domains
 
@@ -152,7 +153,7 @@ If you can't enable this setting, do one of the following:
 
 Most GitLab instances have their `public_runner_releases_url` set to
 `https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-runner/releases`.
-You can't change or disable this setting in the Admin Area, which can prevent you from [blocking all requests](#block-all-requests).
+You can't change or disable this setting in the Admin Area, which can prevent you from [filtering requests](#filter-requests).
 
 To enable the setting, use the [Rails console](../administration/operations/rails_console.md) to set `public_runner_releases_url` to the instance host:
 
@@ -163,5 +164,8 @@ ApplicationSettings::UpdateService.new(current_settings, nil, public_runner_rele
 
 ### GitLab subscription management is blocked
 
-When you [block all requests](#block-all-requests), [GitLab subscription management](../subscriptions/self_managed/index.md) also gets blocked.
-The workaround is to add `customers.gitlab.com:443` to the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
+When you [filter requests](#filter-requests), [GitLab subscription management](../subscriptions/self_managed/index.md)
+is blocked.
+
+To work around this problem, add `customers.gitlab.com:443` to the
+[allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).

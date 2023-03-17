@@ -632,7 +632,7 @@ body {
 }
 
 .page-title {
-  margin: #{2 * $grid-size} 0;
+  margin: 0 0 #{2 * $grid-size};
   line-height: 1.3;
 
   &.with-button {

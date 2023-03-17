@@ -60,10 +60,11 @@ To enable 2FA with a one-time password:
 1. **On your device (usually your phone):**
    1. Install a compatible application. For example:
       - Cloud-based (recommended because you can restore access if you lose the hardware device):
-        - [Authy](https://authy.com/)
+        - [Authy](https://authy.com/).
+        - [Duo](https://duo.com/).
       - Other:
-        - [Google Authenticator](https://support.google.com/accounts/answer/1066447?hl=en)
-        - [Microsoft Authenticator](https://www.microsoft.com/en-us/security/mobile-authenticator-app)
+        - [Google Authenticator](https://support.google.com/accounts/answer/1066447?hl=en).
+        - [Microsoft Authenticator](https://www.microsoft.com/en-us/security/mobile-authenticator-app).
    1. In the application, add a new entry in one of two ways:
       - Scan the code displayed by GitLab with your device's camera to add the entry automatically.
       - Enter the details provided to add the entry manually.
@@ -71,9 +72,6 @@ To enable 2FA with a one-time password:
    1. Enter the six-digit pin number from the entry on your device into **Pin code**.
    1. Enter your current password.
    1. Select **Submit**.
-
-NOTE:
-DUO [cannot be used for 2FA](https://gitlab.com/gitlab-org/gitlab/-/issues/15760).
 
 If you entered the correct pin, GitLab displays a list of [recovery codes](#recovery-codes). Download them and keep them
 in a safe place.
@@ -140,6 +138,70 @@ Configure FortiAuthenticator in GitLab. On your GitLab server:
 1. Save the configuration file.
 1. [Reconfigure](../../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) (Omnibus GitLab) or
    [restart](../../../administration/restart_gitlab.md#installations-from-source) (GitLab installed from source).
+
+### Enable one-time password using Duo
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15760) in GitLab 15.10.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. On GitLab.com this feature is not available.
+
+You can use Duo as an OTP provider in GitLab.
+
+#### Prerequisites
+
+To use Duo as an OTP provider:
+
+- Your account must exist in both Duo and GitLab, with the same username in both applications.
+- You must have [configured Duo](https://admin.duosecurity.com/) and have an integration key, secret key, and API hostname.
+
+For more information, see the [Duo API documentation](https://duo.com/docs/authapi).
+
+GitLab 15.10 has been tested with Duo version D261.14
+
+#### Configure Duo in GitLab
+
+On your GitLab server:
+
+1. Open the configuration file.
+
+   For Omnibus GitLab:
+
+   ```shell
+   sudo editor /etc/gitlab/gitlab.rb
+   ```
+
+   For installations from source:
+
+   ```shell
+   cd /home/git/gitlab
+   sudo -u git -H editor config/gitlab.yml
+   ```
+
+1. Add the provider configuration:
+
+   For Omnibus package:
+
+   ```ruby
+    gitlab_rails['duo_auth_enabled'] = false
+    gitlab_rails['duo_auth_integration_key'] = '<duo_integration_key_value>'
+    gitlab_rails['duo_auth_secret_key'] = '<duo_secret_key_value>'
+    gitlab_rails['duo_auth_hostname'] = '<duo_api_hostname>'
+   ```
+
+   For installations from source:
+
+   ```yaml
+   duo_auth:
+     enabled: true
+     hostname: <duo_api_hostname>
+     integration_key: <duo_integration_key_value>
+     secret_key: <duo_secret_key_value>
+   ```
+
+1. Save the configuration file.
+1. For Omnibus GitLab, [reconfigure GitLab](../../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure).
+   For installations from source, [restart GitLab](../../../administration/restart_gitlab.md#installations-from-source).
 
 ### Enable one-time password using FortiToken Cloud
 

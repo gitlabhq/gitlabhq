@@ -703,6 +703,14 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
       it { is_expected.to be_nil }
     end
+
+    context 'when root reference is empty' do
+      subject { empty_repo.merged_to_root_ref?('master') }
+
+      let(:empty_repo) { build(:project, :empty_repo).repository }
+
+      it { is_expected.to be_nil }
+    end
   end
 
   describe "#root_ref_sha" do
@@ -711,7 +719,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
     subject { repository.root_ref_sha }
 
     before do
-      allow(repository).to receive(:commit).with(repository.root_ref) { commit }
+      allow(repository).to receive(:head_commit) { commit }
     end
 
     it { is_expected.to eq(commit.sha) }

@@ -68,7 +68,7 @@ module ContainerExpirationPolicies
               container_repository_id: repo.id
             )
 
-            repo.cleanup_ongoing!
+            repo.start_expiration_policy!
           end
         end
       end
@@ -95,10 +95,9 @@ module ContainerExpirationPolicies
     def cleanup_scheduled_count
       strong_memoize(:cleanup_scheduled_count) do
         limit = max_running_jobs + 1
-        ContainerExpirationPolicy.with_container_repositories
-                                 .runnable_schedules
-                                 .limit(limit)
-                                 .count
+        ContainerRepository.requiring_cleanup
+                           .limit(limit)
+                           .count
       end
     end
 
