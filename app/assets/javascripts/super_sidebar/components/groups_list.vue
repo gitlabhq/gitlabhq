@@ -2,12 +2,14 @@
 import { s__ } from '~/locale';
 import { MAX_FREQUENT_GROUPS_COUNT } from '../constants';
 import FrequentItemsList from './frequent_items_list.vue';
+import SearchResults from './search_results.vue';
 import NavItem from './nav_item.vue';
 
 export default {
   MAX_FREQUENT_GROUPS_COUNT,
   components: {
     FrequentItemsList,
+    SearchResults,
     NavItem,
   },
   props: {
@@ -52,15 +54,22 @@ export default {
 </script>
 
 <template>
+  <search-results
+    v-if="isSearch"
+    :title="$options.i18n.searchTitle"
+    :no-results-text="$options.i18n.noResultsText"
+    :search-results="searchResults"
+  >
+    <template #view-all-items>
+      <nav-item :item="viewAllItem" />
+    </template>
+  </search-results>
   <frequent-items-list
+    v-else
     :title="$options.i18n.title"
-    :search-title="$options.i18n.searchTitle"
     :storage-key="storageKey"
     :max-items="$options.MAX_FREQUENT_GROUPS_COUNT"
     :pristine-text="$options.i18n.pristineText"
-    :no-results-text="$options.i18n.noResultsText"
-    :is-search="isSearch"
-    :search-results="searchResults"
   >
     <template #view-all-items>
       <nav-item :item="viewAllItem" />

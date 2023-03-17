@@ -33,6 +33,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 
   before_action only: [:show, :diffs] do
+    push_frontend_feature_flag(:content_editor_on_issues, project)
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
     push_frontend_feature_flag(:issue_assignees_widget, @project)
     push_frontend_feature_flag(:refactor_security_extension, @project)

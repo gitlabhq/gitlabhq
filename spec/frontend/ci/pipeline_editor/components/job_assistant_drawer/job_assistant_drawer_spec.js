@@ -4,6 +4,7 @@ import Vue, { nextTick } from 'vue';
 import { stringify } from 'yaml';
 import JobAssistantDrawer from '~/ci/pipeline_editor/components/job_assistant_drawer/job_assistant_drawer.vue';
 import JobSetupItem from '~/ci/pipeline_editor/components/job_assistant_drawer/accordion_items/job_setup_item.vue';
+import ImageItem from '~/ci/pipeline_editor/components/job_assistant_drawer/accordion_items/image_item.vue';
 import getAllRunners from '~/ci/runner/graphql/list/all_runners.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -20,9 +21,12 @@ describe('Job assistant drawer', () => {
 
   const dummyJobName = 'a';
   const dummyJobScript = 'b';
+  const dummyImageName = 'c';
+  const dummyImageEntrypoint = 'd';
 
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findJobSetupItem = () => wrapper.findComponent(JobSetupItem);
+  const findImageItem = () => wrapper.findComponent(ImageItem);
 
   const findConfirmButton = () => wrapper.findByTestId('confirm-button');
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
@@ -44,6 +48,14 @@ describe('Job assistant drawer', () => {
   beforeEach(async () => {
     createComponent();
     await waitForPromises();
+  });
+
+  it('should contain job setup accordion', () => {
+    expect(findJobSetupItem().exists()).toBe(true);
+  });
+
+  it('should contain image accordion', () => {
+    expect(findImageItem().exists()).toBe(true);
   });
 
   it('should emit close job assistant drawer event when closing the drawer', () => {
@@ -78,12 +90,21 @@ describe('Job assistant drawer', () => {
     beforeEach(() => {
       findJobSetupItem().vm.$emit('update-job', 'name', dummyJobName);
       findJobSetupItem().vm.$emit('update-job', 'script', dummyJobScript);
+      findImageItem().vm.$emit('update-job', 'image.name', dummyImageName);
+      findImageItem().vm.$emit('update-job', 'image.entrypoint', [dummyImageEntrypoint]);
     });
 
-    it('job name and script have correct value', () => {
-      expect(findJobSetupItem().props('job')).toMatchObject({
-        name: dummyJobName,
-        script: dummyJobScript,
+    it('passes correct prop to accordions', () => {
+      const accordions = [findJobSetupItem(), findImageItem()];
+      accordions.forEach((accordion) => {
+        expect(accordion.props('job')).toMatchObject({
+          name: dummyJobName,
+          script: dummyJobScript,
+          image: {
+            name: dummyImageName,
+            entrypoint: [dummyImageEntrypoint],
+          },
+        });
       });
     });
 
@@ -114,7 +135,12 @@ describe('Job assistant drawer', () => {
       findConfirmButton().trigger('click');
 
       expect(updateCiConfigSpy).toHaveBeenCalledWith(
-        `\n${stringify({ [dummyJobName]: { script: dummyJobScript } })}`,
+        `\n${stringify({
+          [dummyJobName]: {
+            script: dummyJobScript,
+            image: { name: dummyImageName, entrypoint: [dummyImageEntrypoint] },
+          },
+        })}`,
       );
     });
 

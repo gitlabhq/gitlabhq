@@ -14,7 +14,7 @@ import PersistentUserCallout from '~/persistent_user_callout';
 import UserNameGroup from './user_name_group.vue';
 
 export default {
-  feedbackUrl: 'https://gitlab.com/gitlab-org/gitlab/-/issues/new',
+  feedbackUrl: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391533',
   i18n: {
     newNavigation: {
       badgeLabel: s__('NorthstarNavigation|Alpha'),

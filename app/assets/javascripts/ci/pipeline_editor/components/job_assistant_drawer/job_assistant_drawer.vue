@@ -10,6 +10,7 @@ import getAllRunners from '~/ci/runner/graphql/list/all_runners.query.graphql';
 import { DRAWER_CONTAINER_CLASS, JOB_TEMPLATE, i18n } from './constants';
 import { removeEmptyObj, trimFields } from './utils';
 import JobSetupItem from './accordion_items/job_setup_item.vue';
+import ImageItem from './accordion_items/image_item.vue';
 
 export default {
   i18n,
@@ -18,6 +19,7 @@ export default {
     GlAccordion,
     GlButton,
     JobSetupItem,
+    ImageItem,
   },
   props: {
     isVisible: {
@@ -131,6 +133,7 @@ export default {
         :is-script-valid="isScriptValid"
         @update-job="updateJob"
       />
+      <image-item :job="job" @update-job="updateJob" />
     </gl-accordion>
     <template #footer>
       <div class="gl-display-flex gl-justify-content-end">

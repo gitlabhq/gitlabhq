@@ -5648,7 +5648,20 @@ msgstr ""
 msgid "Artifacts"
 msgstr ""
 
+msgid "Artifacts|%d selected artifact deleted"
+msgid_plural "Artifacts|%d selected artifacts deleted"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Artifacts|%{strongStart}%{count}%{strongEnd} artifact selected"
+msgid_plural "Artifacts|%{strongStart}%{count}%{strongEnd} artifacts selected"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Artifacts|An error occurred while deleting the artifact"
+msgstr ""
+
+msgid "Artifacts|An error occurred while deleting. Some artifacts may not have been deleted."
 msgstr ""
 
 msgid "Artifacts|An error occurred while retrieving job artifacts"
@@ -5660,17 +5673,41 @@ msgstr ""
 msgid "Artifacts|Browse"
 msgstr ""
 
+msgid "Artifacts|Clear selection"
+msgstr ""
+
+msgid "Artifacts|Delete %d artifact"
+msgid_plural "Artifacts|Delete %d artifacts"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Artifacts|Delete %d artifact?"
+msgid_plural "Artifacts|Delete %d artifacts?"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Artifacts|Delete %{name}?"
 msgstr ""
 
 msgid "Artifacts|Delete artifact"
 msgstr ""
 
+msgid "Artifacts|Delete selected"
+msgstr ""
+
 msgid "Artifacts|Help us improve this page"
+msgstr ""
+
+msgid "Artifacts|Something went wrong while deleting. Please refresh the page to try again."
 msgstr ""
 
 msgid "Artifacts|Take a quick survey"
 msgstr ""
+
+msgid "Artifacts|The selected artifact will be permanently deleted. Any reports generated from these artifacts will be empty."
+msgid_plural "Artifacts|The selected artifacts will be permanently deleted. Any reports generated from these artifacts will be empty."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Artifacts|This artifact will be permanently deleted. Any reports generated from this artifact will be empty."
 msgstr ""
@@ -11055,8 +11092,8 @@ msgid_plural "ContainerRegistry|%{count} Image repositories"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "ContainerRegistry|%{count} Tag"
-msgid_plural "ContainerRegistry|%{count} Tags"
+msgid "ContainerRegistry|%{count} tag"
+msgid_plural "ContainerRegistry|%{count} tags"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -24657,6 +24694,15 @@ msgid "Job was retried"
 msgstr ""
 
 msgid "JobAssistant|Add job"
+msgstr ""
+
+msgid "JobAssistant|Image"
+msgstr ""
+
+msgid "JobAssistant|Image entrypoint (optional)"
+msgstr ""
+
+msgid "JobAssistant|Image name (optional)"
 msgstr ""
 
 msgid "JobAssistant|Job Setup"

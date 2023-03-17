@@ -1,9 +1,10 @@
-import { GlBadge, GlButton, GlFriendlyWrap } from '@gitlab/ui';
+import { GlBadge, GlButton, GlFriendlyWrap, GlFormCheckbox } from '@gitlab/ui';
 import mockGetJobArtifactsResponse from 'test_fixtures/graphql/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ArtifactRow from '~/artifacts/components/artifact_row.vue';
+import { BULK_DELETE_FEATURE_FLAG } from '~/artifacts/constants';
 
 describe('ArtifactRow component', () => {
   let wrapper;
@@ -15,15 +16,17 @@ describe('ArtifactRow component', () => {
   const findSize = () => wrapper.findByTestId('job-artifact-row-size');
   const findDownloadButton = () => wrapper.findByTestId('job-artifact-row-download-button');
   const findDeleteButton = () => wrapper.findByTestId('job-artifact-row-delete-button');
+  const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
 
-  const createComponent = ({ canDestroyArtifacts = true } = {}) => {
+  const createComponent = ({ canDestroyArtifacts = true, glFeatures = {} } = {}) => {
     wrapper = shallowMountExtended(ArtifactRow, {
       propsData: {
         artifact,
+        isSelected: false,
         isLoading: false,
         isLastRow: false,
       },
-      provide: { canDestroyArtifacts },
+      provide: { canDestroyArtifacts, glFeatures },
       stubs: { GlBadge, GlButton, GlFriendlyWrap },
     });
   };
@@ -71,6 +74,32 @@ describe('ArtifactRow component', () => {
       await waitForPromises();
 
       expect(wrapper.emitted('delete')).toBeDefined();
+    });
+  });
+
+  describe('bulk delete checkbox', () => {
+    describe('with permission and feature flag enabled', () => {
+      beforeEach(() => {
+        createComponent({ glFeatures: { [BULK_DELETE_FEATURE_FLAG]: true } });
+      });
+
+      it('emits selectArtifact when toggled', () => {
+        findCheckbox().vm.$emit('input', true);
+
+        expect(wrapper.emitted('selectArtifact')).toStrictEqual([[artifact, true]]);
+      });
+    });
+
+    it('is not shown without permission', () => {
+      createComponent({ canDestroyArtifacts: false });
+
+      expect(findCheckbox().exists()).toBe(false);
+    });
+
+    it('is not shown with feature flag disabled', () => {
+      createComponent();
+
+      expect(findCheckbox().exists()).toBe(false);
     });
   });
 });

@@ -9,7 +9,7 @@ export default {
     GlDisclosureDropdown,
     GlTooltip,
   },
-  inject: ['tiptapEditor'],
+  inject: ['tiptapEditor', 'contentEditor'],
   data() {
     return {
       toggleId: uniqueId('dropdown-toggle-btn-'),
@@ -53,10 +53,14 @@ export default {
           text: __('PlantUML diagram'),
           action: () => this.insert('diagram', { language: 'plantuml' }),
         },
-        {
-          text: __('Create or edit diagram'),
-          action: () => this.execute('createOrEditDiagram', 'drawioDiagram'),
-        },
+        ...(this.contentEditor.drawioEnabled
+          ? [
+              {
+                text: __('Create or edit diagram'),
+                action: () => this.execute('createOrEditDiagram', 'drawioDiagram'),
+              },
+            ]
+          : []),
         {
           text: __('Table of contents'),
           action: () => this.execute('insertTableOfContents', 'tableOfContents'),

@@ -87,6 +87,7 @@ export const createContentEditor = ({
   extensions = [],
   serializerConfig = { marks: {}, nodes: {} },
   tiptapOptions,
+  drawioEnabled = false,
 } = {}) => {
   if (!isFunction(renderMarkdown)) {
     throw new Error(PROVIDE_SERIALIZER_OR_RENDERER_ERROR);
@@ -110,7 +111,6 @@ export const createContentEditor = ({
     DetailsContent,
     Document,
     Diagram,
-    DrawioDiagram.configure({ uploadsPath, renderMarkdown }),
     Dropcursor,
     Emoji,
     Figure,
@@ -159,6 +159,9 @@ export const createContentEditor = ({
   ];
 
   const allExtensions = [...builtInContentEditorExtensions, ...extensions];
+
+  if (drawioEnabled) allExtensions.push(DrawioDiagram.configure({ uploadsPath, renderMarkdown }));
+
   const trackedExtensions = allExtensions.map(trackInputRulesAndShortcuts);
   const tiptapEditor = createTiptapEditor({ extensions: trackedExtensions, ...tiptapOptions });
   const serializer = createMarkdownSerializer({ serializerConfig });
@@ -175,5 +178,6 @@ export const createContentEditor = ({
     eventHub,
     deserializer,
     assetResolver,
+    drawioEnabled,
   });
 };

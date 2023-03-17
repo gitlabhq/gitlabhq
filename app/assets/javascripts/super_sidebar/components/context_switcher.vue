@@ -7,8 +7,8 @@ import searchUserProjectsAndGroups from '../graphql/queries/search_user_groups_a
 import { contextSwitcherItems } from '../mock_data';
 import { trackContextAccess, formatContextSwitcherItems } from '../utils';
 import NavItem from './nav_item.vue';
-import FrequentProjectsList from './frequent_projects_list.vue';
-import FrequentGroupsList from './frequent_groups_list.vue';
+import ProjectsList from './projects_list.vue';
+import GroupsList from './groups_list.vue';
 
 export default {
   i18n: {
@@ -55,8 +55,8 @@ export default {
   components: {
     GlSearchBoxByType,
     NavItem,
-    FrequentProjectsList,
-    FrequentGroupsList,
+    ProjectsList,
+    GroupsList,
   },
   props: {
     username: {
@@ -119,14 +119,13 @@ export default {
             <nav-item :item="$options.contextSwitcherItems.explore" />
           </ul>
         </li>
-        <frequent-projects-list
-          :class="{ 'gl-border-t-0': isSearch }"
+        <projects-list
           :username="username"
           :view-all-link="projectsPath"
           :is-search="isSearch"
           :search-results="projects"
         />
-        <frequent-groups-list
+        <groups-list
           :username="username"
           :view-all-link="groupsPath"
           :is-search="isSearch"

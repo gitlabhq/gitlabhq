@@ -183,10 +183,10 @@ describe('HeaderSearchApp', () => {
 
     describe.each`
       username         | showDropdown | expectedDesc
-      ${null}          | ${false}     | ${HeaderSearchApp.i18n.searchInputDescribeByNoDropdown}
-      ${null}          | ${true}      | ${HeaderSearchApp.i18n.searchInputDescribeByNoDropdown}
-      ${MOCK_USERNAME} | ${false}     | ${HeaderSearchApp.i18n.searchInputDescribeByWithDropdown}
-      ${MOCK_USERNAME} | ${true}      | ${HeaderSearchApp.i18n.searchInputDescribeByWithDropdown}
+      ${null}          | ${false}     | ${HeaderSearchApp.i18n.SEARCH_INPUT_DESCRIBE_BY_NO_DROPDOWN}
+      ${null}          | ${true}      | ${HeaderSearchApp.i18n.SEARCH_INPUT_DESCRIBE_BY_NO_DROPDOWN}
+      ${MOCK_USERNAME} | ${false}     | ${HeaderSearchApp.i18n.SEARCH_INPUT_DESCRIBE_BY_WITH_DROPDOWN}
+      ${MOCK_USERNAME} | ${true}      | ${HeaderSearchApp.i18n.SEARCH_INPUT_DESCRIBE_BY_WITH_DROPDOWN}
     `('Search Input Description', ({ username, showDropdown, expectedDesc }) => {
       describe(`current_username is ${username} and showDropdown is ${showDropdown}`, () => {
         beforeEach(() => {
@@ -208,7 +208,7 @@ describe('HeaderSearchApp', () => {
       ${MOCK_USERNAME} | ${true}      | ${''}          | ${false} | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${`${MOCK_DEFAULT_SEARCH_OPTIONS.length} default results provided. Use the up and down arrow keys to navigate search results list.`}
       ${MOCK_USERNAME} | ${true}      | ${''}          | ${true}  | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${`${MOCK_DEFAULT_SEARCH_OPTIONS.length} default results provided. Use the up and down arrow keys to navigate search results list.`}
       ${MOCK_USERNAME} | ${true}      | ${MOCK_SEARCH} | ${false} | ${MOCK_SCOPED_SEARCH_OPTIONS}  | ${`Results updated. ${MOCK_SCOPED_SEARCH_OPTIONS.length} results available. Use the up and down arrow keys to navigate search results list, or ENTER to submit.`}
-      ${MOCK_USERNAME} | ${true}      | ${MOCK_SEARCH} | ${true}  | ${MOCK_SCOPED_SEARCH_OPTIONS}  | ${HeaderSearchApp.i18n.searchResultsLoading}
+      ${MOCK_USERNAME} | ${true}      | ${MOCK_SEARCH} | ${true}  | ${MOCK_SCOPED_SEARCH_OPTIONS}  | ${HeaderSearchApp.i18n.SEARCH_RESULTS_LOADING}
     `(
       'Search Results Description',
       ({ username, showDropdown, search, loading, searchOptions, expectedDesc }) => {

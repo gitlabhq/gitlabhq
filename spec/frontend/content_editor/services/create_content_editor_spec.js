@@ -20,7 +20,7 @@ describe('content_editor/services/create_content_editor', () => {
         preserveUnchangedMarkdown: false,
       },
     };
-    editor = createContentEditor({ renderMarkdown, uploadsPath });
+    editor = createContentEditor({ renderMarkdown, uploadsPath, drawioEnabled: true });
   });
 
   describe('when preserveUnchangedMarkdown feature is on', () => {

@@ -35,6 +35,7 @@ describe('ContentEditor', () => {
         uploadsPath,
         markdown,
         autofocus,
+        placeholder: 'Enter some text here...',
         ...props,
       },
       stubs: {
@@ -131,9 +132,9 @@ describe('ContentEditor', () => {
 
     describe('succeeds', () => {
       beforeEach(async () => {
-        renderMarkdown.mockResolvedValueOnce('hello world');
+        renderMarkdown.mockResolvedValueOnce('');
 
-        createWrapper({ markddown: 'hello world' });
+        createWrapper({ markddown: '' });
         await nextTick();
       });
 
@@ -145,13 +146,17 @@ describe('ContentEditor', () => {
       it('emits loadingSuccess event', () => {
         expect(wrapper.emitted('loadingSuccess')).toHaveLength(1);
       });
+
+      it('shows placeholder text', () => {
+        expect(wrapper.text()).toContain('Enter some text here...');
+      });
     });
 
     describe('fails', () => {
       beforeEach(async () => {
         renderMarkdown.mockRejectedValueOnce(new Error());
 
-        createWrapper({ markddown: 'hello world' });
+        createWrapper({ markdown: 'hello world' });
         await nextTick();
       });
 
@@ -216,11 +221,17 @@ describe('ContentEditor', () => {
 
       expect(findEditorElement().classes()).not.toContain('is-focused');
     });
+
+    it('hides placeholder text', () => {
+      expect(wrapper.text()).not.toContain('Enter some text here...');
+    });
   });
 
   describe('when editorStateObserver emits docUpdate event', () => {
-    it('emits change event with the latest markdown', async () => {
-      const markdown = 'Loaded content';
+    let markdown;
+
+    beforeEach(async () => {
+      markdown = 'Loaded content';
 
       renderMarkdown.mockResolvedValueOnce(markdown);
 
@@ -230,7 +241,9 @@ describe('ContentEditor', () => {
       await waitForPromises();
 
       findEditorStateObserver().vm.$emit('docUpdate');
+    });
 
+    it('emits change event with the latest markdown', () => {
       expect(wrapper.emitted('change')).toEqual([
         [
           {
@@ -240,6 +253,10 @@ describe('ContentEditor', () => {
           },
         ],
       ]);
+    });
+
+    it('hides the placeholder text', () => {
+      expect(wrapper.text()).not.toContain('Enter some text here...');
     });
   });
 

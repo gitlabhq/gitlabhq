@@ -5,8 +5,8 @@ import * as Sentry from '@sentry/browser';
 import { s__ } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ContextSwitcher from '~/super_sidebar/components/context_switcher.vue';
-import FrequentProjectsList from '~/super_sidebar/components/frequent_projects_list.vue';
-import FrequentGroupsList from '~/super_sidebar/components/frequent_groups_list.vue';
+import ProjectsList from '~/super_sidebar/components/projects_list.vue';
+import GroupsList from '~/super_sidebar/components/groups_list.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import searchUserProjectsAndGroupsQuery from '~/super_sidebar/graphql/queries/search_user_groups_and_projects.query.graphql';
 import { trackContextAccess, formatContextSwitcherItems } from '~/super_sidebar/utils';
@@ -34,8 +34,8 @@ describe('ContextSwitcher component', () => {
   let mockApollo;
 
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
-  const findFrequentProjectsList = () => wrapper.findComponent(FrequentProjectsList);
-  const findFrequentGroupsList = () => wrapper.findComponent(FrequentGroupsList);
+  const findProjectsList = () => wrapper.findComponent(ProjectsList);
+  const findGroupsList = () => wrapper.findComponent(GroupsList);
 
   const triggerSearchQuery = async () => {
     findSearchBox().vm.$emit('input', 'foo');
@@ -69,10 +69,10 @@ describe('ContextSwitcher component', () => {
         GlSearchBoxByType: stubComponent(GlSearchBoxByType, {
           props: ['placeholder'],
         }),
-        FrequentProjectsList: stubComponent(FrequentProjectsList, {
+        ProjectsList: stubComponent(ProjectsList, {
           props: ['username', 'viewAllLink', 'isSearch', 'searchResults'],
         }),
-        FrequentGroupsList: stubComponent(FrequentGroupsList, {
+        GroupsList: stubComponent(GroupsList, {
           props: ['username', 'viewAllLink', 'isSearch', 'searchResults'],
         }),
       },
@@ -91,7 +91,7 @@ describe('ContextSwitcher component', () => {
     });
 
     it('passes the correct props the frequent projects list', () => {
-      expect(findFrequentProjectsList().props()).toEqual({
+      expect(findProjectsList().props()).toEqual({
         username,
         viewAllLink: projectsPath,
         isSearch: false,
@@ -100,7 +100,7 @@ describe('ContextSwitcher component', () => {
     });
 
     it('passes the correct props the frequent groups list', () => {
-      expect(findFrequentGroupsList().props()).toEqual({
+      expect(findGroupsList().props()).toEqual({
         username,
         viewAllLink: groupsPath,
         isSearch: false,
@@ -142,20 +142,16 @@ describe('ContextSwitcher component', () => {
       expect(searchUserProjectsAndGroupsHandlerSuccess).toHaveBeenCalled();
     });
 
-    it('removes the top border from the projects list', () => {
-      expect(findFrequentProjectsList().attributes('class')).toContain('gl-border-t-0');
-    });
-
     it('passes the projects to the frequent projects list', () => {
-      expect(findFrequentProjectsList().props('isSearch')).toBe(true);
-      expect(findFrequentProjectsList().props('searchResults')).toEqual(
+      expect(findProjectsList().props('isSearch')).toBe(true);
+      expect(findProjectsList().props('searchResults')).toEqual(
         formatContextSwitcherItems(searchUserProjectsAndGroupsResponseMock.data.projects.nodes),
       );
     });
 
     it('passes the groups to the frequent groups list', () => {
-      expect(findFrequentGroupsList().props('isSearch')).toBe(true);
-      expect(findFrequentGroupsList().props('searchResults')).toEqual(
+      expect(findGroupsList().props('isSearch')).toBe(true);
+      expect(findGroupsList().props('searchResults')).toEqual(
         formatContextSwitcherItems(searchUserProjectsAndGroupsResponseMock.data.user.groups.nodes),
       );
     });
@@ -184,10 +180,10 @@ describe('ContextSwitcher component', () => {
     });
 
     it('passes empty results to the lists', () => {
-      expect(findFrequentProjectsList().props('isSearch')).toBe(true);
-      expect(findFrequentProjectsList().props('searchResults')).toEqual([]);
-      expect(findFrequentGroupsList().props('isSearch')).toBe(true);
-      expect(findFrequentGroupsList().props('searchResults')).toEqual([]);
+      expect(findProjectsList().props('isSearch')).toBe(true);
+      expect(findProjectsList().props('searchResults')).toEqual([]);
+      expect(findGroupsList().props('isSearch')).toBe(true);
+      expect(findGroupsList().props('searchResults')).toEqual([]);
     });
   });
 

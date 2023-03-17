@@ -5,7 +5,8 @@ import Vuex from 'vuex';
 import { trimText } from 'helpers/text_helper';
 import HeaderSearchScopedItems from '~/header_search/components/header_search_scoped_items.vue';
 import { truncate } from '~/lib/utils/text_utility';
-import { MSG_IN_ALL_GITLAB, SCOPE_TOKEN_MAX_LENGTH } from '~/header_search/constants';
+import { SCOPE_TOKEN_MAX_LENGTH } from '~/header_search/constants';
+import { MSG_IN_ALL_GITLAB } from '~/vue_shared/global_search/constants';
 import {
   MOCK_SEARCH,
   MOCK_SCOPED_SEARCH_OPTIONS,

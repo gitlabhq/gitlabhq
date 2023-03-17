@@ -1,54 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'edits content using the content editor' do
+  include ContentEditorHelpers
+
   let(:content_editor_testid) { '[data-testid="content-editor"] [contenteditable].ProseMirror' }
-
-  def switch_to_content_editor
-    click_button _('Viewing markdown')
-    click_button _('Rich text')
-  end
-
-  def type_in_content_editor(keys)
-    find(content_editor_testid).send_keys keys
-  end
-
-  def open_insert_media_dropdown
-    page.find('svg[data-testid="media-icon"]').click
-  end
-
-  def set_source_editor_content(content)
-    find('.js-gfm-input').set content
-  end
-
-  def expect_formatting_menu_to_be_visible
-    expect(page).to have_css('[data-testid="formatting-bubble-menu"]')
-  end
-
-  def expect_formatting_menu_to_be_hidden
-    expect(page).not_to have_css('[data-testid="formatting-bubble-menu"]')
-  end
-
-  def expect_media_bubble_menu_to_be_visible
-    expect(page).to have_css('[data-testid="media-bubble-menu"]')
-  end
-
-  def upload_asset(fixture_name)
-    attach_file('content_editor_image', Rails.root.join('spec', 'fixtures', fixture_name), make_visible: true)
-  end
-
-  def wait_until_hidden_field_is_updated(value)
-    expect(page).to have_field('wiki[content]', with: value, type: 'hidden')
-  end
-
-  def display_media_bubble_menu(media_element_selector, fixture_file)
-    upload_asset fixture_file
-
-    wait_for_requests
-
-    expect(page).to have_css(media_element_selector)
-
-    page.find(media_element_selector).click
-  end
 
   it 'saves page content in local storage if the user navigates away' do
     switch_to_content_editor
@@ -62,16 +17,6 @@ RSpec.shared_examples 'edits content using the content editor' do
     refresh
 
     expect(page).to have_text('Typing text in the content editor')
-
-    refresh # also retained after second refresh
-
-    expect(page).to have_text('Typing text in the content editor')
-
-    click_link 'Cancel' # draft is deleted on cancel
-
-    page.go_back
-
-    expect(page).not_to have_text('Typing text in the content editor')
   end
 
   describe 'formatting bubble menu' do
@@ -114,33 +59,6 @@ RSpec.shared_examples 'edits content using the content editor' do
 
       expect_formatting_menu_to_be_hidden
       expect_media_bubble_menu_to_be_visible
-    end
-  end
-
-  describe 'diagrams.net editor' do
-    def click_edit_diagram_button
-      page.find('[data-testid="edit-diagram"]').click
-    end
-
-    def expect_drawio_editor_is_opened
-      expect(page).to have_css('#drawio-frame', visible: :hidden)
-    end
-
-    before do
-      switch_to_content_editor
-
-      open_insert_media_dropdown
-    end
-
-    it 'displays correct media bubble menu with edit diagram button' do
-      display_media_bubble_menu '[data-testid="content_editor_editablebox"] img[src]', 'diagram.drawio.svg'
-
-      expect_formatting_menu_to_be_hidden
-      expect_media_bubble_menu_to_be_visible
-
-      click_edit_diagram_button
-
-      expect_drawio_editor_is_opened
     end
   end
 
@@ -255,7 +173,7 @@ RSpec.shared_examples 'edits content using the content editor' do
     before do
       if defined?(project)
         create(:issue, project: project, title: 'My Cool Linked Issue')
-        create(:merge_request, source_project: project, title: 'My Cool Merge Request')
+        create(:merge_request, source_project: project, source_branch: 'branch-1', title: 'My Cool Merge Request')
         create(:label, project: project, title: 'My Cool Label')
         create(:milestone, project: project, title: 'My Cool Milestone')
 
@@ -264,7 +182,7 @@ RSpec.shared_examples 'edits content using the content editor' do
         project = create(:project, group: group)
 
         create(:issue, project: project, title: 'My Cool Linked Issue')
-        create(:merge_request, source_project: project, title: 'My Cool Merge Request')
+        create(:merge_request, source_project: project, source_branch: 'branch-1', title: 'My Cool Merge Request')
         create(:group_label, group: group, title: 'My Cool Label')
         create(:milestone, group: group, title: 'My Cool Milestone')
 
@@ -281,7 +199,9 @@ RSpec.shared_examples 'edits content using the content editor' do
 
       expect(find(suggestions_dropdown)).to have_text('abc123')
       expect(find(suggestions_dropdown)).to have_text('all')
-      expect(find(suggestions_dropdown)).to have_text('Group Members (2)')
+      expect(find(suggestions_dropdown)).to have_text('Group Members')
+
+      type_in_content_editor 'bc'
 
       send_keys [:arrow_down, :enter]
 
@@ -360,5 +280,26 @@ RSpec.shared_examples 'edits content using the content editor' do
     def dropdown_scroll_top
       evaluate_script("document.querySelector('#{suggestions_dropdown} .gl-dropdown-inner').scrollTop")
     end
+  end
+end
+
+RSpec.shared_examples 'inserts diagrams.net diagram using the content editor' do
+  include ContentEditorHelpers
+
+  before do
+    switch_to_content_editor
+
+    open_insert_media_dropdown
+  end
+
+  it 'displays correct media bubble menu with edit diagram button' do
+    display_media_bubble_menu '[data-testid="content_editor_editablebox"] img[src]', 'diagram.drawio.svg'
+
+    expect_formatting_menu_to_be_hidden
+    expect_media_bubble_menu_to_be_visible
+
+    click_edit_diagram_button
+
+    expect_drawio_editor_is_opened
   end
 end

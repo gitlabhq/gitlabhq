@@ -30,6 +30,8 @@ RSpec.describe 'User comments on a merge request', :js, feature_category: :code_
     end
   end
 
+  it_behaves_like 'edits content using the content editor'
+
   it 'replys to a new comment' do
     page.within('.js-main-target-form') do
       fill_in('note[note]', with: 'comment 1')

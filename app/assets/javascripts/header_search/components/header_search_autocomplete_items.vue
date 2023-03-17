@@ -9,27 +9,23 @@ import {
 } from '@gitlab/ui';
 import { mapState, mapGetters } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { s__ } from '~/locale';
 import highlight from '~/lib/utils/highlight';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { truncateNamespace } from '~/lib/utils/text_utility';
-
 import {
   GROUPS_CATEGORY,
   PROJECTS_CATEGORY,
   MERGE_REQUEST_CATEGORY,
   ISSUES_CATEGORY,
   RECENT_EPICS_CATEGORY,
-  LARGE_AVATAR_PX,
-  SMALL_AVATAR_PX,
-} from '../constants';
+  AUTOCOMPLETE_ERROR_MESSAGE,
+} from '~/vue_shared/global_search/constants';
+import { LARGE_AVATAR_PX, SMALL_AVATAR_PX } from '../constants';
 
 export default {
   name: 'HeaderSearchAutocompleteItems',
   i18n: {
-    autocompleteErrorMessage: s__(
-      'GlobalSearch|There was an error fetching search autocomplete suggestions.',
-    ),
+    AUTOCOMPLETE_ERROR_MESSAGE,
   },
   components: {
     GlDropdownItem,
@@ -165,7 +161,7 @@ export default {
       :dismissible="false"
       variant="danger"
     >
-      {{ $options.i18n.autocompleteErrorMessage }}
+      {{ $options.i18n.AUTOCOMPLETE_ERROR_MESSAGE }}
     </gl-alert>
   </div>
 </template>

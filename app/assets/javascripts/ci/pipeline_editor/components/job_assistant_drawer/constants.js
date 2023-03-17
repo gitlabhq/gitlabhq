@@ -9,12 +9,12 @@ export const JOB_TEMPLATE = {
   tags: [],
   image: {
     name: '',
-    entrypoint: '',
+    entrypoint: [''],
   },
   services: [
     {
       name: '',
-      entrypoint: '',
+      entrypoint: [''],
     },
   ],
   artifacts: {
@@ -34,5 +34,8 @@ export const i18n = {
   JOB_SETUP: s__('JobAssistant|Job Setup'),
   STAGE: s__('JobAssistant|Stage (optional)'),
   TAGS: s__('JobAssistant|Tags (optional)'),
+  IMAGE: s__('JobAssistant|Image'),
+  IMAGE_NAME: s__('JobAssistant|Image name (optional)'),
+  IMAGE_ENTRYPOINT: s__('JobAssistant|Image entrypoint (optional)'),
   THIS_FIELD_IS_REQUIRED: __('This field is required'),
 };

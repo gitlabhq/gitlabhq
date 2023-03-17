@@ -32,6 +32,8 @@ RSpec.describe "User comments on issue", :js, feature_category: :team_planning d
       end
     end
 
+    it_behaves_like 'edits content using the content editor'
+
     it "adds comment with code block" do
       code_block_content = "Command [1]: /usr/local/bin/git , see [text](doc/text)"
       comment = "```\n#{code_block_content}\n```"

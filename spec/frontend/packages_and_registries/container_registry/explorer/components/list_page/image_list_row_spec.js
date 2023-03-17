@@ -1,4 +1,4 @@
-import { GlIcon, GlSprintf, GlSkeletonLoader, GlButton } from '@gitlab/ui';
+import { GlSprintf, GlSkeletonLoader, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import { mockTracking } from 'helpers/tracking_helper';
@@ -201,13 +201,6 @@ describe('Image List Row', () => {
       expect(findTagsCount().exists()).toBe(true);
     });
 
-    it('contains a tag icon', () => {
-      mountComponent();
-      const icon = findTagsCount().findComponent(GlIcon);
-      expect(icon.exists()).toBe(true);
-      expect(icon.props('name')).toBe('tag');
-    });
-
     describe('loading state', () => {
       it('shows a loader when metadataLoading is true', () => {
         mountComponent({ metadataLoading: true });
@@ -226,12 +219,12 @@ describe('Image List Row', () => {
       it('with one tag in the image', () => {
         mountComponent({ item: { ...item, tagsCount: 1 } });
 
-        expect(findTagsCount().text()).toMatchInterpolatedText('1 Tag');
+        expect(findTagsCount().text()).toMatchInterpolatedText('1 tag');
       });
       it('with more than one tag in the image', () => {
         mountComponent({ item: { ...item, tagsCount: 3 } });
 
-        expect(findTagsCount().text()).toMatchInterpolatedText('3 Tags');
+        expect(findTagsCount().text()).toMatchInterpolatedText('3 tags');
       });
     });
   });

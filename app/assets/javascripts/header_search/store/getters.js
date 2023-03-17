@@ -7,14 +7,16 @@ import {
   MSG_MR_ASSIGNED_TO_ME,
   MSG_MR_IM_REVIEWER,
   MSG_MR_IVE_CREATED,
-  ICON_GROUP,
-  ICON_SUBGROUP,
-  ICON_PROJECT,
   MSG_IN_ALL_GITLAB,
   PROJECTS_CATEGORY,
   GROUPS_CATEGORY,
-  SEARCH_SHORTCUTS_MIN_CHARACTERS,
   DROPDOWN_ORDER,
+} from '~/vue_shared/global_search/constants';
+import {
+  ICON_GROUP,
+  ICON_SUBGROUP,
+  ICON_PROJECT,
+  SEARCH_SHORTCUTS_MIN_CHARACTERS,
 } from '../constants';
 
 export const searchQuery = (state) => {

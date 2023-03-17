@@ -9,12 +9,14 @@ import { createTestEditor, mockChainedCommands, emitEditorEvent } from '../test_
 describe('content_editor/components/toolbar_more_dropdown', () => {
   let wrapper;
   let tiptapEditor;
+  let contentEditor;
   let eventHub;
 
   const buildEditor = () => {
     tiptapEditor = createTestEditor({
       extensions: [Diagram, HorizontalRule],
     });
+    contentEditor = { drawioEnabled: true };
     eventHub = eventHubFactory();
   };
 
@@ -22,6 +24,7 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
     wrapper = mountExtended(ToolbarMoreDropdown, {
       provide: {
         tiptapEditor,
+        contentEditor,
         eventHub,
       },
       propsData,
@@ -32,7 +35,6 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
 
   beforeEach(() => {
     buildEditor();
-    buildWrapper();
   });
 
   describe.each`
@@ -52,6 +54,8 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
     let btn;
 
     beforeEach(async () => {
+      buildWrapper();
+
       commands = mockChainedCommands(tiptapEditor, [command, 'focus', 'run']);
       btn = wrapper.findByRole('button', { name });
     });
@@ -68,8 +72,17 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
     });
   });
 
+  it('does not show drawio option when drawio is disabled', () => {
+    contentEditor.drawioEnabled = false;
+    buildWrapper();
+
+    expect(wrapper.findByRole('button', { name: 'Create or edit diagram' }).exists()).toBe(false);
+  });
+
   describe('a11y tests', () => {
     it('sets toggleText and text-sr-only properties to the table button dropdown', () => {
+      buildWrapper();
+
       expect(findDropdown().props()).toMatchObject({
         textSrOnly: true,
         toggleText: 'More options',

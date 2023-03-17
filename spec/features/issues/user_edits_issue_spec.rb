@@ -111,23 +111,29 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
           markdown_field_focused_selector = 'textarea:focus'
           click_edit_issue_description
 
-          expect(page).to have_selector(markdown_field_focused_selector)
+          issuable_form = find('[data-testid="issuable-form"]')
 
-          click_on _('Viewing markdown')
-          click_on _('Rich text')
+          expect(issuable_form).to have_selector(markdown_field_focused_selector)
 
-          expect(page).not_to have_selector(content_editor_focused_selector)
+          page.within issuable_form do
+            click_on _('Viewing markdown')
+            click_on _('Rich text')
+          end
+
+          expect(issuable_form).not_to have_selector(content_editor_focused_selector)
 
           refresh
 
           click_edit_issue_description
 
-          expect(page).to have_selector(content_editor_focused_selector)
+          expect(issuable_form).to have_selector(content_editor_focused_selector)
 
-          click_on _('Viewing rich text')
-          click_on _('Markdown')
+          page.within issuable_form do
+            click_on _('Viewing rich text')
+            click_on _('Markdown')
+          end
 
-          expect(page).not_to have_selector(markdown_field_focused_selector)
+          expect(issuable_form).not_to have_selector(markdown_field_focused_selector)
         end
       end
 

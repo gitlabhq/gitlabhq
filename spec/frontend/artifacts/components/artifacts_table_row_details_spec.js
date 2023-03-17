@@ -25,11 +25,12 @@ describe('ArtifactsTableRowDetails component', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
 
-  const createComponent = (
+  const createComponent = ({
     handlers = {
       destroyArtifactMutation: jest.fn(),
     },
-  ) => {
+    selectedArtifacts = [],
+  } = {}) => {
     requestHandlers = handlers;
     wrapper = mountExtended(ArtifactsTableRowDetails, {
       apolloProvider: createMockApollo([
@@ -37,6 +38,7 @@ describe('ArtifactsTableRowDetails component', () => {
       ]),
       propsData: {
         artifacts,
+        selectedArtifacts,
         refetchArtifacts,
         queryVariables: {},
       },
@@ -114,6 +116,22 @@ describe('ArtifactsTableRowDetails component', () => {
       wrapper.findComponent(ArtifactDeleteModal).vm.$emit('cancel');
 
       expect(requestHandlers.destroyArtifactMutation).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('bulk delete selection', () => {
+    it('is not selected for unselected artifact', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(wrapper.findAllComponents(ArtifactRow).at(0).props('isSelected')).toBe(false);
+    });
+
+    it('is selected for selected artifacts', async () => {
+      createComponent({ selectedArtifacts: [artifacts.nodes[0].id] });
+      await waitForPromises();
+
+      expect(wrapper.findAllComponents(ArtifactRow).at(0).props('isSelected')).toBe(true);
     });
   });
 });

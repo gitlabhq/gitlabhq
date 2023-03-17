@@ -54,6 +54,45 @@ export const I18N_FEEDBACK_BANNER_BODY = s__(
 export const I18N_FEEDBACK_BANNER_BUTTON = s__('Artifacts|Take a quick survey');
 export const FEEDBACK_URL = 'https://gitlab.fra1.qualtrics.com/jfe/form/SV_cI9rAUI20Vo2St8';
 
+export const BULK_DELETE_FEATURE_FLAG = 'ciJobArtifactBulkDestroy';
+export const I18N_BULK_DELETE_BANNER = (count) =>
+  sprintf(
+    n__(
+      'Artifacts|%{strongStart}%{count}%{strongEnd} artifact selected',
+      'Artifacts|%{strongStart}%{count}%{strongEnd} artifacts selected',
+      count,
+    ),
+    {
+      count,
+    },
+  );
+export const I18N_BULK_DELETE_CLEAR_SELECTION = s__('Artifacts|Clear selection');
+export const I18N_BULK_DELETE_DELETE_SELECTED = s__('Artifacts|Delete selected');
+
+export const BULK_DELETE_MODAL_ID = 'artifacts-bulk-delete-modal';
+export const I18N_BULK_DELETE_MODAL_TITLE = (count) =>
+  n__('Artifacts|Delete %d artifact?', 'Artifacts|Delete %d artifacts?', count);
+export const I18N_BULK_DELETE_BODY = (count) =>
+  sprintf(
+    n__(
+      'Artifacts|The selected artifact will be permanently deleted. Any reports generated from these artifacts will be empty.',
+      'Artifacts|The selected artifacts will be permanently deleted. Any reports generated from these artifacts will be empty.',
+      count,
+    ),
+    { count },
+  );
+export const I18N_BULK_DELETE_ACTION = (count) =>
+  n__('Artifacts|Delete %d artifact', 'Artifacts|Delete %d artifacts', count);
+
+export const I18N_BULK_DELETE_PARTIAL_ERROR = s__(
+  'Artifacts|An error occurred while deleting. Some artifacts may not have been deleted.',
+);
+export const I18N_BULK_DELETE_ERROR = s__(
+  'Artifacts|Something went wrong while deleting. Please refresh the page to try again.',
+);
+export const I18N_BULK_DELETE_CONFIRMATION_TOAST = (count) =>
+  n__('Artifacts|%d selected artifact deleted', 'Artifacts|%d selected artifacts deleted', count);
+
 export const INITIAL_CURRENT_PAGE = 1;
 export const INITIAL_PREVIOUS_PAGE_CURSOR = '';
 export const INITIAL_NEXT_PAGE_CURSOR = '';

@@ -3,15 +3,14 @@ import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import HeaderSearchAutocompleteItems from '~/header_search/components/header_search_autocomplete_items.vue';
+import { LARGE_AVATAR_PX, SMALL_AVATAR_PX } from '~/header_search/constants';
 import {
-  GROUPS_CATEGORY,
-  LARGE_AVATAR_PX,
   PROJECTS_CATEGORY,
-  SMALL_AVATAR_PX,
+  GROUPS_CATEGORY,
   ISSUES_CATEGORY,
   MERGE_REQUEST_CATEGORY,
   RECENT_EPICS_CATEGORY,
-} from '~/header_search/constants';
+} from '~/vue_shared/global_search/constants';
 import {
   MOCK_GROUPED_AUTOCOMPLETE_OPTIONS,
   MOCK_SORTED_AUTOCOMPLETE_OPTIONS,

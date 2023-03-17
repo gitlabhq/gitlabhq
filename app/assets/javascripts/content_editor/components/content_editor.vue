@@ -56,6 +56,11 @@ export default {
       required: false,
       default: '',
     },
+    placeholder: {
+      type: String,
+      required: false,
+      default: '',
+    },
     autofocus: {
       type: [String, Boolean],
       required: false,
@@ -66,6 +71,16 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    drawioEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    editable: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   data() {
@@ -81,9 +96,20 @@ export default {
         this.setSerializedContent(markdown);
       }
     },
+    editable(value) {
+      this.contentEditor.setEditable(value);
+    },
   },
   created() {
-    const { renderMarkdown, uploadsPath, extensions, serializerConfig, autofocus } = this;
+    const {
+      renderMarkdown,
+      uploadsPath,
+      extensions,
+      serializerConfig,
+      autofocus,
+      drawioEnabled,
+      editable,
+    } = this;
 
     // This is a non-reactive attribute intentionally since this is a complex object.
     this.contentEditor = createContentEditor({
@@ -91,8 +117,10 @@ export default {
       uploadsPath,
       extensions,
       serializerConfig,
+      drawioEnabled,
       tiptapOptions: {
         autofocus,
+        editable,
       },
     });
   },
@@ -109,10 +137,10 @@ export default {
 
       try {
         await this.contentEditor.setSerializedContent(markdown);
-        this.contentEditor.setEditable(true);
         this.notifyLoadingSuccess();
         this.latestMarkdown = markdown;
       } catch {
+        this.contentEditor.setEditable(false);
         this.contentEditor.eventHub.$emit(ALERT_EVENT, {
           message: __(
             'An error occurred while trying to render the content editor. Please try again.',
@@ -120,10 +148,10 @@ export default {
           variant: VARIANT_DANGER,
           actionLabel: __('Retry'),
           action: () => {
+            this.contentEditor.setEditable(true);
             this.setSerializedContent(markdown);
           },
         });
-        this.contentEditor.setEditable(false);
         this.notifyLoadingError();
       }
     },
@@ -189,6 +217,9 @@ export default {
           <code-block-bubble-menu />
           <link-bubble-menu />
           <media-bubble-menu />
+          <div v-if="placeholder && !markdown && !focused" class="gl-absolute gl-text-gray-400">
+            {{ placeholder }}
+          </div>
           <tiptap-editor-content
             class="md"
             data-testid="content_editor_editablebox"

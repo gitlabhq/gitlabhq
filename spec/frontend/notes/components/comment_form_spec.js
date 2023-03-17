@@ -5,12 +5,12 @@ import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import Autosave from '~/autosave';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { createAlert } from '~/alert';
 import { STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import axios from '~/lib/utils/axios_utils';
+import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import CommentForm from '~/notes/components/comment_form.vue';
 import CommentTypeDropdown from '~/notes/components/comment_type_dropdown.vue';
@@ -23,7 +23,6 @@ import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } 
 jest.mock('autosize');
 jest.mock('~/commons/nav/user_merge_requests');
 jest.mock('~/alert');
-jest.mock('~/autosave');
 
 Vue.use(Vuex);
 
@@ -33,7 +32,8 @@ describe('issue_comment_form component', () => {
   let axiosMock;
 
   const findCloseReopenButton = () => wrapper.findByTestId('close-reopen-button');
-  const findTextArea = () => wrapper.findByTestId('comment-field');
+  const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
+  const findMarkdownEditorTextarea = () => findMarkdownEditor().find('textarea');
   const findAddToReviewButton = () => wrapper.findByTestId('add-to-review-button');
   const findAddCommentNowButton = () => wrapper.findByTestId('add-comment-now-button');
   const findConfidentialNoteCheckbox = () => wrapper.findByTestId('internal-note-checkbox');
@@ -136,7 +136,6 @@ describe('issue_comment_form component', () => {
         mountComponent({ mountFunction: mount, initialData: { note: 'hello world' } });
 
         jest.spyOn(wrapper.vm, 'saveNote').mockResolvedValue();
-        jest.spyOn(wrapper.vm, 'resizeTextarea');
         jest.spyOn(wrapper.vm, 'stopPolling');
 
         findCloseReopenButton().trigger('click');
@@ -145,7 +144,6 @@ describe('issue_comment_form component', () => {
         expect(wrapper.vm.note).toBe('');
         expect(wrapper.vm.saveNote).toHaveBeenCalled();
         expect(wrapper.vm.stopPolling).toHaveBeenCalled();
-        expect(wrapper.vm.resizeTextarea).toHaveBeenCalled();
       });
 
       it('does not report errors in the UI when the save succeeds', async () => {
@@ -260,6 +258,18 @@ describe('issue_comment_form component', () => {
       });
     });
 
+    it('hides content editor switcher if feature flag content_editor_on_issues is off', () => {
+      mountComponent({ mountFunction: mount, features: { contentEditorOnIssues: false } });
+
+      expect(wrapper.text()).not.toContain('Rich text');
+    });
+
+    it('shows content editor switcher if feature flag content_editor_on_issues is on', () => {
+      mountComponent({ mountFunction: mount, features: { contentEditorOnIssues: true } });
+
+      expect(wrapper.text()).toContain('Rich text');
+    });
+
     describe('textarea', () => {
       describe('general', () => {
         it.each`
@@ -268,13 +278,13 @@ describe('issue_comment_form component', () => {
           ${'internal note'} | ${true}        | ${'Write an internal note or drag your files here…'}
         `(
           'should render textarea with placeholder for $noteType',
-          ({ noteIsInternal, placeholder }) => {
-            mountComponent({
-              mountFunction: mount,
-              initialData: { noteIsInternal },
-            });
+          async ({ noteIsInternal, placeholder }) => {
+            mountComponent();
 
-            expect(findTextArea().attributes('placeholder')).toBe(placeholder);
+            wrapper.vm.noteIsInternal = noteIsInternal;
+            await nextTick();
+
+            expect(findMarkdownEditor().props('formFieldProps').placeholder).toBe(placeholder);
           },
         );
 
@@ -290,13 +300,13 @@ describe('issue_comment_form component', () => {
 
           await findCommentButton().trigger('click');
 
-          expect(findTextArea().attributes('disabled')).toBe('disabled');
+          expect(findMarkdownEditor().find('textarea').attributes('disabled')).toBe('disabled');
         });
 
         it('should support quick actions', () => {
           mountComponent({ mountFunction: mount });
 
-          expect(findTextArea().attributes('data-supports-quick-actions')).toBe('true');
+          expect(findMarkdownEditor().props('supportsQuickActions')).toBe(true);
         });
 
         it('should link to markdown docs', () => {
@@ -336,63 +346,51 @@ describe('issue_comment_form component', () => {
         it('should enter edit mode when arrow up is pressed', () => {
           jest.spyOn(wrapper.vm, 'editCurrentUserLastNote');
 
-          findTextArea().trigger('keydown.up');
+          findMarkdownEditorTextarea().trigger('keydown.up');
 
           expect(wrapper.vm.editCurrentUserLastNote).toHaveBeenCalled();
         });
 
-        it('inits autosave', () => {
-          expect(Autosave).toHaveBeenCalledWith(expect.any(Element), [
-            'Note',
-            'Issue',
-            noteableDataMock.id,
-          ]);
-        });
-      });
+        describe('event enter', () => {
+          describe('when no draft exists', () => {
+            it('should save note when cmd+enter is pressed', () => {
+              jest.spyOn(wrapper.vm, 'handleSave');
 
-      describe('event enter', () => {
-        beforeEach(() => {
-          mountComponent({ mountFunction: mount });
-        });
+              findMarkdownEditorTextarea().trigger('keydown.enter', { metaKey: true });
 
-        describe('when no draft exists', () => {
-          it('should save note when cmd+enter is pressed', () => {
-            jest.spyOn(wrapper.vm, 'handleSave');
+              expect(wrapper.vm.handleSave).toHaveBeenCalledWith();
+            });
 
-            findTextArea().trigger('keydown.enter', { metaKey: true });
+            it('should save note when ctrl+enter is pressed', () => {
+              jest.spyOn(wrapper.vm, 'handleSave');
 
-            expect(wrapper.vm.handleSave).toHaveBeenCalledWith();
+              findMarkdownEditorTextarea().trigger('keydown.enter', { ctrlKey: true });
+
+              expect(wrapper.vm.handleSave).toHaveBeenCalledWith();
+            });
           });
 
-          it('should save note when ctrl+enter is pressed', () => {
-            jest.spyOn(wrapper.vm, 'handleSave');
+          describe('when a draft exists', () => {
+            beforeEach(() => {
+              store.registerModule('batchComments', batchComments());
+              store.state.batchComments.drafts = [{ note: 'A' }];
+            });
 
-            findTextArea().trigger('keydown.enter', { ctrlKey: true });
+            it('should save note draft when cmd+enter is pressed', () => {
+              jest.spyOn(wrapper.vm, 'handleSaveDraft');
 
-            expect(wrapper.vm.handleSave).toHaveBeenCalledWith();
-          });
-        });
+              findMarkdownEditorTextarea().trigger('keydown.enter', { metaKey: true });
 
-        describe('when a draft exists', () => {
-          beforeEach(() => {
-            store.registerModule('batchComments', batchComments());
-            store.state.batchComments.drafts = [{ note: 'A' }];
-          });
+              expect(wrapper.vm.handleSaveDraft).toHaveBeenCalledWith();
+            });
 
-          it('should save note draft when cmd+enter is pressed', () => {
-            jest.spyOn(wrapper.vm, 'handleSaveDraft');
+            it('should save note draft when ctrl+enter is pressed', () => {
+              jest.spyOn(wrapper.vm, 'handleSaveDraft');
 
-            findTextArea().trigger('keydown.enter', { metaKey: true });
+              findMarkdownEditorTextarea().trigger('keydown.enter', { ctrlKey: true });
 
-            expect(wrapper.vm.handleSaveDraft).toHaveBeenCalledWith();
-          });
-
-          it('should save note draft when ctrl+enter is pressed', () => {
-            jest.spyOn(wrapper.vm, 'handleSaveDraft');
-
-            findTextArea().trigger('keydown.enter', { ctrlKey: true });
-
-            expect(wrapper.vm.handleSaveDraft).toHaveBeenCalledWith();
+              expect(wrapper.vm.handleSaveDraft).toHaveBeenCalledWith();
+            });
           });
         });
       });
@@ -661,7 +659,7 @@ describe('issue_comment_form component', () => {
     });
 
     it('should not render submission form', () => {
-      expect(findTextArea().exists()).toBe(false);
+      expect(findMarkdownEditor().exists()).toBe(false);
     });
   });
 

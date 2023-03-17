@@ -3,10 +3,14 @@ import { GlDropdownItem, GlIcon, GlToken } from '@gitlab/ui';
 import { mapState, mapGetters } from 'vuex';
 import { s__, sprintf } from '~/locale';
 import { truncate } from '~/lib/utils/text_utility';
+import { SCOPED_SEARCH_ITEM_ARIA_LABEL } from '~/vue_shared/global_search/constants';
 import { SCOPE_TOKEN_MAX_LENGTH } from '../constants';
 
 export default {
   name: 'HeaderSearchScopedItems',
+  i18n: {
+    SCOPED_SEARCH_ITEM_ARIA_LABEL,
+  },
   components: {
     GlDropdownItem,
     GlIcon,
@@ -28,7 +32,7 @@ export default {
       return this.currentFocusedOption?.html_id === option.html_id;
     },
     ariaLabel(option) {
-      return sprintf(s__('GlobalSearch| %{search} %{description} %{scope}'), {
+      return sprintf(this.$options.i18n.SCOPED_SEARCH_ITEM_ARIA_LABEL, {
         search: this.search,
         description: option.description || option.icon,
         scope: option.scope || '',

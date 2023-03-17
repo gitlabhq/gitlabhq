@@ -1,7 +1,8 @@
 <script>
-import { GlButtonGroup, GlButton, GlBadge, GlFriendlyWrap } from '@gitlab/ui';
+import { GlButtonGroup, GlButton, GlBadge, GlFriendlyWrap, GlFormCheckbox } from '@gitlab/ui';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import { I18N_EXPIRED, I18N_DOWNLOAD, I18N_DELETE } from '../constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { I18N_EXPIRED, I18N_DOWNLOAD, I18N_DELETE, BULK_DELETE_FEATURE_FLAG } from '../constants';
 
 export default {
   name: 'ArtifactRow',
@@ -10,11 +11,17 @@ export default {
     GlButton,
     GlBadge,
     GlFriendlyWrap,
+    GlFormCheckbox,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['canDestroyArtifacts'],
   props: {
     artifact: {
       type: Object,
+      required: true,
+    },
+    isSelected: {
+      type: Boolean,
       required: true,
     },
     isLastRow: {
@@ -32,6 +39,16 @@ export default {
     artifactSize() {
       return numberToHumanSize(this.artifact.size);
     },
+    canBulkDestroyArtifacts() {
+      return this.glFeatures[BULK_DELETE_FEATURE_FLAG] && this.canDestroyArtifacts;
+    },
+  },
+  methods: {
+    handleInput(checked) {
+      if (checked === this.isSelected) return;
+
+      this.$emit('selectArtifact', this.artifact, checked);
+    },
   },
   i18n: {
     expired: I18N_EXPIRED,
@@ -46,6 +63,9 @@ export default {
     :class="{ 'gl-border-b-solid gl-border-b-1 gl-border-gray-100': !isLastRow }"
   >
     <div class="gl-display-inline-flex gl-align-items-center gl-w-full">
+      <span v-if="canBulkDestroyArtifacts" class="gl-pl-5">
+        <gl-form-checkbox :checked="isSelected" @input="handleInput" />
+      </span>
       <span
         class="gl-w-half gl-pl-8 gl-display-flex gl-align-items-center"
         data-testid="job-artifact-row-name"

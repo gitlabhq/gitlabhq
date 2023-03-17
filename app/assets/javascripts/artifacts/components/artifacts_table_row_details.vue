@@ -25,6 +25,10 @@ export default {
       type: Object,
       required: true,
     },
+    selectedArtifacts: {
+      type: Array,
+      required: true,
+    },
     queryVariables: {
       type: Object,
       required: true,
@@ -51,6 +55,9 @@ export default {
   methods: {
     isLastRow(index) {
       return index === this.artifacts.nodes.length - 1;
+    },
+    isSelected(item) {
+      return this.selectedArtifacts.includes(item.id);
     },
     showModal(item) {
       this.deletingArtifactId = item.id;
@@ -98,7 +105,9 @@ export default {
         <dynamic-scroller-item :item="item" :active="active" :class="{ active }">
           <artifact-row
             :artifact="item"
+            :is-selected="isSelected(item)"
             :is-last-row="isLastRow(index)"
+            v-on="$listeners"
             @delete="showModal(item)"
           />
         </dynamic-scroller-item>

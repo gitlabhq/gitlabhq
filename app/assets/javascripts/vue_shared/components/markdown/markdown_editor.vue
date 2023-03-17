@@ -59,6 +59,16 @@ export default {
       required: false,
       default: '',
     },
+    drawioEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -132,6 +142,11 @@ export default {
       if (this.markdown) updateDraft(this.autosaveKey, this.markdown);
       else clearDraft(this.autosaveKey);
     },
+    togglePreview(value) {
+      if (this.editingMode === EDITING_MODE_MARKDOWN_FIELD) {
+        this.$refs.markdownField.previewMarkdown = value;
+      }
+    },
     autosizeTextarea() {
       if (this.editingMode === EDITING_MODE_MARKDOWN_FIELD) {
         this.$nextTick(() => {
@@ -151,6 +166,7 @@ export default {
     />
     <markdown-field
       v-if="!isContentEditorActive"
+      ref="markdownField"
       v-bind="$attrs"
       data-testid="markdown-field"
       :markdown-preview-path="renderMarkdownPath"
@@ -158,7 +174,8 @@ export default {
       :textarea-value="markdown"
       :uploads-path="uploadsPath"
       :quick-actions-docs-path="quickActionsDocsPath"
-      show-content-editor-switcher
+      :show-content-editor-switcher="enableContentEditor"
+      :drawio-enabled="drawioEnabled"
       class="bordered-box"
       @enableContentEditor="onEditingModeChange('contentEditor')"
     >
@@ -170,7 +187,8 @@ export default {
           class="note-textarea js-gfm-input markdown-area"
           dir="auto"
           :data-supports-quick-actions="supportsQuickActions"
-          data-qa-selector="markdown_editor_form_field"
+          :data-qa-selector="formFieldProps['data-qa-selector'] || 'markdown_editor_form_field'"
+          :disabled="disabled"
           @input="updateMarkdownFromMarkdownField"
           @keydown="$emit('keydown', $event)"
         >
@@ -179,11 +197,15 @@ export default {
     </markdown-field>
     <div v-else>
       <content-editor
+        ref="contentEditor"
         :render-markdown="renderMarkdown"
         :uploads-path="uploadsPath"
         :markdown="markdown"
         :quick-actions-docs-path="quickActionsDocsPath"
         :autofocus="contentEditorAutofocused"
+        :placeholder="formFieldProps.placeholder"
+        :drawio-enabled="drawioEnabled"
+        :editable="!disabled"
         @initialized="setEditorAsAutofocused"
         @change="updateMarkdownFromContentEditor"
         @keydown="$emit('keydown', $event)"

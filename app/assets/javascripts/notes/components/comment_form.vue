@@ -1,9 +1,7 @@
 <script>
 import { GlAlert, GlButton, GlIcon, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
-import Autosize from 'autosize';
 import $ from 'jquery';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import Autosave from '~/autosave';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { createAlert } from '~/alert';
 import { badgeState } from '~/issuable/components/status_box.vue';
@@ -15,7 +13,7 @@ import {
   slugifyWithUnderscore,
 } from '~/lib/utils/text_utility';
 import { sprintf } from '~/locale';
-import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
@@ -36,7 +34,7 @@ export default {
   components: {
     NoteSignedOutWidget,
     DiscussionLockedWidget,
-    MarkdownField,
+    MarkdownEditor,
     GlAlert,
     GlButton,
     TimelineEntryItem,
@@ -62,6 +60,14 @@ export default {
       errors: [],
       noteIsInternal: false,
       isSubmitting: false,
+      formFieldProps: {
+        'aria-label': this.$options.i18n.comment,
+        placeholder: this.$options.i18n.bodyPlaceholder,
+        id: 'note-body',
+        name: 'note[note]',
+        class: 'js-note-text note-textarea js-gfm-input markdown-area',
+        'data-qa-selector': 'comment_field',
+      },
     };
   },
   computed: {
@@ -95,11 +101,6 @@ export default {
         return this.noteType === constants.COMMENT ? internalComment : startInternalThread;
       }
       return this.noteType === constants.COMMENT ? comment : startThread;
-    },
-    textareaPlaceholder() {
-      return this.noteIsInternal
-        ? this.$options.i18n.bodyPlaceholderInternal
-        : this.$options.i18n.bodyPlaceholder;
     },
     discussionsRequireResolution() {
       return this.getNoteableData.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE;
@@ -181,14 +182,27 @@ export default {
     containsLink() {
       return ATTACHMENT_REGEXP.test(this.note);
     },
+    autosaveKey() {
+      if (this.isLoggedIn) {
+        const noteableType = capitalizeFirstCharacter(convertToCamelCase(this.noteableType));
+        return `${this.$options.i18n.note}/${noteableType}/${this.getNoteableData.id}`;
+      }
+
+      return null;
+    },
+  },
+  watch: {
+    noteIsInternal(val) {
+      this.formFieldProps.placeholder = val
+        ? this.$options.i18n.bodyPlaceholderInternal
+        : this.$options.i18n.bodyPlaceholder;
+    },
   },
   mounted() {
     // jQuery is needed here because it is a custom event being dispatched with jQuery.
     $(document).on('issuable:change', (e, isClosed) => {
       this.toggleIssueLocalState(isClosed ? STATUS_CLOSED : STATUS_REOPENED);
     });
-
-    this.initAutoSave();
   },
   methods: {
     ...mapActions([
@@ -233,7 +247,6 @@ export default {
         }
 
         this.note = ''; // Empty textarea while being requested. Repopulate in catch
-        this.resizeTextarea();
         this.stopPolling();
 
         this.isSubmitting = true;
@@ -250,7 +263,6 @@ export default {
           .catch(({ response }) => {
             this.handleSaveError(response);
 
-            this.discard(false);
             this.note = noteData.data.note.note; // Restore textarea content.
             this.removePlaceholderNotes();
           })
@@ -287,20 +299,10 @@ export default {
           }),
         );
     },
-    discard(shouldClear = true) {
-      // `blur` is needed to clear slash commands autocomplete cache if event fired.
-      // `focus` is needed to remain cursor in the textarea.
-      this.$refs.textarea.blur();
-      this.$refs.textarea.focus();
-
-      if (shouldClear) {
-        this.note = '';
-        this.noteIsInternal = false;
-        this.resizeTextarea();
-        this.$refs.markdownField.previewMarkdown = false;
-      }
-
-      this.autosave.reset();
+    discard() {
+      this.note = '';
+      this.noteIsInternal = false;
+      this.$refs.markdownEditor.togglePreview(false);
     },
     editCurrentUserLastNote() {
       if (this.note === '') {
@@ -313,27 +315,14 @@ export default {
         }
       }
     },
-    initAutoSave() {
-      if (this.isLoggedIn) {
-        const noteableType = capitalizeFirstCharacter(convertToCamelCase(this.noteableType));
-
-        this.autosave = new Autosave(this.$refs.textarea, [
-          this.$options.i18n.note,
-          noteableType,
-          this.getNoteableData.id,
-        ]);
-      }
-    },
-    resizeTextarea() {
-      this.$nextTick(() => {
-        Autosize.update(this.$refs.textarea);
-      });
-    },
     hasEmailParticipants() {
       return this.getNoteableData.issue_email_participants?.length;
     },
     dismissError(index) {
       this.errors.splice(index, 1);
+    },
+    onInput(value) {
+      this.note = value;
     },
   },
 };
@@ -363,35 +352,24 @@ export default {
               :noteable-type="noteableType"
               :contains-link="containsLink"
             >
-              <markdown-field
-                ref="markdownField"
-                :is-submitting="isSubmitting"
-                :markdown-preview-path="markdownPreviewPath"
+              <markdown-editor
+                ref="markdownEditor"
+                :enable-content-editor="Boolean(glFeatures.contentEditorOnIssues)"
+                :value="note"
+                :render-markdown-path="markdownPreviewPath"
                 :markdown-docs-path="markdownDocsPath"
-                :quick-actions-docs-path="quickActionsDocsPath"
                 :add-spacing-classes="false"
-                :textarea-value="note"
-              >
-                <template #textarea>
-                  <textarea
-                    id="note-body"
-                    ref="textarea"
-                    v-model="note"
-                    dir="auto"
-                    :disabled="isSubmitting"
-                    name="note[note]"
-                    class="note-textarea js-vue-comment-form js-note-text js-gfm-input js-autosize markdown-area"
-                    data-qa-selector="comment_field"
-                    data-testid="comment-field"
-                    data-supports-quick-actions="true"
-                    :aria-label="$options.i18n.comment"
-                    :placeholder="textareaPlaceholder"
-                    @keydown.up="editCurrentUserLastNote()"
-                    @keydown.meta.enter="handleEnter()"
-                    @keydown.ctrl.enter="handleEnter()"
-                  ></textarea>
-                </template>
-              </markdown-field>
+                :quick-actions-docs-path="quickActionsDocsPath"
+                :form-field-props="formFieldProps"
+                :autosave-key="autosaveKey"
+                :disabled="isSubmitting"
+                supports-quick-actions
+                autofocus
+                @keydown.up="editCurrentUserLastNote()"
+                @keydown.meta.enter="handleEnter()"
+                @keydown.ctrl.enter="handleEnter()"
+                @input="onInput"
+              />
             </comment-field-layout>
             <div class="note-form-actions">
               <template v-if="hasDrafts">

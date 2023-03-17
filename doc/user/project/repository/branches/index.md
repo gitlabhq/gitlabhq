@@ -6,41 +6,98 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 # Branches **(FREE)**
 
-A branch is a version of a project's working tree. You create a branch for each
-set of related changes you make. This keeps each set of changes separate from
-each other, allowing changes to be made in parallel, without affecting each
-other.
+Branches are versions of a project's working tree. When you create a new
+[project](../../index.md), GitLab creates a [default branch](default.md) (which
+cannot be deleted) for your repository. Default branch settings can be configured
+at the project, subgroup, group, or instance level.
 
-After pushing your changes to a new branch, you can:
+As your project grows, your team [creates](../web_editor.md#create-a-branch) more
+branches, preferably by following [branch naming patterns](#prefix-branch-names-with-issue-numbers).
+Each branch represents a set of changes, which allows development work to be done
+in parallel. Development work in one branch does not affect another branch.
 
-- Create a [merge request](../../merge_requests/index.md). You can streamline this process
-  by following [branch naming patterns](#prefix-branch-names-with-issue-numbers).
-- Perform inline code review.
-- [Discuss](../../../discussions/index.md) your implementation with your team.
-- Preview changes submitted to a new branch with [Review Apps](../../../../ci/review_apps/index.md).
+Branches are the foundation of development in a project:
 
-You can also request [approval](../../merge_requests/approvals/index.md)
-from your managers.
+1. To get started, create a branch and add commits to it.
+1. When the work is ready for review, create a [merge request](../../merge_requests/index.md) to propose
+   merging the changes in your branch. To streamline this process, you should follow
+   [branch naming patterns](#prefix-branch-names-with-issue-numbers).
+1. Preview changes in a branch with a [review app](../../../../ci/review_apps/index.md).
+1. After the contents of your branch are merged, [delete the merged branch](#delete-merged-branches).
 
-For more information on managing branches using the GitLab UI, see:
+## Manage and protect branches
 
-- [Default branches](default.md): When you create a new [project](../../index.md), GitLab creates a
-  default branch for the repository. You can change this setting at the project,
-  subgroup, group, or instance level.
-- [Create a branch](../web_editor.md#create-a-branch)
-- [Protected branches](../../protected_branches.md#protected-branches)
-- [Delete merged branches](#delete-merged-branches)
+GitLab provides you multiple methods to protect individual branches. These methods
+ensure your branches receive oversight and quality checks from their creation to their deletion:
 
-You can also manage branches using the
-[command line](../../../../gitlab-basics/start-using-git.md#create-a-branch).
+- The [default branch](default.md) in your project receives extra protection.
+- Configure [protected branches](../../protected_branches.md#protected-branches)
+  to restrict who can commit to a branch, merge other branches into it, or merge
+  the branch itself into another branch.
+- Configure [approval rules](../../merge_requests/approvals/rules.md) to set review
+  requirements, including [security-related approvals](../../merge_requests/approvals/rules.md#security-approvals), before a branch can merge.
+- Integrate with third-party [status checks](../../merge_requests/status_checks.md)
+  to ensure your branch contents meet your standards of quality.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>Watch the video [GitLab Flow](https://www.youtube.com/watch?v=InKNIvky2KE).
+You can manage your branches:
 
-See also:
+- With the GitLab user interface.
+- With the [command line](../../../../gitlab-basics/start-using-git.md#create-a-branch).
+- With the [Branches API](../../../../api/branches.md).
 
-- [Branches API](../../../../api/branches.md), for information on operating on repository branches using the GitLab API.
-- [GitLab Flow](../../../../topics/gitlab_flow.md) documentation.
-- [Getting started with Git](../../../../topics/git/index.md) and GitLab.
+### View all branches
+
+To view and manage your branches in the GitLab user interface:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Repository > Branches**.
+
+On this page, you can:
+
+- See all branches, active branches, or stale branches.
+- Create new branches.
+- [Compare branches](#compare-branches).
+- Delete merged branches.
+
+### View branches with configured protections
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) in GitLab 15.1 with a flag named `branch_rules`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/363170) in GitLab 15.10.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../feature_flags.md) named `branch_rules`.
+On GitLab.com, this feature is available.
+
+Branches in your repository can be [protected](../../protected_branches.md) in multiple ways. You can:
+
+- Limit who can push to the branch.
+- Limit who can merge the branch.
+- Require approval of all changes.
+- Require external tests to pass.
+
+The **Branch rules overview** page shows all branches with any configured protections,
+and their protection methods:
+
+![Example of a branch with configured protections](img/view_branch_protections_v15_10.png)
+
+Prerequisites:
+
+- You must have at least the Developer role in the project.
+
+To view the **Branch rules overview** list:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Branch Rules** to view all branches with protections.
+   - To add protections to a new branch:
+     1. Select **Add branch rule**.
+     1. Select **Create protected branch**.
+   - To view more information about protections on an existing branch:
+     1. Identify the branch you want more information about.
+     1. Select **Details** to see information about its:
+        - [Branch protections](../../protected_branches.md).
+        - [Approval rules](../../merge_requests/approvals/rules.md).
+        - [Status checks](../../merge_requests/status_checks.md).
 
 ## Prefix branch names with issue numbers
 
@@ -85,35 +142,12 @@ this operation.
 It's particularly useful to clean up old branches that were not deleted
 automatically when a merge request was merged.
 
-## View branches with configured protections **(FREE SELF)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) in GitLab 15.1 with a flag named `branch_rules`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../feature_flags.md) named `branch_rules`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
-
-Branches in your repository can be [protected](../../protected_branches.md) by limiting
-who can push to a branch, require approval for those pushed changes, or merge those changes.
-To help you track the protections for all branches, the **Branch rules overview**
-page shows your branches with their configured rules.
-
-To view the **Branch rules overview** list:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
-1. Expand **Branch Rules** to view all branches with protections.
-1. Select **Details** next to your desired branch to show information about its:
-   - [Branch protections](../../protected_branches.md).
-   - [Approval rules](../../merge_requests/approvals/rules.md).
-   - [Status checks](../../merge_requests/status_checks.md).
-
 ## Related topics
 
-- [Protected branches](../../protected_branches.md) user documentation
-- [Branches API](../../../../api/branches.md)
-- [Protected Branches API](../../../../api/protected_branches.md)
+- [Protected branches](../../protected_branches.md) user documentation.
+- [Branches API](../../../../api/branches.md), for information on operating on repository branches using the GitLab API.
+- [Protected Branches API](../../../../api/protected_branches.md).
+- [Getting started with Git](../../../../topics/git/index.md) and GitLab.
 
 ## Troubleshooting
 
