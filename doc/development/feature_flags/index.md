@@ -35,7 +35,7 @@ should be leveraged:
   the status of a feature behind the feature flag in the documentation and with other stakeholders. The
   issue description should be updated with the feature flag name and whether it is
   defaulted on or off as soon it is evident that a feature flag is needed.
-- Merge requests that introduce a feature flag, update its state, or remove them
+- Merge requests that introduce a feature flag, update its state, or remove the
   existing feature flag because a feature is deemed stable must have the
   ~"feature flag" label assigned.
 

@@ -48471,9 +48471,6 @@ msgstr ""
 msgid "Warning: Synchronizing LDAP removes direct members' access."
 msgstr ""
 
-msgid "Watch how"
-msgstr ""
-
 msgid "We also use email for avatar detection if no avatar is uploaded."
 msgstr ""
 

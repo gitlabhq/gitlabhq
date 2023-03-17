@@ -26,7 +26,39 @@ GitLab also creates a tag to mark the release point.
 Many projects combine an annotated release tag with a stable branch. Consider
 setting deployment or release tags automatically.
 
-To prevent users from removing a tag with `git push`, create a [push rule](../push_rules.md).
+In the GitLab UI, each tag displays:
+
+![Example of a single tag](img/tag-display_v15_9.png)
+
+- The tag name. (**{tag}**)
+- Optional. If the tag is [protected](../../protected_tags.md), a **protected** badge.
+- The commit SHA (**{commit}**), linked to the commit's contents.
+- The commit's title and creation date.
+- Optional. A link to the release (**{rocket}**).
+- Optional. If a pipeline has been run, the current pipeline status.
+- Download links to the source code and artifacts linked to the tag.
+- A [**Create release**](../../releases/index.md#create-a-release) (**{pencil}**) link.
+- A link to delete the tag.
+
+## View tags for a project
+
+To view all existing tags for a project:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Repository > Tags**.
+
+## View tagged commits in the commits list
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18795) in GitLab 15.10.
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Repository > Commits**.
+1. Commits with a tag are labeled with a tag icon (**{tag}**) and the name of the tag.
+   This example shows a commit tagged `v1.26.0`:
+
+   ![A tagged commit in the Commits view](img/tags_commits_view_v15_10.png)
+
+To view the list of commits in this tag, select the tag name.
 
 ## Create a tag
 
@@ -65,33 +97,9 @@ To create a tag from the GitLab UI:
    create a lightweight tag.
 1. Select **Create tag**.
 
-## View tags for a project
+## Prevent tag deletion **(PREMIUM)**
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Tags**.
-
-![Example of a single tag](img/tag-display_v15_9.png)
-
-In the GitLab UI, each tag displays:
-
-- The tag name. (**{tag}**)
-- Optional. If the tag is [protected](../../protected_tags.md), a **protected** badge.
-- The commit SHA (**{commit}**), linked to the commit's contents.
-- The commit's title and creation date.
-- Optional. A link to the release (**{rocket}**).
-- Optional. If a pipeline has been run, the current pipeline status.
-- Download links to the source code and artifacts linked to the tag.
-- A [**Create release**](../../releases/index.md#create-a-release) (**{pencil}**) link.
-- A link to delete the tag.
-
-## Find tags containing a commit
-
-To search all Git tags for a particular SHA (commit identifier), run this
-command from the command line, replacing `SHA` with the SHA of the commit:
-
-```shell
-git tag --contains SHA
-```
+To prevent users from removing a tag with `git push`, create a [push rule](../push_rules.md).
 
 ## Related topics
 

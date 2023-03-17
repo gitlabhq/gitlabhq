@@ -42,8 +42,6 @@ module SystemNoteHelper
     'severity' => 'information-o',
     'cloned' => 'documents',
     'issue_type' => 'pencil',
-    'attention_requested' => 'user',
-    'attention_request_removed' => 'user',
     'contact' => 'users',
     'timeline_event' => 'clock',
     'relate_to_child' => 'link',

@@ -1,20 +1,9 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { createAlert } from '~/alert';
 import { getParameterByName, updateHistory, mergeUrlParams } from '~/lib/utils/url_utility';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
-import runnerForRegistrationQuery from '../graphql/register/runner_for_registration.query.graphql';
-import {
-  I18N_FETCH_ERROR,
-  PARAM_KEY_PLATFORM,
-  DEFAULT_PLATFORM,
-  STATUS_ONLINE,
-  RUNNER_REGISTRATION_POLLING_INTERVAL_MS,
-} from '../constants';
+import { PARAM_KEY_PLATFORM, DEFAULT_PLATFORM } from '../constants';
 import RegistrationInstructions from '../components/registration/registration_instructions.vue';
 import PlatformsDrawer from '../components/registration/platforms_drawer.vue';
-import { captureException } from '../sentry_utils';
 
 export default {
   name: 'AdminRegisterRunnerApp',
@@ -36,42 +25,8 @@ export default {
   data() {
     return {
       platform: getParameterByName(PARAM_KEY_PLATFORM) || DEFAULT_PLATFORM,
-      runner: null,
-      token: null,
       isDrawerOpen: false,
     };
-  },
-  apollo: {
-    runner: {
-      query: runnerForRegistrationQuery,
-      variables() {
-        return {
-          id: convertToGraphQLId(TYPENAME_CI_RUNNER, this.runnerId),
-        };
-      },
-      manual: true,
-      result({ data }) {
-        if (data?.runner) {
-          const { ephemeralAuthenticationToken, ...runner } = data.runner;
-          this.runner = runner;
-
-          // The token is available in the API for a limited amount of time
-          // preserve its original value if it is missing after polling.
-          this.token = ephemeralAuthenticationToken || this.token;
-        }
-      },
-      error(error) {
-        createAlert({ message: I18N_FETCH_ERROR });
-        captureException({ error, component: this.$options.name });
-      },
-      pollInterval() {
-        if (this.runner?.status === STATUS_ONLINE) {
-          // stop polling
-          return 0;
-        }
-        return RUNNER_REGISTRATION_POLLING_INTERVAL_MS;
-      },
-    },
   },
   watch: {
     platform(platform) {
@@ -93,10 +48,8 @@ export default {
 <template>
   <div>
     <registration-instructions
-      :runner="runner"
-      :token="token"
+      :runner-id="runnerId"
       :platform="platform"
-      :loading="$apollo.queries.runner.loading"
       @toggleDrawer="onToggleDrawer"
     >
       <template #runner-list-name>{{ s__('Runners|Admin area › Runners') }}</template>

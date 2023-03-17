@@ -137,14 +137,16 @@ To switch between the two settings, select either **Issues** or **Issue weight**
 When sorting by weight, make sure all your issues
 have weight assigned, because issues with no weight don't show on the chart.
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+### Burndown and burnup charts do not show the correct issue status
 
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+A limitation of these charts is that [the days are in the UTC time zone](https://gitlab.com/gitlab-org/gitlab/-/issues/267967).
+
+This can cause the graphs to be inaccurate in other timezones. For example:
+
+- All the issues in a milestone are recorded as being closed on or before the last day.
+- One issue was closed on the last day at 6 PM PST (Pacific time), which is UTC-7.
+- The issue activity log displays the closure time at 6 PM on the last day of the milestone.
+- The charts plot the time in UTC, so for this issue, the close time is 1 AM the following day.
+- The charts show the milestone as incomplete and missing one closed issue.

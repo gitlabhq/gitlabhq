@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'logger'
-
 desc "GitLab | Packages | Events | Generate hll counter events file for packages"
 namespace :gitlab do
   namespace :packages do

@@ -116,7 +116,7 @@ services:
     image: 'gitlab/gitlab-ee:12.2.5-ee.0'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    proxy_cache off; \n    proxy_pass  http://plantuml:8080/; \n}\n"
+        nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    rewrite ^/-/plantuml/(.*) /$1 break;\n proxy_cache off; \n    proxy_pass  http://plantuml:8080/; \n}\n"
 
   plantuml:
     image: 'plantuml/plantuml-server:tomcat'
@@ -179,10 +179,10 @@ To enable this redirection:
 
    ```ruby
    # Docker deployment
-   nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    proxy_cache off; \n    proxy_pass  http://plantuml:8080/; \n}\n"
+   nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n  rewrite ^/-/plantuml/(.*) /$1 break;\n  proxy_cache off; \n    proxy_pass  http://plantuml:8080/; \n}\n"
 
    # Built from source
-   nginx['custom_gitlab_server_config'] = "location /-/plantuml { \n rewrite ^/-/(plantuml.*) /$1 break;\n proxy_cache off; \n proxy_pass http://localhost:8080/plantuml; \n}\n"
+   nginx['custom_gitlab_server_config'] = "location /-/plantuml { \n rewrite ^/-/plantuml/(.*) /$1 break;\n proxy_cache off; \n proxy_pass http://localhost:8080/plantuml; \n}\n"
    ```
 
 1. To activate the changes, run the following command:

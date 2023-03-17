@@ -130,7 +130,19 @@ export default {
     timelineEntryInnerClass() {
       return {
         'timeline-entry-inner': true,
-        'gl-p-5': this.addPadding,
+        'gl-pb-3': this.addPadding,
+      };
+    },
+    timelineContentClass() {
+      return {
+        'timeline-content': true,
+        'gl-border-0! gl-pl-0!': !this.addPadding,
+      };
+    },
+    parentClass() {
+      return {
+        'gl-relative gl-display-flex gl-align-items-flex-start gl-flex-wrap-nowrap': !this
+          .isEditing,
       };
     },
     isProjectArchived() {
@@ -200,23 +212,27 @@ export default {
       :is-project-archived="isProjectArchived"
     />
     <div v-else :class="timelineEntryInnerClass">
-      <div class="gl-relative gl-display-flex gl-align-items-flex-start gl-flex-wrap-nowrap">
+      <div class="timeline-avatar gl-float-left">
         <gl-avatar :src="$options.constantOptions.avatarUrl" :size="32" class="gl-mr-3" />
-        <work-item-comment-form
-          v-if="isEditing"
-          :work-item-type="workItemType"
-          :aria-label="__('Add a reply')"
-          :is-submitting="isSubmitting"
-          :autosave-key="autosaveKey"
-          @submitForm="updateWorkItem"
-          @cancelEditing="cancelEditing"
-        />
-        <gl-button
-          v-else
-          class="gl-flex-grow-1 gl-justify-content-start! gl-text-secondary!"
-          @click="isEditing = true"
-          >{{ __('Add a reply') }}</gl-button
-        >
+      </div>
+      <div :class="timelineContentClass">
+        <div :class="parentClass">
+          <work-item-comment-form
+            v-if="isEditing"
+            :work-item-type="workItemType"
+            :aria-label="__('Add a reply')"
+            :is-submitting="isSubmitting"
+            :autosave-key="autosaveKey"
+            @submitForm="updateWorkItem"
+            @cancelEditing="cancelEditing"
+          />
+          <gl-button
+            v-else
+            class="gl-flex-grow-1 gl-justify-content-start! gl-text-secondary!"
+            @click="isEditing = true"
+            >{{ __('Add a reply') }}</gl-button
+          >
+        </div>
       </div>
     </div>
   </li>

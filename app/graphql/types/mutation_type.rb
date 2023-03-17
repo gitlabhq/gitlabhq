@@ -7,7 +7,8 @@ module Types
     include Gitlab::Graphql::MountMutation
 
     mount_mutation Mutations::Achievements::Award, alpha: { milestone: '15.10' }
-    mount_mutation Mutations::Achievements::Create
+    mount_mutation Mutations::Achievements::Create, alpha: { milestone: '15.8' }
+    mount_mutation Mutations::Achievements::Revoke, alpha: { milestone: '15.10' }
     mount_mutation Mutations::Admin::SidekiqQueues::DeleteJobs
     mount_mutation Mutations::AlertManagement::CreateAlertIssue
     mount_mutation Mutations::AlertManagement::UpdateAlertStatus

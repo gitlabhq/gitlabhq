@@ -13,5 +13,9 @@ module Achievements
                 class_name: 'User',
                 inverse_of: :revoked_user_achievements,
                 optional: true
+
+    def revoked?
+      revoked_by_user_id.present?
+    end
   end
 end

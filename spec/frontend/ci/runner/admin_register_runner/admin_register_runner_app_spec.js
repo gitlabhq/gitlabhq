@@ -1,42 +1,19 @@
-import Vue, { nextTick } from 'vue';
-import VueApollo from 'vue-apollo';
+import { nextTick } from 'vue';
 import { GlButton } from '@gitlab/ui';
 
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 
 import { updateHistory } from '~/lib/utils/url_utility';
-import runnerForRegistrationQuery from '~/ci/runner/graphql/register/runner_for_registration.query.graphql';
-import {
-  PARAM_KEY_PLATFORM,
-  DEFAULT_PLATFORM,
-  WINDOWS_PLATFORM,
-  RUNNER_REGISTRATION_POLLING_INTERVAL_MS,
-  STATUS_ONLINE,
-} from '~/ci/runner/constants';
+import { PARAM_KEY_PLATFORM, DEFAULT_PLATFORM, WINDOWS_PLATFORM } from '~/ci/runner/constants';
 import AdminRegisterRunnerApp from '~/ci/runner/admin_register_runner/admin_register_runner_app.vue';
 import RegistrationInstructions from '~/ci/runner/components/registration/registration_instructions.vue';
 import PlatformsDrawer from '~/ci/runner/components/registration/platforms_drawer.vue';
 import { runnerForRegistration } from '../mock_data';
 
-const MOCK_TOKEN = 'MOCK_TOKEN';
-
-const mockRunner = {
-  ...runnerForRegistration.data.runner,
-  ephemeralAuthenticationToken: MOCK_TOKEN,
-};
-const mockRunnerWithoutToken = {
-  ...runnerForRegistration.data.runner,
-  ephemeralAuthenticationToken: undefined,
-};
-const mockRunnerId = `${getIdFromGraphQLId(mockRunner.id)}`;
+const mockRunnerId = runnerForRegistration.data.runner.id;
 const mockRunnersPath = '/admin/runners';
-
-Vue.use(VueApollo);
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
@@ -45,20 +22,13 @@ jest.mock('~/lib/utils/url_utility', () => ({
 
 describe('AdminRegisterRunnerApp', () => {
   let wrapper;
-  let mockRunnerQuery;
 
   const findRegistrationInstructions = () => wrapper.findComponent(RegistrationInstructions);
   const findPlatformsDrawer = () => wrapper.findComponent(PlatformsDrawer);
   const findBtn = () => wrapper.findComponent(GlButton);
 
-  const waitForPolling = async () => {
-    jest.advanceTimersByTime(RUNNER_REGISTRATION_POLLING_INTERVAL_MS);
-    await waitForPromises();
-  };
-
   const createComponent = () => {
     wrapper = shallowMountExtended(AdminRegisterRunnerApp, {
-      apolloProvider: createMockApollo([[runnerForRegistrationQuery, mockRunnerQuery]]),
       propsData: {
         runnerId: mockRunnerId,
         runnersPath: mockRunnersPath,
@@ -66,31 +36,16 @@ describe('AdminRegisterRunnerApp', () => {
     });
   };
 
-  beforeEach(() => {
-    mockRunnerQuery = jest.fn().mockResolvedValue({
-      data: {
-        runner: mockRunner,
-      },
-    });
-  });
-
   describe('When showing runner details', () => {
     beforeEach(async () => {
       createComponent();
-      await waitForPromises();
     });
 
     describe('when runner token is available', () => {
-      it('loads runner', () => {
-        expect(mockRunnerQuery).toHaveBeenCalledWith({ id: mockRunner.id });
-      });
-
       it('shows registration instructions', () => {
         expect(findRegistrationInstructions().props()).toEqual({
-          loading: false,
           platform: DEFAULT_PLATFORM,
-          runner: mockRunnerWithoutToken,
-          token: MOCK_TOKEN,
+          runnerId: mockRunnerId,
         });
       });
 
@@ -102,65 +57,8 @@ describe('AdminRegisterRunnerApp', () => {
       });
 
       it('shows runner list button', () => {
-        expect(findBtn().attributes('href')).toEqual(mockRunnersPath);
-        expect(findBtn().props('variant')).toEqual('confirm');
-      });
-    });
-
-    describe('polling for changes', () => {
-      it('fetches data', () => {
-        expect(mockRunnerQuery).toHaveBeenCalledTimes(1);
-      });
-
-      it('polls', async () => {
-        await waitForPolling();
-        expect(mockRunnerQuery).toHaveBeenCalledTimes(2);
-
-        await waitForPolling();
-        expect(mockRunnerQuery).toHaveBeenCalledTimes(3);
-      });
-
-      it('when runner is online, stops polling', async () => {
-        mockRunnerQuery.mockResolvedValue({
-          data: {
-            runner: { ...mockRunner, status: STATUS_ONLINE },
-          },
-        });
-
-        await waitForPolling();
-        expect(mockRunnerQuery).toHaveBeenCalledTimes(2);
-
-        await waitForPolling();
-        expect(mockRunnerQuery).toHaveBeenCalledTimes(2);
-      });
-
-      it('when token is no longer visible in the API, it is still visible in the UI', async () => {
-        mockRunnerQuery.mockResolvedValue({
-          data: {
-            runner: mockRunnerWithoutToken,
-          },
-        });
-
-        await waitForPolling();
-
-        expect(findRegistrationInstructions().props('token')).toBe(MOCK_TOKEN);
-      });
-
-      it('when runner is not available (e.g. deleted), the UI does not update', async () => {
-        mockRunnerQuery.mockResolvedValue({
-          data: {
-            runner: null,
-          },
-        });
-
-        await waitForPolling();
-
-        expect(findRegistrationInstructions().props()).toEqual({
-          loading: false,
-          platform: DEFAULT_PLATFORM,
-          runner: mockRunnerWithoutToken,
-          token: MOCK_TOKEN,
-        });
+        expect(findBtn().attributes('href')).toBe(mockRunnersPath);
+        expect(findBtn().props('variant')).toBe('confirm');
       });
     });
   });
@@ -170,18 +68,16 @@ describe('AdminRegisterRunnerApp', () => {
       setWindowLocation(`?${PARAM_KEY_PLATFORM}=${WINDOWS_PLATFORM}`);
 
       createComponent();
-      await waitForPromises();
     });
 
     it('shows registration instructions for the platform', () => {
-      expect(findRegistrationInstructions().props('platform')).toEqual(WINDOWS_PLATFORM);
+      expect(findRegistrationInstructions().props('platform')).toBe(WINDOWS_PLATFORM);
     });
   });
 
   describe('When opening install instructions', () => {
     beforeEach(async () => {
       createComponent();
-      await waitForPromises();
 
       findRegistrationInstructions().vm.$emit('toggleDrawer');
       await nextTick();
@@ -220,23 +116,6 @@ describe('AdminRegisterRunnerApp', () => {
 
       it('updates the registration instructions', () => {
         expect(findRegistrationInstructions().props('platform')).toBe(WINDOWS_PLATFORM);
-      });
-    });
-  });
-
-  describe('When runner is loading', () => {
-    beforeEach(async () => {
-      mockRunnerQuery = jest.fn().mockImplementation(() => new Promise());
-    });
-
-    it('shows registration instructions with no runner', () => {
-      createComponent();
-
-      expect(findRegistrationInstructions().props()).toEqual({
-        loading: true,
-        runner: null,
-        token: null,
-        platform: DEFAULT_PLATFORM,
       });
     });
   });

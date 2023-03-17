@@ -96,41 +96,39 @@ export default {
 </script>
 
 <template>
-  <div class="timeline-content">
-    <div class="timeline-discussion-body">
-      <div class="note-body">
-        <form class="common-note-form gfm-form js-main-target-form gl-flex-grow-1">
-          <markdown-editor
-            :value="commentText"
-            :render-markdown-path="markdownPreviewPath"
-            :markdown-docs-path="$options.constantOptions.markdownDocsPath"
-            :form-field-props="formFieldProps"
-            data-testid="work-item-add-comment"
-            class="gl-mb-3"
-            autofocus
-            use-bottom-toolbar
-            @input="setCommentText"
-            @keydown.meta.enter="$emit('submitForm', commentText)"
-            @keydown.ctrl.enter="$emit('submitForm', commentText)"
-            @keydown.esc.stop="cancelEditing"
-          />
-          <gl-button
-            category="primary"
-            variant="confirm"
-            data-testid="confirm-button"
-            :loading="isSubmitting"
-            @click="$emit('submitForm', commentText)"
-            >{{ commentButtonText }}
-          </gl-button>
-          <gl-button
-            data-testid="cancel-button"
-            category="primary"
-            class="gl-ml-3"
-            @click="cancelEditing"
-            >{{ __('Cancel') }}
-          </gl-button>
-        </form>
-      </div>
+  <div class="timeline-discussion-body">
+    <div class="note-body">
+      <form class="common-note-form gfm-form js-main-target-form gl-flex-grow-1">
+        <markdown-editor
+          :value="commentText"
+          :render-markdown-path="markdownPreviewPath"
+          :markdown-docs-path="$options.constantOptions.markdownDocsPath"
+          :form-field-props="formFieldProps"
+          data-testid="work-item-add-comment"
+          class="gl-mb-3"
+          autofocus
+          use-bottom-toolbar
+          @input="setCommentText"
+          @keydown.meta.enter="$emit('submitForm', commentText)"
+          @keydown.ctrl.enter="$emit('submitForm', commentText)"
+          @keydown.esc.stop="cancelEditing"
+        />
+        <gl-button
+          category="primary"
+          variant="confirm"
+          data-testid="confirm-button"
+          :loading="isSubmitting"
+          @click="$emit('submitForm', commentText)"
+          >{{ commentButtonText }}
+        </gl-button>
+        <gl-button
+          data-testid="cancel-button"
+          category="primary"
+          class="gl-ml-3"
+          @click="cancelEditing"
+          >{{ __('Cancel') }}
+        </gl-button>
+      </form>
     </div>
   </div>
 </template>

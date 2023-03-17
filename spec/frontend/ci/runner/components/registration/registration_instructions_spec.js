@@ -1,10 +1,17 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+
+import { s__ } from '~/locale';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { extendedWrapper, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { TEST_HOST } from 'helpers/test_constants';
-import { s__ } from '~/locale';
 
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import RegistrationInstructions from '~/ci/runner/components/registration/registration_instructions.vue';
+import runnerForRegistrationQuery from '~/ci/runner/graphql/register/runner_for_registration.query.graphql';
 import CliCommand from '~/ci/runner/components/registration/cli_command.vue';
 import {
   DEFAULT_PLATFORM,
@@ -12,26 +19,53 @@ import {
   SERVICE_COMMANDS_HELP_URL,
   STATUS_NEVER_CONTACTED,
   STATUS_ONLINE,
+  RUNNER_REGISTRATION_POLLING_INTERVAL_MS,
   I18N_REGISTRATION_SUCCESS,
 } from '~/ci/runner/constants';
 import { runnerForRegistration } from '../../mock_data';
 
-const MOCK_TOKEN = 'MOCK_TOKEN';
+Vue.use(VueApollo);
 
-const mockRunner = runnerForRegistration.data.runner;
+const MOCK_TOKEN = 'MOCK_TOKEN';
+const mockDescription = runnerForRegistration.data.runner.description;
+
+const mockRunner = {
+  ...runnerForRegistration.data.runner,
+  ephemeralAuthenticationToken: MOCK_TOKEN,
+};
+const mockRunnerWithoutToken = {
+  ...runnerForRegistration.data.runner,
+  ephemeralAuthenticationToken: null,
+};
+
+const mockRunnerId = `${getIdFromGraphQLId(mockRunner.id)}`;
 
 describe('RegistrationInstructions', () => {
   let wrapper;
+  let mockRunnerQuery;
 
   const findHeading = () => wrapper.find('h1');
   const findStepAt = (i) => extendedWrapper(wrapper.findAll('section').at(i));
   const findByText = (text, container = wrapper) => container.findByText(text);
 
+  const waitForPolling = async () => {
+    jest.advanceTimersByTime(RUNNER_REGISTRATION_POLLING_INTERVAL_MS);
+    await waitForPromises();
+  };
+
+  const mockResolvedRunner = (runner = mockRunner) => {
+    mockRunnerQuery.mockResolvedValue({
+      data: {
+        runner,
+      },
+    });
+  };
+
   const createComponent = (props) => {
     wrapper = shallowMountExtended(RegistrationInstructions, {
+      apolloProvider: createMockApollo([[runnerForRegistrationQuery, mockRunnerQuery]]),
       propsData: {
-        runner: mockRunner,
-        token: MOCK_TOKEN,
+        runnerId: mockRunnerId,
         platform: DEFAULT_PLATFORM,
         ...props,
       },
@@ -42,24 +76,36 @@ describe('RegistrationInstructions', () => {
   };
 
   beforeEach(() => {
+    mockRunnerQuery = jest.fn();
+    mockResolvedRunner();
+  });
+
+  beforeEach(() => {
     window.gon.gitlab_url = TEST_HOST;
   });
 
-  describe('renders heading', () => {
-    it('when runner is loaded, shows heading', () => {
+  it('loads runner with id', async () => {
+    createComponent();
+
+    expect(mockRunnerQuery).toHaveBeenCalledWith({ id: mockRunner.id });
+  });
+
+  describe('heading', () => {
+    it('when runner is loaded, shows heading', async () => {
       createComponent();
+      await waitForPromises();
+
       expect(findHeading().text()).toContain(mockRunner.description);
     });
 
-    it('when runner is loaded, shows heading safely', () => {
-      const description = '<script>hacked();</script>';
-
-      createComponent({
-        runner: {
-          ...mockRunner,
-          description,
-        },
+    it('when runner is loaded, shows heading safely', async () => {
+      mockResolvedRunner({
+        ...mockRunner,
+        description: '<script>hacked();</script>',
       });
+
+      createComponent();
+      await waitForPromises();
 
       expect(findHeading().text()).toBe('Register "<script>hacked();</script>" runner');
       expect(findHeading().element.innerHTML).toBe(
@@ -68,10 +114,7 @@ describe('RegistrationInstructions', () => {
     });
 
     it('when runner is loading, shows default heading', () => {
-      createComponent({
-        loading: true,
-        runner: null,
-      });
+      createComponent();
 
       expect(findHeading().text()).toBe(s__('Runners|Register runner'));
     });
@@ -79,57 +122,117 @@ describe('RegistrationInstructions', () => {
 
   it('renders legacy instructions', () => {
     createComponent();
+
     findByText('How do I install GitLab Runner?').vm.$emit('click');
 
     expect(wrapper.emitted('toggleDrawer')).toHaveLength(1);
   });
 
-  it('renders step 1', () => {
-    createComponent();
-    const step1 = findStepAt(0);
+  describe('step 1', () => {
+    it('renders step 1', async () => {
+      createComponent();
+      await waitForPromises();
 
-    expect(step1.findComponent(CliCommand).props()).toEqual({
-      command: [
+      const step1 = findStepAt(0);
+
+      expect(step1.findComponent(CliCommand).props()).toEqual({
+        command: [
+          'gitlab-runner register',
+          `  --url ${TEST_HOST}`,
+          `  --registration-token ${MOCK_TOKEN}`,
+          `  --description '${mockDescription}'`,
+        ],
+        prompt: '$',
+      });
+      expect(step1.find('[data-testid="runner-token"]').text()).toBe(MOCK_TOKEN);
+      expect(step1.findComponent(ClipboardButton).props('text')).toBe(MOCK_TOKEN);
+    });
+
+    it('renders step 1 in loading state', () => {
+      createComponent();
+
+      const step1 = findStepAt(0);
+
+      expect(step1.findComponent(GlSkeletonLoader).exists()).toBe(true);
+      expect(step1.find('code').exists()).toBe(false);
+      expect(step1.findComponent(ClipboardButton).exists()).toBe(false);
+    });
+
+    it('render step 1 after token is not visible', async () => {
+      mockResolvedRunner(mockRunnerWithoutToken);
+
+      createComponent();
+      await waitForPromises();
+
+      const step1 = findStepAt(0);
+
+      expect(step1.findComponent(CliCommand).props('command')).toEqual([
         'gitlab-runner register',
         `  --url ${TEST_HOST}`,
-        `  --registration-token ${MOCK_TOKEN}`,
-        `  --description '${mockRunner.description}'`,
-      ],
-      prompt: '$',
-    });
-    expect(step1.find('[data-testid="runner-token"]').text()).toBe(MOCK_TOKEN);
-    expect(step1.findComponent(ClipboardButton).props('text')).toBe(MOCK_TOKEN);
-  });
-
-  it('renders step 1 in loading state', () => {
-    createComponent({
-      loading: true,
+        `  --description '${mockDescription}'`,
+      ]);
+      expect(step1.find('[data-testid="runner-token"]').exists()).toBe(false);
+      expect(step1.findComponent(ClipboardButton).exists()).toBe(false);
     });
 
-    const step1 = findStepAt(0);
+    describe('polling for changes', () => {
+      beforeEach(async () => {
+        createComponent();
+        await waitForPromises();
+      });
 
-    expect(step1.findComponent(GlSkeletonLoader).exists()).toBe(true);
-    expect(step1.find('code').exists()).toBe(false);
-    expect(step1.findComponent(ClipboardButton).exists()).toBe(false);
-  });
+      it('fetches data', () => {
+        expect(mockRunnerQuery).toHaveBeenCalledTimes(1);
+      });
 
-  it('render step 1 after token is not visible', () => {
-    createComponent({
-      token: undefined,
+      it('polls', async () => {
+        await waitForPolling();
+        expect(mockRunnerQuery).toHaveBeenCalledTimes(2);
+
+        await waitForPolling();
+        expect(mockRunnerQuery).toHaveBeenCalledTimes(3);
+      });
+
+      it('when runner is online, stops polling', async () => {
+        mockResolvedRunner({ ...mockRunner, status: STATUS_ONLINE });
+        await waitForPolling();
+
+        expect(mockRunnerQuery).toHaveBeenCalledTimes(2);
+        await waitForPolling();
+
+        expect(mockRunnerQuery).toHaveBeenCalledTimes(2);
+      });
+
+      it('when token is no longer visible in the API, it is still visible in the UI', async () => {
+        mockResolvedRunner(mockRunnerWithoutToken);
+        await waitForPolling();
+
+        const step1 = findStepAt(0);
+        expect(step1.findComponent(CliCommand).props('command')).toEqual([
+          'gitlab-runner register',
+          `  --url ${TEST_HOST}`,
+          `  --registration-token ${MOCK_TOKEN}`,
+          `  --description '${mockDescription}'`,
+        ]);
+        expect(step1.find('[data-testid="runner-token"]').text()).toBe(MOCK_TOKEN);
+        expect(step1.findComponent(ClipboardButton).props('text')).toBe(MOCK_TOKEN);
+      });
+
+      it('when runner is not available (e.g. deleted), the UI does not update', async () => {
+        mockResolvedRunner(null);
+        await waitForPolling();
+
+        const step1 = findStepAt(0);
+        expect(step1.findComponent(CliCommand).props('command')).toEqual([
+          'gitlab-runner register',
+          `  --url ${TEST_HOST}`,
+          `  --registration-token ${MOCK_TOKEN}`,
+          `  --description '${mockDescription}'`,
+        ]);
+        expect(step1.find('[data-testid="runner-token"]').text()).toBe(MOCK_TOKEN);
+        expect(step1.findComponent(ClipboardButton).props('text')).toBe(MOCK_TOKEN);
+      });
     });
-
-    const step1 = findStepAt(0);
-
-    expect(step1.findComponent(CliCommand).props()).toEqual({
-      command: [
-        'gitlab-runner register',
-        `  --url ${TEST_HOST}`,
-        `  --description '${mockRunner.description}'`,
-      ],
-      prompt: '$',
-    });
-    expect(step1.find('[data-testid="runner-token"]').exists()).toBe(false);
-    expect(step1.findComponent(ClipboardButton).exists()).toBe(false);
   });
 
   it('renders step 2', () => {
@@ -157,13 +260,14 @@ describe('RegistrationInstructions', () => {
 
   describe('success state', () => {
     describe('when the runner has not been registered', () => {
-      beforeEach(() => {
-        createComponent({
-          runner: {
-            ...mockRunner,
-            status: STATUS_NEVER_CONTACTED,
-          },
-        });
+      beforeEach(async () => {
+        createComponent();
+
+        await waitForPolling();
+
+        mockResolvedRunner({ ...mockRunner, status: STATUS_NEVER_CONTACTED });
+
+        await waitForPolling();
       });
 
       it('does not show success message', () => {
@@ -172,13 +276,12 @@ describe('RegistrationInstructions', () => {
     });
 
     describe('when the runner has been registered', () => {
-      beforeEach(() => {
-        createComponent({
-          runner: {
-            ...mockRunner,
-            status: STATUS_ONLINE,
-          },
-        });
+      beforeEach(async () => {
+        createComponent();
+        await waitForPolling();
+
+        mockResolvedRunner({ ...mockRunner, status: STATUS_ONLINE });
+        await waitForPolling();
       });
 
       it('shows success message', () => {

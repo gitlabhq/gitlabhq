@@ -1,18 +1,27 @@
 <script>
 import { GlIcon, GlLink, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import { createAlert } from '~/alert';
 import { s__, sprintf } from '~/locale';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
 
+import runnerForRegistrationQuery from '../../graphql/register/runner_for_registration.query.graphql';
 import {
+  STATUS_ONLINE,
   EXECUTORS_HELP_URL,
   SERVICE_COMMANDS_HELP_URL,
-  STATUS_ONLINE,
+  RUNNER_REGISTRATION_POLLING_INTERVAL_MS,
+  I18N_FETCH_ERROR,
   I18N_REGISTRATION_SUCCESS,
 } from '../../constants';
+import { captureException } from '../../sentry_utils';
+
 import CliCommand from './cli_command.vue';
 import { commandPrompt, registerCommand, runCommand } from './utils';
 
 export default {
+  name: 'RegistrationInstructions',
   components: {
     GlIcon,
     GlLink,
@@ -22,27 +31,57 @@ export default {
     CliCommand,
   },
   props: {
-    runner: {
-      type: Object,
-      required: false,
-      default: null,
-    },
-    token: {
+    runnerId: {
       type: String,
-      required: false,
-      default: null,
+      required: true,
     },
     platform: {
       type: String,
       required: true,
     },
-    loading: {
-      type: Boolean,
-      required: false,
-      default: false,
+  },
+  data() {
+    return {
+      runner: null,
+      token: null,
+    };
+  },
+  apollo: {
+    runner: {
+      query: runnerForRegistrationQuery,
+      variables() {
+        return {
+          id: convertToGraphQLId(TYPENAME_CI_RUNNER, this.runnerId),
+        };
+      },
+      manual: true,
+      result({ data }) {
+        if (data?.runner) {
+          const { ephemeralAuthenticationToken, ...runner } = data.runner;
+          this.runner = runner;
+
+          // The token is available in the API for a limited amount of time
+          // preserve its original value if it is missing after polling.
+          this.token = ephemeralAuthenticationToken || this.token;
+        }
+      },
+      error(error) {
+        createAlert({ message: I18N_FETCH_ERROR });
+        captureException({ error, component: this.$options.name });
+      },
+      pollInterval() {
+        if (this.runner?.status === STATUS_ONLINE) {
+          // stop polling
+          return 0;
+        }
+        return RUNNER_REGISTRATION_POLLING_INTERVAL_MS;
+      },
     },
   },
   computed: {
+    loading() {
+      return this.$apollo.queries.runner.loading;
+    },
     description() {
       return this.runner?.description;
     },

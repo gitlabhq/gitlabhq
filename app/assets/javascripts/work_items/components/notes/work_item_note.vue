@@ -171,71 +171,73 @@ export default {
         />
       </gl-avatar-link>
     </div>
-    <work-item-comment-form
-      v-if="isEditing"
-      :work-item-type="workItemType"
-      :aria-label="__('Edit comment')"
-      :autosave-key="autosaveKey"
-      :initial-value="note.body"
-      :comment-button-text="__('Save comment')"
-      @cancelEditing="isEditing = false"
-      @submitForm="updateNote"
-    />
-    <div v-else class="timeline-content" data-testid="note-wrapper">
-      <div :class="noteHeaderClass">
-        <note-header
-          :author="author"
-          :created-at="note.createdAt"
-          :note-id="note.id"
-          :note-url="note.url"
-        >
-          <span v-if="note.createdAt" class="d-none d-sm-inline">&middot;</span>
-        </note-header>
-        <div class="gl-display-inline-flex">
-          <note-actions
-            :show-award-emoji="hasAwardEmojiPermission"
-            :note-url="noteUrl"
-            :show-reply="showReply"
-            :show-edit="hasAdminPermission"
-            :note-id="note.id"
-            @startReplying="showReplyForm"
-            @startEditing="startEditing"
-            @error="($event) => $emit('error', $event)"
-          />
-          <gl-dropdown
-            v-gl-tooltip
-            icon="ellipsis_v"
-            text-sr-only
-            right
-            :text="$options.i18n.moreActionsText"
-            :title="$options.i18n.moreActionsText"
-            category="tertiary"
-            no-caret
-          >
-            <gl-dropdown-item :data-clipboard-text="noteUrl" @click="notifyCopyDone">
-              <span>{{ $options.i18n.copyLinkText }}</span>
-            </gl-dropdown-item>
-            <gl-dropdown-item
-              v-if="hasAdminPermission"
-              variant="danger"
-              data-testid="delete-note-action"
-              @click="$emit('deleteNote')"
-            >
-              {{ $options.i18n.deleteNoteText }}
-            </gl-dropdown-item>
-          </gl-dropdown>
-        </div>
-      </div>
-      <div class="timeline-discussion-body">
-        <note-body ref="noteBody" :note="note" :has-replies="hasReplies" />
-      </div>
-      <edited-at
-        v-if="note.lastEditedBy"
-        :updated-at="note.lastEditedAt"
-        :updated-by-name="lastEditedBy.name"
-        :updated-by-path="lastEditedBy.webPath"
-        :class="isFirstNote ? 'gl-pl-3' : 'gl-pl-8'"
+    <div class="timeline-content">
+      <work-item-comment-form
+        v-if="isEditing"
+        :work-item-type="workItemType"
+        :aria-label="__('Edit comment')"
+        :autosave-key="autosaveKey"
+        :initial-value="note.body"
+        :comment-button-text="__('Save comment')"
+        @cancelEditing="isEditing = false"
+        @submitForm="updateNote"
       />
+      <div v-else data-testid="note-wrapper">
+        <div :class="noteHeaderClass">
+          <note-header
+            :author="author"
+            :created-at="note.createdAt"
+            :note-id="note.id"
+            :note-url="note.url"
+          >
+            <span v-if="note.createdAt" class="d-none d-sm-inline">&middot;</span>
+          </note-header>
+          <div class="gl-display-inline-flex">
+            <note-actions
+              :show-award-emoji="hasAwardEmojiPermission"
+              :note-url="noteUrl"
+              :show-reply="showReply"
+              :show-edit="hasAdminPermission"
+              :note-id="note.id"
+              @startReplying="showReplyForm"
+              @startEditing="startEditing"
+              @error="($event) => $emit('error', $event)"
+            />
+            <gl-dropdown
+              v-gl-tooltip
+              icon="ellipsis_v"
+              text-sr-only
+              right
+              :text="$options.i18n.moreActionsText"
+              :title="$options.i18n.moreActionsText"
+              category="tertiary"
+              no-caret
+            >
+              <gl-dropdown-item :data-clipboard-text="noteUrl" @click="notifyCopyDone">
+                <span>{{ $options.i18n.copyLinkText }}</span>
+              </gl-dropdown-item>
+              <gl-dropdown-item
+                v-if="hasAdminPermission"
+                variant="danger"
+                data-testid="delete-note-action"
+                @click="$emit('deleteNote')"
+              >
+                {{ $options.i18n.deleteNoteText }}
+              </gl-dropdown-item>
+            </gl-dropdown>
+          </div>
+        </div>
+        <div class="timeline-discussion-body">
+          <note-body ref="noteBody" :note="note" :has-replies="hasReplies" />
+        </div>
+        <edited-at
+          v-if="note.lastEditedBy"
+          :updated-at="note.lastEditedAt"
+          :updated-by-name="lastEditedBy.name"
+          :updated-by-path="lastEditedBy.webPath"
+          :class="isFirstNote ? 'gl-pl-3' : 'gl-pl-8'"
+        />
+      </div>
     </div>
   </timeline-entry-item>
 </template>

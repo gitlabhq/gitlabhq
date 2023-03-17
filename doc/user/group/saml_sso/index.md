@@ -25,7 +25,7 @@ You can configure SAML SSO for the top-level group only.
    1. On the left sidebar, select **Settings > SAML SSO**.
    1. Note the **Assertion consumer service URL**, **Identifier**, and **GitLab single sign-on URL**.
 1. Configure your SAML identity provider app using the noted details.
-   Alternatively, GitLab provides a [metadata XML configuration](#metadata-configuration).
+   Alternatively, GitLab provides a [metadata XML configuration](#set-up-identity-provider-using-metadata).
    See [specific identity provider documentation](#set-up-identity-provider) for more details.
 1. Configure the SAML response to include a [NameID](#nameid) that uniquely identifies each user.
 1. Configure the required [user attributes](#user-attributes), ensuring you include the user's email address.
@@ -52,19 +52,24 @@ If you have any questions on configuring the SAML app, contact your provider's s
 
 ### Set up Azure
 
-1. [Use Azure to configure SSO for an application](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/add-application-portal-setup-sso). The following GitLab settings correspond to the Azure fields.
+To set up SSO with Azure as your identification provider:
 
-   | GitLab setting                       | Azure field                                |
-   | ------------------------------------ | ------------------------------------------ |
-   | Identifier                           | Identifier (Entity ID)                     |
-   | Assertion consumer service URL       | Reply URL (Assertion Consumer Service URL) |
-   | GitLab single sign-on URL            | Sign on URL                                |
-   | Identity provider single sign-on URL | Login URL                                  |
-   | Certificate fingerprint              | Thumbprint                                 |
+1. In GitLab, on the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > SAML SSO**.
+1. Note the information on this page.
+1. Go to Azure and [follow the instructions for configuring SSO for an application](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/add-application-portal-setup-sso). The following GitLab settings correspond to the Azure fields.
+
+   | GitLab setting                           | Azure field                                    |
+   | -----------------------------------------| ---------------------------------------------- |
+   | **Identifier**                           | **Identifier (Entity ID)**                     |
+   | **Assertion consumer service URL**       | **Reply URL (Assertion Consumer Service URL)** |
+   | **GitLab single sign-on URL**            | **Sign on URL**                                |
+   | **Identity provider single sign-on URL** | **Login URL**                                  |
+   | **Certificate fingerprint**              | **Thumbprint**                                 |
 
 1. You should set the following attributes:
    - **Unique User Identifier (Name identifier)** to `user.objectID`.
-   - **nameid-format** to persistent.
+   - **nameid-format** to `persistent`.
    - **Additional claims** to [supported attributes](#user-attributes).
 
 1. Optional. If you use [Group Sync](#group-sync), customize the name of the
@@ -152,6 +157,18 @@ OneLogin supports its own [GitLab (SaaS) application](https://onelogin.service-n
 
 1. For **NameID**, use `OneLogin ID`.
 
+### Set up identity provider using metadata
+
+To configure some identity providers, you need a GitLab metadata URL.
+To find this URL:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > SAML SSO**.
+1. Copy the provided **GitLab metadata URL**.
+1. Follow your identity provider's documentation and paste the metadata URL when it's requested.
+
+Check your identity provider's documentation to see if it supports the GitLab metadata URL.
+
 ### NameID
 
 GitLab.com uses the SAML NameID to identify users. The NameID element:
@@ -184,15 +201,6 @@ You can configure the following attributes with GitLab.com Group SAML:
 
 - `username` or `nickname`. We recommend you configure only one of these.
 - The [attributes available](../../../integration/saml.md#configure-assertions) to self-managed GitLab instances.
-
-### Metadata configuration
-
-GitLab provides metadata XML that can be used to configure your identity provider.
-
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > SAML SSO**.
-1. Copy the provided **GitLab metadata URL**.
-1. Follow your identity provider's documentation and paste the metadata URL when it's requested.
 
 ## Configure GitLab
 
