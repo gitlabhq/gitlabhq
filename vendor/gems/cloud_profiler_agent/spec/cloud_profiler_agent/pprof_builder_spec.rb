@@ -27,6 +27,25 @@ RSpec.describe CloudProfilerAgent::PprofBuilder, feature_category: :application_
   # assertions about the message directly.
   let(:message) { subject.message }
 
+  context '#process_frames' do
+    let(:profile) { load_profile(:cpu) }
+    let(:string_map) { subject.instance_variable_get(:@string_map) }
+
+    it 'converts method names to dot notation' do
+      original_frame_name = profile[:frames].to_a[0].last[:name]
+      expect(original_frame_name).to eq("Prime#prime_division")
+      second_original_frame_name = profile[:frames].to_a[1].last[:name]
+      expect(second_original_frame_name).to eq("Prime::PseudoPrimeGenerator#each")
+
+      message
+
+      cleaned_frame_name = string_map.strings[4] # the first 4 items are profile metadata
+      expect(cleaned_frame_name).to eq("Prime.prime_division")
+      second_cleaned_frame_name = string_map.strings[6] # 5 is the file location
+      expect(second_cleaned_frame_name).to eq("Prime.PseudoPrimeGenerator.each")
+    end
+  end
+
   context 'with :cpu profile' do
     let(:profile) { load_profile(:cpu) }
 

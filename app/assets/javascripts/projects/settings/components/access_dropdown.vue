@@ -86,7 +86,10 @@ export default {
       return groupBy(this.preselectedItems, 'type');
     },
     showDeployKeys() {
-      return this.accessLevel === ACCESS_LEVELS.PUSH && this.deployKeys.length;
+      return (
+        (this.accessLevel === ACCESS_LEVELS.PUSH || this.accessLevel === ACCESS_LEVELS.CREATE) &&
+        this.deployKeys.length
+      );
     },
     toggleLabel() {
       const counts = Object.entries(this.selected).reduce((acc, [key, value]) => {

@@ -1373,7 +1373,8 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
           source_name: source_project.full_name,
           source_path: project_path(source_project),
           ahead_compare_path: ahead_path,
-          behind_compare_path: behind_path
+          behind_compare_path: behind_path,
+          source_default_branch: source_project.default_branch
         })
       end
     end

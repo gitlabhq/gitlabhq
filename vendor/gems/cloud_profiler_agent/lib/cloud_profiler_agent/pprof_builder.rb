@@ -145,7 +145,7 @@ module CloudProfilerAgent
       @profile.fetch(:frames, []).each do |location_id, location|
         message.function.push(Perftools::Profiles::Function.new(
           id: location_id,
-          name: @string_map.add(location.fetch(:name)),
+          name: @string_map.add(cleaned_name(location.fetch(:name))),
           filename: @string_map.add(location.fetch(:file)),
           start_line: location.fetch(:line, nil)
         ))
@@ -160,6 +160,13 @@ module CloudProfilerAgent
           line: [line]
         ))
       end
+    end
+
+    def cleaned_name(name)
+      # Google Cloud Profiler has trouble identifying class structure in Ruby. It prefers everything separated by a
+      # dot as it is in for example Golang.
+      # We have to substitute `ActionView::Template#render` to `ActionView.Template.render`
+      name.gsub!(/::|#/, '.') || name
     end
   end
 

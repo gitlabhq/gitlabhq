@@ -126,3 +126,9 @@ export const propsForkInfo = {
   aheadComparePath: '/nataliia/myGitLab/-/compare/main...ref?from_project_id=1',
   behindComparePath: 'gitlab-org/gitlab/-/compare/ref...main?from_project_id=2',
 };
+
+export const propsConflictsModal = {
+  sourceDefaultBranch: 'branch-name',
+  sourceName: 'source-name',
+  sourcePath: 'path/to/project',
+};

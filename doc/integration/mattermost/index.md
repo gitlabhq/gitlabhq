@@ -245,7 +245,7 @@ For local connections, the `mmctl` binary and Mattermost must be run from the sa
            "LocalModeSocketLocation": "/var/tmp/mattermost_local.socket",
            ...
        }
-   } 
+   }
    ```
 
 1. Restart Mattermost:
@@ -280,7 +280,7 @@ $ /opt/gitlab/embedded/bin/mmctl auth login http://mattermost.example.com
 
 Connection name: test
 Username: local-user
-Password: 
+Password:
  credentials for "test": "local-user@http://mattermost.example.com" stored
 ```
 
@@ -377,6 +377,10 @@ If this is not the case, there are two options:
    from Omnibus GitLab.
 
 For a complete list of upgrade notices and special considerations for older versions, see the [Mattermost documentation](https://docs.mattermost.com/administration/important-upgrade-notes.html).
+
+## Upgrading GitLab Mattermost to 15.10
+
+GitLab 15.10 ships with Mattermost 7.8. Before upgrading, [connect to the bundled PostgreSQL database](#connecting-to-the-bundled-postgresql-database) to perform the PostgreSQL maintenance described in the [Important Upgrade Notes](https://docs.mattermost.com/administration/important-upgrade-notes.html) provided by Mattermost.
 
 ## Upgrading GitLab Mattermost to 14.6
 

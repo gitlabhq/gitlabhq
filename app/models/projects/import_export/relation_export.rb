@@ -51,12 +51,16 @@ module Projects
           transition queued: :started
         end
 
+        event :retry do
+          transition started: :queued
+        end
+
         event :finish do
           transition started: :finished
         end
 
         event :fail_op do
-          transition [:queued, :started] => :failed
+          transition [:queued, :started, :failed] => :failed
         end
       end
 
@@ -64,6 +68,14 @@ module Projects
         project_tree_relation_names = ::Gitlab::ImportExport::Reader.new(shared: nil).project_relation_names.map(&:to_s)
 
         project_tree_relation_names + EXTRA_RELATION_LIST
+      end
+
+      def mark_as_failed(export_error)
+        sanitized_error = Gitlab::UrlSanitizer.sanitize(export_error)
+
+        fail_op
+
+        update_column(:export_error, sanitized_error)
       end
     end
   end

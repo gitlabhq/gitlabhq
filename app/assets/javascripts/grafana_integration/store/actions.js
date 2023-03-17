@@ -29,7 +29,7 @@ export const updateGrafanaIntegration = ({ state, dispatch }) =>
 export const receiveGrafanaIntegrationUpdateSuccess = () => {
   /**
    * The operations_controller currently handles successful requests
-   * by creating a alert banner messsage to notify the user.
+   * by creating an alert banner message to notify the user.
    */
   refreshCurrentPage();
 };

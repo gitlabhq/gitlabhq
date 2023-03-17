@@ -686,9 +686,7 @@ You can embed GitLab Observability UI dashboards descriptions and comments, for 
 
 To embed an Observability dashboard URL:
 
-1. In GitLab Observability UI, in the upper-right corner, select **Copy shortened link**.
-
-   ![Generate and copy Observability shortened link](img/observability_copy_shortened_link.png)
+1. In GitLab Observability UI, copy the URL in the address bar.
 
 1. Paste your link wherever you want to embed your dashboard. GitLab Flavored Markdown recognizes the URL and displays the source.
 

@@ -105,3 +105,10 @@ export const i18n = {
   generalError: __('An error occurred while fetching folder content.'),
   gitalyError: __('Error: Gitaly is unavailable. Contact your administrator.'),
 };
+
+export const FIVE_MINUTES_IN_MS = 1000 * 60 * 5;
+
+export const POLLING_INTERVAL_DEFAULT = 2500;
+export const POLLING_INTERVAL_BACKOFF = 2;
+
+export const CONFLICTS_MODAL_ID = 'fork-sync-conflicts-modal';

@@ -42,7 +42,7 @@ stages:
 .update-script:
   script:
     - !reference [.bundle-prefix]
-    - export QA_COMMAND="$BUNDLE_PREFIX gitlab-qa Test::Omnibus::UpdateFromPrevious $RELEASE $GITLAB_VERSION $UPDATE_TYPE -- $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
+    - export QA_COMMAND="$BUNDLE_PREFIX gitlab-qa Test::Omnibus::UpdateFromPrevious $RELEASE $GITLAB_SEMVER_VERSION $UPDATE_TYPE -- $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
     - echo "Running - '$QA_COMMAND'"
     - eval "$QA_COMMAND"
 
@@ -408,7 +408,6 @@ update-minor:
     UPDATE_TYPE: minor
     QA_RSPEC_TAGS: --tag smoke
   rules:
-    - !reference [.rules:test:ee-only, rules]
     - !reference [.rules:test:update, rules]
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
     - !reference [.rules:test:manual, rules]
@@ -421,7 +420,6 @@ update-major:
     UPDATE_TYPE: major
     QA_RSPEC_TAGS: --tag smoke
   rules:
-    - !reference [.rules:test:ee-only, rules]
     - !reference [.rules:test:update, rules]
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
     - !reference [.rules:test:manual, rules]

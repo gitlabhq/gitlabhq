@@ -133,6 +133,7 @@ module ProjectsHelper
     {
       source_name: source_project.full_name,
       source_path: project_path(source_project),
+      source_default_branch: source_default_branch,
       ahead_compare_path: project_compare_path(
         project, from: source_default_branch, to: ref, from_project_id: source_project.id
       ),

@@ -469,6 +469,14 @@ export default class AccessDropdown {
       }
     }
 
+    if (this.accessLevel === ACCESS_LEVELS.CREATE && deployKeys.length) {
+      consolidatedData = consolidatedData.concat(
+        [{ type: 'divider' }],
+        [{ type: 'header', content: s__('AccessDropdown|Deploy Keys') }],
+        deployKeys,
+      );
+    }
+
     return consolidatedData;
   }
 
@@ -506,7 +514,10 @@ export default class AccessDropdown {
         break;
       case LEVEL_TYPES.DEPLOY_KEY:
         groupRowEl =
-          this.accessLevel === ACCESS_LEVELS.PUSH ? this.deployKeyRowHtml(item, isActive) : '';
+          this.accessLevel === ACCESS_LEVELS.PUSH || this.accessLevel === ACCESS_LEVELS.CREATE
+            ? this.deployKeyRowHtml(item, isActive)
+            : '';
+
         break;
       case LEVEL_TYPES.GROUP:
         groupRowEl = this.groupRowHtml(item, isActive);

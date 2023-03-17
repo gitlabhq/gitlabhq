@@ -20,9 +20,9 @@ let vm;
 let $apollo;
 const mockResponse = jest.fn().mockReturnValue(Promise.resolve({ data: {} }));
 
-function factory(path, appoloMockResponse = mockResponse) {
+function factory(path, apolloMockResponse = mockResponse) {
   $apollo = {
-    query: appoloMockResponse,
+    query: apolloMockResponse,
   };
 
   vm = shallowMount(TreeContent, {

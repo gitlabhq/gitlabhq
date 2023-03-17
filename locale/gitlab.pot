@@ -10684,7 +10684,7 @@ msgstr ""
 msgid "ComplianceFrameworks|Remove default"
 msgstr ""
 
-msgid "ComplianceFrameworks|Required format: %{codeStart}path/file.y[a]ml@group-name/project-name%{codeEnd}. %{linkStart}What is a compliance pipeline configuration?%{linkEnd}"
+msgid "ComplianceFrameworks|Required format: %{codeStart}path/file.y[a]ml@group-name/project-name%{codeEnd}. %{linkStart}See some examples%{linkEnd}."
 msgstr ""
 
 msgid "ComplianceFrameworks|Set default"
@@ -18290,13 +18290,37 @@ msgstr ""
 msgid "ForksDivergence|%{messages} the upstream repository."
 msgstr ""
 
+msgid "ForksDivergence|Check out to a new branch, and merge the changes from the upstream project's default branch. You likely need to resolve conflicts during this step."
+msgstr ""
+
+msgid "ForksDivergence|Create a merge request to your project's default branch."
+msgstr ""
+
 msgid "ForksDivergence|Failed to fetch fork details. Try again later."
+msgstr ""
+
+msgid "ForksDivergence|Fetch the latest changes from the upstream repository's default branch:"
+msgstr ""
+
+msgid "ForksDivergence|Push the updates to remote:"
+msgstr ""
+
+msgid "ForksDivergence|Resolve merge conflicts manually"
+msgstr ""
+
+msgid "ForksDivergence|Source project has a limited visibility."
+msgstr ""
+
+msgid "ForksDivergence|The upstream changes could not be synchronized to this project due to file conflicts in the default branch. You must resolve the conflicts manually:"
 msgstr ""
 
 msgid "ForksDivergence|This fork has diverged from the upstream repository."
 msgstr ""
 
 msgid "ForksDivergence|Up to date with the upstream repository."
+msgstr ""
+
+msgid "ForksDivergence|Update fork"
 msgstr ""
 
 msgid "Format: %{dateFormat}"

@@ -94,6 +94,7 @@ describe('Access Level Dropdown', () => {
   const findAllDropdownItems = () => findDropdown().findAllComponents(GlDropdownItem);
   const findAllDropdownHeaders = () => findDropdown().findAllComponents(GlDropdownSectionHeader);
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
+  const findDeployKeyDropdownItem = () => wrapper.findByTestId('deploy_key-dropdown-item');
 
   const findDropdownItemWithText = (items, text) =>
     items.filter((item) => item.text().includes(text)).at(0);
@@ -138,6 +139,21 @@ describe('Access Level Dropdown', () => {
     it('renders dropdown item for each access level type', () => {
       expect(findAllDropdownItems()).toHaveLength(12);
     });
+
+    it.each`
+      accessLevel             | shouldRenderDeployKeyItems
+      ${ACCESS_LEVELS.PUSH}   | ${true}
+      ${ACCESS_LEVELS.CREATE} | ${true}
+      ${ACCESS_LEVELS.MERGE}  | ${false}
+    `(
+      'conditionally renders deploy keys based on access levels',
+      async ({ accessLevel, shouldRenderDeployKeyItems }) => {
+        createComponent({ accessLevel });
+        await waitForPromises();
+
+        expect(findDeployKeyDropdownItem().exists()).toBe(shouldRenderDeployKeyItems);
+      },
+    );
   });
 
   describe('toggleLabel', () => {
