@@ -351,16 +351,16 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [P
    - In the controller using the `ProductAnalyticsTracking` module and the following format:
 
      ```ruby
-     track_custom_event(*controller_actions, name:, action:, label:, conditions: nil, destinations: [:redis_hll], &block)
+     track_event(*controller_actions, name:, action:, label:, conditions: nil, destinations: [:redis_hll], &block)
      ```
 
      Arguments:
 
      - `controller_actions`: the controller actions to track.
      - `name`: the event name.
+     - `action`: required if destination is `:snowplow. Action name for the triggered event. See [event schema](../snowplow/index.md#event-schema) for more details.
+     - `label`: required if destination is `:snowplow. Label for the triggered event. See [event schema](../snowplow/index.md#event-schema) for more details.
      - `conditions`: optional custom conditions. Uses the same format as Rails callbacks.
-     - `action`: optional action name for the triggered event. See [event schema](../snowplow/index.md#event-schema) for more details.
-     - `label`: optional label for the triggered event. See [event schema](../snowplow/index.md#event-schema) for more details.
      - `destinations`: optional list of destinations. Currently supports `:redis_hll` and `:snowplow`. Default: `:redis_hll`.
      - `&block`: optional block that computes and returns the `custom_id` that we want to track. This overrides the `visitor_id`.
 
@@ -372,7 +372,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [P
        include ProductAnalyticsTracking
 
        skip_before_action :authenticate_user!, only: :show
-       track_custom_event :index, :show,
+       track_event :index, :show,
          name: 'users_visiting_projects',
          action: 'user_perform_visit',
          label: 'redis_hll_counters.users_visiting_project_monthly',

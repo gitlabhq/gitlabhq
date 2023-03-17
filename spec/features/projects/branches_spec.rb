@@ -201,6 +201,12 @@ RSpec.describe 'Branches', feature_category: :projects do
       end
     end
 
+    describe 'Link to branch rules' do
+      it 'does not have possibility to navigate to branch rules', :js do
+        expect(page).not_to have_content(s_("Branches|View branch rules"))
+      end
+    end
+
     context 'on project with 0 branch' do
       let(:project) { create(:project, :public, :empty_repo) }
       let(:repository) { project.repository }
@@ -237,6 +243,17 @@ RSpec.describe 'Branches', feature_category: :projects do
 
         page.within first('.all-branches li') do
           expect(page).not_to have_content 'Merge request'
+        end
+      end
+
+      describe 'Navigate to branch rules from branches page' do
+        it 'shows repository settings page with Branch rules section expanded' do
+          visit project_branches_path(project)
+
+          view_branch_rules
+
+          expect(page).to have_content(
+            _('Define rules for who can push, merge, and the required approvals for each branch.'))
         end
       end
     end
@@ -352,5 +369,12 @@ RSpec.describe 'Branches', feature_category: :projects do
     within '.modal-footer' do
       click_button 'Yes, delete branch'
     end
+  end
+
+  def view_branch_rules
+    page.within('.nav-controls') do
+      click_link s_("Branches|View branch rules")
+    end
+    wait_for_requests
   end
 end

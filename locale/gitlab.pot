@@ -7498,6 +7498,9 @@ msgstr ""
 msgid "Branches|Plese type the following to confirm: %{codeStart}delete%{codeEnd}."
 msgstr ""
 
+msgid "Branches|See all branch-related settings together with branch rules"
+msgstr ""
+
 msgid "Branches|Show active branches"
 msgstr ""
 
@@ -7543,6 +7546,9 @@ msgstr ""
 msgid "Branches|Unable to load branches"
 msgstr ""
 
+msgid "Branches|View branch rules"
+msgstr ""
+
 msgid "Branches|Yes, delete branch"
 msgstr ""
 
@@ -7550,6 +7556,9 @@ msgid "Branches|Yes, delete protected branch"
 msgstr ""
 
 msgid "Branches|You are about to %{strongStart}delete all branches%{strongEnd} that were merged into %{codeStart}%{defaultBranch}%{codeEnd}."
+msgstr ""
+
+msgid "Branches|You can now find an overview of settings for protected branches, merge request approvals, status checks, and security approvals conveniently in one spot."
 msgstr ""
 
 msgid "Branches|You're about to permanently delete the branch %{branchName}."
@@ -38846,6 +38855,9 @@ msgid "SecurityConfiguration|Security testing"
 msgstr ""
 
 msgid "SecurityConfiguration|Security training"
+msgstr ""
+
+msgid "SecurityConfiguration|Something went wrong. Please refresh the page, or try again later."
 msgstr ""
 
 msgid "SecurityConfiguration|The status of the tools only applies to the default branch and is based on the %{linkStart}latest pipeline%{linkEnd}."

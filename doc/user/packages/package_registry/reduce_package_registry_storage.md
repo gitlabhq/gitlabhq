@@ -35,6 +35,9 @@ To delete a package in the UI, from your group or project:
 
 The package is permanently deleted.
 
+If [request forwarding](supported_functionality.md#forwarding-requests) is enabled,
+deleting a package can introduce a [dependency confusion risk](supported_functionality.md#deleting-packages).
+
 ## Delete assets associated with a package
 
 To delete package assets, you must have suitable [permissions](../../permissions.md).

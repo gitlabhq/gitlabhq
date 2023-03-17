@@ -11,7 +11,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   before_action :authorize_read_cycle_analytics!
   before_action :load_value_stream, only: :show
 
-  track_custom_event :show,
+  track_event :show,
     name: 'p_analytics_valuestream',
     action: 'perform_analytics_usage_action',
     label: 'redis_hll_counters.analytics.analytics_total_unique_counts_monthly',

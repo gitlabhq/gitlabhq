@@ -15,6 +15,7 @@ module Users
     REGISTRATION_ENABLED_CALLOUT_ALLOWED_CONTROLLER_PATHS = [/^root/, /^dashboard\S*/, /^admin\S*/].freeze
     WEB_HOOK_DISABLED = 'web_hook_disabled'
     ULTIMATE_FEATURE_REMOVAL_BANNER = 'ultimate_feature_removal_banner'
+    BRANCH_RULES_INFO_CALLOUT = 'branch_rules_info_callout'
 
     def show_gke_cluster_integration_callout?(project)
       active_nav_link?(controller: sidebar_operations_paths) &&
@@ -72,6 +73,10 @@ module Users
 
     def show_pages_menu_callout?
       !user_dismissed?(PAGES_MOVED_CALLOUT)
+    end
+
+    def show_branch_rules_info?
+      !user_dismissed?(BRANCH_RULES_INFO_CALLOUT)
     end
 
     def ultimate_feature_removal_banner_dismissed?(project)

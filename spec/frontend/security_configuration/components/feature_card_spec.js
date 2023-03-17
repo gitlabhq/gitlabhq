@@ -5,6 +5,7 @@ import FeatureCard from '~/security_configuration/components/feature_card.vue';
 import FeatureCardBadge from '~/security_configuration/components/feature_card_badge.vue';
 import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
 import { REPORT_TYPE_SAST } from '~/vue_shared/security_reports/constants';
+import { manageViaMRErrorMessage } from '../constants';
 import { makeFeature } from './utils';
 
 describe('FeatureCard component', () => {
@@ -106,8 +107,8 @@ describe('FeatureCard component', () => {
     });
 
     it('should catch and emit manage-via-mr-error', () => {
-      findManageViaMr().vm.$emit('error', 'There was a manage via MR error');
-      expect(wrapper.emitted('error')).toEqual([['There was a manage via MR error']]);
+      findManageViaMr().vm.$emit('error', manageViaMRErrorMessage);
+      expect(wrapper.emitted('error')).toEqual([[manageViaMRErrorMessage]]);
     });
   });
 

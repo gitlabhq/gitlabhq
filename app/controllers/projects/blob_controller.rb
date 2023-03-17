@@ -37,7 +37,7 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :validate_diff_params, only: :diff
   before_action :set_last_commit_sha, only: [:edit, :update]
 
-  track_custom_event :create, :update,
+  track_event :create, :update,
     name: 'g_edit_by_sfe',
     action: 'perform_sfe_action',
     label: 'usage_activity_by_stage_monthly.create.action_monthly_active_users_sfe_edit',

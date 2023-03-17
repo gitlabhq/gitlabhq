@@ -1408,7 +1408,7 @@ export default class Notes {
    * Load notes ids
    */
   static loadNotesIds(note_ids) {
-    const $notesList = $('.main-notes-list').children();
+    const $notesList = $('.main-notes-list li[id^=note_]');
     for (const $noteItem of $notesList) {
       if (Notes.isNodeTypeElement($noteItem)) {
         const noteId = parseInt($noteItem.id.split('_')[1], 10);

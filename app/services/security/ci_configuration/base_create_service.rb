@@ -19,7 +19,8 @@ module Security
                               target: '_blank',
                               rel: 'noopener noreferrer'
           raise Gitlab::Graphql::Errors::MutationError,
-                _(format('You must %s before using Security features.', docs_link.html_safe)).html_safe
+                Gitlab::Utils::ErrorMessage.to_user_facing(
+                  _(format('You must %s before using Security features.', docs_link.html_safe)).html_safe)
         end
 
         project.repository.add_branch(current_user, branch_name, project.default_branch)

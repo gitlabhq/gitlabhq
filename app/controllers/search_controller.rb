@@ -10,7 +10,7 @@ class SearchController < ApplicationController
   RESCUE_FROM_TIMEOUT_ACTIONS = [:count, :show, :autocomplete, :aggregations].freeze
   CODE_SEARCH_LITERALS = %w[blob: extension: path: filename:].freeze
 
-  track_custom_event :show,
+  track_event :show,
     name: 'i_search_total',
     label: 'redis_hll_counters.search.search_total_unique_counts_monthly',
     action: 'executed',

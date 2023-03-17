@@ -7,7 +7,7 @@ class Admin::CohortsController < Admin::ApplicationController
 
   urgency :low
 
-  track_custom_event :index,
+  track_event :index,
     name: 'i_analytics_cohorts',
     action: 'perform_analytics_usage_action',
     label: 'redis_hll_counters.analytics.analytics_total_unique_counts_monthly',

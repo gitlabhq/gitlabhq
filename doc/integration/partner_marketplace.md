@@ -118,3 +118,43 @@ curl \
   --url "https://customers.staging.gitlab.com/api/v1/marketplace/subscriptions/:external_subscription_id" \
   --header "Authorization: Bearer NHb_VhZhPOnBTSNfBSzmCmt28lLDWb2xtwr_c3DL148"
 ```
+
+## Create a new customer subscription
+
+To create a new customer subscription from a GitLab Partner client application,
+
+- Make an authorized POST request to the
+[`/api/v1/marketplace/subscriptions`](https://customers.staging.gitlab.com/openapi_docs/marketplace#/marketplace/post_api_v1_marketplace_subscriptions)
+endpoint in the Customers Portal with the following parameters in JSON format:
+
+| Parameter                | Type   | Required | Description                                                                                                                                          |
+|--------------------------|--------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `externalSubscriptionId` | string | yes      | ID of the subscription on the GitLab Partner system.                                                                                                 |
+| `tradingPartnerId`       | string | yes      | ID of the GitLab Partner account on the Customers Portal.                                                                                            |
+| `customer`               | object | yes      | Information about the customer. Must include company name. Contact must include `firstName`, `lastName` and `email`. Address must include `country`. |
+| `orderLines`             | array  | yes      | Specifies the product purchased. Must include `quantity` and `productId`.                                                                            |
+
+If the request is successful, the response body includes the newly created subscription number. For an example of a full request body,
+see the [Marketplace interactive API documentation](https://customers.staging.gitlab.com/openapi_docs/marketplace).
+
+If the subscription creation is unsuccessful, the response body includes an error message with details about the cause of the error.
+
+## Check the status of a subscription
+
+To get the status of a given subscription,
+
+- Make an authorized GET request to the
+[`/api/v1/marketplace/subscriptions/{external_subscription_id}`](https://customers.staging.gitlab.com/openapi_docs/marketplace#/marketplace/get_api_v1_marketplace_subscriptions__external_subscription_id_)
+endpoint in the Customers Portal.
+
+The request must include the GitLab partner system ID of the subscription to fetch the status for.
+
+If the request is successful, the response body contains the status of the subscription provision. The status can be:
+
+- Creating
+- Created
+- Failed
+- Provisioned
+
+If the subscription cannot be found using the passed `external_subscription_id`, the response has
+a 404 Not Found status.

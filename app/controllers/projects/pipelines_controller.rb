@@ -29,7 +29,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
 
-  track_custom_event :charts,
+  track_event :charts,
     name: 'p_analytics_pipelines',
     action: 'perform_analytics_usage_action',
     label: 'redis_hll_counters.analytics.analytics_total_unique_counts_monthly',
