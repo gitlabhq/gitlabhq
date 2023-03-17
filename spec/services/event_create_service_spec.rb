@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redis_shared_state do
+RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redis_shared_state, feature_category: :service_ping do
   include SnowplowHelpers
 
   let(:service) { described_class.new }

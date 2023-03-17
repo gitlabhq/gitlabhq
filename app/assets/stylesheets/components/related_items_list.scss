@@ -159,6 +159,11 @@ $item-remove-button-space: 42px;
 
 .mr-ci-status {
   line-height: 0;
+
+  a:focus {
+    @include gl-rounded-full;
+    @include gl-focus;
+  }
 }
 
 @include media-breakpoint-down(xs) {

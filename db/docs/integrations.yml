@@ -47,6 +47,7 @@ classes:
 - Integrations::Shimo
 - Integrations::Slack
 - Integrations::SlackSlashCommands
+- Integrations::SquashTm
 - Integrations::Teamcity
 - Integrations::UnifyCircuit
 - Integrations::WebexTeams

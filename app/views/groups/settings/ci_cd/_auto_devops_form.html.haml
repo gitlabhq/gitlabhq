@@ -13,4 +13,5 @@
             help_text: '%{help_text} %{learn_more_link}'.html_safe % { help_text: help_text, learn_more_link: learn_more_link },
             checkbox_options: { checked: group.auto_devops_enabled? }
 
-      = f.submit _('Save changes'), class: 'gl-mt-5', pajamas_button: true
+      = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { class: 'gl-mt-5' }) do
+        = _('Save changes')

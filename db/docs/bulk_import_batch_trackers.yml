@@ -1,6 +1,7 @@
 ---
 table_name: bulk_import_batch_trackers
-classes: []
+classes:
+- BulkImports::BatchTracker
 feature_categories:
 - importers
 description: Used to store and track the import status of a batch of relations for the migration

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::CreateService do
+RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
   include AfterNextHelpers
 
   let_it_be_with_reload(:project) { create(:project) }

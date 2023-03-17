@@ -9,7 +9,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8092) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `license_scanning_policies`. Disabled by default.
 
-License Approval Policies allow you to specify multiple types of criteria that define when approval is required before a merge request can be merged in. The following video provides an overview of these policies.
+License Approval Policies allow you to specify multiple types of criteria that define when approval is required before a merge request can be merged in.
+
+NOTE:
+License Approval Policies are applicable only to [protected](../project/protected_branches.md) target branches.
+
+The following video provides an overview of these policies.
 
 <div class="video-fallback">
   See the video: <a href="https://www.youtube.com/watch?v=34qBQ9t8qO8">Overview of GitLab License Approval Policies</a>.

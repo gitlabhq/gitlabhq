@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RepositoryArchiveCleanUpService do
+RSpec.describe RepositoryArchiveCleanUpService, feature_category: :source_code_management do
   subject(:service) { described_class.new }
 
   describe '#execute (new archive locations)' do

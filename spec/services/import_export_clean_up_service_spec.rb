@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ImportExportCleanUpService do
+RSpec.describe ImportExportCleanUpService, feature_category: :importers do
   describe '#execute' do
     let(:service) { described_class.new }
 

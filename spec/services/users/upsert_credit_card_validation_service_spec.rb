@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::UpsertCreditCardValidationService do
+RSpec.describe Users::UpsertCreditCardValidationService, feature_category: :user_profile do
   let_it_be(:user) { create(:user, requires_credit_card_verification: true) }
 
   let(:user_id) { user.id }

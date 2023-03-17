@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkPushEventPayloadService do
+RSpec.describe BulkPushEventPayloadService, feature_category: :source_code_management do
   let(:event) { create(:push_event) }
 
   let(:push_data) do

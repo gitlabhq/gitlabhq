@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WebHooks::DestroyService do
+RSpec.describe WebHooks::DestroyService, feature_category: :webhooks do
   let_it_be(:user) { create(:user) }
 
   subject { described_class.new(user) }

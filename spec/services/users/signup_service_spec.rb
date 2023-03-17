@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::SignupService do
+RSpec.describe Users::SignupService, feature_category: :system_access do
   let(:user) { create(:user, setup_for_company: true) }
 
   describe '#execute' do

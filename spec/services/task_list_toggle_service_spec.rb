@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TaskListToggleService do
+RSpec.describe TaskListToggleService, feature_category: :team_planning do
   let(:markdown) do
     <<-EOT.strip_heredoc
       * [ ] Task 1

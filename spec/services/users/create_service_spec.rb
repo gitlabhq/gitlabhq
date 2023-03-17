@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::CreateService do
+RSpec.describe Users::CreateService, feature_category: :user_management do
   describe '#execute' do
     let(:password) { User.random_password }
     let(:admin_user) { create(:admin) }

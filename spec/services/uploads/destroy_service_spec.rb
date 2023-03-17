@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Uploads::DestroyService do
+RSpec.describe Uploads::DestroyService, feature_category: :shared do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:upload) { create(:upload, :issuable_upload, model: project) }

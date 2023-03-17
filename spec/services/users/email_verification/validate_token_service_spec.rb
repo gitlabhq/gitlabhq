@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::EmailVerification::ValidateTokenService, :clean_gitlab_redis_rate_limiting do
+RSpec.describe Users::EmailVerification::ValidateTokenService, :clean_gitlab_redis_rate_limiting, feature_category: :system_access do
   using RSpec::Parameterized::TableSyntax
 
   let(:service) { described_class.new(attr: attr, user: user, token: token) }

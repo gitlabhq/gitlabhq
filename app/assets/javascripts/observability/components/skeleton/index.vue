@@ -8,10 +8,12 @@ import {
   OBSERVABILITY_ROUTES,
   TIMEOUT_ERROR_LABEL,
   TIMEOUT_ERROR_MESSAGE,
+  SKELETON_VARIANT_EMBED,
 } from '../../constants';
 import DashboardsSkeleton from './dashboards.vue';
 import ExploreSkeleton from './explore.vue';
 import ManageSkeleton from './manage.vue';
+import EmbedSkeleton from './embed.vue';
 
 export default {
   components: {
@@ -19,11 +21,13 @@ export default {
     DashboardsSkeleton,
     ExploreSkeleton,
     ManageSkeleton,
+    EmbedSkeleton,
     GlAlert,
   },
   SKELETON_VARIANTS_BY_ROUTE,
   SKELETON_STATE,
   OBSERVABILITY_ROUTES,
+  SKELETON_VARIANT_EMBED,
   i18n: {
     TIMEOUT_ERROR_LABEL,
     TIMEOUT_ERROR_MESSAGE,
@@ -102,6 +106,7 @@ export default {
         <dashboards-skeleton v-if="isSkeletonShown($options.OBSERVABILITY_ROUTES.DASHBOARDS)" />
         <explore-skeleton v-else-if="isSkeletonShown($options.OBSERVABILITY_ROUTES.EXPLORE)" />
         <manage-skeleton v-else-if="isSkeletonShown($options.OBSERVABILITY_ROUTES.MANAGE)" />
+        <embed-skeleton v-else-if="variant === $options.SKELETON_VARIANT_EMBED" />
 
         <gl-skeleton-loader v-else>
           <rect y="2" width="10" height="8" />
@@ -122,12 +127,14 @@ export default {
       {{ $options.i18n.TIMEOUT_ERROR_MESSAGE }}
     </gl-alert>
 
-    <div
-      v-show="state === $options.SKELETON_STATE.HIDDEN"
-      data-testid="observability-wrapper"
-      class="gl-flex-grow-1 gl-display-flex gl-flex-direction-column gl-flex-align-items-stretch"
-    >
-      <slot></slot>
-    </div>
+    <transition>
+      <div
+        v-show="state === $options.SKELETON_STATE.HIDDEN"
+        data-testid="observability-wrapper"
+        class="gl-flex-grow-1 gl-display-flex gl-flex-direction-column gl-flex-align-items-stretch"
+      >
+        <slot></slot>
+      </div>
+    </transition>
   </div>
 </template>

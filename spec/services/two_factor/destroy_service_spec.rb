@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TwoFactor::DestroyService do
+RSpec.describe TwoFactor::DestroyService, feature_category: :system_access do
   let_it_be(:current_user) { create(:user) }
 
   subject { described_class.new(current_user, user: user).execute }

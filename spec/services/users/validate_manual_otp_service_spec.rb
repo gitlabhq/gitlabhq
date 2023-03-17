@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::ValidateManualOtpService, feature_category: :system_access do
+RSpec.describe Users::ValidateManualOtpService, feature_category: :user_profile do
   let_it_be(:user) { create(:user) }
 
   let(:otp_code) { 42 }

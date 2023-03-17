@@ -147,14 +147,14 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
         selected_group.add_owner(user)
       end
 
-      it 'can successfully transfer the group', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/384966' do
+      it 'can successfully transfer the group' do
         visit edit_group_path(selected_group)
 
         page.within('[data-testid="transfer-locations-dropdown"]') do
           click_button _('Select parent group')
           fill_in _('Search'), with: target_group_name
           wait_for_requests
-          click_button target_group_name
+          click_button(target_group_name || 'No parent group')
         end
 
         click_button s_('GroupSettings|Transfer group')
@@ -166,7 +166,10 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
           click_button 'Confirm'
         end
 
-        expect(page).to have_text "Group '#{selected_group.name}' was successfully transferred."
+        within('[data-testid="breadcrumb-links"]') do
+          expect(page).to have_content(target_group_name) if target_group_name
+          expect(page).to have_content(selected_group.name)
+        end
         expect(current_url).to include(selected_group.reload.full_path)
       end
     end
@@ -175,7 +178,7 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
       let(:selected_group) { create(:group, path: 'foo-subgroup', parent: group) }
 
       context 'when transfering to no parent group' do
-        let(:target_group_name) { 'No parent group' }
+        let(:target_group_name) { nil }
 
         it_behaves_like 'can transfer the group'
       end

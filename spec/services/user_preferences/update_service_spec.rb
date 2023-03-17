@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UserPreferences::UpdateService do
+RSpec.describe UserPreferences::UpdateService, feature_category: :user_profile do
   let(:user) { create(:user) }
   let(:params) { { view_diffs_file_by_file: false } }
 

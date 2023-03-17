@@ -1,6 +1,7 @@
 ---
 table_name: bulk_import_export_batches
-classes: []
+classes:
+- BulkImports::ExportBatch
 feature_categories:
 - importers
 description: Used to track the generation status of export batch files for groups

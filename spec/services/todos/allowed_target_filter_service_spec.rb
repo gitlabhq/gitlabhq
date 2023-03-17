@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Todos::AllowedTargetFilterService do
+RSpec.describe Todos::AllowedTargetFilterService, feature_category: :team_planning do
   include DesignManagementTestHelpers
 
   let_it_be(:authorized_group) { create(:group, :private) }

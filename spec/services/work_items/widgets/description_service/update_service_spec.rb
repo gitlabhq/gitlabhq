@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Widgets::DescriptionService::UpdateService do
+RSpec.describe WorkItems::Widgets::DescriptionService::UpdateService, feature_category: :portfolio_management do
   let_it_be(:random_user) { create(:user) }
   let_it_be(:author) { create(:user) }
   let_it_be(:guest) { create(:user) }

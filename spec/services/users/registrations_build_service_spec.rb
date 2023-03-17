@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::RegistrationsBuildService do
+RSpec.describe Users::RegistrationsBuildService, feature_category: :system_access do
   describe '#execute' do
     let(:base_params) { build_stubbed(:user).slice(:first_name, :last_name, :username, :email, :password) }
     let(:skip_param) { {} }

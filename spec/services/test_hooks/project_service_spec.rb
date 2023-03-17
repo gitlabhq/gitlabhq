@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TestHooks::ProjectService do
+RSpec.describe TestHooks::ProjectService, feature_category: :code_testing do
   include AfterNextHelpers
 
   let(:current_user) { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SystemHooksService do
+RSpec.describe SystemHooksService, feature_category: :webhooks do
   describe '#execute_hooks_for' do
     let_it_be(:user) { create(:user) }
     let_it_be(:group) { create(:group) }

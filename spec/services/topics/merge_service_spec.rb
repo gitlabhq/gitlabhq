@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Topics::MergeService do
+RSpec.describe Topics::MergeService, feature_category: :shared do
   let_it_be(:source_topic) { create(:topic, name: 'source_topic') }
   let_it_be(:target_topic) { create(:topic, name: 'target_topic') }
   let_it_be(:project_1) { create(:project, :public, topic_list: source_topic.name) }

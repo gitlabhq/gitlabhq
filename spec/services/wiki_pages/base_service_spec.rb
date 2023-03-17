@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WikiPages::BaseService do
+RSpec.describe WikiPages::BaseService, feature_category: :wiki do
   let(:project) { double('project') }
   let(:user) { double('user') }
 

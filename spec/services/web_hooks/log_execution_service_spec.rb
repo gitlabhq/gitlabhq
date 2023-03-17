@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WebHooks::LogExecutionService do
+RSpec.describe WebHooks::LogExecutionService, feature_category: :webhooks do
   include ExclusiveLeaseHelpers
   using RSpec::Parameterized::TableSyntax
 

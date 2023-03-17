@@ -10,8 +10,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You can use scan result policies to take action based on scan results. For example, one type of scan
 result policy is a security approval policy that allows approval to be required based on the
-findings of one or more security scan jobs. Scan result policies are evaluated after a CI scanning
-job is fully executed. The following video gives you an overview of GitLab scan result policies:
+findings of one or more security scan jobs. Scan result policies are evaluated after a CI scanning job is fully executed.
+
+NOTE:
+Scan result policies are applicable only to [protected](../../project/protected_branches.md) target branches.
+
+The following video gives you an overview of GitLab scan result policies:
 
 <div class="video-fallback">
   See the video: <a href="https://youtu.be/w5I9gcUgr9U">Overview of GitLab Scan Result Policies</a>.

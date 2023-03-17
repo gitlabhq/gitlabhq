@@ -96,8 +96,12 @@ export default {
         label="Fetching related merge requests"
         class="gl-py-4"
       />
-      <ul v-else class="content-list related-items-list">
-        <li v-for="mr in mergeRequests" :key="mr.id" class="list-item gl-m-0! gl-px-4! gl-py-3!">
+      <ul v-else class="content-list related-items-list gl-px-4! gl-py-3!">
+        <li
+          v-for="mr in mergeRequests"
+          :key="mr.id"
+          class="list-item gl-m-0! gl-p-0! gl-border-b-0!"
+        >
           <related-issuable-item
             :id-key="mr.id"
             :display-reference="mr.reference"

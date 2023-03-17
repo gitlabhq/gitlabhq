@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CompareService do
+RSpec.describe CompareService, feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:service) { described_class.new(project, 'feature') }

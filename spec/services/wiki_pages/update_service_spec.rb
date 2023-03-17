@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WikiPages::UpdateService do
+RSpec.describe WikiPages::UpdateService, feature_category: :wiki do
   it_behaves_like 'WikiPages::UpdateService#execute', :project
 
   describe '#execute' do

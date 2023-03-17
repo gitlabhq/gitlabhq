@@ -3,7 +3,7 @@
 RSpec.shared_examples 'embeds observability' do
   it 'renders iframe in description' do
     page.within('.description') do
-      expect(page.html).to include(expected)
+      expect_observability_iframe(page.html)
     end
   end
 
@@ -18,7 +18,7 @@ RSpec.shared_examples 'embeds observability' do
     wait_for_requests
 
     page.within('.note-text') do
-      expect(page.html).to include(expected)
+      expect_observability_iframe(page.html)
     end
   end
 end
@@ -26,8 +26,7 @@ end
 RSpec.shared_examples 'does not embed observability' do
   it 'does not render iframe in description' do
     page.within('.description') do
-      expect(page.html).not_to include(expected)
-      expect(page.html).to include(observable_url)
+      expect_observability_iframe(page.html, to_be_nil: true)
     end
   end
 
@@ -42,8 +41,21 @@ RSpec.shared_examples 'does not embed observability' do
     wait_for_requests
 
     page.within('.note-text') do
-      expect(page.html).not_to include(expected)
-      expect(page.html).to include(observable_url)
+      expect_observability_iframe(page.html, to_be_nil: true)
     end
+  end
+end
+
+def expect_observability_iframe(html, to_be_nil: false)
+  iframe = Nokogiri::HTML.parse(html).at_css('#observability-ui-iframe')
+
+  expect(html).to include(observable_url)
+
+  if to_be_nil
+    expect(iframe).to be_nil
+  else
+    expect(iframe).not_to be_nil
+    iframe_src = "#{expected_observable_url}&theme=light&username=#{user.username}&kiosk=inline-embed"
+    expect(iframe.attributes['src'].value).to eq(iframe_src)
   end
 end

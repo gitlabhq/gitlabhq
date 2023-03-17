@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Widgets::MilestoneService::UpdateService do
+RSpec.describe WorkItems::Widgets::MilestoneService::UpdateService, feature_category: :portfolio_management do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :private, group: group) }
   let_it_be(:project_milestone) { create(:milestone, project: project) }

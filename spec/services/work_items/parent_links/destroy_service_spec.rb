@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::ParentLinks::DestroyService do
+RSpec.describe WorkItems::ParentLinks::DestroyService, feature_category: :team_planning do
   describe '#execute' do
     let_it_be(:reporter) { create(:user) }
     let_it_be(:guest) { create(:user) }

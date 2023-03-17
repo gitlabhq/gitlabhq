@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::DismissCalloutService do
+RSpec.describe Users::DismissCalloutService, feature_category: :user_management do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
 
