@@ -8,11 +8,13 @@ class PipelineDetailsEntity < Ci::PipelineEntity
   end
 
   expose :details do
-    expose :manual_actions, if: ->(pipeline, _) { Feature.disabled?(:lazy_load_manual_actions, pipeline.project) },
-      using: BuildActionEntity
-    expose :scheduled_actions, using: BuildActionEntity
+    expose :manual_actions, unless: proc { options[:disable_manual_and_scheduled_actions] }, using: BuildActionEntity
+    expose :scheduled_actions, unless: proc { options[:disable_manual_and_scheduled_actions] }, using: BuildActionEntity
     expose :has_manual_actions do |pipeline|
       pipeline.manual_actions.any?
+    end
+    expose :has_scheduled_actions do |pipeline|
+      pipeline.scheduled_actions.any?
     end
   end
 

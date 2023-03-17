@@ -25467,7 +25467,7 @@ msgstr ""
 msgid "Leave edit mode? All unsaved changes will be lost."
 msgstr ""
 
-msgid "Leave feadback."
+msgid "Leave feedback."
 msgstr ""
 
 msgid "Leave group"
@@ -28326,16 +28326,31 @@ msgstr ""
 msgid "Navigation|Explore"
 msgstr ""
 
-msgid "Navigation|FREQUENT GROUPS"
+msgid "Navigation|Frequent groups"
 msgstr ""
 
-msgid "Navigation|FREQUENT PROJECTS"
+msgid "Navigation|Frequent projects"
+msgstr ""
+
+msgid "Navigation|Groups"
 msgstr ""
 
 msgid "Navigation|Groups you visit often will appear here."
 msgstr ""
 
+msgid "Navigation|No group matches found"
+msgstr ""
+
+msgid "Navigation|No project matches found"
+msgstr ""
+
+msgid "Navigation|Projects"
+msgstr ""
+
 msgid "Navigation|Projects you visit often will appear here."
+msgstr ""
+
+msgid "Navigation|Search for projects or groups"
 msgstr ""
 
 msgid "Navigation|Switch to..."
@@ -39854,9 +39869,6 @@ msgid "Select timezone"
 msgstr ""
 
 msgid "Select type"
-msgstr ""
-
-msgid "Selected"
 msgstr ""
 
 msgid "Selected commits"

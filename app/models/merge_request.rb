@@ -92,7 +92,7 @@ class MergeRequest < ApplicationRecord
     fallback || super || MergeRequestDiff.new(merge_request_id: id)
   end
 
-  belongs_to :head_pipeline, foreign_key: "head_pipeline_id", class_name: "Ci::Pipeline"
+  belongs_to :head_pipeline, class_name: "Ci::Pipeline", inverse_of: :merge_requests_as_head_pipeline
 
   has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 

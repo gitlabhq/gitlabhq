@@ -30,9 +30,14 @@ describe('FrequentProjectsList component', () => {
 
   it('passes the correct props to the frequent items list', () => {
     expect(findFrequentItemsList().props()).toEqual({
-      title: s__('Navigation|FREQUENT PROJECTS'),
+      title: s__('Navigation|Frequent projects'),
+      searchTitle: s__('Navigation|Projects'),
       storageKey,
       maxItems: MAX_FREQUENT_PROJECTS_COUNT,
+      pristineText: s__('Navigation|Projects you visit often will appear here.'),
+      noResultsText: s__('Navigation|No project matches found'),
+      isSearch: false,
+      searchResults: [],
     });
   });
 
@@ -42,9 +47,5 @@ describe('FrequentProjectsList component', () => {
       link: viewAllLink,
       title: s__('Navigation|View all projects'),
     });
-  });
-
-  it('renders the empty text', () => {
-    expect(wrapper.text()).toBe(s__('Navigation|Projects you visit often will appear here.'));
   });
 });

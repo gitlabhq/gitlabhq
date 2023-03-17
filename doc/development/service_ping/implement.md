@@ -330,7 +330,6 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [P
 
    ```yaml
    - name: users_creating_epics
-     redis_slot: users
      aggregation: weekly
    ```
 
@@ -338,18 +337,12 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [P
 
    - `name`: unique event name.
 
-     Name format for Redis HLL events `<name>_<redis_slot>`.
+     Name format for Redis HLL events `{hll_counters}_<name>`
 
      [See Metric name](metrics_dictionary.md#metric-name) for a complete guide on metric naming suggestion.
 
      Example names: `users_creating_epics`, `users_triggering_security_scans`.
 
-   - `redis_slot`: optional Redis slot. Default value: event name. Only event data that is stored in the same slot
-     can be aggregated. Ensure keys are in the same slot. For example:
-     `users_creating_epics` with `redis_slot: 'users'` builds Redis key
-     `{users}_creating_epics-2020-34`. If `redis_slot` is not defined the Redis key will
-     be `{users_creating_epics}-2020-34`.
-     Recommended slots to use are: `users`, `projects`. This is the value we count.
    - `aggregation`: may be set to a `:daily` or `:weekly` key. Defines how counting data is stored in Redis.
      Aggregation on a `daily` basis does not pull more fine grained data.
 
@@ -823,7 +816,6 @@ you must fulfill the following requirements:
 
 1. All events listed at `events` attribute must come from
    [`known_events/*.yml`](#known-events-are-added-automatically-in-service-data-payload) files.
-1. All events listed at `events` attribute must have the same `redis_slot` attribute.
 1. All events listed at `events` attribute must have the same `aggregation` attribute.
 1. `time_frame` does not include `all` value, which is unavailable for Redis sourced aggregated metrics.
 

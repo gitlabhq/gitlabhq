@@ -634,8 +634,7 @@ describe('~/todos/app.vue', () => {
   });
 
   afterEach(() => {
-    // IMPORTANT: Clean up the component instance and axios mock adapter
-    wrapper.destroy();
+    // IMPORTANT: Clean up the axios mock adapter
     mock.restore();
   });
 

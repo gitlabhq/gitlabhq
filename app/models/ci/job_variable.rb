@@ -7,7 +7,7 @@ module Ci
     include Ci::RawVariable
     include BulkInsertSafe
 
-    belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
+    belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id, inverse_of: :job_variables
 
     partitionable scope: :job
 

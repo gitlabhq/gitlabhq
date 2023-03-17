@@ -272,6 +272,10 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
   isolation: isolate;
 }
 
+.gl-text-transform-uppercase {
+  text-transform: uppercase;
+}
+
 /*
  * The below style will be moved to @gitlab/ui by
  * https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2177

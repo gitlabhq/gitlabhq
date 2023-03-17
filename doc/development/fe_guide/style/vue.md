@@ -471,7 +471,8 @@ Creating a global, mutable wrapper provides a number of advantages, including th
 
 - Use a `beforeEach` block to mount the component (see
   [the `createComponent` factory](#the-createcomponent-factory) for more information).
-- Use an `afterEach` block to destroy the component, for example, `wrapper.destroy()`.
+- Automatically destroy the component after the test is run with [`enableAutoDestroy`](https://v1.test-utils.vuejs.org/api/#enableautodestroy-hook)
+  set in [`shared_test_setup.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/d0bdc8370ef17891fd718a4578e41fef97cf065d/spec/frontend/__helpers__/shared_test_setup.js#L20).
 
 #### The `createComponent` factory
 

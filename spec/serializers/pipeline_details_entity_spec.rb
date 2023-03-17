@@ -32,7 +32,7 @@ RSpec.describe PipelineDetailsEntity, feature_category: :continuous_integration 
         expect(subject[:details])
           .to include :duration, :finished_at
         expect(subject[:details])
-          .to include :stages, :has_manual_actions, :scheduled_actions
+          .to include :stages, :manual_actions, :has_manual_actions, :scheduled_actions, :has_scheduled_actions
         expect(subject[:details][:status]).to include :icon, :favicon, :text, :label
       end
 
@@ -44,16 +44,15 @@ RSpec.describe PipelineDetailsEntity, feature_category: :continuous_integration 
       end
     end
 
-    context 'when lazy_load_manual_actions feature flag is disabled' do
+    context 'when disable_manual_and_scheduled_actions is true' do
       let(:pipeline) { create(:ci_pipeline, status: :success) }
-
-      before do
-        stub_feature_flags(lazy_load_manual_actions: false)
+      let(:subject) do
+        described_class.represent(pipeline, request: request, disable_manual_and_scheduled_actions: true).as_json
       end
 
-      it 'contains manual_actions' do
-        expect(subject[:details]).to include :manual_actions
-        expect(subject[:details]).to include :has_manual_actions
+      it 'does not contain manual and scheduled actions' do
+        expect(subject[:details])
+          .not_to include :manual_actions, :scheduled_actions
       end
     end
 

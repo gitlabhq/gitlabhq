@@ -5,13 +5,12 @@ module Gitlab
     module HLLRedisCounter
       DEFAULT_WEEKLY_KEY_EXPIRY_LENGTH = 6.weeks
       DEFAULT_DAILY_KEY_EXPIRY_LENGTH = 29.days
-      DEFAULT_REDIS_SLOT = ''
+      REDIS_SLOT = 'hll_counters'
 
       EventError = Class.new(StandardError)
       UnknownEvent = Class.new(EventError)
       UnknownAggregation = Class.new(EventError)
       AggregationMismatch = Class.new(EventError)
-      SlotMismatch = Class.new(EventError)
       InvalidContext = Class.new(EventError)
 
       KNOWN_EVENTS_PATH = File.expand_path('known_events/*.yml', __dir__)
@@ -25,7 +24,6 @@ module Gitlab
       # Event example:
       #
       # - name: g_compliance_dashboard # Unique event name
-      #   redis_slot: compliance       # Optional slot name, if not defined it will use name as a slot, used for totals
       #   aggregation: daily           # Aggregation level, keys are stored daily or weekly
       #
       # Usage:
@@ -66,7 +64,6 @@ module Gitlab
         # context - Event context, plan level tracking. Available if set when tracking.
         def unique_events(event_names:, start_date:, end_date:, context: '')
           count_unique_events(event_names: event_names, start_date: start_date, end_date: end_date, context: context) do |events|
-            raise SlotMismatch, events unless events_in_same_slot?(events)
             raise AggregationMismatch, events unless events_same_aggregation?(events)
             raise InvalidContext if context.present? && !context.in?(valid_context_list)
           end
@@ -82,7 +79,6 @@ module Gitlab
 
         def calculate_events_union(event_names:, start_date:, end_date:)
           count_unique_events(event_names: event_names, start_date: start_date, end_date: end_date) do |events|
-            raise SlotMismatch, events unless events_in_same_slot?(events)
             raise AggregationMismatch, events unless events_same_aggregation?(events)
           end
         end
@@ -146,15 +142,6 @@ module Gitlab
           known_events.map { |event| event[:name] }
         end
 
-        def events_in_same_slot?(events)
-          # if we check one event then redis_slot is only one to check
-          return false if events.empty?
-          return true if events.size == 1
-
-          slot = events.first[:redis_slot]
-          events.all? { |event| event[:redis_slot].present? && event[:redis_slot] == slot }
-        end
-
         def events_same_aggregation?(events)
           aggregation = events.first[:aggregation]
           events.all? { |event| event[:aggregation] == aggregation }
@@ -172,28 +159,15 @@ module Gitlab
           known_events.select { |event| event_names.include?(event[:name]) }
         end
 
-        def redis_slot(event)
-          event[:redis_slot] || DEFAULT_REDIS_SLOT
-        end
-
         # Compose the key in order to store events daily or weekly
         def redis_key(event, time, context = '')
           raise UnknownEvent, "Unknown event #{event[:name]}" unless known_events_names.include?(event[:name].to_s)
           raise UnknownAggregation, "Use :daily or :weekly aggregation" unless ALLOWED_AGGREGATIONS.include?(event[:aggregation].to_sym)
 
-          key = apply_slot(event)
+          key = "{#{REDIS_SLOT}}_#{event[:name]}"
           key = apply_time_aggregation(key, time, event)
           key = "#{context}_#{key}" if context.present?
           key
-        end
-
-        def apply_slot(event)
-          slot = redis_slot(event)
-          if slot.present?
-            event[:name].to_s.gsub(slot, "{#{slot}}")
-          else
-            "{#{event[:name]}}"
-          end
         end
 
         def apply_time_aggregation(key, time, event)

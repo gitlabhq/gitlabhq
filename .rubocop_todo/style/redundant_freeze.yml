@@ -78,7 +78,6 @@ Style/RedundantFreeze:
     - 'ee/lib/ee/gitlab/path_regex.rb'
     - 'ee/lib/ee/gitlab/web_hooks/rate_limiter.rb'
     - 'ee/lib/elastic/latest/git_class_proxy.rb'
-    - 'ee/lib/gitlab/code_owners/file.rb'
     - 'ee/lib/gitlab/code_owners/reference_extractor.rb'
     - 'ee/lib/gitlab/status_page/filter/image_filter.rb'
     - 'ee/lib/system_check/geo/authorized_keys_check.rb'

@@ -14,6 +14,10 @@ module Packages
       def execute
         raise ExtractionError, 'invalid package file' unless valid_package_file?
 
+        if file_type == :unsupported
+          raise ExtractionError, "unsupported file extension for file #{package_file.file_name}"
+        end
+
         extract_metadata
       end
 
@@ -36,8 +40,8 @@ module Packages
       end
 
       def file_type_source
-        # https://manpages.debian.org/buster/dpkg-dev/dpkg-source.1.en.html
-        %i[gzip bzip2 lzma xz].each do |format|
+        # https://manpages.debian.org/buster/dpkg-dev/dpkg-source.1.en.html#Format:_3.0_(quilt)
+        %i[gz bz2 lzma xz].each do |format|
           return :source if package_file.file_name.end_with?(".tar.#{format}")
         end
 
@@ -45,10 +49,9 @@ module Packages
       end
 
       def file_type
-        strong_memoize(:file_type) do
-          file_type_basic || file_type_source || :unknown
-        end
+        file_type_basic || file_type_source || :unsupported
       end
+      strong_memoize_attr :file_type
 
       def file_type_debian?
         file_type == :deb || file_type == :udeb || file_type == :ddeb
@@ -59,18 +62,17 @@ module Packages
       end
 
       def fields
-        strong_memoize(:fields) do
-          if file_type_debian?
-            package_file.file.use_open_file(unlink_early: false) do |file|
-              ::Packages::Debian::ExtractDebMetadataService.new(file.file_path).execute
-            end
-          elsif file_type_meta?
-            package_file.file.use_open_file do |file|
-              ::Packages::Debian::ParseDebian822Service.new(file.read).execute.each_value.first
-            end
+        if file_type_debian?
+          package_file.file.use_open_file(unlink_early: false) do |file|
+            ::Packages::Debian::ExtractDebMetadataService.new(file.file_path).execute
+          end
+        elsif file_type_meta?
+          package_file.file.use_open_file do |file|
+            ::Packages::Debian::ParseDebian822Service.new(file.read).execute.each_value.first
           end
         end
       end
+      strong_memoize_attr :fields
 
       def extract_metadata
         architecture = fields['Architecture'] if file_type_debian?

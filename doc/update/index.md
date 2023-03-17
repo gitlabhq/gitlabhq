@@ -1451,24 +1451,19 @@ for more information.
 
 ### User profile data loss bug in 15.9.x
 
-There is a database migration bug in 15.9 that can cause data to be lost from the user profile fields `linkedin`, `twitter`, `skype`, `website_url`, `location`, and `organization`.
+There is a database migration bug in 15.9.0, 15.9.1, and 15.9.2 that can cause data loss from the user profile fields `linkedin`, `twitter`, `skype`, `website_url`, `location`, and `organization`.
 
-This bug will be fixed in a future patch release of GitLab 15.9. Until then:
+This bug is fixed in patch releases 15.9.3 and later.
 
-- All 15.9.x patch levels are affected.
-- The GitLab upgrade path requires an intermediate release between 15.4 and 15.9.
+The following upgrade path also works around the bug:
 
-If your organization uses these fields either wait for the bug fix to be released, or:
-
-1. Upgrade to GitLab 15.6.x, 15.7.x, or 15.8.x (the latest patch levels are recommended at all times).
+1. Upgrade to GitLab 15.6.x, 15.7.x, or 15.8.x.
 1. [Ensure batched background migrations](background_migrations.md#batched-background-migrations) are complete.
-1. Upgrade to an affected GitLab 15.9 patch release.
+1. Upgrade to an earlier GitLab 15.9 patch release that doesn't have the bug fix.
 
-Organizations that are already running earlier patch levels of GitLab 15.6, 15.7, or 15.8 can proceed with steps 2 and 3.
+It is not then required to upgrade to 15.9.3 or higher for this issue.
 
-If you have already upgraded to GitLab 15.9 following these instructions, your instance will not be affected by this bug, and you don't need to apply the 15.9.x patch when it is released.
-
-See [issue 393216](https://gitlab.com/gitlab-org/gitlab/-/issues/393216) for more information.
+[Read the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/393216) for more information.
 
 ### Gitaly: Omnibus GitLab configuration structure change
 

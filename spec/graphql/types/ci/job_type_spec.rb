@@ -52,6 +52,9 @@ RSpec.describe Types::Ci::JobType, feature_category: :continuous_integration do
       triggered
       userPermissions
       webPath
+      playPath
+      canPlayJob
+      scheduled
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

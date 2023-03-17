@@ -198,7 +198,7 @@ gem 'asciidoctor', '~> 2.0.18'
 gem 'asciidoctor-include-ext', '~> 0.4.0', require: false
 gem 'asciidoctor-plantuml', '~> 0.0.16'
 gem 'asciidoctor-kroki', '~> 0.8.0', require: false
-gem 'rouge', '~> 3.30.0'
+gem 'rouge', '~> 4.1.0'
 gem 'truncato', '~> 0.7.12'
 gem 'nokogiri', '~> 1.14.2'
 

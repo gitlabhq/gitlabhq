@@ -77,6 +77,37 @@ Administrators can set a default branch protection level in the
 
 ## Configure a protected branch
 
+Configure protected branches for all projects in a group, or just for a project.
+
+### For all projects in a group
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 behind a feature flag, disabled by default.
+
+Group owners can create protected branches for a group. These settings are inherited by all projects in the group and can't be overridden by project settings.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md)
+named `group_protected_branches`. On GitLab.com, this feature is not available.
+
+Prerequisite:
+
+- You must have the Owner role in the group.
+
+To protect a branch for all the projects in a group:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Protected branches**.
+1. In the **Branch** text box, type the branch name or a wildcard.
+1. From the **Allowed to merge** list, select a role, group, or user that can merge into this branch.
+1. From the **Allowed to push** list, select a role, group, or user that can push to this branch.
+1. Select **Protect**.
+
+The protected branch is added to the list of protected branches.
+
+### For a project
+
 Prerequisite:
 
 - You must have at least the Maintainer role.

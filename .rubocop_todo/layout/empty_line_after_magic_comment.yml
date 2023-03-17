@@ -812,7 +812,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/services/packages/create_package_file_service_spec.rb'
     - 'spec/services/packages/debian/extract_changes_metadata_service_spec.rb'
     - 'spec/services/packages/debian/extract_deb_metadata_service_spec.rb'
-    - 'spec/services/packages/debian/extract_metadata_service_spec.rb'
     - 'spec/services/packages/debian/parse_debian822_service_spec.rb'
     - 'spec/services/packages/debian/process_changes_service_spec.rb'
     - 'spec/services/packages/debian/process_package_file_service_spec.rb'

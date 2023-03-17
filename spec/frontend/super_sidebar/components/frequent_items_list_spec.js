@@ -6,6 +6,9 @@ import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { cachedFrequentProjects } from '../mock_data';
 
 const title = s__('Navigation|FREQUENT PROJECTS');
+const searchTitle = 'PROJECTS';
+const pristineText = s__('Navigation|Projects you visit often will appear here.');
+const noResultsText = s__('Navigation|No project matches found');
 const storageKey = 'storageKey';
 const maxItems = 5;
 const mockItems = JSON.parse(cachedFrequentProjects);
@@ -20,15 +23,16 @@ describe('FrequentItemsList component', () => {
   const findNavItems = () => wrapper.findAllComponents(NavItem);
   const findEmptyText = () => wrapper.findByTestId('empty-text');
 
-  const createWrapper = () => {
+  const createWrapper = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(FrequentItemsList, {
       propsData: {
         title,
+        searchTitle,
+        pristineText,
+        noResultsText,
         storageKey,
         maxItems,
-      },
-      slots: {
-        empty: '<div data-testid="empty-text" />',
+        ...props,
       },
     });
   };
@@ -42,8 +46,9 @@ describe('FrequentItemsList component', () => {
       expect(findListTitle().text()).toBe(title);
     });
 
-    it('renders the empty text slot', () => {
+    it('renders the empty text', () => {
       expect(findEmptyText().exists()).toBe(true);
+      expect(findEmptyText().text()).toBe(pristineText);
     });
   });
 
@@ -76,6 +81,35 @@ describe('FrequentItemsList component', () => {
 
     it('does not render the empty text slot', () => {
       expect(findEmptyText().exists()).toBe(false);
+    });
+  });
+
+  describe('when displaying search results', () => {
+    beforeEach(() => {
+      window.localStorage.setItem(storageKey, cachedFrequentProjects);
+    });
+
+    it('render the search title', () => {
+      const searchResults = [{ id: 1 }];
+      createWrapper({ props: { isSearch: true, searchResults } });
+
+      expect(findListTitle().text()).toBe(searchTitle);
+    });
+
+    it('shows search results instead of cached items', () => {
+      const searchResults = [{ id: 1 }];
+      createWrapper({ props: { isSearch: true, searchResults } });
+      const firstNavItem = findNavItems().at(0);
+
+      expect(firstNavItem.props('item')).toEqual(searchResults[0]);
+    });
+
+    it('shows the no results text if search results are empty', () => {
+      const searchResults = [];
+      createWrapper({ props: { isSearch: true, searchResults } });
+
+      expect(findNavItems().length).toEqual(0);
+      expect(findEmptyText().text()).toBe(noResultsText);
     });
   });
 });

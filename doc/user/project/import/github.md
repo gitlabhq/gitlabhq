@@ -213,12 +213,12 @@ The following items of a project are imported:
 - Wiki pages.
 - Milestones.
 - Labels.
-- Release note descriptions.
+- Release notes content.
 - Attachments for:
   - Release notes. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15620) in GitLab 15.4.
-  - Comments and notes. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
+  - Comments. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
   - Issue description. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
-  - Merge Request description. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
+  - Pull Request description. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
 
   All attachment imports are disabled by default behind
   `github_importer_attachments_import` [feature flag](../../../administration/feature_flags.md). From GitLab 15.5, can
@@ -231,7 +231,7 @@ The following items of a project are imported:
 - Pull request "merged by" information.
 - Pull request comments replies in discussions. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336596) in
   GitLab 14.5.
-- Diff Notes suggestions. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340624) in GitLab 14.7.
+- Pull request review comments suggestions. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340624) in GitLab 14.7.
 - Issue events and pull requests events. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7673) in GitLab 15.4
   with `github_importer_issue_events_import` [feature flag](../../../administration/feature_flags.md) disabled by default.
   From GitLab 15.5, can be imported [as an additional item](#select-additional-items-to-import). The feature flag was

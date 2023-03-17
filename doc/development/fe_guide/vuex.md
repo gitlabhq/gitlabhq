@@ -456,10 +456,6 @@ describe('component', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should show a user', async () => {
     const user = {
       name: 'Foo',

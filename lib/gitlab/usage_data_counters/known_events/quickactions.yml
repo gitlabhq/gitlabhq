@@ -1,190 +1,127 @@
 ---
 - name: i_quickactions_assign_multiple
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_approve
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_unapprove
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_assign_single
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_assign_self
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_assign_reviewer
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_award
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_board_move
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_clone
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_close
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_confidential
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_copy_metadata_merge_request
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_copy_metadata_issue
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_create_merge_request
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_done
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_draft
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_due
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_duplicate
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_estimate
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_label
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_lock
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_merge
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_milestone
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_move
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_promote_to_incident
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_timeline
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_ready
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_reassign
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_reassign_reviewer
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_rebase
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_relabel
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_relate
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_remove_due_date
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_remove_estimate
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_remove_milestone
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_remove_time_spent
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_remove_zoom
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_reopen
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_severity
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_shrug
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_spend_subtract
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_spend_add
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_submit_review
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_subscribe
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_tableflip
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_tag
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_target_branch
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_title
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_todo
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_unassign_specific
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_unassign_all
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_unassign_reviewer
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_unlabel_specific
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_unlabel_all
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_unlock
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_unsubscribe
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_wip
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_zoom
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_link
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_invite_email_single
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_invite_email_multiple
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_add_contacts
-  redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_remove_contacts
-  redis_slot: quickactions
   aggregation: weekly

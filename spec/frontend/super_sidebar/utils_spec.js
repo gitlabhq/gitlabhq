@@ -1,8 +1,13 @@
-import { getTopFrequentItems, trackContextAccess } from '~/super_sidebar/utils';
+import {
+  getTopFrequentItems,
+  trackContextAccess,
+  formatContextSwitcherItems,
+} from '~/super_sidebar/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { FREQUENT_ITEMS, FIFTEEN_MINUTES_IN_MS } from '~/frequent_items/constants';
 import { unsortedFrequentItems, sortedFrequentItems } from '../frequent_items/mock_data';
+import { searchUserProjectsAndGroupsResponseMock } from './mock_data';
 
 describe('Super sidebar utils spec', () => {
   describe('getTopFrequentItems', () => {
@@ -135,6 +140,21 @@ describe('Super sidebar utils spec', () => {
           }),
         ]),
       );
+    });
+  });
+
+  describe('formatContextSwitcherItems', () => {
+    it('returns the formatted items', () => {
+      const projects = searchUserProjectsAndGroupsResponseMock.data.projects.nodes;
+      expect(formatContextSwitcherItems(projects)).toEqual([
+        {
+          id: projects[0].id,
+          avatar: null,
+          title: projects[0].name,
+          subtitle: 'Gitlab Org',
+          link: projects[0].webUrl,
+        },
+      ]);
     });
   });
 });

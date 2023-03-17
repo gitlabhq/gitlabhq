@@ -352,7 +352,6 @@ To generate these known events for a single widget:
 1. Repeat step 6, but change the `data_source` to `redis_hll`.
 1. Add each of the HLL metrics to `lib/gitlab/usage_data_counters/known_events/code_review_events.yml`:
     1. `name` = (the event)
-    1. `redis_slot` = `code_review`
     1. `category` = `code_review`
     1. `aggregation` = `weekly`
 1. Add each event (those listed in the command in step 7, replacing `test_reports`

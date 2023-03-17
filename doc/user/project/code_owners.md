@@ -220,7 +220,56 @@ The following image shows a **Groups** and **Documentation** section:
 
 ![MR widget - Sectional Code Owners](img/sectional_code_owners_v13.2.png)
 
-### Sections with duplicate names
+#### Set default owner for a section **(PREMIUM SELF)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371711) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `codeowners_default_owners`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `codeowners_default_owners`.
+The feature is not ready for production use.
+
+WARNING:
+To disable this feature flag after setting default owners per section, edit your
+CODEOWNERS file to [list Code Owners per line](#set-up-code-owners).
+
+If multiple file paths inside a section share the same ownership, define a default
+Code Owner for the section. All paths in that section inherit this default, unless
+you override the section default on a specific line.
+
+Default owners are applied when specific owners are not specified for file paths.
+Specific owners defined beside the file path override default owners:
+
+```plaintext
+[Documentation] @docs-team
+docs/
+README.md
+
+[Database] @database-team
+model/db/
+config/db/database-setup.md @docs-team
+```
+
+In this example:
+
+- `@docs-team` owns all items in the `Documentation` section.
+- `@database-team` owns all items in the `Database` section except
+  `config/db/database-setup.md`, which has an override assigning it to `@docs-team`.
+
+To combine the syntax for default owners with [optional sections](#make-a-code-owners-section-optional)
+and required approvals, place default owners at the end:
+
+```plaintext
+[Documentation][2] @docs-team
+docs/
+README.md
+
+^[Database] @database-team
+model/db/
+config/db/database-setup.md @docs-team
+```
+
+#### Sections with duplicate names
 
 If multiple sections have the same name, they are combined.
 Also, section headings are not case-sensitive. For example:
@@ -242,7 +291,7 @@ This code results in three entries under the **Documentation** section header, a
 entries under **Database**. The entries defined under the sections **Documentation** and
 **DOCUMENTATION** are combined, using the case of the first section.
 
-### Make a Code Owners section optional
+#### Make a Code Owners section optional
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232995) in GitLab 13.8.
 
@@ -376,9 +425,12 @@ path\ with\ spaces/ @space-owner
 ee/docs    @docs
 docs       @docs
 
-[Database]
-README.md  @database
-model/db   @database
+# Use of default owners for a section. In this case, all files (*) are owned by
+the dev team except the README.md and data-models which are owned by other teams.
+[Development] @dev-team
+*
+README.md @docs-team
+data-models/ @data-science-team
 
 # This section is combined with the previously defined [Documentation] section:
 [DOCUMENTATION]

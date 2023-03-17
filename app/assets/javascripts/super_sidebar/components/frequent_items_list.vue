@@ -1,9 +1,8 @@
 <script>
 import * as Sentry from '@sentry/browser';
-import { truncateNamespace } from '~/lib/utils/text_utility';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import AccessorUtilities from '~/lib/utils/accessor';
-import { getTopFrequentItems } from '../utils';
+import { getTopFrequentItems, formatContextSwitcherItems } from '../utils';
 import NavItem from './nav_item.vue';
 
 export default {
@@ -16,6 +15,18 @@ export default {
       type: String,
       required: true,
     },
+    searchTitle: {
+      type: String,
+      required: true,
+    },
+    pristineText: {
+      type: String,
+      required: true,
+    },
+    noResultsText: {
+      type: String,
+      required: true,
+    },
     storageKey: {
       type: String,
       required: true,
@@ -24,6 +35,16 @@ export default {
       type: Number,
       required: true,
     },
+    isSearch: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    searchResults: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -31,17 +52,17 @@ export default {
     };
   },
   computed: {
-    remappedItems() {
-      return this.cachedFrequentItems.map((item) => {
-        const { id, name: title, avatarUrl: avatar, webUrl: link } = item;
-        return {
-          id,
-          title,
-          subtitle: truncateNamespace(item.namespace),
-          avatar,
-          link,
-        };
-      });
+    items() {
+      return this.isSearch ? this.searchResults : this.cachedFrequentItems;
+    },
+    isEmpty() {
+      return !this.items.length;
+    },
+    listTitle() {
+      return this.isSearch ? this.searchTitle : this.title;
+    },
+    emptyText() {
+      return this.isSearch ? this.noResultsText : this.pristineText;
     },
   },
   created() {
@@ -54,7 +75,8 @@ export default {
       }
       try {
         const parsedCachedFrequentItems = JSON.parse(localStorage.getItem(this.storageKey));
-        this.cachedFrequentItems = getTopFrequentItems(parsedCachedFrequentItems, this.maxItems);
+        const topFrequentItems = getTopFrequentItems(parsedCachedFrequentItems, this.maxItems);
+        this.cachedFrequentItems = formatContextSwitcherItems(topFrequentItems);
       } catch (e) {
         Sentry.captureException(e);
       }
@@ -68,21 +90,17 @@ export default {
     <div
       data-testid="list-title"
       aria-hidden="true"
-      class="gl-text-gray-500 gl-font-weight-bold gl-font-xs gl-line-height-12 gl-letter-spacing-06em gl-my-3"
+      class="gl-text-transform-uppercase gl-text-secondary gl-font-weight-bold gl-font-xs gl-line-height-12 gl-letter-spacing-06em gl-my-3"
     >
-      {{ title }}
+      {{ listTitle }}
     </div>
-    <div
-      v-if="!remappedItems.length"
-      data-testid="empty-text"
-      class="gl-text-gray-500 gl-font-sm gl-my-3"
-    >
-      <slot name="empty"></slot>
+    <div v-if="isEmpty" data-testid="empty-text" class="gl-text-gray-500 gl-font-sm gl-my-3">
+      {{ emptyText }}
     </div>
     <ul :aria-label="title" class="gl-p-0 gl-list-style-none">
       <nav-item
-        v-for="item in remappedItems"
-        :key="item.title"
+        v-for="item in items"
+        :key="item.id"
         :item="item"
         :link-classes="{ 'gl-py-2!': true }"
       >

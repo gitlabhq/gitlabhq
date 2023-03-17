@@ -37,7 +37,7 @@ If you need to link to the schema directly, it
 is at:
 
 ```plaintext
-https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/editor/schema/ci.json.
+https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/editor/schema/ci.json
 ```
 
 To see the full list of custom tags covered by the CI/CD schema, check the

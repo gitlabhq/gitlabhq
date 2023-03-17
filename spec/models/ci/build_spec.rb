@@ -22,10 +22,15 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it { is_expected.to belong_to(:runner) }
   it { is_expected.to belong_to(:trigger_request) }
   it { is_expected.to belong_to(:erased_by) }
+  it { is_expected.to belong_to(:pipeline).inverse_of(:builds) }
 
   it { is_expected.to have_many(:needs).with_foreign_key(:build_id) }
-  it { is_expected.to have_many(:sourced_pipelines).with_foreign_key(:source_job_id) }
-  it { is_expected.to have_one(:sourced_pipeline).with_foreign_key(:source_job_id) }
+
+  it do
+    is_expected.to have_many(:sourced_pipelines).class_name('Ci::Sources::Pipeline').with_foreign_key(:source_job_id)
+      .inverse_of(:build)
+  end
+
   it { is_expected.to have_many(:job_variables).with_foreign_key(:job_id) }
   it { is_expected.to have_many(:report_results).with_foreign_key(:build_id) }
   it { is_expected.to have_many(:pages_deployments).with_foreign_key(:ci_build_id) }
@@ -35,7 +40,17 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it { is_expected.to have_one(:runner_session).with_foreign_key(:build_id) }
   it { is_expected.to have_one(:trace_metadata).with_foreign_key(:build_id) }
   it { is_expected.to have_one(:runtime_metadata).with_foreign_key(:build_id) }
-  it { is_expected.to have_one(:pending_state).with_foreign_key(:build_id) }
+  it { is_expected.to have_one(:pending_state).with_foreign_key(:build_id).inverse_of(:build) }
+
+  it do
+    is_expected.to have_one(:queuing_entry).class_name('Ci::PendingBuild').with_foreign_key(:build_id).inverse_of(:build)
+  end
+
+  it do
+    is_expected.to have_one(:runtime_metadata).class_name('Ci::RunningBuild').with_foreign_key(:build_id)
+      .inverse_of(:build)
+  end
+
   it { is_expected.to have_many(:terraform_state_versions).inverse_of(:build).with_foreign_key(:ci_build_id) }
 
   it { is_expected.to validate_presence_of(:ref) }

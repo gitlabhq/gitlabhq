@@ -2843,7 +2843,6 @@ RSpec/ContextWording:
     - 'spec/services/packages/conan/create_package_service_spec.rb'
     - 'spec/services/packages/create_package_file_service_spec.rb'
     - 'spec/services/packages/debian/create_distribution_service_spec.rb'
-    - 'spec/services/packages/debian/extract_metadata_service_spec.rb'
     - 'spec/services/packages/debian/find_or_create_incoming_service_spec.rb'
     - 'spec/services/packages/debian/process_changes_service_spec.rb'
     - 'spec/services/packages/helm/process_file_service_spec.rb'

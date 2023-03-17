@@ -242,7 +242,12 @@ class Projects::PipelinesController < Projects::ApplicationController
     PipelineSerializer
       .new(project: @project, current_user: @current_user)
       .with_pagination(request, response)
-      .represent(@pipelines, disable_coverage: true, preload: true)
+      .represent(
+        @pipelines,
+        disable_coverage: true,
+        preload: true,
+        disable_manual_and_scheduled_actions: Feature.enabled?(:lazy_load_pipeline_dropdown_actions, @project)
+      )
   end
 
   def render_show

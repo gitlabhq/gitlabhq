@@ -30,21 +30,22 @@ describe('FrequentGroupsList component', () => {
 
   it('passes the correct props to the frequent items list', () => {
     expect(findFrequentItemsList().props()).toEqual({
-      title: s__('Navigation|FREQUENT GROUPS'),
+      title: s__('Navigation|Frequent groups'),
+      searchTitle: s__('Navigation|Groups'),
       storageKey,
       maxItems: MAX_FREQUENT_GROUPS_COUNT,
+      pristineText: s__('Navigation|Groups you visit often will appear here.'),
+      noResultsText: s__('Navigation|No group matches found'),
+      isSearch: false,
+      searchResults: [],
     });
   });
 
   it('renders the "View all..." item', () => {
     expect(findViewAllLink().props('item')).toEqual({
-      icon: 'project',
+      icon: 'group',
       link: viewAllLink,
       title: s__('Navigation|View all groups'),
     });
-  });
-
-  it('renders the empty text', () => {
-    expect(wrapper.text()).toBe(s__('Navigation|Groups you visit often will appear here.'));
   });
 });

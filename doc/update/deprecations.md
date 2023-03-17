@@ -112,6 +112,9 @@ configuration structure. You should update the configuration of Gitaly at your e
 
 The change improves consistency between Omnibus GitLab and source installs and enables us to provide better documentation and tooling for both.
 
+You should update to the new configuration structure as soon as possible using
+[the upgrade instructions](https://docs.gitlab.com/ee/update/#gitaly-omnibus-gitlab-configuration-structure-change).
+
 </div>
 </div>
 
@@ -374,8 +377,8 @@ Previously, Praefect configuration keys were scattered throughout the configurat
 Praefect configuration so the previous configuration method is deprecated.
 
 The single configuration structure available from GitLab 15.9, though backwards compatibility is maintained. Once removed, Praefect must be configured using the single
-configuration structure. You should update the configuration of Praefect at your earliest convenience. See
-[GitLab 15.9 upgrade information](https://docs.gitlab.com/ee/update/#1590).
+configuration structure. You should update your Praefect configuration as soon as possible using
+[the upgrade instructions](https://docs.gitlab.com/ee/update/#praefect-omnibus-gitlab-configuration-structure-change).
 
 This change brings Praefect configuration in Omnibus GitLab in line with the configuration structure of Praefect. Previously, the hierarchies and configuration keys
 didn't match. The change improves consistency between Omnibus GitLab and source installs and enables us to provide better documentation and tooling for both.

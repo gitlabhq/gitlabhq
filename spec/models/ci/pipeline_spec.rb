@@ -19,31 +19,66 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:user) }
-  it { is_expected.to belong_to(:auto_canceled_by) }
+  it { is_expected.to belong_to(:auto_canceled_by).class_name('Ci::Pipeline').inverse_of(:auto_canceled_pipelines) }
   it { is_expected.to belong_to(:pipeline_schedule) }
   it { is_expected.to belong_to(:merge_request) }
   it { is_expected.to belong_to(:external_pull_request) }
 
   it { is_expected.to have_many(:statuses) }
-  it { is_expected.to have_many(:trigger_requests) }
+  it { is_expected.to have_many(:trigger_requests).with_foreign_key(:commit_id).inverse_of(:pipeline) }
   it { is_expected.to have_many(:variables) }
   it { is_expected.to have_many(:builds) }
-  it { is_expected.to have_many(:statuses_order_id_desc) }
+
+  it do
+    is_expected.to have_many(:statuses_order_id_desc)
+      .class_name('CommitStatus').with_foreign_key(:commit_id).inverse_of(:pipeline)
+  end
+
   it { is_expected.to have_many(:bridges) }
   it { is_expected.to have_many(:job_artifacts).through(:builds) }
   it { is_expected.to have_many(:build_trace_chunks).through(:builds) }
-  it { is_expected.to have_many(:auto_canceled_pipelines) }
-  it { is_expected.to have_many(:auto_canceled_jobs) }
-  it { is_expected.to have_many(:sourced_pipelines) }
+
   it { is_expected.to have_many(:triggered_pipelines) }
   it { is_expected.to have_many(:pipeline_artifacts) }
 
-  it { is_expected.to have_one(:chat_data) }
+  it do
+    is_expected.to have_many(:failed_builds).class_name('Ci::Build')
+      .with_foreign_key(:commit_id).inverse_of(:pipeline)
+  end
+
+  it do
+    is_expected.to have_many(:cancelable_statuses).class_name('CommitStatus')
+      .with_foreign_key(:commit_id).inverse_of(:pipeline)
+  end
+
+  it do
+    is_expected.to have_many(:auto_canceled_pipelines).class_name('Ci::Pipeline')
+      .with_foreign_key(:auto_canceled_by_id).inverse_of(:auto_canceled_by)
+  end
+
+  it do
+    is_expected.to have_many(:auto_canceled_jobs).class_name('CommitStatus')
+      .with_foreign_key(:auto_canceled_by_id).inverse_of(:auto_canceled_by)
+  end
+
+  it do
+    is_expected.to have_many(:sourced_pipelines).class_name('Ci::Sources::Pipeline')
+      .with_foreign_key(:source_pipeline_id).inverse_of(:source_pipeline)
+  end
+
   it { is_expected.to have_one(:source_pipeline) }
+  it { is_expected.to have_one(:chat_data) }
   it { is_expected.to have_one(:triggered_by_pipeline) }
   it { is_expected.to have_one(:source_job) }
   it { is_expected.to have_one(:pipeline_config) }
   it { is_expected.to have_one(:pipeline_metadata) }
+
+  it do
+    is_expected.to have_many(:daily_build_group_report_results).class_name('Ci::DailyBuildGroupReportResult')
+      .with_foreign_key(:last_pipeline_id).inverse_of(:last_pipeline)
+  end
+
+  it { is_expected.to have_many(:latest_builds_report_results).through(:latest_builds).source(:report_results) }
 
   it { is_expected.to respond_to :git_author_name }
   it { is_expected.to respond_to :git_author_email }

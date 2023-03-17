@@ -79,6 +79,8 @@ module Types
                                                   description: 'Whether the job has a manual action.'
       field :manual_variables, ManualVariableType.connection_type, null: true,
                                                                    description: 'Variables added to a manual job when the job is triggered.'
+      field :play_path, GraphQL::Types::String, null: true,
+                                                description: 'Play path of the job.'
       field :playable, GraphQL::Types::Boolean, null: false, method: :playable?,
                                                 description: 'Indicates the job can be played.'
       field :previous_stage_jobs_or_needs, Types::Ci::JobNeedUnion.connection_type, null: true,
@@ -91,6 +93,8 @@ module Types
                                                description: 'Indicates that the job has been retried.'
       field :retryable, GraphQL::Types::Boolean, null: false, method: :retryable?,
                                                  description: 'Indicates the job can be retried.'
+      field :scheduled, GraphQL::Types::Boolean, null: false, method: :scheduled?,
+                                              description: 'Indicates the job is scheduled.'
       field :scheduling_type, GraphQL::Types::String, null: true,
                                                       description: 'Type of job scheduling. Value is `dag` if the job uses the `needs` keyword, and `stage` otherwise.'
       field :short_sha, type: GraphQL::Types::String, null: false,
@@ -103,6 +107,14 @@ module Types
                                                description: 'Web path of the job.'
 
       field :project, Types::ProjectType, null: true, description: 'Project that the job belongs to.'
+
+      field :can_play_job, GraphQL::Types::Boolean,
+            null: false, resolver_method: :can_play_job?,
+            description: 'Indicates whether the current user can play the job.'
+
+      def can_play_job?
+        object.playable? && Ability.allowed?(current_user, :play_job, object)
+      end
 
       def kind
         return ::Ci::Build unless [::Ci::Build, ::Ci::Bridge].include?(object.class)
@@ -199,6 +211,10 @@ module Types
 
       def web_path
         ::Gitlab::Routing.url_helpers.project_job_path(object.project, object)
+      end
+
+      def play_path
+        ::Gitlab::Routing.url_helpers.play_project_job_path(object.project, object)
       end
 
       def browse_artifacts_path

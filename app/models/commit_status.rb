@@ -15,8 +15,8 @@ class CommitStatus < Ci::ApplicationRecord
 
   belongs_to :user
   belongs_to :project
-  belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id
-  belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
+  belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id, inverse_of: :statuses
+  belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline', inverse_of: :auto_canceled_jobs
   belongs_to :ci_stage, class_name: 'Ci::Stage', foreign_key: :stage_id
 
   has_many :needs, class_name: 'Ci::BuildNeed', foreign_key: :build_id, inverse_of: :build

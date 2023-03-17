@@ -17,7 +17,11 @@ RSpec.describe CommitStatus do
 
   it_behaves_like 'having unique enum values'
 
-  it { is_expected.to belong_to(:pipeline) }
+  it do
+    is_expected.to belong_to(:pipeline).class_name('Ci::Pipeline')
+      .with_foreign_key(:commit_id).inverse_of(:statuses)
+  end
+
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:auto_canceled_by) }

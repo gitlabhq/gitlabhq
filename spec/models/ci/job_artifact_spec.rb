@@ -7,7 +7,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :build_artifacts do
 
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
-    it { is_expected.to belong_to(:job) }
+    it { is_expected.to belong_to(:job).class_name('Ci::Build').with_foreign_key(:job_id).inverse_of(:job_artifacts) }
     it { is_expected.to validate_presence_of(:job) }
     it { is_expected.to validate_presence_of(:partition_id) }
   end

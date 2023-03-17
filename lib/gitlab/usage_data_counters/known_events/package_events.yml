@@ -1,67 +1,45 @@
 ---
 - name: i_package_composer_deploy_token
   aggregation: weekly
-  redis_slot: package
 - name: i_package_composer_user
   aggregation: weekly
-  redis_slot: package
 - name: i_package_conan_deploy_token
   aggregation: weekly
-  redis_slot: package
 - name: i_package_conan_user
   aggregation: weekly
-  redis_slot: package
 - name: i_package_generic_deploy_token
   aggregation: weekly
-  redis_slot: package
 - name: i_package_generic_user
   aggregation: weekly
-  redis_slot: package
 - name: i_package_helm_deploy_token
   aggregation: weekly
-  redis_slot: package
 - name: i_package_helm_user
   aggregation: weekly
-  redis_slot: package
 - name: i_package_maven_deploy_token
   aggregation: weekly
-  redis_slot: package
 - name: i_package_maven_user
   aggregation: weekly
-  redis_slot: package
 - name: i_package_npm_deploy_token
   aggregation: weekly
-  redis_slot: package
 - name: i_package_npm_user
   aggregation: weekly
-  redis_slot: package
 - name: i_package_nuget_deploy_token
   aggregation: weekly
-  redis_slot: package
 - name: i_package_nuget_user
   aggregation: weekly
-  redis_slot: package
 - name: i_package_pypi_deploy_token
   aggregation: weekly
-  redis_slot: package
 - name: i_package_pypi_user
   aggregation: weekly
-  redis_slot: package
 - name: i_package_rubygems_deploy_token
   aggregation: weekly
-  redis_slot: package
 - name: i_package_rubygems_user
   aggregation: weekly
-  redis_slot: package
 - name: i_package_terraform_module_deploy_token
   aggregation: weekly
-  redis_slot: package
 - name: i_package_terraform_module_user
   aggregation: weekly
-  redis_slot: package
 - name: i_package_rpm_user
   aggregation: weekly
-  redis_slot: package
 - name: i_package_rpm_deploy_token
   aggregation: weekly
-  redis_slot: package

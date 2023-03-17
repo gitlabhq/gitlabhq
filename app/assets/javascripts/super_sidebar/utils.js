@@ -1,5 +1,6 @@
 import AccessorUtilities from '~/lib/utils/accessor';
 import { FREQUENT_ITEMS, FIFTEEN_MINUTES_IN_MS } from '~/frequent_items/constants';
+import { truncateNamespace } from '~/lib/utils/text_utility';
 
 /**
  * This takes an array of project or groups that were stored in the local storage, to be shown in
@@ -71,3 +72,12 @@ export const trackContextAccess = (username, context) => {
 
   return localStorage.setItem(storageKey, JSON.stringify(storedItems));
 };
+
+export const formatContextSwitcherItems = (items) =>
+  items.map(({ id, name: title, namespace, avatarUrl: avatar, webUrl: link }) => ({
+    id,
+    title,
+    subtitle: truncateNamespace(namespace),
+    avatar,
+    link,
+  }));

@@ -871,6 +871,125 @@ To configure Praefect with TLS:
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
 
+#### Service discovery
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8971) in GitLab 15.10.
+
+Prerequisites:
+
+- A DNS server.
+
+GitLab uses service discovery to retrieve a list of Praefect hosts. Service
+discovery involves periodic checks of a DNS A or AAAA record, with the IPs
+retrieved from the record serving as the addresses of the target nodes.
+Praefect does not support service discovery by SRV record.
+
+By default, the minimum time between checks is 5 minutes, regardless of the
+records' TTLs. Praefect does not support customizing this interval. When clients
+receive an update, they:
+
+- Establish new connections to the new IP addresses.
+- Keep existing connections to intact IP addresses.
+- Drop connections to removed IP addresses.
+
+In-flight requests on to-be-removed connections are still handled until they
+finish. Workhorse has a 10-minute timeout, while other clients do not specify a
+graceful timeout.
+
+The DNS server should return all IP addresses instead of load-balancing itself.
+Clients can distribute requests to IP addresses in a round-robin fashion.
+
+Before updating client configuration, ensure that DNS service discovery works
+correctly. It should return the list of IP addresses correctly. `dig` is a good
+tool to use to verify.
+
+```console
+❯ dig A praefect.service.consul @127.0.0.1
+
+; <<>> DiG 9.10.6 <<>> A praefect.service.consul @127.0.0.1
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 29210
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 3, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;praefect.service.consul.                     IN      A
+
+;; ANSWER SECTION:
+praefect.service.consul.              0       IN      A       10.0.0.3
+praefect.service.consul.              0       IN      A       10.0.0.2
+praefect.service.consul.              0       IN      A       10.0.0.1
+
+;; Query time: 0 msec
+;; SERVER: ::1#53(::1)
+;; WHEN: Wed Dec 14 12:53:58 +07 2022
+;; MSG SIZE  rcvd: 86
+```
+
+##### Configure service discovery
+
+By default, Praefect delegates DNS resolution to the operating system. In such
+cases, the Gitaly address can be set in either of these formats:
+
+- `dns:[host]:[port]`
+- `dns:///[host]:[port]` (note the three slashes)
+
+You can also appoint an authoritative name server by setting it in this format:
+
+- `dns://[authority_host]:[authority_port]/[host]:[port]`
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb` and add:
+
+   ```ruby
+   praefect['consul_service_name'] = 'praefect'
+   ```
+
+1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. On the Praefect clients (except Gitaly servers), edit `git_data_dirs` in
+`/etc/gitlab/gitlab.rb` as follows. Replace `PRAEFECT_SERVICE_DISCOVERY_ADDRESS`
+with Praefect service discovery address, such as `praefect.service.consul`.
+
+   ```ruby
+   git_data_dirs({
+     "default" => {
+       "gitaly_address" => 'dns:PRAEFECT_SERVICE_DISCOVERY_ADDRESS:2305',
+       "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
+     }
+   })
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+:::TabTitle Self-compiled (source)
+
+1. Install a DNS service discovery service. Register all Praefect nodes with the service.
+1. On the Praefect clients (except Gitaly servers), edit `storages` in
+   `/home/git/gitlab/config/gitlab.yml` as follows:
+
+   ```yaml
+   gitlab:
+     repositories:
+       storages:
+         default:
+           gitaly_address: dns:PRAEFECT_SERVICE_DISCOVERY_ADDRESS:2305
+           path: /some/local/path
+   ```
+
+   NOTE:
+   `/some/local/path` should be set to a local folder that exists, however no
+   data is stored in this folder. [Issue 375254](https://gitlab.com/gitlab-org/gitlab/-/issues/375254)
+   proposes to remove this requirement.
+
+1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
+
+::EndTabs
+
 ### Gitaly
 
 NOTE:

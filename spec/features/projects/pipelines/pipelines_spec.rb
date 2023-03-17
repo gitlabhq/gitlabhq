@@ -278,7 +278,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
         end
 
         before do
-          stub_feature_flags(lazy_load_manual_actions: false)
+          stub_feature_flags(lazy_load_pipeline_dropdown_actions: false)
           visit_project_pipelines
         end
 
@@ -313,6 +313,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
         end
 
         before do
+          stub_feature_flags(lazy_load_pipeline_dropdown_actions: false)
           visit_project_pipelines
         end
 

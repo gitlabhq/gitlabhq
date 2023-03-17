@@ -15,7 +15,7 @@ module Ci
 
     belongs_to :project
     belongs_to :owner, class_name: 'User'
-    has_one :last_pipeline, -> { order(id: :desc) }, class_name: 'Ci::Pipeline'
+    has_one :last_pipeline, -> { order(id: :desc) }, class_name: 'Ci::Pipeline', inverse_of: :pipeline_schedule
     has_many :pipelines, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, class_name: 'Ci::PipelineScheduleVariable'
 

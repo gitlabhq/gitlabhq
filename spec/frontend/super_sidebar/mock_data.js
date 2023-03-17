@@ -154,7 +154,7 @@ export const cachedFrequentProjects = JSON.stringify([
     frequency: 8,
   },
   {
-    id: 1,
+    id: 3,
     name: 'Cached project 3',
     namespace: 'Cached Namespace 3 / Cached project 3',
     webUrl: '/cached-namespace-3/cached-project-3',
@@ -163,7 +163,7 @@ export const cachedFrequentProjects = JSON.stringify([
     frequency: 12,
   },
   {
-    id: 1,
+    id: 4,
     name: 'Cached project 4',
     namespace: 'Cached Namespace 4 / Cached project 4',
     webUrl: '/cached-namespace-4/cached-project-4',
@@ -172,7 +172,7 @@ export const cachedFrequentProjects = JSON.stringify([
     frequency: 3,
   },
   {
-    id: 1,
+    id: 5,
     name: 'Cached project 5',
     namespace: 'Cached Namespace 5 / Cached project 5',
     webUrl: '/cached-namespace-5/cached-project-5',
@@ -181,7 +181,7 @@ export const cachedFrequentProjects = JSON.stringify([
     frequency: 21,
   },
   {
-    id: 1,
+    id: 6,
     name: 'Cached project 6',
     namespace: 'Cached Namespace 6 / Cached project 6',
     webUrl: '/cached-namespace-6/cached-project-6',
@@ -211,7 +211,7 @@ export const cachedFrequentGroups = JSON.stringify([
     frequency: 8,
   },
   {
-    id: 1,
+    id: 3,
     name: 'Cached group 3',
     namespace: 'Cached Namespace 3',
     webUrl: '/cached-namespace-3/cached-group-3',
@@ -220,7 +220,7 @@ export const cachedFrequentGroups = JSON.stringify([
     frequency: 12,
   },
   {
-    id: 1,
+    id: 4,
     name: 'Cached group 4',
     namespace: 'Cached Namespace 4',
     webUrl: '/cached-namespace-4/cached-group-4',
@@ -229,3 +229,36 @@ export const cachedFrequentGroups = JSON.stringify([
     frequency: 3,
   },
 ]);
+
+export const searchUserProjectsAndGroupsResponseMock = {
+  data: {
+    projects: {
+      nodes: [
+        {
+          id: 'gid://gitlab/Project/2',
+          name: 'Gitlab Shell',
+          namespace: 'Gitlab Org / Gitlab Shell',
+          webUrl: 'http://gdk.test:3000/gitlab-org/gitlab-shell',
+          avatarUrl: null,
+          __typename: 'Project',
+        },
+      ],
+    },
+
+    user: {
+      id: 'gid://gitlab/User/1',
+      groups: {
+        nodes: [
+          {
+            id: 'gid://gitlab/Group/60',
+            name: 'GitLab Instance',
+            namespace: 'gitlab-instance-2e4abb29',
+            webUrl: 'http://gdk.test:3000/groups/gitlab-instance-2e4abb29',
+            avatarUrl: null,
+            __typename: 'Group',
+          },
+        ],
+      },
+    },
+  },
+};

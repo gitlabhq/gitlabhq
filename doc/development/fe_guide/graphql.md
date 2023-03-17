@@ -1239,7 +1239,7 @@ Vue.use(VueApollo);
 
 describe('Some component with Apollo mock', () => {
   let wrapper;
- 
+
   function createComponent(options = {}) {
     wrapper = shallowMount(...);
   }

@@ -26,8 +26,10 @@ When you push a change to the upstream repository, the push mirror receives it:
 - Within five minutes.
 - Within one minute, if you enabled **Only mirror protected branches**.
 
-In the case of a diverged branch, an error displays in the **Mirroring repositories**
-section.
+When a branch is merged into the default branch and deleted in the source project,
+it is deleted from the remote mirror on the next push. Branches with unmerged
+changes are kept. If a branch diverges, the **Mirroring repositories** section
+displays an error.
 
 ## Configure push mirroring
 
