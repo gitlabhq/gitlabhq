@@ -72,6 +72,38 @@ export default (IssuableTokenKeys, disableTargetBranchFilter = false) => {
     IssuableTokenKeys.tokenKeysWithAlternative.push(targetBranchToken);
   }
 
+  const approvedToken = {
+    token: {
+      formattedKey: __('Approved'),
+      key: 'approved',
+      type: 'string',
+      param: '',
+      symbol: '',
+      icon: 'approval',
+      tag: __('Yes or No'),
+      lowercaseValueOnSubmit: true,
+      capitalizeTokenValue: true,
+      hideNotEqual: true,
+    },
+    conditions: [
+      {
+        url: 'approved=yes',
+        tokenKey: 'approved',
+        value: __('Yes'),
+        operator: '=',
+      },
+      {
+        url: 'approved=no',
+        tokenKey: 'approved',
+        value: __('No'),
+        operator: '=',
+      },
+    ],
+  };
+
+  IssuableTokenKeys.tokenKeys.splice(3, 0, approvedToken.token);
+  IssuableTokenKeys.conditions.push(...approvedToken.conditions);
+
   const approvedBy = {
     token: {
       formattedKey: TOKEN_TITLE_APPROVED_BY,
@@ -117,8 +149,8 @@ export default (IssuableTokenKeys, disableTargetBranchFilter = false) => {
     ],
   };
 
-  const tokenPosition = 3;
-  IssuableTokenKeys.tokenKeys.splice(tokenPosition, 0, ...[approvedBy.token]);
+  const tokenPosition = 4;
+  IssuableTokenKeys.tokenKeys.splice(tokenPosition, 0, approvedBy.token);
   IssuableTokenKeys.tokenKeysWithAlternative.splice(
     tokenPosition,
     0,

@@ -29,6 +29,19 @@ RSpec.describe Ci::Runners::ProcessRunnerVersionUpdateService, feature_category:
       end
     end
 
+    context 'when fetching runner releases is disabled' do
+      before do
+        stub_application_setting(update_runner_versions_enabled: false)
+      end
+
+      it 'does not update ci_runner_versions records', :aggregate_failures do
+        expect do
+          expect(execute).to be_error
+          expect(execute.message).to eq 'version update disabled'
+        end.not_to change(Ci::RunnerVersion, :count).from(0)
+      end
+    end
+
     context 'with successful result from upgrade check' do
       before do
         url = ::Gitlab::CurrentSettings.current_application_settings.public_runner_releases_url

@@ -26,4 +26,15 @@ RSpec.describe Achievements::UserAchievement, type: :model, feature_category: :u
       end
     end
   end
+
+  describe 'scopes' do
+    let_it_be(:user_achievement) { create(:user_achievement) }
+    let_it_be(:revoked_user_achievement) { create(:user_achievement, :revoked) }
+
+    describe '.not_revoked' do
+      it 'only returns user achievements which have not been revoked' do
+        expect(described_class.not_revoked).to contain_exactly(user_achievement)
+      end
+    end
+  end
 end

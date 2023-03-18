@@ -157,6 +157,18 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
 
           expect(runner_machine.runner_version).to be_nil
         end
+
+        context 'when fetching runner releases is disabled' do
+          before do
+            stub_application_setting(update_runner_versions_enabled: false)
+          end
+
+          it 'does not schedule version information update' do
+            heartbeat
+
+            expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).not_to have_received(:perform_async)
+          end
+        end
       end
 
       context 'with only ip_address specified' do

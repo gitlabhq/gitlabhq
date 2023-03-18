@@ -177,6 +177,16 @@ RSpec.describe Gitlab::Ci::RunnerReleases, feature_category: :runner_fleet do
       it 'returns parsed and sorted Gitlab::VersionInfo objects' do
         expect(releases).to eq(expected_result)
       end
+
+      context 'when fetching runner releases is disabled' do
+        before do
+          stub_application_setting(update_runner_versions_enabled: false)
+        end
+
+        it 'returns nil' do
+          expect(releases).to be_nil
+        end
+      end
     end
 
     context 'when response contains unexpected input type' do
@@ -218,6 +228,16 @@ RSpec.describe Gitlab::Ci::RunnerReleases, feature_category: :runner_fleet do
       it 'returns parsed and grouped Gitlab::VersionInfo objects' do
         expect(releases_by_minor).to eq(expected_result)
       end
+
+      context 'when fetching runner releases is disabled' do
+        before do
+          stub_application_setting(update_runner_versions_enabled: false)
+        end
+
+        it 'returns nil' do
+          expect(releases_by_minor).to be_nil
+        end
+      end
     end
 
     context 'when response contains unexpected input type' do
@@ -230,6 +250,18 @@ RSpec.describe Gitlab::Ci::RunnerReleases, feature_category: :runner_fleet do
       let(:response) { ['error'] }
 
       it { expect(releases_by_minor).to be_nil }
+    end
+  end
+
+  describe '#enabled?' do
+    it { is_expected.to be_enabled }
+
+    context 'when fetching runner releases is disabled' do
+      before do
+        stub_application_setting(update_runner_versions_enabled: false)
+      end
+
+      it { is_expected.not_to be_enabled }
     end
   end
 

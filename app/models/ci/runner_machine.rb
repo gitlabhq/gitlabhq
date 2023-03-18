@@ -101,7 +101,7 @@ module Ci
     end
 
     def schedule_runner_version_update(new_version)
-      return unless new_version
+      return unless new_version && Gitlab::Ci::RunnerReleases.instance.enabled?
 
       Ci::Runners::ProcessRunnerVersionUpdateWorker.perform_async(new_version)
     end

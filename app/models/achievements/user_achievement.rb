@@ -14,6 +14,8 @@ module Achievements
                 inverse_of: :revoked_user_achievements,
                 optional: true
 
+    scope :not_revoked, -> { where(revoked_by_user_id: nil) }
+
     def revoked?
       revoked_by_user_id.present?
     end

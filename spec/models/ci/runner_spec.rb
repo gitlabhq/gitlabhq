@@ -1106,6 +1106,18 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
           expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).to have_received(:perform_async).with(version).once
         end
+
+        context 'when fetching runner releases is disabled' do
+          before do
+            stub_application_setting(update_runner_versions_enabled: false)
+          end
+
+          it 'does not schedule version information update' do
+            heartbeat
+
+            expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).not_to have_received(:perform_async)
+          end
+        end
       end
 
       context 'with only ip_address specified', :freeze_time do

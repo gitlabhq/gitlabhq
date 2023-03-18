@@ -227,6 +227,12 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_value('disabled').for(:whats_new_variant) }
     it { is_expected.not_to allow_value(nil).for(:whats_new_variant) }
 
+    it { is_expected.to allow_value('http://example.com/').for(:public_runner_releases_url) }
+    it { is_expected.not_to allow_value(nil).for(:public_runner_releases_url) }
+
+    it { is_expected.to allow_value([true, false]).for(:update_runner_versions_enabled) }
+    it { is_expected.not_to allow_value(nil).for(:update_runner_versions_enabled) }
+
     it { is_expected.not_to allow_value(['']).for(:valid_runner_registrars) }
     it { is_expected.not_to allow_value(['OBVIOUSLY_WRONG']).for(:valid_runner_registrars) }
     it { is_expected.not_to allow_value(%w(project project)).for(:valid_runner_registrars) }

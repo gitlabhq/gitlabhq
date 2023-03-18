@@ -200,11 +200,11 @@ GEM
     awesome_print (1.9.2)
     awrence (1.2.1)
     aws-eventstream (1.2.0)
-    aws-partitions (1.703.0)
+    aws-partitions (1.730.0)
     aws-sdk-cloudformation (1.41.0)
       aws-sdk-core (~> 3, >= 3.99.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-core (3.170.0)
+    aws-sdk-core (3.170.1)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.651.0)
       aws-sigv4 (~> 1.5)
@@ -1129,7 +1129,7 @@ GEM
       coderay
       parser
       unparser
-    prometheus-client-mmap (0.17.0)
+    prometheus-client-mmap (0.19.1)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -1649,7 +1649,7 @@ DEPENDENCIES
   autoprefixer-rails (= 10.2.5.1)
   awesome_print
   aws-sdk-cloudformation (~> 1)
-  aws-sdk-core (~> 3.170.0)
+  aws-sdk-core (~> 3.170.1)
   aws-sdk-s3 (~> 1.119.1)
   axe-core-rspec
   babosa (~> 1.0.4)
@@ -1836,7 +1836,7 @@ DEPENDENCIES
   pg_query (~> 2.2, >= 2.2.1)
   png_quantizator (~> 0.2.1)
   premailer-rails (~> 1.10.3)
-  prometheus-client-mmap (~> 0.17)
+  prometheus-client-mmap (~> 0.19)
   pry-byebug
   pry-rails (~> 0.3.9)
   pry-shell (~> 0.6.1)

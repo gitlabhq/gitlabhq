@@ -638,7 +638,12 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
           length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
           allow_nil: false
 
-  validates :public_runner_releases_url, addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS, presence: true
+  validates :update_runner_versions_enabled,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
+  validates :public_runner_releases_url,
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS,
+    presence: true,
+    if: :update_runner_versions_enabled?
 
   validates :inactive_projects_min_size_mb,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }

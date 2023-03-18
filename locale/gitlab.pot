@@ -2157,6 +2157,9 @@ msgstr ""
 msgid "AccountValidation|Verification is required to discourage and reduce the abuse on GitLab infrastructure. If you verify with a credit or debit card, %{strong_start}GitLab will not charge your card, it will only be used for validation.%{strong_end} %{learn_more_link}"
 msgstr ""
 
+msgid "Achievements|Awarded %{timeAgo} by %{namespace}"
+msgstr ""
+
 msgid "Acknowledge"
 msgstr ""
 
@@ -37551,6 +37554,9 @@ msgstr ""
 msgid "Runners|Existing runners are not affected. To permit runner registration for all groups, enable this setting in the Admin Area in Settings &gt; CI/CD."
 msgstr ""
 
+msgid "Runners|Fetch GitLab Runner release version data from GitLab.com"
+msgstr ""
+
 msgid "Runners|Filter projects"
 msgstr ""
 
@@ -37666,6 +37672,9 @@ msgid "Runners|No spot. This is the default choice for Linux Docker executor."
 msgstr ""
 
 msgid "Runners|Not accepting jobs"
+msgstr ""
+
+msgid "Runners|Official runner version data is periodically fetched from GitLab.com to determine whether the runners need upgrades."
 msgstr ""
 
 msgid "Runners|Offline"
@@ -37836,6 +37845,9 @@ msgid "Runners|Runner statuses"
 msgstr ""
 
 msgid "Runners|Runner unassigned from project."
+msgstr ""
+
+msgid "Runners|Runner version management"
 msgstr ""
 
 msgid "Runners|Runners"
@@ -47318,9 +47330,6 @@ msgid "UserProfile|(Busy)"
 msgstr ""
 
 msgid "UserProfile|Activity"
-msgstr ""
-
-msgid "UserProfile|An error occurred loading the profile. Please refresh the page to try again."
 msgstr ""
 
 msgid "UserProfile|Blocked user"

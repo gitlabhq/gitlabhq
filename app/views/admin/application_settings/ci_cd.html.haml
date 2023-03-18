@@ -41,7 +41,7 @@
 %section.settings.as-runner.no-animate#js-runner-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = s_('Runners|Runner registration')
+      = s_('Runners|Runners')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? 'Collapse' : 'Expand'
   .settings-content

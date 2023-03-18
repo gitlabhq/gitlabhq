@@ -403,6 +403,7 @@ module ApplicationSettingsHelper
       :protected_paths_raw,
       :time_tracking_limit_to_hours,
       :two_factor_grace_period,
+      :update_runner_versions_enabled,
       :unique_ips_limit_enabled,
       :unique_ips_limit_per_user,
       :unique_ips_limit_time_window,
