@@ -2,6 +2,5 @@
 Rake/Require:
   Details: grace period
   Exclude:
-    - 'lib/tasks/gitlab/refresh_project_statistics_build_artifacts_size.rake'
     - 'lib/tasks/tokens.rake'
     - 'qa/tasks/webdrivers.rake'
