@@ -1,6 +1,6 @@
 <script>
 import { GlModal } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { redirectTo } from '~/lib/utils/url_utility';
 import {
@@ -43,7 +43,7 @@ export default {
   },
   primaryAction: {
     text: PRIMARY_ACTION_TEXT,
-    attributes: [{ variant: 'danger' }],
+    attributes: { variant: 'danger' },
   },
   cancelAction: {
     text: CANCEL_TEXT,

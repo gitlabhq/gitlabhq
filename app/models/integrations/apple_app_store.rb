@@ -7,10 +7,13 @@ module Integrations
     ISSUER_ID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/.freeze
     KEY_ID_REGEX = /\A(?=.*[A-Z])(?=.*[0-9])[A-Z0-9]+\z/.freeze
 
+    SECTION_TYPE_APPLE_APP_STORE = 'apple_app_store'
+
     with_options if: :activated? do
       validates :app_store_issuer_id, presence: true, format: { with: ISSUER_ID_REGEX }
       validates :app_store_key_id, presence: true, format: { with: KEY_ID_REGEX }
       validates :app_store_private_key, presence: true, certificate_key: true
+      validates :app_store_private_key_file_name, presence: true
     end
 
     field :app_store_issuer_id,
@@ -24,12 +27,11 @@ module Integrations
           title: -> { s_('AppleAppStore|The Apple App Store Connect Key ID.') },
           is_secret: false
 
-    field :app_store_private_key,
+    field :app_store_private_key_file_name,
           section: SECTION_TYPE_CONNECTION,
-          required: true,
-          type: 'textarea',
-          title: -> { s_('AppleAppStore|The Apple App Store Connect Private Key.') },
           is_secret: false
+
+    field :app_store_private_key, api_only: true, is_secret: false
 
     def title
       'Apple App Store Connect'
@@ -69,7 +71,7 @@ module Integrations
     def sections
       [
         {
-          type: SECTION_TYPE_CONNECTION,
+          type: SECTION_TYPE_APPLE_APP_STORE,
           title: s_('Integrations|Integration details'),
           description: help
         }
@@ -99,13 +101,11 @@ module Integrations
     private
 
     def client
-      config = {
+      AppStoreConnect::Client.new(
         issuer_id: app_store_issuer_id,
         key_id: app_store_key_id,
         private_key: app_store_private_key
-      }
-
-      AppStoreConnect::Client.new(config)
+      )
     end
   end
 end

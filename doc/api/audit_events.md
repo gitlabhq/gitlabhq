@@ -253,12 +253,15 @@ Example response:
 
 ## Project Audit Events
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219238) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219238) in GitLab 13.1.
+> - [Support for keyset pagination added](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.10.
 
 The Project Audit Events API allows you to retrieve [project audit events](../administration/audit_events.md#project-events).
 
 A user with a Maintainer role (or above) can retrieve project audit events of all users.
 A user with a Developer role is limited to project audit events based on their individual actions.
+
+When requesting consecutive pages of results, you should use [keyset pagination](rest/index.md#keyset-based-pagination).
 
 ### Retrieve all project audit events
 

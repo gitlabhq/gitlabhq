@@ -10,8 +10,6 @@ jest.mock('~/api/user_api', () => ({
 }));
 
 describe('User Popovers', () => {
-  let origGon;
-
   const fixtureTemplate = 'merge_requests/merge_request_with_mentions.html';
 
   const selector = '.js-user-link[data-user], .js-user-link[data-user-id]';
@@ -59,15 +57,6 @@ describe('User Popovers', () => {
       popoverInstance.$mount(mountingRoot);
     });
   };
-
-  beforeEach(() => {
-    origGon = window.gon;
-    window.gon = {};
-  });
-
-  afterEach(() => {
-    window.gon = origGon;
-  });
 
   describe('when signed out', () => {
     beforeEach(() => {

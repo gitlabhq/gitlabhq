@@ -18,6 +18,7 @@ export const initWorkItemsRoot = () => {
     hasIterationsFeature,
     hasOkrsFeature,
     hasIssuableHealthStatusFeature,
+    savedRepliesNewPath,
   } = el.dataset;
 
   return new Vue({
@@ -35,6 +36,7 @@ export const initWorkItemsRoot = () => {
       signInPath,
       hasIterationsFeature: parseBoolean(hasIterationsFeature),
       hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
+      newSavedRepliesPath: savedRepliesNewPath,
     },
     render(createElement) {
       return createElement(App);

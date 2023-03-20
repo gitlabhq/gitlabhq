@@ -13,11 +13,6 @@ describe('LockedWarning component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findLink = () => wrapper.findComponent(GlLink);
 

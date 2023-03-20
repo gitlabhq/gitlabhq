@@ -103,6 +103,8 @@ export default {
           } else {
             next();
           }
+        }).catch(() => {
+          this.failureCount = null;
         });
       }
     },

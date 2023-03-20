@@ -9,7 +9,7 @@ import {
   GlSprintf,
   GlLink,
 } from '@gitlab/ui';
-import { createAlert, VARIANT_INFO } from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -66,6 +66,11 @@ export default {
     },
   },
   methods: {
+    getWritePackageRegistryHelpText() {
+      return this.tokenType === 'group'
+        ? this.$options.translations.groupWritePackageRegistryHelp
+        : this.$options.translations.projectWritePackageRegistryHelp;
+    },
     defaultData() {
       return {
         expiresAt: null,
@@ -110,7 +115,7 @@ export default {
             id: 'deploy_token_write_package_registry',
             isShown: this.$props.packagesRegistryEnabled,
             value: false,
-            helpText: this.$options.translations.writePackageRegistryHelp,
+            helpText: this.getWritePackageRegistryHelpText(),
             scopeName: 'write_package_registry',
           },
         ],

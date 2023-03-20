@@ -97,23 +97,45 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
   end
 
   def create_params
-    params.require(:operations_feature_flag)
-      .permit(:name, :description, :active, :version,
-              scopes_attributes: [:environment_scope, :active,
-                                  strategies: [:name, parameters: [:groupId, :percentage, :userIds]]],
-              strategies_attributes: [:name, :user_list_id,
-                                      parameters: [:groupId, :percentage, :userIds, :rollout, :stickiness],
-                                      scopes_attributes: [:environment_scope]])
+    params.require(:operations_feature_flag).permit(
+      :name,
+      :description,
+      :active,
+      :version,
+      scopes_attributes: [
+        :environment_scope, :active,
+        strategies: [:name, parameters: [:groupId, :percentage, :userIds]]
+      ],
+      strategies_attributes: [
+        :name,
+        :user_list_id,
+        parameters: [:groupId, :percentage, :userIds, :rollout, :stickiness],
+        scopes_attributes: [:environment_scope]
+      ]
+    )
   end
 
   def update_params
-    params.require(:operations_feature_flag)
-          .permit(:name, :description, :active,
-                  scopes_attributes: [:id, :environment_scope, :active, :_destroy,
-                                      strategies: [:name, parameters: [:groupId, :percentage, :userIds]]],
-                  strategies_attributes: [:id, :name, :user_list_id, :_destroy,
-                                          parameters: [:groupId, :percentage, :userIds, :rollout, :stickiness],
-                                          scopes_attributes: [:id, :environment_scope, :_destroy]])
+    params.require(:operations_feature_flag).permit(
+      :name,
+      :description,
+      :active,
+      scopes_attributes: [
+        :id,
+        :environment_scope,
+        :active,
+        :_destroy,
+        strategies: [:name, parameters: [:groupId, :percentage, :userIds]]
+      ],
+      strategies_attributes: [
+        :id,
+        :name,
+        :user_list_id,
+        :_destroy,
+        parameters: [:groupId, :percentage, :userIds, :rollout, :stickiness],
+        scopes_attributes: [:id, :environment_scope, :_destroy]
+      ]
+    )
   end
 
   def feature_flag_json(feature_flag)
@@ -144,7 +166,6 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
   end
 
   def render_error_json(messages, status = :bad_request)
-    render json: { message: messages },
-           status: status
+    render json: { message: messages }, status: status
   end
 end

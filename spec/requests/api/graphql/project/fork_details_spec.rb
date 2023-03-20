@@ -10,12 +10,13 @@ RSpec.describe 'getting project fork details', feature_category: :source_code_ma
   let_it_be(:current_user) { create(:user, maintainer_projects: [project]) }
   let_it_be(:forked_project) { fork_project(project, current_user, repository: true) }
 
+  let(:ref) { 'feature' }
   let(:queried_project) { forked_project }
 
   let(:query) do
     graphql_query_for(:project,
       { full_path: queried_project.full_path }, <<~QUERY
-      forkDetails(ref: "feature"){
+      forkDetails(ref: "#{ref}"){
         ahead
         behind
       }
@@ -33,6 +34,38 @@ RSpec.describe 'getting project fork details', feature_category: :source_code_ma
 
   context 'when a project is not a fork' do
     let(:queried_project) { project }
+
+    it 'does not return fork details' do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data['project']['forkDetails']).to be_nil
+    end
+  end
+
+  context 'when project source is not visible' do
+    it 'does not return fork details' do
+      project.team.truncate
+
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data['project']['forkDetails']).to be_nil
+    end
+  end
+
+  context 'when the specified ref does not exist' do
+    let(:ref) { 'non-existent-branch' }
+
+    it 'does not return fork details' do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data['project']['forkDetails']).to be_nil
+    end
+  end
+
+  context 'when fork_divergence_counts feature flag is disabled' do
+    before do
+      stub_feature_flags(fork_divergence_counts: false)
+    end
 
     it 'does not return fork details' do
       post_graphql(query, current_user: current_user)

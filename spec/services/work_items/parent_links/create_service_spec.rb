@@ -68,6 +68,40 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
       end
     end
 
+    context 'when adjacent is already in place' do
+      using RSpec::Parameterized::TableSyntax
+
+      let_it_be_with_reload(:parent_item) { create(:work_item, :objective, project: project) }
+      let_it_be_with_reload(:current_item) { create(:work_item, :objective, project: project) }
+
+      let_it_be_with_reload(:adjacent) do
+        create(:work_item, :objective, project: project)
+      end
+
+      let_it_be_with_reload(:link_to_adjacent) do
+        create(:parent_link, work_item_parent: parent_item, work_item: adjacent)
+      end
+
+      subject { described_class.new(parent_item, user, { target_issuable: current_item }).execute }
+
+      where(:adjacent_position, :expected_order) do
+        -100 | lazy { [adjacent, current_item] }
+        0    | lazy { [adjacent, current_item] }
+        100  | lazy { [adjacent, current_item] }
+      end
+
+      with_them do
+        before do
+          link_to_adjacent.update!(relative_position: adjacent_position)
+        end
+
+        it 'sets relative positions' do
+          expect { subject }.to change(parent_link_class, :count).by(1)
+          expect(parent_item.work_item_children_by_relative_position).to eq(expected_order)
+        end
+      end
+    end
+
     context 'when there are tasks to relate' do
       let(:params) { { issuable_references: [task1, task2] } }
 

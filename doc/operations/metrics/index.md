@@ -4,7 +4,7 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Monitor your environment's metrics **(FREE)**
+# Monitor your environment's metrics (deprecated) **(FREE)**
 
 > [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541) in GitLab 14.7.
 
@@ -124,7 +124,7 @@ After saving them, they display on the environment metrics dashboard provided th
 
 - A [connected Kubernetes cluster](../../user/clusters/agent/index.md)
   with the matching [environment scope](../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) is used and
-  [Prometheus installed on the cluster](../../user/project/integrations/prometheus.md#enabling-prometheus-integration).
+  [Prometheus installed on the cluster](../../user/project/integrations/prometheus.md#enabling-the-prometheus-integration).
 - Prometheus is [manually configured](../../user/project/integrations/prometheus.md#manual-configuration-of-prometheus).
 
 ![Add New Metric](img/prometheus_add_metric.png)

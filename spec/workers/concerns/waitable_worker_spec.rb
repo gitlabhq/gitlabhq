@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WaitableWorker do
+RSpec.describe WaitableWorker, feature_category: :shared do
   let(:worker) do
     Class.new do
       def self.name

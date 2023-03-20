@@ -1,7 +1,7 @@
 = render 'devise/shared/tab_single', tab_title: 'Resend confirmation instructions'
 .login-box.gl-p-5
   .login-body
-    = form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post, class: 'gl-show-field-errors' }) do |f|
+    = gitlab_ui_form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post, class: 'gl-show-field-errors' }) do |f|
       .devise-errors
         = render "devise/shared/error_messages", resource: resource
       .form-group
@@ -13,7 +13,8 @@
         = recaptcha_tags nonce: content_security_policy_nonce
 
       .gl-mt-5
-        = f.submit _("Resend"), class: 'gl-button btn btn-confirm'
+        = render Pajamas::ButtonComponent.new(block: true, type: :submit, variant: :confirm) do
+          = _("Resend")
 
 .clearfix.prepend-top-20
   = render 'devise/shared/sign_in_link'

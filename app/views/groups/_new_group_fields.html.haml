@@ -31,6 +31,5 @@
 .row
   .col-sm-12
     = f.submit submit_label, pajamas_button: true, data: { qa_selector: 'create_group_button' }
-    = render Pajamas::ButtonComponent.new(href: dashboard_groups_path) do
+    = render Pajamas::ButtonComponent.new(href: @parent_group || dashboard_groups_path) do
       = _('Cancel')
-

@@ -22,6 +22,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   KROKI_URL_ERROR_MESSAGE = 'Please check your Kroki URL setting in ' \
     'Admin Area > Settings > General > Kroki'
 
+  # Validate URIs in this model according to the current value of the `deny_all_requests_except_allowed` property,
+  # rather than the persisted value.
+  ADDRESSABLE_URL_VALIDATION_OPTIONS = { deny_all_requests_except_allowed: ->(settings) { settings.deny_all_requests_except_allowed } }.freeze
+
   enum whats_new_variant: { all_tiers: 0, current_tier: 1, disabled: 2 }, _prefix: true
   enum email_confirmation_setting: { off: 0, soft: 1, hard: 2 }, _prefix: true
 
@@ -30,11 +34,13 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   add_authentication_token_field :static_objects_external_storage_auth_token, encrypted: :required
   add_authentication_token_field :error_tracking_access_token, encrypted: :required
 
-  belongs_to :self_monitoring_project, class_name: "Project", foreign_key: 'instance_administration_project_id'
+  belongs_to :self_monitoring_project, class_name: "Project", foreign_key: :instance_administration_project_id,
+    inverse_of: :application_setting
   belongs_to :push_rule
   alias_attribute :self_monitoring_project_id, :instance_administration_project_id
 
-  belongs_to :instance_group, class_name: "Group", foreign_key: 'instance_administrators_group_id'
+  belongs_to :instance_group, class_name: "Group", foreign_key: :instance_administrators_group_id,
+    inverse_of: :application_setting
   alias_attribute :instance_group_id, :instance_administrators_group_id
   alias_attribute :instance_administrators_group, :instance_group
   alias_attribute :housekeeping_optimize_repository_period, :housekeeping_incremental_repack_period
@@ -90,9 +96,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   chronic_duration_attr :project_runner_token_expiration_interval_human_readable, :project_runner_token_expiration_interval
 
   validates :grafana_url,
-            system_hook_url: {
+            system_hook_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({
               blocked_message: "is blocked: %{exception_message}. #{GRAFANA_URL_ERROR_MESSAGE}"
-            },
+            }),
             if: :grafana_url_absolute?
 
   validate :validate_grafana_url
@@ -116,22 +122,22 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   validates :home_page_url,
             allow_blank: true,
-            addressable_url: true,
+            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS,
             if: :home_page_url_column_exists?
 
   validates :help_page_support_url,
             allow_blank: true,
-            addressable_url: true,
+            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS,
             if: :help_page_support_url_column_exists?
 
   validates :help_page_documentation_base_url,
             length: { maximum: 255, message: N_("is too long (maximum is %{count} characters)") },
             allow_blank: true,
-            addressable_url: true
+            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS
 
   validates :after_sign_out_path,
             allow_blank: true,
-            addressable_url: true
+            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS
 
   validates :abuse_notification_email,
             devise_email: true,
@@ -188,7 +194,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   validates :gitpod_url,
             presence: true,
-            addressable_url: { enforce_sanitization: true },
+            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({ enforce_sanitization: true }),
             if: :gitpod_enabled
 
   validates :mailgun_signing_key,
@@ -348,7 +354,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
             if: :asset_proxy_enabled?
 
   validates :static_objects_external_storage_url,
-            addressable_url: true, allow_blank: true
+            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS, allow_blank: true
 
   validates :static_objects_external_storage_auth_token,
             presence: true,
@@ -421,6 +427,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
             allow_nil: false,
             inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
+  validates :deny_all_requests_except_allowed,
+            allow_nil: false,
+            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
   Gitlab::SSHPublicKey.supported_types.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end
@@ -452,7 +462,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
             if: :external_authorization_service_enabled
 
   validates :external_authorization_service_url,
-            addressable_url: true, allow_blank: true,
+            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS, allow_blank: true,
             if: :external_authorization_service_enabled
 
   validates :external_authorization_service_timeout,
@@ -460,7 +470,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
             if: :external_authorization_service_enabled
 
   validates :spam_check_endpoint_url,
-            addressable_url: { schemes: %w(tls grpc) }, allow_blank: true
+            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({ schemes: %w(tls grpc) }), allow_blank: true
 
   validates :spam_check_endpoint_url,
             presence: true,
@@ -534,7 +544,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :jira_connect_proxy_url,
             length: { maximum: 255, message: N_('is too long (maximum is %{count} characters)') },
             allow_blank: true,
-            public_url: true
+            public_url: ADDRESSABLE_URL_VALIDATION_OPTIONS
 
   with_options(presence: true, numericality: { only_integer: true, greater_than: 0 }) do
     validates :throttle_unauthenticated_api_requests_per_period
@@ -563,14 +573,12 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     validates :throttle_protected_paths_period_in_seconds
   end
 
-  validates :notes_create_limit,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
-  validates :search_rate_limit,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
-  validates :search_rate_limit_unauthenticated,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  with_options(numericality: { only_integer: true, greater_than_or_equal_to: 0 }) do
+    validates :notes_create_limit
+    validates :search_rate_limit
+    validates :search_rate_limit_unauthenticated
+    validates :projects_api_rate_limit_unauthenticated
+  end
 
   validates :notes_create_limit_allowlist,
             length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
@@ -580,7 +588,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
             inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :external_pipeline_validation_service_url,
-            addressable_url: true, allow_blank: true
+            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS, allow_blank: true
 
   validates :external_pipeline_validation_service_timeout,
             allow_nil: true,
@@ -607,10 +615,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :sentry_enabled,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
   validates :sentry_dsn,
-    addressable_url: true, presence: true, length: { maximum: 255 },
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS, presence: true, length: { maximum: 255 },
     if: :sentry_enabled?
   validates :sentry_clientside_dsn,
-    addressable_url: true, allow_blank: true, length: { maximum: 255 },
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS, allow_blank: true, length: { maximum: 255 },
     if: :sentry_enabled?
   validates :sentry_environment,
     presence: true, length: { maximum: 255 },
@@ -620,7 +628,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
   validates :error_tracking_api_url,
     presence: true,
-    addressable_url: true,
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS,
     length: { maximum: 255 },
     if: :error_tracking_enabled?
 
@@ -630,7 +638,12 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
           length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
           allow_nil: false
 
-  validates :public_runner_releases_url, addressable_url: true, presence: true
+  validates :update_runner_versions_enabled,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
+  validates :public_runner_releases_url,
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS,
+    presence: true,
+    if: :update_runner_versions_enabled?
 
   validates :inactive_projects_min_size_mb,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -695,6 +708,15 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
             inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :allow_runner_registration_token,
+            allow_nil: false,
+            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
+  validates :default_syntax_highlighting_theme,
+            allow_nil: false,
+            numericality: { only_integer: true, greater_than: 0 },
+            inclusion: { in: Gitlab::ColorSchemes.valid_ids, message: N_('must be a valid syntax highlighting theme ID') }
+
+  validates :gitlab_dedicated_instance,
             allow_nil: false,
             inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
@@ -820,6 +842,33 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   def personal_access_tokens_disabled?
     false
+  end
+
+  # Overriding the enum check for `email_confirmation_setting` as the feature flag is being removed and is taking a
+  # release M, M.N+1 strategy as noted in:
+  # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107302#note_1286005956
+  def email_confirmation_setting_off?
+    if Feature.enabled?(:soft_email_confirmation)
+      false
+    else
+      super
+    end
+  end
+
+  def email_confirmation_setting_soft?
+    if Feature.enabled?(:soft_email_confirmation)
+      true
+    else
+      super
+    end
+  end
+
+  def email_confirmation_setting_hard?
+    if Feature.enabled?(:soft_email_confirmation)
+      false
+    else
+      super
+    end
   end
 
   private

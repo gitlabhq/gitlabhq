@@ -24,8 +24,6 @@ describe('feature_flags/components/strategies/flexible_rollout.vue', () => {
     if (wrapper?.destroy) {
       wrapper.destroy();
     }
-
-    wrapper = null;
   });
 
   describe('with valid percentage', () => {

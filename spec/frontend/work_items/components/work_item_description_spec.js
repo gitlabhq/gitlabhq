@@ -99,10 +99,6 @@ describe('WorkItemDescription', () => {
     }
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('editing description with workItemsMvc FF enabled', () => {
     beforeEach(() => {
       workItemsMvc = true;
@@ -117,10 +113,13 @@ describe('WorkItemDescription', () => {
       await createComponent({ isEditing: true });
 
       expect(findMarkdownEditor().props()).toMatchObject({
-        autocompleteDataSources: autocompleteDataSources(fullPath, iid),
         supportsQuickActions: true,
         renderMarkdownPath: markdownPreviewPath(fullPath, iid),
         quickActionsDocsPath: wrapper.vm.$options.quickActionsDocsPath,
+      });
+
+      expect(findMarkdownEditor().vm.$attrs).toMatchObject({
+        'autocomplete-data-sources': autocompleteDataSources(fullPath, iid),
       });
     });
   });

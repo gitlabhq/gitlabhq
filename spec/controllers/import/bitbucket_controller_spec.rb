@@ -48,11 +48,13 @@ RSpec.describe Import::BitbucketController do
       let(:expires_at) { Time.current + 1.day }
       let(:expires_in) { 1.day }
       let(:access_token) do
-        double(token: token,
-               secret: secret,
-               expires_at: expires_at,
-               expires_in: expires_in,
-               refresh_token: refresh_token)
+        double(
+          token: token,
+          secret: secret,
+          expires_at: expires_at,
+          expires_in: expires_in,
+          refresh_token: refresh_token
+        )
       end
 
       before do
@@ -63,10 +65,10 @@ RSpec.describe Import::BitbucketController do
         allow_any_instance_of(OAuth2::Client)
           .to receive(:get_token)
           .with(hash_including(
-                  'grant_type' => 'authorization_code',
-                  'code' => code,
-                  'redirect_uri' => users_import_bitbucket_callback_url),
-                {})
+            'grant_type' => 'authorization_code',
+            'code' => code,
+            'redirect_uri' => users_import_bitbucket_callback_url),
+            {})
           .and_return(access_token)
         stub_omniauth_provider('bitbucket')
 

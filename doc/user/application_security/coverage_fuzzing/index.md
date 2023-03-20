@@ -40,7 +40,7 @@ You can use the following fuzzing engines to test the specified languages.
 | Language                                    | Fuzzing Engine                                                                                       | Example                                                                                                                         |
 |---------------------------------------------|------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
 | C/C++                                       | [libFuzzer](https://llvm.org/docs/LibFuzzer.html)                                                    | [c-cpp-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/c-cpp-fuzzing-example)                   |
-| GoLang                                      | [go-fuzz (libFuzzer support)](https://github.com/dvyukov/go-fuzz)                                    | [go-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example)                 |
+| Go                                          | [go-fuzz (libFuzzer support)](https://github.com/dvyukov/go-fuzz)                                    | [go-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example)                 |
 | Swift                                       | [libFuzzer](https://github.com/apple/swift/blob/master/docs/libFuzzerIntegration.md)                 | [swift-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/swift-fuzzing-example)           |
 | Rust                                        | [cargo-fuzz (libFuzzer support)](https://github.com/rust-fuzz/cargo-fuzz)                            | [rust-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/rust-fuzzing-example)             |
 | Java                                        | [Javafuzz](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/javafuzz) (recommended) | [javafuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/javafuzz-fuzzing-example)     |
@@ -54,7 +54,7 @@ You can use the following fuzzing engines to test the specified languages.
 To confirm the status of coverage-guided fuzz testing:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. On the left sidebar, select **Security and Compliance > Security configuration**.
 1. In the **Coverage Fuzzing** section the status is:
    - **Not configured**
    - **Enabled**
@@ -168,7 +168,7 @@ artifacts files you can download from the CI/CD pipeline. Also, a project member
 To view details of the corpus registry:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. On the left sidebar, select **Security and Compliance > Security configuration**.
 1. In the **Coverage Fuzzing** section, select **Manage corpus**.
 
 ### Create a corpus in the corpus registry
@@ -196,7 +196,7 @@ provided by the `COVFUZZ_CORPUS_NAME` variable. The corpus is updated on every p
 To upload an existing corpus file:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. On the left sidebar, select **Security and Compliance > Security configuration**.
 1. In the **Coverage Fuzzing** section, select **Manage corpus**.
 1. Select **New corpus**.
 1. Complete the fields.

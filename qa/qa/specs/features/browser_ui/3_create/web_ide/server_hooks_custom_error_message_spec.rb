@@ -1,13 +1,8 @@
 # frozen_string_literal: true
 
+# TODO: remove this test when 'vscode_web_ide' feature flag is default enabled
 module QA
-  RSpec.describe 'Create', :skip_live_env, except: { job: 'review-qa-*' },
-    feature_flag: { name: 'vscode_web_ide', scope: :global },
-    product_group: :editor,
-    quarantine: {
-      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/387928',
-      type: :stale
-    } do
+  RSpec.describe 'Create', :skip_live_env, except: { job: 'review-qa-*' }, product_group: :editor do
     describe 'Git Server Hooks' do
       let(:file_path) { File.join(Runtime::Path.fixtures_path, 'web_ide', 'README.md') }
 
@@ -20,13 +15,8 @@ module QA
       end
 
       before do
-        Runtime::Feature.disable(:vscode_web_ide)
         Flow::Login.sign_in
         project.visit!
-      end
-
-      after do
-        Runtime::Feature.enable(:vscode_web_ide)
       end
 
       context 'with custom error messages' do

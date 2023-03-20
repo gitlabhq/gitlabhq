@@ -6,6 +6,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Import API **(FREE)**
 
+Use the Import API to import repositories from GitHub or Bitbucket Server.
+
+Related APIs include:
+
+- [Group migration by direct transfer API](bulk_imports.md)
+- [Group import and export API](group_import_export.md)
+- [Project import and export API](project_import_export.md)
+
+## Prerequisites
+
+For information on prerequisites for using the Import API, see:
+
+- [Prerequisites for GitHub importer](../user/project/import/github.md#prerequisites)
+- [Prerequisites for Bitbucket Server importer](../user/project/import/bitbucket_server.md#import-your-bitbucket-repositories)
+
 ## Import repository from GitHub
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups if the namespace or group name specified in `target_namespace` doesn't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken or `target_namespace` is blank.
@@ -77,7 +92,7 @@ token:
 - The GitLab project inherits the original project's visibility settings. As a result, the project is publicly accessible if the original project is public.
 - If the `path` or `target_namespace` does not exist, the project import fails.
 
-## Cancel GitHub project import
+### Cancel GitHub project import
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364783) in GitLab 15.5.
 
@@ -122,13 +137,14 @@ Returns the following status codes:
 - `400 Bad Request`: the project import cannot be canceled.
 - `404 Not Found`: the project associated with `project_id` does not exist.
 
-## Import GitHub gists into GitLab snippets
+### Import GitHub gists into GitLab snippets
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371099) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `github_import_gists`. Disabled by default. Enabled on GitLab.com.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371099) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `github_import_gists`. Disabled by default. Enabled on GitLab.com.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/386579) in GitLab 15.10.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `github_import_gists`.
+On self-managed GitLab, this feature is available by default. To hide the feature,
+ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `github_import_gists`.
 On GitLab.com, this feature is available.
 
 You can use the GitLab API to import personal GitHub gists (with up to 10 files) into personal GitLab snippets.

@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle, class-methods-use-this */
 import { escape, find, countBy } from 'lodash';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { n__, s__, __, sprintf } from '~/locale';
 import { getUsers, getGroups, getDeployKeys } from './api/access_dropdown_api';
 import { LEVEL_TYPES, LEVEL_ID_PROP, ACCESS_LEVELS, ACCESS_LEVEL_NONE } from './constants';
@@ -469,6 +469,14 @@ export default class AccessDropdown {
       }
     }
 
+    if (this.accessLevel === ACCESS_LEVELS.CREATE && deployKeys.length) {
+      consolidatedData = consolidatedData.concat(
+        [{ type: 'divider' }],
+        [{ type: 'header', content: s__('AccessDropdown|Deploy Keys') }],
+        deployKeys,
+      );
+    }
+
     return consolidatedData;
   }
 
@@ -506,7 +514,10 @@ export default class AccessDropdown {
         break;
       case LEVEL_TYPES.DEPLOY_KEY:
         groupRowEl =
-          this.accessLevel === ACCESS_LEVELS.PUSH ? this.deployKeyRowHtml(item, isActive) : '';
+          this.accessLevel === ACCESS_LEVELS.PUSH || this.accessLevel === ACCESS_LEVELS.CREATE
+            ? this.deployKeyRowHtml(item, isActive)
+            : '';
+
         break;
       case LEVEL_TYPES.GROUP:
         groupRowEl = this.groupRowHtml(item, isActive);

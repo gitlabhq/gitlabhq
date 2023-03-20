@@ -48,15 +48,13 @@ export default {
     addDeployFreezeButton() {
       return {
         text: this.isEditing ? __('Save deploy freeze') : __('Add deploy freeze'),
-        attributes: [
-          { variant: 'confirm' },
-          {
-            disabled:
-              !isValidCron(this.freezeStartCron) ||
-              !isValidCron(this.freezeEndCron) ||
-              !this.selectedTimezone,
-          },
-        ],
+        attributes: {
+          variant: 'confirm',
+          disabled:
+            !isValidCron(this.freezeStartCron) ||
+            !isValidCron(this.freezeEndCron) ||
+            !this.selectedTimezone,
+        },
       };
     },
     invalidFreezeStartCron() {

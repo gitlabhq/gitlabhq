@@ -62,10 +62,6 @@ describe('MRWidgetMerged', () => {
     jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findButtonByText = (text) =>
     wrapper.findAll('button').wrappers.find((w) => w.text() === text);
   const findRemoveSourceBranchButton = () => findButtonByText('Delete source branch');

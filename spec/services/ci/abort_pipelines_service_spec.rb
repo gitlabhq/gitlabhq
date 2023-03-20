@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::AbortPipelinesService do
+RSpec.describe Ci::AbortPipelinesService, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, namespace: user.namespace) }
 

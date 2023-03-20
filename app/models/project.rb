@@ -19,6 +19,7 @@ class Project < ApplicationRecord
   include Presentable
   include HasRepository
   include HasWiki
+  include WebHooks::HasWebHooks
   include CanMoveRepositoryStorage
   include Routable
   include GroupDescendant
@@ -41,7 +42,6 @@ class Project < ApplicationRecord
   include BlocksUnsafeSerialization
   include Subquery
   include IssueParent
-  include WebHooks::HasWebHooks
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override
@@ -89,6 +89,14 @@ class Project < ApplicationRecord
 
   DEFAULT_SQUASH_COMMIT_TEMPLATE = '%{title}'
 
+  PROJECT_FEATURES_DEFAULTS = {
+    issues: gitlab_config_features.issues,
+    merge_requests: gitlab_config_features.merge_requests,
+    builds: gitlab_config_features.builds,
+    wiki: gitlab_config_features.wiki,
+    snippets: gitlab_config_features.snippets
+  }.freeze
+
   cache_markdown_field :description, pipeline: :description
 
   attribute :packages_enabled, default: true
@@ -101,18 +109,14 @@ class Project < ApplicationRecord
   attribute :autoclose_referenced_issues, default: true
   attribute :ci_config_path, default: -> { Gitlab::CurrentSettings.default_ci_config_path }
 
-  default_value_for :issues_enabled, gitlab_config_features.issues
-  default_value_for :merge_requests_enabled, gitlab_config_features.merge_requests
-  default_value_for :builds_enabled, gitlab_config_features.builds
-  default_value_for :wiki_enabled, gitlab_config_features.wiki
-  default_value_for :snippets_enabled, gitlab_config_features.snippets
-
   add_authentication_token_field :runners_token,
                                  encrypted: -> { Feature.enabled?(:projects_tokens_optional_encryption) ? :optional : :required },
-                                 prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
+                                 format_with_prefix: :runners_token_prefix,
+                                 require_prefix_for_validation: true
 
   # Storage specific hooks
   after_initialize :use_hashed_storage
+  after_initialize :set_project_feature_defaults, if: :new_record?
   before_validation :mark_remote_mirrors_for_removal, if: -> { RemoteMirror.table_exists? }
 
   before_validation :ensure_project_namespace_in_sync
@@ -128,7 +132,6 @@ class Project < ApplicationRecord
   after_create -> { create_or_load_association(:pages_metadatum) }
   after_create :set_timestamps_for_create
   after_create :check_repository_absence!
-  after_update :update_forks_visibility_level
   before_destroy :remove_private_deploy_keys
   after_destroy :remove_exports
   after_save :update_project_statistics, if: :saved_change_to_namespace_id?
@@ -168,6 +171,8 @@ class Project < ApplicationRecord
   has_one :last_event, -> { order 'events.created_at DESC' }, class_name: 'Event'
   has_many :boards
 
+  has_many :application_setting, inverse_of: :self_monitoring_project
+
   def self.integration_association_name(name)
     "#{name}_integration"
   end
@@ -188,6 +193,7 @@ class Project < ApplicationRecord
   has_one :emails_on_push_integration, class_name: 'Integrations::EmailsOnPush'
   has_one :ewm_integration, class_name: 'Integrations::Ewm'
   has_one :external_wiki_integration, class_name: 'Integrations::ExternalWiki'
+  has_one :google_play_integration, class_name: 'Integrations::GooglePlay'
   has_one :hangouts_chat_integration, class_name: 'Integrations::HangoutsChat'
   has_one :harbor_integration, class_name: 'Integrations::Harbor'
   has_one :irker_integration, class_name: 'Integrations::Irker'
@@ -208,6 +214,7 @@ class Project < ApplicationRecord
   has_one :shimo_integration, class_name: 'Integrations::Shimo'
   has_one :slack_integration, class_name: 'Integrations::Slack'
   has_one :slack_slash_commands_integration, class_name: 'Integrations::SlackSlashCommands'
+  has_one :squash_tm_integration, class_name: 'Integrations::SquashTm'
   has_one :teamcity_integration, class_name: 'Integrations::Teamcity'
   has_one :unify_circuit_integration, class_name: 'Integrations::UnifyCircuit'
   has_one :webex_teams_integration, class_name: 'Integrations::WebexTeams'
@@ -238,14 +245,22 @@ class Project < ApplicationRecord
   has_many :fork_network_projects, through: :fork_network, source: :projects
 
   # Packages
-  has_many :packages, class_name: 'Packages::Package'
-  has_many :package_files, through: :packages, class_name: 'Packages::PackageFile'
+  has_many :packages,
+           class_name: 'Packages::Package'
+  has_many :package_files,
+           through: :packages, class_name: 'Packages::PackageFile'
   # repository_files must be destroyed by ruby code in order to properly remove carrierwave uploads
-  has_many :repository_files, inverse_of: :project, class_name: 'Packages::Rpm::RepositoryFile',
-                              dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :rpm_repository_files,
+           inverse_of: :project,
+           class_name: 'Packages::Rpm::RepositoryFile',
+           dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   # debian_distributions and associated component_files must be destroyed by ruby code in order to properly remove carrierwave uploads
-  has_many :debian_distributions, class_name: 'Packages::Debian::ProjectDistribution', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_one :packages_cleanup_policy, class_name: 'Packages::Cleanup::Policy', inverse_of: :project
+  has_many :debian_distributions,
+           class_name: 'Packages::Debian::ProjectDistribution',
+           dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_one :packages_cleanup_policy,
+          class_name: 'Packages::Cleanup::Policy',
+          inverse_of: :project
 
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
   has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -259,6 +274,7 @@ class Project < ApplicationRecord
   has_one :project_setting, inverse_of: :project, autosave: true
   has_one :alerting_setting, inverse_of: :project, class_name: 'Alerting::ProjectAlertingSetting'
   has_one :service_desk_setting, class_name: 'ServiceDeskSetting'
+  has_one :service_desk_custom_email_verification, class_name: 'ServiceDesk::CustomEmailVerification'
 
   # Merge requests for target project should be removed with it
   has_many :merge_requests, foreign_key: 'target_project_id', inverse_of: :target_project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -371,7 +387,6 @@ class Project < ApplicationRecord
           inverse_of: :project
   has_many :stages, class_name: 'Ci::Stage', inverse_of: :project
   has_many :ci_refs, class_name: 'Ci::Ref', inverse_of: :project
-
   has_many :pipeline_metadata, class_name: 'Ci::PipelineMetadata', inverse_of: :project
   has_many :pending_builds, class_name: 'Ci::PendingBuild'
   has_many :builds, class_name: 'Ci::Build', inverse_of: :project
@@ -874,7 +889,7 @@ class Project < ApplicationRecord
     def reference_pattern
       %r{
         (?<!#{Gitlab::PathRegex::PATH_START_CHAR})
-        ((?<namespace>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})\/)?
+        ((?<namespace>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})/)?
         (?<project>#{Gitlab::PathRegex::PROJECT_PATH_FORMAT_REGEX})
       }xo
     end
@@ -950,25 +965,42 @@ class Project < ApplicationRecord
         .where(pending_delete: false)
         .where(archived: false)
     end
+
+    def project_features_defaults
+      PROJECT_FEATURES_DEFAULTS
+    end
+
+    def by_pages_enabled_unique_domain(domain)
+      without_deleted
+        .joins(:project_setting)
+        .find_by(project_setting: {
+          pages_unique_domain_enabled: true,
+          pages_unique_domain: domain
+        })
+    end
   end
 
   def initialize(attributes = nil)
-    # We can't use default_value_for because the database has a default
-    # value of 0 for visibility_level. If someone attempts to create a
-    # private project, default_value_for will assume that the
-    # visibility_level hasn't changed and will use the application
-    # setting default, which could be internal or public. For projects
-    # inside a private group, those levels are invalid.
-    #
-    # To fix the problem, we assign the actual default in the application if
-    # no explicit visibility has been initialized.
+    # We assign the actual snippet default if no explicit visibility has been initialized.
     attributes ||= {}
 
     unless visibility_attribute_present?(attributes)
       attributes[:visibility_level] = Gitlab::CurrentSettings.default_project_visibility
     end
 
+    @init_attributes = attributes
+
     super
+  end
+
+  # Remove along with ProjectFeaturesCompatibility module
+  def set_project_feature_defaults
+    self.class.project_features_defaults.each do |attr, value|
+      # If the deprecated _enabled or the accepted _access_level attribute is specified, we don't need to set the default
+      next unless @init_attributes[:"#{attr}_enabled"].nil? && @init_attributes[:"#{attr}_access_level"].nil?
+
+      public_send("#{attr}_enabled=", value) # rubocop:disable GitlabSecurity/PublicSend
+    end
   end
 
   def parent_loaded?
@@ -1077,8 +1109,10 @@ class Project < ApplicationRecord
   end
 
   def preload_protected_branches
-    preloader = ActiveRecord::Associations::Preloader.new
-    preloader.preload(self, protected_branches: [:push_access_levels, :merge_access_levels])
+    ActiveRecord::Associations::Preloader.new(
+      records: [self],
+      associations: { protected_branches: [:push_access_levels, :merge_access_levels] }
+    ).call
   end
 
   # returns all ancestor-groups upto but excluding the given namespace
@@ -1089,11 +1123,7 @@ class Project < ApplicationRecord
   end
 
   def ancestors(hierarchy_order: nil)
-    if Feature.enabled?(:linear_project_ancestors, self)
-      group&.self_and_ancestors(hierarchy_order: hierarchy_order) || Group.none
-    else
-      ancestors_upto(hierarchy_order: hierarchy_order)
-    end
+    group&.self_and_ancestors(hierarchy_order: hierarchy_order) || Group.none
   end
 
   def ancestors_upto_ids(...)
@@ -1154,10 +1184,6 @@ class Project < ApplicationRecord
     { scope: :project, status: auto_devops&.enabled || Feature.enabled?(:force_autodevops_on_by_default, self) }
   end
 
-  def unlink_forks_upon_visibility_decrease_enabled?
-    Feature.enabled?(:unlink_fork_network_upon_visibility_decrease, self)
-  end
-
   # LFS and hashed repository storage are required for using Design Management.
   def design_management_enabled?
     lfs_enabled? && hashed_storage?(:repository)
@@ -1174,15 +1200,6 @@ class Project < ApplicationRecord
   def design_repository
     strong_memoize(:design_repository) do
       Gitlab::GlRepository::DESIGN.repository_for(self)
-    end
-  end
-
-  # Because we use default_value_for we need to be sure
-  # packages_enabled= method does exist even if we rollback migration.
-  # Otherwise many tests from spec/migrations will fail.
-  def packages_enabled=(value)
-    if has_attribute?(:packages_enabled)
-      write_attribute(:packages_enabled, value)
     end
   end
 
@@ -1272,6 +1289,18 @@ class Project < ApplicationRecord
     import_state&.human_status_name || 'none'
   end
 
+  def beautified_import_status_name
+    if import_finished?
+      return 'completed' unless import_checksums.present?
+
+      fetched = import_checksums['fetched']
+      imported = import_checksums['imported']
+      fetched.keys.any? { |key| fetched[key] != imported[key] } ? 'partially completed' : 'completed'
+    else
+      import_status
+    end
+  end
+
   def add_import_job
     job_id =
       if forked?
@@ -1312,6 +1341,11 @@ class Project < ApplicationRecord
   def ci_config_path=(value)
     # Strip all leading slashes so that //foo -> foo
     super(value&.delete("\0"))
+  end
+
+  # Used by Import/Export to export commit notes
+  def commit_notes
+    notes.where(noteable_type: "Commit")
   end
 
   def import_url=(value)
@@ -1631,7 +1665,7 @@ class Project < ApplicationRecord
 
   def disabled_integrations
     disabled_integrations = []
-    disabled_integrations << 'apple_app_store' unless Feature.enabled?(:apple_app_store_integration, self)
+    disabled_integrations << 'google_play' unless Feature.enabled?(:google_play_integration, self)
     disabled_integrations
   end
 
@@ -1935,19 +1969,6 @@ class Project < ApplicationRecord
     create_repository(force: true) unless repository_exists?
   end
 
-  # update visibility_level of forks
-  def update_forks_visibility_level
-    return if unlink_forks_upon_visibility_decrease_enabled?
-    return unless visibility_level < visibility_level_before_last_save
-
-    forks.each do |forked_project|
-      if forked_project.visibility_level > visibility_level
-        forked_project.visibility_level = visibility_level
-        forked_project.save!
-      end
-    end
-  end
-
   def allowed_to_share_with_group?
     !namespace.share_with_group_lock
   end
@@ -2080,7 +2101,11 @@ class Project < ApplicationRecord
 
   # rubocop: disable CodeReuse/ServiceClass
   def open_merge_requests_count(_current_user = nil)
-    Projects::OpenMergeRequestsCountService.new(self).count
+    BatchLoader.for(self).batch do |projects, loader|
+      ::Projects::BatchOpenMergeRequestsCountService.new(projects)
+        .refresh_cache_and_retrieve_data
+        .each { |project, count| loader.call(project, count) }
+    end
   end
   # rubocop: enable CodeReuse/ServiceClass
 
@@ -2107,23 +2132,13 @@ class Project < ApplicationRecord
     ensure_runners_token!
   end
 
-  override :format_runners_token
-  def format_runners_token(token)
-    "#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}#{token}"
-  end
-
   def pages_deployed?
     pages_metadatum&.deployed?
   end
 
-  def pages_namespace_url
-    # The host in URL always needs to be downcased
-    Gitlab.config.pages.url.sub(%r{^https?://}) do |prefix|
-      "#{prefix}#{pages_subdomain}."
-    end.downcase
-  end
-
   def pages_url
+    return pages_unique_url if pages_unique_domain_enabled?
+
     url = pages_namespace_url
     url_path = full_path.partition('/').last
     namespace_url = "#{Settings.pages.protocol}://#{url_path}".downcase
@@ -2139,6 +2154,14 @@ class Project < ApplicationRecord
     return url if url == namespace_url
 
     "#{url}/#{url_path}"
+  end
+
+  def pages_unique_url
+    pages_url_for(project_setting.pages_unique_domain)
+  end
+
+  def pages_namespace_url
+    pages_url_for(pages_subdomain)
   end
 
   def pages_subdomain
@@ -2809,7 +2832,7 @@ class Project < ApplicationRecord
   end
 
   def all_protected_branches
-    if Feature.enabled?(:group_protected_branches)
+    if Feature.enabled?(:group_protected_branches, group)
       @all_protected_branches ||= ProtectedBranch.from_union([protected_branches, group_protected_branches])
     else
       protected_branches
@@ -2971,7 +2994,7 @@ class Project < ApplicationRecord
   end
 
   def ci_inbound_job_token_scope_enabled?
-    return false unless ci_cd_settings
+    return true unless ci_cd_settings
 
     ci_cd_settings.inbound_job_token_scope_enabled?
   end
@@ -3121,6 +3144,18 @@ class Project < ApplicationRecord
 
   private
 
+  def pages_unique_domain_enabled?
+    Feature.enabled?(:pages_unique_domain) &&
+      project_setting.pages_unique_domain_enabled?
+  end
+
+  def pages_url_for(domain)
+    # The host in URL always needs to be downcased
+    Gitlab.config.pages.url.sub(%r{^https?://}) do |prefix|
+      "#{prefix}#{domain}."
+    end.downcase
+  end
+
   # overridden in EE
   def project_group_links_with_preload
     project_group_links
@@ -3224,6 +3259,8 @@ class Project < ApplicationRecord
     case from
     when Project
       namespace_id != from.namespace_id
+    when Namespaces::ProjectNamespace
+      namespace_id != from.parent_id
     when Namespace
       namespace != from
     when User
@@ -3233,9 +3270,14 @@ class Project < ApplicationRecord
 
   # Check if a reference is being done cross-project
   def cross_project_reference?(from)
-    return true if from.is_a?(Namespace)
-
-    from && self != from
+    case from
+    when Namespaces::ProjectNamespace
+      project_namespace_id != from.id
+    when Namespace
+      true
+    else
+      from && self != from
+    end
   end
 
   def update_project_statistics
@@ -3400,6 +3442,10 @@ class Project < ApplicationRecord
     elsif project_setting
       project_setting.emails_enabled = !emails_disabled
     end
+  end
+
+  def runners_token_prefix
+    RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
   end
 end
 

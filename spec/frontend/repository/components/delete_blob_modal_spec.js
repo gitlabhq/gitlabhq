@@ -49,10 +49,6 @@ describe('DeleteBlobModal', () => {
     await findCommitTextarea().vm.$emit('input', commitText);
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders Modal component', () => {
     createComponent();
 
@@ -187,7 +183,7 @@ describe('DeleteBlobModal', () => {
       });
 
       it('disables submit button', async () => {
-        expect(findModal().props('actionPrimary').attributes[0]).toEqual(
+        expect(findModal().props('actionPrimary').attributes).toEqual(
           expect.objectContaining({ disabled: true }),
         );
       });
@@ -207,7 +203,7 @@ describe('DeleteBlobModal', () => {
       });
 
       it('enables submit button', async () => {
-        expect(findModal().props('actionPrimary').attributes[0]).toEqual(
+        expect(findModal().props('actionPrimary').attributes).toEqual(
           expect.objectContaining({ disabled: false }),
         );
       });

@@ -1,6 +1,6 @@
 ---
-stage: Manage
-group: Organization
+stage: Data Stores
+group: Tenant Scale
 info: 'To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments'
 type: reference, index, howto
 ---
@@ -87,7 +87,7 @@ Use the toggles to enable or disable features in the project.
 | **Container Registry**           |                           | Activates a [registry](../../packages/container_registry/index.md) for your Docker images.                                                             |
 | **Analytics**                    | ✓                         | Enables [analytics](../../analytics/index.md).                                                                                                         |
 | **Requirements**                 | ✓                         | Control access to [Requirements Management](../requirements/index.md).                                                                                 |
-| **Security & Compliance**        | ✓                         | Control access to [security features](../../application_security/index.md).                                                                            |
+| **Security and Compliance**      | ✓                         | Control access to [security features](../../application_security/index.md).                                                                            |
 | **Wiki**                         | ✓                         | Enables a separate system for [documentation](../wiki/index.md).                                                                                       |
 | **Snippets**                     | ✓                         | Enables [sharing of code and text](../../snippets.md).                                                                                                 |
 | **Pages**                        | ✓                         | Allows you to [publish static websites](../pages/index.md).                                                                                            |

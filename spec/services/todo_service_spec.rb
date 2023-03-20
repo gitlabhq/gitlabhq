@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TodoService do
+RSpec.describe TodoService, feature_category: :team_planning do
   include AfterNextHelpers
 
   let_it_be(:project) { create(:project, :repository) }
@@ -211,7 +211,6 @@ RSpec.describe TodoService do
         end
 
         it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-          let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
           let(:namespace) { project.namespace }
           let(:category) { described_class.to_s }
           let(:action) { 'incident_management_incident_todo' }

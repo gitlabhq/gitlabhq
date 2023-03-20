@@ -31,8 +31,6 @@ describe('Chunk Line component', () => {
     createComponent();
   });
 
-  afterEach(() => wrapper.destroy());
-
   describe('rendering', () => {
     it('renders a blame link', () => {
       expect(findBlameLink().attributes()).toMatchObject({

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RetryPipelineWorker do
+RSpec.describe Ci::RetryPipelineWorker, feature_category: :continuous_integration do
   describe '#perform' do
     subject(:perform) { described_class.new.perform(pipeline_id, user_id) }
 

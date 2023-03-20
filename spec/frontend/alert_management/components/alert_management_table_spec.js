@@ -68,7 +68,7 @@ describe('AlertManagementTable', () => {
         },
         stubs,
         directives: {
-          GlTooltip: createMockDirective(),
+          GlTooltip: createMockDirective('gl-tooltip'),
         },
       }),
     );

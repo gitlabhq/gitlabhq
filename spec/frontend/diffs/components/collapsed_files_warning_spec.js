@@ -45,10 +45,6 @@ describe('CollapsedFilesWarning', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when there is more than one file', () => {
     it.each`
       present  | dismissed

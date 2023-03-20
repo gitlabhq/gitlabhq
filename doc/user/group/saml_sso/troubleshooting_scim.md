@@ -79,7 +79,7 @@ You must not:
 
 When the SCIM app changes:
 
-- Users can follow the instructions in the [Change the SAML app](index.md#change-the-saml-app) section.
+- Users can follow the instructions in the [Change the SAML app](index.md#change-the-identity-provider) section.
 - Administrators of the identity provider can:
   1. Remove users from the SCIM app, which unlinks all removed users.
   1. Turn on sync for the new SCIM app to [link existing users](scim_setup.md#link-scim-and-saml-identities).

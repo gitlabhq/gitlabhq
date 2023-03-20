@@ -398,4 +398,36 @@ describe('text_utility', () => {
       expect(textUtils.base64DecodeUnicode('8J+YgA==')).toBe('😀');
     });
   });
+
+  describe('findInvalidBranchNameCharacters', () => {
+    const invalidChars = [' ', '~', '^', ':', '?', '*', '[', '..', '@{', '\\', '//'];
+    const badBranchName = 'branch-with all these ~ ^ : ? * [ ] \\ // .. @{ } //';
+    const goodBranch = 'branch-with-no-errrors';
+
+    it('returns an array of invalid characters in a branch name', () => {
+      const chars = textUtils.findInvalidBranchNameCharacters(badBranchName);
+      chars.forEach((char) => {
+        expect(invalidChars).toContain(char);
+      });
+    });
+
+    it('returns an empty array with no invalid characters', () => {
+      expect(textUtils.findInvalidBranchNameCharacters(goodBranch)).toEqual([]);
+    });
+  });
+
+  describe('humanizeBranchValidationErrors', () => {
+    it.each`
+      errors               | message
+      ${[' ']}             | ${"Can't contain spaces"}
+      ${['?', '//', ' ']}  | ${"Can't contain spaces, ?, //"}
+      ${['\\', '[', '..']} | ${"Can't contain \\, [, .."}
+    `('returns an $message with $errors', ({ errors, message }) => {
+      expect(textUtils.humanizeBranchValidationErrors(errors)).toEqual(message);
+    });
+
+    it('returns an empty string with no invalid characters', () => {
+      expect(textUtils.humanizeBranchValidationErrors([])).toEqual('');
+    });
+  });
 });

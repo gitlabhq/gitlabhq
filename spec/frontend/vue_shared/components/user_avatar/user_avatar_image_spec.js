@@ -20,10 +20,6 @@ describe('User Avatar Image Component', () => {
 
   const findAvatar = () => wrapper.findComponent(GlAvatar);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Initialization', () => {
     beforeEach(() => {
       wrapper = shallowMount(UserAvatarImage, {

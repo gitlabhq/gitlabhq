@@ -2,10 +2,10 @@
 
 return if Rails.env.production?
 
-require 'graphql/rake_task'
-require_relative '../../../tooling/graphql/docs/renderer'
-
 namespace :gitlab do
+  require 'graphql/rake_task'
+  require_relative '../../../tooling/graphql/docs/renderer'
+
   OUTPUT_DIR = Rails.root.join("doc/api/graphql/reference")
   TEMP_SCHEMA_DIR = Rails.root.join('tmp/tests/graphql')
   TEMPLATES_DIR = 'tooling/graphql/docs/templates/'
@@ -86,8 +86,10 @@ namespace :gitlab do
         else
           warn("#{'OK'.color(:green)}    #{defn.file}") if errs.empty?
           errs.each do |err|
+            path_info = "(at #{err.path.join('.')})" if err.path
+
             warn(<<~MSG)
-            #{'ERROR'.color(:red)} #{defn.file}: #{err.message} (at #{err.path.join('.')})
+            #{'ERROR'.color(:red)} #{defn.file}: #{err.message} #{path_info}
             MSG
           end
         end

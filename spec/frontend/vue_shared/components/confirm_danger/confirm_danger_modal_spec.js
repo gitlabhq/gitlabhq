@@ -24,7 +24,7 @@ describe('Confirm Danger Modal', () => {
   const findAdditionalMessage = () => wrapper.findByTestId('confirm-danger-message');
   const findPrimaryAction = () => findModal().props('actionPrimary');
   const findCancelAction = () => findModal().props('actionCancel');
-  const findPrimaryActionAttributes = (attr) => findPrimaryAction().attributes[0][attr];
+  const findPrimaryActionAttributes = (attr) => findPrimaryAction().attributes[attr];
 
   const createComponent = ({ provide = {} } = {}) =>
     shallowMountExtended(ConfirmDangerModal, {
@@ -40,10 +40,6 @@ describe('Confirm Danger Modal', () => {
     wrapper = createComponent({
       provide: { confirmDangerMessage, confirmButtonText, cancelButtonText },
     });
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('renders the default warning message', () => {

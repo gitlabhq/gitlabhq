@@ -27,7 +27,7 @@ module Gitlab
               table_max_value = define_batchable_model(migration.table_name, connection: connection)
                                   .maximum(migration.column_name)
 
-              largest_batch_start = table_max_value - migration.batch_size
+              largest_batch_start = [table_max_value - migration.batch_size, smallest_batch_start].max
 
               # variance is the portion of the batch range that we shrink between variance * 0 and variance * 1
               # to pick actual batches to sample.

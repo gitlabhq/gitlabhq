@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe NewNoteWorker do
+RSpec.describe NewNoteWorker, feature_category: :team_planning do
   context 'when Note found' do
     let(:note) { create(:note) }
 

@@ -77,8 +77,10 @@ module NotesHelper
       line_type: line_type
     }
 
-    button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',
-                           data: data, title: 'Add a reply'
+    button_tag 'Reply...',
+      class: 'btn btn-text-field js-discussion-reply-button',
+      data: data,
+      title: 'Add a reply'
   end
 
   def note_max_access_for_user(note)
@@ -151,7 +153,6 @@ module NotesHelper
   def initial_notes_data(autocomplete)
     {
       notesUrl: notes_url,
-      notesIds: @noteable.notes.pluck(:id), # rubocop: disable CodeReuse/ActiveRecord
       now: Time.now.to_i,
       diffView: diff_view,
       enableGFM: {

@@ -26,6 +26,8 @@ import {
   REPORT_TYPE_LICENSE_COMPLIANCE,
   REPORT_TYPE_SAST,
 } from '~/vue_shared/security_reports/constants';
+import { USER_FACING_ERROR_MESSAGE_PREFIX } from '~/lib/utils/error_message';
+import { manageViaMRErrorMessage } from '../constants';
 
 const upgradePath = '/upgrade';
 const autoDevopsHelpPagePath = '/autoDevopsHelpPagePath';
@@ -129,10 +131,6 @@ describe('App component', () => {
   const findAutoDevopsEnabledAlert = () => wrapper.findComponent(AutoDevopsEnabledAlert);
   const findVulnerabilityManagementTab = () => wrapper.findByTestId('vulnerability-management-tab');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('basic structure', () => {
     beforeEach(() => {
       createComponent();
@@ -141,7 +139,7 @@ describe('App component', () => {
     it('renders main-heading with correct text', () => {
       const mainHeading = findMainHeading();
       expect(mainHeading.exists()).toBe(true);
-      expect(mainHeading.text()).toContain('Security Configuration');
+      expect(mainHeading.text()).toContain('Security configuration');
     });
 
     describe('tabs', () => {
@@ -204,18 +202,21 @@ describe('App component', () => {
       });
     });
 
-    describe('when error occurs', () => {
+    describe('when user facing error occurs', () => {
       it('should show Alert with error Message', async () => {
         expect(findManageViaMRErrorAlert().exists()).toBe(false);
-        findFeatureCards().at(1).vm.$emit('error', 'There was a manage via MR error');
+        // Prefixed with USER_FACING_ERROR_MESSAGE_PREFIX as used in lib/gitlab/utils/error_message.rb to indicate a user facing error
+        findFeatureCards()
+          .at(1)
+          .vm.$emit('error', `${USER_FACING_ERROR_MESSAGE_PREFIX} ${manageViaMRErrorMessage}`);
 
         await nextTick();
         expect(findManageViaMRErrorAlert().exists()).toBe(true);
-        expect(findManageViaMRErrorAlert().text()).toEqual('There was a manage via MR error');
+        expect(findManageViaMRErrorAlert().text()).toEqual(manageViaMRErrorMessage);
       });
 
       it('should hide Alert when it is dismissed', async () => {
-        findFeatureCards().at(1).vm.$emit('error', 'There was a manage via MR error');
+        findFeatureCards().at(1).vm.$emit('error', manageViaMRErrorMessage);
 
         await nextTick();
         expect(findManageViaMRErrorAlert().exists()).toBe(true);
@@ -223,6 +224,17 @@ describe('App component', () => {
         findManageViaMRErrorAlert().vm.$emit('dismiss');
         await nextTick();
         expect(findManageViaMRErrorAlert().exists()).toBe(false);
+      });
+    });
+
+    describe('when non-user facing error occurs', () => {
+      it('should show Alert with generic error Message', async () => {
+        expect(findManageViaMRErrorAlert().exists()).toBe(false);
+        findFeatureCards().at(1).vm.$emit('error', manageViaMRErrorMessage);
+
+        await nextTick();
+        expect(findManageViaMRErrorAlert().exists()).toBe(true);
+        expect(findManageViaMRErrorAlert().text()).toEqual(i18n.genericErrorText);
       });
     });
   });

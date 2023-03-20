@@ -4,7 +4,11 @@ module Integrations
   class MattermostSlashCommands < BaseSlashCommands
     include Ci::TriggersHelper
 
-    prop_accessor :token
+    field :token,
+      type: 'password',
+      non_empty_password_title: -> { s_('ProjectService|Enter new token') },
+      non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },
+      placeholder: ''
 
     def testable?
       false
@@ -35,10 +39,6 @@ module Integrations
       [::Mattermost::Team.new(current_user).all, nil]
     rescue ::Mattermost::Error => e
       [[], e.message]
-    end
-
-    def chat_responder
-      ::Gitlab::Chat::Responder::Mattermost
     end
 
     private

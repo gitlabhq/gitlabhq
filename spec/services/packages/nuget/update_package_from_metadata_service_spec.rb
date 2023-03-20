@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_redis_shared_state do
+RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_redis_shared_state, feature_category: :package_registry do
   include ExclusiveLeaseHelpers
 
   let!(:package) { create(:nuget_package, :processing, :with_symbol_package) }

@@ -115,8 +115,12 @@ class Projects::CommitController < Projects::ApplicationController
 
     @branch_name = create_new_branch? ? @commit.revert_branch_name : @start_branch
 
-    create_commit(Commits::RevertService, success_notice: "The #{@commit.change_type_title(current_user)} has been successfully reverted.",
-                                          success_path: -> { successful_change_path(@project) }, failure_path: failed_change_path)
+    create_commit(
+      Commits::RevertService,
+      success_notice: "The #{@commit.change_type_title(current_user)} has been successfully reverted.",
+      success_path: -> { successful_change_path(@project) },
+      failure_path: failed_change_path
+    )
   end
 
   def cherry_pick
@@ -131,10 +135,13 @@ class Projects::CommitController < Projects::ApplicationController
 
     @branch_name = create_new_branch? ? @commit.cherry_pick_branch_name : @start_branch
 
-    create_commit(Commits::CherryPickService, success_notice: "The #{@commit.change_type_title(current_user)} has been successfully cherry-picked into #{@branch_name}.",
-                                              success_path: -> { successful_change_path(target_project) },
-                                              failure_path: failed_change_path,
-                                              target_project: target_project)
+    create_commit(
+      Commits::CherryPickService,
+      success_notice: "The #{@commit.change_type_title(current_user)} has been successfully cherry-picked into #{@branch_name}.",
+      success_path: -> { successful_change_path(target_project) },
+      failure_path: failed_change_path,
+      target_project: target_project
+    )
   end
 
   private

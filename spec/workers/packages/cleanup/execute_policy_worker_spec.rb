@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Cleanup::ExecutePolicyWorker do
+RSpec.describe Packages::Cleanup::ExecutePolicyWorker, feature_category: :package_registry do
   let(:worker) { described_class.new }
 
   describe '#perform_work' do

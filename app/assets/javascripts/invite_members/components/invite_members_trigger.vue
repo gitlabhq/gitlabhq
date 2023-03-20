@@ -1,15 +1,16 @@
 <script>
-import { GlButton, GlLink, GlIcon } from '@gitlab/ui';
+import { GlButton, GlLink, GlDropdownItem } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
 import {
   TRIGGER_ELEMENT_BUTTON,
-  TRIGGER_ELEMENT_SIDE_NAV,
   TRIGGER_DEFAULT_QA_SELECTOR,
+  TRIGGER_ELEMENT_WITH_EMOJI,
+  TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI,
 } from '../constants';
 
 export default {
-  components: { GlButton, GlLink, GlIcon },
+  components: { GlButton, GlLink, GlDropdownItem },
   props: {
     displayText: {
       type: String,
@@ -40,16 +41,6 @@ export default {
       required: false,
       default: 'button',
     },
-    event: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    label: {
-      type: String,
-      required: false,
-      default: '',
-    },
     qaSelector: {
       type: String,
       required: false,
@@ -58,21 +49,11 @@ export default {
   },
   computed: {
     componentAttributes() {
-      const baseAttributes = {
+      return {
         class: this.classes,
         'data-qa-selector': this.qaSelector,
         'data-test-id': 'invite-members-button',
       };
-
-      if (this.event && this.label) {
-        return {
-          ...baseAttributes,
-          'data-track-action': this.event,
-          'data-track-label': this.label,
-        };
-      }
-
-      return baseAttributes;
     },
   },
   methods: {
@@ -84,7 +65,8 @@ export default {
     },
   },
   TRIGGER_ELEMENT_BUTTON,
-  TRIGGER_ELEMENT_SIDE_NAV,
+  TRIGGER_ELEMENT_WITH_EMOJI,
+  TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI,
 };
 </script>
 
@@ -99,16 +81,22 @@ export default {
     {{ displayText }}
   </gl-button>
   <gl-link
-    v-else-if="checkTrigger($options.TRIGGER_ELEMENT_SIDE_NAV)"
+    v-else-if="checkTrigger($options.TRIGGER_ELEMENT_WITH_EMOJI)"
     v-bind="componentAttributes"
-    data-is-link="true"
     @click="openModal"
   >
-    <span class="nav-icon-container">
-      <gl-icon :name="icon" />
-    </span>
-    <span class="nav-item-name"> {{ displayText }} </span>
+    {{ displayText }}
+    <gl-emoji class="gl-vertical-align-baseline gl-reset-font-size gl-mr-1" :data-name="icon" />
   </gl-link>
+  <gl-dropdown-item
+    v-else-if="checkTrigger($options.TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI)"
+    v-bind="componentAttributes"
+    button-class="top-nav-menu-item"
+    @click="openModal"
+  >
+    {{ displayText }}
+    <gl-emoji class="gl-vertical-align-baseline gl-reset-font-size gl-mr-1" :data-name="icon" />
+  </gl-dropdown-item>
   <gl-link v-else v-bind="componentAttributes" data-is-link="true" @click="openModal">
     {{ displayText }}
   </gl-link>

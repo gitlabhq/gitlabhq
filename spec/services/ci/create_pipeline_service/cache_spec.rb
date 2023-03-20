@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness do
+RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness,
+  feature_category: :continuous_integration do
   context 'cache' do
     let(:project)  { create(:project, :custom_repo, files: files) }
     let(:user)     { project.first_owner }

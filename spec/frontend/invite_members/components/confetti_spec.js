@@ -6,15 +6,9 @@ jest.mock('canvas-confetti', () => ({
   create: jest.fn(),
 }));
 
-let wrapper;
-
 const createComponent = () => {
-  wrapper = shallowMount(Confetti);
+  shallowMount(Confetti);
 };
-
-afterEach(() => {
-  wrapper.destroy();
-});
 
 describe('Confetti', () => {
   it('initiates confetti', () => {

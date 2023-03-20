@@ -16,11 +16,6 @@ describe('Subscriptions', () => {
       }),
     );
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('shows loading spinner when loading', () => {
     wrapper = mountComponent({
       loading: true,

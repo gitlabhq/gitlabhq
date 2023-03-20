@@ -130,12 +130,6 @@ Use this to check the Git history of the file:
 git log -- <file>
 ```
 
-### Find the tags that contain a particular SHA
-
-```shell
-git tag --contains <sha>
-```
-
 ### Check the content of each change to a file
 
 ```shell

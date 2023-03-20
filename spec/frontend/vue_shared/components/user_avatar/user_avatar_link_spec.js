@@ -34,10 +34,6 @@ describe('User Avatar Link Component', () => {
     createWrapper();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should render GlLink with correct props', () => {
     const link = wrapper.findComponent(GlAvatarLink);
     expect(link.exists()).toBe(true);

@@ -8,6 +8,7 @@ module Ci
       end
 
       def execute
+        return ServiceResponse.error(message: 'version update disabled') unless enabled?
         return ServiceResponse.error(message: 'version not present') unless @version
 
         _, status = upgrade_check_service.check_runner_upgrade_suggestion(@version)
@@ -21,6 +22,10 @@ module Ci
 
       def upgrade_check_service
         @runner_upgrade_check ||= Gitlab::Ci::RunnerUpgradeCheck.new(::Gitlab::VERSION)
+      end
+
+      def enabled?
+        Gitlab::Ci::RunnerReleases.instance.enabled?
       end
     end
   end

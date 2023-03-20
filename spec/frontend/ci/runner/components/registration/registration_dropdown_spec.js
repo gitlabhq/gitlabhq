@@ -116,10 +116,6 @@ describe('RegistrationDropdown', () => {
         await openModal();
       });
 
-      afterEach(() => {
-        wrapper.destroy();
-      });
-
       it('opens the modal with contents', () => {
         const modalText = findModalContent();
 

@@ -25,7 +25,6 @@ feature_category: :kubernetes_management do
   it { is_expected.to have_one(:integration_prometheus) }
   it { is_expected.to have_one(:application_helm) }
   it { is_expected.to have_one(:application_ingress) }
-  it { is_expected.to have_one(:application_prometheus) }
   it { is_expected.to have_one(:application_runner) }
   it { is_expected.to have_many(:kubernetes_namespaces) }
   it { is_expected.to have_one(:cluster_project) }
@@ -714,13 +713,12 @@ feature_category: :kubernetes_management do
     context 'when all applications are created' do
       let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
       let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
-      let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
       let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
       let!(:jupyter) { create(:clusters_applications_jupyter, cluster: cluster) }
       let!(:knative) { create(:clusters_applications_knative, cluster: cluster) }
 
       it 'returns a list of created applications' do
-        is_expected.to contain_exactly(helm, ingress, prometheus, runner, jupyter, knative)
+        is_expected.to contain_exactly(helm, ingress, runner, jupyter, knative)
       end
     end
 
@@ -1340,22 +1338,6 @@ feature_category: :kubernetes_management do
 
       it 'returns the integration' do
         expect(cluster.prometheus_adapter).to eq(integration)
-      end
-    end
-
-    context 'has application_prometheus' do
-      let_it_be(:application) { create(:clusters_applications_prometheus, :no_helm_installed, cluster: cluster) }
-
-      it 'returns nil' do
-        expect(cluster.prometheus_adapter).to be_nil
-      end
-
-      context 'also has a integration_prometheus' do
-        let_it_be(:integration) { create(:clusters_integrations_prometheus, cluster: cluster) }
-
-        it 'returns the integration' do
-          expect(cluster.prometheus_adapter).to eq(integration)
-        end
       end
     end
   end

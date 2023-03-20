@@ -1,9 +1,10 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlTooltip, GlSprintf } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
+import { TYPE_INCIDENT } from '~/issues/constants';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import updateIssuableSeverity from '../../queries/update_issuable_severity.mutation.graphql';
-import { INCIDENT_SEVERITY, ISSUABLE_TYPES, SEVERITY_I18N as I18N } from '../../constants';
+import { INCIDENT_SEVERITY, SEVERITY_I18N as I18N } from '../../constants';
 import SeverityToken from './severity.vue';
 
 export default {
@@ -34,10 +35,10 @@ export default {
     issuableType: {
       type: String,
       required: false,
-      default: ISSUABLE_TYPES.INCIDENT,
+      default: TYPE_INCIDENT,
       validator: (value) => {
         // currently severity is supported only for incidents, but this list might be extended
-        return [ISSUABLE_TYPES.INCIDENT].includes(value);
+        return [TYPE_INCIDENT].includes(value);
       },
     },
   },
@@ -50,7 +51,7 @@ export default {
   computed: {
     severitiesList() {
       switch (this.issuableType) {
-        case ISSUABLE_TYPES.INCIDENT:
+        case TYPE_INCIDENT:
           return Object.values(INCIDENT_SEVERITY);
         default:
           return [];

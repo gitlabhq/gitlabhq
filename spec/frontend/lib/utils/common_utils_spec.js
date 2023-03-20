@@ -534,16 +534,8 @@ describe('common_utils', () => {
   });
 
   describe('spriteIcon', () => {
-    let beforeGon;
-
     beforeEach(() => {
-      window.gon = window.gon || {};
-      beforeGon = { ...window.gon };
       window.gon.sprite_icons = 'icons.svg';
-    });
-
-    afterEach(() => {
-      window.gon = beforeGon;
     });
 
     it('should return the svg for a linked icon', () => {

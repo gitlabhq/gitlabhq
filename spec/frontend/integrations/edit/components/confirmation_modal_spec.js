@@ -14,10 +14,6 @@ describe('ConfirmationModal', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findGlModal = () => wrapper.findComponent(GlModal);
 
   describe('template', () => {

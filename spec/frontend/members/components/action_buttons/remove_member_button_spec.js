@@ -47,7 +47,7 @@ describe('RemoveMemberButton', () => {
         ...propsData,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
@@ -56,10 +56,6 @@ describe('RemoveMemberButton', () => {
 
   beforeEach(() => {
     createComponent();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('sets attributes on button', () => {

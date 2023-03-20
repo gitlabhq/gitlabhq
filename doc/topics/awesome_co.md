@@ -141,3 +141,73 @@ create(:project, name: 'Throws Error', namespace: create(:group, name: 'Some Gro
 create(:project, name: 'No longer throws error', owner: @owner, namespace: create(:group, name: 'Some Group'))
 create(:epic, group: create(:group), author: @owner)
 ```
+
+## YAML Factories
+
+### Generator to generate _n_ amount of records
+
+### [Group Labels](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/factories/labels.rb)
+
+```yaml
+group_labels:
+  # Group Label with Name and a Color
+  - name: Group Label 1
+    group_id: <%= @group.id %>
+    color: "#FF0000"
+```
+
+### [Group Milestones](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/factories/milestones.rb)
+
+```yaml
+group_milestones:
+  # Past Milestone
+  - name: Past Milestone
+    group_id: <%= @group.id %>
+    group:
+    start_date: <%= 1.month.ago %>
+    due_date: <%= 1.day.ago %>
+
+  # Ongoing Milestone
+  - name: Ongoing Milestone
+    group_id: <%= @group.id %>
+    group:
+    start_date: <%= 1.day.ago %>
+    due_date: <%= 1.month.from_now %>
+
+  # Future Milestone
+  - name: Ongoing Milestone
+    group_id: <%= @group.id %>
+    group:
+    start_date: <%= 1.month.from_now %>
+    due_date: <%= 2.months.from_now %>
+```
+
+#### Quirks
+
+- You _must_ specify `group:` and have it be empty. This is because the Milestones factory will manipulate the factory in an `after(:build)`. If this is not present, the Milestone will not be associated properly with the Group.
+
+### [Epics](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/factories/epics.rb)
+
+```yaml
+epics:
+  # Simple Epic
+  - title: Simple Epic
+    group_id: <%= @group.id %>
+    author_id: <%= @owner.id %>
+
+  # Epic with detailed Markdown description
+  - title: Detailed Epic
+    group_id: <%= @group.id %>
+    author_id: <%= @owner.id %>
+    description: |
+      # Markdown
+
+      **Description**
+
+  # Epic with dates
+  - title: Epic with dates
+    group_id: <%= @group.id %>
+    author_id: <%= @owner.id %>
+    start_date: <%= 1.day.ago %>
+    due_date: <%= 1.month.from_now %>
+```

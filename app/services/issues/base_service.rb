@@ -33,6 +33,14 @@ module Issues
 
     private
 
+    # overriding this because IssuableBaseService#constructor_container_arg returns { project: value }
+    # Issues::ReopenService constructor signature is different now, it takes container instead of project also
+    # IssuableBaseService#change_state dynamically picks one of the `Issues::ReopenService`, `Epics::ReopenService` or
+    # MergeRequests::ReopenService, so we need this method to return { }container: value } for Issues::ReopenService
+    def self.constructor_container_arg(value)
+      { container: value }
+    end
+
     def find_work_item_type_id(issue_type)
       work_item_type = WorkItems::Type.default_by_type(issue_type)
       work_item_type ||= WorkItems::Type.default_issue_type

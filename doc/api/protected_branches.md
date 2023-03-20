@@ -208,16 +208,16 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 
 | Attribute                                    | Type | Required | Description |
 | -------------------------------------------- | ---- | -------- | ----------- |
-| `id`                                         | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `name`                                       | string         | yes | The name of the branch or wildcard |
-| `push_access_level`                          | integer        | no  | Access levels allowed to push (defaults: `40`, Maintainer role) |
-| `merge_access_level`                         | integer        | no  | Access levels allowed to merge (defaults: `40`, Maintainer role) |
-| `unprotect_access_level`                     | integer        | no  | Access levels allowed to unprotect (defaults: `40`, Maintainer role) |
-| `allow_force_push`                           | boolean        | no  | Allow all users with push access to force push. (default: `false`) |
-| `allowed_to_push` **(PREMIUM)**              | array          | no  | Array of access levels allowed to push, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}` |
-| `allowed_to_merge` **(PREMIUM)**             | array          | no  | Array of access levels allowed to merge, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}` |
-| `allowed_to_unprotect` **(PREMIUM)**         | array          | no  | Array of access levels allowed to unprotect, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}` |
-| `code_owner_approval_required` **(PREMIUM)** | boolean        | no  | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/code_owners.md). (defaults: false) |
+| `id`                                         | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user.
+| `name`                                       | string         | yes | The name of the branch or wildcard.
+| `allow_force_push`                           | boolean        | no  | Allow all users with push access to force push. (default: `false`)
+| `allowed_to_merge` **(PREMIUM)**             | array          | no  | Array of access levels allowed to merge, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`.
+| `allowed_to_push` **(PREMIUM)**              | array          | no  | Array of access levels allowed to push, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`.
+| `allowed_to_unprotect` **(PREMIUM)**         | array          | no  | Array of access levels allowed to unprotect, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. The access level `No access` is not available for this field. |
+| `code_owner_approval_required` **(PREMIUM)** | boolean        | no  | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/code_owners.md). (defaults: false)
+| `merge_access_level`                         | integer        | no  | Access levels allowed to merge. (defaults: `40`, Maintainer role)
+| `push_access_level`                          | integer        | no  | Access levels allowed to push. (defaults: `40`, Maintainer role)
+| `unprotect_access_level`                     | integer        | no  | Access levels allowed to unprotect. (defaults: `40`, Maintainer role)
 
 Example response:
 
@@ -369,7 +369,7 @@ Example response:
     "name": "master",
     "push_access_levels": [
         {
-            "id": 1,  
+            "id": 1,
             "access_level": 30,
             "access_level_description": "Developers + Maintainers",
             "user_id": null,
@@ -378,14 +378,14 @@ Example response:
     ],
     "merge_access_levels": [
         {
-            "id": 1,  
+            "id": 1,
             "access_level": 30,
             "access_level_description": "Developers + Maintainers",
             "user_id": null,
             "group_id": null
         },
         {
-            "id": 2,  
+            "id": 2,
             "access_level": 40,
             "access_level_description": "Maintainers",
             "user_id": null,
@@ -394,7 +394,7 @@ Example response:
     ],
     "unprotect_access_levels": [
         {
-            "id": 1,  
+            "id": 1,
             "access_level": 40,
             "access_level_description": "Maintainers",
             "user_id": null,
@@ -437,15 +437,15 @@ PATCH /projects/:id/protected_branches/:name
 curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/protected_branches/feature-branch?allow_force_push=true&code_owner_approval_required=true"
 ```
 
-| Attribute                                    | Type           | Required | Description                                                                                                                          |
+| Attribute                                    | Type           | Required | Description |
 | -------------------------------------------- | ---- | -------- | ----------- |
-| `id`                                         | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user                       |
-| `name`                                       | string         | yes      | The name of the branch                                                                                                               |
-| `allow_force_push`                           | boolean        | no       | When enabled, members who can push to this branch can also force push.                                                               |
+| `id`                                         | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user.
+| `name`                                       | string         | yes      | The name of the branch.
+| `allow_force_push`                           | boolean        | no       | When enabled, members who can push to this branch can also force push.
+| `allowed_to_push` **(PREMIUM)**              | array          | no       | Array of push access levels, with each described by a hash.
+| `allowed_to_merge` **(PREMIUM)**             | array          | no       | Array of merge access levels, with each described by a hash.
+| `allowed_to_unprotect` **(PREMIUM)**         | array          | no       | Array of unprotect access levels, with each described by a hash. The access level `No access` is not available for this field.
 | `code_owner_approval_required` **(PREMIUM)** | boolean        | no       | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/code_owners.md). Defaults to `false`. |
-| `allowed_to_push` **(PREMIUM)**              | array          | no       | Array of push access levels, with each described by a hash.                                                                          |
-| `allowed_to_merge` **(PREMIUM)**             | array          | no       | Array of merge access levels, with each described by a hash.                                                                         |
-| `allowed_to_unprotect` **(PREMIUM)**         | array          | no       | Array of unprotect access levels, with each described by a hash.                                                                     |
 
 Elements in the `allowed_to_push`, `allowed_to_merge` and `allowed_to_unprotect` arrays should be one of `user_id`, `group_id` or
 `access_level`, and take the form `{user_id: integer}`, `{group_id: integer}` or

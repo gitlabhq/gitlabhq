@@ -2,6 +2,8 @@
 
 module ResourceAccessTokens
   class CreateService < BaseService
+    include Gitlab::Utils::StrongMemoize
+
     def initialize(current_user, resource, params = {})
       @resource_type = resource.class.name.downcase
       @resource = resource
@@ -25,7 +27,7 @@ module ResourceAccessTokens
 
       unless member.persisted?
         delete_failed_user(user)
-        return error("Could not provision #{Gitlab::Access.human_access(access_level).downcase} access to project access token")
+        return error("Could not provision #{Gitlab::Access.human_access(access_level.to_i).downcase} access to the access token. ERROR: #{member.errors.full_messages.to_sentence}")
       end
 
       token_response = create_personal_access_token(user)
@@ -42,6 +44,14 @@ module ResourceAccessTokens
     private
 
     attr_reader :resource_type, :resource
+
+    def username_and_email_generator
+      Gitlab::Utils::UsernameAndEmailGenerator.new(
+        username_prefix: "#{resource_type}_#{resource.id}_bot",
+        email_domain: "noreply.#{Gitlab.config.gitlab.host}"
+      )
+    end
+    strong_memoize_attr :username_and_email_generator
 
     def has_permission_to_create?
       %w(project group).include?(resource_type) && can?(current_user, :create_resource_access_tokens, resource)
@@ -63,29 +73,11 @@ module ResourceAccessTokens
     def default_user_params
       {
         name: params[:name] || "#{resource.name.to_s.humanize} bot",
-        email: generate_email,
-        username: generate_username,
+        email: username_and_email_generator.email,
+        username: username_and_email_generator.username,
         user_type: :project_bot,
         skip_confirmation: true # Bot users should always have their emails confirmed.
       }
-    end
-
-    def generate_username
-      base_username = "#{resource_type}_#{resource.id}_bot"
-
-      uniquify.string(base_username) { |s| User.find_by_username(s) }
-    end
-
-    def generate_email
-      email_pattern = "#{resource_type}#{resource.id}_bot%s@noreply.#{Gitlab.config.gitlab.host}"
-
-      uniquify.string(-> (n) { Kernel.sprintf(email_pattern, n) }) do |s|
-        User.find_by_email(s)
-      end
-    end
-
-    def uniquify
-      Uniquify.new
     end
 
     def create_personal_access_token(user)

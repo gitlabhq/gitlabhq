@@ -1,4 +1,5 @@
 import merge from 'lodash/merge';
+import { nextTick } from 'vue';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { trackIncidentDetailsViewsOptions } from '~/incidents/constants';
 import DescriptionComponent from '~/issues/show/components/description.vue';
@@ -10,6 +11,11 @@ import INVALID_URL from '~/lib/utils/invalid_url';
 import Tracking from '~/tracking';
 import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
 import { descriptionProps } from '../../mock_data/mock_data';
+
+const push = jest.fn();
+const $router = {
+  push,
+};
 
 const mockAlert = {
   __typename: 'AlertManagementAlert',
@@ -28,12 +34,20 @@ const defaultMocks = {
       },
     },
   },
+  $route: { params: {} },
+  $router,
 };
 
 describe('Incident Tabs component', () => {
   let wrapper;
 
-  const mountComponent = ({ data = {}, options = {}, mount = shallowMountExtended } = {}) => {
+  const mountComponent = ({
+    data = {},
+    options = {},
+    mount = shallowMountExtended,
+    hasLinkedAlerts = false,
+    mocks = {},
+  } = {}) => {
     wrapper = mount(
       IncidentTabs,
       merge(
@@ -54,11 +68,12 @@ describe('Incident Tabs component', () => {
             slaFeatureAvailable: true,
             canUpdate: true,
             canUpdateTimelineEvent: true,
+            hasLinkedAlerts,
           },
           data() {
             return { alert: mockAlert, ...data };
           },
-          mocks: defaultMocks,
+          mocks: { ...defaultMocks, ...mocks },
         },
         options,
       ),
@@ -102,11 +117,13 @@ describe('Incident Tabs component', () => {
     });
 
     it('renders the alert details tab', () => {
+      mountComponent({ hasLinkedAlerts: true });
       expect(findAlertDetailsTab().exists()).toBe(true);
       expect(findAlertDetailsTab().attributes('title')).toBe('Alert details');
     });
 
     it('renders the alert details table with the correct props', () => {
+      mountComponent({ hasLinkedAlerts: true });
       const alert = { iid: mockAlert.iid };
 
       expect(findAlertDetailsComponent().props('alert')).toMatchObject(alert);
@@ -156,6 +173,40 @@ describe('Incident Tabs component', () => {
 
       expect(findActiveTabs()).toHaveLength(1);
       expect(findActiveTabs().at(0).text()).toBe(incidentTabsI18n.timelineTitle);
+      expect(push).toHaveBeenCalledWith('/timeline');
+    });
+  });
+
+  describe('loading page with tab', () => {
+    it('shows the timeline tab when timeline path is passed', async () => {
+      mountComponent({
+        mount: mountExtended,
+        mocks: { $route: { params: { tabId: 'timeline' } } },
+      });
+      await nextTick();
+      expect(findActiveTabs()).toHaveLength(1);
+      expect(findActiveTabs().at(0).text()).toBe(incidentTabsI18n.timelineTitle);
+    });
+
+    it('shows the alerts tab when timeline path is passed', async () => {
+      mountComponent({
+        mount: mountExtended,
+        mocks: { $route: { params: { tabId: 'alerts' } } },
+        hasLinkedAlerts: true,
+      });
+      await nextTick();
+      expect(findActiveTabs()).toHaveLength(1);
+      expect(findActiveTabs().at(0).text()).toBe(incidentTabsI18n.alertsTitle);
+    });
+
+    it('shows the metrics tab when metrics path is passed', async () => {
+      mountComponent({
+        mount: mountExtended,
+        mocks: { $route: { params: { tabId: 'metrics' } } },
+      });
+      await nextTick();
+      expect(findActiveTabs()).toHaveLength(1);
+      expect(findActiveTabs().at(0).text()).toBe(incidentTabsI18n.metricsTitle);
     });
   });
 });

@@ -6,7 +6,7 @@ module Issues
     # necessary in many cases, and we don't want to require every caller to explicitly pass it as nil
     # to disable spam checking.
     def initialize(container:, current_user: nil, params: {}, spam_params: nil)
-      super(project: container, current_user: current_user, params: params)
+      super(container: container, current_user: current_user, params: params)
       @spam_params = spam_params
     end
 
@@ -115,15 +115,6 @@ module Issues
     private
 
     attr_reader :spam_params
-
-    # TODO: remove this once MergeRequests::UpdateService#initialize is changed to take container as named argument.
-    #
-    # Issues::UpdateService is used together with MergeRequests::UpdateService in Mutations::Assignable#assign! method
-    # however MergeRequests::UpdateService#initialize still takes `project` as param and Issues::UpdateService is being
-    # changed to take `container` as param. So we are adding this workaround in the meantime.
-    def self.constructor_container_arg(value)
-      { container: value }
-    end
 
     def handle_quick_actions(issue)
       # Do not handle quick actions unless the work item is the default Issue.

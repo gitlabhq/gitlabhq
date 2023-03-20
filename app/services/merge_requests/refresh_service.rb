@@ -127,16 +127,23 @@ module MergeRequests
 
       merge_requests_array = merge_requests.to_a + merge_requests_from_forks.to_a
       filter_merge_requests(merge_requests_array).each do |merge_request|
+        skip_merge_status_trigger = true
+
         if branch_and_project_match?(merge_request) || @push.force_push?
           merge_request.reload_diff(current_user)
           # Clear existing merge error if the push were directed at the
           # source branch. Clearing the error when the target branch
           # changes will hide the error from the user.
           merge_request.merge_error = nil
+
+          # Don't skip trigger since we to update the MR's merge status in real-time
+          # when the push if for the MR's source branch and project.
+          skip_merge_status_trigger = false
         elsif merge_request.merge_request_diff.includes_any_commits?(push_commit_ids)
           merge_request.reload_diff(current_user)
         end
 
+        merge_request.skip_merge_status_trigger = skip_merge_status_trigger
         merge_request.mark_as_unchecked
       end
 

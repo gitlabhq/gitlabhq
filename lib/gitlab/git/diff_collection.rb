@@ -24,6 +24,8 @@ module Gitlab
         limits[:safe_max_lines] = [limits[:max_lines], defaults[:max_lines]].min
         limits[:safe_max_bytes] = limits[:safe_max_files] * 5.kilobytes # Average 5 KB per file
         limits[:max_patch_bytes] = Gitlab::Git::Diff.patch_hard_limit_bytes
+        limits[:max_patch_bytes_for_file_extension] = options.fetch(:max_patch_bytes_for_file_extension, {})
+
         limits
       end
 

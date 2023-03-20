@@ -1,6 +1,6 @@
 <script>
 import { GlModal } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
@@ -80,11 +80,11 @@ export default {
   },
   primaryAction: {
     text: s__('Milestones|Promote Milestone'),
-    attributes: [{ variant: 'confirm' }],
+    attributes: { variant: 'confirm' },
   },
   cancelAction: {
     text: __('Cancel'),
-    attributes: [],
+    attributes: {},
   },
 };
 </script>

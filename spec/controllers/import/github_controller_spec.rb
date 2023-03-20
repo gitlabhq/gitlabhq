@@ -139,7 +139,7 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         expect_next_instance_of(Gitlab::GithubImport::Clients::Proxy) do |client|
           expect(client).to receive(:repos)
             .with(expected_filter, expected_options)
-            .and_return({ repos: [], page_info: {} })
+            .and_return({ repos: [], page_info: {}, count: 0 })
         end
 
         get :status, params: params, format: :json
@@ -149,6 +149,7 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         expect(json_response['provider_repos'].size).to eq 0
         expect(json_response['incompatible_repos'].size).to eq 0
         expect(json_response['page_info']).to eq({})
+        expect(json_response['provider_repo_count']).to eq(0)
       end
     end
 
@@ -161,9 +162,7 @@ RSpec.describe Import::GithubController, feature_category: :importers do
     let(:provider_repos) { [] }
     let(:expected_filter) { '' }
     let(:expected_options) do
-      pagination_params.merge(relation_params).merge(
-        first: 25, page: 1, per_page: 25
-      )
+      pagination_params.merge(relation_params).merge(first: 25)
     end
 
     before do
@@ -171,6 +170,9 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         if client_auth_success
           allow(proxy).to receive(:repos).and_return({ repos: provider_repos })
           allow(proxy).to receive(:client).and_return(client_stub)
+          allow_next_instance_of(Gitlab::GithubImport::ProjectRelationType) do |instance|
+            allow(instance).to receive(:for).with('example/repo').and_return('owned')
+          end
         else
           allow(proxy).to receive(:repos).and_raise(Octokit::Unauthorized)
         end
@@ -279,22 +281,12 @@ RSpec.describe Import::GithubController, feature_category: :importers do
 
         it_behaves_like 'calls repos through Clients::Proxy with expected args'
       end
-
-      context 'when page is specified' do
-        let(:pagination_params) { { before: nil, after: nil, page: 2 } }
-        let(:params) { pagination_params }
-        let(:expected_options) do
-          pagination_params.merge(relation_params).merge(first: 25, page: 2, per_page: 25)
-        end
-
-        it_behaves_like 'calls repos through Clients::Proxy with expected args'
-      end
     end
 
     context 'when relation type params present' do
       let(:organization_login) { 'test-login' }
       let(:params) { pagination_params.merge(relation_type: 'organization', organization_login: organization_login) }
-      let(:pagination_defaults) { { first: 25, page: 1, per_page: 25 } }
+      let(:pagination_defaults) { { first: 25 } }
       let(:expected_options) do
         pagination_defaults.merge(pagination_params).merge(
           relation_type: 'organization', organization_login: organization_login
@@ -359,7 +351,13 @@ RSpec.describe Import::GithubController, feature_category: :importers do
     end
   end
 
-  describe "POST create" do
+  describe "POST create", :clean_gitlab_redis_cache do
+    before do
+      allow_next_instance_of(Gitlab::GithubImport::ProjectRelationType) do |instance|
+        allow(instance).to receive(:for).with("#{provider_username}/vim").and_return('owned')
+      end
+    end
+
     it_behaves_like 'a GitHub-ish import controller: POST create'
 
     it_behaves_like 'project import rate limiter'
@@ -388,13 +386,22 @@ RSpec.describe Import::GithubController, feature_category: :importers do
   end
 
   describe "POST cancel" do
-    let_it_be(:project) { create(:project, :import_started, import_type: 'github', import_url: 'https://fake.url') }
+    let_it_be(:project) do
+      create(
+        :project, :import_started,
+        import_type: 'github', import_url: 'https://fake.url', import_source: 'login/repo'
+      )
+    end
 
     context 'when project import was canceled' do
       before do
         allow(Import::Github::CancelProjectImportService)
           .to receive(:new).with(project, user)
           .and_return(double(execute: { status: :success, project: project }))
+
+        allow_next_instance_of(Gitlab::GithubImport::ProjectRelationType) do |instance|
+          allow(instance).to receive(:for).with('login/repo').and_return('owned')
+        end
       end
 
       it 'returns success' do
@@ -469,6 +476,28 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         expect(json_response).to eq([])
         expect(other_user_project.import_status).to eq('started')
       end
+    end
+  end
+
+  describe 'GET counts' do
+    let(:expected_result) do
+      {
+        'owned' => 3,
+        'collaborated' => 2,
+        'organization' => 1
+      }
+    end
+
+    it 'returns repos count by type' do
+      expect_next_instance_of(Gitlab::GithubImport::Clients::Proxy) do |client_proxy|
+        expect(client_proxy).to receive(:count_repos_by).with('owned', user.id).and_return(3)
+        expect(client_proxy).to receive(:count_repos_by).with('collaborated', user.id).and_return(2)
+        expect(client_proxy).to receive(:count_repos_by).with('organization', user.id).and_return(1)
+      end
+
+      get :counts
+
+      expect(json_response).to eq(expected_result)
     end
   end
 end

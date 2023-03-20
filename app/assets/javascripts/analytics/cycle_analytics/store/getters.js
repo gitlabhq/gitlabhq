@@ -15,11 +15,11 @@ export const pathNavigationData = ({ stages, medians, stageCounts, selectedStage
 
 export const requestParams = (state) => {
   const {
-    endpoints: { fullPath },
+    namespace: { fullPath },
     selectedValueStream: { id: valueStreamId },
     selectedStage: { id: stageId = null },
   } = state;
-  return { requestPath: fullPath, valueStreamId, stageId };
+  return { namespacePath: fullPath, valueStreamId, stageId };
 };
 
 export const paginationParams = ({ pagination: { page, sort, direction } }) => ({

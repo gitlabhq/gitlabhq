@@ -171,4 +171,36 @@ RSpec.describe EachBatch do
       end
     end
   end
+
+  describe '.each_batch_count' do
+    let_it_be(:users) { create_list(:user, 5, updated_at: 1.day.ago) }
+
+    it 'counts the records' do
+      count, last_value = User.each_batch_count
+
+      expect(count).to eq(5)
+      expect(last_value).to eq(nil)
+    end
+
+    context 'when using a different column' do
+      it 'returns correct count' do
+        count, _ = User.each_batch_count(column: :email, of: 2)
+
+        expect(count).to eq(5)
+      end
+    end
+
+    context 'when stopping and resuming the counting' do
+      it 'returns the correct count' do
+        count, last_value = User.each_batch_count(of: 1) do |current_count, _current_value|
+          current_count == 3 # stop when count reaches 3
+        end
+
+        expect(count).to eq(3)
+
+        final_count, _ = User.each_batch_count(of: 1, last_value: last_value, last_count: count)
+        expect(final_count).to eq(5)
+      end
+    end
+  end
 end

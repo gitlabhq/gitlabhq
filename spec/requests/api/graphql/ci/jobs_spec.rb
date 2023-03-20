@@ -260,6 +260,68 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
     end
   end
 
+  describe '.jobs.runnerMachine' do
+    let_it_be(:admin) { create(:admin) }
+    let_it_be(:runner_machine) { create(:ci_runner_machine, created_at: Time.current, contacted_at: Time.current) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:build) do
+      create(:ci_build, pipeline: pipeline, name: 'my test job', runner_machine: runner_machine)
+    end
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            pipeline(iid: "#{pipeline.iid}") {
+              jobs {
+                nodes {
+                  id
+                  name
+                  runnerMachine {
+                    #{all_graphql_fields_for('CiRunnerMachine', excluded: [:runner], max_depth: 1)}
+                  }
+                }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    let(:jobs_graphql_data) { graphql_data_at(:project, :pipeline, :jobs, :nodes) }
+
+    it 'returns the runner machine in each job of a pipeline' do
+      post_graphql(query, current_user: admin)
+
+      expect(jobs_graphql_data).to contain_exactly(
+        a_graphql_entity_for(
+          build,
+          name: build.name,
+          runner_machine: a_graphql_entity_for(
+            runner_machine,
+            system_id: runner_machine.system_xid,
+            created_at: runner_machine.created_at.iso8601,
+            contacted_at: runner_machine.contacted_at.iso8601,
+            status: runner_machine.status.to_s.upcase
+          )
+        )
+      )
+    end
+
+    it 'does not generate N+1 queries', :request_store, :use_sql_query_cache do
+      admin2 = create(:admin)
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post_graphql(query, current_user: admin)
+      end
+
+      runner_machine2 = create(:ci_runner_machine)
+      create(:ci_build, pipeline: pipeline, name: 'my test job2', runner_machine: runner_machine2)
+
+      expect { post_graphql(query, current_user: admin2) }.not_to exceed_all_query_limit(control)
+    end
+  end
+
   describe '.jobs.count' do
     let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
     let_it_be(:successful_job) { create(:ci_build, :success, pipeline: pipeline) }

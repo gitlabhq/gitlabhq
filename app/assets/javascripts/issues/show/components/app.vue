@@ -1,19 +1,20 @@
 <script>
 import { GlIcon, GlBadge, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import {
   IssuableStatusText,
   STATUS_CLOSED,
   TYPE_EPIC,
+  TYPE_INCIDENT,
   TYPE_ISSUE,
-  WorkspaceType,
+  WORKSPACE_PROJECT,
 } from '~/issues/constants';
 import Poll from '~/lib/utils/poll';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
-import { ISSUE_TYPE_PATH, INCIDENT_TYPE_PATH, INCIDENT_TYPE, POLLING_DELAY } from '../constants';
+import { ISSUE_TYPE_PATH, INCIDENT_TYPE_PATH, POLLING_DELAY } from '../constants';
 import eventHub from '../event_hub';
 import getIssueStateQuery from '../queries/get_issue_state.query.graphql';
 import Service from '../services/index';
@@ -25,7 +26,7 @@ import PinnedLinks from './pinned_links.vue';
 import TitleComponent from './title.vue';
 
 export default {
-  WorkspaceType,
+  WORKSPACE_PROJECT,
   components: {
     GlIcon,
     GlBadge,
@@ -51,11 +52,6 @@ export default {
     canUpdate: {
       required: true,
       type: Boolean,
-    },
-    showInlineEditButton: {
-      type: Boolean,
-      required: false,
-      default: true,
     },
     enableAutocomplete: {
       type: Boolean,
@@ -191,11 +187,6 @@ export default {
       required: false,
       default: null,
     },
-    issueIid: {
-      type: Number,
-      required: false,
-      default: null,
-    },
   },
   data() {
     const store = new Store({
@@ -281,7 +272,7 @@ export default {
     },
   },
   created() {
-    this.flashContainer = null;
+    this.alert = null;
     this.service = new Service(this.endpoint);
     this.poll = new Poll({
       resource: this.service,
@@ -399,7 +390,7 @@ export default {
         ? { ...formState, issue_type: issueState.issueType }
         : formState;
 
-      this.clearFlash();
+      this.alert?.dismiss();
 
       return this.service
         .updateIssuable(issuablePayload)
@@ -407,14 +398,14 @@ export default {
         .then((data) => {
           if (
             !window.location.pathname.includes(data.web_url) &&
-            issueState.issueType !== INCIDENT_TYPE
+            issueState.issueType !== TYPE_INCIDENT
           ) {
             visitUrl(data.web_url);
           }
 
           if (issueState.isDirty) {
             const URI =
-              issueState.issueType === INCIDENT_TYPE
+              issueState.issueType === TYPE_INCIDENT
                 ? data.web_url.replace(ISSUE_TYPE_PATH, INCIDENT_TYPE_PATH)
                 : data.web_url;
             visitUrl(URI);
@@ -435,7 +426,7 @@ export default {
             errMsg += `. ${message}`;
           }
 
-          this.flashContainer = createAlert({
+          this.alert = createAlert({
             message: errMsg,
           });
         })
@@ -450,13 +441,6 @@ export default {
 
     showStickyHeader() {
       this.isStickyHeaderShowing = true;
-    },
-
-    clearFlash() {
-      if (this.flashContainer) {
-        this.flashContainer.close();
-        this.flashContainer = null;
-      }
     },
 
     handleSaveDescription(description) {
@@ -509,7 +493,6 @@ export default {
         :can-update="canUpdate"
         :title-html="state.titleHtml"
         :title-text="state.titleText"
-        :show-inline-edit-button="showInlineEditButton"
       />
 
       <gl-intersection-observer
@@ -538,7 +521,7 @@ export default {
               <confidentiality-badge
                 v-if="isConfidential"
                 data-testid="confidential"
-                :workspace-type="$options.WorkspaceType.project"
+                :workspace-type="$options.WORKSPACE_PROJECT"
                 :issuable-type="issuableType"
               />
               <span
@@ -570,7 +553,6 @@ export default {
       <component
         :is="descriptionComponent"
         :issue-id="issueId"
-        :issue-iid="issueIid"
         :can-update="canUpdate"
         :description-html="state.descriptionHtml"
         :description-text="state.descriptionText"

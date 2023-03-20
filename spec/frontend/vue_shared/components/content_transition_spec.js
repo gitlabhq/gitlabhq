@@ -13,11 +13,6 @@ const TEST_SLOTS = [
 describe('~/vue_shared/components/content_transition.vue', () => {
   let wrapper;
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const createComponent = (props = {}, slots = {}) => {
     wrapper = shallowMount(ContentTransition, {
       propsData: {

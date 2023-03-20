@@ -321,11 +321,9 @@ $search-input-field-x-min-width: 200px;
 .breadcrumbs-container {
   display: flex;
   width: 100%;
-  position: relative;
   padding-top: $gl-padding / 2;
   padding-bottom: $gl-padding / 2;
   align-items: center;
-  border-bottom: 1px solid $border-color;
 }
 
 .breadcrumbs-links {
@@ -375,14 +373,11 @@ $search-input-field-x-min-width: 200px;
     display: flex;
     align-items: center;
     position: relative;
+    min-width: 0;
     padding: 2px 0;
 
     &:not(:last-child) {
       padding-right: 20px;
-
-      &:not(.dropdown) {
-        overflow: hidden;
-      }
     }
 
     &:last-child {
@@ -558,25 +553,16 @@ $search-input-field-x-min-width: 200px;
 }
 
 .toggle-mobile-nav {
-  display: none;
-  background-color: transparent;
-  border: 0;
-  padding: 6px 16px;
-  margin: 0 0 0 -15px;
-  height: 46px;
-  color: $gl-text-color;
+  @include gl-display-none;
 
   @include media-breakpoint-down(sm) {
-    display: flex;
-    align-items: center;
-
-    i {
-      font-size: 18px;
-    }
+    @include gl-display-block;
 
     + .breadcrumbs-links {
-      padding-left: $gl-padding;
-      border-left: 1px solid $gl-text-color-quaternary;
+      @include gl-pl-4;
+      @include gl-border-l-1;
+      @include gl-border-l-solid;
+      @include gl-border-gray-100;
     }
   }
 }

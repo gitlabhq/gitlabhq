@@ -29,6 +29,7 @@ InitializerConnections.raise_if_new_database_connection do
                   token_info: 'oauth/token_info',
                   tokens: 'oauth/tokens'
     end
+    put '/oauth/applications/:id/renew(.:format)' => 'oauth/applications#renew', as: :renew_oauth_application
 
     # This prefixless path is required because Jira gets confused if we set it up with a path
     # More information: https://gitlab.com/gitlab-org/gitlab/issues/6752
@@ -87,6 +88,7 @@ InitializerConnections.raise_if_new_database_connection do
 
     # JSON Web Token
     get 'jwt/auth' => 'jwt#auth'
+    post 'jwt/auth', to: proc { [404, {}, ['']] }
 
     # Health check
     get 'health_check(/:checks)' => 'health_check#index', as: :health_check

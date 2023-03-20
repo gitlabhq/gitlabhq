@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NotificationRecipients::BuildService do
+RSpec.describe NotificationRecipients::BuildService, feature_category: :team_planning do
   let(:service) { described_class }
   let(:assignee) { create(:user) }
   let(:project) { create(:project, :public) }

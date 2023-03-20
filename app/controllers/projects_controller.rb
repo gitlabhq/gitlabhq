@@ -39,7 +39,7 @@ class ProjectsController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:highlight_js, @project)
     push_frontend_feature_flag(:file_line_blame, @project)
-    push_frontend_feature_flag(:increase_page_size_exponentially, @project)
+    push_frontend_feature_flag(:synchronize_fork, @project)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_licensed_feature(:security_orchestration_policies) if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
@@ -77,6 +77,8 @@ class ProjectsController < Projects::ApplicationController
   def new
     @namespace = Namespace.find_by(id: params[:namespace_id]) if params[:namespace_id]
     return access_denied! if @namespace && !can?(current_user, :create_projects, @namespace)
+
+    @parent_group = Group.find_by(id: params[:namespace_id])
 
     @current_user_group =
       if current_user.manageable_groups(include_groups_with_developer_maintainer_access: true).count == 1

@@ -32,10 +32,6 @@ describe('DropdownContentsCreateView', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('computed', () => {
     describe('disableCreate', () => {
       it('returns `true` when label title and color is not defined', () => {
@@ -174,11 +170,17 @@ describe('DropdownContentsCreateView', () => {
       });
 
       await nextTick();
-      const colorPreviewEl = wrapper.find('.color-input-container > .dropdown-label-color-preview');
-      const colorInputEl = wrapper.find('.color-input-container').findComponent(GlFormInput);
+      const colorPreviewEl = wrapper
+        .find('.color-input-container')
+        .findAllComponents(GlFormInput)
+        .at(0);
+      const colorInputEl = wrapper
+        .find('.color-input-container')
+        .findAllComponents(GlFormInput)
+        .at(1);
 
       expect(colorPreviewEl.exists()).toBe(true);
-      expect(colorPreviewEl.attributes('style')).toContain('background-color');
+      expect(colorPreviewEl.attributes('value')).toBe('#ff0000');
       expect(colorInputEl.exists()).toBe(true);
       expect(colorInputEl.attributes('placeholder')).toBe('Use custom color #FF0000');
       expect(colorInputEl.attributes('value')).toBe('#ff0000');

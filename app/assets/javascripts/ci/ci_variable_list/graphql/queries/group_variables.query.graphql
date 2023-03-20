@@ -1,10 +1,17 @@
 #import "~/ci/ci_variable_list/graphql/fragments/ci_variable.fragment.graphql"
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
-query getGroupVariables($after: String, $first: Int = 100, $fullPath: ID!) {
+query getGroupVariables(
+  $after: String
+  $before: String
+  $first: Int
+  $fullPath: ID!
+  $last: Int
+  $sort: CiVariableSort = KEY_ASC
+) {
   group(fullPath: $fullPath) {
     id
-    ciVariables(after: $after, first: $first) {
+    ciVariables(after: $after, before: $before, first: $first, last: $last, sort: $sort) {
       limit
       pageInfo {
         ...PageInfo

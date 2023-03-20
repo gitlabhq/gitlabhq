@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::MigrateRecordsToGhostUserInBatchesService do
+RSpec.describe Users::MigrateRecordsToGhostUserInBatchesService, feature_category: :user_management do
   let(:service) { described_class.new }
 
   let_it_be(:ghost_user_migration) { create(:ghost_user_migration) }

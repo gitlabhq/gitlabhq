@@ -12,7 +12,7 @@ import {
 } from '@gitlab/ui';
 import { kebabCase } from 'lodash';
 import { buildApiUrl } from '~/api/api_utils';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import csrf from '~/lib/utils/csrf';
 import { redirectTo } from '~/lib/utils/url_utility';

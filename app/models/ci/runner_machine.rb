@@ -5,17 +5,14 @@ module Ci
     include FromUnion
     include RedisCacheable
     include Ci::HasRunnerExecutor
-    include IgnorableColumns
-
-    ignore_column :machine_xid, remove_with: '15.11', remove_after: '2022-03-22'
 
     # The `UPDATE_CONTACT_COLUMN_EVERY` defines how often the Runner Machine DB entry can be updated
-    UPDATE_CONTACT_COLUMN_EVERY = 40.minutes..55.minutes
+    UPDATE_CONTACT_COLUMN_EVERY = (40.minutes)..(55.minutes)
 
     belongs_to :runner
 
-    has_many :build_metadata, class_name: 'Ci::BuildMetadata'
-    has_many :builds, through: :build_metadata, class_name: 'Ci::Build'
+    has_many :runner_machine_builds, inverse_of: :runner_machine, class_name: 'Ci::RunnerMachineBuild'
+    has_many :builds, through: :runner_machine_builds, class_name: 'Ci::Build'
     belongs_to :runner_version, inverse_of: :runner_machines, primary_key: :version, foreign_key: :version,
                class_name: 'Ci::RunnerVersion'
 
@@ -44,7 +41,15 @@ module Ci
         remove_duplicates: false).where(created_some_time_ago)
     end
 
-    def heartbeat(values)
+    def self.online_contact_time_deadline
+      Ci::Runner.online_contact_time_deadline
+    end
+
+    def self.stale_deadline
+      STALE_TIMEOUT.ago
+    end
+
+    def heartbeat(values, update_contacted_at: true)
       ##
       # We can safely ignore writes performed by a runner heartbeat. We do
       # not want to upgrade database connection proxy to use the primary
@@ -52,23 +57,39 @@ module Ci
       #
       ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
         values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config, :executor) || {}
-        values[:contacted_at] = Time.current
+        values[:contacted_at] = Time.current if update_contacted_at
         if values.include?(:executor)
           values[:executor_type] = Ci::Runner::EXECUTOR_NAME_TO_TYPES.fetch(values.delete(:executor), :unknown)
         end
 
-        version_changed = values.include?(:version) && values[:version] != version
+        new_version = values[:version]
+        schedule_runner_version_update(new_version) if new_version && values[:version] != version
 
-        cache_attributes(values)
-
-        schedule_runner_version_update if version_changed
+        merge_cache_attributes(values)
 
         # We save data without validation, it will always change due to `contacted_at`
         update_columns(values) if persist_cached_data?
       end
     end
 
+    def status
+      return :stale if stale?
+      return :never_contacted unless contacted_at
+
+      online? ? :online : :offline
+    end
+
     private
+
+    def online?
+      contacted_at && contacted_at > self.class.online_contact_time_deadline
+    end
+
+    def stale?
+      return false unless created_at
+
+      [created_at, contacted_at].compact.max <= self.class.stale_deadline
+    end
 
     def persist_cached_data?
       # Use a random threshold to prevent beating DB updates.
@@ -79,10 +100,10 @@ module Ci
         (Time.current - real_contacted_at) >= contacted_at_max_age
     end
 
-    def schedule_runner_version_update
-      return unless version
+    def schedule_runner_version_update(new_version)
+      return unless new_version && Gitlab::Ci::RunnerReleases.instance.enabled?
 
-      Ci::Runners::ProcessRunnerVersionUpdateWorker.perform_async(version)
+      Ci::Runners::ProcessRunnerVersionUpdateWorker.perform_async(new_version)
     end
   end
 end

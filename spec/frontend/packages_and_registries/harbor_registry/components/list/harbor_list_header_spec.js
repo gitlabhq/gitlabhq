@@ -29,10 +29,6 @@ describe('harbor_list_header', () => {
     await nextTick();
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('header', () => {
     it('has a title', () => {
       mountComponent({ metadataLoading: true });

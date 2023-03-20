@@ -32,9 +32,7 @@ module Projects
       end
 
       def configuration_presenter
-        ::Projects::Security::ConfigurationPresenter.new(project,
-                                                         **presenter_attributes,
-                                                         current_user: current_user)
+        ::Projects::Security::ConfigurationPresenter.new(project, **presenter_attributes, current_user: current_user)
       end
 
       def presenter_attributes

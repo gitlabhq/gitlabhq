@@ -153,6 +153,7 @@ RSpec.describe Packages::PackageFile, type: :model do
     let_it_be(:debian_changes) { debian_package.package_files.last }
     let_it_be(:debian_deb) { create(:debian_package_file, package: debian_package) }
     let_it_be(:debian_udeb) { create(:debian_package_file, :udeb, package: debian_package) }
+    let_it_be(:debian_ddeb) { create(:debian_package_file, :ddeb, package: debian_package) }
 
     let_it_be(:debian_contrib) do
       create(:debian_package_file, package: debian_package).tap do |pf|

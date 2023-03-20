@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe VerifyPagesDomainService do
+RSpec.describe VerifyPagesDomainService, feature_category: :pages do
   using RSpec::Parameterized::TableSyntax
   include EmailHelpers
 

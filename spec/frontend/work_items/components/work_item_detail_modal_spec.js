@@ -82,10 +82,6 @@ describe('WorkItemDetailModal component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders WorkItemDetail', () => {
     createComponent();
 

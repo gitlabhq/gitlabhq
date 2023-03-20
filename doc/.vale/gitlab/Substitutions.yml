@@ -23,6 +23,7 @@ swap:
   params: parameters
   pg: PostgreSQL
   'postgres$': PostgreSQL
+  golang: Go
   raketask: Rake task
   raketasks: Rake tasks
   rspec: RSpec

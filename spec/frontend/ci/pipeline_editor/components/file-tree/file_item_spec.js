@@ -18,10 +18,6 @@ describe('Pipeline editor file nav', () => {
   const fileIcon = () => wrapper.findComponent(FileIcon);
   const link = () => wrapper.findComponent(GlLink);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     beforeEach(() => {
       createComponent();

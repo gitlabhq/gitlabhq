@@ -13,10 +13,6 @@ describe('Code Block', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('overwrites the default slot', () => {
     createComponent({}, { default: 'DEFAULT SLOT' });
 

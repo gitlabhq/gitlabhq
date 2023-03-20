@@ -22,7 +22,6 @@ describe('WebIDE', () => {
 
   afterEach(() => {
     vm.$destroy();
-    vm = null;
     resetHTMLFixture();
   });
 

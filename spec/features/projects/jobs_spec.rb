@@ -1065,16 +1065,19 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :proj
     end
 
     context "Build from other project" do
+      let(:other_job_download_path) { download_project_job_artifacts_path(project, job2) }
+
       before do
         create(:ci_job_artifact, :archive, file: artifacts_file, job: job2)
       end
 
-      it do
-        requests = inspect_requests do
-          visit download_project_job_artifacts_path(project, job2)
-        end
+      it 'receive 404 from download request', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391632' do
+        requests = inspect_requests { visit other_job_download_path }
 
-        expect(requests.first.status_code).to eq(404)
+        request = requests.find { |request| request.url == other_job_download_path }
+
+        expect(request).to be_present
+        expect(request.status_code).to eq(404)
       end
     end
   end

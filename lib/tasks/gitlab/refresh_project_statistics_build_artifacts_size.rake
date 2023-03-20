@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require 'httparty'
-require 'csv'
-
 namespace :gitlab do
   desc "GitLab | Refresh build artifacts size project statistics for given list of Project IDs from remote CSV"
 
   BUILD_ARTIFACTS_SIZE_REFRESH_ENQUEUE_BATCH_SIZE = 500
 
   task :refresh_project_statistics_build_artifacts_size, [:csv_url] => :environment do |_t, args|
+    require 'httparty'
+    require 'csv'
+
     csv_url = args.csv_url
 
     # rubocop: disable Gitlab/HTTParty

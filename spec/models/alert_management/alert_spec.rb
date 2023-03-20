@@ -16,9 +16,13 @@ RSpec.describe AlertManagement::Alert do
     it { is_expected.to belong_to(:prometheus_alert).optional }
     it { is_expected.to belong_to(:environment).optional }
     it { is_expected.to have_many(:assignees).through(:alert_assignees) }
-    it { is_expected.to have_many(:notes) }
-    it { is_expected.to have_many(:ordered_notes) }
-    it { is_expected.to have_many(:user_mentions) }
+    it { is_expected.to have_many(:notes).inverse_of(:noteable) }
+    it { is_expected.to have_many(:ordered_notes).class_name('Note').inverse_of(:noteable) }
+
+    it do
+      is_expected.to have_many(:user_mentions).class_name('AlertManagement::AlertUserMention')
+        .with_foreign_key(:alert_management_alert_id).inverse_of(:alert)
+    end
   end
 
   describe 'validations' do

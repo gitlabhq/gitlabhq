@@ -1,7 +1,6 @@
 import * as Sentry from '@sentry/browser';
 import { sortBy } from 'lodash';
 import {
-  BoardType,
   ListType,
   inactiveId,
   flashAnimationDuration,
@@ -34,7 +33,7 @@ import totalCountAndWeightQuery from 'ee_else_ce/boards/graphql/board_lists_defe
 import { fetchPolicies } from '~/lib/graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { defaultClient as gqlClient } from '~/graphql_shared/issuable_client';
-import { TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_ISSUE, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { queryToObject } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
@@ -61,7 +60,7 @@ export default {
 
     return gqlClient
       .query({
-        query: boardType === BoardType.group ? groupBoardQuery : projectBoardQuery,
+        query: boardType === WORKSPACE_GROUP ? groupBoardQuery : projectBoardQuery,
         variables,
       })
       .then(({ data }) => {
@@ -139,8 +138,8 @@ export default {
       boardId: fullBoardId,
       filters: filterParams,
       ...(issuableType === TYPE_ISSUE && {
-        isGroup: boardType === BoardType.group,
-        isProject: boardType === BoardType.project,
+        isGroup: boardType === WORKSPACE_GROUP,
+        isProject: boardType === WORKSPACE_PROJECT,
       }),
     };
 
@@ -234,8 +233,8 @@ export default {
     const variables = {
       fullPath,
       searchTerm,
-      isGroup: boardType === BoardType.group,
-      isProject: boardType === BoardType.project,
+      isGroup: boardType === WORKSPACE_GROUP,
+      isProject: boardType === WORKSPACE_PROJECT,
     };
 
     commit(types.RECEIVE_LABELS_REQUEST);
@@ -268,10 +267,10 @@ export default {
     };
 
     let query;
-    if (boardType === BoardType.project) {
+    if (boardType === WORKSPACE_PROJECT) {
       query = projectBoardMilestonesQuery;
     }
-    if (boardType === BoardType.group) {
+    if (boardType === WORKSPACE_GROUP) {
       query = groupBoardMilestonesQuery;
     }
 
@@ -286,8 +285,8 @@ export default {
         variables,
       })
       .then(({ data }) => {
-        const errors = data[boardType]?.errors;
-        const milestones = data[boardType]?.milestones.nodes;
+        const errors = data.workspace?.errors;
+        const milestones = data.workspace?.milestones.nodes;
 
         if (errors?.[0]) {
           throw new Error(errors[0]);
@@ -431,8 +430,8 @@ export default {
       boardId: fullBoardId,
       id: listId,
       filters: filterParams,
-      isGroup: boardType === BoardType.group,
-      isProject: boardType === BoardType.project,
+      isGroup: boardType === WORKSPACE_GROUP,
+      isProject: boardType === WORKSPACE_PROJECT,
       first: DEFAULT_BOARD_LIST_ITEMS_SIZE,
       after: fetchNext ? state.pageInfoByListId[listId].endCursor : undefined,
     };
@@ -710,7 +709,7 @@ export default {
   ) => {
     const input = formatIssueInput(issueInput, boardConfig);
 
-    if (boardType === BoardType.project) {
+    if (boardType === WORKSPACE_PROJECT) {
       input.projectPath = fullPath;
     }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::UpdateLockedUnknownArtifactsWorker do
+RSpec.describe Ci::UpdateLockedUnknownArtifactsWorker, feature_category: :build_artifacts do
   let(:worker) { described_class.new }
 
   describe '#perform' do

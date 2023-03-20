@@ -34,11 +34,6 @@ describe('ValueStreamFilters', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('will render the filter bar', () => {
     expect(findFilterBar().exists()).toBe(true);
   });

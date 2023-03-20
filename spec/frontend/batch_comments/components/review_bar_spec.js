@@ -20,10 +20,6 @@ describe('Batch comments review bar component', () => {
     document.body.className = '';
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('adds review-bar-visible class to body when review bar is mounted', async () => {
     expect(document.body.classList.contains(REVIEW_BAR_VISIBLE_CLASS_NAME)).toBe(false);
 

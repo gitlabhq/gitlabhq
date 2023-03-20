@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineSchedules::TakeOwnershipService do
+RSpec.describe Ci::PipelineSchedules::TakeOwnershipService, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
   let_it_be(:owner) { create(:user) }
   let_it_be(:reporter) { create(:user) }

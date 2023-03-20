@@ -45,10 +45,6 @@ describe('URL utility', () => {
   });
 
   describe('webIDEUrl', () => {
-    afterEach(() => {
-      gon.relative_url_root = '';
-    });
-
     it('escapes special characters', () => {
       expect(urlUtils.webIDEUrl('/gitlab-org/gitlab-#-foss/merge_requests/1')).toBe(
         '/-/ide/project/gitlab-org/gitlab-%23-foss/merge_requests/1',
@@ -503,10 +499,6 @@ describe('URL utility', () => {
 
     beforeEach(() => {
       gon.gitlab_url = gitlabUrl;
-    });
-
-    afterEach(() => {
-      gon.gitlab_url = '';
     });
 
     it.each`

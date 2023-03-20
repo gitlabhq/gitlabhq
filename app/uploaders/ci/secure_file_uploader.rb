@@ -4,7 +4,7 @@ module Ci
   class SecureFileUploader < GitlabUploader
     include ObjectStorage::Concern
 
-    storage_options Gitlab.config.ci_secure_files
+    storage_location :ci_secure_files
 
     # Use Lockbox to encrypt/decrypt the stored file (registers CarrierWave callbacks)
     encrypt(key: :key)

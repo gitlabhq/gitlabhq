@@ -47,10 +47,6 @@ describe('RunnerStats', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('Displays all the stats', () => {
     createComponent({
       mountFn: mount,

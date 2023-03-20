@@ -4,10 +4,6 @@ import ReportLink from '~/ci/reports/components/report_link.vue';
 describe('app/assets/javascripts/ci/reports/components/report_link.vue', () => {
   let wrapper;
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const defaultProps = {
     issue: {},
   };

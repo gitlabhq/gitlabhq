@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::SetCrmContactsService do
+RSpec.describe Issues::SetCrmContactsService, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :crm_enabled) }
   let_it_be(:project) { create(:project, group: create(:group, :crm_enabled, parent: group)) }

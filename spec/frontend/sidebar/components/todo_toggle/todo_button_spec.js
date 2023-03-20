@@ -22,7 +22,6 @@ describe('Todo Button', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     dispatchEventSpy = null;
     jest.clearAllMocks();
   });

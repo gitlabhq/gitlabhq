@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 
 import $ from 'jquery';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 import { spriteIcon } from '~/lib/utils/common_utils';
 import FilesCommentButton from './files_comment_button';

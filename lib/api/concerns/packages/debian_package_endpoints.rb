@@ -58,9 +58,19 @@ module API
                 .with_compression_type(nil)
                 .order_created_asc
 
+              # Empty component files are not persisted in DB
+              no_content! if params[:file_sha256] == ::Packages::Debian::EMPTY_FILE_SHA256
+
               relation = relation.with_file_sha256(params[:file_sha256]) if params[:file_sha256]
 
-              present_carrierwave_file!(relation.last!.file)
+              component_file = relation.last
+
+              if component_file.nil? || component_file.empty?
+                not_found! if params[:file_sha256] # asking for a non existing component file.
+                no_content! # empty component files are not always persisted in DB
+              end
+
+              present_carrierwave_file!(component_file.file)
             end
           end
 
@@ -156,7 +166,10 @@ module API
                 # https://wiki.debian.org/DebianRepository/Format#A.22Packages.22_Indices
                 desc 'The installer (udeb) binary files index' do
                   detail 'This feature was introduced in GitLab 15.4'
-                  success code: 200
+                  success [
+                    { code: 200 },
+                    { code: 202 }
+                  ]
                   failure [
                     { code: 400, message: 'Bad Request' },
                     { code: 401, message: 'Unauthorized' },
@@ -175,7 +188,10 @@ module API
                 # https://wiki.debian.org/DebianRepository/Format?action=show&redirect=RepositoryFormat#indices_acquisition_via_hashsums_.28by-hash.29
                 desc 'The installer (udeb) binary files index by hash' do
                   detail 'This feature was introduced in GitLab 15.4'
-                  success code: 200
+                  success [
+                    { code: 200 },
+                    { code: 202 }
+                  ]
                   failure [
                     { code: 400, message: 'Bad Request' },
                     { code: 401, message: 'Unauthorized' },
@@ -196,7 +212,10 @@ module API
                 # https://wiki.debian.org/DebianRepository/Format#A.22Sources.22_Indices
                 desc 'The source files index' do
                   detail 'This feature was introduced in GitLab 15.4'
-                  success code: 200
+                  success [
+                    { code: 200 },
+                    { code: 202 }
+                  ]
                   failure [
                     { code: 400, message: 'Bad Request' },
                     { code: 401, message: 'Unauthorized' },
@@ -215,7 +234,10 @@ module API
                 # https://wiki.debian.org/DebianRepository/Format?action=show&redirect=RepositoryFormat#indices_acquisition_via_hashsums_.28by-hash.29
                 desc 'The source files index by hash' do
                   detail 'This feature was introduced in GitLab 15.4'
-                  success code: 200
+                  success [
+                    { code: 200 },
+                    { code: 202 }
+                  ]
                   failure [
                     { code: 400, message: 'Bad Request' },
                     { code: 401, message: 'Unauthorized' },
@@ -240,7 +262,10 @@ module API
                 # https://wiki.debian.org/DebianRepository/Format#A.22Packages.22_Indices
                 desc 'The binary files index' do
                   detail 'This feature was introduced in GitLab 13.5'
-                  success code: 200
+                  success [
+                    { code: 200 },
+                    { code: 202 }
+                  ]
                   failure [
                     { code: 400, message: 'Bad Request' },
                     { code: 401, message: 'Unauthorized' },
@@ -259,7 +284,10 @@ module API
                 # https://wiki.debian.org/DebianRepository/Format?action=show&redirect=RepositoryFormat#indices_acquisition_via_hashsums_.28by-hash.29
                 desc 'The binary files index by hash' do
                   detail 'This feature was introduced in GitLab 15.4'
-                  success code: 200
+                  success [
+                    { code: 200 },
+                    { code: 202 }
+                  ]
                   failure [
                     { code: 400, message: 'Bad Request' },
                     { code: 401, message: 'Unauthorized' },

@@ -413,6 +413,27 @@ RSpec.describe Repository, feature_category: :source_code_management do
           repository.commits('master', limit: 1)
         end
       end
+
+      context 'when include_referenced_by is passed' do
+        context 'when commit has references' do
+          let(:ref) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
+          let(:include_referenced_by) { ['refs/tags'] }
+
+          subject { repository.commits(ref, limit: 1, include_referenced_by: include_referenced_by).first }
+
+          it 'returns commits with referenced_by excluding that match the patterns' do
+            expect(subject.referenced_by).to match_array(['refs/tags/v1.1.0'])
+          end
+
+          context 'when matching multiple references' do
+            let(:include_referenced_by) { ['refs/tags', 'refs/heads'] }
+
+            it 'returns commits with referenced_by that match the patterns' do
+              expect(subject.referenced_by).to match_array(['refs/tags/v1.1.0', 'refs/heads/improve/awesome', 'refs/heads/merge-test'])
+            end
+          end
+        end
+      end
     end
 
     context "when 'author' is set" do
@@ -682,6 +703,14 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
       it { is_expected.to be_nil }
     end
+
+    context 'when root reference is empty' do
+      subject { empty_repo.merged_to_root_ref?('master') }
+
+      let(:empty_repo) { build(:project, :empty_repo).repository }
+
+      it { is_expected.to be_nil }
+    end
   end
 
   describe "#root_ref_sha" do
@@ -690,7 +719,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
     subject { repository.root_ref_sha }
 
     before do
-      allow(repository).to receive(:commit).with(repository.root_ref) { commit }
+      allow(repository).to receive(:head_commit) { commit }
     end
 
     it { is_expected.to eq(commit.sha) }
@@ -1020,8 +1049,34 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
+  describe "#move_dir_files" do
+    it 'move directory files successfully' do
+      expect do
+        repository.move_dir_files(user, 'files/new_js', 'files/js',
+                                  branch_name: 'master',
+                                  message: 'move directory images to new_images',
+                                  author_email: author_email,
+                                  author_name: author_name)
+      end.to change { repository.count_commits(ref: 'master') }.by(1)
+      files = repository.ls_files('master')
+
+      expect(files).not_to include('files/js/application.js')
+      expect(files).to include('files/new_js/application.js')
+    end
+
+    it 'skips commit with same path' do
+      expect do
+        repository.move_dir_files(user, 'files/js', 'files/js',
+                                  branch_name: 'master',
+                                  message: 'no commit',
+                                  author_email: author_email,
+                                  author_name: author_name)
+      end.to change { repository.count_commits(ref: 'master') }.by(0)
+    end
+  end
+
   describe "#delete_file" do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     it 'removes file successfully' do
       expect do
@@ -1422,46 +1477,38 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
-  [true, false].each do |ff|
-    context "with feature flag license_from_gitaly=#{ff}" do
-      before do
-        stub_feature_flags(license_from_gitaly: ff)
-      end
+  describe '#license', :use_clean_rails_memory_store_caching, :clean_gitlab_redis_cache do
+    let(:project) { create(:project, :repository) }
 
-      describe '#license', :use_clean_rails_memory_store_caching, :clean_gitlab_redis_cache do
-        let(:project) { create(:project, :repository) }
+    before do
+      repository.delete_file(user, 'LICENSE',
+                             message: 'Remove LICENSE', branch_name: 'master')
+    end
 
-        before do
-          repository.delete_file(user, 'LICENSE',
-                                 message: 'Remove LICENSE', branch_name: 'master')
-        end
+    it 'returns nil when no license is detected' do
+      expect(repository.license).to be_nil
+    end
 
-        it 'returns nil when no license is detected' do
-          expect(repository.license).to be_nil
-        end
+    it 'returns nil when the repository does not exist' do
+      expect(repository).to receive(:exists?).and_return(false)
 
-        it 'returns nil when the repository does not exist' do
-          expect(repository).to receive(:exists?).and_return(false)
+      expect(repository.license).to be_nil
+    end
 
-          expect(repository.license).to be_nil
-        end
+    it 'returns other when the content is not recognizable' do
+      repository.create_file(user, 'LICENSE', 'Gitlab B.V.',
+                             message: 'Add LICENSE', branch_name: 'master')
 
-        it 'returns other when the content is not recognizable' do
-          repository.create_file(user, 'LICENSE', 'Gitlab B.V.',
-                                 message: 'Add LICENSE', branch_name: 'master')
+      expect(repository.license_key).to eq('other')
+    end
 
-          expect(repository.license_key).to eq('other')
-        end
+    it 'returns the license' do
+      license = Licensee::License.new('mit')
+      repository.create_file(user, 'LICENSE',
+                             license.content,
+                             message: 'Add LICENSE', branch_name: 'master')
 
-        it 'returns the license' do
-          license = Licensee::License.new('mit')
-          repository.create_file(user, 'LICENSE',
-                                 license.content,
-                                 message: 'Add LICENSE', branch_name: 'master')
-
-          expect(repository.license_key).to eq(license.key)
-        end
-      end
+      expect(repository.license_key).to eq(license.key)
     end
   end
 
@@ -2302,7 +2349,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
           :contribution_guide,
           :changelog,
           :license_blob,
-          :license_licensee,
           :license_gitaly,
           :gitignore,
           :gitlab_ci_yml,
@@ -2957,11 +3003,10 @@ RSpec.describe Repository, feature_category: :source_code_management do
   describe '#refresh_method_caches' do
     it 'refreshes the caches of the given types' do
       expect(repository).to receive(:expire_method_caches)
-        .with(%i(readme_path license_blob license_licensee license_gitaly))
+        .with(%i(readme_path license_blob license_gitaly))
 
       expect(repository).to receive(:readme_path)
       expect(repository).to receive(:license_blob)
-      expect(repository).to receive(:license_licensee)
       expect(repository).to receive(:license_gitaly)
 
       repository.refresh_method_caches(%i(readme license))

@@ -21,11 +21,6 @@ describe('HelpIcon component', () => {
   const findPopover = () => wrapper.findComponent(GlPopover);
   const findPopoverTarget = () => wrapper.findComponent({ ref: 'discoverProjectSecurity' });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('given a help path only', () => {
     beforeEach(() => {
       createWrapper();

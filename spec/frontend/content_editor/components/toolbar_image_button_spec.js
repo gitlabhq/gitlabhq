@@ -50,7 +50,6 @@ describe('content_editor/components/toolbar_image_button', () => {
 
   afterEach(() => {
     editor.destroy();
-    wrapper.destroy();
   });
 
   it('sets the image to the value in the URL input when "Insert" button is clicked', async () => {

@@ -163,10 +163,12 @@ module QA
 
         def open_web_ide!
           click_element(:web_ide_button)
+          page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
         end
 
         def open_web_ide_via_shortcut
           page.driver.send_keys('.')
+          page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
         end
 
         def has_edit_fork_button?

@@ -18,7 +18,7 @@ RSpec.describe 'Update a work item task', feature_category: :team_planning do
   let(:task_params) { { 'title' => 'UPDATED' } }
   let(:task_input) { { 'id' => task.to_global_id.to_s }.merge(task_params) }
   let(:input) { { 'id' => work_item.to_global_id.to_s, 'taskData' => task_input } }
-  let(:mutation) { graphql_mutation(:workItemUpdateTask, input) }
+  let(:mutation) { graphql_mutation(:workItemUpdateTask, input, nil, ['productAnalyticsState']) }
   let(:mutation_response) { graphql_mutation_response(:work_item_update_task) }
 
   context 'the user is not allowed to read a work item' do

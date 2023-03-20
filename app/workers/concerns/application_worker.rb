@@ -11,6 +11,7 @@ module ApplicationWorker
   include WorkerAttributes
   include WorkerContext
   include Gitlab::SidekiqVersioning::Worker
+  include Gitlab::Loggable
 
   LOGGING_EXTRA_KEY = 'extra'
   SAFE_PUSH_BULK_LIMIT = 1000
@@ -28,7 +29,7 @@ module ApplicationWorker
         'jid' => jid
       )
 
-      payload.stringify_keys.merge(context)
+      build_structured_payload(**payload).merge(context)
     end
 
     def log_extra_metadata_on_done(key, value)

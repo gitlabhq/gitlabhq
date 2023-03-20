@@ -101,23 +101,19 @@ export default {
     primaryOptions() {
       return {
         text: this.$options.i18n.PRIMARY_OPTIONS_TEXT,
-        attributes: [
-          {
-            variant: 'danger',
-            loading: this.loading,
-            disabled: this.loading || !this.form.state,
-          },
-        ],
+        attributes: {
+          variant: 'danger',
+          loading: this.loading,
+          disabled: this.loading || !this.form.state,
+        },
       };
     },
     cancelOptions() {
       return {
         text: this.$options.i18n.SECONDARY_OPTIONS_TEXT,
-        attributes: [
-          {
-            disabled: this.loading,
-          },
-        ],
+        attributes: {
+          disabled: this.loading,
+        },
       };
     },
     showCreateNewMrToggle() {

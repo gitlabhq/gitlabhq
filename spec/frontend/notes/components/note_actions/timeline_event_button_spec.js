@@ -20,10 +20,6 @@ describe('NoteTimelineEventButton', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findTimelineButton = () => wrapper.findComponent(GlButton);
 
   it('emits click-promote-comment-to-event', async () => {

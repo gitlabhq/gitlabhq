@@ -208,7 +208,7 @@ the following command:
 ssh-keygen -o -t rsa -b 4096 -C "<comment>"
 ```
 
-## Generate an SSH key pair for a FIDO/U2F hardware security key
+## Generate an SSH key pair for a FIDO2 hardware security key
 
 To generate ED25519_SK or ECDSA_SK SSH keys, you must use OpenSSH 8.2 or later:
 
@@ -548,7 +548,7 @@ If you receive this error, restart your terminal and try the command again.
 
 ### `Key enrollment failed: invalid format` error
 
-You may receive the following error when [generating an SSH key pair for a FIDO/U2F hardware security key](#generate-an-ssh-key-pair-for-a-fidou2f-hardware-security-key):
+You may receive the following error when [generating an SSH key pair for a FIDO2 hardware security key](#generate-an-ssh-key-pair-for-a-fido2-hardware-security-key):
 
 ```shell
 Key enrollment failed: invalid format
@@ -557,7 +557,7 @@ Key enrollment failed: invalid format
 You can troubleshoot this by trying the following:
 
 - Run the `ssh-keygen` command using `sudo`.
-- Verify your IDO/U2F hardware security key supports
+- Verify your FIDO2 hardware security key supports
   the key type provided.
 - Verify the version of OpenSSH is 8.2 or greater by
   running `ssh -V`.

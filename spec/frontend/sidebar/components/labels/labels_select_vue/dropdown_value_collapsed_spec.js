@@ -19,14 +19,10 @@ describe('DropdownValueCollapsedComponent', () => {
     wrapper = shallowMount(DropdownValueCollapsedComponent, {
       propsData: { ...defaultProps, ...props },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   const findGlIcon = () => wrapper.findComponent(GlIcon);
   const getTooltip = () => getBinding(wrapper.element, 'gl-tooltip');

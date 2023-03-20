@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::MergeService do
+RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workflow do
   include ExclusiveLeaseHelpers
 
   let_it_be(:user) { create(:user) }

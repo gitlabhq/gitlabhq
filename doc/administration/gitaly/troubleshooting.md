@@ -66,7 +66,7 @@ for details.
 ### Client side gRPC logs
 
 Gitaly uses the [gRPC](https://grpc.io/) RPC framework. The Ruby gRPC
-client has its own log file which may contain useful information when
+client has its own log file which may contain helpful information when
 you are seeing Gitaly errors. You can control the log level of the
 gRPC client with the `GRPC_LOG_LEVEL` environment variable. The
 default level is `WARN`.
@@ -345,7 +345,7 @@ You might see the following in Gitaly and Praefect logs:
 }
 ```
 
-This is a gRPC call
+This information in the logs is a gRPC call
 [error response code](https://grpc.github.io/grpc/core/md_doc_statuscodes.html).
 
 If this error occurs, even though
@@ -358,7 +358,7 @@ server to keep them synchronized.
 
 ### Gitaly not listening on new address after reconfiguring
 
-When updating the `gitaly['listen_addr']` or `gitaly['prometheus_listen_addr']` values, Gitaly may
+When updating the `gitaly['configuration'][:listen_addr]` or `gitaly['configuration'][:prometheus_listen_addr]` values, Gitaly may
 continue to listen on the old address after a `sudo gitlab-ctl reconfigure`.
 
 When this occurs, run `sudo gitlab-ctl restart` to resolve the issue. This should no longer be
@@ -514,9 +514,9 @@ Here are common errors and potential causes:
 
 - 500 response code
   - `ActionView::Template::Error (7:permission denied)`
-    - `praefect['auth_token']` and `gitlab_rails['gitaly_token']` do not match on the GitLab server.
+    - `praefect['configuration'][:auth][:token]` and `gitlab_rails['gitaly_token']` do not match on the GitLab server.
   - `Unable to save project. Error: 7:permission denied`
-    - Secret token in `praefect['storage_nodes']` on GitLab server does not match the
+    - Secret token in `praefect['configuration'][:virtual_storage]` on GitLab server does not match the
       value in `gitaly['auth_token']` on one or more Gitaly servers.
 - 503 response code
   - `GRPC::Unavailable (14:failed to connect to all addresses)`
@@ -530,7 +530,7 @@ Here are common errors and potential causes:
 Some common reasons for the Praefect database to experience elevated CPU usage include:
 
 - Prometheus metrics scrapes [running an expensive query](https://gitlab.com/gitlab-org/gitaly/-/issues/3796). If you have GitLab 14.2
-  or above, set `praefect['separate_database_metrics'] = true` in `gitlab.rb`.
+  or above, set `praefect['configuration'][:prometheus_exclude_database_from_default_metrics] = true` in `gitlab.rb`.
 - [Read distribution caching](praefect.md#reads-distribution-caching) is disabled, increasing the number of queries made to the
   database when user traffic is high. Ensure read distribution caching is enabled.
 
@@ -544,9 +544,8 @@ To determine the primary node of a repository:
 - With legacy election strategies in GitLab 13.12 and earlier, the primary was the same for all repositories in a virtual storage.
   To determine the current primary Gitaly node for a specific virtual storage:
 
-  - Use the `Shard Primary Election` [Grafana chart](praefect.md#grafana) on the
+  - (Recommended) Use the `Shard Primary Election` [Grafana chart](praefect.md#grafana) on the
     [`Gitlab Omnibus - Praefect` dashboard](https://gitlab.com/gitlab-org/grafana-dashboards/-/blob/master/omnibus/praefect.json).
-    This is recommended.
   - If you do not have Grafana set up, use the following command on each host of each
     Praefect node:
 
@@ -650,7 +649,7 @@ If the supplied value for `-virtual-storage` is incorrect, the command returns t
 get metadata: rpc error: code = NotFound desc = repository not found
 ```
 
-The documented examples specify `-virtual-storage default`. Check the Praefect server setting `praefect['virtual_storages']` in `/etc/gitlab/gitlab.rb`.
+The documented examples specify `-virtual-storage default`. Check the Praefect server setting `praefect['configuration'][:virtual_storage]` in `/etc/gitlab/gitlab.rb`.
 
 ### Check that repositories are in sync
 
@@ -669,7 +668,7 @@ However, the Praefect database tables are not created on initial reconfigure and
 errors that relations do not exist if either:
 
 - The `gitlab-ctl reconfigure` command isn't executed.
-- There are errors during the execution.
+- Errors occur during the execution.
 
 For example:
 
@@ -693,7 +692,7 @@ praefect sql-migrate: OK (applied 21 migrations)
 
 This indicates that the virtual storage name used in the
 [Praefect configuration](praefect.md#praefect) does not match the storage name used in
-[`git_data_dirs` setting](praefect.md#gitaly) for GitLab.
+[`gitaly['configuration'][:storage][<index>][:name]` setting](praefect.md#gitaly) for GitLab.
 
 Resolve this by matching the virtual storage names used in Praefect and GitLab configuration.
 
@@ -715,9 +714,13 @@ Possible solutions:
 - Provision larger VMs to gain access to larger network traffic allowances.
 - Use your cloud service's monitoring and logging to check that the Praefect nodes are not exhausting their traffic allowances.
 
+### `gitlab-ctl reconfigure` fails with error: `STDOUT: praefect: configuration error: error reading config file: toml: cannot store TOML string into a Go int`
+
+This error occurs when `praefect['database_port']` or `praefect['database_direct_port']` are configured as a string instead of an integer.
+
 ## Profiling Gitaly
 
-Gitaly exposes several of the Golang built-in performance profiling tools on the Prometheus listen port. For example, if Prometheus is listening
+Gitaly exposes several of the Go built-in performance profiling tools on the Prometheus listen port. For example, if Prometheus is listening
 on port `9236` of the GitLab server:
 
 - Get a list of running `goroutines` and their backtraces:

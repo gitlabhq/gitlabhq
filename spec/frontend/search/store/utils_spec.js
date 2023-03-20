@@ -7,6 +7,7 @@ import {
   isSidebarDirty,
   formatSearchResultCount,
   getAggregationsUrl,
+  prepareSearchAggregations,
 } from '~/search/store/utils';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import {
@@ -15,6 +16,9 @@ import {
   MOCK_INFLATED_DATA,
   FRESH_STORED_DATA,
   STALE_STORED_DATA,
+  MOCK_AGGREGATIONS,
+  SMALL_MOCK_AGGREGATIONS,
+  TEST_RAW_BUCKETS,
 } from '../mock_data';
 
 const PREV_TIME = new Date().getTime() - 1;
@@ -226,11 +230,14 @@ describe('Global Search Store Utils', () => {
   });
 
   describe.each`
-    description            | currentQuery                                                          | urlQuery                                                              | isDirty
-    ${'identical'}         | ${{ [SIDEBAR_PARAMS[0]]: 'default', [SIDEBAR_PARAMS[1]]: 'default' }} | ${{ [SIDEBAR_PARAMS[0]]: 'default', [SIDEBAR_PARAMS[1]]: 'default' }} | ${false}
-    ${'different'}         | ${{ [SIDEBAR_PARAMS[0]]: 'default', [SIDEBAR_PARAMS[1]]: 'new' }}     | ${{ [SIDEBAR_PARAMS[0]]: 'default', [SIDEBAR_PARAMS[1]]: 'default' }} | ${true}
-    ${'null/undefined'}    | ${{ [SIDEBAR_PARAMS[0]]: null, [SIDEBAR_PARAMS[1]]: null }}           | ${{ [SIDEBAR_PARAMS[0]]: undefined, [SIDEBAR_PARAMS[1]]: undefined }} | ${false}
-    ${'updated/undefined'} | ${{ [SIDEBAR_PARAMS[0]]: 'new', [SIDEBAR_PARAMS[1]]: 'new' }}         | ${{ [SIDEBAR_PARAMS[0]]: undefined, [SIDEBAR_PARAMS[1]]: undefined }} | ${true}
+    description                             | currentQuery                                                                                           | urlQuery                                                                                               | isDirty
+    ${'identical'}                          | ${{ [SIDEBAR_PARAMS[0]]: 'default', [SIDEBAR_PARAMS[1]]: 'default', [SIDEBAR_PARAMS[2]]: ['a', 'b'] }} | ${{ [SIDEBAR_PARAMS[0]]: 'default', [SIDEBAR_PARAMS[1]]: 'default', [SIDEBAR_PARAMS[2]]: ['a', 'b'] }} | ${false}
+    ${'different'}                          | ${{ [SIDEBAR_PARAMS[0]]: 'default', [SIDEBAR_PARAMS[1]]: 'new', [SIDEBAR_PARAMS[2]]: ['a', 'b'] }}     | ${{ [SIDEBAR_PARAMS[0]]: 'default', [SIDEBAR_PARAMS[1]]: 'default', [SIDEBAR_PARAMS[2]]: ['a', 'c'] }} | ${true}
+    ${'null/undefined'}                     | ${{ [SIDEBAR_PARAMS[0]]: null, [SIDEBAR_PARAMS[1]]: null, [SIDEBAR_PARAMS[2]]: null }}                 | ${{ [SIDEBAR_PARAMS[0]]: undefined, [SIDEBAR_PARAMS[1]]: undefined, [SIDEBAR_PARAMS[2]]: undefined }}  | ${false}
+    ${'updated/undefined'}                  | ${{ [SIDEBAR_PARAMS[0]]: 'new', [SIDEBAR_PARAMS[1]]: 'new', [SIDEBAR_PARAMS[2]]: ['a', 'b'] }}         | ${{ [SIDEBAR_PARAMS[0]]: undefined, [SIDEBAR_PARAMS[1]]: undefined, [SIDEBAR_PARAMS[2]]: [] }}         | ${true}
+    ${'language only no url params'}        | ${{ [SIDEBAR_PARAMS[2]]: ['a', 'b'] }}                                                                 | ${{ [SIDEBAR_PARAMS[2]]: undefined }}                                                                  | ${true}
+    ${'language only url params symetric'}  | ${{ [SIDEBAR_PARAMS[2]]: ['a', 'b'] }}                                                                 | ${{ [SIDEBAR_PARAMS[2]]: ['a', 'b'] }}                                                                 | ${false}
+    ${'language only url params asymetric'} | ${{ [SIDEBAR_PARAMS[2]]: ['a'] }}                                                                      | ${{ [SIDEBAR_PARAMS[2]]: ['a', 'b'] }}                                                                 | ${true}
   `('isSidebarDirty', ({ description, currentQuery, urlQuery, isDirty }) => {
     describe(`with ${description} sidebar query data`, () => {
       let res;
@@ -261,6 +268,24 @@ describe('Global Search Store Utils', () => {
     it('returns zero as string if no count is provided', () => {
       const testURL = window.location.href;
       expect(getAggregationsUrl()).toStrictEqual(`${testURL}search/aggregations`);
+    });
+  });
+
+  const TEST_LANGUAGE_QUERY = ['Markdown', 'JSON'];
+  const TEST_EXPECTED_ORDERED_BUCKETS = [
+    TEST_RAW_BUCKETS.find((x) => x.key === 'Markdown'),
+    TEST_RAW_BUCKETS.find((x) => x.key === 'JSON'),
+    ...TEST_RAW_BUCKETS.filter((x) => !TEST_LANGUAGE_QUERY.includes(x.key)),
+  ];
+
+  describe('prepareSearchAggregations', () => {
+    it.each`
+      description        | query                                | data                       | result
+      ${'has no query'}  | ${undefined}                         | ${MOCK_AGGREGATIONS}       | ${MOCK_AGGREGATIONS}
+      ${'has query'}     | ${{ language: TEST_LANGUAGE_QUERY }} | ${SMALL_MOCK_AGGREGATIONS} | ${[{ ...SMALL_MOCK_AGGREGATIONS[0], buckets: TEST_EXPECTED_ORDERED_BUCKETS }]}
+      ${'has bad query'} | ${{ language: ['sdf', 'wrt'] }}      | ${SMALL_MOCK_AGGREGATIONS} | ${SMALL_MOCK_AGGREGATIONS}
+    `('$description', ({ query, data, result }) => {
+      expect(prepareSearchAggregations({ query }, data)).toStrictEqual(result);
     });
   });
 });

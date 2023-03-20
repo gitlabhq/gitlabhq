@@ -77,12 +77,10 @@ RSpec.describe Groups::VariablesController do
 
     describe 'PATCH #update' do
       it 'is successful' do
-        patch :update,
-              params: {
-                group_id: group,
-                variables_attributes: [{ id: variable.id, key: 'hello' }]
-              },
-              format: :json
+        patch :update, params: {
+          group_id: group,
+          variables_attributes: [{ id: variable.id, key: 'hello' }]
+        }, format: :json
 
         expect(response).to have_gitlab_http_status(:ok)
       end

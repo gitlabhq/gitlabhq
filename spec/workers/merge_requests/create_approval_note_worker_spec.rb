@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::CreateApprovalNoteWorker do
+RSpec.describe MergeRequests::CreateApprovalNoteWorker, feature_category: :code_review_workflow do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }

@@ -1,6 +1,8 @@
 - project = blob.project
 - return unless project
-- blob_link = project_blob_path(project, tree_join(repository_ref(project), blob.path))
-- blame_link = project_blame_path(project, tree_join(repository_ref(project), blob.path))
+- project_repository_ref = repository_ref(project) || ''
+- blob_path = blob.path || ''
+- blob_link = project_blob_path(project, tree_join(project_repository_ref, blob_path))
+- blame_link = project_blame_path(project, tree_join(project_repository_ref, blob_path))
 
-= render partial: 'search/results/blob_data', locals: { blob: blob, project: project, path: blob.path, blob_link: blob_link, blame_link: blame_link }
+= render partial: 'search/results/blob_data', locals: { blob: blob, project: project, path: blob_path, blob_link: blob_link, blame_link: blame_link }

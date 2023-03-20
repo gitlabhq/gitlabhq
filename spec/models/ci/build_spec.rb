@@ -22,20 +22,35 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it { is_expected.to belong_to(:runner) }
   it { is_expected.to belong_to(:trigger_request) }
   it { is_expected.to belong_to(:erased_by) }
+  it { is_expected.to belong_to(:pipeline).inverse_of(:builds) }
 
   it { is_expected.to have_many(:needs).with_foreign_key(:build_id) }
-  it { is_expected.to have_many(:sourced_pipelines).with_foreign_key(:source_job_id) }
-  it { is_expected.to have_one(:sourced_pipeline).with_foreign_key(:source_job_id) }
+
+  it do
+    is_expected.to have_many(:sourced_pipelines).class_name('Ci::Sources::Pipeline').with_foreign_key(:source_job_id)
+      .inverse_of(:build)
+  end
+
   it { is_expected.to have_many(:job_variables).with_foreign_key(:job_id) }
   it { is_expected.to have_many(:report_results).with_foreign_key(:build_id) }
   it { is_expected.to have_many(:pages_deployments).with_foreign_key(:ci_build_id) }
 
   it { is_expected.to have_one(:deployment) }
-  it { is_expected.to have_one(:runner_machine).through(:metadata) }
+  it { is_expected.to have_one(:runner_machine).through(:runner_machine_build) }
   it { is_expected.to have_one(:runner_session).with_foreign_key(:build_id) }
   it { is_expected.to have_one(:trace_metadata).with_foreign_key(:build_id) }
   it { is_expected.to have_one(:runtime_metadata).with_foreign_key(:build_id) }
-  it { is_expected.to have_one(:pending_state).with_foreign_key(:build_id) }
+  it { is_expected.to have_one(:pending_state).with_foreign_key(:build_id).inverse_of(:build) }
+
+  it do
+    is_expected.to have_one(:queuing_entry).class_name('Ci::PendingBuild').with_foreign_key(:build_id).inverse_of(:build)
+  end
+
+  it do
+    is_expected.to have_one(:runtime_metadata).class_name('Ci::RunningBuild').with_foreign_key(:build_id)
+      .inverse_of(:build)
+  end
+
   it { is_expected.to have_many(:terraform_state_versions).inverse_of(:build).with_foreign_key(:ci_build_id) }
 
   it { is_expected.to validate_presence_of(:ref) }
@@ -1040,7 +1055,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'non public artifacts' do
-      let(:build) { create(:ci_build, :artifacts, :non_public_artifacts, pipeline: pipeline) }
+      let(:build) { create(:ci_build, :artifacts, :with_private_artifacts_config, pipeline: pipeline) }
 
       it { is_expected.to be_falsey }
     end
@@ -1422,11 +1437,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let(:build) { create(:ci_build, trait, pipeline: pipeline) }
       let(:event) { state }
 
-      context "when transitioning to #{params[:state]}" do
-        before do
-          allow(Gitlab).to receive(:com?).and_return(true)
-        end
-
+      context "when transitioning to #{params[:state]}", :saas do
         it 'increments build_completed_report_type metric' do
           expect(
             ::Gitlab::Ci::Artifacts::Metrics
@@ -1922,62 +1933,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             it { is_expected.to be_truthy }
           end
         end
-      end
-    end
-  end
-
-  describe '#failed_but_allowed?' do
-    subject { build.failed_but_allowed? }
-
-    context 'when build is not allowed to fail' do
-      before do
-        build.allow_failure = false
-      end
-
-      context 'and build.status is success' do
-        before do
-          build.status = 'success'
-        end
-
-        it { is_expected.to be_falsey }
-      end
-
-      context 'and build.status is failed' do
-        before do
-          build.status = 'failed'
-        end
-
-        it { is_expected.to be_falsey }
-      end
-    end
-
-    context 'when build is allowed to fail' do
-      before do
-        build.allow_failure = true
-      end
-
-      context 'and build.status is success' do
-        before do
-          build.status = 'success'
-        end
-
-        it { is_expected.to be_falsey }
-      end
-
-      context 'and build status is failed' do
-        before do
-          build.status = 'failed'
-        end
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'when build is a manual action' do
-        before do
-          build.status = 'manual'
-        end
-
-        it { is_expected.to be_falsey }
       end
     end
   end
@@ -3635,6 +3590,46 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_ISSUER_ID' }).to be_nil
           expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_KEY' }).to be_nil
           expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_KEY_ID' }).to be_nil
+        end
+      end
+    end
+
+    context 'for the google_play integration' do
+      let_it_be(:google_play_integration) { create(:google_play_integration) }
+
+      let(:google_play_variables) do
+        [
+          { key: 'SUPPLY_JSON_KEY_DATA', value: google_play_integration.service_account_key, masked: true, public: false }
+        ]
+      end
+
+      context 'when the google_play integration exists' do
+        context 'when a build is protected' do
+          before do
+            allow(build.pipeline).to receive(:protected_ref?).and_return(true)
+            build.project.update!(google_play_integration: google_play_integration)
+          end
+
+          it 'includes google_play variables' do
+            is_expected.to include(*google_play_variables)
+          end
+        end
+
+        context 'when a build is not protected' do
+          before do
+            allow(build.pipeline).to receive(:protected_ref?).and_return(false)
+            build.project.update!(google_play_integration: google_play_integration)
+          end
+
+          it 'does not include the google_play variable' do
+            expect(subject[:key] == 'SUPPLY_JSON_KEY_DATA').to eq(false)
+          end
+        end
+      end
+
+      context 'when the googel_play integration does not exist' do
+        it 'does not include google_play variable' do
+          expect(subject[:key] == 'SUPPLY_JSON_KEY_DATA').to eq(false)
         end
       end
     end
@@ -5784,12 +5779,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       expect(build.token).to be_nil
       expect(build.changes).to be_empty
     end
-
-    it 'does not remove the token when FF is disabled' do
-      stub_feature_flags(remove_job_token_on_completion: false)
-
-      expect { build.remove_token! }.not_to change(build, :token)
-    end
   end
 
   describe 'metadata partitioning', :ci_partitioning do
@@ -5902,6 +5891,33 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         context "when job has no artifact of type #{type}" do
           it { is_expected.to be_nil }
         end
+      end
+    end
+  end
+
+  describe 'token format for builds transiting into pending' do
+    let(:partition_id) { 100 }
+    let(:ci_build) { described_class.new(partition_id: partition_id) }
+
+    context 'when build is initialized without a token and transits to pending' do
+      let(:partition_id_prefix_in_16_bit_encode) { partition_id.to_s(16) + '_' }
+
+      it 'generates a token' do
+        expect { ci_build.enqueue }
+          .to change { ci_build.token }.from(nil).to(a_string_starting_with(partition_id_prefix_in_16_bit_encode))
+      end
+    end
+
+    context 'when build is initialized with a token and transits to pending' do
+      let(:token) { 'an_existing_secret_token' }
+
+      before do
+        ci_build.set_token(token)
+      end
+
+      it 'does not change the existing token' do
+        expect { ci_build.enqueue }
+          .not_to change { ci_build.token }.from(token)
       end
     end
   end

@@ -44,6 +44,11 @@ module Sidebars
           'doc-text'
         end
 
+        override :pick_into_super_sidebar?
+        def pick_into_super_sidebar?
+          true
+        end
+
         private
 
         def files_menu_item
@@ -92,7 +97,7 @@ module Sidebars
           link = project_graph_path(context.project, context.current_ref, ref_type: ref_type_from_context(context))
 
           ::Sidebars::MenuItem.new(
-            title: _('Contributors'),
+            title: _('Contributor statistics'),
             link: link,
             active_routes: { path: 'graphs#show' },
             item_id: :contributors
@@ -112,7 +117,7 @@ module Sidebars
 
         def compare_menu_item
           ::Sidebars::MenuItem.new(
-            title: _('Compare'),
+            title: _('Compare revisions'),
             link: project_compare_index_path(context.project, from: context.project.repository.root_ref, to: context.current_ref),
             active_routes: { controller: :compare },
             item_id: :compare

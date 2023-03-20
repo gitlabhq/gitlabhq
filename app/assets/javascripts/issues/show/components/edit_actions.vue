@@ -1,16 +1,9 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { __ } from '~/locale';
 import Tracking from '~/tracking';
 import eventHub from '../event_hub';
 import updateMixin from '../mixins/update';
 import getIssueStateQuery from '../queries/get_issue_state.query.graphql';
-
-const issuableTypes = {
-  issue: __('Issue'),
-  epic: __('Epic'),
-  incident: __('Incident'),
-};
 
 const trackingMixin = Tracking.mixin({ label: 'delete_issue' });
 
@@ -54,11 +47,6 @@ export default {
   computed: {
     isSubmitEnabled() {
       return this.formState.title.trim() !== '';
-    },
-    typeToShow() {
-      const { issueState, issuableType } = this;
-      const type = issueState.issueType ?? issuableType;
-      return issuableTypes[type];
     },
   },
   methods: {

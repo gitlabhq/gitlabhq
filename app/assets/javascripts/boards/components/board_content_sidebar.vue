@@ -6,9 +6,9 @@ import SidebarDropdownWidget from 'ee_else_ce/sidebar/components/sidebar_dropdow
 import { __, sprintf } from '~/locale';
 import BoardSidebarTimeTracker from '~/boards/components/sidebar/board_sidebar_time_tracker.vue';
 import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
-import { BoardType, ISSUABLE, INCIDENT } from '~/boards/constants';
+import { ISSUABLE, INCIDENT } from '~/boards/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_ISSUE, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
 import SidebarConfidentialityWidget from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
 import SidebarDateWidget from '~/sidebar/components/date/sidebar_date_widget.vue';
@@ -16,7 +16,6 @@ import SidebarSeverityWidget from '~/sidebar/components/severity/sidebar_severit
 import SidebarSubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import SidebarLabelsWidget from '~/sidebar/components/labels/labels_select_widget/labels_select_root.vue';
-import { LabelType } from '~/sidebar/components/labels/labels_select_widget/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
@@ -98,7 +97,7 @@ export default {
       return this.activeBoardItem?.referencePath?.split('#')[0] || '';
     },
     parentType() {
-      return this.isGroupBoard ? BoardType.group : BoardType.project;
+      return this.isGroupBoard ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
     },
     createLabelTitle() {
       return sprintf(__('Create %{workspace} label'), {
@@ -114,7 +113,7 @@ export default {
       return this.isGroupBoard ? this.groupPathForActiveIssue : this.projectPathForActiveIssue;
     },
     labelType() {
-      return this.isGroupBoard ? LabelType.group : LabelType.project;
+      return this.isGroupBoard ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
     },
     labelsFilterPath() {
       return this.isGroupBoard

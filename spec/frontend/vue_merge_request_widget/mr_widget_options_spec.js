@@ -1,9 +1,10 @@
 import { GlBadge, GlLink, GlIcon, GlButton, GlDropdown } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import * as Sentry from '@sentry/browser';
+import approvedByCurrentUser from 'test_fixtures/graphql/merge_requests/approvals/approvals.query.graphql.json';
 import getStateQueryResponse from 'test_fixtures/graphql/merge_requests/get_state.query.graphql.json';
 import readyToMergeResponse from 'test_fixtures/graphql/merge_requests/states/ready_to_merge.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -20,6 +21,7 @@ import {
   registerExtension,
   registeredExtensions,
 } from '~/vue_merge_request_widget/components/extensions';
+import { STATE_QUERY_POLLING_INTERVAL_BACKOFF } from '~/vue_merge_request_widget/constants';
 import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/constants';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import MrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
@@ -28,6 +30,7 @@ import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_
 import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/graphql/queries/security_report_merge_request_download_paths.query.graphql';
 import getStateQuery from '~/vue_merge_request_widget/queries/get_state.query.graphql';
 import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
+import approvalsQuery from 'ee_else_ce/vue_merge_request_widget/components/approvals/queries/approvals.query.graphql';
 import userPermissionsQuery from '~/vue_merge_request_widget/queries/permissions.query.graphql';
 import conflictsStateQuery from '~/vue_merge_request_widget/queries/states/conflicts.query.graphql';
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
@@ -60,6 +63,8 @@ jest.mock('@sentry/browser', () => ({
 Vue.use(VueApollo);
 
 describe('MrWidgetOptions', () => {
+  let stateQueryHandler;
+  let queryResponse;
   let wrapper;
   let mock;
 
@@ -83,37 +88,41 @@ describe('MrWidgetOptions', () => {
 
   afterEach(() => {
     mock.restore();
+    // eslint-disable-next-line @gitlab/vtu-no-explicit-wrapper-destroy
     wrapper.destroy();
-
     gl.mrWidgetData = {};
-    gon.features = {};
   });
 
-  const createComponent = (mrData = mockData, options = {}) => {
-    wrapper = mount(MrWidgetOptions, {
+  const createComponent = (mrData = mockData, options = {}, data = {}, fullMount = true) => {
+    const mounting = fullMount ? mount : shallowMount;
+
+    queryResponse = {
+      data: {
+        project: {
+          ...getStateQueryResponse.data.project,
+          mergeRequest: {
+            ...getStateQueryResponse.data.project.mergeRequest,
+            mergeError: mrData.mergeError || null,
+          },
+        },
+      },
+    };
+    stateQueryHandler = jest.fn().mockResolvedValue(queryResponse);
+    wrapper = mounting(MrWidgetOptions, {
       propsData: {
         mrData: { ...mrData },
       },
       data() {
-        return { loading: false };
+        return {
+          loading: false,
+          ...data,
+        };
       },
 
       ...options,
       apolloProvider: createMockApollo([
-        [
-          getStateQuery,
-          jest.fn().mockResolvedValue({
-            data: {
-              project: {
-                ...getStateQueryResponse.data.project,
-                mergeRequest: {
-                  ...getStateQueryResponse.data.project.mergeRequest,
-                  mergeError: mrData.mergeError || null,
-                },
-              },
-            },
-          }),
-        ],
+        [approvalsQuery, jest.fn().mockResolvedValue(approvedByCurrentUser)],
+        [getStateQuery, stateQueryHandler],
         [readyToMergeQuery, jest.fn().mockResolvedValue(readyToMergeResponse)],
         [
           userPermissionsQuery,
@@ -351,18 +360,6 @@ describe('MrWidgetOptions', () => {
         });
       });
 
-      describe('initPolling', () => {
-        it('should call SmartInterval', () => {
-          wrapper.vm.initPolling();
-
-          expect(SmartInterval).toHaveBeenCalledWith(
-            expect.objectContaining({
-              callback: wrapper.vm.checkStatus,
-            }),
-          );
-        });
-      });
-
       describe('initDeploymentsPolling', () => {
         it('should call SmartInterval', () => {
           wrapper.vm.initDeploymentsPolling();
@@ -529,23 +526,64 @@ describe('MrWidgetOptions', () => {
         });
       });
 
-      describe('resumePolling', () => {
-        it('should call stopTimer on pollingInterval', () => {
-          jest.spyOn(wrapper.vm.pollingInterval, 'resume').mockImplementation(() => {});
+      describe('Apollo query', () => {
+        const interval = 5;
+        const data = 'foo';
+        const mockCheckStatus = jest.fn().mockResolvedValue({ data });
+        const mockSetGraphqlData = jest.fn();
+        const mockSetData = jest.fn();
 
-          wrapper.vm.resumePolling();
+        beforeEach(() => {
+          wrapper.destroy();
 
-          expect(wrapper.vm.pollingInterval.resume).toHaveBeenCalled();
+          return createComponent(
+            mockData,
+            {},
+            {
+              pollInterval: interval,
+              startingPollInterval: interval,
+              mr: {
+                setData: mockSetData,
+                setGraphqlData: mockSetGraphqlData,
+              },
+              service: {
+                checkStatus: mockCheckStatus,
+              },
+            },
+            false,
+          );
         });
-      });
 
-      describe('stopPolling', () => {
-        it('should call stopTimer on pollingInterval', () => {
-          jest.spyOn(wrapper.vm.pollingInterval, 'stopTimer').mockImplementation(() => {});
+        describe('normal polling behavior', () => {
+          it('responds to the GraphQL query finishing', () => {
+            expect(mockSetGraphqlData).toHaveBeenCalledWith(queryResponse.data.project);
+            expect(mockCheckStatus).toHaveBeenCalled();
+            expect(mockSetData).toHaveBeenCalledWith(data, undefined);
+            expect(stateQueryHandler).toHaveBeenCalledTimes(1);
+          });
+        });
 
-          wrapper.vm.stopPolling();
+        describe('external event control', () => {
+          describe('enablePolling', () => {
+            it('enables the Apollo query polling using the event hub', () => {
+              eventHub.$emit('EnablePolling');
 
-          expect(wrapper.vm.pollingInterval.stopTimer).toHaveBeenCalled();
+              expect(stateQueryHandler).toHaveBeenCalled();
+              jest.advanceTimersByTime(interval * STATE_QUERY_POLLING_INTERVAL_BACKOFF);
+              expect(stateQueryHandler).toHaveBeenCalledTimes(2);
+            });
+          });
+
+          describe('disablePolling', () => {
+            it('disables the Apollo query polling using the event hub', () => {
+              expect(stateQueryHandler).toHaveBeenCalledTimes(1);
+
+              eventHub.$emit('DisablePolling');
+              jest.advanceTimersByTime(interval * STATE_QUERY_POLLING_INTERVAL_BACKOFF);
+
+              expect(stateQueryHandler).toHaveBeenCalledTimes(1); // no additional polling after a real interval timeout
+            });
+          });
         });
       });
     });
@@ -890,11 +928,7 @@ describe('MrWidgetOptions', () => {
   });
 
   describe('mock extension', () => {
-    let pollRequest;
-
     beforeEach(() => {
-      pollRequest = jest.spyOn(Poll.prototype, 'makeRequest');
-
       registerExtension(workingExtension());
 
       createComponent();
@@ -944,10 +978,6 @@ describe('MrWidgetOptions', () => {
 
       expect(collapsedSection.findComponent(GlButton).exists()).toBe(true);
       expect(collapsedSection.findComponent(GlButton).text()).toBe('Full report');
-    });
-
-    it('extension polling is not called if enablePolling flag is not passed', () => {
-      expect(pollRequest).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -1235,10 +1265,6 @@ describe('MrWidgetOptions', () => {
     });
 
     describe('widget container', () => {
-      afterEach(() => {
-        delete window.gon.features.refactorSecurityExtension;
-      });
-
       it('should not be displayed when the refactor_security_extension feature flag is turned off', () => {
         createComponent();
         expect(findWidgetContainer().exists()).toBe(false);

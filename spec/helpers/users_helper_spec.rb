@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe UsersHelper do
   include TermsHelper
 
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user, timezone: ActiveSupport::TimeZone::MAPPING['UTC']) }
 
   def filter_ee_badges(badges)
     badges.reject { |badge| badge[:text] == 'Is using seat' }
@@ -34,6 +34,35 @@ RSpec.describe UsersHelper do
 
     it "has the user's email as title" do
       is_expected.to include("title=\"#{user.email}\"")
+    end
+  end
+
+  describe '#user_clear_status_at' do
+    context 'when status exists' do
+      context 'with clear_status_at set' do
+        it 'has the correct iso formatted date', time_travel_to: '2020-01-01 00:00:00 +0000' do
+          clear_status_at = 1.day.from_now
+          status = build_stubbed(:user_status, clear_status_at: clear_status_at)
+
+          expect(user_clear_status_at(status.user)).to eq('2020-01-02T00:00:00Z')
+        end
+      end
+
+      context 'without clear_status_at set' do
+        it 'returns nil' do
+          status = build_stubbed(:user_status, clear_status_at: nil)
+
+          expect(user_clear_status_at(status.user)).to be_nil
+        end
+      end
+    end
+
+    context 'without status' do
+      it 'returns nil' do
+        user = build_stubbed(:user)
+
+        expect(user_clear_status_at(user)).to be_nil
+      end
     end
   end
 
@@ -466,6 +495,33 @@ RSpec.describe UsersHelper do
 
     it 'paths matches the schema' do
       expect(data[:paths]).to match_schema('entities/admin_users_data_attributes_paths')
+    end
+  end
+
+  describe '#trials_link_url' do
+    it 'returns the correct URL' do
+      if Gitlab.ee?
+        expect(trials_link_url).to eq('/-/trial_registrations/new?glm_content=top-right-dropdown&glm_source=gitlab.com')
+      else
+        expect(trials_link_url).to eq('https://about.gitlab.com/free-trial/')
+      end
+    end
+  end
+
+  describe '#user_profile_tabs_app_data' do
+    before do
+      allow(helper).to receive(:user_calendar_path).with(user, :json).and_return('/users/root/calendar.json')
+      allow(user).to receive_message_chain(:followers, :count).and_return(2)
+      allow(user).to receive_message_chain(:followees, :count).and_return(3)
+    end
+
+    it 'returns expected hash' do
+      expect(helper.user_profile_tabs_app_data(user)).to eq({
+        followees: 3,
+        followers: 2,
+        user_calendar_path: '/users/root/calendar.json',
+        utc_offset: 0
+      })
     end
   end
 end

@@ -11,7 +11,6 @@ module Ci
     include Gitlab::OptimisticLocking
     include Gitlab::Utils::StrongMemoize
     include AtomicInternalId
-    include EnumWithNil
     include Ci::HasRef
     include ShaAttribute
     include FromUnion
@@ -46,7 +45,7 @@ module Ci
 
     belongs_to :project, inverse_of: :all_pipelines
     belongs_to :user
-    belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
+    belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline', inverse_of: :auto_canceled_pipelines
     belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
     belongs_to :merge_request, class_name: 'MergeRequest'
     belongs_to :external_pull_request
@@ -67,14 +66,15 @@ module Ci
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :latest_statuses_ordered_by_stage, -> { latest.order(:stage_idx, :stage) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :latest_statuses, -> { latest }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
-    has_many :statuses_order_id_desc, -> { order_id_desc }, class_name: 'CommitStatus', foreign_key: :commit_id
+    has_many :statuses_order_id_desc, -> { order_id_desc }, class_name: 'CommitStatus', foreign_key: :commit_id,
+      inverse_of: :pipeline
     has_many :processables, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :bridges, class_name: 'Ci::Bridge', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
     has_many :generic_commit_statuses, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'GenericCommitStatus'
     has_many :job_artifacts, through: :builds
     has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks
-    has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
+    has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id, inverse_of: :pipeline # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, class_name: 'Ci::PipelineVariable'
     has_many :latest_builds, -> { latest.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Build'
     has_many :downloadable_artifacts, -> do
@@ -86,17 +86,24 @@ module Ci
 
     # Merge requests for which the current pipeline is running against
     # the merge request's latest commit.
-    has_many :merge_requests_as_head_pipeline, foreign_key: "head_pipeline_id", class_name: 'MergeRequest'
+    has_many :merge_requests_as_head_pipeline, foreign_key: :head_pipeline_id, class_name: 'MergeRequest',
+      inverse_of: :head_pipeline
+
     has_many :pending_builds, -> { pending }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
-    has_many :failed_builds, -> { latest.failed }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
+    has_many :failed_builds, -> { latest.failed }, foreign_key: :commit_id, class_name: 'Ci::Build',
+      inverse_of: :pipeline
     has_many :retryable_builds, -> { latest.failed_or_canceled.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
-    has_many :cancelable_statuses, -> { cancelable }, foreign_key: :commit_id, class_name: 'CommitStatus'
+    has_many :cancelable_statuses, -> { cancelable }, foreign_key: :commit_id, class_name: 'CommitStatus',
+      inverse_of: :pipeline
     has_many :manual_actions, -> { latest.manual_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
     has_many :scheduled_actions, -> { latest.scheduled_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
 
-    has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
-    has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
-    has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_pipeline_id
+    has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: :auto_canceled_by_id,
+      inverse_of: :auto_canceled_by
+    has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: :auto_canceled_by_id,
+      inverse_of: :auto_canceled_by
+    has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_pipeline_id,
+      inverse_of: :source_pipeline
 
     has_one :source_pipeline, class_name: 'Ci::Sources::Pipeline', inverse_of: :pipeline
 
@@ -114,7 +121,9 @@ module Ci
 
     has_one :pipeline_metadata, class_name: 'Ci::PipelineMetadata', inverse_of: :pipeline
 
-    has_many :daily_build_group_report_results, class_name: 'Ci::DailyBuildGroupReportResult', foreign_key: :last_pipeline_id
+    has_many :daily_build_group_report_results, class_name: 'Ci::DailyBuildGroupReportResult',
+      foreign_key: :last_pipeline_id, inverse_of: :last_pipeline
+
     has_many :latest_builds_report_results, through: :latest_builds, source: :report_results
     has_many :pipeline_artifacts, class_name: 'Ci::PipelineArtifact', inverse_of: :pipeline, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
@@ -143,9 +152,9 @@ module Ci
 
     # We use `Enums::Ci::Pipeline.sources` here so that EE can more easily extend
     # this `Hash` with new values.
-    enum_with_nil source: Enums::Ci::Pipeline.sources
+    enum source: Enums::Ci::Pipeline.sources
 
-    enum_with_nil config_source: Enums::Ci::Pipeline.config_sources
+    enum config_source: Enums::Ci::Pipeline.config_sources
 
     # We use `Enums::Ci::Pipeline.failure_reasons` here so that EE can more easily
     # extend this `Hash` with new values.
@@ -334,6 +343,22 @@ module Ci
           ::Gitlab::Ci::Pipeline::Metrics.pipeline_failure_reason_counter.increment(reason: pipeline.failure_reason)
 
           AutoDevops::DisableWorker.perform_async(pipeline.id) if pipeline.auto_devops_source?
+        end
+      end
+
+      after_transition any => [:running, *::Ci::Pipeline.completed_statuses] do |pipeline|
+        project = pipeline&.project
+
+        next unless project
+        next unless Feature.enabled?(:pipeline_trigger_merge_status, project)
+
+        pipeline.run_after_commit do
+          next if pipeline.child?
+          next unless project.only_allow_merge_if_pipeline_succeeds?(inherit_group_setting: true)
+
+          pipeline.all_merge_requests.opened.each do |merge_request|
+            GraphqlTriggers.merge_request_merge_status_updated(merge_request)
+          end
         end
       end
     end
@@ -1282,7 +1307,7 @@ module Ci
       types_to_collect = report_types.empty? ? ::Ci::JobArtifact::SECURITY_REPORT_FILE_TYPES : report_types
 
       ::Gitlab::Ci::Reports::Security::Reports.new(self).tap do |security_reports|
-        latest_report_builds(reports_scope).each do |build|
+        latest_report_builds_in_self_and_project_descendants(reports_scope).includes(pipeline: { project: :route }).each do |build| # rubocop:disable Rails/FindEach
           build.collect_security_reports!(security_reports, report_types: types_to_collect)
         end
       end

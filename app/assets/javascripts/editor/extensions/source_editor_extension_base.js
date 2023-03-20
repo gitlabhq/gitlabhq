@@ -1,8 +1,11 @@
 import { Range } from 'monaco-editor';
+import { __ } from '~/locale';
 import {
   EDITOR_TYPE_CODE,
   EXTENSION_BASE_LINE_LINK_ANCHOR_CLASS,
   EXTENSION_BASE_LINE_NUMBERS_CLASS,
+  EDITOR_TOOLBAR_BUTTON_GROUPS,
+  EXTENSION_SOFTWRAP_ID,
 } from '../constants';
 
 const hashRegexp = /#?L/g;
@@ -24,12 +27,44 @@ export class SourceEditorExtension {
     return 'BaseExtension';
   }
 
+  onSetup(instance) {
+    this.toolbarButtons = [];
+    if (instance.toolbar) {
+      this.setupToolbar(instance);
+    }
+  }
+
   // eslint-disable-next-line class-methods-use-this
   onUse(instance) {
     SourceEditorExtension.highlightLines(instance);
     if (instance.getEditorType && instance.getEditorType() === EDITOR_TYPE_CODE) {
       SourceEditorExtension.setupLineLinking(instance);
     }
+  }
+
+  onBeforeUnuse(instance) {
+    const ids = this.toolbarButtons.map((item) => item.id);
+    if (instance.toolbar) {
+      instance.toolbar.removeItems(ids);
+    }
+  }
+
+  setupToolbar(instance) {
+    this.toolbarButtons = [
+      {
+        id: EXTENSION_SOFTWRAP_ID,
+        label: __('Soft wrap'),
+        icon: 'soft-wrap',
+        selected: instance.getOption(116) === 'on',
+        group: EDITOR_TOOLBAR_BUTTON_GROUPS.settings,
+        category: 'primary',
+        selectedLabel: __('No wrap'),
+        selectedIcon: 'soft-unwrap',
+        class: 'soft-wrap-toggle',
+        onClick: () => instance.toggleSoftwrap(),
+      },
+    ];
+    instance.toolbar.addItems(this.toolbarButtons);
   }
 
   static onMouseMoveHandler(e) {
@@ -107,6 +142,16 @@ export class SourceEditorExtension {
        */
       highlightLines(instance, bounds = null) {
         SourceEditorExtension.highlightLines(instance, bounds);
+      },
+
+      toggleSoftwrap(instance) {
+        const isSoftWrapped = instance.getOption(116) === 'on';
+        instance.updateOptions({ wordWrap: isSoftWrapped ? 'off' : 'on' });
+        if (instance.toolbar) {
+          instance.toolbar.updateItem(EXTENSION_SOFTWRAP_ID, {
+            selected: !isSoftWrapped,
+          });
+        }
       },
     };
   }

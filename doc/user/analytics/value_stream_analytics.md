@@ -198,8 +198,8 @@ example, milestones have been created and CI for testing and setting environment
 Value stream analytics records the following times for each stage:
 
 - **Issue**: 09:00 to 11:00: 2 hrs
-- **Plan**: 11:00 to 12:00: 1 hr
-- **Code**: 12:00 to 14:00: 2 hrs
+- **Plan**: 11:00 to 12:30: 1.5 hr
+- **Code**: 12:30 to 14:00: 1.5 hrs
 - **Test**: 5 minutes
 - **Review**: 14:00 to 19:00: 5 hrs
 - **Staging**: 19:00 to 19:30: 30 minutes

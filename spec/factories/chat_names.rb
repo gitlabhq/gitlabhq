@@ -3,7 +3,6 @@
 FactoryBot.define do
   factory :chat_name, class: 'ChatName' do
     user
-    integration
 
     team_id { 'T0001' }
     team_domain { 'Awesome Team' }

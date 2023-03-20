@@ -5,14 +5,14 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import RegistrationTokenResetDropdownItem from '~/ci/runner/components/registration/registration_token_reset_dropdown_item.vue';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/ci/runner/constants';
 import runnersRegistrationTokenResetMutation from '~/ci/runner/graphql/list/runners_registration_token_reset.mutation.graphql';
 import { captureException } from '~/ci/runner/sentry_utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
 
 Vue.use(VueApollo);
@@ -43,7 +43,7 @@ describe('RegistrationTokenResetDropdownItem', () => {
         [runnersRegistrationTokenResetMutation, runnersRegistrationTokenResetMutationHandler],
       ]),
       directives: {
-        GlModal: createMockDirective(),
+        GlModal: createMockDirective('gl-modal'),
       },
     });
 
@@ -61,10 +61,6 @@ describe('RegistrationTokenResetDropdownItem', () => {
     });
 
     createComponent();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('Displays reset button', () => {

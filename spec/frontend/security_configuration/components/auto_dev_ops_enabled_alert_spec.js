@@ -21,10 +21,6 @@ describe('AutoDevopsEnabledAlert component', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('contains correct body text', () => {
     expect(wrapper.text()).toMatchInterpolatedText(AutoDevopsEnabledAlert.i18n.body);
   });

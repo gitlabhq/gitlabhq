@@ -32,10 +32,6 @@ describe('SignInGitlabMultiversion', () => {
     wrapper = shallowMountExtended(SignInGitlabMultiversion);
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when version is not selected', () => {
     describe('VersionSelectForm', () => {
       it('renders version select form', () => {

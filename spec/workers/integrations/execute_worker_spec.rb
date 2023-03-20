@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Integrations::ExecuteWorker, '#perform' do
+RSpec.describe Integrations::ExecuteWorker, '#perform', feature_category: :integrations do
   let_it_be(:integration) { create(:jira_integration) }
 
   let(:worker) { described_class.new }

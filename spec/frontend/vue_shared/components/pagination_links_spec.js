@@ -44,10 +44,6 @@ describe('Pagination links component', () => {
     glPagination = wrapper.findComponent(GlPagination);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should provide translated text to GitLab UI pagination', () => {
     Object.entries(translations).forEach((entry) => {
       expect(glPagination.vm[entry[0]]).toBe(entry[1]);

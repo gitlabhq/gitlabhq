@@ -18,14 +18,14 @@ For deprecation authors (usually Product Managers and Engineering Managers):
 
 - To add a deprecation, use the example.yml file in `/data/deprecations/templates` as a template.
 - For more information about authoring deprecations, check the the deprecation item guidance:
-  https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-a-deprecation-entry
+  https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-and-removals-docs
 
 For deprecation reviewers (Technical Writers only):
 
 - To update the deprecation doc, run: `bin/rake gitlab:docs:compile_deprecations`
 - To verify the deprecations doc is up to date, run: `bin/rake gitlab:docs:check_deprecations`
 - For more information about updating the deprecation doc, see the deprecation doc update guidance:
-  https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc
+  https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-and-removals-docs
 -->
 
 {::options parse_block_html="true" /}
@@ -37,14 +37,86 @@ Some features cause breaking changes when they are removed.
 **{rss}** **To be notified of upcoming breaking changes**,
 add this URL to your RSS feed reader: `https://about.gitlab.com/breaking-changes.xml`
 
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-As with all projects, the items mentioned on this page are subject to change or delay.
-The development, release, and timing of any products, features, or functionality remain at the
-sole discretion of GitLab Inc.
+You can also view [REST API](https://docs.gitlab.com/ee/api/rest/deprecations.html)
+and [GraphQL](https://docs.gitlab.com/ee/api/graphql/removed_items.html) deprecations/removals.
 <div class="js-deprecation-filters"></div>
+
+<div class="announcement-milestone">
+
+## Announced in 15.10
+
+<div class="deprecation removal-160 breaking-change">
+
+### Deprecated Consul http metrics
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The Consul provided in the GitLab Omnibus package will no longer provide older deprecated Consul metrics starting in GitLab 16.0.
+
+In GitLab 14.0, [Consul was updated to 1.9.6](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5344),
+which deprecated some telemetry metrics from being at the `consul.http` path. In GitLab 16.0, the `consul.http` path will be removed.
+
+If you have monitoring that consumes Consul metrics, update them to use `consul.api.http` instead of `consul.http`.
+For more information, see [the deprecation notes for Consul 1.9.0](https://github.com/hashicorp/consul/releases/tag/v1.9.0).
+
+</div>
+
+<div class="deprecation removal-170 breaking-change">
+
+### DingTalk OmniAuth provider
+
+Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The `omniauth-dingtalk` gem that provides GitLab with the DingTalk OmniAuth provider will be removed in our next
+major release, GitLab 17.0. This gem sees very little use and is better suited for JiHu edition.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Environment search query requires at least three characters
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+From GitLab 16.0, when you search for environments with the API, you must use at least three characters. This change helps us ensure the scalability of the search operation.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Legacy Gitaly configuration method
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Gitaly configuration within Omnibus GitLab has been updated such that all Gitaly related configuration keys are in a single
+configuration structure that matches the standard Gitaly configuration. As such, the previous configuration structure is deprecated.
+
+The single configuration structure is available from GitLab 15.10, though backwards compatibility is maintained. Once removed, Gitaly must be configured using the single
+configuration structure. You should update the configuration of Gitaly at your earliest convenience.
+
+The change improves consistency between Omnibus GitLab and source installs and enables us to provide better documentation and tooling for both.
+
+You should update to the new configuration structure as soon as possible using
+[the upgrade instructions](https://docs.gitlab.com/ee/update/#gitaly-omnibus-gitlab-configuration-structure-change).
+
+</div>
+</div>
 
 <div class="announcement-milestone">
 
@@ -112,6 +184,21 @@ In 16.0, this inbound scope limit will be the only option available for all proj
 
 <div class="deprecation removal-160 breaking-change">
 
+### Deprecation and planned removal for `CI_PRE_CLONE_SCRIPT` variable on GitLab SaaS
+
+End of Support: GitLab <span class="removal-milestone">16.0</span> <span class="support-end-date"></span><br />
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The [`CI_PRE_CLONE_SCRIPT` variable](https://docs.gitlab.com/ee/ci/runners/saas/linux_saas_runner.html#pre-clone-script) supported by GitLab SaaS Runners is deprecated as of GitLab 15.9 and will be removed in 16.0. The `CI_PRE_CLONE_SCRIPT` variable enables you to run commands in your CI/CD job prior to the runner executing Git init and get fetch. For more information about how this feature works, see [Pre-clone script](https://docs.gitlab.com/ee/ci/runners/saas/linux_saas_runner.html#pre-clone-script). As an alternative, you can use the [`pre_get_sources_script`](https://docs.gitlab.com/ee/ci/yaml/#hookspre_get_sources_script).
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Development dependencies reported for PHP and Python
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
@@ -141,7 +228,7 @@ We intend to replace this feature with the ability to [embed charts](https://git
 
 <div class="deprecation removal-160 breaking-change">
 
-### Error Tracking UI in GitLab Rails is deprecated
+### Enforced validation of CI/CD parameter character lengths
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
 
@@ -149,7 +236,29 @@ WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-The [Error Tracking UI](https://docs.gitlab.com/ee/operations/error_tracking.html) is deprecated in 15.9 and will be removed in 16.0. In future versions, you should use the [GitLab Observability UI](https://gitlab.com/gitlab-org/opstrace/opstrace-ui/), which will gradually be made available on GitLab.com over the next few releases.
+While CI/CD [job names](https://docs.gitlab.com/ee/ci/jobs/index.html#job-name-limitations) have a strict 255 character limit, other CI/CD parameters do not yet have validations ensuring they also stay under the limit.
+
+In GitLab 16.0, validation will be added to strictly limit the following to 255 characters as well:
+
+- The `stage` keyword.
+- The `ref`, which is the Git branch or tag name for the pipeline.
+- The `description` and `target_url` parameter, used by external CI/CD integrations.
+
+Users on self-managed instances should update their pipelines to ensure they do not use parameters that exceed 255 characters. Users on GitLab.com do not need to make any changes, as these are already limited in that database.
+
+</div>
+
+<div class="deprecation removal-166 breaking-change">
+
+### Error Tracking UI in GitLab Rails is deprecated
+
+Planned removal: GitLab <span class="removal-milestone">16.6</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The [Error Tracking UI](https://docs.gitlab.com/ee/operations/error_tracking.html) is deprecated in 15.9 and will be removed in 16.6 (milestone might change) once GitLab Observability UI is made available. In future versions, you should use the [GitLab Observability UI](https://gitlab.com/gitlab-org/opstrace/opstrace-ui/), which will gradually be made available on GitLab.com over the next few releases.
 
 During the transition to the GitLab Observability UI, we will migrate the [GitLab Observability Backend](https://gitlab.com/gitlab-org/opstrace/opstrace) from a per-cluster deployment model to a per-tenant deployment model. Because [Integrated Error Tracking](https://docs.gitlab.com/ee/operations/error_tracking.html#integrated-error-tracking) is in Open Beta, we will not migrate any existing user data. For more details about the migration, see the direction pages for:
 
@@ -268,8 +377,8 @@ Previously, Praefect configuration keys were scattered throughout the configurat
 Praefect configuration so the previous configuration method is deprecated.
 
 The single configuration structure available from GitLab 15.9, though backwards compatibility is maintained. Once removed, Praefect must be configured using the single
-configuration structure. You should update the configuration of Praefect at your earliest convenience. See
-[GitLab 15.9 upgrade information](https://docs.gitlab.com/ee/update/#1590).
+configuration structure. You should update your Praefect configuration as soon as possible using
+[the upgrade instructions](https://docs.gitlab.com/ee/update/#praefect-omnibus-gitlab-configuration-structure-change).
 
 This change brings Praefect configuration in Omnibus GitLab in line with the configuration structure of Praefect. Previously, the hierarchies and configuration keys
 didn't match. The change improves consistency between Omnibus GitLab and source installs and enables us to provide better documentation and tooling for both.
@@ -346,6 +455,20 @@ Due to low customer usage, Load Performance Testing is deprecated and will be re
 
 <div class="deprecation removal-160 breaking-change">
 
+### Managed Licenses API
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The [Managed Licenses API](https://docs.gitlab.com/ee/api/managed_licenses.html) is now deprecated and is scheduled for removal in GitLab 16.0.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Old versions of JSON web tokens are deprecated
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
@@ -379,11 +502,11 @@ WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-The project deletion protection setting in the Admin Area had an option to delete projects immediately. Starting with 16.0, this option will no longer be available, and delayed project deletion will become the default behavior.
+The group and project deletion protection setting in the Admin Area had an option to delete groups and projects immediately. Starting with 16.0, this option will no longer be available, and delayed group and project deletion will become the default behavior.
 
-The option will no longer appear as a group setting. Self-managed users will still have the option to define the deletion delay period, and SaaS users have a non-adjustable default retention period of 7 days. Users can still delete the project immediately from the project settings.
+The option will no longer appear as a group setting. Self-managed users will still have the option to define the deletion delay period, and SaaS users have a non-adjustable default retention period of 7 days. Users can still immediately delete the project from the project settings, and the group from the group settings.
 
-The option to delete projects immediately by default was deprecated to prevent users from accidentally taking this action and permanently losing projects.
+The option to delete groups and projects immediately by default was deprecated to prevent users from accidentally taking this action and permanently losing groups and projects.
 
 </div>
 
@@ -638,17 +761,17 @@ We will be transitioning to a new IID as a result of moving requirements to a [w
 
 </div>
 
-<div class="deprecation removal-160 breaking-change">
+<div class="deprecation removal-170 breaking-change">
 
 ### Trigger jobs can mirror downstream pipeline status exactly
 
-Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-In some cases, like when a downstream pipeline had the `passed with warnings` status, trigger jobs that were using [`strategy: depend`](https://docs.gitlab.com/ee/ci/yaml/index.html#strategydepend) did not mirror the status of the downstream pipeline exactly. In GitLab 16.0 trigger jobs will show the exact same status as the the downstream pipeline. If your pipeline relied on this behavior, you should update your pipeline to handle the more accurate status.
+In some cases, like when a downstream pipeline had the `passed with warnings` status, trigger jobs that were using [`strategy: depend`](https://docs.gitlab.com/ee/ci/yaml/index.html#strategydepend) did not mirror the status of the downstream pipeline exactly. In GitLab 17.0 trigger jobs will show the exact same status as the the downstream pipeline. If your pipeline relied on this behavior, you should update your pipeline to handle the more accurate status.
 
 </div>
 </div>
@@ -656,20 +779,6 @@ In some cases, like when a downstream pipeline had the `passed with warnings` st
 <div class="announcement-milestone">
 
 ## Announced in 15.8
-
-<div class="deprecation removal-160 breaking-change">
-
-### Approvers and Approver Group fields in Merge Request Approval API
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-The endpoint to get the configuration of approvals for a project returns empty arrays for `approvers` and `approval_groups`. These fields were deprecated in favor of the endpoint to [get project-level rules](https://docs.gitlab.com/ee/api/merge_request_approvals.html#get-project-level-rules) for a merge request. API users are encouraged to switch to this endpoint instead. These fields will be removed from the `get configuration` endpoint in v5 of the GitLab REST API.
-
-</div>
 
 <div class="deprecation removal-160 breaking-change">
 
@@ -1253,25 +1362,11 @@ and will be moved to the JiHu GitLab codebase.
 
 </div>
 
-<div class="deprecation removal-160 breaking-change">
-
-### Single merge request changes API endpoint
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-The endpoint to get [changes from a single merge request](https://docs.gitlab.com/ee/api/merge_requests.html#get-single-merge-request-changes) has been deprecated in favor the [list merge request diffs](https://docs.gitlab.com/ee/api/merge_requests.html#list-merge-request-diffs) endpoint. API users are encouraged to switch to the new diffs endpoint instead. The `changes from a single merge request` endpoint will be removed in v5 of the GitLab REST API.
-
-</div>
-
 <div class="deprecation removal-170 breaking-change">
 
 ### Support for REST API endpoints that reset runner registration tokens
 
-End of Support: GitLab <span class="removal-milestone">16.6</span> <span class="support-end-date"></span><br />
+End of Support: GitLab <span class="removal-milestone">17.0</span> <span class="support-end-date"></span><br />
 Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
 
 WARNING:
@@ -1286,8 +1381,9 @@ The deprecated endpoints are:
 - `POST /projects/:id/runners/reset_registration_token`
 - `POST /groups/:id/runners/reset_registration_token`
 
-In GitLab 15.8, we plan to implement a new method to bind runners to a GitLab instance,
+We plan to implement a new method to bind runners to a GitLab instance
 as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
+The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
 This new architecture introduces a new method for registering runners and will eliminate the legacy
 [runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
 From GitLab 17.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
@@ -1402,14 +1498,17 @@ From GitLab 13.6, users can [specify any runner configuration in the GitLab Runn
 
 ### GitLab Runner registration token in Runner Operator
 
-End of Support: GitLab <span class="removal-milestone">16.6</span> <span class="support-end-date"></span><br />
+End of Support: GitLab <span class="removal-milestone">17.0</span> <span class="support-end-date"></span><br />
 Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-The [`runner-registration-token`](https://docs.gitlab.com/runner/install/operator.html#install-the-kubernetes-operator) parameter that uses the OpenShift and k8s Vanilla Operator to install a runner on Kubernetes is deprecated. GitLab plans to introduce a new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/) in GitLab 15.8, which introduces a new method for registering runners and eliminates the legacy runner registration token.
+The [`runner-registration-token`](https://docs.gitlab.com/runner/install/operator.html#install-the-kubernetes-operator) parameter that uses the OpenShift and k8s Vanilla Operator to install a runner on Kubernetes is deprecated.
+We plan to implement a new method to bind runners to a GitLab instance
+as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
+The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
 
 </div>
 
@@ -1417,7 +1516,7 @@ The [`runner-registration-token`](https://docs.gitlab.com/runner/install/operato
 
 ### Registration tokens and server-side runner arguments in `POST /api/v4/runners` endpoint
 
-End of Support: GitLab <span class="removal-milestone">16.6</span> <span class="support-end-date"></span><br />
+End of Support: GitLab <span class="removal-milestone">17.0</span> <span class="support-end-date"></span><br />
 Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
 
 WARNING:
@@ -1429,8 +1528,9 @@ This endpoint [registers](https://docs.gitlab.com/ee/api/runners.html#register-a
 with a GitLab instance at the instance, group, or project level through the API. We plan to remove the support for
 registration tokens and certain configuration arguments in this endpoint in GitLab 17.0.
 
-In GitLab 15.10, we plan to implement a new method to bind runners to a GitLab instance,
+We plan to implement a new method to bind runners to a GitLab instance
 as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
+The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
 This new architecture introduces a new method for registering runners and will eliminate the legacy
 [runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
 From GitLab 17.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
@@ -1441,7 +1541,7 @@ From GitLab 17.0 and later, the runner registration methods implemented by the n
 
 ### Registration tokens and server-side runner arguments in `gitlab-runner register` command
 
-End of Support: GitLab <span class="removal-milestone">16.6</span> <span class="support-end-date"></span><br />
+End of Support: GitLab <span class="removal-milestone">17.0</span> <span class="support-end-date"></span><br />
 Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
 
 WARNING:
@@ -1449,9 +1549,9 @@ This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_g
 Review the details carefully before upgrading.
 
 The support for registration tokens and certain configuration arguments in the command to [register](https://docs.gitlab.com/runner/register/) a runner, `gitlab-runner register` is deprecated.
-GitLab plans to introduce a new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/) in GitLab 15.10,
-which introduces a new method for registering runners and eliminates the legacy
-[runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
+We plan to implement a new method to bind runners to a GitLab instance
+as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
+The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
 The new method will involve creating the runner in the GitLab UI and passing the
 [runner authentication token](https://docs.gitlab.com/ee/security/token_overview.html#runner-authentication-tokens-also-called-runner-tokens)
 to the `gitlab-runner register` command.
@@ -1462,7 +1562,7 @@ to the `gitlab-runner register` command.
 
 ### `runnerRegistrationToken` parameter for GitLab Runner Helm Chart
 
-End of Support: GitLab <span class="removal-milestone">16.6</span> <span class="support-end-date"></span><br />
+End of Support: GitLab <span class="removal-milestone">17.0</span> <span class="support-end-date"></span><br />
 Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
 
 WARNING:
@@ -1471,26 +1571,11 @@ Review the details carefully before upgrading.
 
 The [`runnerRegistrationToken`](https://docs.gitlab.com/runner/install/kubernetes.html#required-configuration) parameter to use the GitLab Helm Chart to install a runner on Kubernetes is deprecated.
 
-As part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/), in GitLab 15.8 we plan to introduce:
-
-- A new method to bind runners to a GitLab instance leveraging `runnerToken`.
-- A unique system ID saved to the `config.toml`, which will ensure traceability between jobs and runners.
+We plan to implement a new method to bind runners to a GitLab instance leveraging `runnerToken`
+as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
+The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
 
 From GitLab 17.0 and later, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.
-
-</div>
-
-<div class="deprecation removal-160 breaking-change">
-
-### merge_status API field
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-The `merge_status` field in the [merge request API](https://docs.gitlab.com/ee/api/merge_requests.html#merge-status) has been deprecated in favor of the `detailed_merge_status` field which more correctly identifies all of the potential statuses that a merge request can be in. API users are encouraged to use the new `detailed_merge_status` field instead. The `merge_status` field will be removed in v5 of the GitLab REST API.
 
 </div>
 </div>
@@ -1816,21 +1901,6 @@ This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_g
 Review the details carefully before upgrading.
 
 The [`project_fingerprint`](https://gitlab.com/groups/gitlab-org/-/epics/2791) attribute of vulnerability findings is being deprecated in favor of a `uuid` attribute. By using UUIDv5 values to identify findings, we can easily associate any related entity with a finding. The `project_fingerprint` attribute is no longer being used to track findings, and will be removed in GitLab 16.0.
-
-</div>
-
-<div class="deprecation removal-160 breaking-change">
-
-### REST API Runner maintainer_note
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-The `maintainer_note` argument in the `POST /runners` REST endpoint was deprecated in  GitLab 14.8 and replaced with the `maintenance_note` argument.
-The `maintainer_note` argument will be removed in GitLab 16.0.
 
 </div>
 
@@ -2310,29 +2380,6 @@ To align with this change, API calls to list external status checks will also re
 
 </div>
 
-<div class="deprecation removal-160 breaking-change">
-
-### GraphQL API Runner will not accept `status` filter values of `active` or `paused`
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-The GitLab Runner GraphQL endpoints will stop accepting `paused` or `active` as a status value in GitLab 16.0.
-
-A runner's status will only relate to runner contact status, such as: `online`, `offline`.
-Status values `paused` or `active` will no longer be accepted and will be replaced by the `paused` query parameter.
-
-When checking for paused runners, API users are advised to specify `paused: true` as the query parameter.
-When checking for active runners, specify `paused: false`.
-
-The REST API endpoints will follow in the same direction in a future REST v5 API, however the new `paused`
-status value can be used in place of `active` since GitLab 14.8.
-
-</div>
-
 <div class="deprecation removal-150 breaking-change">
 
 ### GraphQL ID and GlobalID compatibility
@@ -2487,37 +2534,6 @@ This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_g
 Review the details carefully before upgrading.
 
 The `instanceStatisticsMeasurements` GraphQL node has been renamed to `usageTrendsMeasurements` in 13.10 and the old field name has been marked as deprecated. To fix the existing GraphQL queries, replace `instanceStatisticsMeasurements` with `usageTrendsMeasurements`.
-
-</div>
-
-<div class="deprecation removal-160 breaking-change">
-
-### REST and GraphQL API Runner usage of `active` replaced by `paused`
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-Occurrences of the `active` identifier in the GitLab Runner GraphQL API endpoints will be
-renamed to `paused` in GitLab 16.0.
-
-- For the GraphQL API, this change affects:
-  - the `CiRunner` property
-  - the `RunnerUpdateInput` input type for the `runnerUpdate` mutation
-  - the `runners` and `Group.runners` queries
-- In v4 of the REST API, starting in GitLab 14.8, you can use the `paused` property in place of `active`
-- In v5 of the REST API, this change will affect:
-  - endpoints taking or returning `active` property, such as:
-    - `GET /runners`
-    - `GET /runners/all`
-    - `GET /runners/:id` / `PUT /runners/:id`
-    - `PUT --form "active=false" /runners/:runner_id`
-    - `GET /projects/:id/runners` / `POST /projects/:id/runners`
-    - `GET /groups/:id/runners`
-
-The 16.0 release of GitLab Runner will start using the `paused` property when registering runners.
 
 </div>
 
@@ -3160,20 +3176,6 @@ Currently, test coverage visualizations in GitLab only support Cobertura reports
 only supported report file in 15.0, but this is the first step towards GitLab supporting other report types.
 
 </div>
-
-<div class="deprecation removal-160 breaking-change">
-
-### merged_by API field
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-The `merged_by` field in the [merge request API](https://docs.gitlab.com/ee/api/merge_requests.html#list-merge-requests) has been deprecated in favor of the `merge_user` field which more correctly identifies who merged a merge request when performing actions (merge when pipeline succeeds, add to merge train) other than a simple merge. API users are encouraged to use the new `merge_user` field instead. The `merged_by` field will be removed in v5 of the GitLab REST API.
-
-</div>
 </div>
 
 <div class="announcement-milestone">
@@ -3682,3 +3684,11 @@ The OAuth implicit grant authorization flow will be removed in our next major re
 
 </div>
 </div>
+
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+As with all projects, the items mentioned on this page are subject to change or delay.
+The development, release, and timing of any products, features, or functionality remain at the
+sole discretion of GitLab Inc.

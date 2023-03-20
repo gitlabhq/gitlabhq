@@ -9,6 +9,8 @@ module Gitlab
 
       @per_page = (per_page || Kaminari.config.default_per_page).to_i
       @first_collection, @second_collection = collections
+
+      raise ArgumentError, 'Page size must be at least 1' if @per_page < 1
     end
 
     def paginate(page)

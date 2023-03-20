@@ -20,10 +20,6 @@ describe('InstallationTitle', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('has a title', () => {
     createComponent();
 

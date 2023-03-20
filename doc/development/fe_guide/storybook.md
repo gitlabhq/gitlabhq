@@ -16,15 +16,15 @@ To build and launch Storybook locally, in the root directory of the `gitlab` pro
 
 1. Install Storybook dependencies:
 
-    ```shell
-    yarn storybook:install
-    ```
+   ```shell
+   yarn storybook:install
+   ```
 
 1. Build the Storybook site:
 
-    ```shell
-    yarn storybook:start
-    ```
+   ```shell
+   yarn storybook:start
+   ```
 
 ## Adding components to Storybook
 
@@ -35,14 +35,14 @@ To add a story:
 1. Create a new `.stories.js` file in the same directory as the Vue component.
    The filename should have the same prefix as the Vue component.
 
-    ```txt
-    vue_shared/
-    ├─ components/
-    │  ├─ sidebar
-    │  |  ├─ todo_toggle
-    │  |  |  ├─ todo_button.vue
-    │  │  |  ├─ todo_button.stories.js
-    ```
+   ```txt
+   vue_shared/
+   ├─ components/
+   │  ├─ sidebar
+   │  |  ├─ todo_toggle
+   │  |  |  ├─ todo_button.vue
+   │  │  |  ├─ todo_button.stories.js
+   ```
 
 1. Write the story as per the [official Storybook instructions](https://storybook.js.org/docs/vue/writing-stories/introduction/)
 

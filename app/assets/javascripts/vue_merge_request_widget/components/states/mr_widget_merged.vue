@@ -1,7 +1,7 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
 import api from '~/api';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { s__, __ } from '~/locale';
 import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '~/projects/commit/constants';
 import modalEventHub from '~/projects/commit/event_hub';

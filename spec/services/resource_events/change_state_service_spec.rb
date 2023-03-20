@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ResourceEvents::ChangeStateService do
+RSpec.describe ResourceEvents::ChangeStateService, feature_category: :team_planning do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 

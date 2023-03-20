@@ -44,7 +44,6 @@ describe('UpgradeBanner component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     unmockTracking();
   });
 

@@ -1,0 +1,25 @@
+#
+# REQUIRED FIELDS
+#
+- title: "`artifacts:public` CI/CD keyword refactored"  # (required) Clearly explain the change. For example, "The `confidential` field for a `Note` is removed" or "CI/CD job names are limited to 250 characters."
+  announcement_milestone: "15.10"  # (required) The milestone when this feature was deprecated.
+  announcement_date: "2023-03-22"  # (required) The date of the milestone release when this feature was deprecated. This should almost always be the 22nd of a month (YYYY-MM-DD), unless you did an out of band blog post.
+  removal_milestone: "15.8"  # (required) The milestone when this feature is being removed.
+  removal_date: "2023-01-22"  # (required) This should almost always be the 22nd of a month (YYYY-MM-DD), the date of the milestone release when this feature will be removed.
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: jocelynjane  # (required) GitLab username of the person reporting the removal
+  stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/322454  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    The [`artifacts:public` CI/CD keyword](https://docs.gitlab.com/ee/ci/yaml/#artifactspublic) was discovered to be not working properly since GitLab 15.8 and needed to be refactored. This feature is disabled on GitLab.com, and disabled by default on self-managed instances. If an administrator for an instance running GitLab 15.8 or 15.9 enabled this feature via the `non_public_artifacts` feature flag, it is likely that artifacts created with the `public:false` setting are being treated as `public:true`.
+
+    If you have projects that use this setting, you should delete artifacts that must not be public, or [change the visibility](https://docs.gitlab.com/ee/user/public_access.html#change-project-visibility) of affected projects to private, before updating to GitLab 15.8 or later.
+
+    In GitLab 15.10, this feature's code was refactored. On instances with this feature enabled, new artifacts created with `public:false` are now working as expected, though still disabled by default. Avoid testing this feature with production data until it is enabled by default and made generally available.
+#
+# OPTIONAL FIELDS
+#
+  tiers: Free # (optional - may be required in the future) An array of tiers that the feature is available in currently. e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url: https://docs.gitlab.com/ee/ci/yaml/#artifactspublic # (optional) This is a link to the current documentation page
+  image_url:  # (optional) This is a link to a thumbnail image depicting the feature
+  video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

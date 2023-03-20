@@ -90,13 +90,23 @@ module Gitlab
 
         def save_relation_object(relation_object, relation_key, relation_definition, relation_index)
           if relation_object.new_record?
-            Gitlab::ImportExport::Base::RelationObjectSaver.new(
+            saver = Gitlab::ImportExport::Base::RelationObjectSaver.new(
               relation_object: relation_object,
               relation_key: relation_key,
               relation_definition: relation_definition,
               importable: @importable
-            ).execute
+            )
+
+            saver.execute
+
+            log_invalid_subrelations(saver.invalid_subrelations, relation_key)
           else
+            if relation_object.invalid?
+              Gitlab::Import::Errors.merge_nested_errors(relation_object)
+
+              raise(ActiveRecord::RecordInvalid, relation_object)
+            end
+
             import_failure_service.with_retry(action: 'relation_object.save!', relation_key: relation_key, relation_index: relation_index) do
               relation_object.save!
             end
@@ -113,7 +123,7 @@ module Gitlab
           @relations ||=
             @reader
               .attributes_finder
-              .find_relations_tree(importable_class_sym)
+              .find_relations_tree(importable_class_sym, include_import_only_tree: true)
               .deep_stringify_keys
         end
 
@@ -289,6 +299,32 @@ module Gitlab
             author_id: relation_object.try(:author_id),
             message: '[Project/Group Import] Created new object relation'
           )
+        end
+
+        def log_invalid_subrelations(invalid_subrelations, relation_key)
+          invalid_subrelations.flatten.each do |record|
+            Gitlab::Import::Errors.merge_nested_errors(record)
+
+            @shared.logger.info(
+              message: '[Project/Group Import] Invalid subrelation',
+              importable_column_name => @importable.id,
+              relation_key: relation_key,
+              error_messages: record.errors.full_messages.to_sentence
+            )
+
+            ::ImportFailure.create(
+              source: 'RelationTreeRestorer#save_relation_object',
+              relation_key: relation_key,
+              exception_class: 'ActiveRecord::RecordInvalid',
+              exception_message: record.errors.full_messages.to_sentence,
+              correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id,
+              importable_column_name => @importable.id
+            )
+          end
+        end
+
+        def importable_column_name
+          @column_name ||= @importable.class.reflect_on_association(:import_failures).foreign_key.to_sym
         end
       end
     end

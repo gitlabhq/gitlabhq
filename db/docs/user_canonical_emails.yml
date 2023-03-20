@@ -3,7 +3,7 @@ table_name: user_canonical_emails
 classes:
 - UserCanonicalEmail
 feature_categories:
-- authentication_and_authorization
+- system_access
 description: stores the canonical version of user's primary email address
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27722
 milestone: '13.0'

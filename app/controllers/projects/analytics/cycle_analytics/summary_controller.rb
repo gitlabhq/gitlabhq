@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::Analytics::CycleAnalytics::SummaryController < Projects::ApplicationController
+  extend ::Gitlab::Utils::Override
   include CycleAnalyticsParams
 
   respond_to :json
@@ -16,6 +17,11 @@ class Projects::Analytics::CycleAnalytics::SummaryController < Projects::Applica
   end
 
   private
+
+  override :all_cycle_analytics_params
+  def all_cycle_analytics_params
+    super.merge({ namespace: @project.project_namespace })
+  end
 
   def project_level
     @project_level ||= Analytics::CycleAnalytics::ProjectLevel.new(project: @project, options: options(allowed_params))

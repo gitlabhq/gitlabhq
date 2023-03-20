@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ContainerRepository::CleanupTagsService do
+RSpec.describe Projects::ContainerRepository::CleanupTagsService, feature_category: :container_registry do
   let_it_be_with_reload(:container_repository) { create(:container_repository) }
   let_it_be(:user) { container_repository.project.owner }
 
@@ -77,7 +77,7 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
 
       context 'with a migrated repository' do
         before do
-          container_repository.update_column(:migration_state, :import_done)
+          allow(container_repository).to receive(:migrated?).and_return(true)
         end
 
         context 'supporting the gitlab api' do
@@ -99,8 +99,7 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
 
       context 'with a non migrated repository' do
         before do
-          container_repository.update_column(:migration_state, :default)
-          container_repository.update!(created_at: ContainerRepository::MIGRATION_PHASE_1_ENDED_AT - 1.week)
+          allow(container_repository).to receive(:migrated?).and_return(false)
         end
 
         it_behaves_like 'calling service', ::Projects::ContainerRepository::ThirdParty::CleanupTagsService, extra_log_data: { third_party_cleanup_tags_service: true }

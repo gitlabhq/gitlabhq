@@ -23,12 +23,11 @@ module Gitlab
           # Storage section
           link :storage_tab
           link :purchase_more_storage
-          div :used_storage_message
+          div :namespace_usage_total
           div :group_usage_message
           div :dependency_proxy_usage
           span :dependency_proxy_size
           div :container_registry_usage
-          div :project_storage_used
           div :project
           div :storage_type_legend
           span :container_registry_size

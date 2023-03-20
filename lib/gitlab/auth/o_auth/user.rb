@@ -233,7 +233,7 @@ module Gitlab
           email ||= auth_hash.email
 
           valid_username = ::Namespace.clean_path(username)
-          valid_username = Uniquify.new.string(valid_username) { |s| !NamespacePathValidator.valid_path?(s) }
+          valid_username = Gitlab::Utils::Uniquify.new.string(valid_username) { |s| !NamespacePathValidator.valid_path?(s) }
 
           {
             name: name.strip.presence || valid_username,

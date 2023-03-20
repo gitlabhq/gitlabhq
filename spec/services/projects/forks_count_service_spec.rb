@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ForksCountService, :use_clean_rails_memory_store_caching do
+RSpec.describe Projects::ForksCountService, :use_clean_rails_memory_store_caching, feature_category: :source_code_management do
   let(:project) { build(:project) }
 
   subject { described_class.new(project) }

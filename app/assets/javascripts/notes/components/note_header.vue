@@ -68,6 +68,11 @@ export default {
       required: false,
       default: false,
     },
+    noteUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -85,7 +90,9 @@ export default {
       return this.expanded ? 'chevron-up' : 'chevron-down';
     },
     noteTimestampLink() {
-      return this.noteId ? `#note_${this.noteId}` : undefined;
+      if (this.noteUrl) return this.noteUrl;
+
+      return this.noteId ? `#note_${getIdFromGraphQLId(this.noteId)}` : undefined;
     },
     hasAuthor() {
       return this.author && Object.keys(this.author).length;
@@ -159,15 +166,13 @@ export default {
         :data-user-id="authorId"
         :data-username="author.username"
       >
-        <span class="note-header-author-name gl-font-weight-bold">
-          {{ authorName }}
-        </span>
+        <span class="note-header-author-name gl-font-weight-bold" v-text="authorName"></span>
       </a>
       <span v-if="!isSystemNote" class="text-nowrap author-username">
         <a
           ref="authorUsernameLink"
           class="author-username-link"
-          :href="author.path"
+          :href="authorHref"
           @mouseenter="handleUsernameMouseEnter"
           @mouseleave="handleUsernameMouseLeave"
           ><span class="note-headline-light">@{{ author.username }}</span>

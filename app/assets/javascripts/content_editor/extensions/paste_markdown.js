@@ -1,7 +1,7 @@
 import { Extension } from '@tiptap/core';
-import { Plugin, PluginKey } from 'prosemirror-state';
+import { Plugin, PluginKey } from '@tiptap/pm/state';
 import { __ } from '~/locale';
-import { VARIANT_DANGER } from '~/flash';
+import { VARIANT_DANGER } from '~/alert';
 import createMarkdownDeserializer from '../services/gl_api_markdown_deserializer';
 import { ALERT_EVENT, EXTENSION_PRIORITY_HIGHEST } from '../constants';
 import CodeBlockHighlight from './code_block_highlight';

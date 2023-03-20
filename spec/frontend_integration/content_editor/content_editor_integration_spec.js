@@ -38,10 +38,6 @@ describe('content_editor', () => {
     renderMarkdown = jest.fn();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when loading initial content', () => {
     describe('when the initial content is empty', () => {
       it('still hides the loading indicator', async () => {

@@ -23,7 +23,7 @@ module Ci
       attr_reader :schedule, :user
 
       def allowed?
-        user.can?(:take_ownership_pipeline_schedule, schedule)
+        user.can?(:admin_pipeline_schedule, schedule)
       end
 
       def forbidden

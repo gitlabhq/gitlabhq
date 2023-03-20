@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService do
+RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, feature_category: :code_review_workflow do
   subject(:detailed_merge_status) { described_class.new(merge_request: merge_request).execute }
 
   context 'when merge status is cannot_be_merged_rechecking' do

@@ -12,19 +12,16 @@ import { timeRanges } from '~/vue_shared/constants';
 
 describe('~/api/user_api', () => {
   let axiosMock;
-  let originalGon;
 
   beforeEach(() => {
     axiosMock = new MockAdapter(axios);
 
-    originalGon = window.gon;
     window.gon = { api_version: 'v4' };
   });
 
   afterEach(() => {
     axiosMock.restore();
     axiosMock.resetHistory();
-    window.gon = originalGon;
   });
 
   describe('followUser', () => {

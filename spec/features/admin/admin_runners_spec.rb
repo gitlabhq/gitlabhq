@@ -23,8 +23,6 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
 
     describe "runners creation" do
       before do
-        stub_feature_flags(create_runner_workflow: true)
-
         visit admin_runners_path
       end
 
@@ -35,7 +33,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
 
     describe "runners registration" do
       before do
-        stub_feature_flags(create_runner_workflow: false)
+        stub_feature_flags(create_runner_workflow_for_admin: false)
 
         visit admin_runners_path
       end
@@ -489,6 +487,29 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
         visit admin_runners_path('status[]': 'PAUSED')
 
         expect(page).to have_current_path(admin_runners_path('paused[]': 'true'))
+      end
+    end
+  end
+
+  describe "Runner create page", :js do
+    before do
+      visit new_admin_runner_path
+    end
+
+    context 'when runner is saved' do
+      before do
+        fill_in s_('Runners|Runner description'), with: 'runner-foo'
+        fill_in s_('Runners|Tags'), with: 'tag1'
+        click_on _('Submit')
+        wait_for_requests
+      end
+
+      it 'navigates to registration page and opens install instructions drawer' do
+        expect(page.find('[data-testid="alert-success"]')).to have_content(s_('Runners|Runner created.'))
+        expect(current_url).to match(register_admin_runner_path(Ci::Runner.last))
+
+        click_on 'How do I install GitLab Runner?'
+        expect(page.find('[data-testid="runner-platforms-drawer"]')).to have_content('gitlab-runner install')
       end
     end
   end

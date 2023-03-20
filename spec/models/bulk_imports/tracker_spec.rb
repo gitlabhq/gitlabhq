@@ -4,7 +4,10 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::Tracker, type: :model do
   describe 'associations' do
-    it { is_expected.to belong_to(:entity).required }
+    it do
+      is_expected.to belong_to(:entity).required.class_name('BulkImports::Entity')
+        .with_foreign_key(:bulk_import_entity_id).inverse_of(:trackers)
+    end
   end
 
   describe 'validations' do

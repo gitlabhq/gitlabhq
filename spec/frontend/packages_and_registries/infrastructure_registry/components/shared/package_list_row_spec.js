@@ -49,15 +49,10 @@ describe('packages_list_row', () => {
         disableDelete,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   it('renders', () => {
     mountComponent();

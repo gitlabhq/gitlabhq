@@ -206,7 +206,8 @@ class Commit
 
   def self.link_reference_pattern
     @link_reference_pattern ||=
-      super("commit", /(?<commit>#{COMMIT_SHA_PATTERN})?(\.(?<extension>#{LINK_EXTENSION_PATTERN}))?/o)
+      compose_link_reference_pattern('commit',
+        /(?<commit>#{COMMIT_SHA_PATTERN})?(\.(?<extension>#{LINK_EXTENSION_PATTERN}))?/o)
   end
 
   def to_reference(from = nil, full: false)

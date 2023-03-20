@@ -113,10 +113,6 @@ describe('List Page', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('contains registry header', async () => {
     mountComponent();
     fireFirstSortUpdate();

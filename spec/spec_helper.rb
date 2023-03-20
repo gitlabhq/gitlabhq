@@ -7,9 +7,7 @@ if $LOADED_FEATURES.include?(File.expand_path('fast_spec_helper.rb', __dir__))
   abort 'Aborting...'
 end
 
-# Enable deprecation warnings by default and make them more visible
-# to developers to ease upgrading to newer Ruby versions.
-Warning[:deprecated] = true unless ENV.key?('SILENCE_DEPRECATIONS')
+require './spec/deprecation_warnings'
 
 require './spec/deprecation_toolkit_env'
 DeprecationToolkitEnv.configure!
@@ -38,6 +36,7 @@ require 'test_prof/recipes/rspec/let_it_be'
 require 'test_prof/factory_default'
 require 'test_prof/factory_prof/nate_heckler'
 require 'parslet/rig/rspec'
+require 'axe-rspec'
 
 rspec_profiling_is_configured =
   ENV['RSPEC_PROFILING_POSTGRES_URL'].present? ||
@@ -178,6 +177,8 @@ RSpec.configure do |config|
   config.include RenderedHelpers
   config.include RSpec::Benchmark::Matchers, type: :benchmark
   config.include DetailedErrorHelpers
+  config.include RequestUrgencyMatcher, type: :controller
+  config.include RequestUrgencyMatcher, type: :request
 
   config.include_context 'when rendered has no HTML escapes', type: :view
 
@@ -356,35 +357,14 @@ RSpec.configure do |config|
     # All API specs will be adapted continuously. The following list contains the specs that have not yet been adapted.
     # The feature flag is disabled for these specs as long as they are not yet adapted.
     admin_mode_for_api_feature_flag_paths = %w[
-      ./spec/frontend/fixtures/api_deploy_keys.rb
-      ./spec/requests/api/admin/batched_background_migrations_spec.rb
-      ./spec/requests/api/admin/ci/variables_spec.rb
-      ./spec/requests/api/admin/instance_clusters_spec.rb
-      ./spec/requests/api/admin/plan_limits_spec.rb
-      ./spec/requests/api/admin/sidekiq_spec.rb
       ./spec/requests/api/broadcast_messages_spec.rb
-      ./spec/requests/api/ci/pipelines_spec.rb
-      ./spec/requests/api/ci/runners_reset_registration_token_spec.rb
-      ./spec/requests/api/ci/runners_spec.rb
       ./spec/requests/api/deploy_keys_spec.rb
       ./spec/requests/api/deploy_tokens_spec.rb
-      ./spec/requests/api/freeze_periods_spec.rb
-      ./spec/requests/api/graphql/user/starred_projects_query_spec.rb
       ./spec/requests/api/groups_spec.rb
-      ./spec/requests/api/issues/get_group_issues_spec.rb
-      ./spec/requests/api/issues/get_project_issues_spec.rb
-      ./spec/requests/api/issues/issues_spec.rb
-      ./spec/requests/api/issues/post_projects_issues_spec.rb
-      ./spec/requests/api/issues/put_projects_issues_spec.rb
       ./spec/requests/api/keys_spec.rb
       ./spec/requests/api/merge_requests_spec.rb
       ./spec/requests/api/namespaces_spec.rb
       ./spec/requests/api/notes_spec.rb
-      ./spec/requests/api/pages/internal_access_spec.rb
-      ./spec/requests/api/pages/pages_spec.rb
-      ./spec/requests/api/pages/private_access_spec.rb
-      ./spec/requests/api/pages/public_access_spec.rb
-      ./spec/requests/api/pages_domains_spec.rb
       ./spec/requests/api/personal_access_tokens/self_information_spec.rb
       ./spec/requests/api/personal_access_tokens_spec.rb
       ./spec/requests/api/project_export_spec.rb
@@ -544,18 +524,16 @@ RSpec.configure do |config|
     end
   end
 
-  # Makes diffs show entire non-truncated values.
-  config.before(:each, unlimited_max_formatted_output_length: true) do |_example|
-    config.expect_with :rspec do |c|
-      c.max_formatted_output_length = nil
-    end
-  end
-
   # Ensures that any Javascript script that tries to make the external VersionCheck API call skips it and returns a response
   config.before(:each, :js) do
     allow_any_instance_of(VersionCheck).to receive(:response).and_return({ "severity" => "success" })
   end
 end
+
+# Disabled because it's causing N+1 queries.
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/396352.
+# Support::AbilityCheck.inject(Ability.singleton_class)
+Support::PermissionsCheck.inject(Ability.singleton_class)
 
 ActiveRecord::Migration.maintain_test_schema!
 

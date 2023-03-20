@@ -163,6 +163,30 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
   end
 
+  describe 'transform_quick_action_params' do
+    let(:work_item) { build(:work_item, :task) }
+
+    subject(:transformed_params) do
+      work_item.transform_quick_action_params({
+        title: 'bar',
+        assignee_ids: ['foo']
+      })
+    end
+
+    it 'correctly separates widget params from regular params' do
+      expect(transformed_params).to eq({
+        common: {
+          title: 'bar'
+        },
+        widgets: {
+          assignees_widget: {
+            assignee_ids: ['foo']
+          }
+        }
+      })
+    end
+  end
+
   describe 'callbacks' do
     describe 'record_create_action' do
       it 'records the creation action after saving' do

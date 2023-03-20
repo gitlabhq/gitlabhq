@@ -7,20 +7,12 @@ import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/h
 import { TEST_HOST } from 'helpers/test_constants';
 import NewDeployToken from '~/deploy_tokens/components/new_deploy_token.vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert, VARIANT_INFO } from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/alert';
 
 const createNewTokenPath = `${TEST_HOST}/create`;
 const deployTokensHelpUrl = `${TEST_HOST}/help`;
 
-jest.mock('~/flash', () => {
-  const original = jest.requireActual('~/flash');
-
-  return {
-    __esModule: true,
-    ...original,
-    createAlert: jest.fn(),
-  };
-});
+jest.mock('~/alert');
 
 describe('New Deploy Token', () => {
   let wrapper;
@@ -43,12 +35,11 @@ describe('New Deploy Token', () => {
         createNewTokenPath,
         tokenType,
       },
+      stubs: {
+        GlFormCheckbox,
+      },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('without a container registry', () => {
     beforeEach(() => {
@@ -69,7 +60,7 @@ describe('New Deploy Token', () => {
 
     it('should show the read registry scope', () => {
       const checkbox = wrapper.findAllComponents(GlFormCheckbox).at(1);
-      expect(checkbox.text()).toBe('read_registry');
+      expect(checkbox.text()).toContain('read_registry');
     });
 
     function submitTokenThenCheck() {
@@ -91,7 +82,7 @@ describe('New Deploy Token', () => {
         });
     }
 
-    it('should flash error message if token creation fails', async () => {
+    it('should alert error message if token creation fails', async () => {
       const mockAxios = new MockAdapter(axios);
 
       const date = new Date();
@@ -220,6 +211,34 @@ describe('New Deploy Token', () => {
         .replyOnce(HTTP_STATUS_OK, { username: 'test token username', token: 'test token' });
 
       return submitTokenThenCheck();
+    });
+  });
+
+  describe('help text for write_package_registry scope', () => {
+    const findWriteRegistryScopeCheckbox = () => wrapper.findAllComponents(GlFormCheckbox).at(4);
+
+    describe('with project tokenType', () => {
+      beforeEach(() => {
+        wrapper = factory();
+      });
+
+      it('should show the correct help text', () => {
+        expect(findWriteRegistryScopeCheckbox().text()).toContain(
+          'Allows read, write and delete access to the package registry.',
+        );
+      });
+    });
+
+    describe('with group tokenType', () => {
+      beforeEach(() => {
+        wrapper = factory({ tokenType: 'group' });
+      });
+
+      it('should show the correct help text', () => {
+        expect(findWriteRegistryScopeCheckbox().text()).toContain(
+          'Allows read and write access to the package registry.',
+        );
+      });
     });
   });
 });

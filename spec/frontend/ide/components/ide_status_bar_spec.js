@@ -34,10 +34,6 @@ describe('IdeStatusBar component', () => {
     wrapper = mount(IdeStatusBar, { store });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default', () => {
     it('triggers a setInterval', () => {
       mountComponent();

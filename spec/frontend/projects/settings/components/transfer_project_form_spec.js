@@ -31,10 +31,6 @@ describe('Transfer project form', () => {
   const findTransferLocations = () => wrapper.findComponent(TransferLocations);
   const findConfirmDanger = () => wrapper.findComponent(ConfirmDanger);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the namespace selector and passes `groupTransferLocationsApiMethod` prop', () => {
     createComponent();
 

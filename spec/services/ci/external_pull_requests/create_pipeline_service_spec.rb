@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ExternalPullRequests::CreatePipelineService do
+RSpec.describe Ci::ExternalPullRequests::CreatePipelineService, feature_category: :continuous_integration do
   describe '#execute' do
     let_it_be(:project) { create(:project, :auto_devops, :repository) }
     let_it_be(:user) { create(:user) }

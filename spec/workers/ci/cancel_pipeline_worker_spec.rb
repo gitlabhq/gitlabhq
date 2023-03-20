@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CancelPipelineWorker, :aggregate_failures do
+RSpec.describe Ci::CancelPipelineWorker, :aggregate_failures, feature_category: :continuous_integration do
   let!(:pipeline) { create(:ci_pipeline, :running) }
 
   describe '#perform' do

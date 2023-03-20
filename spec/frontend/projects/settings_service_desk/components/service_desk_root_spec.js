@@ -41,7 +41,6 @@ describe('ServiceDeskRoot', () => {
 
   afterEach(() => {
     axiosMock.restore();
-    wrapper.destroy();
     if (spy) {
       spy.mockRestore();
     }

@@ -7,7 +7,7 @@ product_stage: manage
 product_group: integrations
 product_category: integrations
 value_type: number
-status: active
+status: removed
 time_frame: all
 data_source: database
 distribution:
@@ -19,3 +19,5 @@ tier:
 - ultimate
 performance_indicator_type: []
 milestone: "<13.9"
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112571
+milestone_removed: "15.10"

@@ -234,8 +234,12 @@ class ProjectPolicy < BasePolicy
     Gitlab.config.packages.enabled
   end
 
+  condition :terraform_state_disabled do
+    !Gitlab.config.terraform_state.enabled
+  end
+
   condition(:create_runner_workflow_enabled) do
-    Feature.enabled?(:create_runner_workflow)
+    Feature.enabled?(:create_runner_workflow_for_namespace, project.namespace)
   end
 
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
@@ -257,6 +261,7 @@ class ProjectPolicy < BasePolicy
     enable :reporter_access
     enable :developer_access
     enable :maintainer_access
+    enable :add_catalog_resource
 
     enable :change_namespace
     enable :change_visibility_level
@@ -353,6 +358,7 @@ class ProjectPolicy < BasePolicy
     enable :read_ci_cd_analytics
     enable :read_external_emails
     enable :read_grafana
+    enable :export_work_items
   end
 
   # We define `:public_user_access` separately because there are cases in gitlab-ee
@@ -404,11 +410,15 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { infrastructure_disabled }.policy do
-    prevent(*create_read_update_admin_destroy(:terraform_state))
     prevent(*create_read_update_admin_destroy(:cluster))
     prevent(:read_pod_logs)
     prevent(:read_prometheus)
     prevent(:admin_project_google_cloud)
+    prevent(:admin_project_aws)
+  end
+
+  rule { infrastructure_disabled | terraform_state_disabled }.policy do
+    prevent(*create_read_update_admin_destroy(:terraform_state))
   end
 
   rule { can?(:metrics_dashboard) }.policy do
@@ -429,6 +439,7 @@ class ProjectPolicy < BasePolicy
   rule { ~request_access_enabled }.prevent :request_access
 
   rule { can?(:developer_access) & can?(:create_issue) }.enable :import_issues
+  rule { can?(:reporter_access) & can?(:create_work_item) }.enable :import_work_items
 
   rule { can?(:developer_access) }.policy do
     enable :create_package
@@ -455,15 +466,15 @@ class ProjectPolicy < BasePolicy
     enable :create_deployment
     enable :update_deployment
     enable :read_cluster
+    enable :use_k8s_proxies
     enable :create_release
     enable :update_release
     enable :destroy_release
-    enable :create_metrics_dashboard_annotation
-    enable :delete_metrics_dashboard_annotation
-    enable :update_metrics_dashboard_annotation
+    enable :admin_metrics_dashboard_annotation
     enable :read_alert_management_alert
     enable :update_alert_management_alert
     enable :create_design
+    enable :update_design
     enable :move_design
     enable :destroy_design
     enable :read_terraform_state
@@ -477,7 +488,6 @@ class ProjectPolicy < BasePolicy
     enable :update_escalation_status
     enable :read_secure_files
     enable :update_sentry_issue
-    enable :read_airflow_dags
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do
@@ -531,8 +541,8 @@ class ProjectPolicy < BasePolicy
     enable :create_project_runners
     enable :update_runners_registration_token
     enable :admin_project_google_cloud
+    enable :admin_project_aws
     enable :admin_secure_files
-    enable :read_web_hooks
     enable :read_upload
     enable :destroy_upload
     enable :admin_incident_management_timeline_event_tag
@@ -752,6 +762,7 @@ class ProjectPolicy < BasePolicy
     prevent :read_design
     prevent :read_design_activity
     prevent :create_design
+    prevent :update_design
     prevent :destroy_design
     prevent :move_design
   end
@@ -780,6 +791,7 @@ class ProjectPolicy < BasePolicy
   rule { write_package_registry_deploy_token }.policy do
     enable :create_package
     enable :read_package
+    enable :destroy_package
     enable :read_project
   end
 

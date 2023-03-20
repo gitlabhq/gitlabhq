@@ -13,10 +13,6 @@ describe('NodeErrorHelpText', () => {
 
   const findPopover = () => wrapper.findComponent(GlPopover);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     errorType                 | wrapperText                 | popoverText
     ${'authentication_error'} | ${'Unable to Authenticate'} | ${'GitLab failed to authenticate'}

@@ -82,10 +82,6 @@ To remove a metric:
 
 1. Create an issue for removing the metric if none exists yet. The issue needs to outline why the metric should be deleted. You can use this issue to document the removal process.
 
-1. Check the following YAML files and verify the metric is not used in an aggregate:
-   - [`config/metrics/aggregates/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/aggregates/)
-   - [`ee/config/metrics/aggregates/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/aggregates/)
-
 1. Verify the metric is not used to calculate the conversational index. The
    conversational index is a measure that reports back to self-managed instances
    to inform administrators of the progress of DevOps adoption for the instance.
@@ -115,7 +111,7 @@ To remove a metric:
    can be safely removed from Service Ping. Use this
    [example issue](https://gitlab.com/gitlab-data/analytics/-/issues/15266) for guidance.
 
-1. Notify the Customer Success Ops team (`@csops-team`), Analytics Engineers (`@gitlab-data/analytics-engineers`), and Product Analysts (`@gitlab-data/product-analysts`) by `@` mentioning those groups in a comment in the issue regarding the deletion of the metric.
+1. Notify the Customer Success Ops team (`@csops-team`), Analytics Engineers (`@gitlab-data/analytics-engineers`), and Product Analysts (`@gitlab-data/product-analysts`) by `@` mentioning those groups in a comment in the issue from step 1 regarding the deletion of the metric.
    Many Service Ping metrics are relied upon for health score and XMAU reporting and unexpected changes to those metrics could break reporting.
 
 1. After you verify the metric can be safely removed,

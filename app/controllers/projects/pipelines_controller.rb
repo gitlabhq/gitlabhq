@@ -22,13 +22,14 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action :ensure_pipeline, only: [:show, :downloadable_artifacts]
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:destroy]
+  before_action :push_frontend_feature_flags, only: [:show]
 
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596
   before_action :redirect_for_legacy_scope_filter, only: [:index], if: -> { request.format.html? }
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
 
-  track_custom_event :charts,
+  track_event :charts,
     name: 'p_analytics_pipelines',
     action: 'perform_analytics_usage_action',
     label: 'redis_hll_counters.analytics.analytics_total_unique_counts_monthly',
@@ -98,15 +99,15 @@ class Projects::PipelinesController < Projects::ApplicationController
       end
       format.json do
         if service_response.success?
-          render json: PipelineSerializer
-                         .new(project: project, current_user: current_user)
-                         .represent(@pipeline),
-                 status: :created
+          render json: PipelineSerializer.new(project: project, current_user: current_user).represent(@pipeline),
+            status: :created
         else
-          render json: { errors: @pipeline.error_messages.map(&:content),
-                         warnings: @pipeline.warning_messages(limit: ::Gitlab::Ci::Warnings::MAX_LIMIT).map(&:content),
-                         total_warnings: @pipeline.warning_messages.length },
-                 status: :bad_request
+          bad_request_json = {
+            errors: @pipeline.error_messages.map(&:content),
+            warnings: @pipeline.warning_messages(limit: ::Gitlab::Ci::Warnings::MAX_LIMIT).map(&:content),
+            total_warnings: @pipeline.warning_messages.length
+          }
+          render json: bad_request_json, status: :bad_request
         end
       end
     end
@@ -241,7 +242,12 @@ class Projects::PipelinesController < Projects::ApplicationController
     PipelineSerializer
       .new(project: @project, current_user: @current_user)
       .with_pagination(request, response)
-      .represent(@pipelines, disable_coverage: true, preload: true)
+      .represent(
+        @pipelines,
+        disable_coverage: true,
+        preload: true,
+        disable_manual_and_scheduled_actions: Feature.enabled?(:lazy_load_pipeline_dropdown_actions, @project)
+      )
   end
 
   def render_show
@@ -363,6 +369,10 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def tracking_project_source
     project
+  end
+
+  def push_frontend_feature_flags
+    push_frontend_feature_flag(:refactor_ci_minutes_consumption, @project)
   end
 end
 

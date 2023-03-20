@@ -10,6 +10,7 @@
   %meta{ 'http-equiv' => 'X-UA-Compatible', content: 'IE=edge' }
 
   = render 'layouts/startup_js'
+  = yield :startup_js
 
   - if page_canonical_link
     %link{ rel: 'canonical', href: page_canonical_link }
@@ -56,6 +57,8 @@
   = webpack_bundle_tag 'performance_bar' if performance_bar_enabled?
 
   = yield :page_specific_javascripts
+
+  = webpack_bundle_tag 'super_sidebar' if show_super_sidebar?
 
   = webpack_controller_bundle_tags
 

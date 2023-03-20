@@ -54,7 +54,7 @@ To enable a project runner for more than one project:
 1. On the top bar, select **Main menu > Admin**.
 1. From the left sidebar, select **CI/CD > Runners**.
 1. Select the runner you want to edit.
-1. In the upper right, select **Edit** (**{pencil}**).
+1. In the upper-right corner, select **Edit** (**{pencil}**).
 1. Under **Restrict projects for this runner**, search for a project.
 1. To the left of the project, select **Enable**.
 1. Repeat this process for each additional project.
@@ -344,7 +344,7 @@ To restrict all users in an instance from registering runners:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
-1. Expand **Runner registration**.
+1. Expand **Runners**.
 1. Clear the checkbox if you don't want to display runner registration
    information in the UI for group or project members.
 1. Select **Save changes**.

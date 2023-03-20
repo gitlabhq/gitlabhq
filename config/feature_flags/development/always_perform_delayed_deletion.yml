@@ -1,0 +1,8 @@
+---
+name: always_perform_delayed_deletion
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/393622
+milestone: '15.10'
+type: development
+group: group::tenant scale
+default_enabled: false

@@ -37,13 +37,11 @@ is stored in a file at the path configured in `config/gitlab.yml` by
 default this is in the root of the rails app named
 `.gitlab_shell_secret`
 
-To authenticate using that token, clients read the contents of that
-file, and include the token Base64 encoded in a `secret_token` parameter
-or in the `Gitlab-Shared-Secret` header.
+To authenticate using that token, clients:
 
-NOTE:
-The internal API used by GitLab Pages, and GitLab agent server (`kas`) uses JSON Web Token (JWT)
-authentication, which is different from GitLab Shell.
+1. Read the contents of that file.
+1. Use the file contents to generate a JSON Web Token (`JWT`).
+1. Pass the JWT in the `Gitlab-Shell-Api-Request` header.
 
 ## Git Authentication
 
@@ -78,7 +76,7 @@ POST /internal/allowed
 Example request:
 
 ```shell
-curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded token>" \
+curl --request POST --header "Gitlab-Shell-Api-Request: <JWT token>" \
      --data "key_id=11&project=gnuwget/wget2&action=git-upload-pack&protocol=ssh" \
      "http://localhost:3001/api/v4/internal/allowed"
 ```
@@ -128,7 +126,7 @@ information for LFS clients when the repository is accessed over SSH.
 Example request:
 
 ```shell
-curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded token>" \
+curl --request POST --header "Gitlab-Shell-Api-Request: <JWT token>" \
      --data "key_id=11&project=gnuwget/wget2" "http://localhost:3001/api/v4/internal/lfs_authenticate"
 ```
 
@@ -148,12 +146,12 @@ curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded token>" \
 ## Authorized Keys Check
 
 This endpoint is called by the GitLab Shell authorized keys
-check. Which is called by OpenSSH for
+check. Which is called by OpenSSH or GitLab SSHD for
 [fast SSH key lookup](../../administration/operations/fast_ssh_key_lookup.md).
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
-| `key`     | string | yes      | SSH key as passed by OpenSSH to GitLab Shell |
+| `key`     | string | yes      | An authorized key used for public key authentication. |
 
 ```plaintext
 GET /internal/authorized_keys
@@ -162,7 +160,7 @@ GET /internal/authorized_keys
 Example request:
 
 ```shell
-curl --request GET --header "Gitlab-Shared-Secret: <Base64 encoded secret>" "http://localhost:3001/api/v4/internal/authorized_keys?key=<key as passed by OpenSSH>"
+curl --request GET --header "Gitlab-Shell-Api-Request: <JWT token>" "http://localhost:3001/api/v4/internal/authorized_keys?key=<key>"
 ```
 
 Example response:
@@ -197,7 +195,7 @@ GET /internal/discover
 Example request:
 
 ```shell
-curl --request GET --header "Gitlab-Shared-Secret: <Base64 encoded secret>" "http://localhost:3001/api/v4/internal/discover?key_id=7"
+curl --request GET --header "Gitlab-Shell-Api-Request: <JWT token>" "http://localhost:3001/api/v4/internal/discover?key_id=7"
 ```
 
 Example response:
@@ -226,7 +224,7 @@ GET /internal/check
 Example request:
 
 ```shell
-curl --request GET --header "Gitlab-Shared-Secret: <Base64 encoded secret>" "http://localhost:3001/api/v4/internal/check"
+curl --request GET --header "Gitlab-Shell-Api-Request: <JWT token>" "http://localhost:3001/api/v4/internal/check"
 ```
 
 Example response:
@@ -263,7 +261,7 @@ GET /internal/two_factor_recovery_codes
 Example request:
 
 ```shell
-curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded secret>" \
+curl --request POST --header "Gitlab-Shell-Api-Request: <JWT token>" \
      --data "key_id=7" "http://localhost:3001/api/v4/internal/two_factor_recovery_codes"
 ```
 
@@ -311,7 +309,7 @@ POST /internal/personal_access_token
 Example request:
 
 ```shell
-curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded secret>" \
+curl --request POST --header "Gitlab-Shell-Api-Request: <JWT token>" \
      --data "user_id=29&name=mytokenname&scopes[]=read_user&scopes[]=read_repository&expires_at=2020-07-24" \
      "http://localhost:3001/api/v4/internal/personal_access_token"
 ```
@@ -348,7 +346,7 @@ POST /internal/error_tracking/allowed
 Example request:
 
 ```shell
-curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded secret>" \
+curl --request POST --header "Gitlab-Shell-Api-Request: <JWT token>" \
      --data "project_id=111&public_key=generated-error-tracking-key" \
           "http://localhost:3001/api/v4/internal/error_tracking/allowed"
 ```
@@ -379,7 +377,7 @@ POST /internal/pre_receive
 Example request:
 
 ```shell
-curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded secret>" \
+curl --request POST --header "Gitlab-Shell-Api-Request: <JWT token>" \
      --data "gl_repository=project-7" "http://localhost:3001/api/v4/internal/pre_receive"
 ```
 
@@ -412,7 +410,7 @@ POST /internal/post_receive
 Example Request:
 
 ```shell
-curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded secret>" \
+curl --request POST --header "Gitlab-Shell-Api-Request: <JWT token>" \
      --data "gl_repository=project-7" --data "identifier=user-1" \
      --data "changes=0000000000000000000000000000000000000000 fd9e76b9136bdd9fe217061b497745792fe5a5ee gh-pages\n" \
      "http://localhost:3001/api/v4/internal/post_receive"

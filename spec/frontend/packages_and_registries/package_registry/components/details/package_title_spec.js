@@ -38,7 +38,7 @@ describe('PackageTitle', () => {
       },
       provide,
       directives: {
-        GlResizeObserver: createMockDirective(),
+        GlResizeObserver: createMockDirective('gl-resize-observer'),
       },
     });
     await nextTick();
@@ -54,10 +54,6 @@ describe('PackageTitle', () => {
   const findPackageBadges = () => wrapper.findAllByTestId('tag-badge');
   const findSubHeaderText = () => wrapper.findByTestId('sub-header');
   const findSubHeaderTimeAgo = () => wrapper.findComponent(TimeAgoTooltip);
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('renders', () => {
     it('without tags', async () => {

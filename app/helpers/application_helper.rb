@@ -181,14 +181,14 @@ module ApplicationHelper
     css_classes << html_class unless html_class.blank?
 
     content_tag :time, l(time, format: "%b %d, %Y"),
-                class: css_classes.join(' '),
-                title: l(time.to_time.in_time_zone, format: :timeago_tooltip),
-                datetime: time.to_time.getutc.iso8601,
-                data: {
-                  toggle: 'tooltip',
-                  placement: placement,
-                  container: 'body'
-                }
+      class: css_classes.join(' '),
+      title: l(time.to_time.in_time_zone, format: :timeago_tooltip),
+      datetime: time.to_time.getutc.iso8601,
+      data: {
+        toggle: 'tooltip',
+        placement: placement,
+        container: 'body'
+      }
   end
 
   def edited_time_ago_with_tooltip(object, placement: 'top', html_class: 'time_ago', exclude_author: false)
@@ -200,7 +200,7 @@ module ApplicationHelper
 
       if !exclude_author && object.last_edited_by
         output << content_tag(:span, ' by ')
-        output << link_to_member(object.project, object.last_edited_by, avatar: false, author_class: nil)
+        output << link_to_member(object.project, object.last_edited_by, avatar: false, extra_class: 'gl-hover-text-decoration-underline', author_class: nil)
       end
 
       output
@@ -372,6 +372,10 @@ module ApplicationHelper
 
   def collapsed_sidebar?
     cookies["sidebar_collapsed"] == "true"
+  end
+
+  def collapsed_super_sidebar?
+    cookies["super_sidebar_collapsed"] == "true"
   end
 
   def locale_path

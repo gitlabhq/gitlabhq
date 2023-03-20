@@ -22,8 +22,14 @@ RSpec.describe API::Terraform::StateVersion, feature_category: :infrastructure_a
   let(:version_serial) { version.version }
   let(:state_version_path) { "/projects/#{project_id}/terraform/state/#{state_name}/versions/#{version_serial}" }
 
+  before do
+    stub_config(terraform_state: { enabled: true })
+  end
+
   describe 'GET /projects/:id/terraform/state/:name/versions/:serial' do
     subject(:request) { get api(state_version_path), headers: auth_header }
+
+    it_behaves_like 'it depends on value of the `terraform_state.enabled` config'
 
     context 'with invalid authentication' do
       let(:auth_header) { basic_auth_header('bad', 'token') }
@@ -146,6 +152,8 @@ RSpec.describe API::Terraform::StateVersion, feature_category: :infrastructure_a
 
   describe 'DELETE /projects/:id/terraform/state/:name/versions/:serial' do
     subject(:request) { delete api(state_version_path), headers: auth_header }
+
+    it_behaves_like 'it depends on value of the `terraform_state.enabled` config', { success_status: :no_content }
 
     context 'with invalid authentication' do
       let(:auth_header) { basic_auth_header('bad', 'token') }

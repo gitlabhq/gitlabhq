@@ -210,9 +210,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
           diff = merge_request.merge_request_diff
 
           diff.clean!
-          diff.update!(real_size: nil,
-                       start_commit_sha: nil,
-                       base_commit_sha: nil)
+          diff.update!(real_size: nil, start_commit_sha: nil, base_commit_sha: nil)
 
           go(format: :html)
 
@@ -270,24 +268,22 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         end
 
         it 'redirects from an old merge request correctly' do
-          get :show,
-              params: {
-                namespace_id: project.namespace,
-                project_id: project,
-                id: merge_request
-              }
+          get :show, params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            id: merge_request
+          }
 
           expect(response).to redirect_to(project_merge_request_path(new_project, merge_request))
           expect(response).to have_gitlab_http_status(:moved_permanently)
         end
 
         it 'redirects from an old merge request commits correctly' do
-          get :commits,
-              params: {
-                namespace_id: project.namespace,
-                project_id: project,
-                id: merge_request
-              }
+          get :commits, params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            id: merge_request
+          }
 
           expect(response).to redirect_to(commits_project_merge_request_path(new_project, merge_request))
           expect(response).to have_gitlab_http_status(:moved_permanently)
@@ -385,13 +381,12 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
     let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
 
     def get_merge_requests(page = nil)
-      get :index,
-          params: {
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            state: 'opened',
-            page: page.to_param
-          }
+      get :index, params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        state: 'opened',
+        page: page.to_param
+      }
     end
 
     it_behaves_like "issuables list meta-data", :merge_request
@@ -842,15 +837,13 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
 
   describe 'GET commits' do
     def go(page: nil, per_page: 1, format: 'html')
-      get :commits,
-          params: {
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            id: merge_request.iid,
-            page: page,
-            per_page: per_page
-          },
-          format: format
+      get :commits, params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: merge_request.iid,
+        page: page,
+        per_page: per_page
+      }, format: format
     end
 
     it 'renders the commits template to a string' do
@@ -884,17 +877,18 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
 
   describe 'GET pipelines' do
     before do
-      create(:ci_pipeline, project: merge_request.source_project,
-                           ref: merge_request.source_branch,
-                           sha: merge_request.diff_head_sha)
+      create(
+        :ci_pipeline,
+        project: merge_request.source_project,
+        ref: merge_request.source_branch,
+        sha: merge_request.diff_head_sha
+      )
 
-      get :pipelines,
-          params: {
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            id: merge_request.iid
-          },
-          format: :json
+      get :pipelines, params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: merge_request.iid
+      }, format: :json
     end
 
     context 'with "enabled" builds on a public project' do
@@ -1955,17 +1949,18 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
     let(:issue2) { create(:issue, project: project) }
 
     def post_assign_issues
-      merge_request.update!(description: "Closes #{issue1.to_reference} and #{issue2.to_reference}",
-                            author: user,
-                            source_branch: 'feature',
-                            target_branch: 'master')
+      merge_request.update!(
+        description: "Closes #{issue1.to_reference} and #{issue2.to_reference}",
+        author: user,
+        source_branch: 'feature',
+        target_branch: 'master'
+      )
 
-      post :assign_related_issues,
-           params: {
-             namespace_id: project.namespace.to_param,
-             project_id: project,
-             id: merge_request.iid
-           }
+      post :assign_related_issues, params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: merge_request.iid
+      }
     end
 
     it 'displays an flash error message on fail' do
@@ -2143,10 +2138,13 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
   describe 'GET pipeline_status.json' do
     context 'when head_pipeline exists' do
       let!(:pipeline) do
-        create(:ci_pipeline, project: merge_request.source_project,
-                             ref: merge_request.source_branch,
-                             sha: merge_request.diff_head_sha,
-                             head_pipeline_of: merge_request)
+        create(
+          :ci_pipeline,
+          project: merge_request.source_project,
+          ref: merge_request.source_branch,
+          sha: merge_request.diff_head_sha,
+          head_pipeline_of: merge_request
+        )
       end
 
       let(:status) { pipeline.detailed_status(double('user')) }
@@ -2199,11 +2197,10 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
 
     def get_pipeline_status
       get :pipeline_status, params: {
-                              namespace_id: project.namespace,
-                              project_id: project,
-                              id: merge_request.iid
-                            },
-                            format: :json
+        namespace_id: project.namespace,
+        project_id: project,
+        id: merge_request.iid
+      }, format: :json
     end
   end
 

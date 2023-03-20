@@ -60,6 +60,7 @@ module ApplicationSettingImplementation
         default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         default_projects_limit: Settings.gitlab['default_projects_limit'],
         default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
+        deny_all_requests_except_allowed: false,
         diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
         diff_max_files: Commit::DEFAULT_MAX_DIFF_FILES_SETTING,
         diff_max_lines: Commit::DEFAULT_MAX_DIFF_LINES_SETTING,
@@ -249,7 +250,9 @@ module ApplicationSettingImplementation
         can_create_group: true,
         bulk_import_enabled: false,
         allow_runner_registration_token: true,
-        user_defaults_to_private_profile: false
+        user_defaults_to_private_profile: false,
+        projects_api_rate_limit_unauthenticated: 400,
+        gitlab_dedicated_instance: false
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

@@ -373,6 +373,32 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           )
         end
       end
+
+      describe 'notifications widget' do
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetNotifications {
+                subscribed
+              }
+            }
+          GRAPHQL
+        end
+
+        it 'returns widget information' do
+          expect(work_item_data).to include(
+            'id' => work_item.to_gid.to_s,
+            'widgets' => include(
+              hash_including(
+                'type' => 'NOTIFICATIONS',
+                'subscribed' => work_item.subscribed?(current_user, project)
+              )
+            )
+          )
+        end
+      end
     end
 
     context 'when an Issue Global ID is provided' do

@@ -493,6 +493,24 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         end
       end
 
+      context 'filtering by approved' do
+        before do
+          create(:approval, merge_request: merge_request3, user: user2)
+        end
+
+        it 'for approved' do
+          merge_requests = described_class.new(user, { approved: true }).execute
+
+          expect(merge_requests).to contain_exactly(merge_request3)
+        end
+
+        it 'for not approved' do
+          merge_requests = described_class.new(user, { approved: false }).execute
+
+          expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request4, merge_request5)
+        end
+      end
+
       context 'filtering by approved by username' do
         let(:params) { { approved_by_usernames: user2.username } }
 

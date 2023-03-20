@@ -266,6 +266,15 @@ RSpec.describe API::ProtectedBranches, feature_category: :source_code_management
         end.to change { protected_branch.reload.allow_force_push }.from(false).to(true)
         expect(response).to have_gitlab_http_status(:ok)
       end
+
+      context 'when allow_force_push is not set' do
+        it 'responds with a bad request error' do
+          patch api(route, user), params: { allow_force_push: nil }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error']).to eq 'allow_force_push is empty'
+        end
+      end
     end
 
     context 'when returned protected branch is invalid' do

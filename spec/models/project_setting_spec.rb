@@ -39,6 +39,44 @@ RSpec.describe ProjectSetting, type: :model do
     [nil, 'not_allowed', :invalid].each do |invalid_value|
       it { is_expected.not_to allow_value([invalid_value]).for(:target_platforms) }
     end
+
+    context "when pages_unique_domain is required", feature_category: :pages do
+      it "is not required if pages_unique_domain_enabled is false" do
+        project_setting = build(:project_setting, pages_unique_domain_enabled: false)
+
+        expect(project_setting).to be_valid
+        expect(project_setting.errors.full_messages).not_to include("Pages unique domain can't be blank")
+      end
+
+      it "is required when pages_unique_domain_enabled is true" do
+        project_setting = build(:project_setting, pages_unique_domain_enabled: true)
+
+        expect(project_setting).not_to be_valid
+        expect(project_setting.errors.full_messages).to include("Pages unique domain can't be blank")
+      end
+
+      it "is required if it is already saved in the database" do
+        project_setting = create(
+          :project_setting,
+          pages_unique_domain: "random-unique-domain-here",
+          pages_unique_domain_enabled: true
+        )
+
+        project_setting.pages_unique_domain = nil
+
+        expect(project_setting).not_to be_valid
+        expect(project_setting.errors.full_messages).to include("Pages unique domain can't be blank")
+      end
+    end
+
+    it "validates uniqueness of pages_unique_domain", feature_category: :pages do
+      create(:project_setting, pages_unique_domain: "random-unique-domain-here")
+
+      project_setting = build(:project_setting, pages_unique_domain: "random-unique-domain-here")
+
+      expect(project_setting).not_to be_valid
+      expect(project_setting.errors.full_messages).to include("Pages unique domain has already been taken")
+    end
   end
 
   describe 'target_platforms=' do

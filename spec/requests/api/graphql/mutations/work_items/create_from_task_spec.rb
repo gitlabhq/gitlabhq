@@ -23,7 +23,7 @@ RSpec.describe "Create a work item from a task in a work item's description", fe
     }
   end
 
-  let(:mutation) { graphql_mutation(:workItemCreateFromTask, input) }
+  let(:mutation) { graphql_mutation(:workItemCreateFromTask, input, nil, ['productAnalyticsState']) }
   let(:mutation_response) { graphql_mutation_response(:work_item_create_from_task) }
 
   context 'the user is not allowed to update a work item' do

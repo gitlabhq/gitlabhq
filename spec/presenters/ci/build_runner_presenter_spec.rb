@@ -228,16 +228,20 @@ RSpec.describe Ci::BuildRunnerPresenter do
     let(:pipeline) { build.pipeline }
 
     it 'returns the correct refspecs' do
-      is_expected.to contain_exactly("+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}",
-                                     "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}")
+      is_expected.to contain_exactly(
+        "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}",
+        "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}"
+      )
     end
 
     context 'when ref is tag' do
       let(:build) { create(:ci_build, :tag) }
 
       it 'returns the correct refspecs' do
-        is_expected.to contain_exactly("+refs/tags/#{build.ref}:refs/tags/#{build.ref}",
-                                       "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}")
+        is_expected.to contain_exactly(
+          "+refs/tags/#{build.ref}:refs/tags/#{build.ref}",
+          "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}"
+        )
       end
 
       context 'when GIT_DEPTH is zero' do
@@ -246,9 +250,11 @@ RSpec.describe Ci::BuildRunnerPresenter do
         end
 
         it 'returns the correct refspecs' do
-          is_expected.to contain_exactly('+refs/tags/*:refs/tags/*',
-                                         '+refs/heads/*:refs/remotes/origin/*',
-                                         "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}")
+          is_expected.to contain_exactly(
+            '+refs/tags/*:refs/tags/*',
+            '+refs/heads/*:refs/remotes/origin/*',
+            "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}"
+          )
         end
       end
     end
@@ -273,10 +279,11 @@ RSpec.describe Ci::BuildRunnerPresenter do
         end
 
         it 'returns the correct refspecs' do
-          is_expected
-            .to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
-                                '+refs/heads/*:refs/remotes/origin/*',
-                                '+refs/tags/*:refs/tags/*')
+          is_expected.to contain_exactly(
+            "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
+            '+refs/heads/*:refs/remotes/origin/*',
+            '+refs/tags/*:refs/tags/*'
+          )
         end
       end
 
@@ -284,8 +291,10 @@ RSpec.describe Ci::BuildRunnerPresenter do
         let(:merge_request) { create(:merge_request, :with_legacy_detached_merge_request_pipeline) }
 
         it 'returns the correct refspecs' do
-          is_expected.to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
-                                         "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}")
+          is_expected.to contain_exactly(
+            "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
+            "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}"
+          )
         end
       end
     end
@@ -301,9 +310,10 @@ RSpec.describe Ci::BuildRunnerPresenter do
       end
 
       it 'exposes the persistent pipeline ref' do
-        is_expected
-          .to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
-                              "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}")
+        is_expected.to contain_exactly(
+          "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
+          "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}"
+        )
       end
     end
   end
@@ -327,16 +337,14 @@ RSpec.describe Ci::BuildRunnerPresenter do
 
     context 'when there is a file variable to expand' do
       before_all do
-        create(:ci_variable, project: project,
-                             key: 'regular_var',
-                             value: 'value 1')
-        create(:ci_variable, project: project,
-                             key: 'file_var',
-                             value: 'value 2',
-                             variable_type: :file)
-        create(:ci_variable, project: project,
-                             key: 'var_with_variables',
-                             value: 'value 3 and $regular_var and $file_var and $undefined_var')
+        create(:ci_variable, project: project, key: 'regular_var', value: 'value 1')
+        create(:ci_variable, project: project, key: 'file_var', value: 'value 2', variable_type: :file)
+        create(
+          :ci_variable,
+          project: project,
+          key: 'var_with_variables',
+          value: 'value 3 and $regular_var and $file_var and $undefined_var'
+        )
       end
 
       it 'returns variables with expanded' do
@@ -353,16 +361,14 @@ RSpec.describe Ci::BuildRunnerPresenter do
 
     context 'when there is a raw variable to expand' do
       before_all do
-        create(:ci_variable, project: project,
-                             key: 'regular_var',
-                             value: 'value 1')
-        create(:ci_variable, project: project,
-                             key: 'raw_var',
-                             value: 'value 2',
-                             raw: true)
-        create(:ci_variable, project: project,
-                             key: 'var_with_variables',
-                             value: 'value 3 and $regular_var and $raw_var and $undefined_var')
+        create(:ci_variable, project: project, key: 'regular_var', value: 'value 1')
+        create(:ci_variable, project: project, key: 'raw_var', value: 'value 2', raw: true)
+        create(
+          :ci_variable,
+          project: project,
+          key: 'var_with_variables',
+          value: 'value 3 and $regular_var and $raw_var and $undefined_var'
+        )
       end
 
       it 'returns expanded variables without expanding raws' do

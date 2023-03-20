@@ -14,12 +14,11 @@ module Gitlab
     class_option :ee, type: :boolean, optional: true, default: false, desc: 'Indicates if event is for ee'
     class_option :category, type: :string, optional: false, desc: 'Category of the event'
     class_option :action, type: :string, optional: false, desc: 'Action of the event'
-    class_option :force, type: :boolean, optional: true, default: false, desc: 'Overwrite existing definition'
 
     def create_event_file
-      raise "Event definition already exists at #{file_path}" if definition_exists? && !force_definition_override?
+      raise "Event definition already exists at #{file_path}" if definition_exists?
 
-      template "event_definition.yml", file_path, force: force_definition_override?
+      template "event_definition.yml", file_path, force: false
     end
 
     def distributions
@@ -42,10 +41,6 @@ module Gitlab
       options[:ee]
     end
 
-    def force_definition_override?
-      options[:force]
-    end
-
     private
 
     def definition_exists?
@@ -64,8 +59,10 @@ module Gitlab
       File.join(EE_DIR, file_name)
     end
 
+    # Example of file name
+    # 20230227000018_project_management_issue_title_changed.yml
     def file_name
-      name = remove_special_chars("#{Time.current.to_i}_#{event_category}_#{event_action}")
+      name = remove_special_chars("#{Time.now.utc.strftime('%Y%m%d%H%M%S')}_#{event_category}_#{event_action}")
       "#{name[0..95]}.yml" # max 100 chars, see https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/2030#note_679501200
     end
 

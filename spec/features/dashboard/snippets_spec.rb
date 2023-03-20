@@ -7,6 +7,13 @@ RSpec.describe 'Dashboard snippets', feature_category: :source_code_management d
 
   it_behaves_like 'a dashboard page with sidebar', :dashboard_snippets_path, :snippets
 
+  it 'links to the "Explore snippets" page' do
+    sign_in(user)
+    visit dashboard_snippets_path
+
+    expect(page).to have_link("Explore snippets", href: explore_snippets_path)
+  end
+
   context 'when the project has snippets' do
     let(:project) { create(:project, :public, creator: user) }
     let!(:snippets) { create_list(:project_snippet, 2, :public, author: project.first_owner, project: project) }

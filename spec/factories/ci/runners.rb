@@ -66,6 +66,12 @@ FactoryBot.define do
       end
     end
 
+    trait :with_runner_machine do
+      after(:build) do |runner, evaluator|
+        runner.runner_machines << build(:ci_runner_machine, runner: runner)
+      end
+    end
+
     trait :inactive do
       active { false }
     end

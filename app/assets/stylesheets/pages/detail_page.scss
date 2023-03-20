@@ -1,6 +1,4 @@
 .detail-page-header {
-  padding: $gl-padding-top 0;
-  border-bottom: 1px solid $border-color;
   color: $gl-text-color;
   line-height: 34px;
   display: flex;
@@ -53,6 +51,10 @@
       margin-top: 10px;
     }
   }
+}
+
+.detail-page-header-meta {
+  @include gl-flex-basis-full;
 }
 
 .detail-page-description {

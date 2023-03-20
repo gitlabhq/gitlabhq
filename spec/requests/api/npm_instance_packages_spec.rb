@@ -11,8 +11,38 @@ RSpec.describe API::NpmInstancePackages, feature_category: :package_registry do
   include_context 'npm api setup'
 
   describe 'GET /api/v4/packages/npm/*package_name' do
-    it_behaves_like 'handling get metadata requests', scope: :instance do
-      let(:url) { api("/packages/npm/#{package_name}") }
+    let(:url) { api("/packages/npm/#{package_name}") }
+
+    it_behaves_like 'handling get metadata requests', scope: :instance
+
+    context 'with a duplicate package name in another project' do
+      subject { get(url) }
+
+      let_it_be(:project2) { create(:project, :public, namespace: namespace) }
+      let_it_be(:package2) do
+        create(:npm_package,
+          project: project2,
+          name: "@#{group.path}/scoped_package",
+          version: '1.2.0')
+      end
+
+      it 'includes all matching package versions in the response' do
+        subject
+
+        expect(json_response['versions'].keys).to match_array([package.version, package2.version])
+      end
+
+      context 'with the feature flag disabled' do
+        before do
+          stub_feature_flags(npm_allow_packages_in_multiple_projects: false)
+        end
+
+        it 'returns matching package versions from only one project' do
+          subject
+
+          expect(json_response['versions'].keys).to match_array([package2.version])
+        end
+      end
     end
   end
 

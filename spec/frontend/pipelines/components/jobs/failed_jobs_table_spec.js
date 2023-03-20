@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { redirectTo } from '~/lib/utils/url_utility';
 import FailedJobsTable from '~/pipelines/components/jobs/failed_jobs_table.vue';
 import RetryFailedJobMutation from '~/pipelines/graphql/mutations/retry_failed_job.mutation.graphql';
@@ -15,7 +15,7 @@ import {
   mockPreparedFailedJobsDataNoPermission,
 } from '../../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility');
 
 Vue.use(VueApollo);
@@ -44,10 +44,6 @@ describe('Failed Jobs Table', () => {
       apolloProvider: createMockApolloProvider(resolver),
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   it('displays the failed jobs table', () => {
     createComponent();

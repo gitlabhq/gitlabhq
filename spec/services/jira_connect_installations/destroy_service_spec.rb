@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnectInstallations::DestroyService do
+RSpec.describe JiraConnectInstallations::DestroyService, feature_category: :integrations do
   describe '.execute' do
     it 'creates an instance and calls execute' do
       expect_next_instance_of(described_class, 'param1', 'param2', 'param3') do |destroy_service|

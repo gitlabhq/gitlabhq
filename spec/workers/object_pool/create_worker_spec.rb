@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ObjectPool::CreateWorker do
+RSpec.describe ObjectPool::CreateWorker, feature_category: :shared do
   let(:pool) { create(:pool_repository, :scheduled) }
 
   subject { described_class.new }

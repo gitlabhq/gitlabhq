@@ -84,6 +84,8 @@ When a feature has successfully been
 environment and verified as safe and working, you can roll out the
 change to GitLab.com (production).
 
+If a feature is [deprecated](../../update/deprecations.md), do not enable the flag.
+
 #### Communicate the change
 
 Some feature flag changes on GitLab.com should be communicated with

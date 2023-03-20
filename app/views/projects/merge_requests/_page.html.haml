@@ -81,7 +81,8 @@
                 help_page_path: suggest_changes_help_path,
                 current_user_data: @current_user_data,
                 is_locked: @merge_request.discussion_locked.to_s,
-                report_abuse_path: add_category_abuse_reports_path } }
+                report_abuse_path: add_category_abuse_reports_path,
+                saved_replies_new_path: profile_saved_replies_path } }
           - if moved_mr_sidebar_enabled?
             = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, reviewers: @merge_request.reviewers, source_branch: @merge_request.source_branch
 
@@ -90,7 +91,7 @@
       = render "projects/merge_requests/tabs/pane", name: "pipelines", id: "pipelines", class: "pipelines" do
         - if @project.builds_enabled?
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
-      - params = request.query_parameters.merge(diff_head: true)
+      - params = request.query_parameters.merge(ck: @diffs_batch_cache_key, diff_head: true)
       = render "projects/merge_requests/tabs/pane", name: "diffs", id: "js-diffs-app", class: "diffs", data: diffs_tab_pane_data(@project, @merge_request, params)
 
     .mr-loading-status
@@ -105,10 +106,9 @@
 - if @merge_request.can_be_cherry_picked?
   = render "projects/commit/change", type: 'cherry-pick', commit: @merge_request.merge_commit
 
-#js-review-bar
+#js-review-bar{ data: { saved_replies_new_path: profile_saved_replies_path } }
 
 - if current_user && Feature.enabled?(:mr_experience_survey, current_user)
   #js-mr-experience-survey{ data: { account_age: current_user.account_age_in_days } }
 
-= render 'projects/invite_members_modal', project: @project
 = render 'shared/web_ide_path'

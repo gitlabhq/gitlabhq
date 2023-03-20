@@ -7,7 +7,7 @@ import {
   GlSprintf,
   GlLink,
 } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { s__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import branchesQuery from '../../queries/branches.query.graphql';

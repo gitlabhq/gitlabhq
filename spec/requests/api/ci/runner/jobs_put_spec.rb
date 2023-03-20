@@ -43,6 +43,17 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                                                .and change { runner_machine.reload.contacted_at }
       end
 
+      context 'when runner_machine_heartbeat is disabled' do
+        before do
+          stub_feature_flags(runner_machine_heartbeat: false)
+        end
+
+        it 'does not load runner machine' do
+          queries = ActiveRecord::QueryRecorder.new { update_job(state: 'success') }
+          expect(queries.log).not_to include(/ci_runner_machines/)
+        end
+      end
+
       context 'when status is given' do
         it 'marks job as succeeded' do
           update_job(state: 'success')

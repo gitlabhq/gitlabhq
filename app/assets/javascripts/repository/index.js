@@ -69,7 +69,13 @@ export default function setupVueRepositoryList() {
     if (!forkEl) {
       return null;
     }
-    const { sourceName, sourcePath, aheadComparePath, behindComparePath } = forkEl.dataset;
+    const {
+      sourceName,
+      sourcePath,
+      sourceDefaultBranch,
+      aheadComparePath,
+      behindComparePath,
+    } = forkEl.dataset;
     return new Vue({
       el: forkEl,
       apolloProvider,
@@ -80,6 +86,7 @@ export default function setupVueRepositoryList() {
             selectedBranch: ref,
             sourceName,
             sourcePath,
+            sourceDefaultBranch,
             aheadComparePath,
             behindComparePath,
           },

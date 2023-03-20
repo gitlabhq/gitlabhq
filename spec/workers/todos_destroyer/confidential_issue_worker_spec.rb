@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TodosDestroyer::ConfidentialIssueWorker do
+RSpec.describe TodosDestroyer::ConfidentialIssueWorker, feature_category: :team_planning do
   let(:service) { double }
 
   it "calls the Todos::Destroy::ConfidentialIssueService with issue_id parameter" do

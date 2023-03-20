@@ -2,12 +2,21 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipeline_composition do
   let(:project) { build(:project) }
   let(:user) { double('User') }
   let(:sha) { '12345' }
   let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'a', 'value' => 'b' }]) }
-  let(:attributes) { { project: project, user: user, sha: sha, variables: variables } }
+  let(:pipeline_config) { instance_double(Gitlab::Ci::ProjectConfig) }
+  let(:attributes) do
+    {
+      project: project,
+      user: user,
+      sha: sha,
+      variables: variables,
+      pipeline_config: pipeline_config
+    }
+  end
 
   subject(:subject) { described_class.new(**attributes) }
 
@@ -15,11 +24,12 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
     context 'with values' do
       it { is_expected.to have_attributes(**attributes) }
       it { expect(subject.expandset).to eq([]) }
-      it { expect(subject.max_includes).to eq(Gitlab::Ci::Config::External::Context::NEW_MAX_INCLUDES) }
+      it { expect(subject.max_includes).to eq(Gitlab::Ci::Config::External::Context::MAX_INCLUDES) }
       it { expect(subject.execution_deadline).to eq(0) }
       it { expect(subject.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
       it { expect(subject.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
       it { expect(subject.variables_hash).to include('a' => 'b') }
+      it { expect(subject.pipeline_config).to eq(pipeline_config) }
     end
 
     context 'without values' do
@@ -27,37 +37,11 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
 
       it { is_expected.to have_attributes(**attributes) }
       it { expect(subject.expandset).to eq([]) }
-      it { expect(subject.max_includes).to eq(Gitlab::Ci::Config::External::Context::NEW_MAX_INCLUDES) }
+      it { expect(subject.max_includes).to eq(Gitlab::Ci::Config::External::Context::MAX_INCLUDES) }
       it { expect(subject.execution_deadline).to eq(0) }
       it { expect(subject.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
       it { expect(subject.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
-    end
-
-    context 'when FF ci_includes_count_duplicates is disabled' do
-      before do
-        stub_feature_flags(ci_includes_count_duplicates: false)
-      end
-
-      context 'with values' do
-        it { is_expected.to have_attributes(**attributes) }
-        it { expect(subject.expandset).to eq(Set.new) }
-        it { expect(subject.max_includes).to eq(Gitlab::Ci::Config::External::Context::MAX_INCLUDES) }
-        it { expect(subject.execution_deadline).to eq(0) }
-        it { expect(subject.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
-        it { expect(subject.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
-        it { expect(subject.variables_hash).to include('a' => 'b') }
-      end
-
-      context 'without values' do
-        let(:attributes) { { project: nil, user: nil, sha: nil } }
-
-        it { is_expected.to have_attributes(**attributes) }
-        it { expect(subject.expandset).to eq(Set.new) }
-        it { expect(subject.max_includes).to eq(Gitlab::Ci::Config::External::Context::MAX_INCLUDES) }
-        it { expect(subject.execution_deadline).to eq(0) }
-        it { expect(subject.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
-        it { expect(subject.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
-      end
+      it { expect(subject.pipeline_config).to be_nil }
     end
   end
 
@@ -169,5 +153,27 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
 
   describe '#sentry_payload' do
     it { expect(subject.sentry_payload).to match(a_hash_including(:project, :user)) }
+  end
+
+  describe '#internal_include?' do
+    context 'when pipeline_config is provided' do
+      where(:value) { [true, false] }
+
+      with_them do
+        it 'returns the value of .internal_include_prepended?' do
+          allow(pipeline_config).to receive(:internal_include_prepended?).and_return(value)
+
+          expect(subject.internal_include?).to eq(value)
+        end
+      end
+    end
+
+    context 'when pipeline_config is not provided' do
+      let(:pipeline_config) { nil }
+
+      it 'returns false' do
+        expect(subject.internal_include?).to eq(false)
+      end
+    end
   end
 end

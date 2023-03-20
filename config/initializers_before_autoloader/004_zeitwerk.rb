@@ -65,7 +65,6 @@ Rails.autoloaders.each do |autoloader|
     'function_uri' => 'FunctionURI',
     'uuid' => 'UUID',
     'occurrence_uuid' => 'OccurrenceUUID',
-    'vulnerability_uuid' => 'VulnerabilityUUID',
-    'vs_code_extension_activity_unique_counter' => 'VSCodeExtensionActivityUniqueCounter'
+    'vulnerability_uuid' => 'VulnerabilityUUID'
   )
 end

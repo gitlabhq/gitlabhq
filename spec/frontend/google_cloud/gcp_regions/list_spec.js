@@ -18,10 +18,6 @@ describe('google_cloud/gcp_regions/list', () => {
       wrapper = mount(GcpRegionsList, { propsData });
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('shows the empty state component', () => {
       expect(findEmptyState().exists()).toBe(true);
     });

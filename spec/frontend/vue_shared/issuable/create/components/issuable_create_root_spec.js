@@ -34,10 +34,6 @@ describe('IssuableCreateRoot', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     it('renders component container element with class "issuable-create-container"', () => {
       expect(wrapper.classes()).toContain('issuable-create-container');

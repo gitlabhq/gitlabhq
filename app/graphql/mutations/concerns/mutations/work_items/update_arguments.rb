@@ -36,6 +36,10 @@ module Mutations
         argument :milestone_widget, ::Types::WorkItems::Widgets::MilestoneInputType,
                  required: false,
                  description: 'Input for milestone widget.'
+        argument :notifications_widget,
+                 ::Types::WorkItems::Widgets::NotificationsUpdateInputType,
+                 required: false,
+                 description: 'Input for notifications widget.'
       end
     end
   end

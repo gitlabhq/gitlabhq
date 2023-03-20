@@ -1,8 +1,8 @@
 import redirectToCorrectPage from '~/blame/blame_redirect';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Blame page redirect', () => {
   beforeEach(() => {

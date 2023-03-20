@@ -97,7 +97,7 @@ docker run -d \
   -v "${CERTS_DIR}/fullchain.pem:/gitlab-rd-web-ide/certs/fullchain.pem" \
   -v "${CERTS_DIR}/privkey.pem:/gitlab-rd-web-ide/certs/privkey.pem" \
   -v "${PROJECTS_DIR}:/projects" \
-  registry.gitlab.com/gitlab-com/create-stage/editor-poc/remote-development/gitlab-rd-web-ide-docker:0.1-alpha \
+  registry.gitlab.com/gitlab-org/remote-development/gitlab-rd-web-ide-docker:0.2-alpha \
   --log-level warn --domain "${DOMAIN}" --ignore-version-mismatch
 ```
 

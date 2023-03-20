@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Milestones::TransferService do
+RSpec.describe Milestones::TransferService, feature_category: :team_planning do
   describe '#execute' do
     subject(:service) { described_class.new(user, old_group, project) }
 

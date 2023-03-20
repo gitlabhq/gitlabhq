@@ -252,25 +252,16 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
   }
 }
 
-
-.gl-gap-2 {
-  gap: $gl-spacing-scale-2;
+.gl-font-xs {
+  font-size: px-to-rem(10px);
 }
 
-.gl-hover-bg-t-gray-a-08:hover {
-  background-color: $t-gray-a-08;
+.gl-line-height-12 {
+  line-height: px-to-rem(12px);
 }
 
-/* End gitlab-ui#1709 */
-
-/*
- * The below style will be moved to @gitlab/ui by
- * https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1751
- */
-.gl-filter-blur-1 {
-  backdrop-filter: blur(2px);
-  /* stylelint-disable property-no-vendor-prefix */
-  -webkit-backdrop-filter: blur(2px); // still required by Safari
+.gl-letter-spacing-06em {
+  letter-spacing: 0.06em;
 }
 
 .gl-flex-flow-row-wrap {
@@ -279,4 +270,42 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
 
 .gl-isolate {
   isolation: isolate;
+}
+
+.gl-text-transform-uppercase {
+  text-transform: uppercase;
+}
+
+/*
+ * The below style will be moved to @gitlab/ui by
+ * https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2177
+ */
+.gl-gap-2 {
+  gap: $gl-spacing-scale-2;
+}
+
+.gl-bg-t-gray-a-08 {
+  background-color: $t-gray-a-08;
+}
+
+.gl-hover-bg-t-gray-a-08:hover {
+  background-color: $t-gray-a-08;
+}
+
+.gl-inset-border-1-gray-a-08 {
+  box-shadow: inset 0 0 0 $gl-border-size-1 $t-gray-a-08;
+}
+
+.gl-line-height-1 {
+  line-height: 1;
+}
+
+.gl-focus:focus {
+  @include gl-focus;
+}
+
+.gl-md-justify-content-space-between {
+  @include gl-media-breakpoint-up(md) {
+    justify-content: space-between;
+  }
 }

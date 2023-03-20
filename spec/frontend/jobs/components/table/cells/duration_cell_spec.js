@@ -22,10 +22,6 @@ describe('Duration Cell', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('does not display duration or finished time when no properties are present', () => {
     createComponent();
 

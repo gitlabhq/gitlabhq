@@ -45,7 +45,7 @@ describe('RevokeTokenButton', () => {
   const findInput = () => wrapper.findComponent(GlFormInput);
   const findTooltip = () => wrapper.findComponent(GlTooltip);
   const findPrimaryAction = () => findModal().props('actionPrimary');
-  const findPrimaryActionAttributes = (attr) => findPrimaryAction().attributes[0][attr];
+  const findPrimaryActionAttributes = (attr) => findPrimaryAction().attributes[attr];
 
   const createMockApolloProvider = ({ mutationResponse }) => {
     revokeSpy = jest.fn().mockResolvedValue(mutationResponse);
@@ -105,7 +105,6 @@ describe('RevokeTokenButton', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     apolloProvider = null;
     revokeSpy = null;
   });

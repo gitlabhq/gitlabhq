@@ -9,4 +9,5 @@
 = render 'shared/doorkeeper/applications/show',
   edit_path: edit_oauth_application_path(@application),
   delete_path: oauth_application_path(@application),
-  index_path: oauth_applications_path
+  index_path: oauth_applications_path,
+  renew_path: renew_oauth_application_path(@application)

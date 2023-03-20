@@ -17,12 +17,11 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 On GitLab.com, this feature is not available.
 The feature is not ready for production use.
 
-Use objectives and key results to align your workforce towards common goals and track the progress.
-Set a big goal with an objective and use [child objectives and key results](#child-objectives-and-key-results)
-to measure the big goal's completion.
+[Objectives and key results](https:://en.wikipedia.org/wiki/OKR) (OKRs) are a framework for setting
+and tracking goals that are aligned with your organization's overall strategy and vision.
 
 The objective and the key result in GitLab share many features. In the documentation, the term
-**OKR** refers to either an objective or a key result.
+**OKRs** refers to both objectives and key results.
 
 OKRs are a type of work item, a step towards [default issue types](https://gitlab.com/gitlab-org/gitlab/-/issues/323404)
 in GitLab.
@@ -30,6 +29,29 @@ For the roadmap of migrating [issues](project/issues/index.md) and [epics](group
 to work items and adding custom work item types, see
 [epic 6033](https://gitlab.com/groups/gitlab-org/-/epics/6033) or the
 [Plan direction page](https://about.gitlab.com/direction/plan/).
+
+## Designing effective OKRs
+
+Use objectives and key results to align your workforce towards common goals and track the progress.
+Set a big goal with an objective and use [child objectives and key results](#child-objectives-and-key-results)
+to measure the big goal's completion.
+
+**Objectives** are aspirational goals to be achieved and define **what you're aiming to do**.
+They show how an individual's, team's, or department's work impacts overall direction of the
+organization by connecting their work to overall company strategy.
+
+**Key results** are measures of progress against aligned objectives. They express
+**how you know if you have reached your goal** (objective).
+By achieving a specific outcome (key result), you create progress for the linked objective.
+
+To know if your OKR makes sense, you can use this sentence:
+
+<!-- vale gitlab.FutureTense = NO -->
+> I/we will accomplish (objective) by (date) through attaining and achieving the following metrics (key results).
+<!-- vale gitlab.FutureTense = YES -->
+
+To learn how to create better OKRs and how we use them at GitLab, see the
+[Objectives and Key Results handbook page](https://about.gitlab.com/company/okrs/).
 
 ## Create an objective
 
@@ -92,6 +114,26 @@ To edit an OKR:
    text box.
 1. Optional. To edit the description, select the edit icon (**{pencil}**), make your changes, and
    select **Save**.
+
+## View OKR system notes
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) to feature flag named `work_items_mvc` in GitLab 15.8. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 15.10.
+> - Changing activity sort order [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) in GitLab 15.8.
+> - Filtering activity [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389971) in GitLab 15.10.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 15.10.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+You can view all the system notes related to the task. By default they are sorted by **Oldest first**.
+You can always change the sorting order to **Newest first**, which is remembered across sessions.
+
+## Comments and threads
+
+You can add [comments](discussions/index.md) and reply to threads in tasks.
 
 ## Assign users
 

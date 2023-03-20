@@ -46,8 +46,7 @@ class GroupsController < Groups::ApplicationController
 
   helper_method :captcha_required?
 
-  skip_cross_project_access_check :index, :new, :create, :edit, :update,
-                                  :destroy, :projects
+  skip_cross_project_access_check :index, :new, :create, :edit, :update, :destroy, :projects
   # When loading show as an atom feed, we render events that could leak cross
   # project information
   skip_cross_project_access_check :show, if: -> { request.format.html? }
@@ -76,6 +75,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def new
+    @parent_group = Group.find_by_id(params[:parent_id])
     @group = Group.new(params.permit(:parent_id))
     @group.build_namespace_settings
   end
@@ -201,7 +201,7 @@ class GroupsController < Groups::ApplicationController
         send_upload(@group.export_file, attachment: @group.export_file.filename)
       else
         redirect_to edit_group_path(@group),
-                    alert: _('The file containing the export is not available yet; it may still be transferring. Please try again later.')
+          alert: _('The file containing the export is not available yet; it may still be transferring. Please try again later.')
       end
     else
       redirect_to edit_group_path(@group),

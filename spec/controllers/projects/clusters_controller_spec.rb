@@ -420,11 +420,12 @@ RSpec.describe Projects::ClustersController, feature_category: :kubernetes_manag
 
   describe 'PUT update' do
     def go(format: :html)
-      put :update, params: params.merge(namespace_id: project.namespace.to_param,
-                                        project_id: project.to_param,
-                                        id: cluster,
-                                        format: format
-                                       )
+      put :update, params: params.merge(
+        namespace_id: project.namespace.to_param,
+        project_id: project.to_param,
+        id: cluster,
+        format: format
+      )
     end
 
     before do

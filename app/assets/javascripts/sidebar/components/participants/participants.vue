@@ -99,7 +99,7 @@ export default {
     >
       <gl-icon name="users" />
       <gl-loading-icon v-if="loading" size="sm" />
-      <span v-else data-testid="collapsed-count" class="gl-pt-2 gl-px-3 gl-font-sm">
+      <span v-else class="gl-pt-2 gl-px-3 gl-font-sm">
         {{ participantCount }}
       </span>
     </div>
@@ -114,9 +114,12 @@ export default {
       <div
         v-for="participant in visibleParticipants"
         :key="participant.id"
-        class="participants-author gl-display-inline-block gl-pr-3 gl-pb-3"
+        class="participants-author gl-display-inline-block gl-mr-3 gl-mb-3"
       >
-        <a :href="participant.web_url || participant.webUrl" class="author-link">
+        <a
+          :href="participant.web_url || participant.webUrl"
+          class="author-link gl-display-inline-block gl-rounded-full"
+        >
           <user-avatar-image
             :lazy="lazy"
             :img-src="participant.avatar_url || participant.avatarUrl"
@@ -133,7 +136,6 @@ export default {
       <gl-button
         variant="link"
         button-text-classes="gl-text-secondary"
-        data-testid="more-participants"
         @click="toggleMoreParticipants"
         >{{ toggleLabel }}</gl-button
       >

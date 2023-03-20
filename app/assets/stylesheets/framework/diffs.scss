@@ -944,6 +944,19 @@ table.code {
   }
 }
 
+// Remove border from collapsed replies widget only on diffs
+.diff-grid-comments {
+  .replies-widget-collapsed {
+    border-bottom: 0;
+  }
+  // Rounded border radius only on diff comments with no replies
+  .discussion-collapsible {
+    .discussion-reply-holder:first-of-type {
+      border-radius: $gl-border-radius-base;
+    }
+  }
+}
+
 .discussion-body .image .frame {
   position: relative;
 }
@@ -999,7 +1012,7 @@ table.code {
 }
 
 // Note: Prevents tall files from appearing above sticky tabs
-.diffs .vue-recycle-scroller__item-view > div:not(.active) {
+.diff-files-holder .vue-recycle-scroller__item-view > div:not(.active) {
   position: absolute;
   bottom: 100vh;
 }

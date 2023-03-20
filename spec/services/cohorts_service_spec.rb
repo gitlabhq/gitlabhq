@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CohortsService do
+RSpec.describe CohortsService, feature_category: :shared do
   describe '#execute' do
     def month_start(months_ago)
       months_ago.months.ago.beginning_of_month.to_date

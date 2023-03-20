@@ -1,6 +1,6 @@
 ---
-stage: Manage
-group: Organization
+stage: Data Stores
+group: Tenant Scale
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
@@ -11,12 +11,9 @@ code are saved in projects, and most features are in the scope of projects.
 
 ## View projects
 
-To view projects, on the top bar, select **Main menu > Projects > View all projects**.
+To view all your projects, on the top bar, select **Main menu > Projects > View all projects**.
 
-NOTE:
-The **Explore projects** tab is visible to unauthenticated users unless the
-[**Public** visibility level](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
-is restricted. Then the tab is visible only to authenticated users.
+To browse all public projects, select **Main menu > Explore > Projects**.
 
 ### Who can view the Projects page
 
@@ -63,7 +60,7 @@ You can add a star to projects you use frequently to make them easier to find.
 To add a star to a project:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. In the upper right corner of the page, select **Star**.
+1. In the upper-right corner of the page, select **Star**.
 
 ## View starred projects
 
@@ -241,15 +238,15 @@ Configure Git to either:
 
 - Embed credentials in the request URL:
 
-    ```shell
-    git config --global url."https://${user}:${personal_access_token}@gitlab.example.com".insteadOf "https://gitlab.example.com"
-    ```
+  ```shell
+  git config --global url."https://${user}:${personal_access_token}@gitlab.example.com".insteadOf "https://gitlab.example.com"
+  ```
 
 - Use SSH instead of HTTPS:
 
-    ```shell
-    git config --global url."git@gitlab.example.com:".insteadOf "https://gitlab.example.com/"
-    ```
+  ```shell
+  git config --global url."git@gitlab.example.com:".insteadOf "https://gitlab.example.com/"
+  ```
 
 ### Disable Go module fetching for private projects
 
@@ -263,8 +260,8 @@ the [environment variables](../../development/go_guide/dependencies.md#proxies):
 To disable fetching:
 
 1. Disable `GOPRIVATE`:
-    - To disable queries for one project, disable `GOPRIVATE=gitlab.example.com/my/private/project`.
-    - To disable queries for all projects on GitLab.com, disable `GOPRIVATE=gitlab.example.com`.
+   - To disable queries for one project, disable `GOPRIVATE=gitlab.example.com/my/private/project`.
+   - To disable queries for all projects on GitLab.com, disable `GOPRIVATE=gitlab.example.com`.
 1. Disable proxy queries in `GONOPROXY`.
 1. Disable checksum queries in `GONOSUMDB`.
 
@@ -291,8 +288,8 @@ To access the Geo secondary server with SSH:
    git config --global url."git@gitlab-secondary.example.com".insteadOf "http://gitlab.example.com"
    ```
 
-    - For `gitlab.example.com`, use the primary site domain name.
-    - For `gitlab-secondary.example.com`, use the secondary site domain name.
+   - For `gitlab.example.com`, use the primary site domain name.
+   - For `gitlab-secondary.example.com`, use the secondary site domain name.
 
 1. Ensure the client is set up for SSH access to GitLab repositories. You can test this on the primary,
    and GitLab replicates the public key to the secondary.

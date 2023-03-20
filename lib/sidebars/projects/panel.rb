@@ -34,14 +34,6 @@ module Sidebars
         add_wiki_menus
         add_menu(Sidebars::Projects::Menus::SnippetsMenu.new(context))
         add_menu(Sidebars::Projects::Menus::SettingsMenu.new(context))
-        add_invite_members_menu
-      end
-
-      def add_invite_members_menu
-        experiment(:invite_members_in_side_nav, group: context.project.group) do |e|
-          e.control {}
-          e.candidate { add_menu(Sidebars::Projects::Menus::InviteTeamMembersMenu.new(context)) }
-        end
       end
 
       def add_wiki_menus

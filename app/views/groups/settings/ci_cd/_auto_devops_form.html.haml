@@ -2,8 +2,8 @@
   = form_errors(group)
   %fieldset
     .form-group
-      .card.gl-mb-3
-        .card-body
+      = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-3' }) do |c|
+        - c.body do
           - learn_more_link = link_to _('Learn more.'), help_page_path('topics/autodevops/index.md'), target: '_blank', rel: 'noopener noreferrer'
           - help_text = s_('GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found.')
           - badge = gl_badge_tag badge_for_auto_devops_scope(group), variant: :info
@@ -13,4 +13,5 @@
             help_text: '%{help_text} %{learn_more_link}'.html_safe % { help_text: help_text, learn_more_link: learn_more_link },
             checkbox_options: { checked: group.auto_devops_enabled? }
 
-      = f.submit _('Save changes'), class: 'gl-mt-5', pajamas_button: true
+      = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { class: 'gl-mt-5' }) do
+        = _('Save changes')

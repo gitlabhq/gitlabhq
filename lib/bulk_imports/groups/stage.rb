@@ -71,7 +71,7 @@ module BulkImports
       end
 
       def project_entities_pipeline
-        if migrate_projects? && project_pipeline_available? && feature_flag_enabled?
+        if migrate_projects? && project_pipeline_available?
           {
             project_entities: {
               pipeline: BulkImports::Groups::Pipelines::ProjectEntitiesPipeline,
@@ -89,12 +89,6 @@ module BulkImports
 
       def project_pipeline_available?
         @bulk_import.source_version_info >= BulkImport.min_gl_version_for_project_migration
-      end
-
-      def feature_flag_enabled?
-        destination_namespace = @bulk_import_entity.destination_namespace
-
-        BulkImports::Features.project_migration_enabled?(destination_namespace)
       end
     end
   end

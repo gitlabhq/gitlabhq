@@ -88,6 +88,10 @@ module Packages
           end
         end
 
+        def empty?
+          size == 0
+        end
+
         private
 
         def extension

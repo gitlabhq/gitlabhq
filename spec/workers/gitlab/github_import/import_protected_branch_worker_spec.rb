@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::ImportProtectedBranchWorker do
+RSpec.describe Gitlab::GithubImport::ImportProtectedBranchWorker, feature_category: :importers do
   let(:worker) { described_class.new }
 
   let(:import_state) { build_stubbed(:import_state, :started) }

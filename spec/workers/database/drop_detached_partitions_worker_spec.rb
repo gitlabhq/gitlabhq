@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Database::DropDetachedPartitionsWorker do
+RSpec.describe Database::DropDetachedPartitionsWorker, feature_category: :database do
   describe '#perform' do
     subject { described_class.new.perform }
 

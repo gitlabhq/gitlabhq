@@ -1,7 +1,7 @@
 <script>
 import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
-import { createAlert, VARIANT_INFO } from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import { historyReplaceState } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages_and_registries/shared/constants';

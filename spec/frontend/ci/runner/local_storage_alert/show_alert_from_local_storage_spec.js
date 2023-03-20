@@ -2,9 +2,9 @@ import AccessorUtilities from '~/lib/utils/accessor';
 import { showAlertFromLocalStorage } from '~/ci/runner/local_storage_alert/show_alert_from_local_storage';
 import { LOCAL_STORAGE_ALERT_KEY } from '~/ci/runner/local_storage_alert/constants';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('showAlertFromLocalStorage', () => {
   useLocalStorageSpy();

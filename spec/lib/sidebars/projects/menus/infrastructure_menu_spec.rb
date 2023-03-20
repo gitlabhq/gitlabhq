@@ -2,10 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Projects::Menus::InfrastructureMenu do
+RSpec.describe Sidebars::Projects::Menus::InfrastructureMenu, feature_category: :navigation do
   let(:project) { build(:project) }
   let(:user) { project.first_owner }
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project, show_cluster_hint: false) }
+
+  it_behaves_like 'not serializable as super_sidebar_menu_args' do
+    let(:menu) { described_class.new(context) }
+  end
 
   describe '#render?' do
     subject { described_class.new(context) }
@@ -103,6 +107,22 @@ RSpec.describe Sidebars::Projects::Menus::InfrastructureMenu do
       let(:item_id) { :terraform }
 
       it_behaves_like 'access rights checks'
+
+      context 'if terraform_state.enabled=true' do
+        before do
+          stub_config(terraform_state: { enabled: true })
+        end
+
+        it_behaves_like 'access rights checks'
+      end
+
+      context 'if terraform_state.enabled=false' do
+        before do
+          stub_config(terraform_state: { enabled: false })
+        end
+
+        it { is_expected.to be_nil }
+      end
     end
 
     describe 'Google Cloud' do
@@ -136,6 +156,56 @@ RSpec.describe Sidebars::Projects::Menus::InfrastructureMenu do
         context 'when feature flag is enabled for specific project' do
           before do
             stub_feature_flags(incubation_5mp_google_cloud: user)
+          end
+
+          it_behaves_like 'access rights checks'
+        end
+      end
+
+      context 'when instance is not configured for Google OAuth2' do
+        before do
+          stub_feature_flags(incubation_5mp_google_cloud: true)
+          unconfigured_google_oauth2 = Struct.new(:app_id, :app_secret).new('', '')
+          allow(Gitlab::Auth::OAuth::Provider).to receive(:config_for)
+                                                    .with('google_oauth2')
+                                                    .and_return(unconfigured_google_oauth2)
+        end
+
+        it { is_expected.to be_nil }
+      end
+    end
+
+    describe 'AWS' do
+      let(:item_id) { :aws }
+
+      it_behaves_like 'access rights checks'
+
+      context 'when feature flag is turned off globally' do
+        before do
+          stub_feature_flags(cloudseed_aws: false)
+        end
+
+        it { is_expected.to be_nil }
+
+        context 'when feature flag is enabled for specific project' do
+          before do
+            stub_feature_flags(cloudseed_aws: project)
+          end
+
+          it_behaves_like 'access rights checks'
+        end
+
+        context 'when feature flag is enabled for specific group' do
+          before do
+            stub_feature_flags(cloudseed_aws: project.group)
+          end
+
+          it_behaves_like 'access rights checks'
+        end
+
+        context 'when feature flag is enabled for specific project' do
+          before do
+            stub_feature_flags(cloudseed_aws: user)
           end
 
           it_behaves_like 'access rights checks'

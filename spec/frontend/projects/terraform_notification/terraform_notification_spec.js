@@ -41,10 +41,6 @@ describe('TerraformNotificationBanner', () => {
     trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when user has already dismissed the banner', () => {
     beforeEach(() => {
       createComponent({

@@ -208,7 +208,7 @@ export default {
       v-if="note.last_edited_at"
       :edited-at="note.last_edited_at"
       :edited-by="note.last_edited_by"
-      action-text="Edited"
+      :action-text="__('Edited')"
       class="note_edited_ago"
     />
     <note-awards-list

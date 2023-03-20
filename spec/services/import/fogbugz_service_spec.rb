@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::FogbugzService do
+RSpec.describe Import::FogbugzService, feature_category: :importers do
   let_it_be(:user) { create(:user) }
 
   let(:base_uri) { "https://test:7990" }

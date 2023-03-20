@@ -2,6 +2,8 @@
 
 module Ci
   class PipelinesFinder
+    include UpdatedAtFilter
+
     attr_reader :project, :pipelines, :params, :current_user
 
     ALLOWED_INDEXED_COLUMNS = %w[id status ref updated_at user_id].freeze
@@ -145,13 +147,6 @@ module Ci
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
-
-    def by_updated_at(items)
-      items = items.updated_before(params[:updated_before]) if params[:updated_before].present?
-      items = items.updated_after(params[:updated_after]) if params[:updated_after].present?
-
-      items
-    end
 
     def by_name(items)
       return items unless

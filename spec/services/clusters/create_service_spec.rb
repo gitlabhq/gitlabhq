@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::CreateService do
+RSpec.describe Clusters::CreateService, feature_category: :kubernetes_management do
   let(:access_token) { 'xxx' }
   let(:project) { create(:project) }
   let(:user) { create(:user) }

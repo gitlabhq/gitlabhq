@@ -590,7 +590,6 @@ RSpec.describe Integrations::Jira do
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
         subject { close_issue }
 
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:category) { 'Integrations::Jira' }
         let(:action) { 'perform_integrations_action' }
         let(:namespace) { project.namespace }
@@ -944,7 +943,6 @@ RSpec.describe Integrations::Jira do
       end
 
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:category) { 'Integrations::Jira' }
         let(:action) { 'perform_integrations_action' }
         let(:namespace) { project.namespace }
@@ -1095,9 +1093,7 @@ RSpec.describe Integrations::Jira do
         expect(integration.web_url).to eq('')
       end
 
-      it 'includes Atlassian referrer for gitlab.com' do
-        allow(Gitlab).to receive(:com?).and_return(true)
-
+      it 'includes Atlassian referrer for SaaS', :saas do
         expect(integration.web_url).to eq("http://jira.test.com/path?#{described_class::ATLASSIAN_REFERRER_GITLAB_COM.to_query}")
 
         allow(Gitlab).to receive(:staging?).and_return(true)

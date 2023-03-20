@@ -227,7 +227,8 @@ Example response:
   "can_create_group": false,
   "jira_connect_application_key": "123",
   "jira_connect_proxy_url": "http://gitlab.example.com",
-  "user_defaults_to_private_profile": true
+  "user_defaults_to_private_profile": true,
+  "projects_api_rate_limit_unauthenticated": 400
 }
 ```
 
@@ -268,9 +269,9 @@ listed in the descriptions of the relevant settings.
 | `akismet_api_key`                        | string           | required by: `akismet_enabled`       | API key for Akismet spam protection. |
 | `akismet_enabled`                        | boolean          | no                                   | (**If enabled, requires:** `akismet_api_key`) Enable or disable Akismet spam protection. |
 | `allow_group_owners_to_manage_ldap` **(PREMIUM)** | boolean | no                                   | Set to `true` to allow group owners to manage LDAP. |
-| `allow_local_requests_from_hooks_and_services` | boolean    | no                                   | (Deprecated: Use `allow_local_requests_from_web_hooks_and_services` instead) Allow requests to the local network from hooks and services. |
+| `allow_local_requests_from_hooks_and_services` | boolean    | no                                   | (Deprecated: Use `allow_local_requests_from_web_hooks_and_services` instead) Allow requests to the local network from webhooks and integrations. |
 | `allow_local_requests_from_system_hooks` | boolean          | no                                   | Allow requests to the local network from system hooks. |
-| `allow_local_requests_from_web_hooks_and_services` | boolean | no                                  | Allow requests to the local network from web hooks and services. |
+| `allow_local_requests_from_web_hooks_and_services` | boolean | no                                  | Allow requests to the local network from webhooks and integrations. |
 | `allow_runner_registration_token`        | boolean          | no                                   | Allow using a registration token to create a runner. Defaults to `true`. |
 | `archive_builds_in_human_readable`       | string           | no                                   | Set the duration for which the jobs are considered as old and expired. After that time passes, the jobs are archived and no longer able to be retried. Make it empty to never expire jobs. It has to be no less than 1 day, for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>. |
 | `asset_proxy_enabled`                    | boolean          | no                                   | (**If enabled, requires:** `asset_proxy_url`) Enable proxying of assets. GitLab restart is required to apply changes. |
@@ -282,7 +283,7 @@ listed in the descriptions of the relevant settings.
 | `auto_devops_domain`                     | string           | no                                   | Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages. |
 | `auto_devops_enabled`                    | boolean          | no                                   | Enable Auto DevOps for projects by default. It automatically builds, tests, and deploys applications based on a predefined CI/CD configuration. |
 | `automatic_purchased_storage_allocation` | boolean          | no                                   | Enabling this permits automatic allocation of purchased storage in a namespace. |
-| `bulk_import_enabled`                    | boolean          | no                                   | Enable migrating GitLab groups by direct transfer. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8. Requires [`bulk_import_projects` feature flag](../user/group/import/index.md#migrate-groups-by-direct-transfer-recommended) to also migrate projects. Setting also [available](../user/admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer) in the Admin Area. |
+| `bulk_import_enabled`                    | boolean          | no                                   | Enable migrating GitLab groups by direct transfer. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8. Setting also [available](../user/admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer) in the Admin Area. |
 | `can_create_group` | boolean | no | Indicates whether users can create top-level groups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367754) in GitLab 15.5. Defaults to `true`. |
 | `check_namespace_plan` **(PREMIUM)**     | boolean          | no                                   | Enabling this makes only licensed EE features available to projects if the project namespace's plan includes the feature or if the project is public. |
 | `commit_email_hostname`                  | string           | no                                   | Custom hostname (for private commit emails). |
@@ -305,6 +306,7 @@ listed in the descriptions of the relevant settings.
 | `default_project_visibility`             | string           | no                                   | What visibility level new projects receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
 | `default_projects_limit`                 | integer          | no                                   | Project limit per user. Default is `100000`. |
 | `default_snippet_visibility`             | string           | no                                   | What visibility level new snippets receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
+| `default_syntax_highlighting_theme`      | integer          | no                                   | Default syntax highlighting theme for new users and users who are not signed in. See [IDs of available themes](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/themes.rb#L16).
 | `delayed_project_deletion` **(PREMIUM SELF)** | boolean     | no                                   | Enable delayed project deletion by default in new groups. Default is `false`. [From GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/352960), can only be enabled when `delayed_group_deletion` is true. |
 | `delayed_group_deletion` **(PREMIUM SELF)**   | boolean     | no                                   | Enable delayed group deletion. Default is `true`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352959) in GitLab 15.0. [From GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/352960), disables and locks the group-level setting for delayed protect deletion when set to `false`.  |
 | `deletion_adjourned_period` **(PREMIUM SELF)** | integer    | no                                   | The number of days to wait before deleting a project or group that is marked for deletion. Value must be between `1` and `90`. Defaults to `7`. [From GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/352960), a hook on `deletion_adjourned_period` sets the period to `1` on every update, and sets both `delayed_project_deletion` and `delayed_group_deletion` to `false` if the period is `0`. |
@@ -315,7 +317,7 @@ listed in the descriptions of the relevant settings.
 | `disable_feed_token`                     | boolean          | no                                   | Disable display of RSS/Atom and calendar feed tokens. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231493) in GitLab 13.7. |
 | `disable_personal_access_token` **(PREMIUM SELF)** | boolean | no                                  | Disable personal access tokens. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384201) in GitLab 15.7. |
 | `disabled_oauth_sign_in_sources`         | array of strings | no                                   | Disabled OAuth sign-in sources. |
-| `dns_rebinding_protection_enabled`       | boolean          | no                                   | Enforce DNS rebinding attack protection. |
+| `dns_rebinding_protection_enabled`       | boolean          | no                                   | Enforce DNS-rebinding attack protection. |
 | `domain_denylist_enabled`                | boolean          | no                                   | (**If enabled, requires:** `domain_denylist`) Allows blocking sign-ups from emails from specific domains. |
 | `domain_denylist`                        | array of strings | no                                   | Users with email addresses that match these domains **cannot** sign up. Wildcards allowed. Use separate lines for multiple entries. For example: `domain.com`, `*.domain.com`. |
 | `domain_allowlist`                       | array of strings | no                                   | Force people to use only corporate emails for sign-up. Default is `null`, meaning there is no restriction. |
@@ -368,6 +370,7 @@ listed in the descriptions of the relevant settings.
 | `gitaly_timeout_default`                 | integer          | no                                   | Default Gitaly timeout, in seconds. This timeout is not enforced for Git fetch/push operations or Sidekiq jobs. Set to `0` to disable timeouts. |
 | `gitaly_timeout_fast`                    | integer          | no                                   | Gitaly fast operation timeout, in seconds. Some Gitaly operations are expected to be fast. If they exceed this threshold, there may be a problem with a storage shard and 'failing fast' can help maintain the stability of the GitLab instance. Set to `0` to disable timeouts. |
 | `gitaly_timeout_medium`                  | integer          | no                                   | Medium Gitaly timeout, in seconds. This should be a value between the Fast and the Default timeout. Set to `0` to disable timeouts. |
+| `gitlab_dedicated_instance`              | boolean          | no                                   | Indicates whether the instance was provisioned for GitLab Dedicated. |
 | `grafana_enabled`                        | boolean          | no                                   | Enable Grafana. |
 | `grafana_url`                            | string           | no                                   | Grafana URL. |
 | `gravatar_enabled`                       | boolean          | no                                   | Enable Gravatar. |
@@ -417,7 +420,7 @@ listed in the descriptions of the relevant settings.
 | `maven_package_requests_forwarding` **(PREMIUM)** | boolean   | no                                   | Use repo.maven.apache.org as a default remote repository when the package is not found in the GitLab Package Registry for Maven. |
 | `npm_package_requests_forwarding` **(PREMIUM)** | boolean   | no                                   | Use npmjs.org as a default remote repository when the package is not found in the GitLab Package Registry for npm. |
 | `pypi_package_requests_forwarding` **(PREMIUM)** | boolean  | no                                   | Use pypi.org as a default remote repository when the package is not found in the GitLab Package Registry for PyPI. |
-| `outbound_local_requests_whitelist`      | array of strings | no                                   | Define a list of trusted domains or IP addresses to which local requests are allowed when local requests for hooks and services are disabled.
+| `outbound_local_requests_whitelist`      | array of strings | no                                   | Define a list of trusted domains or IP addresses to which local requests are allowed when local requests for webhooks and integrations are disabled.
 | `pages_domain_verification_enabled`       | boolean          | no                                   | Require users to prove ownership of custom domains. Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled. |
 | `password_authentication_enabled_for_git` | boolean         | no                                   | Enable authentication for Git over HTTP(S) via a GitLab account password. Default is `true`. |
 | `password_authentication_enabled_for_web` | boolean         | no                                   | Enable authentication for the web interface via a GitLab account password. Default is `true`. |
@@ -434,6 +437,7 @@ listed in the descriptions of the relevant settings.
 | `plantuml_url`                           | string           | required by: `plantuml_enabled`      | The PlantUML instance URL for integration. |
 | `polling_interval_multiplier`            | decimal          | no                                   | Interval multiplier used by endpoints that perform polling. Set to `0` to disable polling. |
 | `project_export_enabled`                 | boolean          | no                                   | Enable project export. |
+| `projects_api_rate_limit_unauthenticated`      | integer          | no                                   | [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112283) in GitLab 15.10. Max number of requests per 10 minutes per IP address for unauthenticated requests to the [list all projects API](projects.md#list-all-projects). Default: 400. To disable throttling set to 0.|
 | `prometheus_metrics_enabled`             | boolean          | no                                   | Enable Prometheus metrics. |
 | `protected_ci_variables`                 | boolean          | no                                   | CI/CD variables are protected by default. |
 | `push_event_activities_limit`            | integer          | no                                   | Number of changes (branches or tags) in a single push to determine whether individual push events or bulk push events are created. [Bulk push events are created](../user/admin_area/settings/push_event_activities_limit.md) if it surpasses that value. |

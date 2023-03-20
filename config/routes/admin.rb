@@ -44,7 +44,9 @@ namespace :admin do
     end
   end
 
-  resources :applications
+  resources :applications do
+    put 'renew', on: :member
+  end
 
   resources :groups, only: [:index, :new, :create]
 
@@ -121,6 +123,10 @@ namespace :admin do
       member do
         put :transfer
         post :repository_check
+        get :edit, action: :edit
+        get '/', action: :show
+        patch '/', action: :update
+        put '/', action: :update
       end
 
       resources :runner_projects, only: [:create, :destroy]
@@ -168,6 +174,7 @@ namespace :admin do
 
   resources :runners, only: [:index, :new, :show, :edit, :update, :destroy] do
     member do
+      get :register
       post :resume
       post :pause
     end

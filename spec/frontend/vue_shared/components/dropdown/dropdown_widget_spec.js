@@ -31,20 +31,11 @@ describe('DropdownWidget component', () => {
       },
     });
 
-    // We need to mock out `showDropdown` which
-    // invokes `show` method of BDropdown used inside GlDropdown.
-    // Context: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54895#note_524281679
-    jest.spyOn(wrapper.vm, 'showDropdown').mockImplementation();
     jest.spyOn(findDropdown().vm, 'hide').mockImplementation();
   };
 
   beforeEach(() => {
     createComponent();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
   });
 
   it('passes default selectText prop to dropdown', () => {

@@ -94,10 +94,10 @@ module Gitlab
 
           # rubocop: disable CodeReuse/ActiveRecord
           def preload_associations(records)
-            ActiveRecord::Associations::Preloader.new.preload(
-              records,
-              MAPPINGS.fetch(subject_class).fetch(:includes_for_query)
-            )
+            ActiveRecord::Associations::Preloader.new(
+              records: records,
+              associations: MAPPINGS.fetch(subject_class).fetch(:includes_for_query)
+            ).call
 
             records
           end

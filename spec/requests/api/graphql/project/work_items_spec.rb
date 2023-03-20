@@ -313,6 +313,34 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     end
   end
 
+  context 'when fetching work item notifications widget' do
+    let(:fields) do
+      <<~GRAPHQL
+          nodes {
+            widgets {
+              type
+              ... on WorkItemWidgetNotifications {
+                subscribed
+              }
+            }
+          }
+      GRAPHQL
+    end
+
+    it 'executes limited number of N+1 queries', :use_sql_query_cache do
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post_graphql(query, current_user: current_user)
+      end
+
+      create_list(:work_item, 3, project: project)
+
+      # Performs 1 extra query per item to fetch subscriptions
+      expect { post_graphql(query, current_user: current_user) }
+        .not_to exceed_all_query_limit(control).with_threshold(3)
+      expect_graphql_errors_to_be_empty
+    end
+  end
+
   def item_ids
     graphql_dig_at(items_data, :node, :id)
   end

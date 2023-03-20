@@ -81,7 +81,6 @@ describe('Links Inner component', () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
-    wrapper.destroy();
     resetHTMLFixture();
   });
 

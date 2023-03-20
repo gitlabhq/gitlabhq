@@ -12,6 +12,7 @@ settings:
     jest:
       jestConfigFile: 'jest.config.js'
 rules:
+  '@gitlab/vtu-no-explicit-wrapper-destroy': error
   jest/expect-expect:
     - off
     - assertFunctionNames:

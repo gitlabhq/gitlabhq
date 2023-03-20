@@ -3,6 +3,10 @@
 
 = render_if_exists 'shared/ultimate_feature_removal_banner', project: @project
 
+= content_for :page_level_alert do
+  - if can_invite_members_for_project?(@project)
+    = render_if_exists 'shared/unlimited_members_during_trial_alert', group: @project.root_ancestor
+
 .row.gl-mt-3
   .col-lg-12
     .gl-display-flex.gl-flex-wrap
@@ -25,7 +29,6 @@
               classes: 'gl-md-w-auto gl-w-full gl-md-ml-3 gl-md-mt-0 gl-mt-3',
               trigger_source: 'project-members-page',
               display_text: _('Invite members') } }
-        = render 'projects/invite_members_modal', project: @project, reload_page_on_submit: true
       - else
         - if project_can_be_shared?
           %h4

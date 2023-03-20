@@ -35,6 +35,7 @@ RSpec.describe Packages::Debian::ProcessPackageFileService, feature_category: :p
     where(:case_name, :expected_file_type, :file_name, :component_name) do
       'with a deb'   | 'deb'  | 'libsample0_1.2.3~alpha2_amd64.deb'   | 'main'
       'with an udeb' | 'udeb' | 'sample-udeb_1.2.3~alpha2_amd64.udeb' | 'contrib'
+      'with an ddeb' | 'ddeb' | 'sample-ddeb_1.2.3~alpha2_amd64.ddeb' | 'main'
     end
 
     with_them do
@@ -67,9 +68,9 @@ RSpec.describe Packages::Debian::ProcessPackageFileService, feature_category: :p
               .to receive(:perform_async).with(:project, distribution.id)
             expect { subject.execute }
               .to change(Packages::Package, :count).from(2).to(1)
-              .and change(Packages::PackageFile, :count).from(14).to(8)
+              .and change(Packages::PackageFile, :count).from(16).to(9)
               .and not_change(Packages::Debian::Publication, :count)
-              .and change(package.package_files, :count).from(7).to(0)
+              .and change(package.package_files, :count).from(8).to(0)
               .and change(package_file, :package).from(package).to(matching_package)
               .and not_change(matching_package, :name)
               .and not_change(matching_package, :version)

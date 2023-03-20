@@ -33,7 +33,7 @@ export default {
     closeModalProps() {
       return {
         text: this.$options.i18n.closeText,
-        attributes: [],
+        attributes: {},
       };
     },
   },

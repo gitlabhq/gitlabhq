@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Environments::CanaryIngress::UpdateWorker do
+RSpec.describe Environments::CanaryIngress::UpdateWorker, feature_category: :continuous_delivery do
   let_it_be(:environment) { create(:environment) }
 
   let(:worker) { described_class.new }

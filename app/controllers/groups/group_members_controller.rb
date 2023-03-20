@@ -18,8 +18,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   skip_before_action :check_two_factor_requirement, only: :leave
   skip_cross_project_access_check :index, :update, :destroy, :request_access,
-                                  :approve_access_request, :leave, :resend_invite,
-                                  :override
+    :approve_access_request, :leave, :resend_invite, :override
 
   feature_category :subgroups
   urgency :low
@@ -73,7 +72,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def filter_params
-    params.permit(:two_factor, :search).merge(sort: @sort)
+    params.permit(:two_factor, :search, :user_type).merge(sort: @sort)
   end
 
   def membershipable_members

@@ -49,7 +49,6 @@ describe('MembersApp', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     store = null;
   });
 

@@ -892,4 +892,61 @@ describe('DiffsStoreUtils', () => {
       expect(files[6].right).toBeNull();
     });
   });
+
+  describe('isUrlHashNoteLink', () => {
+    it.each`
+      input            | bool
+      ${'#note_12345'} | ${true}
+      ${'#12345'}      | ${false}
+      ${'note_12345'}  | ${true}
+      ${'12345'}       | ${false}
+    `('returns $bool for $input', ({ bool, input }) => {
+      expect(utils.isUrlHashNoteLink(input)).toBe(bool);
+    });
+  });
+
+  describe('isUrlHashFileHeader', () => {
+    it.each`
+      input                    | bool
+      ${'#diff-content-12345'} | ${true}
+      ${'#12345'}              | ${false}
+      ${'diff-content-12345'}  | ${true}
+      ${'12345'}               | ${false}
+    `('returns $bool for $input', ({ bool, input }) => {
+      expect(utils.isUrlHashFileHeader(input)).toBe(bool);
+    });
+  });
+
+  describe('parseUrlHashAsFileHash', () => {
+    it.each`
+      input                                          | currentDiffId | resultId
+      ${'#note_12345'}                               | ${'1A2B3C'}   | ${'1A2B3C'}
+      ${'note_12345'}                                | ${'1A2B3C'}   | ${'1A2B3C'}
+      ${'#note_12345'}                               | ${undefined}  | ${null}
+      ${'note_12345'}                                | ${undefined}  | ${null}
+      ${'#diff-content-12345'}                       | ${undefined}  | ${'12345'}
+      ${'diff-content-12345'}                        | ${undefined}  | ${'12345'}
+      ${'#diff-content-12345'}                       | ${'98765'}    | ${'12345'}
+      ${'diff-content-12345'}                        | ${'98765'}    | ${'12345'}
+      ${'#e334a2a10f036c00151a04cea7938a5d4213a818'} | ${undefined}  | ${'e334a2a10f036c00151a04cea7938a5d4213a818'}
+      ${'e334a2a10f036c00151a04cea7938a5d4213a818'}  | ${undefined}  | ${'e334a2a10f036c00151a04cea7938a5d4213a818'}
+      ${'#Z334a2a10f036c00151a04cea7938a5d4213a818'} | ${undefined}  | ${null}
+      ${'Z334a2a10f036c00151a04cea7938a5d4213a818'}  | ${undefined}  | ${null}
+    `('returns $resultId for $input and $currentDiffId', ({ input, currentDiffId, resultId }) => {
+      expect(utils.parseUrlHashAsFileHash(input, currentDiffId)).toBe(resultId);
+    });
+  });
+
+  describe('markTreeEntriesLoaded', () => {
+    it.each`
+      desc                                                               | entries                                            | loaded                   | outcome
+      ${'marks an existing entry as loaded'}                             | ${{ abc: {} }}                                     | ${[{ new_path: 'abc' }]} | ${{ abc: { diffLoaded: true } }}
+      ${'does nothing if the new file is not found in the tree entries'} | ${{ abc: {} }}                                     | ${[{ new_path: 'def' }]} | ${{ abc: {} }}
+      ${'leaves entries unmodified if they are not in the loaded files'} | ${{ abc: {}, def: { diffLoaded: true }, ghi: {} }} | ${[{ new_path: 'ghi' }]} | ${{ abc: {}, def: { diffLoaded: true }, ghi: { diffLoaded: true } }}
+    `('$desc', ({ entries, loaded, outcome }) => {
+      expect(utils.markTreeEntriesLoaded({ priorEntries: entries, loadedFiles: loaded })).toEqual(
+        outcome,
+      );
+    });
+  });
 });

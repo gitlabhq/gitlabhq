@@ -5,7 +5,12 @@ module Gitlab
     module Packages
       CONAN_RECIPE_FILES = %w[conanfile.py conanmanifest.txt conan_sources.tgz conan_export.tgz].freeze
       CONAN_PACKAGE_FILES = %w[conaninfo.txt conanmanifest.txt conan_package.tgz].freeze
+
       PYPI_NORMALIZED_NAME_REGEX_STRING = '[-_.]+'
+
+      # see https://github.com/apache/maven/blob/c1dfb947b509e195c75d4275a113598cf3063c3e/maven-artifact/src/main/java/org/apache/maven/artifact/Artifact.java#L46
+      MAVEN_SNAPSHOT_DYNAMIC_PARTS = /\A.{0,1000}(-\d{8}\.\d{6}-\d+).{0,1000}\z/.freeze
+
       API_PATH_REGEX = %r{^/api/v\d+/(projects/[^/]+/|groups?/[^/]+/-/)?packages/[A-Za-z]+}.freeze
 
       def conan_package_reference_regex
@@ -141,7 +146,7 @@ module Gitlab
       end
 
       def debian_direct_upload_filename_regex
-        @debian_direct_upload_filename_regex ||= %r{\A.*\.(deb|udeb)\z}o.freeze
+        @debian_direct_upload_filename_regex ||= %r{\A.*\.(deb|udeb|ddeb)\z}o.freeze
       end
 
       def helm_channel_regex
@@ -265,7 +270,7 @@ module Gitlab
       # eg 'source/full/path' or 'destination_namespace' not 'https://example.com/destination/namespace/path'
       # the regex also allows for an empty string ('') to be accepted as this is allowed in
       # a bulk_import POST request
-      @bulk_import_destination_namespace_path_regex ||= %r/((\A\z)|\A([.]?)[^\W](\/?[.]?[0-9a-z][-_]*)+\z)/i
+      @bulk_import_destination_namespace_path_regex ||= %r/((\A\z)|\A([.]?)\w*([0-9a-z][-_]*)(\/?[.]?[0-9a-z][-_]*)+\z)/i
     end
 
     def bulk_import_source_full_path_regex
@@ -548,11 +553,11 @@ module Gitlab
     end
 
     def issue
-      @issue ||= /(?<issue>\d+)(?<format>\+)?(?=\W|\z)/
+      @issue ||= /(?<issue>\d+)(?<format>\+s{,1})?(?=\W|\z)/
     end
 
     def merge_request
-      @merge_request ||= /(?<merge_request>\d+)(?<format>\+)?/
+      @merge_request ||= /(?<merge_request>\d+)(?<format>\+s{,1})?/
     end
 
     def base64_regex

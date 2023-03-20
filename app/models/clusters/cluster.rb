@@ -14,8 +14,6 @@ module Clusters
     APPLICATIONS = {
       Clusters::Applications::Helm.application_name => Clusters::Applications::Helm,
       Clusters::Applications::Ingress.application_name => Clusters::Applications::Ingress,
-      Clusters::Applications::Crossplane.application_name => Clusters::Applications::Crossplane,
-      Clusters::Applications::Prometheus.application_name => Clusters::Applications::Prometheus,
       Clusters::Applications::Runner.application_name => Clusters::Applications::Runner,
       Clusters::Applications::Jupyter.application_name => Clusters::Applications::Jupyter,
       Clusters::Applications::Knative.application_name => Clusters::Applications::Knative
@@ -56,8 +54,6 @@ module Clusters
 
     has_one_cluster_application :helm
     has_one_cluster_application :ingress
-    has_one_cluster_application :crossplane
-    has_one_cluster_application :prometheus
     has_one_cluster_application :runner
     has_one_cluster_application :jupyter
     has_one_cluster_application :knative
@@ -362,12 +358,6 @@ module Clusters
         instance
       else
         raise NotImplementedError
-      end
-    end
-
-    def serverless_domain
-      strong_memoize(:serverless_domain) do
-        self.application_knative&.serverless_domain_cluster
       end
     end
 

@@ -41,7 +41,9 @@ module Packages
         raise ArgumentError, 'package file without Debian metadata' unless @package_file.debian_file_metadatum
         raise ArgumentError, 'already processed package file' unless @package_file.debian_file_metadatum.unknown?
 
-        return if file_metadata[:file_type] == :deb || file_metadata[:file_type] == :udeb
+        if file_metadata[:file_type] == :deb || file_metadata[:file_type] == :udeb || file_metadata[:file_type] == :ddeb
+          return
+        end
 
         raise ArgumentError, "invalid package file type: #{file_metadata[:file_type]}"
       end

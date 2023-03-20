@@ -5,15 +5,19 @@
 module Projects
   class BlameService
     PER_PAGE = 1000
+    STREAMING_FIRST_PAGE_SIZE = 200
+    STREAMING_PER_PAGE = 2000
 
     def initialize(blob, commit, params)
       @blob = blob
       @commit = commit
-      @page = extract_page(params)
+      @streaming_enabled = streaming_state(params)
       @pagination_enabled = pagination_state(params)
+      @page = extract_page(params)
+      @params = params
     end
 
-    attr_reader :page
+    attr_reader :page, :streaming_enabled
 
     def blame
       Gitlab::Blame.new(blob, commit, range: blame_range)
@@ -28,7 +32,22 @@ module Projects
     end
 
     def per_page
-      PER_PAGE
+      streaming_enabled ? STREAMING_PER_PAGE : PER_PAGE
+    end
+
+    def total_pages
+      total = (blob_lines_count.to_f / per_page).ceil
+      return total unless streaming_enabled
+
+      ([blob_lines_count - STREAMING_FIRST_PAGE_SIZE, 0].max.to_f / per_page).ceil + 1
+    end
+
+    def total_extra_pages
+      [total_pages - 1, 0].max
+    end
+
+    def streaming_possible
+      Feature.enabled?(:blame_page_streaming, commit.project)
     end
 
     private
@@ -36,9 +55,16 @@ module Projects
     attr_reader :blob, :commit, :pagination_enabled
 
     def blame_range
-      return unless pagination_enabled
+      return unless pagination_enabled || streaming_enabled
 
       first_line = (page - 1) * per_page + 1
+
+      if streaming_enabled
+        return 1..STREAMING_FIRST_PAGE_SIZE if page == 1
+
+        first_line = STREAMING_FIRST_PAGE_SIZE + (page - 2) * per_page + 1
+      end
+
       last_line = (first_line + per_page).to_i - 1
 
       first_line..last_line
@@ -52,6 +78,12 @@ module Projects
       page
     end
 
+    def streaming_state(params)
+      return false unless streaming_possible
+
+      Gitlab::Utils.to_boolean(params[:streaming], default: false)
+    end
+
     def pagination_state(params)
       return false if Gitlab::Utils.to_boolean(params[:no_pagination], default: false)
 
@@ -59,7 +91,7 @@ module Projects
     end
 
     def overlimit?(page)
-      page * per_page >= blob_lines_count + per_page
+      page > total_pages
     end
 
     def blob_lines_count

@@ -31,10 +31,6 @@ describe('JiraIssuesFields', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findEnableCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findEnableCheckboxDisabled = () =>
     findEnableCheckbox().find('[type=checkbox]').attributes('disabled');

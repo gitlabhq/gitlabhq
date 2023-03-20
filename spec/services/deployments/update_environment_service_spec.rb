@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Deployments::UpdateEnvironmentService do
+RSpec.describe Deployments::UpdateEnvironmentService, feature_category: :continuous_delivery do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:options) { { name: environment_name } }

@@ -7,7 +7,12 @@ class Explore::GroupsController < Explore::ApplicationController
   urgency :low
 
   def index
-    user = Feature.enabled?(:generic_explore_groups, current_user, type: :experiment) ? nil : current_user
+    # For gitlab.com, including internal visibility groups here causes
+    # a major performance issue: https://gitlab.com/gitlab-org/gitlab/-/issues/358944
+    #
+    # For self-hosted users, not including internal groups here causes
+    # a lack of visibility: https://gitlab.com/gitlab-org/gitlab/-/issues/389041
+    user = Gitlab.com? ? nil : current_user
 
     render_group_tree GroupsFinder.new(user).execute
   end

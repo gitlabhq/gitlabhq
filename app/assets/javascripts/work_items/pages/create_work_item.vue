@@ -74,7 +74,7 @@ export default {
       return sprintfWorkItem(I18N_WORK_ITEM_ERROR_CREATING, workItemType);
     },
     fetchByIid() {
-      return this.glFeatures.useIidInWorkItemsPath;
+      return true;
     },
   },
   methods: {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Milestones::FindOrCreateService do
+RSpec.describe Milestones::FindOrCreateService, feature_category: :team_planning do
   describe '#execute' do
     subject(:service) { described_class.new(project, user, params) }
 

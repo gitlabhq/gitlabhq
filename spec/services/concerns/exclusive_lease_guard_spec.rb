@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ExclusiveLeaseGuard, :clean_gitlab_redis_shared_state do
+RSpec.describe ExclusiveLeaseGuard, :clean_gitlab_redis_shared_state, feature_category: :shared do
   subject :subject_class do
     Class.new do
       include ExclusiveLeaseGuard

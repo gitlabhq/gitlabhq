@@ -12,7 +12,7 @@ module API
       },
       gitlab_ci_ymls: {
         gitlab_version: 8.9,
-        feature_category: :pipeline_authoring,
+        feature_category: :pipeline_composition,
         file_type: 'GitLab CI/CD YAML'
       },
       dockerfiles: {

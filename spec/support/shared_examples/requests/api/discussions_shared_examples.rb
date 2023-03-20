@@ -123,18 +123,6 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
       expect_snowplow_event(category: 'Notes::CreateService', action: 'execute', label: 'note', value: anything)
     end
 
-    context 'with notes_create_service_tracking feature flag disabled' do
-      before do
-        stub_feature_flags(notes_create_service_tracking: false)
-      end
-
-      it 'does not track Notes::CreateService events', :snowplow do
-        post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions"), params: { body: 'hi!' }
-
-        expect_no_snowplow_event(category: 'Notes::CreateService', action: 'execute')
-      end
-    end
-
     context 'when an admin or owner makes the request' do
       it 'accepts the creation date to be set' do
         creation_time = 2.weeks.ago

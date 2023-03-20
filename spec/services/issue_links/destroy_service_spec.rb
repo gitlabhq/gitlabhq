@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IssueLinks::DestroyService do
+RSpec.describe IssueLinks::DestroyService, feature_category: :team_planning do
   describe '#execute' do
     let_it_be(:project) { create(:project_empty_repo, :private) }
     let_it_be(:user) { create(:user) }
@@ -27,7 +27,6 @@ RSpec.describe IssueLinks::DestroyService do
       end
 
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:namespace) { issue_b.namespace }
         let(:category) { described_class.to_s }
         let(:action) { 'incident_management_incident_unrelate' }

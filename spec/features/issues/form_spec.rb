@@ -13,6 +13,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
   let_it_be(:label)     { create(:label, project: project) }
   let_it_be(:label2)    { create(:label, project: project) }
   let_it_be(:issue)     { create(:issue, project: project, assignees: [user], milestone: milestone) }
+  let_it_be(:issue2)    { create(:issue, project: project, assignees: [user], milestone: milestone) }
   let_it_be(:confidential_issue) { create(:issue, project: project, assignees: [user], milestone: milestone, confidential: true) }
 
   let(:current_user) { user }
@@ -477,14 +478,69 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
   end
 
   describe 'inline edit' do
-    before do
-      visit project_issue_path(project, issue)
+    context 'within issue 1' do
+      before do
+        visit project_issue_path(project, issue)
+        wait_for_requests
+      end
+
+      it 'opens inline edit form with shortcut' do
+        find('body').send_keys('e')
+
+        expect(page).to have_selector('.detail-page-description form')
+      end
+
+      describe 'when user has made no changes' do
+        it 'let user leave the page without warnings' do
+          expected_content = 'Issue created'
+          expect(page).to have_content(expected_content)
+
+          find('body').send_keys('e')
+
+          click_link 'Boards'
+
+          expect(page).not_to have_content(expected_content)
+        end
+      end
+
+      describe 'when user has made changes' do
+        it 'shows a warning and can stay on page' do
+          content = 'new issue content'
+
+          find('body').send_keys('e')
+          fill_in 'issue-description', with: content
+
+          click_link 'Boards'
+
+          page.driver.browser.switch_to.alert.dismiss
+
+          click_button 'Save changes'
+          wait_for_requests
+
+          expect(page).to have_content(content)
+        end
+      end
     end
 
-    it 'opens inline edit form with shortcut' do
-      find('body').send_keys('e')
+    context 'within issue 2' do
+      before do
+        visit project_issue_path(project, issue2)
+        wait_for_requests
+      end
 
-      expect(page).to have_selector('.detail-page-description form')
+      describe 'when user has made changes' do
+        it 'shows a warning and can leave page' do
+          content = 'new issue content'
+          find('body').send_keys('e')
+          fill_in 'issue-description', with: content
+
+          click_link 'Boards'
+
+          page.driver.browser.switch_to.alert.accept
+
+          expect(page).not_to have_content(content)
+        end
+      end
     end
   end
 

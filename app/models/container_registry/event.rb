@@ -8,7 +8,7 @@ module ContainerRegistry
     PUSH_ACTION = 'push'
     DELETE_ACTION = 'delete'
     EVENT_TRACKING_CATEGORY = 'container_registry:notification'
-    EVENT_PREFIX = "i_container_registry"
+    EVENT_PREFIX = 'i_container_registry'
 
     ALLOWED_ACTOR_TYPES = %w(
       personal_access_token
@@ -48,8 +48,12 @@ module ContainerRegistry
 
       ::Gitlab::Tracking.event(EVENT_TRACKING_CATEGORY, tracking_action)
 
-      event = usage_data_event_for(tracking_action)
-      ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event, values: originator.id) if event
+      if manifest_delete_event?
+        ::Gitlab::UsageDataCounters::ContainerRegistryEventCounter.count("#{EVENT_PREFIX}_delete_manifest")
+      else
+        event = usage_data_event_for(tracking_action)
+        ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event, values: originator.id) if event
+      end
     end
 
     private
@@ -122,9 +126,13 @@ module ContainerRegistry
       end
     end
 
+    def manifest_delete_event?
+      action_delete? && target_digest?
+    end
+
     def update_project_statistics
       return unless supported?
-      return unless target_tag? || (action_delete? && target_digest?)
+      return unless target_tag? || manifest_delete_event?
       return unless project
 
       Rails.cache.delete(project.root_ancestor.container_repositories_size_cache_key)

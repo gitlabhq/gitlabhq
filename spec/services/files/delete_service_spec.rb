@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Files::DeleteService do
+RSpec.describe Files::DeleteService, feature_category: :source_code_management do
   subject { described_class.new(project, user, commit_params) }
 
   let(:project) { create(:project, :repository) }
@@ -52,8 +52,8 @@ RSpec.describe Files::DeleteService do
   end
 
   describe "#execute" do
-    context "when the file's last commit sha does not match the supplied last_commit_sha" do
-      let(:last_commit_sha) { "foo" }
+    context "when the file's last commit is earlier than the latest commit for this branch" do
+      let(:last_commit_sha) { Gitlab::Git::Commit.last_for_path(project.repository, project.default_branch, file_path).parent_id }
 
       it "returns a hash with the correct error message and a :error status" do
         expect { subject.execute }

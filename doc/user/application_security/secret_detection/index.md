@@ -36,8 +36,8 @@ more information, see [Post-processing and revocation](post_processing.md).
 
 All identified secrets are reported in the:
 
-- Merge request widget
-- Pipelines' **Security** tab
+- [Merge request widget](../index.md#view-security-scan-information-in-merge-requests)
+- [Pipeline security report](../vulnerability_report/pipeline.md)
 - [Vulnerability Report](../vulnerability_report/index.md)
 
 ![Secret Detection in merge request widget](img/secret_detection_v13_2.png)
@@ -141,12 +141,12 @@ To enable Secret Detection, either:
 
 - Enable [Auto DevOps](../../../topics/autodevops/index.md), which includes [Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection).
 
-- [Edit the `.gitlab.ci.yml` file manually](#edit-the-gitlabciyml-file-manually). Use this method if
-  your `.gitlab-ci.yml` file is complex.
+- [Edit the `.gitlab.ci.yml` file manually](#edit-the-gitlab-ciyml-file-manually). Use this method
+  if your `.gitlab-ci.yml` file is complex.
 
 - [Use an automatically configured merge request](#use-an-automatically-configured-merge-request).
 
-### Edit the `.gitlab.ci.yml` file manually
+### Edit the `.gitlab-ci.yml` file manually
 
 This method requires you to manually edit the existing `.gitlab-ci.yml` file. Use this method if
 your GitLab CI/CD configuration file is complex.
@@ -180,12 +180,12 @@ the `.gitlab-ci.yml` file. You then merge the merge request to enable Secret Det
 NOTE:
 This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration
 file. If you have a complex GitLab configuration file it may not be parsed successfully, and an
-error may occur. In that case, use the [manual](#edit-the-gitlabciyml-file-manually) method instead.
+error may occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manually) method instead.
 
-To enable Secret Detection automatically:
+To enable Secret Detection:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. On the left sidebar, select **Security and Compliance > Security configuration**.
 1. In the **Secret Detection** row, select **Configure with a merge request**.
 1. Optional. Complete the fields.
 1. Select **Create merge request**.
@@ -195,12 +195,13 @@ Pipelines now include a Secret Detection job.
 
 ## Responding to a leaked secret
 
-Secrets detected by the analyzer should be immediately rotated.
-[Purging a file from the repository's history](../../project/repository/reducing_the_repo_size_using_git.md#purge-files-from-repository-history)
-may not be effective in removing all references to the file. Additionally, the secret will remain in any existing
-forks or clones of the repository.
+When a secret is detected, you should rotate it immediately. GitLab attempts to
+[automatically revoke](post_processing.md) some types of leaked secrets. For those that are not
+automatically revoked, you must do so manually.
 
-GitLab will attempt to [automatically revoke](post_processing.md) some types of leaked secrets.
+[Purging a secret from the repository's history](../../project/repository/reducing_the_repo_size_using_git.md#purge-files-from-repository-history)
+does not fully address the leak. The original secret remains in any existing forks or
+clones of the repository.
 
 ## Pinning to specific analyzer version
 
@@ -413,18 +414,16 @@ In the following example `secret-detection-ruleset.toml` file, rules are matched
 
 ### Synthesize a custom configuration
 
-To create a custom configuration, you can use passthrough chains. Passthroughs can also be chained
-to build more complex configurations. For more details, see
-[SAST Customize ruleset](../sast/customize_rulesets.md).
+You can use passthroughs to override the default Secret Detection ruleset. The
+following passthrough types are supported by the `secrets` analyzer:
 
-Only the following passthrough types are supported by the `secrets` analyzer:
-
-- `file`
 - `raw`
+- `file`
 
-In the `secret-detection-ruleset.toml` file, do one of the following:
+To define a passthrough, add _one_ of the following to the
+`secret-detection-ruleset.toml` file:
 
-- Define a custom ruleset, for example:
+- Using an inline (`raw`) value:
 
   ```toml
   [secrets]
@@ -442,7 +441,7 @@ In the `secret-detection-ruleset.toml` file, do one of the following:
   """
   ```
 
-- Provide the name of the file containing a custom ruleset, for example:
+- Using an external `file` committed to the current repository:
 
   ```toml
   [secrets]
@@ -453,6 +452,10 @@ In the `secret-detection-ruleset.toml` file, do one of the following:
       target = "gitleaks.toml"
       value = "config/gitleaks.toml"
   ```
+
+For more information on the syntax of passthroughs, see the
+[passthroughs section on the SAST customize rulesets](../sast/customize_rulesets.md#the-analyzerpassthrough-section)
+page.
 
 ## Running Secret Detection in an offline environment **(PREMIUM SELF)**
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::ReleaseAssetLinks::Delete do
+RSpec.describe Mutations::ReleaseAssetLinks::Delete, feature_category: :release_orchestration do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :private, :repository) }
@@ -58,6 +58,18 @@ RSpec.describe Mutations::ReleaseAssetLinks::Delete do
 
         it 'raises an error' do
           expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+        end
+      end
+
+      context 'when destroy process fails' do
+        before do
+          allow_next_instance_of(::Releases::Links::DestroyService) do |service|
+            allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'error'))
+          end
+        end
+
+        it 'returns errors' do
+          expect(resolve).to include(errors: 'error')
         end
       end
     end

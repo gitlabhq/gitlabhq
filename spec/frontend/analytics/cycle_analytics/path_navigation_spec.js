@@ -50,8 +50,6 @@ describe('Project PathNavigation', () => {
 
   afterEach(() => {
     unmockTracking();
-    wrapper.destroy();
-    wrapper = null;
   });
 
   describe('displays correctly', () => {

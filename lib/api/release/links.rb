@@ -65,14 +65,16 @@ module API
             end
             route_setting :authentication, job_token_allowed: true
             post 'links' do
-              authorize! :create_release, release
+              result = ::Releases::Links::CreateService
+                .new(release, current_user, declared_params(include_missing: false))
+                .execute
 
-              new_link = release.links.create(declared_params(include_missing: false))
-
-              if new_link.persisted?
-                present new_link, with: Entities::Releases::Link
+              if result.success?
+                present result.payload[:link], with: Entities::Releases::Link
+              elsif result.reason == ::Releases::Links::REASON_FORBIDDEN
+                forbidden!
               else
-                render_api_error!(new_link.errors.messages, 400)
+                render_api_error!(result.message, 400)
               end
             end
 
@@ -119,12 +121,16 @@ module API
               end
               route_setting :authentication, job_token_allowed: true
               put do
-                authorize! :update_release, release
+                result = ::Releases::Links::UpdateService
+                  .new(release, current_user, declared_params(include_missing: false))
+                  .execute(link)
 
-                if link.update(declared_params(include_missing: false))
-                  present link, with: Entities::Releases::Link
+                if result.success?
+                  present result.payload[:link], with: Entities::Releases::Link
+                elsif result.reason == ::Releases::Links::REASON_FORBIDDEN
+                  forbidden!
                 else
-                  render_api_error!(link.errors.messages, 400)
+                  render_api_error!(result.message, 400)
                 end
               end
 
@@ -139,12 +145,16 @@ module API
               end
               route_setting :authentication, job_token_allowed: true
               delete do
-                authorize! :destroy_release, release
+                result = ::Releases::Links::DestroyService
+                  .new(release, current_user)
+                  .execute(link)
 
-                if link.destroy
-                  present link, with: Entities::Releases::Link
+                if result.success?
+                  present result.payload[:link], with: Entities::Releases::Link
+                elsif result.reason == ::Releases::Links::REASON_FORBIDDEN
+                  forbidden!
                 else
-                  render_api_error!(link.errors.messages, 400)
+                  render_api_error!(result.message, 400)
                 end
               end
             end

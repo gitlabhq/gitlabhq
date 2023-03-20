@@ -607,10 +607,10 @@ Without this configuration, the Azure storage driver uses `//` instead of `/` as
 registry['storage'] = {
   'azure' => {
     'accountname' => 'accountname',
-    'accesskey' => 'base64encodedaccountkey',
+    'accountkey' => 'base64encodedaccountkey',
     'container' => 'containername',
     'rootdirectory' => '/azure/virtual/container',
-    'trimlegacyrootprefix' => 'true'
+    'trimlegacyrootprefix' => true
   }
 }
 ```
@@ -627,6 +627,8 @@ storage:
     trimlegacyrootprefix: true
 ```
 
+By default, Azure Storage Driver uses the `core.windows.net` realm. You can set another value for `realm` in the `azure` section (for example, `core.usgovcloudapi.net` for Azure Government Cloud). For more information, see the [Docker documentation](https://docs.docker.com/registry/storage-drivers/azure/).
+
 ### Disable redirect for storage driver
 
 By default, users accessing a registry configured with a remote backend are redirected to the default backend for the storage driver. For example, registries can be configured using the `s3` storage driver, which redirects requests to a remote S3 bucket to alleviate load on the GitLab server.
@@ -637,20 +639,20 @@ However, this behavior is undesirable for registries used by internal hosts that
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    registry['storage'] = {
-      's3' => {
-        'accesskey' => 's3-access-key',
-        'secretkey' => 's3-secret-key-for-access-key',
-        'bucket' => 'your-s3-bucket',
-        'region' => 'your-s3-region',
-        'regionendpoint' => 'your-s3-regionendpoint'
-      },
-      'redirect' => {
-        'disable' => true
-      }
-    }
-    ```
+   ```ruby
+   registry['storage'] = {
+     's3' => {
+       'accesskey' => 's3-access-key',
+       'secretkey' => 's3-secret-key-for-access-key',
+       'bucket' => 'your-s3-bucket',
+       'region' => 'your-s3-region',
+       'regionendpoint' => 'your-s3-regionendpoint'
+     },
+     'redirect' => {
+       'disable' => true
+     }
+   }
+   ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
@@ -658,21 +660,21 @@ However, this behavior is undesirable for registries used by internal hosts that
 
 1. Add the `redirect` flag to your registry configuration YAML file:
 
-    ```yaml
-    storage:
-      s3:
-        accesskey: 'AKIAKIAKI'
-        secretkey: 'secret123'
-        bucket: 'gitlab-registry-bucket-AKIAKIAKI'
-        region: 'your-s3-region'
-        regionendpoint: 'your-s3-regionendpoint'
-      redirect:
-        disable: true
-      cache:
-        blobdescriptor: inmemory
-      delete:
-        enabled: true
-    ```
+   ```yaml
+   storage:
+     s3:
+       accesskey: 'AKIAKIAKI'
+       secretkey: 'secret123'
+       bucket: 'gitlab-registry-bucket-AKIAKIAKI'
+       region: 'your-s3-region'
+       regionendpoint: 'your-s3-regionendpoint'
+     redirect:
+       disable: true
+     cache:
+       blobdescriptor: inmemory
+     delete:
+       enabled: true
+   ```
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
@@ -690,18 +692,18 @@ For Omnibus GitLab installations:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    registry['storage'] = {
-      's3' => {
-        'accesskey' => 's3-access-key',
-        'secretkey' => 's3-secret-key-for-access-key',
-        'bucket' => 'your-s3-bucket',
-        'region' => 'your-s3-region',
-        'regionendpoint' => 'your-s3-regionendpoint',
-        'encrypt' => true
-      }
-    }
-    ```
+   ```ruby
+   registry['storage'] = {
+     's3' => {
+       'accesskey' => 's3-access-key',
+       'secretkey' => 's3-secret-key-for-access-key',
+       'bucket' => 'your-s3-bucket',
+       'region' => 'your-s3-region',
+       'regionendpoint' => 'your-s3-regionendpoint',
+       'encrypt' => true
+     }
+   }
+   ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
    for the changes to take effect.
@@ -710,16 +712,16 @@ For installations from source:
 
 1. Edit your registry configuration YAML file:
 
-    ```yaml
-    storage:
-      s3:
-        accesskey: 'AKIAKIAKI'
-        secretkey: 'secret123'
-        bucket: 'gitlab-registry-bucket-AKIAKIAKI'
-        region: 'your-s3-region'
-        regionendpoint: 'your-s3-regionendpoint'
-        encrypt: true
-    ```
+   ```yaml
+   storage:
+     s3:
+       accesskey: 'AKIAKIAKI'
+       secretkey: 'secret123'
+       bucket: 'gitlab-registry-bucket-AKIAKIAKI'
+       region: 'your-s3-region'
+       regionendpoint: 'your-s3-regionendpoint'
+       encrypt: true
+   ```
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source)
    for the changes to take effect.

@@ -10,6 +10,7 @@ module QA
       include Support::API
       include Errors
 
+      attr_reader :api_fabrication_http_method
       attr_writer :api_client
       attr_accessor :api_user, :api_resource, :api_response
 
@@ -49,22 +50,6 @@ module QA
         end
       end
 
-      def api_put(body = api_put_body)
-        response = put(
-          Runtime::API::Request.new(api_client, api_put_path).url,
-          body)
-
-        unless response.code == HTTP_STATUS_OK
-          raise ResourceFabricationFailedError, "Updating #{self.class.name} using the API failed (#{response.code}) with `#{response}`.\n#{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}"
-        end
-
-        process_api_response(parse_body(response))
-      end
-
-      def api_fabrication_http_method
-        @api_fabrication_http_method ||= :post
-      end
-
       # Checks if a resource already exists
       #
       # @return [Boolean] true if the resource returns HTTP status code 200
@@ -84,14 +69,15 @@ module QA
 
       private
 
-      def resource_web_url(resource)
-        resource.fetch(:web_url) do
-          raise ResourceURLMissingError, "API resource for #{self.class.name} does not expose a `web_url` property: `#{resource}`."
-        end
-      end
-
+      # rubocop:disable Gitlab/ModuleWithInstanceVariables
       def api_get
-        process_api_response(parse_body(api_get_from(api_get_path)))
+        process_api_response(parse_body(api_get_from(api_get_path))).tap do
+          # Record method that was used to create certain resource
+          #  :get - resource already existed in GitLab instance and was fetched via get request
+          #  :post - resource was created from scratch using post request
+          #  :put - resource was created from scratch using put request
+          @api_fabrication_http_method ||= :get
+        end
       end
 
       def api_get_from(get_path)
@@ -100,27 +86,24 @@ module QA
         response = get(request.url)
 
         if response.code == HTTP_STATUS_SERVER_ERROR
-          raise InternalServerError, "Failed to GET #{request.mask_url} - (#{response.code}): `#{response}`.\n#{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}"
+          raise(InternalServerError, <<~MSG.strip)
+            Failed to GET #{request.mask_url} - (#{response.code}): `#{response}`.
+            #{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}
+          MSG
         elsif response.code != HTTP_STATUS_OK
-          raise ResourceNotFoundError, "Resource at #{request.mask_url} could not be found (#{response.code}): `#{response}`.\n#{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}"
+          raise(ResourceNotFoundError, <<~MSG.strip)
+            Resource at #{request.mask_url} could not be found (#{response.code}): `#{response}`.
+            #{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}
+          MSG
         end
-
-        @api_fabrication_http_method ||= :get # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
         response
       end
 
-      # Query parameters formatted as `?key1=value1&key2=value2...`
-      #
-      # @return [String]
-      def query_parameters_to_string
-        query_parameters.each_with_object([]) do |(k, v), arr|
-          arr << "#{k}=#{v}"
-        end.join('&').prepend('?').chomp('?') # prepend `?` unless the string is blank
-      end
-
       def api_post
-        process_api_response(api_post_to(api_post_path, api_post_body))
+        process_api_response(api_post_to(api_post_path, api_post_body)).tap do
+          @api_fabrication_http_method ||= :post
+        end
       end
 
       def api_post_to(post_path, post_body, args = {})
@@ -131,7 +114,7 @@ module QA
           body = flatten_hash(parse_body(graphql_response))
 
           unless graphql_response.code == HTTP_STATUS_OK && (body[:errors].nil? || body[:errors].empty?)
-            raise(ResourceFabricationFailedError, <<~MSG)
+            raise(ResourceFabricationFailedError, <<~MSG.strip)
               Fabrication of #{self.class.name} using the API failed (#{graphql_response.code}) with `#{graphql_response}`.
               #{QA::Support::Loglinking.failure_metadata(graphql_response.headers[:x_request_id])}
             MSG
@@ -144,20 +127,33 @@ module QA
           response = post(Runtime::API::Request.new(api_client, post_path).url, post_body, args)
 
           unless response.code == HTTP_STATUS_CREATED
-            raise(
-              ResourceFabricationFailedError,
-              "Fabrication of #{self.class.name} using the API failed (#{response.code}) with `#{response}`.\n#{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}"
-            )
+            raise(ResourceFabricationFailedError, <<~MSG.strip)
+              Fabrication of #{self.class.name} using the API failed (#{response.code}) with `#{response}`.
+              #{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}
+            MSG
           end
 
           parse_body(response)
         end
       end
 
-      def flatten_hash(param)
-        param.each_pair.reduce({}) do |a, (k, v)|
-          v.is_a?(Hash) ? a.merge(flatten_hash(v)) : a.merge(k.to_sym => v)
+      def api_put
+        process_api_response(api_put_to(api_put_path, api_put_body)).tap do
+          @api_fabrication_http_method ||= :put
         end
+      end
+
+      def api_put_to(put_path, body)
+        response = put(Runtime::API::Request.new(api_client, put_path).url, body)
+
+        unless response.code == HTTP_STATUS_OK
+          raise(ResourceFabricationFailedError, <<~MSG.strip)
+            Updating #{self.class.name} using the API failed (#{response.code}) with `#{response}`.
+            #{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}
+          MSG
+        end
+
+        parse_body(response)
       end
 
       def api_delete
@@ -165,15 +161,30 @@ module QA
         response = delete(request.url)
 
         unless [HTTP_STATUS_NO_CONTENT, HTTP_STATUS_ACCEPTED].include? response.code
-          raise ResourceNotDeletedError, "Resource at #{request.mask_url} could not be deleted (#{response.code}): `#{response}`.\n#{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}"
+          raise(ResourceNotDeletedError, <<~MSG.strip)
+            Resource at #{request.mask_url} could not be deleted (#{response.code}): `#{response}`.
+            #{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}
+          MSG
         end
 
         response
       end
 
-      def api_client
-        @api_client ||= Runtime::API::Client.new(:gitlab, is_new_session: !current_url.start_with?('http'), user: api_user)
+      def resource_web_url(resource)
+        resource.fetch(:web_url) do
+          raise ResourceURLMissingError,
+            "API resource for #{self.class.name} does not expose a `web_url` property: `#{resource}`."
+        end
       end
+
+      def api_client
+        @api_client ||= Runtime::API::Client.new(
+          :gitlab,
+          is_new_session: !current_url.start_with?('http'),
+          user: api_user
+        )
+      end
+      # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
       def process_api_response(parsed_response)
         self.api_response = parsed_response
@@ -190,6 +201,21 @@ module QA
       # @return [String]
       def request_url(path, **opts)
         Runtime::API::Request.new(api_client, path, **opts).url
+      end
+
+      # Query parameters formatted as `?key1=value1&key2=value2...`
+      #
+      # @return [String]
+      def query_parameters_to_string
+        query_parameters.each_with_object([]) do |(k, v), arr|
+          arr << "#{k}=#{v}"
+        end.join('&').prepend('?').chomp('?') # prepend `?` unless the string is blank
+      end
+
+      def flatten_hash(param)
+        param.each_pair.reduce({}) do |a, (k, v)|
+          v.is_a?(Hash) ? a.merge(flatten_hash(v)) : a.merge(k.to_sym => v)
+        end
       end
     end
   end

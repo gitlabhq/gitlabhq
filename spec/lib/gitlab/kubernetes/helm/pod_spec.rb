@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Kubernetes::Helm::Pod do
 
     with_them do
       let(:cluster) { create(:cluster, helm_major_version: helm_major_version) }
-      let(:app) { create(:clusters_applications_prometheus, cluster: cluster) }
+      let(:app) { create(:clusters_applications_knative, cluster: cluster) }
       let(:command) { app.install_command }
       let(:namespace) { Gitlab::Kubernetes::Helm::NAMESPACE }
       let(:service_account_name) { nil }

@@ -52,9 +52,7 @@ module QA
       shared_examples 'displaying details on index page' do |snippet_type, testcase|
         it "shows correct details of #{snippet_type} including file number", testcase: testcase do
           send(snippet_type)
-          Page::Main::Menu.perform do |menu|
-            menu.go_to_menu_dropdown_option(:snippets_link)
-          end
+          Page::Main::Menu.perform(&:go_to_snippets)
 
           Page::Dashboard::Snippet::Index.perform do |snippet|
             aggregate_failures 'file content verification' do

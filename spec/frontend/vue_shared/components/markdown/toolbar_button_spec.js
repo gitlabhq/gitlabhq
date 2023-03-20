@@ -20,11 +20,6 @@ describe('toolbar_button', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const getButtonShortcutsAttr = () => {
     return wrapper.findComponent(GlButton).attributes('data-md-shortcuts');
   };

@@ -12,10 +12,6 @@ describe('WalkthroughPopover component', () => {
     return extendedWrapper(mountFn(WalkthroughPopover));
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('CTA button clicked', () => {
     beforeEach(async () => {
       wrapper = createComponent(mount);

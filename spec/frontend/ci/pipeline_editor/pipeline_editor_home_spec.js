@@ -67,7 +67,6 @@ describe('Pipeline editor home wrapper', () => {
 
   afterEach(() => {
     localStorage.clear();
-    wrapper.destroy();
   });
 
   describe('renders', () => {

@@ -13,6 +13,9 @@ import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_sta
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
 import '~/sourcegraph/load';
 import createStore from '~/code_navigation/store';
+import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
+import RefSelector from '~/ref/components/ref_selector.vue';
+import { visitUrl } from '~/lib/utils/url_utility';
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
@@ -25,6 +28,33 @@ const apolloProvider = new VueApollo({
 const router = new VueRouter({ mode: 'history' });
 
 const viewBlobEl = document.querySelector('#js-view-blob-app');
+
+const initRefSwitcher = () => {
+  const refSwitcherEl = document.getElementById('js-tree-ref-switcher');
+
+  if (!refSwitcherEl) return false;
+
+  const { projectId, projectRootPath, ref } = refSwitcherEl.dataset;
+
+  return new Vue({
+    el: refSwitcherEl,
+    render(createElement) {
+      return createElement(RefSelector, {
+        props: {
+          projectId,
+          value: ref,
+        },
+        on: {
+          input(selectedRef) {
+            visitUrl(generateRefDestinationPath(projectRootPath, ref, selectedRef));
+          },
+        },
+      });
+    },
+  });
+};
+
+initRefSwitcher();
 
 if (viewBlobEl) {
   const { blobPath, projectPath, targetBranch, originalBranch } = viewBlobEl.dataset;

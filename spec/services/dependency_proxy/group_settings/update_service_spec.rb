@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::DependencyProxy::GroupSettings::UpdateService do
+RSpec.describe ::DependencyProxy::GroupSettings::UpdateService, feature_category: :dependency_proxy do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_reload(:group) { create(:group) }

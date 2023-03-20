@@ -1,7 +1,7 @@
 <script>
 import { GlDropdownForm, GlDropdownItem, GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import { workspaceLabelsQueries } from '../../../constants';

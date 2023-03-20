@@ -45,8 +45,10 @@ export default {
 </script>
 
 <template>
-  <div class="disabled-comment text-center">
-    <span class="issuable-note-warning gl-display-inline-block">
+  <div class="disabled-comment gl-text-center gl-relative gl-mt-3">
+    <span
+      class="issuable-note-warning gl-display-inline-block gl-w-full gl-px-5 gl-py-4 gl-rounded-base"
+    >
       <gl-icon name="lock" class="gl-mr-2" />
       <template v-if="isProjectArchived">
         {{ $options.constantOptions.projectArchivedWarning }}

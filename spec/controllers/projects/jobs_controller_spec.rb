@@ -106,9 +106,10 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       def create_job(name, status)
         user = create(:user)
         pipeline = create(:ci_pipeline, project: project, user: user)
-        create(:ci_build, :tags, :triggered, :artifacts,
-               pipeline: pipeline, name: name, status: status,
-               user: user)
+        create(
+          :ci_build, :tags, :triggered, :artifacts,
+          pipeline: pipeline, name: name, status: status, user: user
+        )
       end
     end
 
@@ -832,8 +833,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
           retried_build = Ci::Build.last
 
           Ci::Build.clone_accessors.each do |accessor|
-            expect(job.read_attribute(accessor))
-              .to eq(retried_build.read_attribute(accessor)),
+            expect(job.read_attribute(accessor)).to eq(retried_build.read_attribute(accessor)),
               "Mismatched attribute on \"#{accessor}\". " \
               "It was \"#{job.read_attribute(accessor)}\" but changed to \"#{retried_build.read_attribute(accessor)}\""
           end
@@ -855,10 +855,10 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
     def post_retry
       post :retry, params: {
-                     namespace_id: project.namespace,
-                     project_id: project,
-                     id: job.id
-                   }
+        namespace_id: project.namespace,
+        project_id: project,
+        id: job.id
+      }
     end
   end
 
@@ -869,8 +869,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     before do
       project.add_developer(user)
 
-      create(:protected_branch, :developers_can_merge,
-             name: 'protected-branch', project: project)
+      create(:protected_branch, :developers_can_merge, name: 'protected-branch', project: project)
 
       sign_in(user)
     end

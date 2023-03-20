@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 # Test an operation that triggers background jobs requiring administrative rights
-RSpec.describe 'Admin mode for workers', :request_store, feature_category: :authentication_and_authorization do
+RSpec.describe 'Admin mode for workers', :request_store, feature_category: :system_access do
   include Spec::Support::Helpers::Features::AdminUsersHelpers
 
   let(:user) { create(:user) }

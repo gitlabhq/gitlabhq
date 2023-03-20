@@ -74,7 +74,7 @@ Prerequisites:
 
 To create a new issue board:
 
-1. Select the dropdown list with the current board name in the upper left corner of the issue boards page.
+1. In the upper-left corner of the issue board page, select the dropdown list with the current board name.
 1. Select **Create new board**.
 1. Enter the new board's name and select its scope: milestone, labels, assignee, or weight.
 
@@ -86,7 +86,7 @@ Prerequisites:
 
 To delete the currently active issue board:
 
-1. Select the dropdown list with the current board name in the upper left corner of the issue boards page.
+1. In the upper-left corner of the issue board page, select the dropdown list with the current board name.
 1. Select **Delete board**.
 1. Select **Delete** to confirm.
 
@@ -394,11 +394,11 @@ You can also [drag issues](#move-issues-and-lists) to change their position and 
 
 ![Drag issues between swimlanes](img/epics_swimlanes_drag_and_drop.png)
 
-## Work In Progress limits **(PREMIUM)**
+## Work in progress limits **(PREMIUM)**
 
 > Moved to GitLab Premium in 13.9.
 
-You can set a Work In Progress (WIP) limit for each issue list on an issue board. When a limit is
+You can set a work in progress (WIP) limit for each issue list on an issue board. When a limit is
 set, the list's header shows the number of issues in the list and the soft limit of issues.
 You cannot set a WIP limit on the default lists (**Open** and **Closed**).
 
@@ -413,11 +413,11 @@ Prerequisites:
 
 - You must have at least the Reporter role for the project.
 
-To set a WIP limit for a list:
+To set a WIP limit for a list, in an issue board:
 
-1. Navigate to a Project or Group board of which you're a member.
-1. Select the settings icon in a list's header.
-1. Next to **Work In Progress Limit**, select **Edit**.
+1. On the top of the list you want to edit, select **List actions** (**{ellipsis_v}**) **> Edit list settings**.
+   The list settings sidebar opens on the right.
+1. Next to **Work in progress limit**, select **Edit**.
 1. Enter the maximum number of issues.
 1. Press <kbd>Enter</kbd> to save.
 
@@ -475,7 +475,7 @@ Additionally, you can also see the time tracking value.
 
 ### Create a new list
 
-Create a new list by selecting the **Create** button in the upper right corner of the issue board.
+To create a new list, in the upper-right corner of the issue board, select **Create**.
 
 ![creating a new list in an issue board](img/issue_board_add_list_v14_1.png)
 
@@ -493,10 +493,10 @@ Prerequisites:
 
 To remove a list from an issue board:
 
-1. On the top of the list you want to remove, select the **List settings** icon (**{settings}**).
+1. On the top of the list you want to remove, select **List actions** (**{ellipsis_v}**).
    The list settings sidebar opens on the right.
 1. Select **Remove list**. A confirmation dialog appears.
-1. Select **OK**.
+1. Select **Remove list** again.
 
 ### Add issues to a list
 

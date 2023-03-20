@@ -13,7 +13,7 @@ module Ci
     STOPPED_STATUSES = COMPLETED_STATUSES + BLOCKED_STATUS
     ORDERED_STATUSES = %w[failed preparing pending running waiting_for_resource manual scheduled canceled success skipped created].freeze
     PASSED_WITH_WARNINGS_STATUSES = %w[failed canceled].to_set.freeze
-    EXCLUDE_IGNORED_STATUSES = %w[manual failed canceled].to_set.freeze
+    IGNORED_STATUSES = %w[manual].to_set.freeze
     ALIVE_STATUSES = (ACTIVE_STATUSES + ['created']).freeze
     CANCELABLE_STATUSES = (ALIVE_STATUSES + ['scheduled']).freeze
     STATUSES_ENUM = { created: 0, pending: 1, running: 2, success: 3,
@@ -23,6 +23,7 @@ module Ci
     UnknownStatusError = Class.new(StandardError)
 
     class_methods do
+      # This will be removed with ci_remove_ensure_stage_service
       def composite_status
         Gitlab::Ci::Status::Composite
           .new(all, with_allow_failure: columns_hash.key?('allow_failure'))

@@ -415,7 +415,7 @@ FactoryBot.define do
       runner factory: :ci_runner
 
       after(:create) do |build|
-        build.create_runtime_metadata!
+        ::Ci::RunningBuild.upsert_shared_runner_build!(build)
       end
     end
 
@@ -694,10 +694,18 @@ FactoryBot.define do
       end
     end
 
-    trait :non_public_artifacts do
+    trait :with_private_artifacts_config do
       options do
         {
           artifacts: { public: false }
+        }
+      end
+    end
+
+    trait :with_public_artifacts_config do
+      options do
+        {
+          artifacts: { public: true }
         }
       end
     end

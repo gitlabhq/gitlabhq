@@ -5,10 +5,10 @@ import {
   getUtcShiftedDate,
   getPreviousEventTags,
 } from '~/issues/show/components/incidents/utils';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { mockTimelineEventTags } from './mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('incident utils', () => {
   describe('display and log error', () => {

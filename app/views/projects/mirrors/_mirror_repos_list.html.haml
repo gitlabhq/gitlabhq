@@ -3,11 +3,11 @@
 .panel.panel-default
   .table-responsive
     - if !@project.mirror? && @project.remote_mirrors.count == 0
-      .gl-card.gl-mt-5
-        .gl-card-header
+      = render Pajamas::CardComponent.new(card_options: { class: 'gl-mt-5' }) do |c|
+        - c.header do
           %strong
             = _('Mirrored repositories') + ' (0)'
-        .gl-card-body
+        - c.body do
           = _('There are currently no mirrored repositories.')
     - else
       %table.table.push-pull-table

@@ -42,10 +42,6 @@ describe('Jobs Table Tabs', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays All tab with count', () => {
     expect(trimText(findAllTab().text())).toBe(`All ${defaultProps.allJobsCount}`);
   });

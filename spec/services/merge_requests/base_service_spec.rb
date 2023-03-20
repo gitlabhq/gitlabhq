@@ -123,4 +123,8 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
       end
     end
   end
+
+  describe '#constructor_container_arg' do
+    it { expect(described_class.constructor_container_arg("some-value")).to eq({ project: "some-value" }) }
+  end
 end

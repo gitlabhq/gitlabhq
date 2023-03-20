@@ -42,11 +42,6 @@ describe('UsersChart', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findLoader = () => wrapper.findComponent(ChartSkeletonLoader);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findChart = () => wrapper.findComponent(GlAreaChart);

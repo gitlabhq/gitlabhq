@@ -16,17 +16,13 @@ describe('RunnerOwnerCell', () => {
   const createComponent = ({ runner } = {}) => {
     wrapper = shallowMount(RunnerOwnerCell, {
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       propsData: {
         runner,
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('When its an instance runner', () => {
     beforeEach(() => {

@@ -36,7 +36,9 @@ RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
   end
 
   describe "PUT /application/appearance" do
-    it_behaves_like 'PUT request permissions for admin mode', { title: "Test" }
+    it_behaves_like 'PUT request permissions for admin mode' do
+      let(:params) { { title: "Test" } }
+    end
 
     context 'as an admin user' do
       context "instance basics" do

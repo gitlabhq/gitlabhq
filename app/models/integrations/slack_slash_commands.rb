@@ -4,6 +4,12 @@ module Integrations
   class SlackSlashCommands < BaseSlashCommands
     include Ci::TriggersHelper
 
+    field :token,
+      type: 'password',
+      non_empty_password_title: -> { s_('ProjectService|Enter new token') },
+      non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },
+      placeholder: ''
+
     def title
       'Slack slash commands'
     end
@@ -21,10 +27,6 @@ module Integrations
       super.tap do |result|
         result[:text] = format(result[:text]) if result.is_a?(Hash)
       end
-    end
-
-    def chat_responder
-      ::Gitlab::Chat::Responder::Slack
     end
 
     private

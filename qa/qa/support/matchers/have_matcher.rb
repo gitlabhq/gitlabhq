@@ -25,6 +25,9 @@ module QA
           tag
           label
           variable
+          system_note
+          alert_with_title
+          incident
         ].each do |predicate|
           RSpec::Matchers.define "have_#{predicate}" do |*args, **kwargs|
             match do |page_object|

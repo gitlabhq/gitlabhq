@@ -20,6 +20,8 @@ module API
       end
 
       def authorize_push_to_branch!(branch)
+        authenticate!
+
         unless user_access.can_push_to_branch?(branch)
           forbidden!("You are not allowed to push into this branch")
         end
@@ -76,6 +78,10 @@ module API
                  type: String,
                  desc: 'The file path',
                  documentation: { example: 'README.md' }
+        optional :author,
+                 type: String,
+                 desc: 'Search commits by commit author',
+                 documentation: { example: 'John Smith' }
         optional :all, type: Boolean, desc: 'Every commit will be returned'
         optional :with_stats, type: Boolean, desc: 'Stats about each commit will be added to the response'
         optional :first_parent, type: Boolean, desc: 'Only include the first parent of merges'
@@ -99,6 +105,7 @@ module API
         with_stats = params[:with_stats]
         first_parent = params[:first_parent]
         order = params[:order]
+        author = params[:author]
 
         commits = user_project.repository.commits(ref,
                                                   path: path,
@@ -109,6 +116,7 @@ module API
                                                   all: all,
                                                   first_parent: first_parent,
                                                   order: order,
+                                                  author: author,
                                                   trailers: params[:trailers])
 
         serializer = with_stats ? Entities::CommitWithStats : Entities::Commit
@@ -127,6 +135,8 @@ module API
         tags %w[commits]
         failure [
           { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
           { code: 404, message: 'Not found' }
         ]
         detail 'This feature was introduced in GitLab 8.13'

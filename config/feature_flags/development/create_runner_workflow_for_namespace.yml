@@ -1,0 +1,8 @@
+---
+name: create_runner_workflow_for_namespace
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113535
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/393919
+milestone: '15.10'
+type: development
+group: group::runner
+default_enabled: false

@@ -19,7 +19,7 @@ class Import::FogbugzController < Import::BaseController
       # If the URI is invalid various errors can occur
       return redirect_to new_import_fogbugz_path(namespace_id: params[:namespace_id]), alert: _('Could not connect to FogBugz, check your URL')
     end
-    session[:fogbugz_token] = res.get_token
+    session[:fogbugz_token] = res.get_token.to_s
     session[:fogbugz_uri] = params[:uri]
 
     redirect_to new_user_map_import_fogbugz_path(namespace_id: params[:namespace_id])

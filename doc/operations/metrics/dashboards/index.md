@@ -4,7 +4,7 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Custom dashboards (DEPRECATED) **(FREE)**
+# Custom dashboards (deprecated) **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/59974) in GitLab 12.1.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541) in GitLab 14.7.
@@ -124,9 +124,9 @@ can manage [the settings](settings.md) for your metrics dashboard.
 
 ## Chart Context Menu
 
-You can take action related to a chart's data by selecting the
-**{ellipsis_v}** **More actions** dropdown list above the upper right corner of
-any chart on a dashboard:
+To take action related to a chart's data:
+
+- In the upper-right corner of the chart, select **More actions** (**{ellipsis_v}**).
 
 ![Context Menu](img/panel_context_menu_v14_0.png)
 

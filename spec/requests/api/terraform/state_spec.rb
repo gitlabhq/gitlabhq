@@ -21,6 +21,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
 
   before do
     stub_terraform_state_object_storage
+    stub_config(terraform_state: { enabled: true })
   end
 
   shared_examples 'endpoint with unique user tracking' do
@@ -51,7 +52,6 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
         subject(:api_request) { request }
 
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:category) { described_class.name }
         let(:action) { 'terraform_state_api_request' }
         let(:label) { 'redis_hll_counters.terraform.p_terraform_state_api_unique_users_monthly' }
@@ -82,6 +82,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
     subject(:request) { get api(state_path), headers: auth_header }
 
     it_behaves_like 'endpoint with unique user tracking'
+    it_behaves_like 'it depends on value of the `terraform_state.enabled` config'
 
     context 'without authentication' do
       let(:auth_header) { basic_auth_header('bad', 'token') }
@@ -194,6 +195,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
     subject(:request) { post api(state_path), headers: auth_header, as: :json, params: params }
 
     it_behaves_like 'endpoint with unique user tracking'
+    it_behaves_like 'it depends on value of the `terraform_state.enabled` config'
 
     context 'when terraform state with a given name is already present' do
       context 'with maintainer permissions' do
@@ -372,6 +374,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
     subject(:request) { delete api(state_path), headers: auth_header }
 
     it_behaves_like 'endpoint with unique user tracking'
+    it_behaves_like 'it depends on value of the `terraform_state.enabled` config'
 
     shared_examples 'schedules the state for deletion' do
       it 'returns empty body' do
@@ -551,6 +554,10 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
 
     it_behaves_like 'cannot access a state that is scheduled for deletion' do
       let(:lock_id) { 'irrelevant to this test, just needs to be present' }
+    end
+
+    it_behaves_like 'it depends on value of the `terraform_state.enabled` config' do
+      let(:lock_id) { '123.456' }
     end
 
     where(given_state_name: %w[test-state test.state test%2Ffoo])

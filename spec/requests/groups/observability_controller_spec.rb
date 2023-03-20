@@ -26,7 +26,7 @@ RSpec.describe Groups::ObservabilityController, feature_category: :tracing do
       end
     end
 
-    context 'when user is not a developer' do
+    context 'when user is a guest' do
       before do
         sign_in(user)
       end
@@ -36,10 +36,10 @@ RSpec.describe Groups::ObservabilityController, feature_category: :tracing do
       end
     end
 
-    context 'when user is authenticated and a developer' do
+    context 'when user has the correct permissions' do
       before do
         sign_in(user)
-        group.add_developer(user)
+        set_permissions
       end
 
       context 'when observability url is missing' do
@@ -75,13 +75,21 @@ RSpec.describe Groups::ObservabilityController, feature_category: :tracing do
     let(:path) { group_observability_explore_path(group) }
     let(:expected_observability_path) { "#{observability_url}/-/#{group.id}/explore" }
 
-    it_behaves_like 'observability route request'
+    it_behaves_like 'observability route request' do
+      let(:set_permissions) do
+        group.add_developer(user)
+      end
+    end
   end
 
   describe 'GET #datasources' do
     let(:path) { group_observability_datasources_path(group) }
     let(:expected_observability_path) { "#{observability_url}/-/#{group.id}/datasources" }
 
-    it_behaves_like 'observability route request'
+    it_behaves_like 'observability route request' do
+      let(:set_permissions) do
+        group.add_maintainer(user)
+      end
+    end
   end
 end

@@ -19,10 +19,6 @@ describe('DependencyRow', () => {
   const dependencyVersion = () => wrapper.findByTestId('version-pattern');
   const dependencyFramework = () => wrapper.findByTestId('target-framework');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('renders', () => {
     it('full dependency', () => {
       createComponent();

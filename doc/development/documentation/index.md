@@ -107,8 +107,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 ```
 
-If you need help determining the correct stage, read [Ask for help](workflow.md#ask-for-help).
-
 ### Redirection metadata
 
 The following metadata should be added when a page is moved to another location:
@@ -157,19 +155,15 @@ You can use a Rake task to update the `CODEOWNERS` file.
 
 #### Update the `CODEOWNERS` file
 
-To update the `CODEOWNERS` file:
+When groups or [TW assignments](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments)
+change, you must update the `CODEOWNERS` file:
 
-1. Review the [TW team assignments](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments)
-   in the [`codeowners.rake`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/tasks/gitlab/tw/codeowners.rake)
-   file. If any assignments have changed:
-   1. Update the `codeowners.rake` file with the changes.
-   1. Assign the merge request to a technical writing manager for review and merge.
-1. After the changes to `codeowners.rake` are merged, go to the root of the `gitlab` repository.
+1. Update the [stage and group metadata](#stage-and-group-metadata) for any affected doc pages, if necessary. If there are many changes, you can do this step in a separate MR.
+1. Update the [`codeowners.rake`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/tasks/gitlab/tw/codeowners.rake) file with the changes.
+1. Go to the root of the `gitlab` repository.
 1. Run the Rake task with this command: `bundle exec rake tw:codeowners`
-1. Review the command output for any pages that need attention to
-   their metadata. Handle any needed changes in a separate merge request.
-1. Add the changes to the CODEOWNERS file to Git: `git add .gitlab/CODEOWNERS`
-1. Commit your changes to your branch, and push your branch up to `origin`.
+1. Review the changes in the `CODEOWNERS` file.
+1. Add and commit all your changes and push your branch up to `origin`.
 1. Create a merge request and assign it to a technical writing manager for review.
 
 ## Move, rename, or delete a page

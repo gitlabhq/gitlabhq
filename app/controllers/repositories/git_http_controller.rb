@@ -8,6 +8,7 @@ module Repositories
     prepend_before_action :deny_head_requests, only: [:info_refs]
 
     rescue_from Gitlab::GitAccess::ForbiddenError, with: :render_403_with_exception
+    rescue_from JWT::DecodeError, with: :render_403_with_exception
     rescue_from Gitlab::GitAccess::NotFoundError, with: :render_404_with_exception
     rescue_from Gitlab::GitAccessProject::CreationError, with: :render_422_with_exception
     rescue_from Gitlab::GitAccess::TimeoutError, with: :render_503_with_exception
@@ -19,6 +20,7 @@ module Repositories
     # GET /foo/bar.git/info/refs?service=git-receive-pack (git push)
     def info_refs
       log_user_activity if upload_pack?
+      log_user_activity if receive_pack? && Feature.enabled?(:log_user_git_push_activity)
 
       render_ok
     end
@@ -47,6 +49,10 @@ module Repositories
 
     def upload_pack?
       git_command == 'git-upload-pack'
+    end
+
+    def receive_pack?
+      git_command == 'git-receive-pack'
     end
 
     def git_command

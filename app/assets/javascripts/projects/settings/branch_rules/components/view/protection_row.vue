@@ -101,12 +101,7 @@ export default {
 
       <div v-if="statusCheckUrl" class="gl-ml-7 gl-flex-grow-1">{{ statusCheckUrl }}</div>
 
-      <div
-        v-for="(item, index) in accessLevels"
-        :key="index"
-        data-testid="access-level"
-        class="gl-w-quarter"
-      >
+      <div v-for="(item, index) in accessLevels" :key="index" data-testid="access-level">
         <span v-if="commaSeparateList && index > 0" data-testid="comma-separator">,</span>
         {{ item.accessLevelDescription }}
       </div>

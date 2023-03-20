@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PipelineHooksWorker do
+RSpec.describe PipelineHooksWorker, feature_category: :continuous_integration do
   describe '#perform' do
     context 'when pipeline exists' do
       let(:pipeline) { create(:ci_pipeline) }

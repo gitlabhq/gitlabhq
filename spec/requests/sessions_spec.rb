@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Sessions', feature_category: :authentication_and_authorization do
+RSpec.describe 'Sessions', feature_category: :system_access do
   context 'authentication', :allow_forgery_protection do
     let(:user) { create(:user) }
 

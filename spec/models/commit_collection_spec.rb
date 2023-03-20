@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CommitCollection do
+RSpec.describe CommitCollection, feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
   let(:commit) { project.commit("c1c67abbaf91f624347bb3ae96eabe3a1b742478") }
 
@@ -188,6 +188,19 @@ RSpec.describe CommitCollection do
 
         expect(collection.commits).to contain_exactly(hash_commit)
       end
+    end
+  end
+
+  describe '#load_tags' do
+    let(:gitaly_commit_with_tags) { project.commit('5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
+    let(:collection) { described_class.new(project, [gitaly_commit_with_tags]) }
+
+    subject { collection.load_tags }
+
+    it 'loads tags' do
+      subject
+
+      expect(collection.commits[0].referenced_by).to contain_exactly('refs/tags/v1.1.0')
     end
   end
 

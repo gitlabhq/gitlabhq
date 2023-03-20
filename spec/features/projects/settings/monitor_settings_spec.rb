@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Settings > For a forked project', :js, feature_category: :projects do
+  include ListboxHelpers
+
   let_it_be(:project) { create(:project, :repository, create_templates: :issue) }
 
   let(:user) { project.first_owner }
@@ -47,7 +49,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js, feature_catego
         check(create_issue)
         uncheck(send_email)
         click_on('No template selected')
-        click_on('bug')
+        select_listbox_item('bug')
 
         save_form
         click_settings_tab

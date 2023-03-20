@@ -11,7 +11,7 @@ import {
 import Mousetrap from 'mousetrap';
 import VueDraggable from 'vuedraggable';
 import { mapActions, mapState, mapGetters } from 'vuex';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import invalidUrl from '~/lib/utils/invalid_url';
 import { ESC_KEY } from '~/lib/utils/keys';
 import { mergeUrlParams, updateHistory } from '~/lib/utils/url_utility';

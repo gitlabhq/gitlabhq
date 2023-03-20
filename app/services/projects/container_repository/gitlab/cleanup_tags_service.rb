@@ -45,12 +45,12 @@ module Projects
         end
 
         def with_timeout
-          result = {
+          result = success(
             original_size: 0,
             before_delete_size: 0,
             deleted_size: 0,
             deleted: []
-          }
+          )
 
           yield Time.zone.now, result
 

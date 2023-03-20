@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AccessTokenValidationService do
+RSpec.describe AccessTokenValidationService, feature_category: :system_access do
   describe ".include_any_scope?" do
     let(:request) { double("request") }
 

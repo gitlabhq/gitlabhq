@@ -36,10 +36,6 @@ describe('cleanup_status', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     status                | visible  | text
     ${UNFINISHED_STATUS}  | ${true}  | ${CLEANUP_STATUS_UNFINISHED}

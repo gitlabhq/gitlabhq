@@ -15,15 +15,21 @@ module Projects
       def execute(oids)
         return [] unless project&.lfs_enabled?
 
-        if oids.size > MAX_OIDS
-          raise TooManyOidsError, 'Too many LFS object ids to link, please push them manually'
-        end
+        validate!(oids)
+
+        yield if block_given?
 
         # Search and link existing LFS Object
         link_existing_lfs_objects(oids)
       end
 
       private
+
+      def validate!(oids)
+        return if oids.size <= MAX_OIDS
+
+        raise TooManyOidsError, 'Too many LFS object ids to link, please push them manually'
+      end
 
       def link_existing_lfs_objects(oids)
         linked_existing_objects = []

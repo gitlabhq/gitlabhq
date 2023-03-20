@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Ci::Interpolation::Context, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Interpolation::Context, feature_category: :pipeline_composition do
   subject { described_class.new(ctx) }
 
   let(:ctx) do

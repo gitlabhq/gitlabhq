@@ -19,10 +19,6 @@ describe('ItemTitle', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders title contents', () => {
     expect(findInputEl().attributes()).toMatchObject({
       'data-placeholder': 'Add a title...',

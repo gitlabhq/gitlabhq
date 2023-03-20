@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::JiraConnect::SyncDeploymentsWorker do
+RSpec.describe ::JiraConnect::SyncDeploymentsWorker, feature_category: :integrations do
   include AfterNextHelpers
 
   it_behaves_like 'worker with data consistency',

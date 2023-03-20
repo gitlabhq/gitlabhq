@@ -44,7 +44,6 @@ describe('toggles/index.js', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     instance = null;
-    toggleWrapper = null;
   });
 
   describe('initToggle', () => {

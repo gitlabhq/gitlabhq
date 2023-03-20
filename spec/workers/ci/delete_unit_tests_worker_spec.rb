@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::DeleteUnitTestsWorker do
+RSpec.describe Ci::DeleteUnitTestsWorker, feature_category: :code_testing do
   let(:worker) { described_class.new }
 
   describe '#perform' do

@@ -59,7 +59,6 @@ describe('TopicSelect', () => {
   }
 
   afterEach(() => {
-    wrapper.destroy();
     jest.clearAllMocks();
   });
 

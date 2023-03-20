@@ -23,27 +23,33 @@ RSpec.describe 'Jobs/SAST-IaC.latest.gitlab-ci.yml', feature_category: :continuo
       allow(project).to receive(:default_branch).and_return(default_branch)
     end
 
-    context 'on feature branch' do
-      let(:pipeline_ref) { 'feature' }
+    context 'when SAST_DISABLED="false"' do
+      before do
+        create(:ci_variable, key: 'SAST_DISABLED', value: 'false', project: project)
+      end
 
-      it 'creates the kics-iac-sast job' do
-        expect(build_names).to contain_exactly('kics-iac-sast')
+      context 'on feature branch' do
+        let(:pipeline_ref) { 'feature' }
+
+        it 'creates the kics-iac-sast job' do
+          expect(build_names).to contain_exactly('kics-iac-sast')
+        end
+      end
+
+      context 'on merge request' do
+        let(:service) { MergeRequests::CreatePipelineService.new(project: project, current_user: user) }
+        let(:merge_request) { create(:merge_request, :simple, source_project: project) }
+        let(:pipeline) { service.execute(merge_request).payload }
+
+        it 'creates a pipeline with the expected jobs' do
+          expect(pipeline).to be_merge_request_event
+          expect(pipeline.errors.full_messages).to be_empty
+          expect(build_names).to match_array(%w(kics-iac-sast))
+        end
       end
     end
 
-    context 'on merge request' do
-      let(:service) { MergeRequests::CreatePipelineService.new(project: project, current_user: user) }
-      let(:merge_request) { create(:merge_request, :simple, source_project: project) }
-      let(:pipeline) { service.execute(merge_request).payload }
-
-      it 'creates a pipeline with the expected jobs' do
-        expect(pipeline).to be_merge_request_event
-        expect(pipeline.errors.full_messages).to be_empty
-        expect(build_names).to match_array(%w(kics-iac-sast))
-      end
-    end
-
-    context 'SAST_DISABLED is set' do
+    context 'when SAST_DISABLED="true"' do
       before do
         create(:ci_variable, key: 'SAST_DISABLED', value: 'true', project: project)
       end

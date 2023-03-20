@@ -65,9 +65,10 @@ module BulkImports
             namespace_children_names = namespace.children.pluck(:name) # rubocop: disable CodeReuse/ActiveRecord
 
             if namespace_children_names.include?(data['name'])
-              data['name'] = Uniquify.new(1).string(-> (counter) { "#{data['name']}(#{counter})" }) do |base|
-                namespace_children_names.include?(base)
-              end
+              data['name'] =
+                Gitlab::Utils::Uniquify.new(1).string(-> (counter) { "#{data['name']}(#{counter})" }) do |base|
+                  namespace_children_names.include?(base)
+                end
             end
           end
 

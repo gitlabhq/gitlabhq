@@ -6,8 +6,3 @@ export const DropdownVariant = {
   Standalone: 'standalone',
   Embedded: 'embedded',
 };
-
-export const LabelType = {
-  group: 'group',
-  project: 'project',
-};

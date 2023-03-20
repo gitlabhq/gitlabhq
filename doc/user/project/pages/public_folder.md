@@ -6,7 +6,7 @@ group: Editor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configure the public files folder **(FREE)**
+# GitLab Pages public folder **(FREE)**
 
 All the files that should be accessible by the browser must be in a root-level folder called `public`.
 
@@ -98,7 +98,7 @@ example:
 next export -o public
 ```
 
-### Nuxt.js
+## Nuxt.js
 
 NOTE:
 GitLab Pages supports only static sites.

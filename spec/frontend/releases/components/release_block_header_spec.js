@@ -25,10 +25,6 @@ describe('Release block header', () => {
     release = convertObjectPropsToCamelCase(originalRelease, { deep: true });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findHeader = () => wrapper.find('h2');
   const findHeaderLink = () => findHeader().findComponent(GlLink);
   const findEditButton = () => wrapper.find('.js-edit-button');

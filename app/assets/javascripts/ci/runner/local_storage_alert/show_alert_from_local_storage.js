@@ -7,7 +7,7 @@ export const showAlertFromLocalStorage = async () => {
 
     if (alertOptions) {
       try {
-        const { createAlert } = await import('~/flash');
+        const { createAlert } = await import('~/alert');
         createAlert(JSON.parse(alertOptions));
       } catch {
         // ignore when the alert data cannot be parsed

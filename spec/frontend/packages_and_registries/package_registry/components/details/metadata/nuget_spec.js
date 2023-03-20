@@ -19,11 +19,6 @@ describe('Nuget Metadata', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findNugetSource = () => wrapper.findByTestId('nuget-source');
   const findNugetLicense = () => wrapper.findByTestId('nuget-license');
   const findElementLink = (container) => container.findComponent(GlLink);

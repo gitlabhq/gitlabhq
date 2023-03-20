@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import getStateQueryResponse from 'test_fixtures/graphql/merge_requests/get_state.query.graphql.json';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import WorkInProgress, {
   MSG_SOMETHING_WENT_WRONG,
   MSG_MARK_READY,
@@ -22,7 +22,7 @@ const TEST_MR_IID = '23';
 const TEST_MR_TITLE = 'Test MR Title';
 const TEST_PROJECT_PATH = 'lorem/ipsum';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/merge_request');
 
 describe('~/vue_merge_request_widget/components/states/work_in_progress.vue', () => {

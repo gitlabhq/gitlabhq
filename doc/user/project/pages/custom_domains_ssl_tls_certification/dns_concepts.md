@@ -5,10 +5,7 @@ group: Editor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# DNS records overview **(FREE)**
-
-_Read this document for a brief overview of DNS records in the scope
-of GitLab Pages, for beginners in web development._
+# GitLab Pages DNS records **(FREE)**
 
 A Domain Name System (DNS) web service routes visitors to websites
 by translating domain names (such as `www.example.com`) into the
@@ -74,7 +71,7 @@ Example:
 This way, visitors visiting `www.example.com` are redirected to
 `example.com`.
 
-## MX record
+## `MX` record
 
 MX records are used to define the mail exchanges that are used for the domain.
 This helps email messages arrive at your mail server correctly.

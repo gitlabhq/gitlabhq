@@ -17,11 +17,6 @@ describe('MR widget status icon component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('while loading', () => {
     it('renders loading icon', () => {
       createWrapper({ status: 'loading' });

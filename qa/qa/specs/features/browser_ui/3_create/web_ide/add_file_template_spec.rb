@@ -1,12 +1,8 @@
 # frozen_string_literal: true
 
+# TODO: remove this test when 'vscode_web_ide' feature flag is default enabled
 module QA
-  RSpec.describe 'Create', feature_flag: { name: 'vscode_web_ide', scope: :global },
-                           product_group: :editor,
-                           quarantine: {
-                             issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/387033',
-                             type: :stale
-                           } do
+  RSpec.describe 'Create', :skip_live_env, product_group: :editor do
     describe 'Web IDE file templates' do
       include Runtime::Fixtures
 
@@ -16,11 +12,6 @@ module QA
           project.description = 'Add file templates via the Web IDE'
           project.initialize_with_readme = true
         end
-        Runtime::Feature.disable(:vscode_web_ide)
-      end
-
-      after(:all) do
-        Runtime::Feature.enable(:vscode_web_ide)
       end
 
       templates = [

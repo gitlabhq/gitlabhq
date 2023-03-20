@@ -55,11 +55,6 @@ describe('Actions menu', () => {
     store = createStore();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('add metric item', () => {
     it('is rendered when custom metrics are available', async () => {
       createShallowWrapper();

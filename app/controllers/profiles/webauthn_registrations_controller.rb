@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Profiles::WebauthnRegistrationsController < Profiles::ApplicationController
-  feature_category :authentication_and_authorization
+  feature_category :system_access
 
   def destroy
     webauthn_registration = current_user.webauthn_registrations.find(params[:id])

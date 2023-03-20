@@ -8,6 +8,7 @@ class Milestone < ApplicationRecord
   include FromUnion
   include Importable
   include IidRoutes
+  include UpdatedAtFilterable
 
   prepend_mod_with('Milestone') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
@@ -26,6 +27,7 @@ class Milestone < ApplicationRecord
 
   has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
+  scope :by_iid, ->(iid) { where(iid: iid) }
   scope :active, -> { with_state(:active) }
   scope :started, -> { active.where('milestones.start_date <= CURRENT_DATE') }
   scope :not_started, -> { active.where('milestones.start_date > CURRENT_DATE') }
@@ -112,7 +114,7 @@ class Milestone < ApplicationRecord
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super("milestones", /(?<milestone>\d+)/)
+    @link_reference_pattern ||= compose_link_reference_pattern('milestones', /(?<milestone>\d+)/)
   end
 
   def self.upcoming_ids(projects, groups)

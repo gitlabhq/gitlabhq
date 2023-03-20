@@ -11,8 +11,8 @@ module RegistrationsHelper
     }
   end
 
-  def arkose_labs_challenge_enabled?
-    false
+  def signup_box_template
+    'devise/shared/signup_box'
   end
 end
 

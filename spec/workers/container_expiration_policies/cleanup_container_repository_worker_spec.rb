@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
+RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker, feature_category: :container_registry do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:repository, refind: true) { create(:container_repository, :cleanup_scheduled, expiration_policy_started_at: 1.month.ago) }
@@ -348,16 +348,18 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
 
         subject { worker.send(:container_repository) }
 
-        if params[:expected_selected_repository] == :none
-          it 'does not select any repository' do
+        it 'selects the correct repository', :freeze_time do
+          case expected_selected_repository
+          when :none
             expect(subject).to eq(nil)
+            next
+          when :repository
+            expect(subject).to eq(repository)
+          when :other_repository
+            expect(subject).to eq(other_repository)
           end
-        else
-          it 'does select a repository' do
-            selected_repository = expected_selected_repository == :repository ? repository : other_repository
-
-            expect(subject).to eq(selected_repository)
-          end
+          expect(subject).to be_cleanup_ongoing
+          expect(subject.expiration_policy_started_at).to eq(Time.zone.now)
         end
 
         def update_container_repository(container_repository, cleanup_status, policy_status)
@@ -510,6 +512,16 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
 
         subject
       end
+    end
+
+    context 'with a stuck container repository' do
+      before do
+        repository.cleanup_ongoing!
+        repository.update_column(:expiration_policy_started_at, nil)
+        policy.update_column(:next_run_at, 5.minutes.ago)
+      end
+
+      it { is_expected.to eq(0) }
     end
   end
 

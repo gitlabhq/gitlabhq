@@ -45,34 +45,44 @@ To run a DAST authenticated scan:
 
 ### Prerequisites
 
+- You have the username and password of the user you would like to authenticate as during the scan.
+- You have checked the [known limitations](#known-limitations) to ensure DAST can authenticate to your application.
+- You have satisfied the prerequisites depending on whether you're using [form authentication](#form-authentication) or [HTTP authentication]((#http-authentication).
+- You have thought about how you can [verify](#verifying-authentication-is-successful) whether or not authentication was successful.
+
+#### Form authentication
+
 - You are using either the [DAST proxy-based analyzer](proxy-based.md) or the [DAST browser-based analyzer](browser_based.md).
 - You know the URL of the login form of your application. Alternatively, you know how to navigate to the login form from the authentication URL (see [clicking to navigate to the login form](#clicking-to-navigate-to-the-login-form)).
-- You have the username and password of the user you would like to authenticate as during the scan.
 - You know the [selectors](#finding-an-elements-selector) of the username and password HTML fields that DAST uses to input the respective values.
 - You know the element's [selector](#finding-an-elements-selector) that submits the login form when selected.
-- You have thought about how you can [verify](#verifying-authentication-is-successful) whether or not authentication was successful.
-- You have checked the [known limitations](#known-limitations) to ensure DAST can authenticate to your application.
+
+#### HTTP authentication
+
+- You must be using the [DAST browser-based analyzer](browser_based.md).
 
 ### Available CI/CD variables
 
 | CI/CD variable                                 | Type                                      | Description                                                                                                                                                                                                                                                                          |
 |:-----------------------------------------------|:------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `DAST_AUTH_COOKIES`                            | string                                    | Set to a comma-separated list of cookie names to specify which cookies are used for authentication.                                                                                                                                                                                  |
-| `DAST_AUTH_REPORT`                             | boolean                                   | Used in combination with exporting the `gl-dast-debug-auth-report.html` artifact to aid in debugging authentication issues.                                                                                                                                                          |
+| `DAST_AUTH_REPORT`                             | boolean                                   | Set to `true` to generate a report detailing steps taken during the authentication process. You must also define `gl-dast-debug-auth-report.html` as a CI job artifact to be able to access the generated report. Useful for debugging when authentication fails.                    |
+| `DAST_AUTH_TYPE` <sup>2</sup>                   | string                                   | The authentication type to use. Example: `basic-digest`.                                                                                                                                                                                                              |
 | `DAST_AUTH_URL` <sup>1</sup>                   | URL                                       | The URL of the page containing the sign-in HTML form on the target website. `DAST_USERNAME` and `DAST_PASSWORD` are submitted with the login form to create an authenticated scan. Example: `https://login.example.com`.                                                             |
 | `DAST_AUTH_VERIFICATION_LOGIN_FORM`            | boolean                                   | Verifies successful authentication by checking for the absence of a login form once the login form has been submitted.                                                                                                                                                               |
 | `DAST_AUTH_VERIFICATION_SELECTOR`              | [selector](#finding-an-elements-selector) | Verifies successful authentication by checking for presence of a selector once the login form has been submitted. Example: `css:.user-photo`.                                                                                                                                        |
 | `DAST_AUTH_VERIFICATION_URL` <sup>1</sup>      | URL                                       | Verifies successful authentication by checking the URL in the browser once the login form has been submitted. Example: `"https://example.com/loggedin_page"`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207335) in GitLab 13.8.                                     |
 | `DAST_BROWSER_PATH_TO_LOGIN_FORM` <sup>1</sup> | [selector](#finding-an-elements-selector) | Comma-separated list of selectors that are selected prior to attempting to enter `DAST_USERNAME` and `DAST_PASSWORD` into the login form. Example: `"css:.navigation-menu,css:.login-menu-item"`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326633) in GitLab 14.1. |
 | `DAST_EXCLUDE_URLS` <sup>1</sup>               | URLs                                      | The URLs to skip during the authenticated scan; comma-separated. Regular expression syntax can be used to match multiple URLs. For example, `.*` matches an arbitrary character sequence.                                                                                            |
-| `DAST_FIRST_SUBMIT_FIELD`                      | string                                    | The `id` or `name` of the element that when selected submits the username form of a multi-page login process. For example, `css:button[type='user-submit']`. [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9894) in GitLab 12.4.                                       |
+| `DAST_FIRST_SUBMIT_FIELD`                      | string                                    | The `id` or `name` of the element that when selected submits the username form of a multi-page login process. For example, `css:button[type='user-submit']`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9894) in GitLab 12.4.                                       |
 | `DAST_PASSWORD` <sup>1</sup>                   | string                                    | The password to authenticate to in the website. Example: `P@55w0rd!`                                                                                                                                                                                                                 |
 | `DAST_PASSWORD_FIELD`                          | string                                    | The selector of password field at the sign-in HTML form. Example: `id:password`                                                                                                                                                                                                      |
-| `DAST_SUBMIT_FIELD`                            | string                                    | The `id` or `name` of the element that when selected submits the login form or the password form of a multi-page login process. For example, `css:button[type='submit']`. [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9894) in GitLab 12.4.                          |
+| `DAST_SUBMIT_FIELD`                            | string                                    | The `id` or `name` of the element that when selected submits the login form or the password form of a multi-page login process. For example, `css:button[type='submit']`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9894) in GitLab 12.4.                          |
 | `DAST_USERNAME` <sup>1</sup>                   | string                                    | The username to authenticate to in the website. Example: `admin`                                                                                                                                                                                                                     |
 | `DAST_USERNAME_FIELD` <sup>1</sup>             | string                                    | The selector of username field at the sign-in HTML form. Example: `name:username`                                                                                                                                                                                                    |
 
 1. Available to an on-demand proxy-based DAST scan.
+1. Not available to proxy-based scans.
 
 ### Update the target website
 
@@ -92,6 +102,28 @@ dast:
     DAST_WEBSITE: "https://example.com/dashboard/welcome"
     DAST_AUTH_URL: "https://example.com/login"
 ```
+
+### Configuration for HTTP authentication
+
+To use an [HTTP authentication scheme](https://www.chromium.org/developers/design-documents/http-authentication/) such as Basic Authentication you can set the `DAST_AUTH_TYPE` value to `basic-digest`.
+Other schemes such as Negotiate or NTLM may work but aren't officially supported due to current lack of automated test coverage.
+
+Configuration requires the CI/CD variables `DAST_AUTH_TYPE`, `DAST_AUTH_URL`, `DAST_USERNAME`, `DAST_PASSWORD` to be defined for the DAST job. If you don't have a unique login URL, please set `DAST_AUTH_URL` to the same URL as `DAST_WEBSITE`.
+
+```yaml
+include:
+  - template: DAST.gitlab-ci.yml
+
+dast:
+  variables:
+    DAST_WEBSITE: "https://example.com"
+    DAST_AUTH_TYPE: "basic-digest"
+    DAST_AUTH_URL: "https://example.com"
+```
+
+Do **not** define `DAST_USERNAME` and `DAST_PASSWORD` in the YAML job definition file as this could present a security risk. Instead, create them as masked CI/CD variables using the GitLab UI.
+See [Custom CI/CD variables](../../../ci/variables/index.md#for-a-project) for more information.
+The proxy-based analyzer does not support basic authentication as an authentication mechanism. A workaround could be to set `DAST_REQUEST_HEADERS` as a masked CI/CD variable with a value containing the appropriate `Authorization` header, for example, `Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQK`.
 
 ### Configuration for a single-step login form
 
@@ -114,7 +146,7 @@ dast:
 ```
 
 Do **not** define `DAST_USERNAME` and `DAST_PASSWORD` in the YAML job definition file as this could present a security risk. Instead, create them as masked CI/CD variables using the GitLab UI.
-See [Custom CI/CI variables](../../../ci/variables/index.md#for-a-project) for more information.
+See [Custom CI/CD variables](../../../ci/variables/index.md#for-a-project) for more information.
 
 ### Configuration for a multi-step login form
 
@@ -140,7 +172,7 @@ dast:
 ```
 
 Do **not** define `DAST_USERNAME` and `DAST_PASSWORD` in the YAML job definition file as this could present a security risk. Instead, create them as masked CI/CD variables using the GitLab UI.
-See [Custom CI/CI variables](../../../ci/variables/index.md#for-a-project) for more information.
+See [Custom CI/CD variables](../../../ci/variables/index.md#for-a-project) for more information.
 
 ### Configuration for Single Sign-On (SSO)
 

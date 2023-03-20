@@ -12,7 +12,7 @@ module Gitlab
       end
 
       operation_name :update_all
-      feature_category :authentication_and_authorization
+      feature_category :system_access
 
       ADMIN_MODE_SCOPE = ['admin_mode'].freeze
 

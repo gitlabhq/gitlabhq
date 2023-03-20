@@ -640,10 +640,6 @@ module Issuable
     false
   end
 
-  def ensure_metrics
-    self.metrics || create_metrics
-  end
-
   ##
   # Overridden in MergeRequest
   #
@@ -657,6 +653,10 @@ module Issuable
     name =  participable_source.try(:issuable_ability_name) || :read_issuable_participables
 
     { name: name, subject: self }
+  end
+
+  def supports_health_status?
+    false
   end
 end
 

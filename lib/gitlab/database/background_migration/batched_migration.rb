@@ -83,8 +83,6 @@ module Gitlab
           end
         end
 
-        attribute :pause_ms, :integer, default: 100
-
         def self.valid_status
           state_machine.states.map(&:name)
         end

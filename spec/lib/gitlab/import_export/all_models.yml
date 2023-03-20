@@ -92,6 +92,20 @@ notes:
 - suggestions
 - diff_note_positions
 - review
+commit_notes:
+- award_emoji
+- noteable
+- author
+- updated_by
+- last_edited_by
+- resolved_by
+- todos
+- events
+- system_note_metadata
+- note_diff_file
+- suggestions
+- diff_note_positions
+- review
 label_links:
 - target
 - label
@@ -283,6 +297,7 @@ ci_pipelines:
 - job_artifacts
 - vulnerabilities_finding_pipelines
 - vulnerability_findings
+- vulnerability_state_transitions
 - pipeline_config
 - security_scans
 - security_findings
@@ -317,6 +332,7 @@ stages:
 - processables
 - builds
 - bridges
+- generic_commit_statuses
 - latest_statuses
 - retried_statuses
 statuses:
@@ -327,6 +343,92 @@ statuses:
 - auto_canceled_by
 - needs
 - ci_stage
+builds:
+- user
+- auto_canceled_by
+- ci_stage
+- needs
+- resource
+- pipeline
+- sourced_pipeline
+- resource_group
+- metadata
+- runner
+- trigger_request
+- erased_by
+- deployment
+- pending_state
+- queuing_entry
+- runtime_metadata
+- trace_chunks
+- report_results
+- namespace
+- job_artifacts
+- job_variables
+- sourced_pipelines
+- pages_deployments
+- job_artifacts_archive
+- job_artifacts_metadata
+- job_artifacts_trace
+- job_artifacts_junit
+- job_artifacts_sast
+- job_artifacts_dependency_scanning
+- job_artifacts_container_scanning
+- job_artifacts_dast
+- job_artifacts_codequality
+- job_artifacts_license_scanning
+- job_artifacts_performance
+- job_artifacts_metrics
+- job_artifacts_metrics_referee
+- job_artifacts_network_referee
+- job_artifacts_lsif
+- job_artifacts_dotenv
+- job_artifacts_cobertura
+- job_artifacts_terraform
+- job_artifacts_accessibility
+- job_artifacts_cluster_applications
+- job_artifacts_secret_detection
+- job_artifacts_requirements
+- job_artifacts_coverage_fuzzing
+- job_artifacts_browser_performance
+- job_artifacts_load_performance
+- job_artifacts_api_fuzzing
+- job_artifacts_cluster_image_scanning
+- job_artifacts_cyclonedx
+- job_artifacts_requirements_v2
+- runner_machine
+- runner_machine_build
+- runner_session
+- trace_metadata
+- terraform_state_versions
+- taggings
+- base_tags
+- tag_taggings
+- tags
+- security_scans
+- dast_site_profiles_build
+- dast_site_profile
+- dast_scanner_profiles_build
+- dast_scanner_profile
+bridges:
+- user
+- pipeline
+- auto_canceled_by
+- ci_stage
+- needs
+- resource
+- sourced_pipeline
+- resource_group
+- metadata
+- trigger_request
+- downstream_pipeline
+- upstream_pipeline
+generic_commit_statuses:
+- user
+- pipeline
+- auto_canceled_by
+- ci_stage
+- needs
 variables:
 - project
 triggers:
@@ -408,6 +510,7 @@ project:
 - project_namespace
 - management_clusters
 - boards
+- application_setting
 - last_event
 - integrations
 - push_hooks_integrations
@@ -432,6 +535,7 @@ project:
 - discord_integration
 - drone_ci_integration
 - emails_on_push_integration
+- google_play_integration
 - pipelines_email_integration
 - mattermost_slash_commands_integration
 - shimo_integration
@@ -466,6 +570,7 @@ project:
 - external_wiki_integration
 - mock_ci_integration
 - mock_monitoring_integration
+- squash_tm_integration
 - forked_to_members
 - forked_from_project
 - forks
@@ -600,7 +705,7 @@ project:
 - project_registry
 - packages
 - package_files
-- repository_files
+- rpm_repository_files
 - packages_cleanup_policy
 - alerting_setting
 - project_setting
@@ -618,6 +723,7 @@ project:
 - upstream_project_subscriptions
 - downstream_project_subscriptions
 - service_desk_setting
+- service_desk_custom_email_verification
 - security_setting
 - import_failures
 - container_expiration_policy
@@ -859,6 +965,8 @@ bulk_import_export:
   - group
 service_desk_setting:
   - file_template_project
+service_desk_custom_email_verification:
+  - triggerer
 approvals:
   - user
   - merge_request

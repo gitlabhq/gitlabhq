@@ -24,11 +24,6 @@ describe('releases/components/tag_field', () => {
   const findTagFieldNew = () => wrapper.findComponent(TagFieldNew);
   const findTagFieldExisting = () => wrapper.findComponent(TagFieldExisting);
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('when an existing release is being edited', () => {
     beforeEach(() => {
       createComponent({ isExistingRelease: true });

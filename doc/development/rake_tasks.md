@@ -258,7 +258,7 @@ One way to generate the initial list is to run the Rake task `rubocop:todo:gener
 bundle exec rake rubocop:todo:generate
 ```
 
-To generate TODO list for specific RuboCop rules, pass them comma-separated as
+To generate TODO list for specific RuboCop rules, pass them comma-seperated as
 argument to the Rake task:
 
 ```shell

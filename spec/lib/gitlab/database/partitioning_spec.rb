@@ -67,14 +67,19 @@ RSpec.describe Gitlab::Database::Partitioning do
     let(:ci_connection) { Ci::ApplicationRecord.connection }
     let(:table_names) { %w[partitioning_test1 partitioning_test2] }
     let(:models) do
-      table_names.map do |table_name|
+      [
         Class.new(ApplicationRecord) do
           include PartitionedTable
 
-          self.table_name = table_name
+          self.table_name = 'partitioning_test1'
           partitioned_by :created_at, strategy: :monthly
+        end,
+        Class.new(Gitlab::Database::Partitioning::TableWithoutModel).tap do |klass|
+          klass.table_name = 'partitioning_test2'
+          klass.partitioned_by(:created_at, strategy: :monthly)
+          klass.limit_connection_names = %i[main]
         end
-      end
+      ]
     end
 
     before do

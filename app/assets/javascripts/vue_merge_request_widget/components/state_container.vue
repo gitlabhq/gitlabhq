@@ -62,7 +62,7 @@ export default {
       <slot name="loading">
         <div class="gl-display-flex">
           <status-icon status="loading" />
-          <div class="media-body">
+          <div class="media-body gl-display-flex gl-align-items-center">
             <slot></slot>
           </div>
         </div>
@@ -78,7 +78,7 @@ export default {
             'gl-display-flex gl-align-items-center': actions.length,
             'gl-md-display-flex gl-align-items-center gl-flex-wrap gl-gap-3': !actions.length,
           }"
-          class="media-body gl-line-height-24"
+          class="media-body gl-line-height-normal"
         >
           <slot></slot>
           <div

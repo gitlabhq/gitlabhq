@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PendingBuilds::UpdateGroupWorker do
+RSpec.describe Ci::PendingBuilds::UpdateGroupWorker, feature_category: :subgroups do
   describe '#perform' do
     let(:worker) { described_class.new }
 

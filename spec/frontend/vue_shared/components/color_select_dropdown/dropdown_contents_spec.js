@@ -28,10 +28,6 @@ describe('DropdownContent', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findColorView = () => wrapper.findComponent(DropdownContentsColorView);
   const findDropdownHeader = () => wrapper.findComponent(DropdownHeader);
   const findDropdown = () => wrapper.findComponent(GlDropdown);

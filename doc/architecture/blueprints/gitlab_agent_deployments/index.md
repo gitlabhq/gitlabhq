@@ -374,6 +374,8 @@ Here is an example of GraphQL query:
       lastDeployment(status: SUCCESS) {
         agent {
           id
+          name
+          project
           kubernetesNamespace
         }
       }

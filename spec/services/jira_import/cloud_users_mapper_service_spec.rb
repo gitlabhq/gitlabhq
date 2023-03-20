@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraImport::CloudUsersMapperService do
+RSpec.describe JiraImport::CloudUsersMapperService, feature_category: :integrations do
   let(:start_at) { 7 }
   let(:url) { "/rest/api/2/users?maxResults=50&startAt=#{start_at}" }
 

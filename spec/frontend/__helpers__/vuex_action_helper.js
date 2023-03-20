@@ -78,6 +78,8 @@ export default (
     }
 
     actions.push(dispatchedAction);
+
+    return Promise.resolve();
   };
 
   const validateResults = () => {

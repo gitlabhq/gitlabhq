@@ -23,7 +23,7 @@ describe('/environments/components/canary_ingress.vue', () => {
         ...props,
       },
       directives: {
-        GlModal: createMockDirective(),
+        GlModal: createMockDirective('gl-modal'),
       },
       ...options,
     });
@@ -37,8 +37,6 @@ describe('/environments/components/canary_ingress.vue', () => {
     if (wrapper) {
       wrapper.destroy();
     }
-
-    wrapper = null;
   });
 
   describe('stable weight', () => {

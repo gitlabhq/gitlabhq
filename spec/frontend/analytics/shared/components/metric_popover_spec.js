@@ -34,10 +34,6 @@ describe('MetricPopover', () => {
   const findMetricDocsLinkIcon = () => findMetricDocsLink().findComponent(GlIcon);
   const findMetricDetailsIcon = () => findMetricLink().findComponent(GlIcon);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the metric label', () => {
     wrapper = createComponent({ metric: MOCK_METRIC });
     expect(findMetricLabel().text()).toBe(MOCK_METRIC.label);

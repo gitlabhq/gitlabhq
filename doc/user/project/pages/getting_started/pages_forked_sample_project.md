@@ -5,7 +5,7 @@ group: Editor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Create a Pages website from a forked sample **(FREE)**
+# Create a GitLab Pages website from a forked sample project **(FREE)**
 
 GitLab provides [sample projects for the most popular Static Site Generators (SSG)](https://gitlab.com/pages).
 You can fork one of the sample projects and run the CI/CD pipeline to generate a Pages website.
@@ -19,7 +19,7 @@ To fork a sample project and create a Pages website:
 
 1. View the sample projects by navigating to the [GitLab Pages examples](https://gitlab.com/pages) group.
 1. Select the name of the project you want to [fork](../../repository/forking_workflow.md#creating-a-fork).
-1. In the upper right, select **Fork** and then choose a namespace to fork to.
+1. In the upper-right corner, select **Fork**, then choose a namespace to fork to.
 1. For your project, on the left sidebar, select **CI/CD > Pipelines** and then **Run pipeline**.
    GitLab CI/CD builds and deploys your site.
 

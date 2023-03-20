@@ -168,12 +168,7 @@ RSpec.describe Projects::ForksController, feature_category: :source_code_managem
     let(:format) { :html }
 
     subject(:do_request) do
-      get :new,
-          format: format,
-          params: {
-            namespace_id: project.namespace,
-            project_id: project
-          }
+      get :new, format: format, params: { namespace_id: project.namespace, project_id: project }
     end
 
     context 'when user is signed in' do

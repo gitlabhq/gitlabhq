@@ -520,6 +520,25 @@ it('waits for an event', () => {
 });
 ```
 
+### Manipulate `gon` object
+
+`gon` (or `window.gon`) is a global object used to pass data from the backend. If your test depends
+on its value you can directly modify it:
+
+```javascript
+describe('when logged in', () => {
+  beforeEach(() => {
+    gon.current_user_id = 1;
+  });
+
+  it('shows message', () => {
+    expect(wrapper.text()).toBe('Logged in!');
+  });
+})
+```
+
+`gon` is reset in every test to ensure tests are isolated.
+
 ### Ensuring that tests are isolated
 
 Tests are normally architected in a pattern which requires a recurring setup of the component under test. This is often achieved by making use of the `beforeEach` hook.

@@ -151,7 +151,7 @@ RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type:
     context 'merge request with no approvals' do
       base_input_path = 'vue_merge_request_widget/components/approvals/queries/'
       base_output_path = 'graphql/merge_requests/approvals/'
-      query_name = 'approved_by.query.graphql'
+      query_name = 'approvals.query.graphql'
 
       it "#{base_output_path}#{query_name}_no_approvals.json" do
         query = get_graphql_query_as_string("#{base_input_path}#{query_name}", ee: Gitlab.ee?)
@@ -165,7 +165,7 @@ RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type:
     context 'merge request approved by current user' do
       base_input_path = 'vue_merge_request_widget/components/approvals/queries/'
       base_output_path = 'graphql/merge_requests/approvals/'
-      query_name = 'approved_by.query.graphql'
+      query_name = 'approvals.query.graphql'
 
       it "#{base_output_path}#{query_name}.json" do
         merge_request.approved_by_users << user
@@ -181,7 +181,7 @@ RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type:
     context 'merge request approved by multiple users' do
       base_input_path = 'vue_merge_request_widget/components/approvals/queries/'
       base_output_path = 'graphql/merge_requests/approvals/'
-      query_name = 'approved_by.query.graphql'
+      query_name = 'approvals.query.graphql'
 
       it "#{base_output_path}#{query_name}_multiple_users.json" do
         merge_request.approved_by_users << user

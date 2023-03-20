@@ -6,10 +6,10 @@ import { s__, sprintf } from '~/locale';
 import DeleteEnvironmentModal from '~/environments/components/delete_environment_modal.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { resolvedEnvironment } from './graphql/mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 Vue.use(VueApollo);
 
 describe('~/environments/components/delete_environment_modal.vue', () => {
@@ -67,7 +67,7 @@ describe('~/environments/components/delete_environment_modal.vue', () => {
     );
   });
 
-  it('should flash a message on error', async () => {
+  it('should alert a message on error', async () => {
     createComponent({ apolloProvider: mockApollo });
 
     deleteResolver.mockRejectedValue();

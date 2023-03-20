@@ -19,11 +19,6 @@ describe('Conan Metadata', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findConanRecipe = () => wrapper.findByTestId('conan-recipe');
 
   beforeEach(() => {

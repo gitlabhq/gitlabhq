@@ -22,7 +22,7 @@ module QA
 
           opts = {}
           opts[:domain] = '.+'
-          opts[:tld] = '.com'
+          opts[:tld] = opts_tld
 
           uri = URI(Runtime::Scenario.gitlab_address)
 
@@ -78,6 +78,10 @@ module QA
 
         def production_domain
           GitlabEdition.jh? ? 'jihulab' : 'gitlab'
+        end
+
+        def opts_tld
+          GitlabEdition.jh? ? '(.com|.hk)' : '.com'
         end
       end
     end

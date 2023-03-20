@@ -20,11 +20,6 @@ function factory(propsData) {
 }
 
 describe('MR widget extension child content', () => {
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders child components', () => {
     factory({
       data: {

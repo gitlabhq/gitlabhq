@@ -23,6 +23,7 @@
 
 variables:
   CS_ANALYZER_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/security-products/container-scanning:5"
+  CS_SCHEMA_MODEL: 15
 
 container_scanning:
   image: "$CS_ANALYZER_IMAGE$CS_IMAGE_SUFFIX"

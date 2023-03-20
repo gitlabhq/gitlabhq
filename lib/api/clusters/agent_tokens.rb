@@ -65,7 +65,9 @@ module API
               agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
 
               result = ::Clusters::AgentTokens::CreateService.new(
-                container: agent.project, current_user: current_user, params: token_params.merge(agent_id: agent.id)
+                agent: agent,
+                current_user: current_user,
+                params: token_params
               ).execute
 
               bad_request!(result[:message]) if result[:status] == :error
@@ -86,8 +88,9 @@ module API
               agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
               token = ::Clusters::AgentTokensFinder.new(agent, current_user).find(params[:token_id])
 
-              # Skipping explicit error handling and relying on exceptions
-              token.revoked!
+              result = ::Clusters::AgentTokens::RevokeService.new(token: token, current_user: current_user).execute
+
+              bad_request!(result[:message]) if result[:status] == :error
 
               status :no_content
             end

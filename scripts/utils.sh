@@ -1,10 +1,19 @@
 function retry() {
+  retry_times_sleep 2 3 "$@"
+}
+
+function retry_times_sleep() {
+  number_of_retries="$1"
+  shift
+  sleep_seconds="$1"
+  shift
+
   if eval "$@"; then
     return 0
   fi
 
-  for i in 2 1; do
-    sleep 3s
+  for i in $(seq "${number_of_retries}" -1 1); do
+    sleep "$sleep_seconds"s
     echo "[$(date '+%H:%M:%S')] Retrying $i..."
     if eval "$@"; then
       return 0
@@ -32,6 +41,7 @@ function retry_exponential() {
       return 0
     fi
   done
+
   return 1
 }
 

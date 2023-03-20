@@ -34,10 +34,6 @@ describe('Blob Header Default Actions', () => {
     buttons = wrapper.findAllComponents(GlButton);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('renders', () => {
     const findCopyButton = () => wrapper.findByTestId('copyContentsButton');
     const findViewRawButton = () => wrapper.findByTestId('viewRawButton');

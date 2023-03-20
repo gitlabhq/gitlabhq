@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Trigger, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Config::Entry::Trigger, feature_category: :pipeline_composition do
   subject { described_class.new(config) }
 
   context 'when trigger config is a non-empty string' do

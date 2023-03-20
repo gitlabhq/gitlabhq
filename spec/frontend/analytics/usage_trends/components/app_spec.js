@@ -15,11 +15,6 @@ describe('UsageTrendsApp', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('displays the usage counts component', () => {
     expect(wrapper.findComponent(UsageCounts).exists()).toBe(true);
   });

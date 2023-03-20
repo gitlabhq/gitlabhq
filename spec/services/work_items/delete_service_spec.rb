@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::DeleteService do
+RSpec.describe WorkItems::DeleteService, feature_category: :team_planning do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:work_item, refind: true) { create(:work_item, project: project, author: guest) }

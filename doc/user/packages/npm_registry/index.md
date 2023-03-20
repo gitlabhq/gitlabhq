@@ -244,8 +244,19 @@ npm dist-tag rm @scope/package@version my-tag  # Delete a tag from the package
 npm install @scope/package@my-tag              # Install a specific tag
 ```
 
-You cannot use your `CI_JOB_TOKEN` or deploy token with the `npm dist-tag` commands.
-View [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/258835) for details.
+#### From CI/CD
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258835) in GitLab 15.10.
+
+You can use a [`CI_JOB_TOKEN`](../../../ci/jobs/ci_job_token.md) or [deploy token](../../project/deploy_tokens/index.md)
+to run `npm dist-tag` commands in a GitLab CI/CD job. For example:
+
+```yaml
+npm-deploy-job:
+  script:
+    - echo "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}">.npmrc
+    - npm dist-tag add @scope/package@version my-tag
+```
 
 Due to a bug in npm 6.9.0, deleting distribution tags fails. Make sure your npm version is 6.9.1 or later.
 
@@ -266,19 +277,28 @@ The GitLab npm repository supports the following commands for the npm CLI (`npm`
 
 ### `404 Not Found` errors are happening on `npm install` or `yarn`
 
-Using `CI_JOB_TOKEN` to install npm packages with dependencies in another project gives you 404 Not Found errors. A fix for this problem is proposed in [issue 352962](https://gitlab.com/gitlab-org/gitlab/-/issues/352962). 
+Using `CI_JOB_TOKEN` to install npm packages with dependencies in another project gives you 404 Not Found errors. You need to authenticate with a token that has access to the package and all its dependencies.
 
-As a workaround, you can:
+If the package and its dependencies are in separate projects but in the same group, you can use a
+[group deploy token](../../project/deploy_tokens/index.md#create-a-deploy-token):
 
-1. Create a [personal access token](../../profile/personal_access_tokens.md).
-1. Authenticate at both the instance level and project level for each package:
+```ini
+//gitlab.example.com/api/v4/packages/npm/:_authToken=<group-token>
+@group-scope:registry=https://gitlab.example.com/api/v4/packages/npm/
+```
 
-   ```ini
-   @foo:registry=https://gitlab.example.com/api/v4/packages/npm/
-   //gitlab.example.com/api/v4/packages/npm/:_authToken=${MY_TOKEN}
-   //gitlab.example.com/api/v4/projects/<your_project_id_a>/packages/npm/:_authToken=${MY_TOKEN}
-   //gitlab.example.com/api/v4/projects/<your_project_id_b>/packages/npm/:_authToken=${MY_TOKEN}
-   ```
+If the package and its dependencies are spread across multiple groups, you can use a [personal access token](../../profile/personal_access_tokens.md)
+from a user that has access to all the groups or individual projects:
+
+```ini
+//gitlab.example.com/api/v4/packages/npm/:_authToken=<personal-access-token>
+@group-1:registry=https://gitlab.example.com/api/v4/packages/npm/
+@group-2:registry=https://gitlab.example.com/api/v4/packages/npm/
+```
+
+WARNING:
+Personal access tokens must be treated carefully. Read our [token security considerations](../../../security/token_overview.md#security-considerations)
+for guidance on managing personal access tokens (for example, setting a short expiry and using minimal scopes).
 
 ### `npm publish` targets default npm registry (`registry.npmjs.org`)
 

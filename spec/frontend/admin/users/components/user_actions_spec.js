@@ -32,15 +32,10 @@ describe('AdminUserActions component', () => {
         showButtonLabels,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   describe('edit button', () => {
     describe('when the user has an edit action attached', () => {

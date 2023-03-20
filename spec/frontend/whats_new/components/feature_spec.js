@@ -30,11 +30,6 @@ describe("What's new single feature", () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders the date', () => {
     createWrapper({ feature: exampleFeature });
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
@@ -100,8 +100,8 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_authoring do
       end
 
       it 'sets merged_config' do
-        root_config = YAML.safe_load(content, [Symbol])
-        included_config = YAML.safe_load(included_content, [Symbol])
+        root_config = YAML.safe_load(content, permitted_classes: [Symbol])
+        included_config = YAML.safe_load(included_content, permitted_classes: [Symbol])
         expected_config = included_config.merge(root_config).except(:include).deep_stringify_keys
 
         expect(subject.merged_yaml).to eq(expected_config.to_yaml)

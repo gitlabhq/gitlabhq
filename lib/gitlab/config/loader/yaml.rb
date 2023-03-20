@@ -34,6 +34,10 @@ module Gitlab
           @symbolized_config ||= load_raw!.deep_symbolize_keys
         end
 
+        def blank?
+          @config.blank?
+        end
+
         private
 
         def hash?

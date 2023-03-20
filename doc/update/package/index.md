@@ -169,7 +169,7 @@ To download and install GitLab:
    and architecture. Next to the filename is a label indicating the distribution,
    as the filenames may be the same.
 1. Find the package version you wish to install, and select the filename from the list.
-1. Select **Download** in the upper right corner to download the package.
+1. In the upper-right corner, select **Download**.
 1. After the package is downloaded, install it by using one of the
    following commands and replacing `<package_name>` with the package name
    you downloaded:

@@ -11,7 +11,7 @@ milestone: "15.7"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106869
 time_frame: 7d
 data_source: redis_hll
-data_category: optional
+data_category: operational
 instrumentation_class: RedisHLLMetric
 performance_indicator_type: []
 options:

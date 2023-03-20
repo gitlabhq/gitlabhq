@@ -31,10 +31,6 @@ describe('Persisted dropdown selection', () => {
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('local storage sync', () => {
     it('uses the local storage sync component with the correct props', () => {
       createComponent();

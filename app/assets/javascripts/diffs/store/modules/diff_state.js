@@ -16,6 +16,7 @@ export default () => ({
   removedLines: null,
   endpoint: '',
   endpointUpdateUser: '',
+  endpointDiffForPath: '',
   basePath: '',
   commit: null,
   startVersion: null, // Null unless a target diff is selected for comparison that is not the "base" diff

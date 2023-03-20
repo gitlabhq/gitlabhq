@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::MergeRequests::AddTodoWhenBuildFailsService do
+RSpec.describe ::MergeRequests::AddTodoWhenBuildFailsService, feature_category: :code_review_workflow do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:sha) { '1234567890abcdef1234567890abcdef12345678' }

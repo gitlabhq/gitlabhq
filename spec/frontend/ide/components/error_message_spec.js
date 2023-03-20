@@ -32,11 +32,6 @@ describe('IDE error message component', () => {
     setErrorMessageMock.mockReset();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findDismissButton = () => wrapper.find('button[aria-label=Dismiss]');
   const findActionButton = () => wrapper.find('button.gl-alert-action');
 

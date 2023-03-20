@@ -333,24 +333,10 @@ module Gitlab
       end
 
       def jira_usage
-        # Jira Cloud does not support custom domains as per https://jira.atlassian.com/browse/CLOUD-6999
-        # so we can just check for subdomains of atlassian.net
-        jira_integration_data_hash = jira_integration_data
-        if jira_integration_data_hash.nil?
-          return { projects_jira_server_active: FALLBACK, projects_jira_cloud_active: FALLBACK }
-        end
-
-        results = {
-          projects_jira_server_active: 0,
-          projects_jira_cloud_active: 0,
+        {
           projects_jira_dvcs_cloud_active: count(ProjectFeatureUsage.with_jira_dvcs_integration_enabled),
           projects_jira_dvcs_server_active: count(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: false))
         }
-
-        results[:projects_jira_server_active] = jira_integration_data_hash[:projects_jira_server_active]
-        results[:projects_jira_cloud_active] = jira_integration_data_hash[:projects_jira_cloud_active]
-
-        results
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -385,13 +371,11 @@ module Gitlab
       end
 
       def merge_requests_users(time_period)
-        counter = Gitlab::UsageDataCounters::TrackUniqueEvents
-
         redis_usage_data do
-          counter.count_unique_events(
-            event_action: Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION,
-            date_from: time_period[:created_at].first,
-            date_to: time_period[:created_at].last
+          Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(
+            event_names: :merge_request_action,
+            start_date: time_period[:created_at].first,
+            end_date: time_period[:created_at].last
           )
         end
       end
@@ -410,7 +394,7 @@ module Gitlab
         end.data
 
         platform = ohai_data['platform']
-        platform = 'raspbian' if ohai_data['platform'] == 'debian' && /armv/.match?(ohai_data['kernel']['machine'])
+        platform = 'raspbian' if ohai_data['platform'] == 'debian' && ohai_data['kernel']['machine']&.include?('armv')
 
         "#{platform}-#{ohai_data['platform_version']}"
       end
@@ -464,10 +448,7 @@ module Gitlab
           remote_mirrors: distinct_count(::Project.with_remote_mirrors.where(time_period), :creator_id),
           snippets: distinct_count(::Snippet.where(time_period), :author_id)
         }.tap do |h|
-          if time_period.present?
-            h[:merge_requests_users] = merge_requests_users(time_period)
-            h.merge!(action_monthly_active_users(time_period))
-          end
+          h[:merge_requests_users] = merge_requests_users(time_period) if time_period.present?
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -527,7 +508,6 @@ module Gitlab
 
       # Omitted because no user, creator or author associated: `boards`, `labels`, `milestones`, `uploads`
       # Omitted because too expensive: `epics_deepest_relationship_level`
-      # Omitted because of encrypted properties: `projects_jira_cloud_active`, `projects_jira_server_active`
       # rubocop: disable CodeReuse/ActiveRecord
       def usage_activity_by_stage_plan(time_period)
         time_frame = metric_time_period(time_period)
@@ -580,17 +560,6 @@ module Gitlab
       # Once https://gitlab.com/gitlab-org/gitlab/merge_requests/17568 is merged, this might be doable
       def usage_activity_by_stage_secure(time_period)
         {}
-      end
-
-      def action_monthly_active_users(time_period)
-        counter = Gitlab::UsageDataCounters::EditorUniqueCounter
-        date_range = { date_from: time_period[:created_at].first, date_to: time_period[:created_at].last }
-
-        {
-          action_monthly_active_users_web_ide_edit: redis_usage_data { counter.count_web_ide_edit_actions(**date_range) },
-          action_monthly_active_users_sfe_edit: redis_usage_data { counter.count_sfe_edit_actions(**date_range) },
-          action_monthly_active_users_snippet_editor_edit: redis_usage_data { counter.count_snippet_editor_edit_actions(**date_range) }
-        }
       end
 
       def with_metadata

@@ -231,4 +231,20 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
       it { is_expected.to eq("#{component1_1.name}/binary-#{architecture1_1.name}/Packages.xz") }
     end
   end
+
+  describe '#empty?' do
+    subject { component_file_with_architecture.empty? }
+
+    context 'with a non-empty component' do
+      it { is_expected.to be_falsey }
+    end
+
+    context 'with an empty component' do
+      before do
+        component_file_with_architecture.update! size: 0
+      end
+
+      it { is_expected.to be_truthy }
+    end
+  end
 end

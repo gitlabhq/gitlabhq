@@ -22,7 +22,7 @@ Prerequisite:
 - At least the Maintainer role on the destination group to import to. Using the Developer role for this purpose was
   [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
 
-## Caveats
+## Rate limit
 
 If the GitHub [rate limit](https://docs.github.com/en/rest/rate-limit) is reached while
 importing, the importing process waits (`sleep()`) until it can continue importing.

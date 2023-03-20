@@ -2,10 +2,20 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Checks::DiffCheck do
+RSpec.describe Gitlab::Checks::DiffCheck, feature_category: :source_code_management do
   include_context 'change access checks context'
 
   describe '#validate!' do
+    context 'when ref is not tag or branch ref' do
+      let(:ref) { 'refs/notes/commit' }
+
+      it 'does not call find_changed_paths' do
+        expect(project.repository).not_to receive(:find_changed_paths)
+
+        subject.validate!
+      end
+    end
+
     context 'when commits is empty' do
       it 'does not call find_changed_paths' do
         expect(project.repository).not_to receive(:find_changed_paths)

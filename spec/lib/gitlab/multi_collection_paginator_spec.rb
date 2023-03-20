@@ -5,6 +5,13 @@ require 'spec_helper'
 RSpec.describe Gitlab::MultiCollectionPaginator do
   subject(:paginator) { described_class.new(Project.all.order(:id), Group.all.order(:id), per_page: 3) }
 
+  it 'raises an error for invalid page size' do
+    expect { described_class.new(Project.all.order(:id), Group.all.order(:id), per_page: 0) }
+      .to raise_error(ArgumentError)
+    expect { described_class.new(Project.all.order(:id), Group.all.order(:id), per_page: -1) }
+      .to raise_error(ArgumentError)
+  end
+
   it 'combines both collections' do
     project = create(:project)
     group = create(:group)

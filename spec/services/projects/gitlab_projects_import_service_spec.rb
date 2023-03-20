@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::GitlabProjectsImportService do
+RSpec.describe Projects::GitlabProjectsImportService, feature_category: :importers do
   let_it_be(:namespace) { create(:namespace) }
 
   let(:path) { 'test-path' }

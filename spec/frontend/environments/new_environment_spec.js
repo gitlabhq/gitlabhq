@@ -3,13 +3,13 @@ import MockAdapter from 'axios-mock-adapter';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import NewEnvironment from '~/environments/components/new_environment.vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility');
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const DEFAULT_OPTS = {
   provide: {
@@ -41,7 +41,6 @@ describe('~/environments/components/new.vue', () => {
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
   });
 
   const showsLoading = () => wrapper.findComponent(GlLoadingIcon).exists();

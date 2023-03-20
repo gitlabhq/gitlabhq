@@ -73,7 +73,7 @@ You can integrate GitLab with the following feature enhancements:
 or [Kroki](../administration/integration/kroki.md) to use diagrams in AsciiDoc and Markdown documents.
 - Attach merge requests to [Trello](trello_power_up.md) cards.
 - Enable integrated code intelligence powered by [Sourcegraph](sourcegraph.md).
-- Add [Elasticsearch](advanced_search/elasticsearch.md) for [Advanced Search](../user/search/advanced_search.md).
+- Add [Elasticsearch](advanced_search/elasticsearch.md) for [advanced search](../user/search/advanced_search.md).
 
 ## Troubleshooting
 

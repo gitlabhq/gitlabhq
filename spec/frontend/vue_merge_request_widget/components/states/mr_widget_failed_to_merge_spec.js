@@ -28,10 +28,6 @@ describe('MRWidgetFailedToMerge', () => {
     jest.spyOn(window, 'clearInterval').mockImplementation();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('interval', () => {
     it('sets interval to refresh', () => {
       createComponent();

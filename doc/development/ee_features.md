@@ -18,6 +18,49 @@ info: To determine the technical writer assigned to the Stage/Group associated w
   [EE features list](https://about.gitlab.com/features/).
 <!-- markdownlint-enable MD044 -->
 
+## SaaS only feature
+
+Use the following guidelines when you develop a feature that is only applicable for SaaS (for example, a CustomersDot integration).
+
+1. It is recommended you use an application setting. This enables
+   granular settings so that each SaaS instance can switch things according to
+   their need.
+1. If application setting is not possible, helpers such as `Gitlab.com?` can be
+   used. However, this comes with drawbacks as listed in the epic to
+   [remove these helpers](https://gitlab.com/groups/gitlab-org/-/epics/7374).
+   1. Consider performance and availability impact on other SaaS instances. For example,
+      [GitLab JH overrides](https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/lib/jh/gitlab/saas.rb)
+      SaaS helpers, so that it returns true for `Gitlab.com?`.
+
+### Simulate a SaaS instance
+
+If you're developing locally and need your instance to simulate the SaaS (GitLab.com)
+version of the product:
+
+1. Export this environment variable:
+
+   ```shell
+   export GITLAB_SIMULATE_SAAS=1
+   ```
+
+   There are many ways to pass an environment variable to your local GitLab instance.
+   For example, you can create an `env.runit` file in the root of your GDK with the above snippet.
+
+1. Enable **Allow use of licensed EE features** to make licensed EE features available to projects
+   only if the project namespace's plan includes the feature.
+
+   1. Visit **Admin > Settings > General**.
+   1. Expand **Account and limit**.
+   1. Select the **Allow use of licensed EE features** checkbox.
+   1. Select **Save changes**.
+
+1. Ensure the group you want to test the EE feature for is actually using an EE plan:
+   1. On the top bar, select **Main menu > Admin**.
+   1. On the left sidebar, select **Overview > Groups**.
+   1. Identify the group you want to modify, and select **Edit**.
+   1. Scroll to **Permissions and group features**. For **Plan**, select `Ultimate`.
+   1. Select **Save changes**.
+
 ## Implement a new EE feature
 
 If you're developing a GitLab Premium or GitLab Ultimate licensed feature, use these steps to
@@ -74,9 +117,9 @@ To guard your licensed feature:
 1. Optional. If your global feature is also available to namespaces with a paid plan, combine two
 feature identifiers to allow both administrators and group users. For example:
 
-    ```ruby
-    License.feature_available?(:my_feature_name) || group.licensed_feature_available?(:my_feature_name_for_namespace) # Both admins and group members can see this EE feature
-    ```
+   ```ruby
+   License.feature_available?(:my_feature_name) || group.licensed_feature_available?(:my_feature_name_for_namespace) # Both admins and group members can see this EE feature
+   ```
 
 ### Simulate a CE instance when unlicensed
 
@@ -100,15 +143,15 @@ To simulate a CE instance without deleting the license in a GDK:
 
 1. Create an `env.runit` file in the root of your GDK with the line:
 
-    ```shell
-    export FOSS_ONLY=1
-    ```
+   ```shell
+   export FOSS_ONLY=1
+   ```
 
 1. Then restart the GDK:
 
-    ```shell
-    gdk restart rails && gdk restart webpack
-    ```
+   ```shell
+   gdk restart rails && gdk restart webpack
+   ```
 
 Remove the line in `env.runit` if you want to revert back to an EE
 installation, and repeat step 2.
@@ -136,35 +179,6 @@ To do so:
    ```shell
    bin/rspec spec/features/<path_to_your_spec>
    ```
-
-### Simulate a SaaS instance
-
-If you're developing locally and need your instance to simulate the SaaS (GitLab.com)
-version of the product:
-
-1. Export this environment variable:
-
-   ```shell
-   export GITLAB_SIMULATE_SAAS=1
-   ```
-
-   There are many ways to pass an environment variable to your local GitLab instance.
-   For example, you can create an `env.runit` file in the root of your GDK with the above snippet.
-
-1. Enable **Allow use of licensed EE features** to make licensed EE features available to projects
-   only if the project namespace's plan includes the feature.
-
-    1. Visit **Admin > Settings > General**.
-    1. Expand **Account and limit**.
-    1. Select the **Allow use of licensed EE features** checkbox.
-    1. Click **Save changes**.
-
-1. Ensure that the group for which you want to test the EE feature, is actually using an EE plan:
-   1. On the top bar, select **Main menu > Admin**.
-   1. On the left sidebar, select **Overview > Groups**.
-   1. Identify the group you want to modify, and select **Edit**.
-   1. Scroll to **Permissions and group features**. For **Plan**, select `Ultimate`.
-   1. Select **Save changes**.
 
 ### Run CI pipelines in a FOSS context
 
@@ -580,11 +594,11 @@ Resolving an EE template path that is relative to the CE view path doesn't work.
 For `render` and `render_if_exists`, they search for the EE partial first,
 and then CE partial. They would only render a particular partial, not all
 partials with the same name. We could take the advantage of this, so that
-the same partial path (for example, `shared/issuable/form/default_templates`) could
+the same partial path (for example, `projects/settings/archive`) could
 be referring to the CE partial in CE (that is,
-`app/views/shared/issuable/form/_default_templates.html.haml`), while EE
+`app/views/projects/settings/_archive.html.haml`), while EE
 partial in EE (that is,
-`ee/app/views/shared/issuable/form/_default_templates.html.haml`). This way,
+`ee/app/views/projects/settings/_archive.html.haml`). This way,
 we could show different things between CE and EE.
 
 However sometimes we would also want to reuse the CE partial in EE partial
@@ -594,21 +608,19 @@ would be tedious to do so.
 
 In this case, we could as well just use `render_ce` which would ignore any EE
 partials. One example would be
-`ee/app/views/shared/issuable/form/_default_templates.html.haml`:
+`ee/app/views/projects/settings/_archive.html.haml`:
 
 ```haml
-- if @project.feature_available?(:issuable_default_templates)
-  = render_ce 'shared/issuable/form/default_templates'
-- elsif show_promotions?
-  = render 'shared/promotions/promote_issue_templates'
+- return if @project.marked_for_deletion?
+= render_ce 'projects/settings/archive'
 ```
 
 In the above example, we can't use
-`render 'shared/issuable/form/default_templates'` because it would find the
+`render 'projects/settings/archive'` because it would find the
 same EE partial, causing infinite recursion. Instead, we could use `render_ce`
 so it ignores any partials in `ee/` and then it would render the CE partial
-(that is, `app/views/shared/issuable/form/_default_templates.html.haml`)
-for the same path (that is, `shared/issuable/form/default_templates`). This way
+(that is, `app/views/projects/settings/_archive.html.haml`)
+for the same path (that is, `projects/settings/archive`). This way
 we could easily wrap around the CE partial.
 
 ### Code in `lib/gitlab/background_migration/`

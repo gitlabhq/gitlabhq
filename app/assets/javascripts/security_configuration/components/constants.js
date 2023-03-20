@@ -35,7 +35,7 @@ export const SAST_CONFIG_HELP_PATH = helpPagePath('user/application_security/sas
 });
 
 export const SAST_IAC_NAME = __('Infrastructure as Code (IaC) Scanning');
-export const SAST_IAC_SHORT_NAME = s__('ciReport|IaC Scanning');
+export const SAST_IAC_SHORT_NAME = s__('ciReport|SAST IaC');
 export const SAST_IAC_DESCRIPTION = __(
   'Analyze your infrastructure as code configuration files for known vulnerabilities.',
 );
@@ -65,7 +65,6 @@ export const DAST_PROFILES_NAME = __('DAST profiles');
 export const DAST_PROFILES_DESCRIPTION = s__(
   'SecurityConfiguration|Manage profiles for use by DAST scans.',
 );
-export const DAST_PROFILES_HELP_PATH = helpPagePath('user/application_security/dast/index');
 export const DAST_PROFILES_CONFIG_TEXT = s__('SecurityConfiguration|Manage profiles');
 
 export const SECRET_DETECTION_NAME = __('Secret Detection');

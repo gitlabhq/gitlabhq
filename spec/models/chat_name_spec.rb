@@ -7,7 +7,6 @@ RSpec.describe ChatName, feature_category: :integrations do
 
   subject { chat_name }
 
-  it { is_expected.to belong_to(:integration) }
   it { is_expected.to belong_to(:user) }
 
   it { is_expected.to validate_presence_of(:user) }
@@ -15,12 +14,6 @@ RSpec.describe ChatName, feature_category: :integrations do
   it { is_expected.to validate_presence_of(:chat_id) }
 
   it { is_expected.to validate_uniqueness_of(:chat_id).scoped_to(:team_id) }
-
-  it 'is not removed when the project is deleted' do
-    expect { subject.reload.integration.project.delete }.not_to change { ChatName.count }
-
-    expect(ChatName.where(id: subject.id)).to exist
-  end
 
   describe '#update_last_used_at', :clean_gitlab_redis_shared_state do
     it 'updates the last_used_at timestamp' do

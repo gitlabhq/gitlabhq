@@ -15,12 +15,12 @@
 - application_performance
 - attack_emulation
 - audit_events
-- authentication_and_authorization
 - auto_devops
 - backup_restore
 - billing_and_payments
 - build
 - build_artifacts
+- capacity_planning
 - cloud_native_installation
 - cluster_cost_management
 - code_quality
@@ -35,7 +35,6 @@
 - continuous_delivery
 - continuous_integration
 - continuous_verification
-- credential_management
 - customersdot_application
 - database
 - dataops
@@ -67,6 +66,7 @@
 - geo_replication
 - gitaly
 - gitlab_cli
+- gitlab_docs
 - global_search
 - helm_chart_registry
 - importers
@@ -93,9 +93,7 @@
 - onboarding
 - package_registry
 - pages
-- performance_testing
-- permissions
-- pipeline_authoring
+- pipeline_composition
 - planning_analytics
 - pods
 - portfolio_management

@@ -1,8 +1,9 @@
 # frozen_string_literal: true
-require_relative Rails.root.join('metrics_server', 'dependencies')
-require_relative Rails.root.join('metrics_server', 'metrics_server')
 
 namespace :gitlab do
+  require_relative Rails.root.join('metrics_server', 'dependencies')
+  require_relative Rails.root.join('metrics_server', 'metrics_server')
+
   namespace :metrics_exporter do
     REPO = 'https://gitlab.com/gitlab-org/gitlab-metrics-exporter.git'
 

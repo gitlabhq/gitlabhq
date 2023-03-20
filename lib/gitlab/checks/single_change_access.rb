@@ -14,7 +14,9 @@ module Gitlab
         protocol:, logger:, commits: nil
       )
         @oldrev, @newrev, @ref = change.values_at(:oldrev, :newrev, :ref)
+        @branch_ref = Gitlab::Git.branch_ref?(@ref)
         @branch_name = Gitlab::Git.branch_name(@ref)
+        @tag_ref = Gitlab::Git.tag_ref?(@ref)
         @tag_name = Gitlab::Git.tag_name(@ref)
         @user_access = user_access
         @project = project
@@ -36,6 +38,14 @@ module Gitlab
 
       def commits
         @commits ||= project.repository.new_commits(newrev)
+      end
+
+      def branch_ref?
+        @branch_ref
+      end
+
+      def tag_ref?
+        @tag_ref
       end
 
       protected

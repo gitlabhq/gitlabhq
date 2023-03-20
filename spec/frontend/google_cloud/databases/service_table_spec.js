@@ -19,10 +19,6 @@ describe('google_cloud/databases/service_table', () => {
     wrapper = mountExtended(ServiceTable, { propsData });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should contain a table', () => {
     expect(findTable().exists()).toBe(true);
   });

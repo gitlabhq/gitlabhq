@@ -340,7 +340,7 @@ What was done?
       spec.add_dependency 'graphql-docs'
       spec.add_dependency 'grape'
     end
-     ```
+    ```
 
 1. Move routes to the `engines/web_engine/config/routes.rb` file
 
@@ -380,59 +380,59 @@ What was done?
 
 1. Configure GitLab when to load the engine.
 
-    In GitLab `config/engines.rb`, we can configure when do we want to load our engines by relying on our `Gitlab::Runtime`
+   In GitLab `config/engines.rb`, we can configure when do we want to load our engines by relying on our `Gitlab::Runtime`
 
-    ```ruby
-    # config/engines.rb
-    # Load only in case we are running web_server or rails console
-    if Gitlab::Runtime.puma? || Gitlab::Runtime.console?
-      require 'web_engine'
-    end
-    ```
+   ```ruby
+   # config/engines.rb
+   # Load only in case we are running web_server or rails console
+   if Gitlab::Runtime.puma? || Gitlab::Runtime.console?
+     require 'web_engine'
+   end
+   ```
 
 1. Configure Engine
 
-    Our Engine inherits from the `Rails::Engine` class. This way this gem notifies Rails that
-    there's an engine at the specified path so it will correctly mount the engine inside
-    the application, performing tasks such as adding the app directory of the engine to
-    the load path for models, mailers, controllers, and views.
-    A file at `lib/web_engine/engine.rb`, is identical in function to a standard Rails
-    application's `config/application.rb` file. This way engines can access a configuration
-    object which contains configuration shared by all railties and the application.
-    Additionally, each engine can access `autoload_paths`, `eager_load_paths`, and `autoload_once_paths`
-    settings which are scoped to that engine.
+   Our Engine inherits from the `Rails::Engine` class. This way this gem notifies Rails that
+   there's an engine at the specified path so it will correctly mount the engine inside
+   the application, performing tasks such as adding the app directory of the engine to
+   the load path for models, mailers, controllers, and views.
+   A file at `lib/web_engine/engine.rb`, is identical in function to a standard Rails
+   application's `config/application.rb` file. This way engines can access a configuration
+   object which contains configuration shared by all railties and the application.
+   Additionally, each engine can access `autoload_paths`, `eager_load_paths`, and `autoload_once_paths`
+   settings which are scoped to that engine.
 
-    ```ruby
-    module WebEngine
-      class Engine < ::Rails::Engine
-        config.eager_load_paths.push(*%W[#{config.root}/lib
-                                         #{config.root}/app/graphql/resolvers/concerns
-                                         #{config.root}/app/graphql/mutations/concerns
-                                         #{config.root}/app/graphql/types/concerns])
+   ```ruby
+   module WebEngine
+     class Engine < ::Rails::Engine
+       config.eager_load_paths.push(*%W[#{config.root}/lib
+                                        #{config.root}/app/graphql/resolvers/concerns
+                                        #{config.root}/app/graphql/mutations/concerns
+                                        #{config.root}/app/graphql/types/concerns])
 
-        if Gitlab.ee?
-          ee_paths = config.eager_load_paths.each_with_object([]) do |path, memo|
-            ee_path = config.root
-                        .join('ee', Pathname.new(path).relative_path_from(config.root))
-            memo << ee_path.to_s
-          end
-          # Eager load should load CE first
-          config.eager_load_paths.push(*ee_paths)
-        end
-      end
-    end
-    ```
+       if Gitlab.ee?
+         ee_paths = config.eager_load_paths.each_with_object([]) do |path, memo|
+           ee_path = config.root
+                       .join('ee', Pathname.new(path).relative_path_from(config.root))
+           memo << ee_path.to_s
+         end
+         # Eager load should load CE first
+         config.eager_load_paths.push(*ee_paths)
+       end
+     end
+   end
+   ```
 
 1. Testing
 
-    We adapted CI to test `engines/web_engine/` as a self-sufficient component of stack.
+   We adapted CI to test `engines/web_engine/` as a self-sufficient component of stack.
 
-    - We moved `spec` as-is files to the `engines/web_engine/spec` folder
-    - We moved `ee/spec` as-is files to the `engines/web_engine/ee/spec` folder
-    - We control specs from main application using environment variable `TEST_WEB_ENGINE`
-    - We added new CI job that will run `engines/web_engine/spec` tests separately using `TEST_WEB_ENGINE` environment variable.
-    - We added new CI job that will run `engines/web_engine/ee/spec` tests separately using `TEST_WEB_ENGINE` environment variable.
-    - We are running all white box frontend tests with `TEST_WEB_ENGINE=true`
+   - We moved `spec` as-is files to the `engines/web_engine/spec` folder
+   - We moved `ee/spec` as-is files to the `engines/web_engine/ee/spec` folder
+   - We control specs from main application using environment variable `TEST_WEB_ENGINE`
+   - We added new CI job that will run `engines/web_engine/spec` tests separately using `TEST_WEB_ENGINE` environment variable.
+   - We added new CI job that will run `engines/web_engine/ee/spec` tests separately using `TEST_WEB_ENGINE` environment variable.
+   - We are running all white box frontend tests with `TEST_WEB_ENGINE=true`
 
 #### Results
 

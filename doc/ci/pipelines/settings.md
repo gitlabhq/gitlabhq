@@ -71,7 +71,7 @@ is selected.
 
 ## Auto-cancel redundant pipelines
 
-You can set pending or running pipelines to cancel automatically when a new pipeline runs on the same branch. You can enable this in the project settings:
+You can set pending or running pipelines to cancel automatically when a pipeline for new changes runs on the same branch. You can enable this in the project settings:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.

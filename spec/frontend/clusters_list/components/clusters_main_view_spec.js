@@ -40,10 +40,6 @@ describe('ClustersMainViewComponent', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findTabs = () => wrapper.findComponent(GlTabs);
   const findAllTabs = () => wrapper.findAllComponents(GlTab);
   const findGlTabAtIndex = (index) => findAllTabs().at(index);

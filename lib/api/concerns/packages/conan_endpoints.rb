@@ -350,7 +350,7 @@ module API
             delete urgency: :low do
               authorize!(:destroy_package, project)
 
-              track_package_event('delete_package', :conan, category: 'API::ConanPackages', user: current_user, project: project, namespace: project.namespace)
+              track_package_event('delete_package', :conan, category: 'API::ConanPackages', project: project, namespace: project.namespace)
 
               package.destroy
             end

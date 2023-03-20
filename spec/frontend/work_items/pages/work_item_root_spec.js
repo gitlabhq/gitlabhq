@@ -44,10 +44,6 @@ describe('Work items root component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders WorkItemDetail', () => {
     createComponent();
 

@@ -8,11 +8,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   helper_method :current_password_required?
 
-  before_action do
-    push_frontend_feature_flag(:webauthn)
-  end
-
-  feature_category :authentication_and_authorization
+  feature_category :system_access
 
   def show
     setup_show_page
@@ -41,29 +37,9 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
       @error = { message: _('Invalid pin code.') }
       @qr_code = build_qr_code
       @account_string = account_string
-
-      if Feature.enabled?(:webauthn)
-        setup_webauthn_registration
-      else
-        setup_u2f_registration
-      end
+      setup_webauthn_registration
 
       render 'show'
-    end
-  end
-
-  # A U2F (universal 2nd factor) device's information is stored after successful
-  # registration, which is then used while 2FA authentication is taking place.
-  def create_u2f
-    @u2f_registration = U2fRegistration.register(current_user, u2f_app_id, device_registration_params, session[:challenges])
-
-    if @u2f_registration.persisted?
-      session.delete(:challenges)
-      redirect_to profile_two_factor_auth_path, notice: s_("Your U2F device was registered!")
-    else
-      @qr_code = build_qr_code
-      setup_u2f_registration
-      render :show
     end
   end
 
@@ -173,22 +149,6 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   def issuer_host
     Gitlab.config.gitlab.host
-  end
-
-  # Setup in preparation of communication with a U2F (universal 2nd factor) device
-  # Actual communication is performed using a Javascript API
-  def setup_u2f_registration
-    @u2f_registration ||= U2fRegistration.new
-    @registrations = u2f_registrations
-    u2f = U2F::U2F.new(u2f_app_id)
-
-    registration_requests = u2f.registration_requests
-    sign_requests = u2f.authentication_requests(current_user.u2f_registrations.map(&:key_handle))
-    session[:challenges] = registration_requests.map(&:challenge)
-
-    gon.push(u2f: { challenges: session[:challenges], app_id: u2f_app_id,
-                    register_requests: registration_requests,
-                    sign_requests: sign_requests })
   end
 
   def device_registration_params

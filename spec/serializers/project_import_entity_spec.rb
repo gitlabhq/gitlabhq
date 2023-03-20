@@ -5,10 +5,11 @@ require 'spec_helper'
 RSpec.describe ProjectImportEntity, feature_category: :importers do
   include ImportHelper
 
-  let_it_be(:project) { create(:project, import_status: :started, import_source: 'namespace/project') }
+  let_it_be(:project) { create(:project, import_status: :started, import_source: 'import_user/project') }
 
   let(:provider_url) { 'https://provider.com' }
-  let(:entity) { described_class.represent(project, provider_url: provider_url) }
+  let(:client) { nil }
+  let(:entity) { described_class.represent(project, provider_url: provider_url, client: client) }
 
   before do
     create(:import_failure, project: project)
@@ -23,6 +24,31 @@ RSpec.describe ProjectImportEntity, feature_category: :importers do
       expect(subject[:human_import_status_name]).to eq(project.human_import_status_name)
       expect(subject[:provider_link]).to eq(provider_project_link_url(provider_url, project[:import_source]))
       expect(subject[:import_error]).to eq(nil)
+      expect(subject[:relation_type]).to eq(nil)
+    end
+
+    context 'when client option present', :clean_gitlab_redis_cache do
+      let(:octokit) { instance_double(Octokit::Client, access_token: 'stub') }
+      let(:client) do
+        instance_double(
+          ::Gitlab::GithubImport::Clients::Proxy,
+          user: { login: 'import_user' }, octokit: octokit
+        )
+      end
+
+      it 'includes relation_type' do
+        expect(subject[:relation_type]).to eq('owned')
+      end
+
+      context 'with remove_legacy_github_client FF is disabled' do
+        before do
+          stub_feature_flags(remove_legacy_github_client: false)
+        end
+
+        it "doesn't include relation_type" do
+          expect(subject[:relation_type]).to eq(nil)
+        end
+      end
     end
 
     context 'when import is failed' do

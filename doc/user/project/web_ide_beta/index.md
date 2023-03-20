@@ -40,7 +40,7 @@ or a merge request.
 
 To open the Web IDE Beta from a file or the repository file list:
 
-- In the upper right of the page, select **Open in Web IDE**.
+- In the upper-right corner of the page, select **Open in Web IDE**.
 
 If **Open in Web IDE** is not visible:
 
@@ -53,7 +53,7 @@ If **Open in Web IDE** is not visible:
 To open the Web IDE Beta from a merge request:
 
 1. Go to your merge request.
-1. In the upper right corner, select **Code > Open in Web IDE**.
+1. In the upper-right corner, select **Code > Open in Web IDE**.
 
 ## Open a file in the Web IDE Beta
 
@@ -63,6 +63,26 @@ To open any file by its name:
 1. Enter the name of your file.
 
 ![fuzzy_finder_v15_7](img/fuzzy_finder_v15_7.png)
+
+## Switch branches
+
+The Web IDE Beta uses the currently selected branch by default.
+To switch branches in the Web IDE Beta:
+
+1. On the status bar, in the lower-left corner, select the current branch name.
+1. In the search box, start typing the branch name.
+1. From the dropdown list, select the branch.
+
+## Create a branch
+
+To create a branch from the current branch in the Web IDE Beta:
+
+1. On the status bar, in the lower-left corner, select the current branch name.
+1. From the dropdown list, select **Create new branch...**.
+1. Enter the branch name.
+1. Press <kbd>Enter</kbd>.
+
+If you don't have write access to the repository, **Create new branch...** is not visible.
 
 ## Search across files
 
@@ -83,6 +103,15 @@ in the Activity Bar on the left, select **Source Control**.
 Your `CHANGES`, `STAGED CHANGES`, and `MERGE CHANGES` are displayed.
 
 For details, see the [VS Code documentation](https://code.visualstudio.com/docs/sourcecontrol/overview#_commit).
+
+## Open the command palette
+
+In the Web IDE Beta, you can access many commands through the command palette.
+To open the command palette and run a command in the Web IDE Beta:
+
+1. Press <kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd>.
+1. In the search box, start typing the command name.
+1. From the dropdown list, select the command.
 
 ## Stop using the Web IDE Beta
 

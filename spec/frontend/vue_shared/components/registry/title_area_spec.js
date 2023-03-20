@@ -36,11 +36,6 @@ describe('title area', () => {
       return acc;
     }, {});
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('title', () => {
     it('if slot is not present defaults to prop', () => {
       mountComponent();

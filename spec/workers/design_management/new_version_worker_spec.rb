@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DesignManagement::NewVersionWorker do
+RSpec.describe DesignManagement::NewVersionWorker, feature_category: :design_management do
   describe '#perform' do
     let(:worker) { described_class.new }
 

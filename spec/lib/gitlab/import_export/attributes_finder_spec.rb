@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::ImportExport::AttributesFinder do
+RSpec.describe Gitlab::ImportExport::AttributesFinder, feature_category: :importers do
   describe '#find_root' do
     subject { described_class.new(config: config).find_root(model_key) }
 
@@ -206,6 +206,19 @@ RSpec.describe Gitlab::ImportExport::AttributesFinder do
       let(:config) { {} }
 
       it { is_expected.to be_nil }
+    end
+
+    context 'when include_import_only_tree is true' do
+      subject { described_class.new(config: config).find_relations_tree(model_key, include_import_only_tree: true) }
+
+      let(:config) do
+        {
+          tree: { project: { ci_pipelines: { stages: { builds: nil } } } },
+          import_only_tree: { project: { ci_pipelines: { stages: { statuses: nil } } } }
+        }
+      end
+
+      it { is_expected.to eq({ ci_pipelines: { stages: { builds: nil, statuses: nil } } }) }
     end
   end
 

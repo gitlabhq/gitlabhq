@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe FeatureFlags::HookService do
+RSpec.describe FeatureFlags::HookService, feature_category: :feature_flags do
   describe '#execute_hooks' do
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:project) { create(:project, :repository, namespace: namespace) }

@@ -23,10 +23,6 @@ describe('TriggerField', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findGlFormCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findGlFormInput = () => wrapper.findComponent(GlFormInput);
   const findHiddenInput = () => wrapper.find('input[type="hidden"]');

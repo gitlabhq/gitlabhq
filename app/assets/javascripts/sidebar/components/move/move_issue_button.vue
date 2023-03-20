@@ -1,7 +1,7 @@
 <script>
 import ProjectSelect from '~/sidebar/components/move/issuable_move_dropdown.vue';
 import { __ } from '~/locale';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
 import moveIssueMutation from '../../queries/move_issue.mutation.graphql';
 

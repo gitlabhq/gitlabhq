@@ -2,11 +2,11 @@ import { GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import SidebarConfidentialityForm from '~/sidebar/components/confidential/sidebar_confidentiality_form.vue';
 import { confidentialityQueries } from '~/sidebar/constants';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Sidebar Confidentiality Form', () => {
   let wrapper;
@@ -38,10 +38,6 @@ describe('Sidebar Confidentiality Form', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('emits a `closeForm` event when Cancel button is clicked', () => {
     createComponent();
     findCancelButton().vm.$emit('click');
@@ -58,7 +54,7 @@ describe('Sidebar Confidentiality Form', () => {
     expect(findConfidentialToggle().props('loading')).toBe(true);
   });
 
-  it('creates a flash if mutation is rejected', async () => {
+  it('creates an alert if mutation is rejected', async () => {
     createComponent({ mutate: jest.fn().mockRejectedValue('Error!') });
     findConfidentialToggle().vm.$emit('click', new MouseEvent('click'));
     await waitForPromises();
@@ -68,7 +64,7 @@ describe('Sidebar Confidentiality Form', () => {
     });
   });
 
-  it('creates a flash if mutation contains errors', async () => {
+  it('creates an alert if mutation contains errors', async () => {
     createComponent({
       mutate: jest.fn().mockResolvedValue({
         data: { issuableSetConfidential: { errors: ['Houston, we have a problem!'] } },

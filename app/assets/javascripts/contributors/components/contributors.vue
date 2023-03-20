@@ -9,7 +9,6 @@ import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import { __ } from '~/locale';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
-import ResizableChartContainer from '~/vue_shared/components/resizable_chart/resizable_chart_container.vue';
 import { xAxisLabelFormatter, dateFormatter } from '../utils';
 
 const GRAPHS_PATH_REGEX = /^(.*?)\/-\/graphs/g;
@@ -26,7 +25,6 @@ export default {
     GlAreaChart,
     GlButton,
     GlLoadingIcon,
-    ResizableChartContainer,
     RefSelector,
   },
   props: {
@@ -249,18 +247,15 @@ export default {
       <div data-testid="contributors-charts">
         <h4 class="gl-mb-2 gl-mt-5">{{ __('Commits to') }} {{ branch }}</h4>
         <span>{{ __('Excluding merge commits. Limited to 6,000 commits.') }}</span>
-        <resizable-chart-container>
-          <template #default="{ width }">
-            <gl-area-chart
-              class="gl-mb-5"
-              :width="width"
-              :data="masterChartData"
-              :option="masterChartOptions"
-              :height="masterChartHeight"
-              @created="onMasterChartCreated"
-            />
-          </template>
-        </resizable-chart-container>
+        <gl-area-chart
+          class="gl-mb-5"
+          responsive
+          width="auto"
+          :data="masterChartData"
+          :option="masterChartOptions"
+          :height="masterChartHeight"
+          @created="onMasterChartCreated"
+        />
 
         <div class="row">
           <div
@@ -272,17 +267,14 @@ export default {
             <p class="gl-mb-3">
               {{ n__('%d commit', '%d commits', contributor.commits) }} ({{ contributor.email }})
             </p>
-            <resizable-chart-container>
-              <template #default="{ width }">
-                <gl-area-chart
-                  :width="width"
-                  :data="contributor.dates"
-                  :option="individualChartOptions"
-                  :height="individualChartHeight"
-                  @created="onIndividualChartCreated"
-                />
-              </template>
-            </resizable-chart-container>
+            <gl-area-chart
+              responsive
+              width="auto"
+              :data="contributor.dates"
+              :option="individualChartOptions"
+              :height="individualChartHeight"
+              @created="onIndividualChartCreated"
+            />
           </div>
         </div>
       </div>

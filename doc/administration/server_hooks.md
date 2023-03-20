@@ -84,7 +84,7 @@ To create a Git hook that applies to all repositories, set a global server hook.
 
 Before creating a global server hook, you must choose a directory for it.
 
-For Omnibus GitLab installations, the directory is set in `gitlab.rb` under `gitaly['custom_hooks_dir']`. You can either:
+For Omnibus GitLab installations, the directory is set in `gitlab.rb` under `gitaly['configuration'][:hooks][:custom_hooks_dir]`. You can either:
 
 - Use the default suggestion of the `/var/opt/gitlab/gitaly/custom_hooks` directory by uncommenting it.
 - Add your own setting.

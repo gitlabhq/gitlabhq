@@ -63,10 +63,6 @@ describe('RunnerTypeTabs', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('Renders all options to filter runners by default', () => {
     createComponent();
 

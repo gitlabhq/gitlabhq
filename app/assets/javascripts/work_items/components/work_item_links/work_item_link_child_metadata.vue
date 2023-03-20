@@ -70,7 +70,7 @@ export default {
     <item-milestone
       v-if="milestone"
       :milestone="milestone"
-      class="gl-display-flex gl-align-items-center gl-mr-5 gl-max-w-15 gl-text-secondary! gl-cursor-help! gl-text-decoration-none!"
+      class="gl-display-flex gl-align-items-center gl-mr-5 gl-max-w-15 gl-line-height-normal gl-text-secondary! gl-cursor-help! gl-text-decoration-none!"
     />
     <gl-avatars-inline
       v-if="assignees.length"
@@ -97,7 +97,7 @@ export default {
         :background-color="label.color"
         :description="label.description"
         :scoped="showScopedLabel(label)"
-        class="gl-mt-3 gl-sm-mt-0 gl-mr-2 gl-mb-auto gl-label-sm"
+        class="gl-my-2 gl-mr-2 gl-mb-auto gl-label-sm"
         tooltip-placement="top"
       />
     </div>

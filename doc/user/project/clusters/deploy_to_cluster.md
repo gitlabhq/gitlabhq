@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Deploy to a Kubernetes cluster with cluster certificates (DEPRECATED) **(FREE)**
+# Deploy to a Kubernetes cluster with cluster certificates (deprecated) **(FREE)**
 
 > [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 

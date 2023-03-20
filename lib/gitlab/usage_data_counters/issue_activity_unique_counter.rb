@@ -180,7 +180,6 @@ module Gitlab
         private
 
         def track_snowplow_action(event_name, author, project)
-          return unless Feature.enabled?(:route_hll_to_snowplow_phase2, project.namespace)
           return unless author
 
           Gitlab::Tracking.event(

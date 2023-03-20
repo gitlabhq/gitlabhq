@@ -1,6 +1,6 @@
 <script>
 import { isString } from 'lodash';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import { DEFAULT_COLOR, COLOR_WIDGET_COLOR, DROPDOWN_VARIANT, ISSUABLE_COLORS } from './constants';

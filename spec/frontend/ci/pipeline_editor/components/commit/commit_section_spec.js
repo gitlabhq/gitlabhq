@@ -113,10 +113,6 @@ describe('Pipeline Editor | Commit section', () => {
     await waitForPromises();
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when the user commits a new file', () => {
     beforeEach(async () => {
       mockMutateCommitData.mockResolvedValue(mockCommitCreateResponse);

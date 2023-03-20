@@ -4,6 +4,8 @@ class OauthAccessToken < Doorkeeper::AccessToken
   belongs_to :resource_owner, class_name: 'User'
   belongs_to :application, class_name: 'Doorkeeper::Application'
 
+  validates :expires_in, presence: true
+
   alias_attribute :user, :resource_owner
 
   scope :latest_per_application, -> { select('distinct on(application_id) *').order(application_id: :desc, created_at: :desc) }

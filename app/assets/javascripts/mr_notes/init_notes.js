@@ -1,5 +1,8 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { mapActions, mapState, mapGetters } from 'vuex';
+import { apolloProvider } from '~/graphql_shared/issuable_client';
+
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import store from '~/mr_notes/stores';
@@ -22,6 +25,8 @@ export default () => {
     return;
   }
 
+  Vue.use(VueApollo);
+
   const notesFilterProps = getNotesFilterData(el);
   const notesDataset = el.dataset;
 
@@ -33,8 +38,10 @@ export default () => {
       NotesApp,
     },
     store,
+    apolloProvider,
     provide: {
       reportAbusePath: notesDataset.reportAbusePath,
+      newSavedRepliesPath: notesDataset.savedRepliesNewPath,
     },
     data() {
       const noteableData = JSON.parse(notesDataset.noteableData);

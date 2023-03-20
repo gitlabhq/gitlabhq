@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::SetStatusService do
+RSpec.describe Users::SetStatusService, feature_category: :user_management do
   let(:current_user) { create(:user) }
 
   subject(:service) { described_class.new(current_user, params) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SystemNotes::IncidentsService do
+RSpec.describe SystemNotes::IncidentsService, feature_category: :incident_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:author) { create(:user) }

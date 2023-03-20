@@ -31,8 +31,8 @@ GET /search
 | `scope`       | string   | Yes | The scope to search in. Values include `projects`, `issues`, `merge_requests`, `milestones`, `snippet_titles`, `users`. [Additional scopes](#additional-scopes): `blobs`, `commits`, `notes`, `wiki_blobs`. |
 | `search`      | string   | Yes | The search query. |
 | `confidential` | boolean   | No | Filter by confidentiality. Supports `issues` scope; other scopes are ignored. |
-| `order_by`    | string   | No | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for Advanced Search.|
-| `sort`    | string   | No | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for Advanced Search.|
+| `order_by`    | string   | No | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.|
+| `sort`    | string   | No | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.|
 | `state`       | string   | No | Filter by state. Supports `issues` and `merge_requests` scopes; other scopes are ignored. |
 
 ### Scope: `projects`
@@ -407,6 +407,7 @@ Example response:
     "system": false,
     "noteable_id": 22,
     "noteable_type": "Issue",
+    "project_id": 6,
     "noteable_iid": 2
   }
 ]
@@ -449,8 +450,8 @@ GET /groups/:id/search
 | `scope`       | string   | Yes | The scope to search in. Values include `issues`, `merge_requests`, `milestones`, `projects`, `users`. [Additional scopes](#additional-scopes): `blobs`, `commits`, `notes`, `wiki_blobs`. |
 | `search`      | string   | Yes | The search query. |
 | `confidential` | boolean   | No | Filter by confidentiality. Supports only `issues` scope; other scopes are ignored. |
-| `order_by`    | string   | No | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for Advanced Search.|
-| `sort`    | string   | No | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for Advanced Search.|
+| `order_by`    | string   | No | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.|
+| `sort`    | string   | No | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.|
 | `state`       | string   | No | Filter by state. Supports `issues` and `merge_requests` only; other scopes are ignored. |
 
 The response depends on the requested scope.
@@ -796,6 +797,7 @@ Example response:
     "system": false,
     "noteable_id": 22,
     "noteable_type": "Issue",
+    "project_id": 6,
     "noteable_iid": 2
   }
 ]
@@ -839,8 +841,8 @@ GET /projects/:id/search
 | `search`      | string   | Yes | The search query. |
 | `confidential` | boolean   | No | Filter by confidentiality. Supports `issues` scope; other scopes are ignored. |
 | `ref`         | string   | No | The name of a repository branch or tag to search on. The project's default branch is used by default. Applicable only for scopes `blobs`, `commits`, and `wiki_blobs`. |
-| `order_by`    | string   | No | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for Advanced Search.|
-| `sort`    | string   | No | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for Advanced Search.|
+| `order_by`    | string   | No | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.|
+| `sort`    | string   | No | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.|
 | `state`       | string   | No | Filter by state. Supports the `issues` and `merge_requests` scopes; other scopes are ignored. |
 
 The response depends on the requested scope.
@@ -1046,6 +1048,7 @@ Example response:
     "system": false,
     "noteable_id": 22,
     "noteable_type": "Issue",
+    "project_id": 6,
     "noteable_iid": 2
   }
 ]

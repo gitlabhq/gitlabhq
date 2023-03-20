@@ -86,6 +86,16 @@ project, the following information is listed:
 
 Projects can be edited or deleted.
 
+To edit a project's name or description:
+
+1. In the Projects overview, next to the project you want to edit, select **Edit**.
+1. Edit the **Project name** or **Project description**.
+1. Select **Save Changes**.
+
+To delete a project:
+
+1. In the Projects overview, next to the project you want to delete, select **Delete**.
+
 The list of projects can be sorted by:
 
 - Updated date

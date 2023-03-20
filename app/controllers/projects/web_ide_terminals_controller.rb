@@ -29,10 +29,7 @@ class Projects::WebIdeTerminalsController < Projects::ApplicationController
   end
 
   def create
-    result = ::Ci::CreateWebIdeTerminalService.new(project,
-                                                     current_user,
-                                                     ref: params[:branch])
-                                                .execute
+    result = ::Ci::CreateWebIdeTerminalService.new(project, current_user, ref: params[:branch]).execute
 
     if result[:status] == :error
       render status: :bad_request, json: result[:message]

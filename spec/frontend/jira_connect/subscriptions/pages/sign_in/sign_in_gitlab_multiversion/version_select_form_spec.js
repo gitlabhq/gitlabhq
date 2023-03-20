@@ -17,10 +17,6 @@ describe('VersionSelectForm', () => {
     wrapper = shallowMountExtended(VersionSelectForm);
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default state', () => {
     beforeEach(() => {
       createComponent();

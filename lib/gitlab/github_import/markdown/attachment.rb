@@ -79,6 +79,22 @@ module Gitlab
           @url = url
         end
 
+        def part_of_project_blob?(import_source)
+          url.start_with?(
+            "#{::Gitlab::GithubImport::MarkdownText.github_url}/#{import_source}/blob"
+          )
+        end
+
+        def doc_belongs_to_project?(import_source)
+          url.start_with?(
+            "#{::Gitlab::GithubImport::MarkdownText.github_url}/#{import_source}/files"
+          )
+        end
+
+        def media?
+          url.start_with?(::Gitlab::GithubImport::MarkdownText::GITHUB_MEDIA_CDN)
+        end
+
         def inspect
           "<#{self.class.name}: { name: #{name}, url: #{url} }>"
         end

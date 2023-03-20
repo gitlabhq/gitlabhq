@@ -44,28 +44,28 @@ module Gitlab
     TRANSLATION_LEVELS = {
       'bg' => 0,
       'cs_CZ' => 0,
-      'da_DK' => 34,
-      'de' => 16,
+      'da_DK' => 33,
+      'de' => 15,
       'en' => 100,
       'eo' => 0,
-      'es' => 33,
+      'es' => 32,
       'fil_PH' => 0,
       'fr' => 99,
       'gl_ES' => 0,
       'id_ID' => 0,
       'it' => 1,
       'ja' => 31,
-      'ko' => 20,
-      'nb_NO' => 23,
+      'ko' => 19,
+      'nb_NO' => 22,
       'nl_NL' => 0,
       'pl_PL' => 3,
-      'pt_BR' => 57,
-      'ro_RO' => 91,
-      'ru' => 26,
-      'si_LK' => 11,
+      'pt_BR' => 56,
+      'ro_RO' => 89,
+      'ru' => 25,
+      'si_LK' => 10,
       'tr_TR' => 10,
-      'uk' => 55,
-      'zh_CN' => 98,
+      'uk' => 53,
+      'zh_CN' => 96,
       'zh_HK' => 1,
       'zh_TW' => 98
     }.freeze
@@ -118,11 +118,16 @@ module Gitlab
     end
 
     def setup(domain:, default_locale:)
+      custom_pluralization
       setup_repositories(domain)
       setup_default_locale(default_locale)
     end
 
     private
+
+    def custom_pluralization
+      Gitlab::I18n::Pluralization.install_on(FastGettext)
+    end
 
     def setup_repositories(domain)
       translation_repositories = [

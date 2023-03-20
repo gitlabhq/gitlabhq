@@ -91,7 +91,7 @@ export const designUploadMutationUpdatedResponse = {
   },
 };
 
-export const permissionsQueryResponse = {
+export const getPermissionsQueryResponse = (createDesign = true) => ({
   data: {
     project: {
       __typename: 'Project',
@@ -99,11 +99,11 @@ export const permissionsQueryResponse = {
       issue: {
         __typename: 'Issue',
         id: 'issue-1',
-        userPermissions: { __typename: 'UserPermissions', createDesign: true },
+        userPermissions: { __typename: 'UserPermissions', createDesign },
       },
     },
   },
-};
+});
 
 export const reorderedDesigns = [
   {
@@ -207,6 +207,112 @@ export const getDesignQueryResponse = {
             },
           ],
         },
+      },
+    },
+  },
+};
+
+export const mockNoteSubmitSuccessMutationResponse = [
+  {
+    data: {
+      createNote: {
+        note: {
+          id: 'gid://gitlab/DiffNote/468',
+          author: {
+            id: 'gid://gitlab/User/1',
+            avatarUrl:
+              'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+            name: 'Administrator',
+            username: 'root',
+            webUrl: 'http://127.0.0.1:3000/root',
+            __typename: 'UserCore',
+          },
+          body: 'New comment',
+          bodyHtml: "<p data-sourcepos='1:1-1:4' dir='auto'>asdd</p>",
+          createdAt: '2023-02-24T06:49:20Z',
+          resolved: false,
+          position: {
+            diffRefs: {
+              baseSha: 'f63ae53ed82d8765477c191383e1e6a000c10375',
+              startSha: 'f63ae53ed82d8765477c191383e1e6a000c10375',
+              headSha: 'f348c652f1a737151fc79047895e695fbe81464c',
+              __typename: 'DiffRefs',
+            },
+            x: 441,
+            y: 128,
+            height: 152,
+            width: 695,
+            __typename: 'DiffPosition',
+          },
+          userPermissions: {
+            adminNote: true,
+            repositionNote: true,
+            __typename: 'NotePermissions',
+          },
+          discussion: {
+            id: 'gid://gitlab/Discussion/6466a72f35b163f3c3e52d7976a09387f2c573e8',
+            notes: {
+              nodes: [
+                {
+                  id: 'gid://gitlab/DiffNote/459',
+                  __typename: 'Note',
+                },
+              ],
+              __typename: 'NoteConnection',
+            },
+            __typename: 'Discussion',
+          },
+          __typename: 'Note',
+        },
+        errors: [],
+        __typename: 'CreateNotePayload',
+      },
+    },
+  },
+];
+
+export const mockNoteSubmitFailureMutationResponse = [
+  {
+    errors: [
+      {
+        message:
+          'Variable $input of type CreateNoteInput! was provided invalid value for bodyaa (Field is not defined on CreateNoteInput), body (Expected value to not be null)',
+        locations: [
+          {
+            line: 1,
+            column: 21,
+          },
+        ],
+        extensions: {
+          value: {
+            noteableId: 'gid://gitlab/DesignManagement::Design/10',
+            discussionId: 'gid://gitlab/Discussion/6466a72f35b163f3c3e52d7976a09387f2c573e8',
+            bodyaa: 'df',
+          },
+          problems: [
+            {
+              path: ['bodyaa'],
+              explanation: 'Field is not defined on CreateNoteInput',
+            },
+            {
+              path: ['body'],
+              explanation: 'Expected value to not be null',
+            },
+          ],
+        },
+      },
+    ],
+  },
+];
+
+export const mockCreateImageNoteDiffResponse = {
+  data: {
+    createImageDiffNote: {
+      note: {
+        author: {
+          username: '',
+        },
+        discussion: {},
       },
     },
   },

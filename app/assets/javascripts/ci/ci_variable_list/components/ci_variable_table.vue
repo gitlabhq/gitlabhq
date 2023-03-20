@@ -4,6 +4,7 @@ import {
   GlButton,
   GlLoadingIcon,
   GlModalDirective,
+  GlKeysetPagination,
   GlTable,
   GlTooltipDirective,
 } from '@gitlab/ui';
@@ -56,6 +57,7 @@ export default {
   components: {
     GlAlert,
     GlButton,
+    GlKeysetPagination,
     GlLoadingIcon,
     GlTable,
   },
@@ -76,6 +78,10 @@ export default {
     },
     maxVariableLimit: {
       type: Number,
+      required: true,
+    },
+    pageInfo: {
+      type: Object,
       required: true,
     },
     variables: {
@@ -165,6 +171,28 @@ export default {
     >
       {{ exceedsVariableLimitText }}
     </gl-alert>
+    <div
+      v-if="glFeatures.ciVariablesPages"
+      class="ci-variable-actions gl-display-flex gl-justify-content-end gl-my-3"
+    >
+      <gl-button
+        v-if="!isTableEmpty"
+        data-qa-selector="reveal_ci_variable_value_button"
+        @click="toggleHiddenState"
+        >{{ valuesButtonText }}</gl-button
+      >
+      <gl-button
+        v-gl-modal-directive="$options.modalId"
+        class="gl-mx-3"
+        data-qa-selector="add_ci_variable_button"
+        variant="confirm"
+        category="primary"
+        :aria-label="__('Add')"
+        :disabled="exceedsVariableLimit"
+        @click="setSelectedVariable()"
+        >{{ __('Add variable') }}</gl-button
+      >
+    </div>
     <gl-table
       v-if="!isLoading"
       :fields="fields"
@@ -174,11 +202,13 @@ export default {
       sort-by="key"
       sort-direction="asc"
       stacked="lg"
-      table-class="text-secondary"
+      table-class="gl-border-t"
       fixed
       show-empty
       sort-icon-left
       no-sort-reset
+      no-local-sorting
+      @sort-changed="(val) => $emit('sort-changed', val)"
     >
       <template #table-colgroup="scope">
         <col v-for="field in scope.fields" :key="field.key" :style="field.customStyle" />
@@ -275,7 +305,7 @@ export default {
     >
       {{ exceedsVariableLimitText }}
     </gl-alert>
-    <div class="ci-variable-actions gl-display-flex gl-mt-5">
+    <div v-if="!glFeatures.ciVariablesPages" class="ci-variable-actions gl-display-flex gl-mt-5">
       <gl-button
         v-gl-modal-directive="$options.modalId"
         class="gl-mr-3"
@@ -293,6 +323,15 @@ export default {
         @click="toggleHiddenState"
         >{{ valuesButtonText }}</gl-button
       >
+    </div>
+    <div v-else class="gl-display-flex gl-justify-content-center gl-mt-6">
+      <gl-keyset-pagination
+        v-bind="pageInfo"
+        :prev-text="__('Previous')"
+        :next-text="__('Next')"
+        @prev="$emit('handle-prev-page')"
+        @next="$emit('handle-next-page')"
+      />
     </div>
   </div>
 </template>

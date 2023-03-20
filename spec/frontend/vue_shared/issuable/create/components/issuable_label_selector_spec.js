@@ -6,11 +6,8 @@ import {
 } from 'jest/sidebar/components/labels/labels_select_widget/mock_data';
 import IssuableLabelSelector from '~/vue_shared/issuable/create/components/issuable_label_selector.vue';
 import LabelsSelect from '~/sidebar/components/labels/labels_select_widget/labels_select_root.vue';
-import {
-  DropdownVariant,
-  LabelType,
-} from '~/sidebar/components/labels/labels_select_widget/constants';
-import { WorkspaceType } from '~/issues/constants';
+import { DropdownVariant } from '~/sidebar/components/labels/labels_select_widget/constants';
+import { WORKSPACE_PROJECT } from '~/issues/constants';
 import { __ } from '~/locale';
 
 const allowLabelRemove = true;
@@ -20,9 +17,9 @@ const fullPath = '/full-path';
 const labelsFilterBasePath = '/labels-filter-base-path';
 const initialLabels = [];
 const issuableType = 'issue';
-const labelType = LabelType.project;
+const labelType = WORKSPACE_PROJECT;
 const variant = DropdownVariant.Embedded;
-const workspaceType = WorkspaceType.project;
+const workspaceType = WORKSPACE_PROJECT;
 
 describe('IssuableLabelSelector', () => {
   let wrapper;
@@ -49,10 +46,6 @@ describe('IssuableLabelSelector', () => {
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   const expectTitleWithCount = (count) => {
     const title = findTitle();

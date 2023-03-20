@@ -88,10 +88,6 @@ function factory({ path, isLoading = false, hasMore = true, entries = {}, commit
 const findTableRows = () => vm.findAllComponents(TableRow);
 
 describe('Repository table component', () => {
-  afterEach(() => {
-    vm.destroy();
-  });
-
   it.each`
     path            | ref
     ${'/'}          | ${'main'}

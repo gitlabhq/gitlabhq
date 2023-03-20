@@ -1,7 +1,9 @@
 <script>
 import { EditorContent as TiptapEditorContent } from '@tiptap/vue-2';
-import { __ } from '~/locale';
-import { VARIANT_DANGER } from '~/flash';
+import { GlSprintf, GlLink } from '@gitlab/ui';
+import { __, s__ } from '~/locale';
+import { VARIANT_DANGER } from '~/alert';
+import EditorModeDropdown from '~/vue_shared/components/markdown/editor_mode_dropdown.vue';
 import { createContentEditor } from '../services/create_content_editor';
 import { ALERT_EVENT, TIPTAP_AUTOFOCUS_OPTIONS } from '../constants';
 import ContentEditorAlert from './content_editor_alert.vue';
@@ -16,6 +18,8 @@ import LoadingIndicator from './loading_indicator.vue';
 
 export default {
   components: {
+    GlSprintf,
+    GlLink,
     LoadingIndicator,
     ContentEditorAlert,
     ContentEditorProvider,
@@ -26,6 +30,7 @@ export default {
     LinkBubbleMenu,
     MediaBubbleMenu,
     EditorStateObserver,
+    EditorModeDropdown,
   },
   props: {
     renderMarkdown: {
@@ -51,16 +56,31 @@ export default {
       required: false,
       default: '',
     },
+    placeholder: {
+      type: String,
+      required: false,
+      default: '',
+    },
     autofocus: {
       type: [String, Boolean],
       required: false,
       default: false,
       validator: (autofocus) => TIPTAP_AUTOFOCUS_OPTIONS.includes(autofocus),
     },
-    useBottomToolbar: {
+    quickActionsDocsPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    drawioEnabled: {
       type: Boolean,
       required: false,
       default: false,
+    },
+    editable: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   data() {
@@ -76,9 +96,20 @@ export default {
         this.setSerializedContent(markdown);
       }
     },
+    editable(value) {
+      this.contentEditor.setEditable(value);
+    },
   },
   created() {
-    const { renderMarkdown, uploadsPath, extensions, serializerConfig, autofocus } = this;
+    const {
+      renderMarkdown,
+      uploadsPath,
+      extensions,
+      serializerConfig,
+      autofocus,
+      drawioEnabled,
+      editable,
+    } = this;
 
     // This is a non-reactive attribute intentionally since this is a complex object.
     this.contentEditor = createContentEditor({
@@ -86,8 +117,10 @@ export default {
       uploadsPath,
       extensions,
       serializerConfig,
+      drawioEnabled,
       tiptapOptions: {
         autofocus,
+        editable,
       },
     });
   },
@@ -104,10 +137,10 @@ export default {
 
       try {
         await this.contentEditor.setSerializedContent(markdown);
-        this.contentEditor.setEditable(true);
         this.notifyLoadingSuccess();
         this.latestMarkdown = markdown;
       } catch {
+        this.contentEditor.setEditable(false);
         this.contentEditor.eventHub.$emit(ALERT_EVENT, {
           message: __(
             'An error occurred while trying to render the content editor. Please try again.',
@@ -115,10 +148,10 @@ export default {
           variant: VARIANT_DANGER,
           actionLabel: __('Retry'),
           action: () => {
+            this.contentEditor.setEditable(true);
             this.setSerializedContent(markdown);
           },
         });
-        this.contentEditor.setEditable(false);
         this.notifyLoadingError();
       }
     },
@@ -149,6 +182,16 @@ export default {
         markdown: this.latestMarkdown,
       });
     },
+    handleEditorModeChanged(mode) {
+      if (mode === 'markdown') {
+        this.$emit('enableMarkdownEditor');
+      }
+    },
+  },
+  i18n: {
+    quickActionsText: s__(
+      'ContentEditor|For %{quickActionsDocsLinkStart}quick actions%{quickActionsDocsLinkEnd}, type %{keyboardStart}/%{keyboardEnd}.',
+    ),
   },
 };
 </script>
@@ -168,30 +211,37 @@ export default {
         class="md-area"
         :class="{ 'is-focused': focused }"
       >
-        <formatting-toolbar
-          v-if="!useBottomToolbar"
-          ref="toolbar"
-          class="gl-border-b"
-          @enableMarkdownEditor="$emit('enableMarkdownEditor')"
-        />
+        <formatting-toolbar ref="toolbar" @enableMarkdownEditor="$emit('enableMarkdownEditor')" />
         <div class="gl-relative gl-mt-4">
           <formatting-bubble-menu />
           <code-block-bubble-menu />
           <link-bubble-menu />
           <media-bubble-menu />
+          <div v-if="placeholder && !markdown && !focused" class="gl-absolute gl-text-gray-400">
+            {{ placeholder }}
+          </div>
           <tiptap-editor-content
             class="md"
             data-testid="content_editor_editablebox"
             :editor="contentEditor.tiptapEditor"
           />
           <loading-indicator v-if="isLoading" />
+          <div class="gl-display-flex gl-border-t gl-py-2 gl-text-secondary">
+            <div class="gl-w-full">
+              <template v-if="quickActionsDocsPath">
+                <gl-sprintf :message="$options.i18n.quickActionsText">
+                  <template #keyboard="{ content }">
+                    <kbd>{{ content }}</kbd>
+                  </template>
+                  <template #quickActionsDocsLink="{ content }">
+                    <gl-link :href="quickActionsDocsPath" target="_blank">{{ content }}</gl-link>
+                  </template>
+                </gl-sprintf>
+              </template>
+            </div>
+            <editor-mode-dropdown size="small" value="richText" @input="handleEditorModeChanged" />
+          </div>
         </div>
-        <formatting-toolbar
-          v-if="useBottomToolbar"
-          ref="toolbar"
-          class="gl-border-t"
-          @enableMarkdownEditor="$emit('enableMarkdownEditor')"
-        />
       </div>
     </div>
   </content-editor-provider>

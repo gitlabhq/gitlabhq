@@ -55,6 +55,7 @@ RSpec.describe DesignManagement::Design, feature_category: :design_management do
     it { is_expected.to validate_presence_of(:issue) }
     it { is_expected.to validate_presence_of(:filename) }
     it { is_expected.to validate_length_of(:filename).is_at_most(255) }
+    it { is_expected.to validate_length_of(:description).is_at_most(Gitlab::Database::MAX_TEXT_SIZE_LIMIT) }
     it { is_expected.to validate_uniqueness_of(:filename).scoped_to(:issue_id) }
 
     it "validates that the extension is an image" do
@@ -512,11 +513,11 @@ RSpec.describe DesignManagement::Design, feature_category: :design_management do
   end
 
   describe '#to_reference' do
+    let(:filename)  { 'homescreen.jpg' }
     let(:namespace) { build(:namespace, id: non_existing_record_id, path: 'sample-namespace') }
     let(:project)   { build(:project, name: 'sample-project', namespace: namespace) }
-    let(:group)     { create(:group, name: 'Group', path: 'sample-group') }
+    let(:group)     { build(:group, name: 'Group', path: 'sample-group') }
     let(:issue)     { build(:issue, iid: 1, project: project) }
-    let(:filename)  { 'homescreen.jpg' }
     let(:design)    { build(:design, filename: filename, issue: issue, project: project) }
 
     context 'when nil argument' do

@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { GlBroadcastMessage, GlForm } from '@gitlab/ui';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
 import MessageForm from '~/admin/broadcast_messages/components/message_form.vue';
@@ -15,7 +15,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { MOCK_TARGET_ACCESS_LEVELS } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('MessageForm', () => {
   let wrapper;

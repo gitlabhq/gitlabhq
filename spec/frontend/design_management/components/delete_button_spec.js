@@ -21,10 +21,6 @@ describe('Batch delete button component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders non-disabled button by default', () => {
     createComponent();
 

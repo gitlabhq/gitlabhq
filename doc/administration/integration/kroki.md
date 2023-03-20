@@ -9,12 +9,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241744) in GitLab 13.7.
 > - Support for reStructuredText and Textile documents [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324766) in GitLab 13.12.
 
-When [Kroki](https://kroki.io) integration is enabled and configured in
-GitLab, you can use it to create diagrams in AsciiDoc, Markdown, reStructuredText, and Textile documents.
+With the [Kroki](https://kroki.io) integration,
+you can create diagrams in AsciiDoc, Markdown, reStructuredText, and Textile.
 
-## Kroki Server
+## Kroki server
 
-When Kroki is enabled, GitLab sends diagrams to an instance of Kroki to display them as images.
+When you enable Kroki, GitLab sends diagrams to an instance of Kroki to display them as images.
 You can use the free public cloud instance `https://kroki.io` or you can [install Kroki](https://docs.kroki.io/kroki/setup/install/)
 on your own infrastructure.
 After you've installed Kroki, make sure to update the server URL to point to your instance.
@@ -29,11 +29,16 @@ docker run -d --name kroki -p 8080:8000 yuzutech/kroki
 
 The **Kroki URL** is the hostname of the server running the container.
 
-The [`yuzutech/kroki`](https://hub.docker.com/r/yuzutech/kroki) image contains the following diagrams libraries out-of-the-box:
+The [`yuzutech/kroki`](https://hub.docker.com/r/yuzutech/kroki) Docker image contains several diagram
+libraries out of the box. For a complete list, see the
+[`asciidoctor-kroki` README](https://github.com/ggrossetie/asciidoctor-kroki/blob/master/README.md#supported-diagram-types).
+Supported libraries include:
 
 <!-- vale gitlab.Spelling = NO -->
 
 - [Bytefield](https://bytefield-svg.deepsymmetry.org/)
+- [D2](https://d2lang.com/tour/intro/)
+- [DBML](https://www.dbml.org/home/)
 - [Ditaa](https://ditaa.sourceforge.net)
 - [Erd](https://github.com/BurntSushi/erd)
 - [GraphViz](https://www.graphviz.org/)

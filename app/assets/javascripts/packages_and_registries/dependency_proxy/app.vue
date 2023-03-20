@@ -55,7 +55,7 @@ export default {
   modalButtons: {
     primary: {
       text: s__('DependencyProxy|Clear cache'),
-      attributes: [{ variant: 'danger' }],
+      attributes: { variant: 'danger' },
     },
     secondary: {
       text: __('Cancel'),

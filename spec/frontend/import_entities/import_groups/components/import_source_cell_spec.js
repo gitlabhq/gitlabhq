@@ -22,10 +22,6 @@ describe('import source cell', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when group status is NONE', () => {
     beforeEach(() => {
       group = generateFakeTableEntry({ id: 1, status: STATUSES.NONE });

@@ -56,10 +56,6 @@ describe('SignInOauthButton', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findButton = () => wrapper.findComponent(GlButton);
   describe('when `gitlabBasePath` is GitLab.com', () => {
     it('displays a button', () => {

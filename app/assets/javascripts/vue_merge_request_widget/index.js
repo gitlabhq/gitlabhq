@@ -13,7 +13,18 @@ Vue.use(Translate);
 Vue.use(VueApollo);
 
 const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient(),
+  defaultClient: createDefaultClient(
+    {},
+    {
+      cacheConfig: {
+        typePolicies: {
+          MergeRequestApprovalState: {
+            merge: true,
+          },
+        },
+      },
+    },
+  ),
 });
 
 export default () => {
@@ -29,6 +40,9 @@ export default () => {
       artifactsEndpointPlaceholder: gl.mrWidgetData.artifacts_endpoint_placeholder,
       falsePositiveDocUrl: gl.mrWidgetData.false_positive_doc_url,
       canViewFalsePositive: parseBoolean(gl.mrWidgetData.can_view_false_positive),
+      canCreatePipelineInTargetProject: parseBoolean(
+        gl.mrWidgetData.can_create_pipeline_in_target_project,
+      ),
     },
     ...MrWidgetOptions,
     apolloProvider,

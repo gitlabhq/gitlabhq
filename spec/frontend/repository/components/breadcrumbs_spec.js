@@ -42,10 +42,6 @@ describe('Repository breadcrumbs component', () => {
   const findUploadBlobModal = () => wrapper.findComponent(UploadBlobModal);
   const findNewDirectoryModal = () => wrapper.findComponent(NewDirectoryModal);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     path                        | linkCount
     ${'/'}                      | ${1}

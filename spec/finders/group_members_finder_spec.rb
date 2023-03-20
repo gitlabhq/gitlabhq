@@ -225,4 +225,56 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :subgroups do
       end
     end
   end
+
+  context 'filter by user type' do
+    subject(:by_user_type) { described_class.new(group, user1, params: { user_type: user_type }).execute }
+
+    let_it_be(:service_account) { create(:user, :service_account) }
+    let_it_be(:project_bot) { create(:user, :project_bot) }
+
+    let_it_be(:service_account_member) { group.add_developer(service_account) }
+    let_it_be(:project_bot_member) { group.add_developer(project_bot) }
+
+    context 'when the user is an owner' do
+      before do
+        group.add_owner(user1)
+      end
+
+      context 'when filtering by project bots' do
+        let(:user_type) { 'project_bot' }
+
+        it 'returns filtered members' do
+          expect(by_user_type).to match_array([project_bot_member])
+        end
+      end
+
+      context 'when filtering by service accounts' do
+        let(:user_type) { 'service_account' }
+
+        it 'returns filtered members' do
+          expect(by_user_type).to match_array([service_account_member])
+        end
+      end
+    end
+
+    context 'when the user is a maintainer' do
+      let(:user_type) { 'service_account' }
+
+      let_it_be(:user1_member) { group.add_maintainer(user1) }
+
+      it 'returns unfiltered members' do
+        expect(by_user_type).to match_array([user1_member, service_account_member, project_bot_member])
+      end
+    end
+
+    context 'when the user is a developer' do
+      let(:user_type) { 'service_account' }
+
+      let_it_be(:user1_member) { group.add_developer(user1) }
+
+      it 'returns unfiltered members' do
+        expect(by_user_type).to match_array([user1_member, service_account_member, project_bot_member])
+      end
+    end
+  end
 end

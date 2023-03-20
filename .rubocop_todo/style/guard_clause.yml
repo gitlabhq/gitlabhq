@@ -490,7 +490,6 @@ Style/GuardClause:
     - 'lib/gitlab/ci/pipeline/expression/lexeme/base.rb'
     - 'lib/gitlab/ci/pipeline/expression/lexeme/pattern.rb'
     - 'lib/gitlab/ci/reports/codequality_reports_comparer.rb'
-    - 'lib/gitlab/ci/reports/security/vulnerability_reports_comparer.rb'
     - 'lib/gitlab/ci/runner/backoff.rb'
     - 'lib/gitlab/ci/runner_upgrade_check.rb'
     - 'lib/gitlab/ci/trace.rb'

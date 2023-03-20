@@ -52,11 +52,14 @@ const createMainOutput = ({ outFile, cssKeys, type }) => ({
     path.join(FIXTURES_ROOT, `startup_css/project-${type}.html`),
     path.join(FIXTURES_ROOT, `startup_css/project-${type}-signed-out.html`),
     path.join(FIXTURES_ROOT, `startup_css/project-${type}-search-ff-off.html`),
+    path.join(FIXTURES_ROOT, `startup_css/project-${type}-super-sidebar.html`),
   ],
   cssKeys,
   purgeOptions: {
     safelist: {
       standard: [
+        'page-with-super-sidebar',
+        'page-with-super-sidebar-collapsed',
         'page-with-icon-sidebar',
         'sidebar-collapsed-desktop',
         // We want to include the root dropdown-menu style since it should be hidden by default

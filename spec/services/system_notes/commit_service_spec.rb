@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SystemNotes::CommitService do
+RSpec.describe SystemNotes::CommitService, feature_category: :code_review_workflow do
   let_it_be(:group)    { create(:group) }
   let_it_be(:project)  { create(:project, :repository, group: group) }
   let_it_be(:author)   { create(:user) }
@@ -13,7 +13,7 @@ RSpec.describe SystemNotes::CommitService do
     subject { commit_service.add_commits(new_commits, old_commits, oldrev) }
 
     let(:noteable)    { create(:merge_request, source_project: project, target_project: project) }
-    let(:new_commits) { noteable.commits }
+    let(:new_commits) { create_commits(10) }
     let(:old_commits) { [] }
     let(:oldrev)      { nil }
 
@@ -43,6 +43,48 @@ RSpec.describe SystemNotes::CommitService do
             expect(decoded_note_content).to include("<li>#{commit.short_id} - #{commit.title}</li>")
           end
         end
+
+        context 'with HTML content' do
+          let(:new_commits) { [double(title: '<pre>This is a test</pre>', short_id: '12345678')] }
+
+          it 'escapes HTML titles' do
+            expect(note_lines[1]).to eq("<ul><li>12345678 - &lt;pre&gt;This is a test&lt;/pre&gt;</li></ul>")
+          end
+        end
+
+        context 'with one commit exceeding the NEW_COMMIT_DISPLAY_LIMIT' do
+          let(:new_commits) { create_commits(11) }
+          let(:earlier_commit_summary_line) { note_lines[1] }
+
+          it 'includes the truncated new commits summary' do
+            expect(earlier_commit_summary_line).to start_with("<ul><li>#{new_commits[0].short_id} - 1 earlier commit")
+          end
+
+          context 'with oldrev' do
+            let(:oldrev) { '12345678abcd' }
+
+            it 'includes the truncated new commits summary with the oldrev' do
+              expect(earlier_commit_summary_line).to start_with("<ul><li>#{new_commits[0].short_id} - 1 earlier commit")
+            end
+          end
+        end
+
+        context 'with multiple commits exceeding the NEW_COMMIT_DISPLAY_LIMIT' do
+          let(:new_commits) { create_commits(13) }
+          let(:earlier_commit_summary_line) { note_lines[1] }
+
+          it 'includes the truncated new commits summary' do
+            expect(earlier_commit_summary_line).to start_with("<ul><li>#{new_commits[0].short_id}..#{new_commits[2].short_id} - 3 earlier commits")
+          end
+
+          context 'with oldrev' do
+            let(:oldrev) { '12345678abcd' }
+
+            it 'includes the truncated new commits summary with the oldrev' do
+              expect(earlier_commit_summary_line).to start_with("<ul><li>12345678...#{new_commits[2].short_id} - 3 earlier commits")
+            end
+          end
+        end
       end
 
       describe 'summary line for existing commits' do
@@ -53,6 +95,15 @@ RSpec.describe SystemNotes::CommitService do
 
           it 'includes the existing commit' do
             expect(summary_line).to start_with("<ul><li>#{old_commits.first.short_id} - 1 commit from branch <code>feature</code>")
+          end
+
+          context 'with new commits exceeding the display limit' do
+            let(:summary_line) { note_lines[1] }
+            let(:new_commits) { create_commits(13) }
+
+            it 'includes the existing commit as well as the truncated new commit summary' do
+              expect(summary_line).to start_with("<ul><li>#{old_commits.first.short_id} - 1 commit from branch <code>feature</code></li><li>#{old_commits.last.short_id}...#{new_commits[2].short_id} - 3 earlier commits")
+            end
           end
         end
 
@@ -66,12 +117,30 @@ RSpec.describe SystemNotes::CommitService do
               expect(summary_line)
                 .to start_with("<ul><li>#{Commit.truncate_sha(oldrev)}...#{old_commits.last.short_id} - 26 commits from branch <code>feature</code>")
             end
+
+            context 'with new commits exceeding the display limit' do
+              let(:new_commits) { create_commits(13) }
+
+              it 'includes the existing commit as well as the truncated new commit summary' do
+                expect(summary_line)
+                  .to start_with("<ul><li>#{Commit.truncate_sha(oldrev)}...#{old_commits.last.short_id} - 26 commits from branch <code>feature</code></li><li>#{old_commits.last.short_id}...#{new_commits[2].short_id} - 3 earlier commits")
+              end
+            end
           end
 
           context 'without oldrev' do
             it 'includes a commit range and count' do
               expect(summary_line)
                 .to start_with("<ul><li>#{old_commits[0].short_id}..#{old_commits[-1].short_id} - 26 commits from branch <code>feature</code>")
+            end
+
+            context 'with new commits exceeding the display limit' do
+              let(:new_commits) { create_commits(13) }
+
+              it 'includes the existing commit as well as the truncated new commit summary' do
+                expect(summary_line)
+                  .to start_with("<ul><li>#{old_commits.first.short_id}..#{old_commits.last.short_id} - 26 commits from branch <code>feature</code></li><li>#{old_commits.last.short_id}...#{new_commits[2].short_id} - 3 earlier commits")
+              end
             end
           end
 
@@ -106,12 +175,9 @@ RSpec.describe SystemNotes::CommitService do
     end
   end
 
-  describe '#new_commit_summary' do
-    it 'escapes HTML titles' do
-      commit = double(title: '<pre>This is a test</pre>', short_id: '12345678')
-      escaped = '&lt;pre&gt;This is a test&lt;/pre&gt;'
-
-      expect(described_class.new.new_commit_summary([commit])).to all(match(/- #{escaped}/))
+  def create_commits(count)
+    Array.new(count) do |i|
+      double(title: "Test commit #{i}", short_id: "abcd00#{i}")
     end
   end
 end

@@ -20,10 +20,6 @@ describe('ColorItem', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the correct title', () => {
     expect(wrapper.text()).toBe(propsData.title);
   });

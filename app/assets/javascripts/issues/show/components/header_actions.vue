@@ -2,7 +2,6 @@
 import {
   GlButton,
   GlDropdown,
-  GlDropdownDivider,
   GlDropdownItem,
   GlLink,
   GlModal,
@@ -10,9 +9,9 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { createAlert, VARIANT_SUCCESS } from '~/flash';
+import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
-import { IssueType, STATUS_CLOSED } from '~/issues/constants';
+import { STATUS_CLOSED, TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import { ISSUE_STATE_EVENT_CLOSE, ISSUE_STATE_EVENT_REOPEN } from '~/issues/show/constants';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -20,6 +19,7 @@ import { s__, __, sprintf } from '~/locale';
 import eventHub from '~/notes/event_hub';
 import Tracking from '~/tracking';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
+import issuesEventHub from '../event_hub';
 import promoteToEpicMutation from '../queries/promote_to_epic.mutation.graphql';
 import updateIssueMutation from '../queries/update_issue.mutation.graphql';
 import DeleteIssueModal from './delete_issue_modal.vue';
@@ -35,6 +35,8 @@ export default {
   },
   deleteModalId: 'delete-modal-id',
   i18n: {
+    edit: __('Edit'),
+    editTitleAndDescription: __('Edit title and description'),
     promoteErrorMessage: __(
       'Something went wrong while promoting the issue to an epic. Please try again.',
     ),
@@ -47,7 +49,6 @@ export default {
     DeleteIssueModal,
     GlButton,
     GlDropdown,
-    GlDropdownDivider,
     GlDropdownItem,
     GlLink,
     GlModal,
@@ -87,7 +88,7 @@ export default {
       default: '',
     },
     issueType: {
-      default: IssueType.Issue,
+      default: TYPE_ISSUE,
     },
     newIssuePath: {
       default: '',
@@ -118,8 +119,8 @@ export default {
     },
     issueTypeText() {
       const issueTypeTexts = {
-        [IssueType.Issue]: s__('HeaderAction|issue'),
-        [IssueType.Incident]: s__('HeaderAction|incident'),
+        [TYPE_ISSUE]: s__('HeaderAction|issue'),
+        [TYPE_INCIDENT]: s__('HeaderAction|incident'),
       };
 
       return issueTypeTexts[this.issueType] ?? this.issueType;
@@ -240,6 +241,9 @@ export default {
           this.toggleStateButtonLoading(false);
         });
     },
+    edit() {
+      issuesEventHub.$emit('open.form');
+    },
   },
 };
 </script>
@@ -255,6 +259,9 @@ export default {
       data-testid="mobile-dropdown"
       :loading="isToggleStateButtonLoading"
     >
+      <gl-dropdown-item v-if="canUpdateIssue" @click="edit">
+        {{ $options.i18n.edit }}
+      </gl-dropdown-item>
       <gl-dropdown-item
         v-if="showToggleIssueStateButton"
         :data-qa-selector="`mobile_${qaSelector}`"
@@ -280,7 +287,6 @@ export default {
         {{ __('Submit as spam') }}
       </gl-dropdown-item>
       <template v-if="canDestroyIssue">
-        <gl-dropdown-divider />
         <gl-dropdown-item
           v-gl-modal="$options.deleteModalId"
           variant="danger"
@@ -292,10 +298,23 @@ export default {
     </gl-dropdown>
 
     <gl-button
+      v-if="canUpdateIssue"
+      v-gl-tooltip.bottom
+      :title="$options.i18n.editTitleAndDescription"
+      :aria-label="$options.i18n.editTitleAndDescription"
+      class="js-issuable-edit gl-display-none gl-sm-display-block"
+      data-testid="edit-button"
+      @click="edit"
+    >
+      {{ $options.i18n.edit }}
+    </gl-button>
+
+    <gl-button
       v-if="showToggleIssueStateButton"
-      class="gl-display-none gl-sm-display-inline-flex!"
+      class="gl-display-none gl-sm-display-inline-flex! gl-sm-ml-3"
       :data-qa-selector="qaSelector"
       :loading="isToggleStateButtonLoading"
+      data-testid="toggle-button"
       @click="toggleIssueState"
     >
       {{ buttonText }}
@@ -304,7 +323,7 @@ export default {
     <gl-dropdown
       v-if="hasDesktopDropdown"
       v-gl-tooltip.hover
-      class="gl-display-none gl-sm-display-inline-flex! gl-ml-3"
+      class="gl-display-none gl-sm-display-inline-flex! gl-sm-ml-3"
       icon="ellipsis_v"
       category="tertiary"
       data-qa-selector="issue_actions_ellipsis_dropdown"
@@ -338,8 +357,8 @@ export default {
       >
         {{ __('Submit as spam') }}
       </gl-dropdown-item>
+
       <template v-if="canDestroyIssue">
-        <gl-dropdown-divider />
         <gl-dropdown-item
           v-gl-modal="$options.deleteModalId"
           variant="danger"

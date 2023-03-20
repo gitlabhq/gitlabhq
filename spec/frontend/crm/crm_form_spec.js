@@ -188,10 +188,6 @@ describe('Reusable form component', () => {
   };
   const asTestParams = (...keys) => keys.map((name) => [name, forms[name]]);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe.each(asTestParams(FORM_CREATE_CONTACT, FORM_UPDATE_CONTACT))(
     '%s form save button',
     (name, { mountFunction }) => {

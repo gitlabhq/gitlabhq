@@ -126,7 +126,7 @@ We'll use this variable in the `.gitlab-ci.yml` later, to easily connect to our 
 
 ![variables page](img/variables_page.png)
 
-We also need to add the public key to **Project** > **Settings** > **Repository** as a [Deploy Key](../../../user/project/deploy_keys/index.md), which gives us the ability to access our repository from the server through [SSH protocol](../../../gitlab-basics/command-line-commands.md#start-working-on-your-project).
+We also need to add the public key to **Project** > **Settings** > **Repository** as a [Deploy Key](../../../user/project/deploy_keys/index.md), which gives us the ability to access our repository from the server through the SSH protocol.
 
 ```shell
 # As the deployer user on the server

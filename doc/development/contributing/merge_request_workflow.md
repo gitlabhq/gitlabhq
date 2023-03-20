@@ -9,11 +9,33 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 We welcome merge requests from everyone, with fixes and improvements
 to GitLab code, tests, and documentation. The issues that are specifically suitable
-for community contributions have the [`Seeking community contributions`](issue_workflow.md#label-for-community-contributors)
+for community contributions have the
+[`Seeking community contributions`](../labels/index.md#label-for-community-contributors)
 label, but you are free to contribute to any issue you want.
 
+## Working from issues
+
+If you find an issue, please submit a merge request with a fix or improvement,
+if you can, and include tests.
+
+If you want to add a new feature that is not labeled, it is best to first create
+an issue (if there isn't one already) and leave a comment asking for it
+to be labeled as `Seeking community contributions`. See the [feature proposals](issue_workflow.md#feature-proposals)
+section.
+
+If you don't know how to fix the issue but can write a test that exposes the
+issue, we will accept that as well. In general, bug fixes that include a
+regression test are merged quickly. New features without proper tests
+might be slower to receive feedback.
+
+If you are new to GitLab development (or web development in general), see the
+[how to contribute](index.md#how-to-contribute) section to get started with
+some potentially easy issues.
+
+## Merge request ownership
+
 If an issue is marked for the current milestone at any time, even
-when you are working on it, a GitLab team member may take over the merge request to ensure the work is finished before the release date. 
+when you are working on it, a GitLab team member may take over the merge request to ensure the work is finished before the release date.
 
 If a contributor is no longer actively working on a submitted merge request,
 we can:
@@ -31,27 +53,17 @@ we credit the original author by adding a changelog entry crediting the author
 and optionally include the original author on at least one of the commits
 within the MR.
 
-If you want to add a new feature that is not labeled, it is best to first create
-an issue (if there isn't one already) and leave a comment asking for it
-to be labeled as `Seeking community contributions`. See the [feature proposals](issue_workflow.md#feature-proposals)
-section.
+## Merge request guidelines for contributors
+
+### Getting started
 
 Merge requests should be submitted to the appropriate project at GitLab.com, for example
 [GitLab](https://gitlab.com/gitlab-org/gitlab/-/merge_requests),
 [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests), or
 [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests).
 
-If you are new to GitLab development (or web development in general), see the
-[how to contribute](index.md#how-to-contribute) section to get started with
-some potentially easy issues.
-
-To start developing GitLab, download the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit)
+To start developing GitLab locally, download the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit)
 and see the [Development section](../../index.md) for the required guidelines.
-
-## Merge request guidelines for contributors
-
-If you find an issue, please submit a merge request with a fix or improvement,
-if you can, and include tests.
 
 NOTE:
 Consider placing your code behind a feature flag if you think it might affect production availability.
@@ -64,20 +76,19 @@ this by tagging them in an MR before submitting the code for review. Talking
 to team members can be helpful when making design decisions. Communicating the
 intent behind your changes can also help expedite merge request reviews.
 
-If
-you don't know how to fix the issue but can write a test that exposes the
-issue, we will accept that as well. In general, bug fixes that include a
-regression test are merged quickly. New features without proper tests
-might be slower to receive feedback.
+### Creating a merge request
 
 To create a merge request:
 
-1. [Fork](../../user/project/repository/forking_workflow.md) the project into
-   your personal namespace (or group) on GitLab.com.
-1. Create a feature branch in your fork (don't work off your [default branch](../../user/project/repository/branches/default.md)).
+1. [Read about](https://gitlab.com/gitlab-community/meta) and [request access](https://gitlab.com/gitlab-community/meta#request-access-to-community-forks)
+   to the GitLab Community forks. In some cases, you will want to set up the
+   [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit) to
+   [develop against the GitLab community fork](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#develop-in-your-own-gitlab-fork).
+1. Create a feature branch in the [GitLab community fork](https://gitlab.com/gitlab-community/gitlab)
+   (don't work off the [default branch](../../user/project/repository/branches/default.md)).
 1. Follow the [commit messages guidelines](#commit-messages-guidelines).
 1. If you have multiple commits, combine them into a few logically organized commits.
-1. Push the commits to your working branch in your fork.
+1. Push the commits to your working branch in the fork.
 1. Submit a merge request (MR) against the default branch of the upstream project.
 1. The MR title should describe the change you want to make.
 1. The MR description should give a reason for your change.
@@ -191,6 +202,10 @@ To make sure that your merge request can be approved, please ensure that it meet
 the contribution acceptance criteria below:
 
 1. The change is as small as possible.
+1. If the merge request contains more than 500 changes:
+   - Explain the reason
+   - Mention a maintainer
+1. Mention any major [breaking changes](../deprecation_guidelines/index.md).
 1. Include proper tests and make all tests pass (unless it contains a test
    exposing a bug in existing code). Every new class should have corresponding
    unit tests, even if the class is exercised at a higher level, such as a feature test.

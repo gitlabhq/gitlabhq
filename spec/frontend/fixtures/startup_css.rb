@@ -16,7 +16,6 @@ RSpec.describe 'Startup CSS fixtures', type: :controller do
     before do
       # We want vNext badge to be included and com/canary don't remove/hide any other elements.
       # This is why we're turning com and canary on by default for now.
-      allow(Gitlab).to receive(:com?).and_return(true)
       allow(Gitlab).to receive(:canary?).and_return(true)
       sign_in(user)
     end
@@ -55,13 +54,28 @@ RSpec.describe 'Startup CSS fixtures', type: :controller do
 
       expect(response).to be_successful
     end
+
+    # This Feature Flag is off by default
+    # This ensures that the correct css is generated for super sidebar
+    # When the feature flag is off, the general startup will capture it
+    it "startup_css/project-#{type}-super-sidebar.html" do
+      stub_feature_flags(super_sidebar_nav: true)
+      user.update!(use_new_navigation: true)
+
+      get :show, params: {
+        namespace_id: project.namespace.to_param,
+        id: project
+      }
+
+      expect(response).to be_successful
+    end
   end
 
-  describe ProjectsController, '(Startup CSS fixtures)', type: :controller do
+  describe ProjectsController, '(Startup CSS fixtures)', :saas, type: :controller do
     it_behaves_like 'startup css project fixtures', 'general'
   end
 
-  describe ProjectsController, '(Startup CSS fixtures)', type: :controller do
+  describe ProjectsController, '(Startup CSS fixtures)', :saas, type: :controller do
     before do
       user.update!(theme_id: 11)
     end

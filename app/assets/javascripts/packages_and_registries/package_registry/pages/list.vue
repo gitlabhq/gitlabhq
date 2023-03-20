@@ -1,12 +1,11 @@
 <script>
 import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
-import { createAlert, VARIANT_INFO } from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/alert';
+import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import { historyReplaceState } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages_and_registries/shared/constants';
 import {
-  PROJECT_RESOURCE_TYPE,
-  GROUP_RESOURCE_TYPE,
   GRAPHQL_PAGE_SIZE,
   DELETE_PACKAGE_SUCCESS_MESSAGE,
   EMPTY_LIST_HELP_URL,
@@ -44,7 +43,7 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data[this.graphqlResource].packages;
+        return data[this.graphqlResource]?.packages ?? {};
       },
       skip() {
         return !this.sort;
@@ -64,7 +63,7 @@ export default {
       };
     },
     graphqlResource() {
-      return this.isGroupPage ? GROUP_RESOURCE_TYPE : PROJECT_RESOURCE_TYPE;
+      return this.isGroupPage ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
     },
     pageInfo() {
       return this.packages?.pageInfo ?? {};

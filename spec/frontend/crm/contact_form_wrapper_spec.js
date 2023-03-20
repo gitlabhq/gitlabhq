@@ -47,7 +47,6 @@ describe('Customer relations contact form wrapper', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 

@@ -57,11 +57,6 @@ describe('import target cell', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('events', () => {
     beforeEach(async () => {
       group = generateFakeTableEntry({ id: 1, status: STATUSES.NONE });

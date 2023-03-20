@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ProcessPipelineService do
+RSpec.describe Ci::ProcessPipelineService, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
 
   let(:pipeline) do

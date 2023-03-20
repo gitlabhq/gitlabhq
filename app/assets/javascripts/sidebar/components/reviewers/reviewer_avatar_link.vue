@@ -2,7 +2,7 @@
 // NOTE! For the first iteration, we are simply copying the implementation of Assignees
 // It will soon be overhauled in Issue https://gitlab.com/gitlab-org/gitlab/-/issues/233736
 import { GlTooltipDirective, GlLink } from '@gitlab/ui';
-import { TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 import ReviewerAvatar from './reviewer_avatar.vue';
 
@@ -41,7 +41,9 @@ export default {
   },
   computed: {
     cannotMerge() {
-      return this.issuableType === 'merge_request' && !this.user.mergeRequestInteraction?.canMerge;
+      return (
+        this.issuableType === TYPE_MERGE_REQUEST && !this.user.mergeRequestInteraction?.canMerge
+      );
     },
     tooltipTitle() {
       if (this.cannotMerge && this.tooltipHasName) {

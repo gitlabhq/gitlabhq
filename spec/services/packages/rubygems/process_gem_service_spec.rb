@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Rubygems::ProcessGemService do
+RSpec.describe Packages::Rubygems::ProcessGemService, feature_category: :package_registry do
   include ExclusiveLeaseHelpers
   include RubygemsHelpers
 

@@ -34,10 +34,6 @@ describe('ColorPicker', () => {
     };
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('label', () => {
     it('hides the label if the label is not passed', () => {
       createComponent(shallowMount);

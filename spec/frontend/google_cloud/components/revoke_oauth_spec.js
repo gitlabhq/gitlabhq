@@ -20,10 +20,6 @@ describe('google_cloud/components/revoke_oauth', () => {
     wrapper = shallowMount(RevokeOauth, { propsData });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('contains title', () => {
     const title = findTitle();
     expect(title.text()).toContain('Revoke authorizations');

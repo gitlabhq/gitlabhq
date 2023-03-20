@@ -47,7 +47,7 @@ RSpec.describe 'User reverts a commit', :js, feature_category: :source_code_mana
 
         revert_commit
 
-        expect(page).to have_content('Sorry, we cannot revert this commit automatically.')
+        expect(page).to have_content('Commit revert failed:')
       end
     end
 

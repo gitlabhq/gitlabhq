@@ -4,20 +4,22 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Value Streams Dashboard **(PREMIUM)**
+# Value Streams Dashboard **(ULTIMATE)**
 
-> Introduced in GitLab 15.8 as a Closed [Beta](../../policy/alpha-beta-support.md#beta-features) feature.
+> Introduced in GitLab 15.8 as a Closed [Beta](../../policy/alpha-beta-support.md#beta-features) feature [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards_page`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboards_page`.
+On GitLab.com, this feature is not available. This feature is not ready for production use.
 
 You can leave feedback on dashboard bugs or functionality in [issue 381787](https://gitlab.com/gitlab-org/gitlab/-/issues/381787).
 
-This feature is not ready for production use.
-
-The Value Streams Dashboard is a customizable dashboard to enable decision-makers to identify trends, patterns, and opportunities for digital transformation improvements.
+The Value Streams Dashboard is a customizable dashboard that enables decision-makers to identify trends, patterns, and opportunities for digital transformation improvements.
 This page is a work in progress, and we're updating the information as we add more features.
 For more information, see the [Value Stream Management category direction page](https://about.gitlab.com/direction/plan/value_stream_management/).
 
-After the feature flag is enabled, to open the new page, append this path `/analytics/dashboards` to the group URL
-(for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards`).
+After the feature flag is enabled, to open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL
+(for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
 
 ## Initial use case
 
@@ -27,7 +29,7 @@ This comparison can help decision-makers understand whether projects and groups 
 The beta version of the Value Streams Dashboard includes the following metrics:
 
 - [DORA metrics](dora_metrics.md)
-- [Value Stream Analytics (VSA) - flow metrics](value_stream_analytics.md)
+- [Value Stream Analytics (VSA) - flow metrics](../group/value_stream_analytics/index.md)
 
 The Value Streams Dashboard allows you to:
 
@@ -49,7 +51,7 @@ that are the largest value contributors, overperforming, or underperforming.
 You can also drill down the metrics for further analysis.
 When you hover over a metric, a tooltip displays an explanation of the metric and a link to the related documentation page.
 
-## Customize the dashboard widgets
+## Customize the dashboard panels
 
 You can customize the Value Streams Dashboard and configure what subgroups and projects to include in the page.
 
@@ -57,7 +59,7 @@ A view can display maximum four subgroups or projects.
 
 To display multiple subgroups and projects, specify their path as a URL parameter.
 
-For example, the parameter `query=gitlab-org/gitlab-foss,gitlab-org/gitlab,gitlab-org/gitlab-design,gitlab-org/gitlab-docs` displays three separate widgets, one each for the:
+For example, the parameter `query=gitlab-org/gitlab-foss,gitlab-org/gitlab,gitlab-org/gitlab-design,gitlab-org/gitlab-docs` displays three separate panels, one each for the:
 
 - `gitlab-org` group
 - `gitlab-ui` project

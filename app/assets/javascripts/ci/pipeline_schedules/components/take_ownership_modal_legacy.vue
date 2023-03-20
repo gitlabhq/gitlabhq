@@ -27,14 +27,12 @@ export default {
     actionPrimary() {
       return {
         text: this.$options.i18n.takeOwnership,
-        attributes: [
-          {
-            variant: 'confirm',
-            category: 'primary',
-            href: this.ownershipUrl,
-            'data-method': 'post',
-          },
-        ],
+        attributes: {
+          variant: 'confirm',
+          category: 'primary',
+          href: this.ownershipUrl,
+          'data-method': 'post',
+        },
       };
     },
   },

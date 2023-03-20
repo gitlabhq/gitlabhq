@@ -18,8 +18,6 @@ describe('Branch rule protection row', () => {
 
   beforeEach(() => createComponent());
 
-  afterEach(() => wrapper.destroy());
-
   const findTitle = () => wrapper.findByText(protectionRowPropsMock.title);
   const findAvatarsInline = () => wrapper.findComponent(GlAvatarsInline);
   const findAvatarLinks = () => wrapper.findAllComponents(GlAvatarLink);

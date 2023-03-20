@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Widgets::StartAndDueDateService::UpdateService do
+RSpec.describe WorkItems::Widgets::StartAndDueDateService::UpdateService, feature_category: :portfolio_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be_with_reload(:work_item) { create(:work_item, project: project) }

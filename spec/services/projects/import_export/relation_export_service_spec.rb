@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ImportExport::RelationExportService do
+RSpec.describe Projects::ImportExport::RelationExportService, feature_category: :importers do
   using RSpec::Parameterized::TableSyntax
 
   subject(:service) { described_class.new(relation_export, 'jid') }
@@ -49,6 +49,7 @@ RSpec.describe Projects::ImportExport::RelationExportService do
           expect(logger).to receive(:error).with(
             export_error: '',
             message: 'Project relation export failed',
+            relation: relation_export.relation,
             project_export_job_id: project_export_job.id,
             project_id: project_export_job.project.id,
             project_name: project_export_job.project.name
@@ -78,6 +79,7 @@ RSpec.describe Projects::ImportExport::RelationExportService do
           expect(logger).to receive(:error).with(
             export_error: 'Error!',
             message: 'Project relation export failed',
+            relation: relation_export.relation,
             project_export_job_id: project_export_job.id,
             project_id: project_export_job.project.id,
             project_name: project_export_job.project.name

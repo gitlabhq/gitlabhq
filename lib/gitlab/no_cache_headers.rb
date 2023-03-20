@@ -4,7 +4,6 @@ module Gitlab
   module NoCacheHeaders
     DEFAULT_GITLAB_NO_CACHE_HEADERS = {
       'Cache-Control' => "#{ActionDispatch::Http::Cache::Response::DEFAULT_CACHE_CONTROL}, no-store, no-cache",
-      'Pragma' => 'no-cache', # HTTP 1.0 compatibility
       'Expires' => 'Fri, 01 Jan 1990 00:00:00 GMT'
     }.freeze
 

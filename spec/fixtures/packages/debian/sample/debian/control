@@ -33,3 +33,7 @@ Package-Type: udeb
 Architecture: any
 Depends: installed-base
 Description: Some mostly empty udeb
+
+Package: sample-ddeb
+Architecture: any
+Description: Some fake Ubuntu ddeb

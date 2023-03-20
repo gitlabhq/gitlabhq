@@ -17,7 +17,8 @@ RSpec.describe Backup::GitalyBackup do
   let(:expected_env) do
     {
       'SSL_CERT_FILE' => Gitlab::X509::Certificate.default_cert_file,
-      'SSL_CERT_DIR' => Gitlab::X509::Certificate.default_cert_dir
+      'SSL_CERT_DIR' => Gitlab::X509::Certificate.default_cert_dir,
+      'GITALY_SERVERS' => anything
     }.merge(ENV)
   end
 
@@ -125,12 +126,18 @@ RSpec.describe Backup::GitalyBackup do
         }
       end
 
+      let(:expected_env) do
+        ssl_env.merge(
+          'GITALY_SERVERS' => anything
+        )
+      end
+
       before do
         stub_const('ENV', ssl_env)
       end
 
       it 'passes through SSL envs' do
-        expect(Open3).to receive(:popen2).with(ssl_env, anything, 'create', '-path', anything, '-layout', 'pointer', '-id', backup_id).and_call_original
+        expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-layout', 'pointer', '-id', backup_id).and_call_original
 
         subject.start(:create, destination, backup_id: backup_id)
         subject.finish!

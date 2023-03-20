@@ -4,7 +4,7 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { redirectTo } from '~/lib/utils/url_utility';
@@ -12,7 +12,7 @@ import BroadcastMessagesBase from '~/admin/broadcast_messages/components/base.vu
 import MessagesTable from '~/admin/broadcast_messages/components/messages_table.vue';
 import { generateMockMessages, MOCK_MESSAGES } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility');
 
 describe('BroadcastMessagesBase', () => {
@@ -41,7 +41,6 @@ describe('BroadcastMessagesBase', () => {
 
   afterEach(() => {
     axiosMock.restore();
-    wrapper.destroy();
   });
 
   it('renders the table and pagination when there are existing messages', () => {

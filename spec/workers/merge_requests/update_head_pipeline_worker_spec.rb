@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::UpdateHeadPipelineWorker do
+RSpec.describe MergeRequests::UpdateHeadPipelineWorker, feature_category: :code_review_workflow do
   include ProjectForksHelper
 
   let_it_be(:project) { create(:project, :repository) }

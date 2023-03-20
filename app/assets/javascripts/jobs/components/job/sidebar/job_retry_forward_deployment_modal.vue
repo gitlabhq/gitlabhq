@@ -30,18 +30,16 @@ export default {
     return {
       primaryProps: {
         text: this.$options.i18n.primaryText,
-        attributes: [
-          {
-            'data-method': 'post',
-            'data-testid': 'retry-button-modal',
-            href: this.href,
-            variant: 'danger',
-          },
-        ],
+        attributes: {
+          'data-method': 'post',
+          'data-testid': 'retry-button-modal',
+          href: this.href,
+          variant: 'danger',
+        },
       },
       cancelProps: {
         text: this.$options.i18n.cancel,
-        attributes: [{ category: 'secondary', variant: 'default' }],
+        attributes: { category: 'secondary', variant: 'default' },
       },
     };
   },

@@ -29,10 +29,6 @@ describe('Create dashboard modal', () => {
     createWrapper();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('has button that links to the project url', async () => {
     findRepoButton().trigger('click');
 

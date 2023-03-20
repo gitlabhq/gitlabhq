@@ -40,7 +40,7 @@ module API
           user: current_user, subject: user_project
         ).execute
 
-        track_package_event('list_repositories', :container, user: current_user, project: user_project, namespace: user_project.namespace)
+        track_package_event('list_repositories', :container, project: user_project, namespace: user_project.namespace)
 
         present paginate(repositories), with: Entities::ContainerRegistry::Repository, tags: params[:tags], tags_count: params[:tags_count]
       end
@@ -62,7 +62,7 @@ module API
         authorize_admin_container_image!
         repository.delete_scheduled!
 
-        track_package_event('delete_repository', :container, user: current_user, project: user_project, namespace: user_project.namespace)
+        track_package_event('delete_repository', :container, project: user_project, namespace: user_project.namespace)
 
         status :accepted
       end
@@ -85,7 +85,7 @@ module API
         authorize_read_container_image!
 
         tags = Kaminari.paginate_array(repository.tags)
-        track_package_event('list_tags', :container, user: current_user, project: user_project, namespace: user_project.namespace)
+        track_package_event('list_tags', :container, project: user_project, namespace: user_project.namespace)
 
         present paginate(tags), with: Entities::ContainerRegistry::Tag
       end
@@ -121,7 +121,7 @@ module API
           declared_params.except(:repository_id))
         # rubocop:enable CodeReuse/Worker
 
-        track_package_event('delete_tag_bulk', :container, user: current_user, project: user_project, namespace: user_project.namespace)
+        track_package_event('delete_tag_bulk', :container, project: user_project, namespace: user_project.namespace)
 
         status :accepted
       end
@@ -169,7 +169,7 @@ module API
           .execute(repository)
 
         if result[:status] == :success
-          track_package_event('delete_tag', :container, user: current_user, project: user_project, namespace: user_project.namespace)
+          track_package_event('delete_tag', :container, project: user_project, namespace: user_project.namespace)
 
           status :ok
         else

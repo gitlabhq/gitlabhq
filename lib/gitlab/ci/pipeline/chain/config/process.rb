@@ -20,6 +20,7 @@ module Gitlab
                     source: @pipeline.source,
                     user: current_user,
                     parent_pipeline: parent_pipeline,
+                    pipeline_config: @command.pipeline_config,
                     logger: logger
                   }
                 )

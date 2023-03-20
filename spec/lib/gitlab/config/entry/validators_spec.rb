@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Config::Entry::Validators, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Config::Entry::Validators, feature_category: :pipeline_composition do
   let(:klass) do
     Class.new do
       include ActiveModel::Validations

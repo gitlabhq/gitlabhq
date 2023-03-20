@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issuables::ClearGroupsIssueCounterWorker do
+RSpec.describe Issuables::ClearGroupsIssueCounterWorker, feature_category: :team_planning do
   describe '#perform' do
     let_it_be(:user) { create(:user) }
     let_it_be(:parent_group) { create(:group) }

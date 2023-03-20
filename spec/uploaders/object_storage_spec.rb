@@ -8,7 +8,7 @@ class Implementation < GitlabUploader
   include ::RecordsUploads::Concern
   prepend ::ObjectStorage::Extension::RecordsUploads
 
-  storage_options Gitlab.config.uploads
+  storage_location :uploads
 
   private
 

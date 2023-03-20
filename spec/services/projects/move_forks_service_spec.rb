@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::MoveForksService do
+RSpec.describe Projects::MoveForksService, feature_category: :source_code_management do
   include ProjectForksHelper
 
   let!(:user) { create(:user) }

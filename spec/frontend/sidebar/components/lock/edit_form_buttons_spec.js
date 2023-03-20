@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { createStore as createMrStore } from '~/mr_notes/stores';
 import createStore from '~/notes/stores';
 import EditFormButtons from '~/sidebar/components/lock/edit_form_buttons.vue';
@@ -8,7 +8,7 @@ import eventHub from '~/sidebar/event_hub';
 import { ISSUABLE_TYPE_ISSUE, ISSUABLE_TYPE_MR } from './constants';
 
 jest.mock('~/sidebar/event_hub', () => ({ $emit: jest.fn() }));
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('EditFormButtons', () => {
   let wrapper;
@@ -50,11 +50,6 @@ describe('EditFormButtons', () => {
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   describe.each`
     pageType
@@ -128,7 +123,7 @@ describe('EditFormButtons', () => {
             expect(eventHub.$emit).toHaveBeenCalledWith('closeLockForm');
           });
 
-          it('does not flash an error message', () => {
+          it('does not alert an error message', () => {
             expect(createAlert).not.toHaveBeenCalled();
           });
         });
@@ -161,7 +156,7 @@ describe('EditFormButtons', () => {
             expect(eventHub.$emit).toHaveBeenCalledWith('closeLockForm');
           });
 
-          it('calls flash with the correct message', () => {
+          it('calls alert with the correct message', () => {
             expect(createAlert).toHaveBeenCalledWith({
               message: `Something went wrong trying to change the locked state of this ${issuableDisplayName}`,
             });

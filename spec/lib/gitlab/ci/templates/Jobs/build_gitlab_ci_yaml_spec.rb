@@ -10,7 +10,7 @@ RSpec.describe 'Jobs/Build.gitlab-ci.yml' do
   describe 'AUTO_BUILD_IMAGE_VERSION' do
     it 'corresponds to a published image in the registry' do
       registry = "https://#{template_registry_host}"
-      repository = "gitlab-org/cluster-integration/auto-build-image"
+      repository = auto_build_image_repository
       reference = YAML.safe_load(template.content).dig('variables', 'AUTO_BUILD_IMAGE_VERSION')
 
       expect(public_image_exist?(registry, repository, reference)).to be true

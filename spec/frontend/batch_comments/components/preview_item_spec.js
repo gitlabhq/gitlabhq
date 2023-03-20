@@ -26,10 +26,6 @@ describe('Batch comments draft preview item component', () => {
     wrapper = mount(PreviewItem, { store, propsData: { draft, isLast } });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders text content', () => {
     createComponent(false, { note_html: '<img src="" /><p>Hello world</p>' });
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::BatchStatusCleanerService do
+RSpec.describe Users::BatchStatusCleanerService, feature_category: :user_management do
   let_it_be(:user_status_1) { create(:user_status, emoji: 'coffee', message: 'msg1', clear_status_at: 1.year.ago) }
   let_it_be(:user_status_2) { create(:user_status, emoji: 'coffee', message: 'msg1', clear_status_at: 1.year.from_now) }
   let_it_be(:user_status_3) { create(:user_status, emoji: 'coffee', message: 'msg1', clear_status_at: 2.years.ago) }

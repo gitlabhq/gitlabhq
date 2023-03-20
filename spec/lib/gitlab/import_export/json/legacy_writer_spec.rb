@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'tmpdir'
 
-RSpec.describe Gitlab::ImportExport::Json::LegacyWriter do
+RSpec.describe Gitlab::ImportExport::Json::LegacyWriter, feature_category: :importers do
   let(:path) { "#{Dir.tmpdir}/legacy_writer_spec/test.json" }
 
   subject do

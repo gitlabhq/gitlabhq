@@ -13,7 +13,7 @@ including when features were introduced and when they were updated or removed.
 ## View older documentation versions
 
 Previous versions of the documentation are available on `docs.gitlab.com`.
-To view a previous version, select the **Versions** button in the upper right.
+To view a previous version, in the upper-right corner, select **Versions**.
 
 To view versions that are not available on `docs.gitlab.com`:
 
@@ -89,8 +89,9 @@ voters to agree.
 
 When features are deprecated and removed, update the related documentation.
 
-API documentation follows these guidelines, but the GraphQL docs use
-a [separate process](../api_graphql_styleguide.md#deprecating-schema-items).
+NOTE:
+A separate process exists for [GraphQL docs](../api_graphql_styleguide.md#deprecating-schema-items)
+and [REST API docs](restful_api_styleguide.md#deprecations).
 
 ### Deprecate a page or topic
 

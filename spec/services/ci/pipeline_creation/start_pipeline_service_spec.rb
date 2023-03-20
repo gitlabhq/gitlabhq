@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineCreation::StartPipelineService do
+RSpec.describe Ci::PipelineCreation::StartPipelineService, feature_category: :continuous_integration do
   let(:pipeline) { build(:ci_pipeline) }
 
   subject(:service) { described_class.new(pipeline) }

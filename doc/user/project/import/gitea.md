@@ -75,10 +75,9 @@ From there, you can view the import statuses of your Gitea repositories:
 
 You also can:
 
-- Import all of your Gitea projects in one go by selecting **Import all projects**
-  in the upper left corner.
-- Filter projects by name. If filter is applied, selecting **Import all projects**
-  imports only matched projects.
+- In the upper-left corner, select **Import all projects** to import all of your Gitea projects at once.
+- Filter projects by name. If a filter is applied, **Import all projects**
+  imports only selected projects.
 
 ![Gitea importer page](img/import_projects_from_gitea_importer_v12_3.png)
 

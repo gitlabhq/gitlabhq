@@ -4,7 +4,7 @@ import { SourceEditorExtension } from '~/editor/extensions/source_editor_extensi
 import { FileTemplateExtension } from '~/editor/extensions/source_editor_file_template_ext';
 import { ToolbarExtension } from '~/editor/extensions/source_editor_toolbar_ext';
 import SourceEditor from '~/editor/source_editor';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { addEditorMarkdownListeners } from '~/lib/utils/text_markdown';
 import { insertFinalNewline } from '~/lib/utils/text_utility';
@@ -68,9 +68,9 @@ export default class EditBlob {
       blobContent: editorEl.innerText,
     });
     this.editor.use([
+      { definition: ToolbarExtension },
       { definition: SourceEditorExtension },
       { definition: FileTemplateExtension },
-      { definition: ToolbarExtension },
     ]);
 
     fileNameEl.addEventListener('change', () => {

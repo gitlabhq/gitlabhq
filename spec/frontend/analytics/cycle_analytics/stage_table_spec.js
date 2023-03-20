@@ -51,10 +51,6 @@ function createComponent(props = {}, shallow = false) {
 }
 
 describe('StageTable', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('is loaded with data', () => {
     beforeEach(() => {
       wrapper = createComponent();
@@ -258,7 +254,6 @@ describe('StageTable', () => {
 
     afterEach(() => {
       unmockTracking();
-      wrapper.destroy();
     });
 
     it('will display the pagination component', () => {
@@ -305,7 +300,6 @@ describe('StageTable', () => {
 
     afterEach(() => {
       unmockTracking();
-      wrapper.destroy();
     });
 
     it('can sort the end event or duration', () => {

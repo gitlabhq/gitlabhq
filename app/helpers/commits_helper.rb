@@ -27,12 +27,11 @@ module CommitsHelper
   end
 
   def commit_to_html(commit, ref, project)
-    render partial: 'projects/commits/commit', formats: :html,
-           locals: {
-        commit: commit,
-        ref: ref,
-        project: project
-      }
+    render partial: 'projects/commits/commit', formats: :html, locals: {
+      commit: commit,
+      ref: ref,
+      project: project
+    }
   end
 
   # Breadcrumb links for a Project and, if applicable, a tree path
@@ -161,17 +160,23 @@ module CommitsHelper
   # This includes a keyed hash for values that can be nil, to prevent invalid cache entries
   # being served if the order should change in future.
   def commit_partial_cache_key(commit, ref:, merge_request:, request:)
+    keyed_hash = {
+      merge_request: merge_request&.cache_key,
+      pipeline_status: commit.detailed_status_for(ref)&.cache_key,
+      xhr: request.xhr?,
+      controller: controller.controller_path,
+      path: @path # referred to in #link_to_browse_code
+    }
+
+    if Feature.enabled?(:show_tags_on_commits_view, commit.project)
+      keyed_hash[:referenced_by] = tag_checksum(commit.referenced_by)
+    end
+
     [
       commit,
       commit.author,
       ref,
-      {
-        merge_request: merge_request&.cache_key,
-        pipeline_status: commit.detailed_status_for(ref)&.cache_key,
-        xhr: request.xhr?,
-        controller: controller.controller_path,
-        path: @path # referred to in #link_to_browse_code
-      }
+      keyed_hash
     ]
   end
 
@@ -188,15 +193,21 @@ module CommitsHelper
     entity = mode == 'raw' ? 'rawButton' : 'renderedButton'
     title = "Display #{mode} diff"
 
-    link_to("##{mode}-diff-#{file_hash}",
-            class: "btn gl-button btn-default btn-file-option has-tooltip btn-show-#{mode}-diff",
-            title: title,
-            data: { file_hash: file_hash, diff_toggle_entity: entity }) do
+    link_to(
+      "##{mode}-diff-#{file_hash}",
+      class: "btn gl-button btn-default btn-file-option has-tooltip btn-show-#{mode}-diff",
+      title: title,
+      data: { file_hash: file_hash, diff_toggle_entity: entity }
+    ) do
       sprite_icon(icon)
     end
   end
 
   protected
+
+  def tag_checksum(tags_array)
+    ::Zlib.crc32(tags_array.sort.join)
+  end
 
   # Private: Returns a link to a person. If the person has a matching user and
   # is a member of the current @project it will link to the team member page.

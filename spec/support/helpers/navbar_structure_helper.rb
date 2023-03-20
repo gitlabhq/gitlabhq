@@ -106,6 +106,14 @@ module NavbarStructureHelper
     )
   end
 
+  def insert_infrastructure_aws_nav
+    insert_after_sub_nav_item(
+      _('Google Cloud'),
+      within: _('Infrastructure'),
+      new_sub_nav_item_name: _('AWS')
+    )
+  end
+
   def project_analytics_sub_nav_item
     [
       _('Value stream'),

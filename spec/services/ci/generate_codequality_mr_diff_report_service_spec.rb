@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::GenerateCodequalityMrDiffReportService do
+RSpec.describe Ci::GenerateCodequalityMrDiffReportService, feature_category: :code_review_workflow do
   let(:service) { described_class.new(project) }
   let(:project) { create(:project, :repository) }
 

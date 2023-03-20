@@ -43,8 +43,9 @@ RSpec.describe GraphqlController, feature_category: :integrations do
       post :execute
 
       expect(json_response).to include(
-        'errors' => include(a_hash_including('message' => /Internal server error/,
-                                             'raisedAt' => /graphql_controller_spec.rb/))
+        'errors' => include(
+          a_hash_including('message' => /Internal server error/, 'raisedAt' => /graphql_controller_spec.rb/)
+        )
       )
     end
 
@@ -106,6 +107,41 @@ RSpec.describe GraphqlController, feature_category: :integrations do
             { 'data' => { '__typename' => 'Query' } },
             { 'data' => { '__typename' => 'Query' } }
           ])
+      end
+
+      it 'executes a multiplexed queries with variables with no errors' do
+        query = <<~GQL
+          mutation($a: String!, $b: String!) {
+            echoCreate(input: { messages: [$a, $b] }) { echoes }
+          }
+        GQL
+        multiplex = [
+          { query: query, variables: { a: 'A', b: 'B' } },
+          { query: query, variables: { a: 'a', b: 'b' } }
+        ]
+
+        post :execute, params: { _json: multiplex }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq(
+          [
+            { 'data' => { 'echoCreate' => { 'echoes' => %w[A B] } } },
+            { 'data' => { 'echoCreate' => { 'echoes' => %w[a b] } } }
+          ])
+      end
+
+      it 'does not allow string as _json parameter' do
+        post :execute, params: { _json: 'bad' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq({
+          "errors" => [
+            {
+              "message" => "Unexpected end of document",
+              "locations" => []
+            }
+          ]
+        })
       end
 
       it 'sets a limit on the total query size' do
@@ -172,14 +208,28 @@ RSpec.describe GraphqlController, feature_category: :integrations do
         post :execute
       end
 
-      it 'calls the track gitlab cli when trackable method' do
-        agent = 'GLab - GitLab CLI'
-        request.env['HTTP_USER_AGENT'] = agent
+      context 'if using the GitLab CLI' do
+        it 'call trackable for the old UserAgent' do
+          agent = 'GLab - GitLab CLI'
 
-        expect(Gitlab::UsageDataCounters::GitLabCliActivityUniqueCounter)
-          .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
+          request.env['HTTP_USER_AGENT'] = agent
 
-        post :execute
+          expect(Gitlab::UsageDataCounters::GitLabCliActivityUniqueCounter)
+            .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
+
+          post :execute
+        end
+
+        it 'call trackable for the current UserAgent' do
+          agent = 'glab/v1.25.3-27-g7ec258fb (built 2023-02-16), darwin'
+
+          request.env['HTTP_USER_AGENT'] = agent
+
+          expect(Gitlab::UsageDataCounters::GitLabCliActivityUniqueCounter)
+            .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
+
+          post :execute
+        end
       end
 
       it "assigns username in ApplicationContext" do

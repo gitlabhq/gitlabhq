@@ -230,4 +230,11 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :subgroups do
       expect(page).not_to have_content(another_group.name)
     end
   end
+
+  it 'links to the "Explore groups" page' do
+    sign_in(user)
+    visit dashboard_groups_path
+
+    expect(page).to have_link("Explore groups", href: explore_groups_path)
+  end
 end

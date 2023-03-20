@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects::Ci::PrometheusMetrics::HistogramsController', feature_category: :pipeline_authoring do
+RSpec.describe 'Projects::Ci::PrometheusMetrics::HistogramsController', feature_category: :pipeline_composition do
   let_it_be(:project) { create(:project, :public) }
 
   describe 'POST /*namespace_id/:project_id/-/ci/prometheus_metrics/histograms' do

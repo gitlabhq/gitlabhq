@@ -6,10 +6,6 @@ import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 describe('modal copy button', () => {
   let wrapper;
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   beforeEach(() => {
     wrapper = shallowMount(ModalCopyButton, {
       propsData: {

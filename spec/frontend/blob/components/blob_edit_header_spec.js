@@ -22,10 +22,6 @@ describe('Blob Header Editing', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('rendering', () => {
     it('matches the snapshot', () => {
       expect(wrapper.element).toMatchSnapshot();

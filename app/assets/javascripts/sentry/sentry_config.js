@@ -1,5 +1,4 @@
 import * as Sentry from 'sentrybrowser7';
-import { IGNORE_ERRORS, DENY_URLS, SAMPLE_RATE } from './constants';
 
 const SentryConfig = {
   init(options = {}) {
@@ -17,9 +16,6 @@ const SentryConfig = {
       release,
       allowUrls,
       environment,
-      ignoreErrors: IGNORE_ERRORS,
-      denyUrls: DENY_URLS,
-      sampleRate: SAMPLE_RATE,
     });
 
     Sentry.setTags(tags);

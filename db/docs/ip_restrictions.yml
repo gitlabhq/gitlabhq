@@ -3,7 +3,7 @@ table_name: ip_restrictions
 classes:
 - IpRestriction
 feature_categories:
-- authentication_and_authorization
+- system_access
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/12669
 milestone: '12.0'

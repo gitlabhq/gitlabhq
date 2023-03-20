@@ -1,4 +1,8 @@
 query getPipelineSchedulesQuery($projectPath: ID!, $status: PipelineScheduleStatus) {
+  currentUser {
+    id
+    username
+  }
   project(fullPath: $projectPath) {
     id
     pipelineSchedules(status: $status) {
@@ -25,13 +29,13 @@ query getPipelineSchedulesQuery($projectPath: ID!, $status: PipelineScheduleStat
         realNextRun
         owner {
           id
+          username
           avatarUrl
           name
           webPath
         }
         userPermissions {
           playPipelineSchedule
-          takeOwnershipPipelineSchedule
           updatePipelineSchedule
           adminPipelineSchedule
         }

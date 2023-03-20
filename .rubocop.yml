@@ -19,6 +19,9 @@ inherit_from:
   <% if RUBY_VERSION[/^\d+\.\d+/, 0] == '3.0' %>
   - ./rubocop/rubocop-ruby30.yml
   <% end %>
+  <% if RUBY_VERSION[/^\d+\.\d+/, 0] == '3.1' %>
+  - ./rubocop/rubocop-ruby31.yml
+  <% end %>
   - ./rubocop/rubocop-migrations.yml
   - ./rubocop/rubocop-usage-data.yml
   - ./rubocop/rubocop-code_reuse.yml
@@ -30,6 +33,7 @@ inherit_mode:
   merge:
     - Include
     - Exclude
+    - AllowedPatterns
 
 AllCops:
   # Target the current Ruby version. For example, "2.7" or "3.0".
@@ -96,6 +100,9 @@ InternalAffairs/DeprecateCopHelper:
   Enabled: true
   Include:
     - spec/rubocop/**/*.rb
+
+Layout/LineLength:
+  AllowedPatterns: ['^RSpec\.describe\s.*\sdo']
 
 Lint/LastKeywordArgument:
   Safe: false
@@ -435,6 +442,12 @@ BackgroundMigration/FeatureCategory:
   Enabled: true
   Include:
     - 'lib/gitlab/background_migration/*.rb'
+
+BackgroundMigration/MissingDictionaryFile:
+  Enabled: true
+  EnforcedSince: 20230307160251
+  Include:
+    - 'db/post_migrate/*.rb'
 
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/373194
 Gitlab/RSpec/AvoidSetup:

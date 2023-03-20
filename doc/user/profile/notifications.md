@@ -286,7 +286,8 @@ To always receive notifications on your own issues, merge requests, and so on, t
 
 ## Notifications for unknown sign-ins
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27211) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27211) in GitLab 13.0.
+> - Listing the full name and username of the signed-in user [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225183) in GitLab 15.10.
 
 NOTE:
 This feature is enabled by default for self-managed instances. Administrators may disable this feature
@@ -295,7 +296,12 @@ The feature is always enabled on GitLab.com.
 
 When a user successfully signs in from a previously unknown IP address or device,
 GitLab notifies the user by email. In this way, GitLab proactively alerts users of potentially
-malicious or unauthorized sign-ins.
+malicious or unauthorized sign-ins. This notification email includes the:
+
+- Hostname.
+- User's name and username.
+- IP address.
+- Date and time of sign-in.
 
 GitLab uses several methods to identify a known sign-in. All methods must fail for a notification email to be sent.
 
@@ -306,7 +312,7 @@ GitLab uses several methods to identify a known sign-in. All methods must fail f
 - Cookie: After successful sign in, an encrypted cookie is stored in the browser.
   This cookie is set to expire 14 days after the last successful sign in.
 
-## Notifications for attempted sign-in using wrong two-factor authentication codes
+## Notifications for attempted sign-ins using incorrect verification codes
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374740) in GitLab 15.5.
 

@@ -175,7 +175,6 @@ describe('Blob content viewer component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mockAxios.reset();
   });
 
@@ -481,11 +480,6 @@ describe('Blob content viewer component', () => {
         userPermissions: { pushCode, downloadCode },
         repository: { empty },
       } = projectMock;
-
-      afterEach(() => {
-        delete gon.current_user_id;
-        delete gon.current_username;
-      });
 
       it('renders component', async () => {
         window.gon.current_user_id = 1;

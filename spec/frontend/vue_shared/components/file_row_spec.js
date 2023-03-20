@@ -6,6 +6,9 @@ import FileIcon from '~/vue_shared/components/file_icon.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import FileHeader from '~/vue_shared/components/file_row_header.vue';
 
+const scrollIntoViewMock = jest.fn();
+HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
+
 describe('File row component', () => {
   let wrapper;
 
@@ -17,10 +20,6 @@ describe('File row component', () => {
       },
     });
   }
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   it('renders name', () => {
     const fileName = 't4';
@@ -72,11 +71,10 @@ describe('File row component', () => {
       },
       level: 0,
     });
-    jest.spyOn(wrapper.vm, '$emit');
 
     wrapper.element.click();
 
-    expect(wrapper.vm.$emit).toHaveBeenCalledWith('toggleTreeOpen', fileName);
+    expect(wrapper.emitted('toggleTreeOpen')[0][0]).toEqual(fileName);
   });
 
   it('calls scrollIntoView if made active', () => {
@@ -89,14 +87,12 @@ describe('File row component', () => {
       level: 0,
     });
 
-    jest.spyOn(wrapper.vm, 'scrollIntoView');
-
     wrapper.setProps({
       file: { ...wrapper.props('file'), active: true },
     });
 
     return nextTick().then(() => {
-      expect(wrapper.vm.scrollIntoView).toHaveBeenCalled();
+      expect(scrollIntoViewMock).toHaveBeenCalled();
     });
   });
 

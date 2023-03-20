@@ -7,7 +7,6 @@ class Group < Namespace
   include AfterCommitQueue
   include AccessRequestable
   include Avatarable
-  include Referable
   include SelectForProjectAuthorization
   include LoadedInGroupList
   include GroupDescendant
@@ -21,7 +20,6 @@ class Group < Namespace
   include ChronicDurationAttribute
   include RunnerTokenExpirationInterval
   include Todoable
-  include IssueParent
 
   extend ::Gitlab::Utils::Override
 
@@ -110,7 +108,10 @@ class Group < Namespace
 
   has_one :import_state, class_name: 'GroupImportState', inverse_of: :group
 
+  has_many :application_setting, foreign_key: :instance_administrators_group_id, inverse_of: :instance_group
+
   has_many :bulk_import_exports, class_name: 'BulkImports::Export', inverse_of: :group
+  has_many :bulk_import_entities, class_name: 'BulkImports::Entity', foreign_key: :namespace_id, inverse_of: :group
 
   has_many :group_deploy_keys_groups, inverse_of: :group
   has_many :group_deploy_keys, through: :group_deploy_keys_groups
@@ -162,7 +163,8 @@ class Group < Namespace
 
   add_authentication_token_field :runners_token,
                                  encrypted: -> { Feature.enabled?(:groups_tokens_optional_encryption) ? :optional : :required },
-                                 prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
+                                 format_with_prefix: :runners_token_prefix,
+                                 require_prefix_for_validation: true
 
   after_create :post_create_hook
   after_create -> { create_or_load_association(:group_feature) }
@@ -238,14 +240,6 @@ class Group < Namespace
       else
         order_by(method)
       end
-    end
-
-    def reference_prefix
-      User.reference_prefix
-    end
-
-    def reference_pattern
-      User.reference_pattern
     end
 
     # WARNING: This method should never be used on its own
@@ -362,10 +356,6 @@ class Group < Namespace
     # Finds the closest notification_setting with a `notification_email`
     notification_settings = notification_settings_for(user, hierarchy_order: :asc)
     notification_settings.find { |n| n.notification_email.present? }&.notification_email
-  end
-
-  def to_reference(_from = nil, target_project: nil, full: nil)
-    "#{self.class.reference_prefix}#{full_path}"
   end
 
   def web_url(only_path: nil)
@@ -762,11 +752,6 @@ class Group < Namespace
     ensure_runners_token!
   end
 
-  override :format_runners_token
-  def format_runners_token(token)
-    "#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}#{token}"
-  end
-
   def project_creation_level
     super || ::Gitlab::CurrentSettings.default_project_creation
   end
@@ -814,8 +799,10 @@ class Group < Namespace
   end
 
   def preload_shared_group_links
-    preloader = ActiveRecord::Associations::Preloader.new
-    preloader.preload(self, shared_with_group_links: [shared_with_group: :route])
+    ActiveRecord::Associations::Preloader.new(
+      records: [self],
+      associations: { shared_with_group_links: [shared_with_group: :route] }
+    ).call
   end
 
   def update_shared_runners_setting!(state)
@@ -1094,6 +1081,10 @@ class Group < Namespace
 
   def enable_shared_runners!
     update!(shared_runners_enabled: true)
+  end
+
+  def runners_token_prefix
+    RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
   end
 end
 

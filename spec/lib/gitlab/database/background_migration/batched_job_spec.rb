@@ -184,6 +184,35 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
         expect(transition_log.exception_message).to eq('RuntimeError')
       end
     end
+
+    context 'when job fails during sub batch processing' do
+      let(:args) { { error: ActiveRecord::StatementTimeout.new, from_sub_batch: true } }
+      let(:attempts) { 0 }
+      let(:failure) { job.failure!(**args) }
+      let(:job) do
+        create(:batched_background_migration_job, :running, batch_size: 20, sub_batch_size: 10, attempts: attempts)
+      end
+
+      context 'when sub batch size can be reduced in 25%' do
+        it { expect { failure }.to change { job.sub_batch_size }.to 7 }
+      end
+
+      context 'when retries exceeds 2 attempts' do
+        let(:attempts) { 3 }
+
+        before do
+          allow(job).to receive(:split_and_retry!)
+        end
+
+        it 'calls split_and_retry! once sub_batch_size cannot be decreased anymore' do
+          failure
+
+          expect(job).to have_received(:split_and_retry!).once
+        end
+
+        it { expect { failure }.not_to change { job.sub_batch_size } }
+      end
+    end
   end
 
   describe 'scopes' do
@@ -271,6 +300,24 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
     end
   end
 
+  describe '.extract_transition_options' do
+    let(:perform) { subject.class.extract_transition_options(args) }
+
+    where(:args, :expected_result) do
+      [
+        [[], []],
+        [[{ error: StandardError }], [StandardError, nil]],
+        [[{ error: StandardError, from_sub_batch: true }], [StandardError, true]]
+      ]
+    end
+
+    with_them do
+      it 'matches expected keys and result' do
+        expect(perform).to match_array(expected_result)
+      end
+    end
+  end
+
   describe '#can_split?' do
     subject { job.can_split?(exception) }
 
@@ -324,6 +371,48 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
       let(:exception) { ActiveRecord::StatementTimeout.new }
 
       it { expect(subject).to be_falsey }
+    end
+  end
+
+  describe '#can_reduce_sub_batch_size?' do
+    let(:attempts) { 0 }
+    let(:batch_size) { 10 }
+    let(:sub_batch_size) { 6 }
+    let(:feature_flag) { :reduce_sub_batch_size_on_timeouts }
+    let(:job) do
+      create(:batched_background_migration_job, attempts: attempts,
+        batch_size: batch_size, sub_batch_size: sub_batch_size)
+    end
+
+    where(:feature_flag_state, :within_boundaries, :outside_boundaries, :limit_reached) do
+      [
+        [true, true, false, false],
+        [false, false, false, false]
+      ]
+    end
+
+    with_them do
+      before do
+        stub_feature_flags(feature_flag => feature_flag_state)
+      end
+
+      context 'when the number of attempts is lower than the limit and batch size are within boundaries' do
+        let(:attempts) { 1 }
+
+        it { expect(job.can_reduce_sub_batch_size?).to be(within_boundaries) }
+      end
+
+      context 'when the number of attempts is lower than the limit and batch size are outside boundaries' do
+        let(:batch_size) { 1 }
+
+        it { expect(job.can_reduce_sub_batch_size?).to be(outside_boundaries) }
+      end
+
+      context 'when the number of attempts is greater than the limit and batch size are within boundaries' do
+        let(:attempts) { 3 }
+
+        it { expect(job.can_reduce_sub_batch_size?).to be(limit_reached) }
+      end
     end
   end
 
@@ -462,6 +551,82 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
         expect(job.batch_size).to eq(5)
         expect(job.attempts).to eq(0)
         expect(job.status_name).to eq(:failed)
+      end
+    end
+  end
+
+  describe '#reduce_sub_batch_size!' do
+    let(:migration_batch_size) { 20 }
+    let(:migration_sub_batch_size) { 10 }
+    let(:job_batch_size) { 20 }
+    let(:job_sub_batch_size) { 10 }
+    let(:status) { :failed }
+
+    let(:migration) do
+      create(:batched_background_migration, :active, batch_size: migration_batch_size,
+        sub_batch_size: migration_sub_batch_size)
+    end
+
+    let(:job) do
+      create(:batched_background_migration_job, status, sub_batch_size: job_sub_batch_size,
+        batch_size: job_batch_size, batched_migration: migration)
+    end
+
+    context 'when the job sub batch size can be reduced' do
+      let(:expected_sub_batch_size) { 7 }
+
+      it 'reduces sub batch size in 25%' do
+        expect { job.reduce_sub_batch_size! }.to change { job.sub_batch_size }.to(expected_sub_batch_size)
+      end
+
+      it 'log the changes' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          message: 'Sub batch size reduced due to timeout',
+          batched_job_id: job.id,
+          sub_batch_size: job_sub_batch_size,
+          reduced_sub_batch_size: expected_sub_batch_size,
+          attempts: job.attempts,
+          batched_migration_id: migration.id,
+          job_class_name: job.migration_job_class_name,
+          job_arguments: job.migration_job_arguments
+        )
+
+        job.reduce_sub_batch_size!
+      end
+    end
+
+    context 'when reduced sub_batch_size is greater than sub_batch' do
+      let(:job_batch_size) { 5 }
+
+      it "doesn't allow sub_batch_size to greater than sub_batch" do
+        expect { job.reduce_sub_batch_size! }.to change { job.sub_batch_size }.to 5
+      end
+    end
+
+    context 'when sub_batch_size is already 1' do
+      let(:job_sub_batch_size) { 1 }
+
+      it "updates sub_batch_size to it's minimum value" do
+        expect { job.reduce_sub_batch_size! }.not_to change { job.sub_batch_size }
+      end
+    end
+
+    context 'when job has not failed' do
+      let(:status) { :succeeded }
+      let(:error) { Gitlab::Database::BackgroundMigration::ReduceSubBatchSizeError }
+
+      it 'raises an exception' do
+        expect { job.reduce_sub_batch_size! }.to raise_error(error)
+      end
+    end
+
+    context 'when the amount to be reduced exceeds the threshold' do
+      let(:migration_batch_size) { 150 }
+      let(:migration_sub_batch_size) { 100 }
+      let(:job_sub_batch_size) { 30 }
+
+      it 'prevents sub batch size to be reduced' do
+        expect { job.reduce_sub_batch_size! }.not_to change { job.sub_batch_size }
       end
     end
   end

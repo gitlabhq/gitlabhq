@@ -29,10 +29,6 @@ describe('releases_pagination.vue', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const singlePageInfo = {
     hasPreviousPage: false,
     hasNextPage: false,

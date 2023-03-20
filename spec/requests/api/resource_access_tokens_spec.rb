@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe API::ResourceAccessTokens, feature_category: :authentication_and_authorization do
+RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
   let_it_be(:user) { create(:user) }
   let_it_be(:user_non_priviledged) { create(:user) }
 

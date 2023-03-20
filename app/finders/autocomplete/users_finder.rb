@@ -98,7 +98,7 @@ module Autocomplete
 
     # rubocop: disable CodeReuse/ActiveRecord
     def preload_associations(items)
-      ActiveRecord::Associations::Preloader.new.preload(items, :status)
+      ActiveRecord::Associations::Preloader.new(records: items, associations: :status).call
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

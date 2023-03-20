@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
-RSpec.describe Gitlab::Console do
+RSpec.describe Gitlab::Console, feature_category: :application_instrumentation do
   describe '.welcome!' do
     context 'when running in the Rails console' do
       before do

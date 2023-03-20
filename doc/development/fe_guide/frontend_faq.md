@@ -69,7 +69,7 @@ banner on top of the component examples indicates that:
 > component.
 
 For example, at the time of writing, this type of warning can be observed for
-[all form components](https://design.gitlab.com/components/form/). It, however,
+all form components, such as the [checkbox](https://design.gitlab.com/components/checkbox). It, however,
 doesn't imply that the component should not be used.
 
 GitLab always asks to use `<gl-*>` components whenever a suitable component exists.
@@ -192,7 +192,7 @@ To see what polyfills are being used:
 1. Select the [`compile-production-assets`](https://gitlab.com/gitlab-org/gitlab/-/jobs/641770154) job.
 1. In the right-hand sidebar, scroll to **Job Artifacts**, and select **Browse**.
 1. Select the **webpack-report** folder to open it, and select **index.html**.
-1. In the upper left corner of the page, select the right arrow **{chevron-lg-right}**
+1. In the upper-left corner of the page, select the right arrow (**{chevron-lg-right}**)
    to display the explorer.
 1. In the **Search modules** field, enter `gitlab/node_modules/core-js` to see
    which polyfills are being loaded and where:

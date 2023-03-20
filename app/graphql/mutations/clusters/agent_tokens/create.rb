@@ -40,9 +40,9 @@ module Mutations
 
           result = ::Clusters::AgentTokens::CreateService
             .new(
-              container: cluster_agent.project,
+              agent: cluster_agent,
               current_user: current_user,
-              params: args.merge(agent_id: cluster_agent.id)
+              params: args
             )
             .execute
 

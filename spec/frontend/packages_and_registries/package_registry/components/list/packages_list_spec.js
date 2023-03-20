@@ -73,10 +73,6 @@ describe('packages_list', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when is loading', () => {
     beforeEach(() => {
       mountComponent({ isLoading: true });

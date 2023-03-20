@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Notes::BuildService do
+RSpec.describe Notes::BuildService, feature_category: :team_planning do
   include AdminModeHelper
 
   let_it_be(:project) { create(:project, :repository) }

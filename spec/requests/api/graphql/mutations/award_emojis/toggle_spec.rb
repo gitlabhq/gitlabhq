@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Toggling an AwardEmoji', feature_category: :not_owned do
+RSpec.describe 'Toggling an AwardEmoji', feature_category: :shared do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

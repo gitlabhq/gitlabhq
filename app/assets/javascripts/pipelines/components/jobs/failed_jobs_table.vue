@@ -2,7 +2,7 @@
 import { GlButton, GlLink, GlTableLite } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __, s__ } from '~/locale';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { redirectTo } from '~/lib/utils/url_utility';
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import RetryFailedJobMutation from '../../graphql/mutations/retry_failed_job.mutation.graphql';

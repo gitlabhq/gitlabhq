@@ -22,6 +22,8 @@ initFilePickers();
 function initNewGroupCreation(el) {
   const {
     hasErrors,
+    groupsUrl,
+    parentGroupUrl,
     parentGroupName,
     importExistingGroupPath,
     verificationRequired,
@@ -30,6 +32,8 @@ function initNewGroupCreation(el) {
   } = el.dataset;
 
   const props = {
+    groupsUrl,
+    parentGroupUrl,
     parentGroupName,
     importExistingGroupPath,
     hasErrors: parseBoolean(hasErrors),

@@ -351,6 +351,7 @@ export default {
             :enable-content-editor="isMarkdownFormat"
             :enable-preview="isMarkdownFormat"
             :autofocus="pageInfo.persisted"
+            :drawio-enabled="true"
             @contentEditor="notifyContentEditorActive"
             @markdownField="notifyContentEditorInactive"
             @keydown.ctrl.enter="submitFormShortcut"

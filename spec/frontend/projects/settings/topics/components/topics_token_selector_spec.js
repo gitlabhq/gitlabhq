@@ -64,7 +64,6 @@ describe('TopicsTokenSelector', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     div.remove();
     input.remove();
   });

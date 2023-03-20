@@ -53,10 +53,10 @@ Requests for packages not found in your GitLab project are forwarded to the publ
 
 | Package type                                        | Supports request forwarding |
 |-----------------------------------------------------|-----------------------------|
-| [Maven](../maven_repository/index.md)               | Y                           |
-| [npm](../npm_registry/index.md)                     | Y                           |
+| [Maven](../maven_repository/index.md)               | [Yes (disabled by default)](../../admin_area/settings/continuous_integration.md#maven-forwarding) |
+| [npm](../npm_registry/index.md)                     | [Yes](../../admin_area/settings/continuous_integration.md#npm-forwarding) |
 | [NuGet](../nuget_repository/index.md)               | N                           |
-| [PyPI](../pypi_repository/index.md)                 | Y                           |
+| [PyPI](../pypi_repository/index.md)                 | [Yes](../../admin_area/settings/continuous_integration.md#pypi-forwarding) |
 | [Generic packages](../generic_packages/index.md)    | N                           |
 | [Terraform](../terraform_module_registry/index.md)  | N                           |
 | [Composer](../composer_repository/index.md)         | N                           |
@@ -65,6 +65,23 @@ Requests for packages not found in your GitLab project are forwarded to the publ
 | [Debian](../debian_repository/index.md)             | N                           |
 | [Go](../go_proxy/index.md)                          | N                           |
 | [Ruby gems](../rubygems_registry/index.md)          | N                           |
+
+### Deleting packages
+
+When package requests are forwarded to a public registry, deleting packages can
+be a [dependency confusion vulnerability](https://medium.com/@alex.birsan/dependency-confusion-4a5d60fec610).
+
+If a system tries to pull a deleted package, the request is forwarded to the public
+registry. If a package with the same name and version is found in the public registry, that package
+is pulled instead. There is a risk that the package pulled from the registry might not be
+what is expected, and could even be malicious.
+
+To reduce the associated security risks, before deleting a package you can:
+
+- Verify the package is not being actively used.
+- Disable request forwarding:
+  - Instance administrators can disable forwarding in the [**Continuous Integration** section](../../admin_area/settings/continuous_integration.md#package-registry-configuration) of the Admin Area.
+  - Group owners can disable forwarding in the **Packages and Registries** section of the group settings.
 
 ## Allow or prevent duplicates **(FREE)**
 

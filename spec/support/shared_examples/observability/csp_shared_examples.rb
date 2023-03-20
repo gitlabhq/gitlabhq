@@ -31,19 +31,19 @@ RSpec.shared_examples 'observability csp policy' do |controller_class = describe
   let(:observability_url) { Gitlab::Observability.observability_url }
   let(:signin_url) do
     Gitlab::Utils.append_path(Gitlab.config.gitlab.url,
-  '/users/sign_in')
+      '/users/sign_in')
   end
 
   let(:oauth_url) do
     Gitlab::Utils.append_path(Gitlab.config.gitlab.url,
-  '/oauth/authorize')
+      '/oauth/authorize')
   end
 
   before do
     setup_csp_for_controller(controller_class, csp, any_time: true)
     group.add_developer(user)
     login_as(user)
-    allow(Gitlab::Observability).to receive(:observability_enabled?).and_return(true)
+    stub_feature_flags(observability_group_tab: true)
   end
 
   subject do
@@ -67,29 +67,12 @@ RSpec.shared_examples 'observability csp policy' do |controller_class = describe
     end
 
     before do
-      allow(Gitlab::Observability).to receive(:observability_enabled?).and_return(false)
+      stub_feature_flags(observability_group_tab: false)
     end
 
     it 'does not add observability urls to the csp header' do
       expect(subject).to include("frame-src https://something.test")
       expect(subject).not_to include("#{observability_url} #{signin_url} #{oauth_url}")
-    end
-  end
-
-  context 'when checking if observability is enabled' do
-    let(:csp) do
-      ActionDispatch::ContentSecurityPolicy.new do |p|
-        p.frame_src 'https://something.test'
-      end
-    end
-
-    it 'check access for a given user and group' do
-      allow(Gitlab::Observability).to receive(:observability_enabled?)
-
-      get tested_path
-
-      expect(Gitlab::Observability).to have_received(:observability_enabled?)
-        .with(user, group).at_least(:once)
     end
   end
 

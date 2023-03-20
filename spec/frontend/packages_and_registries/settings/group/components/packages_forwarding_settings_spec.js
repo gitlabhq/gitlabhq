@@ -25,7 +25,7 @@ import {
   mavenProps,
 } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/packages_and_registries/settings/group/graphql/utils/optimistic_responses');
 
 describe('Packages Forwarding Settings', () => {

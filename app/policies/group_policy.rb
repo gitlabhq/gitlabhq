@@ -85,7 +85,11 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:crm_enabled, score: 0, scope: :subject) { @subject.crm_enabled? }
 
   condition(:create_runner_workflow_enabled) do
-    Feature.enabled?(:create_runner_workflow)
+    Feature.enabled?(:create_runner_workflow_for_namespace, group)
+  end
+
+  condition(:achievements_enabled, scope: :subject) do
+    Feature.enabled?(:achievements, @subject)
   end
 
   condition(:group_runner_registration_allowed, scope: :subject) do
@@ -131,7 +135,15 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_group_member
     enable :read_custom_emoji
     enable :read_counts
+  end
+
+  rule { can?(:read_group) & achievements_enabled }.policy do
     enable :read_achievement
+  end
+
+  rule { can?(:maintainer_access) & achievements_enabled }.policy do
+    enable :admin_achievement
+    enable :award_achievement
   end
 
   rule { ~public_group & ~has_access }.prevent :read_counts
@@ -147,17 +159,15 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { has_access }.enable :read_namespace
 
   rule { developer }.policy do
-    enable :create_metrics_dashboard_annotation
-    enable :delete_metrics_dashboard_annotation
-    enable :update_metrics_dashboard_annotation
+    enable :admin_metrics_dashboard_annotation
     enable :create_custom_emoji
     enable :create_package
     enable :developer_access
     enable :admin_crm_organization
     enable :admin_crm_contact
     enable :read_cluster
-
     enable :read_group_all_available_runners
+    enable :use_k8s_proxies
   end
 
   rule { reporter }.policy do
@@ -191,7 +201,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :maintainer_access
     enable :read_upload
     enable :destroy_upload
-    enable :admin_achievement
   end
 
   rule { owner }.policy do
@@ -246,7 +255,9 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { ~can?(:view_globally) }.prevent   :request_access
   rule { has_access }.prevent              :request_access
 
-  rule { owner & (~share_with_group_locked | ~has_parent | ~parent_share_with_group_locked | can_change_parent_share_with_group_lock) }.enable :change_share_with_group_lock
+  rule do
+    owner & (~share_with_group_locked | ~has_parent | ~parent_share_with_group_locked | can_change_parent_share_with_group_lock)
+  end.enable :change_share_with_group_lock
 
   rule { developer & developer_maintainer_access }.enable :create_projects
   rule { create_projects_disabled }.prevent :create_projects
@@ -323,6 +334,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { can?(:developer_access) & observability_enabled }.policy do
     enable :read_observability
+  end
+
+  rule { can?(:maintainer_access) & observability_enabled }.policy do
+    enable :admin_observability
   end
 
   rule { ~create_runner_workflow_enabled }.policy do

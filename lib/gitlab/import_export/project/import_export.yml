@@ -89,13 +89,15 @@ tree:
         - :milestone
       - :resource_state_events
     - :external_pull_requests
+    - commit_notes:
+      - :author
+      - events:
+        - :push_event_payload
     - ci_pipelines:
-      - notes:
-        - :author
-        - events:
-          - :push_event_payload
       - stages:
-        - :statuses
+        - :builds
+        - :generic_commit_statuses
+        - :bridges
       - :external_pull_request
       - :merge_request
       - :pipeline_metadata
@@ -121,6 +123,21 @@ tree:
     - :service_desk_setting
   group_members:
     - :user
+
+# Used to support old exports that were exported before the removal/rename of the associations
+#
+# For example, statuses of ci_pipelines are no longer exported, and instead, statuses are
+# exported as builds, generic_commit_statuses, and bridges. So in order to allow statuses
+# to be still imported, it is added to the list below.
+import_only_tree:
+  project:
+    - ci_pipelines:
+      - notes:
+        - :author
+        - events:
+          - :push_event_payload
+      - stages:
+        - :statuses
 
 # Only include the following attributes for the models specified.
 included_attributes:
@@ -529,7 +546,7 @@ included_attributes:
     - :source_sha
     - :target_sha
   external_pull_requests: *external_pull_request_definition
-  statuses:
+  statuses: &statuses_definition
     - :project_id
     - :status
     - :finished_at
@@ -562,6 +579,9 @@ included_attributes:
     - :scheduled_at
     - :scheduling_type
     - :ci_stage
+  builds: *statuses_definition
+  generic_commit_statuses: *statuses_definition
+  bridges: *statuses_definition
   ci_pipelines:
     - :ref
     - :sha
@@ -596,6 +616,7 @@ included_attributes:
     - :project_id
     - :created_at
     - :updated_at
+    # - :statuses # old exports use statuses instead of builds, generic_commit_statuses and bridges
   actions:
     - :event
   design: &design_definition
@@ -896,7 +917,7 @@ excluded_attributes:
   merge_requests: *merge_request_excluded_definition
   award_emoji:
     - :awardable_id
-  statuses:
+  statuses: &statuses_excluded_definition
     - :trace
     - :token
     - :token_encrypted
@@ -918,6 +939,9 @@ excluded_attributes:
     - :processed
     - :id_convert_to_bigint
     - :stage_id_convert_to_bigint
+  builds: *statuses_excluded_definition
+  generic_commit_statuses: *statuses_excluded_definition
+  bridges: *statuses_excluded_definition
   sentry_issue:
     - :issue_id
   push_event_payload:
@@ -953,6 +977,9 @@ excluded_attributes:
     - :merge_request_id
     - :note_id
   notes:
+    - :noteable_id
+    - :review_id
+  commit_notes:
     - :noteable_id
     - :review_id
   label_links:
@@ -1079,6 +1106,8 @@ methods:
     - :squash_option
   notes:
     - :type
+  commit_notes:
+    - :type
   labels:
     - :type
   label:
@@ -1100,8 +1129,6 @@ methods:
     - :type
   lists:
     - :list_type
-  ci_pipelines:
-    - :notes
   issues:
     - :state
 
@@ -1111,10 +1138,11 @@ methods:
 preloads:
   issues:
     project: :route
-  statuses:
-    # TODO: We cannot preload tags, as they are not part of `GenericCommitStatus`
-    # tags: # needed by tag_list
-    project: # deprecated: needed by coverage_regex of Ci::Build
+  builds:
+    metadata:
+    project:
+  bridges:
+    metadata:
   merge_requests:
     source_project: :route # needed by source_branch_sha and diff_head_sha
     target_project: :route # needed by target_branch_sha

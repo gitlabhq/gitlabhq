@@ -124,8 +124,10 @@ If you get this error, [check the batched background migration options](#databas
 
 ### Pause batched background migrations in GitLab 14.x
 
-To pause an ongoing batched background migration, use the `disable` command above.
-This command causes the migration to complete the current batch, and then wait to start the next batch.
+To pause an ongoing batched background migration,
+[disable the batched background migrations feature](#enable-or-disable-background-migrations).
+Disabling the feature completes the current batch of migrations, then waits to start
+the next batch until after the feature is enabled again.
 
 Use the following database queries to see the state of the current batched background migration:
 

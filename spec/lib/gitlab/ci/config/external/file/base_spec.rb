@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipeline_composition do
   let(:variables) {}
   let(:context_params) { { sha: 'HEAD', variables: variables } }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }

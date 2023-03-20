@@ -1,0 +1,8 @@
+---
+name: reduce_sub_batch_size_on_timeouts
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109354
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/393556
+milestone: '15.10'
+type: development
+group: group::database
+default_enabled: false

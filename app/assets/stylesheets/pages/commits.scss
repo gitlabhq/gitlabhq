@@ -270,6 +270,10 @@
   &:hover {
     @include gl-text-decoration-none;
   }
+
+  .header-main-content & {
+    @include gl-mr-2;
+  }
 }
 
 .gpg-popover-certificate-details {

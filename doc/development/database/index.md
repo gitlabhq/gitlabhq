@@ -4,7 +4,7 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Database guides
+# Database development guidelines
 
 ## Database Reviews
 
@@ -109,6 +109,8 @@ including the major methods:
 - [Introduction](clickhouse/index.md)
 - [Optimizing query execution](clickhouse/optimization.md)
 - [Rebuild GitLab features using ClickHouse 1: Activity data](clickhouse/gitlab_activity_data.md)
+- [Rebuild GitLab features using ClickHouse 2: Merge Request analytics](clickhouse/merge_request_analytics.md)
+- [Tiered Storage in ClickHouse](clickhouse/tiered_storage.md)
 
 ## Miscellaneous
 

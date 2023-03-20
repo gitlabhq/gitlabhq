@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Commits::CommitPatchService do
+RSpec.describe Commits::CommitPatchService, feature_category: :source_code_management do
   describe '#execute' do
     let(:patches) do
       patches_folder = Rails.root.join('spec/fixtures/patchfiles')

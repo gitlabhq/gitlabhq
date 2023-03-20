@@ -1,16 +1,9 @@
 <script>
-import {
-  GlButton,
-  GlDropdown,
-  GlDropdownItem,
-  GlIcon,
-  GlTooltipDirective as GlTooltip,
-} from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlIcon, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 
 export default {
   components: {
     GlIcon,
-    GlButton,
     GlDropdown,
     GlDropdownItem,
   },
@@ -18,10 +11,6 @@ export default {
     GlTooltip,
   },
   props: {
-    isProjectsImportEnabled: {
-      type: Boolean,
-      required: true,
-    },
     isFinished: {
       type: Boolean,
       required: true,
@@ -46,7 +35,7 @@ export default {
 <template>
   <span class="gl-white-space-nowrap gl-inline-flex gl-align-items-center">
     <gl-dropdown
-      v-if="isProjectsImportEnabled && (isAvailableForImport || isFinished)"
+      v-if="isAvailableForImport || isFinished"
       :text="isFinished ? __('Re-import with projects') : __('Import with projects')"
       :disabled="isInvalid"
       variant="confirm"
@@ -59,16 +48,6 @@ export default {
         isFinished ? __('Re-import without projects') : __('Import without projects')
       }}</gl-dropdown-item>
     </gl-dropdown>
-    <gl-button
-      v-else-if="isAvailableForImport || isFinished"
-      :disabled="isInvalid"
-      variant="confirm"
-      category="secondary"
-      data-qa-selector="import_group_button"
-      @click="$emit('import-group')"
-    >
-      {{ isFinished ? __('Re-import') : __('Import') }}
-    </gl-button>
     <gl-icon
       v-if="isFinished"
       v-gl-tooltip

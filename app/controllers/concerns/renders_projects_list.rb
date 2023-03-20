@@ -8,6 +8,7 @@ module RendersProjectsList
     # once when the entities are rendered
     projects.each(&:forks_count)
     projects.each(&:open_issues_count)
+    projects.each(&:open_merge_requests_count)
 
     projects
   end

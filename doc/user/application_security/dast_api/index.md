@@ -48,6 +48,7 @@ The following projects demonstrate DAST API scanning:
 - [Example Postman Collection project](https://gitlab.com/gitlab-org/security-products/demos/api-dast/postman-example)
 - [Example GraphQL project](https://gitlab.com/gitlab-org/security-products/demos/api-dast/graphql-example)
 - [Example SOAP project](https://gitlab.com/gitlab-org/security-products/demos/api-dast/soap-example)
+- [Authentication Token using Selenium](https://gitlab.com/gitlab-org/security-products/demos/api-dast/auth-token-selenium)
 
 ## Targeting API for DAST scanning
 
@@ -96,8 +97,6 @@ Multiple media types in `DAST_API_OPENAPI_MEDIA_TYPES` are separated by a colon 
 The environment variables `DAST_API_OPENAPI_ALL_MEDIA_TYPES` and `DAST_API_OPENAPI_MEDIA_TYPES` allow you to decide how to handle media types. These settings are mutually exclusive. If both are enabled, DAST API reports an error.
 
 #### Configure DAST API with an OpenAPI Specification
-
-To configure DAST API scanning with an OpenAPI specification:
 
 To configure DAST API scanning with an OpenAPI Specification:
 
@@ -263,6 +262,8 @@ This example is a minimal configuration for DAST API. From here you can:
 - Learn how to [handle false positives](#handling-false-positives).
 
 #### DAST API scanning with a GraphQL Schema file
+
+DAST API can use a GraphQL schema file to understand and test a GraphQL endpoint that has introspection disabled. To use a GraphQL schema file, it must be in the introspection JSON format. A GraphQL schema can be converted to a the introspection JSON format using an online 3rd party tool: [https://transform.tools/graphql-to-introspection-json](https://transform.tools/graphql-to-introspection-json).
 
 To configure DAST API to use a GraphQL schema file that provides information about the target API to test:
 
@@ -1924,7 +1925,7 @@ variables:
 
 When configured correctly, a CI/CD pipeline contains a `dast` stage and an `dast_api` job. The job only fails when an invalid configuration is provided. During typical operation, the job always succeeds even if vulnerabilities are identified during testing.
 
-Vulnerabilities are displayed on the **Security** pipeline tab with the suite name. When testing against the repositories default branch, the DAST API vulnerabilities are also shown on the Security & Compliance's Vulnerability Report page.
+Vulnerabilities are displayed on the **Security** pipeline tab with the suite name. When testing against the repositories default branch, the DAST API vulnerabilities are also shown on the Security and Compliance's Vulnerability Report page.
 
 To prevent an excessive number of reported vulnerabilities, the DAST API scanner limits the number of vulnerabilities it reports per operation.
 
@@ -1941,7 +1942,7 @@ Follow these steps to view details of a vulnerability:
 
 1. You can view vulnerabilities in a project, or a merge request:
 
-   - In a project, go to the project's **Security & Compliance > Vulnerability Report**
+   - In a project, go to the project's **Security and Compliance > Vulnerability Report**
      page. This page shows all vulnerabilities from the default branch only.
    - In a merge request, go the merge request's **Security** section and select the **Expand**
      button. DAST API vulnerabilities are available in a section labeled
@@ -2558,7 +2559,7 @@ You can expedite the investigation with the [testssl.sh tool](https://testssl.sh
 To get support for your particular problem, use the [getting help channels](https://about.gitlab.com/get-help/).
 
 The [GitLab issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues) is the right place for bugs and feature proposals about API Security and DAST API.
-Use `~"Category:API Security"` [label](../../../development/contributing/issue_workflow.md#labels) when opening a new issue regarding DAST API to ensure it is quickly reviewed by the right people. Refer to our [review response SLO](https://about.gitlab.com/handbook/engineering/workflow/code-review/#review-response-slo) to understand when you should receive a response.
+Use `~"Category:API Security"` [label](../../../development/labels/index.md) when opening a new issue regarding DAST API to ensure it is quickly reviewed by the right people. Refer to our [review response SLO](https://about.gitlab.com/handbook/engineering/workflow/code-review/#review-response-slo) to understand when you should receive a response.
 
 [Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) for similar entries before submitting your own, there's a good chance somebody else had the same issue or feature proposal. Show your support with an award emoji and or join the discussion.
 

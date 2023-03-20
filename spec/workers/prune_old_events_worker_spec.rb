@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PruneOldEventsWorker do
+RSpec.describe PruneOldEventsWorker, feature_category: :user_profile do
   describe '#perform' do
     let(:user) { create(:user) }
 
@@ -29,6 +29,18 @@ RSpec.describe PruneOldEventsWorker do
     it 'leaves events from 3 years ago' do
       subject.perform
       expect(not_expired_3_years_event).to be_present
+    end
+
+    context 'with ops_prune_old_events FF disabled' do
+      before do
+        stub_feature_flags(ops_prune_old_events: false)
+      end
+
+      it 'does not delete' do
+        subject.perform
+
+        expect(Event.find_by(id: expired_event.id)).to be_present
+      end
     end
   end
 end

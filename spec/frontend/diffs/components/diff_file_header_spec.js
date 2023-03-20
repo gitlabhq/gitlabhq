@@ -72,8 +72,6 @@ describe('DiffFileHeader component', () => {
       diffHasExpandedDiscussionsResultMock,
       ...Object.values(mockStoreConfig.modules.diffs.actions),
     ].forEach((mock) => mock.mockReset());
-
-    wrapper.destroy();
   });
 
   const findHeader = () => wrapper.findComponent({ ref: 'header' });

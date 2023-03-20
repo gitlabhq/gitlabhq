@@ -81,8 +81,6 @@
 }
 
 .detail-page-description {
-  padding: 16px 0;
-
   small {
     color: var(--gray-500, $gray-500);
   }
@@ -92,10 +90,11 @@
   color: var(--gray-500, $gray-500);
   display: block;
   margin: 16px 0 0;
-  font-size: 85%;
+  font-size: $gl-font-size-small;
 
   .author-link {
-    color: var(--gray-500, $gray-500);
+    color: var(--gray-700, $gray-700);
+    font-size: $gl-font-size-small;
   }
 }
 
@@ -135,21 +134,6 @@
 
   @include media-breakpoint-down(sm) {
     margin-bottom: $gl-padding;
-  }
-}
-
-.add-issuable-form-input-wrapper {
-  &.focus {
-    border-color: var(--gray-700, $gray-700);
-    @include gl-focus;
-
-    input {
-      @include gl-shadow-none;
-    }
-  }
-
-  .gl-show-field-errors &.form-control:not(textarea) {
-    height: auto;
   }
 }
 

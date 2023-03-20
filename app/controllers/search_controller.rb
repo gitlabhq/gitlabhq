@@ -10,11 +10,11 @@ class SearchController < ApplicationController
   RESCUE_FROM_TIMEOUT_ACTIONS = [:count, :show, :autocomplete, :aggregations].freeze
   CODE_SEARCH_LITERALS = %w[blob: extension: path: filename:].freeze
 
-  track_custom_event :show,
-              name: 'i_search_total',
-              label: 'redis_hll_counters.search.search_total_unique_counts_monthly',
-              action: 'executed',
-              destinations: [:redis_hll, :snowplow]
+  track_event :show,
+    name: 'i_search_total',
+    label: 'redis_hll_counters.search.search_total_unique_counts_monthly',
+    action: 'executed',
+    destinations: [:redis_hll, :snowplow]
 
   def self.search_rate_limited_endpoints
     %i[show count autocomplete]
@@ -24,7 +24,6 @@ class SearchController < ApplicationController
 
   before_action :block_anonymous_global_searches, :check_scope_global_search_enabled, except: :opensearch
   skip_before_action :authenticate_user!
-  skip_before_action :default_cache_headers, only: :count
 
   requires_cross_project_access if: -> do
     search_term_present = params[:search].present? || params[:term].present?
@@ -32,9 +31,6 @@ class SearchController < ApplicationController
   end
   before_action :check_search_rate_limit!, only: search_rate_limited_endpoints
 
-  before_action only: :show do
-    push_frontend_feature_flag(:search_blobs_language_aggregation, current_user)
-  end
   before_action only: :show do
     update_scope_for_code_search
   end
@@ -115,6 +111,9 @@ class SearchController < ApplicationController
     @project = search_service.project
     @ref = params[:project_ref] if params[:project_ref].present?
     @filter = params[:filter]
+
+    # Cache the response on the frontend
+    expires_in 1.minute
 
     render json: Gitlab::Json.dump(search_autocomplete_opts(term, filter: @filter))
   end

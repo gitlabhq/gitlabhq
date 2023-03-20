@@ -15,7 +15,6 @@ class PagesDomain < ApplicationRecord
 
   belongs_to :project
   has_many :acme_orders, class_name: "PagesDomainAcmeOrder"
-  has_many :serverless_domain_clusters, class_name: 'Serverless::DomainCluster', inverse_of: :pages_domain
 
   after_initialize :set_verification_code
   before_validation :clear_auto_ssl_failure, unless: :auto_ssl_enabled
@@ -209,20 +208,6 @@ class PagesDomain < ApplicationRecord
     self.certificate_source = 'gitlab_provided' if attribute_changed?(:key)
   end
 
-  def pages_virtual_domain
-    return unless pages_deployed?
-
-    cache = if Feature.enabled?(:cache_pages_domain_api, project.root_namespace)
-              ::Gitlab::Pages::CacheControl.for_domain(id)
-            end
-
-    Pages::VirtualDomain.new(
-      projects: [project],
-      domain: self,
-      cache: cache
-    )
-  end
-
   def clear_auto_ssl_failure
     self.auto_ssl_failed = false
   end
@@ -237,13 +222,13 @@ class PagesDomain < ApplicationRecord
     end
   end
 
-  private
-
   def pages_deployed?
     return false unless project
 
     project.pages_metadatum&.deployed?
   end
+
+  private
 
   def set_verification_code
     return if self.verification_code.present?

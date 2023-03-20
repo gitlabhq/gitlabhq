@@ -2,7 +2,7 @@ import { Node } from '@tiptap/core';
 import { VueRenderer } from '@tiptap/vue-2';
 import tippy from 'tippy.js';
 import Suggestion from '@tiptap/suggestion';
-import { PluginKey } from 'prosemirror-state';
+import { PluginKey } from '@tiptap/pm/state';
 import { isFunction, uniqueId, memoize } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import { initEmojiMap, getAllEmoji } from '~/emoji';

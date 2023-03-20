@@ -26,10 +26,6 @@ describe('Package code instruction', () => {
   const findInputElement = () => wrapper.find('[data-testid="instruction-input"]');
   const findMultilineInstruction = () => wrapper.find('[data-testid="multiline-instruction"]');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('single line', () => {
     beforeEach(() =>
       createComponent({

@@ -71,6 +71,33 @@ RSpec.describe Oauth::ApplicationsController do
       it_behaves_like 'redirects to 2fa setup page when the user requires it'
     end
 
+    describe 'PUT #renew' do
+      let(:oauth_params) do
+        {
+          id: application.id
+        }
+      end
+
+      subject { put :renew, params: oauth_params }
+
+      it { is_expected.to have_gitlab_http_status(:ok) }
+      it { expect { subject }.to change { application.reload.secret } }
+
+      it_behaves_like 'redirects to login page when the user is not signed in'
+      it_behaves_like 'redirects to 2fa setup page when the user requires it'
+
+      context 'when renew fails' do
+        before do
+          allow_next_found_instance_of(Doorkeeper::Application) do |application|
+            allow(application).to receive(:save).and_return(false)
+          end
+        end
+
+        it { expect { subject }.not_to change { application.reload.secret } }
+        it { is_expected.to redirect_to(oauth_application_url(application)) }
+      end
+    end
+
     describe 'GET #show' do
       subject { get :show, params: { id: application.id } }
 
@@ -113,30 +140,11 @@ RSpec.describe Oauth::ApplicationsController do
 
       subject { post :create, params: oauth_params }
 
-      context 'when hash_oauth_tokens flag set' do
-        before do
-          stub_feature_flags(hash_oauth_secrets: true)
-        end
+      it 'creates an application' do
+        subject
 
-        it 'creates an application' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template :show
-        end
-      end
-
-      context 'when hash_oauth_tokens flag not set' do
-        before do
-          stub_feature_flags(hash_oauth_secrets: false)
-        end
-
-        it 'creates an application' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:found)
-          expect(response).to redirect_to(oauth_application_path(Doorkeeper::Application.last))
-        end
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template :show
       end
 
       it 'redirects back to profile page if OAuth applications are disabled' do

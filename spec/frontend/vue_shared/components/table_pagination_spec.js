@@ -16,10 +16,6 @@ describe('Pagination component', () => {
     spy = jest.fn();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('render', () => {
     it('should not render anything', () => {
       mountComponent({

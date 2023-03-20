@@ -43,10 +43,6 @@ describe('Persisted Search', () => {
     extractFilterAndSorting.mockReturnValue(defaultQueryParamsMock);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('has a registry search component', async () => {
     mountComponent();
 

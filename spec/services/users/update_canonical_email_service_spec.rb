@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::UpdateCanonicalEmailService do
+RSpec.describe Users::UpdateCanonicalEmailService, feature_category: :user_profile do
   let(:other_email) { "differentaddress@includeddomain.com" }
 
   before do

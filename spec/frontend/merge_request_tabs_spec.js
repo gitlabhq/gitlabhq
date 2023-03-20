@@ -354,8 +354,6 @@ describe('MergeRequestTabs', () => {
       testContext.class.expandSidebar.forEach((el) => {
         expect(el.classList.contains('gl-display-none!')).toBe(hides);
       });
-
-      window.gon = {};
     });
 
     describe('when switching tabs', () => {

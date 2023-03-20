@@ -20,11 +20,6 @@ describe('Registry Settings app', () => {
   const findPackagesCleanupPolicy = () => wrapper.findComponent(PackagesCleanupPolicy);
   const findAlert = () => wrapper.findComponent(GlAlert);
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const defaultProvide = {
     showContainerRegistrySettings: true,
     showPackageRegistrySettings: true,

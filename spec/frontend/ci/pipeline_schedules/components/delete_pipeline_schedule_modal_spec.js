@@ -20,10 +20,6 @@ describe('Delete pipeline schedule modal', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('emits the deleteSchedule event', async () => {
     findModal().vm.$emit('primary');
 

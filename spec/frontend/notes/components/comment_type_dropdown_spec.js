@@ -24,10 +24,6 @@ describe('CommentTypeDropdown component', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     isInternalNote | buttonText
     ${false}       | ${COMMENT_FORM.comment}

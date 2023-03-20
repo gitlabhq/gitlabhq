@@ -8,7 +8,14 @@ import createRouter from './router';
 
 export default () => {
   const el = document.querySelector('.js-design-management');
-  const { issueIid, projectPath, issuePath, registerPath, signInPath } = el.dataset;
+  const {
+    issueIid,
+    projectPath,
+    issuePath,
+    registerPath,
+    signInPath,
+    savedRepliesNewPath,
+  } = el.dataset;
   const router = createRouter(issuePath);
 
   apolloProvider.clients.defaultClient.cache.writeQuery({
@@ -32,6 +39,7 @@ export default () => {
       issueIid,
       registerPath,
       signInPath,
+      newSavedRepliesPath: savedRepliesNewPath,
     },
     mounted() {
       performanceMarkAndMeasure({

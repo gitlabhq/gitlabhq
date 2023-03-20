@@ -1,18 +1,12 @@
 export function supported() {
   return Boolean(
-    navigator.credentials &&
-      navigator.credentials.create &&
-      navigator.credentials.get &&
-      window.PublicKeyCredential,
+    navigator.credentials?.create && navigator.credentials?.get && window.PublicKeyCredential,
   );
 }
 
 export function isHTTPS() {
   return window.location.protocol.startsWith('https');
 }
-
-export const FLOW_AUTHENTICATE = 'authenticate';
-export const FLOW_REGISTER = 'register';
 
 /**
  * Converts a base64 string to an ArrayBuffer

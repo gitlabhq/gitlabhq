@@ -495,7 +495,6 @@ production: &base
   ## To switch to a Jira connect development environment
   jira_connect:
     # atlassian_js_url: 'http://localhost:9292/atlassian.js'
-    # enable_public_keys_storage: true
     # enforce_jira_base_url_https: false
     # additional_iframe_ancestors: ['localhost:*']
 
@@ -1167,6 +1166,16 @@ production: &base
     # Client ID and Secret to access FortiToken Cloud API
     # client_id: 'YOUR_FORTI_TOKEN_CLOUD_CLIENT_ID'
     # client_secret: 'YOUR_FORTI_TOKEN_CLOUD_CLIENT_SECRET'
+
+  # Duo Auth settings
+  duo_auth:
+    # Allow using Duo as an OTP provider
+    enabled: false
+
+    # Client ID and Secret to access Duo's API
+    # integration_key: 'YOUR_DUO_INTEGRATION_KEY'
+    # secret_key: 'YOUR_DUO_SECRET_KEY'
+    # hostname: 'YOUR_DUO_API_FQDN'
 
   # Shared file storage settings
   shared:

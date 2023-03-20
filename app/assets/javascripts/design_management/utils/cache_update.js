@@ -2,7 +2,7 @@
 
 import produce from 'immer';
 import { differenceBy } from 'lodash';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { extractCurrentDiscussion, extractDesign, extractDesigns } from './design_management_utils';
 import {
   ADD_IMAGE_DIFF_NOTE_ERROR,

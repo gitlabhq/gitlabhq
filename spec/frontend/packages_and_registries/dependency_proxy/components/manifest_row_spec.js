@@ -29,10 +29,6 @@ describe('Manifest Row', () => {
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeagoTooltip);
   const findStatus = () => wrapper.findByTestId('status');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('With a manifest on the DEFAULT status', () => {
     beforeEach(() => {
       createComponent();

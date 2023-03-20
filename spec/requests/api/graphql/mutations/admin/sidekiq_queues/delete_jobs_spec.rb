@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Deleting Sidekiq jobs', :clean_gitlab_redis_queues, feature_category: :not_owned do
+RSpec.describe 'Deleting Sidekiq jobs', :clean_gitlab_redis_queues, feature_category: :shared do
   include GraphqlHelpers
 
   let_it_be(:admin) { create(:admin) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::FastHashSerializer, :with_license do
+RSpec.describe Gitlab::ImportExport::FastHashSerializer, :with_license, feature_category: :importers do
   # FastHashSerializer#execute generates the hash which is not easily accessible
   # and includes `JSONBatchRelation` items which are serialized at this point.
   # Wrapping the result into JSON generating/parsing is for making
@@ -125,13 +125,13 @@ RSpec.describe Gitlab::ImportExport::FastHashSerializer, :with_license do
     expect(subject.dig('ci_pipelines', 0, 'stages')).not_to be_empty
   end
 
-  it 'has pipeline statuses' do
-    expect(subject.dig('ci_pipelines', 0, 'stages', 0, 'statuses')).not_to be_empty
+  it 'has pipeline builds' do
+    expect(subject.dig('ci_pipelines', 0, 'stages', 0, 'builds')).not_to be_empty
   end
 
   it 'has pipeline builds' do
     builds_count = subject
-      .dig('ci_pipelines', 0, 'stages', 0, 'statuses')
+      .dig('ci_pipelines', 0, 'stages', 0, 'builds')
       .count { |hash| hash['type'] == 'Ci::Build' }
 
     expect(builds_count).to eq(1)
@@ -141,8 +141,8 @@ RSpec.describe Gitlab::ImportExport::FastHashSerializer, :with_license do
     expect(subject['ci_pipelines']).not_to be_empty
   end
 
-  it 'has ci pipeline notes' do
-    expect(subject['ci_pipelines'].first['notes']).not_to be_empty
+  it 'has commit notes' do
+    expect(subject['commit_notes']).not_to be_empty
   end
 
   it 'has labels with no associations' do

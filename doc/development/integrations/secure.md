@@ -234,21 +234,12 @@ then `artifacts:reports:dependency_scanning` must be set to `depscan.json`.
 
 ### Exit code
 
-Following the POSIX exit code standard, the scanner exits with 0 for success and any number from 1 to 255 for anything else.
+Following the POSIX exit code standard, the scanner exits with either `0` for success or `1` for failure.
 Success also includes the case when vulnerabilities are found.
 
 When a CI job fails, security report results are not ingested by GitLab, even if the job
-[allows failure](../../ci/yaml/index.md#allow_failure). The report artifacts are still uploaded to GitLab and available
+[allows failure](../../ci/yaml/index.md#allow_failure). However, the report artifacts are still uploaded to GitLab and available
 for [download in the pipeline security tab](../../user/application_security/vulnerability_report/pipeline.md#download-security-scan-outputs).
-
-When executing a scanning job using the [Docker-in-Docker privileged mode](../../user/application_security/sast/index.md#requirements),
-we reserve the following standard exit codes.
-
-| Orchestrator Exit Code | Description                      |
-|------------------------|----------------------------------|
-| 3                      | No match, no compatible analyzer |
-| 4                      | Project directory empty          |
-| 5                      | No compatible Docker image       |
 
 ### Logging
 
@@ -412,8 +403,6 @@ The `id` should not collide with any other analyzers or scanners another integra
 
 ##### Scan Primary Identifiers
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `sec_mark_dropped_findings_as_resolved`. Disabled by default.
-
 The `scan.primary_identifiers` field is an optional field containing an array of
 [primary identifiers](../../user/application_security/terminology/index.md#primary-identifier)).
 This is an exhaustive list of all rulesets for which the analyzer performed the scan.
@@ -422,7 +411,7 @@ Even when the [`Vulnerabilities`](#vulnerabilities) array for a given scan may b
 should contain the complete list of potential identifiers to inform the Rails application of which
 rules were executed.
 
-When populated, the Rails application automatically resolves previously detected vulnerabilities as no
+When populated, the Rails application [may automatically resolve previously detected vulnerabilities](../../user/application_security/iac_scanning/index.md#automatic-vulnerability-resolution) as no
 longer relevant when their primary identifier is not included.
 
 ##### Name, message, and description

@@ -33,25 +33,23 @@ describe('Text variable component', () => {
 
   it('triggers keyup enter', async () => {
     createShallowWrapper();
-    jest.spyOn(wrapper.vm, '$emit');
 
     findInput().element.value = 'prod-pod';
     findInput().trigger('input');
     findInput().trigger('keyup.enter');
 
     await nextTick();
-    expect(wrapper.vm.$emit).toHaveBeenCalledWith('input', 'prod-pod');
+    expect(wrapper.emitted('input')).toEqual([['prod-pod']]);
   });
 
   it('triggers blur enter', async () => {
     createShallowWrapper();
-    jest.spyOn(wrapper.vm, '$emit');
 
     findInput().element.value = 'canary-pod';
     findInput().trigger('input');
     findInput().trigger('blur');
 
     await nextTick();
-    expect(wrapper.vm.$emit).toHaveBeenCalledWith('input', 'canary-pod');
+    expect(wrapper.emitted('input')).toEqual([['canary-pod']]);
   });
 });

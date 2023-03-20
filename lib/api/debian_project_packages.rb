@@ -82,7 +82,7 @@ module API
             optional :distribution, type: String, desc: 'The Debian Codename or Suite', regexp: Gitlab::Regex.debian_distribution_regex
             given :distribution do
               requires :component, type: String, desc: 'The Debian Component', regexp: Gitlab::Regex.debian_component_regex
-              requires :file_name, type: String, desc: 'The filename', regexp: { value: Gitlab::Regex.debian_direct_upload_filename_regex, message: 'Only debs and udebs can be directly added to a distribution' }
+              requires :file_name, type: String, desc: 'The filename', regexp: { value: Gitlab::Regex.debian_direct_upload_filename_regex, message: 'Only debs, udebs and ddebs can be directly added to a distribution' }
             end
           end
           route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth, authenticate_non_public: true
@@ -132,7 +132,7 @@ module API
             optional :distribution, type: String, desc: 'The Debian Codename or Suite', regexp: Gitlab::Regex.debian_distribution_regex
             given :distribution do
               requires :component, type: String, desc: 'The Debian Component', regexp: Gitlab::Regex.debian_component_regex
-              requires :file_name, type: String, desc: 'The filename', regexp: { value: Gitlab::Regex.debian_direct_upload_filename_regex, message: 'Only debs and udebs can be directly added to a distribution' }
+              requires :file_name, type: String, desc: 'The filename', regexp: { value: Gitlab::Regex.debian_direct_upload_filename_regex, message: 'Only debs, udebs and ddebs can be directly added to a distribution' }
             end
           end
           route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth, authenticate_non_public: true

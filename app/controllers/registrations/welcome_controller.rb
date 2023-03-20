@@ -10,7 +10,7 @@ module Registrations
     skip_before_action :authenticate_user!, :required_signup_info, :check_two_factor_requirement, only: [:show, :update]
     before_action :require_current_user
 
-    feature_category :authentication_and_authorization
+    feature_category :user_management
 
     def show
       return redirect_to path_for_signed_in_user(current_user) if completed_welcome_step?
@@ -50,7 +50,7 @@ module Registrations
 
     def requires_confirmation?(user)
       return false if user.confirmed?
-      return false if Feature.enabled?(:soft_email_confirmation)
+      return false unless Gitlab::CurrentSettings.email_confirmation_setting_hard?
 
       true
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UpdateHeadPipelineForMergeRequestWorker do
+RSpec.describe UpdateHeadPipelineForMergeRequestWorker, feature_category: :continuous_integration do
   describe '#perform' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :repository) }

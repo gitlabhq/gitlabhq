@@ -28,10 +28,6 @@ describe('Confirm Modal', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findGlModal = () => wrapper.findComponent(GlModal);
 
   describe('Modal events', () => {

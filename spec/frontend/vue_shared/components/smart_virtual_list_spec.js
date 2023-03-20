@@ -1,5 +1,4 @@
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
 import SmartVirtualScrollList from '~/vue_shared/components/smart_virtual_list.vue';
 
 describe('Toggle Button', () => {
@@ -16,7 +15,7 @@ describe('Toggle Button', () => {
       remain,
     };
 
-    const Component = Vue.extend({
+    const Component = {
       components: {
         SmartVirtualScrollList,
       },
@@ -26,7 +25,7 @@ describe('Toggle Button', () => {
       <smart-virtual-scroll-list v-bind="$options.smartListProperties">
         <li v-for="(val, key) in $options.items" :key="key">{{ key + 1 }}</li>
       </smart-virtual-scroll-list>`,
-    });
+    };
 
     return mount(Component).vm;
   };

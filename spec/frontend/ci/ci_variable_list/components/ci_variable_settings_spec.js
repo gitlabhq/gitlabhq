@@ -22,6 +22,7 @@ describe('Ci variable table', () => {
     hideEnvironmentScope: false,
     isLoading: false,
     maxVariableLimit: 5,
+    pageInfo: { after: '' },
     variables: mockVariablesWithScopes(projectString),
   };
 
@@ -37,10 +38,6 @@ describe('Ci variable table', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('props passing', () => {
     it('passes props down correctly to the ci table', () => {
       createComponent();
@@ -49,6 +46,7 @@ describe('Ci variable table', () => {
         entity: 'project',
         isLoading: defaultProps.isLoading,
         maxVariableLimit: defaultProps.maxVariableLimit,
+        pageInfo: defaultProps.pageInfo,
         variables: defaultProps.variables,
       });
     });
@@ -142,6 +140,24 @@ describe('Ci variable table', () => {
       await nextTick();
 
       expect(wrapper.emitted(eventName)).toEqual([[newVariable]]);
+    });
+  });
+
+  describe('pages events', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it.each`
+      eventName             | args
+      ${'handle-prev-page'} | ${undefined}
+      ${'handle-next-page'} | ${undefined}
+      ${'sort-changed'}     | ${{ sortDesc: true }}
+    `('bubbles up the $eventName event', async ({ args, eventName }) => {
+      findCiVariableTable().vm.$emit(eventName, args);
+      await nextTick();
+
+      expect(wrapper.emitted(eventName)).toEqual([[args]]);
     });
   });
 });

@@ -379,8 +379,12 @@ but we'd like to at least help those with specific needs.
 
 ## Keep OmniAuth user profiles up to date
 
-You can enable profile syncing from selected OmniAuth providers. You can sync
-all or specific user information.
+You can enable profile syncing from selected OmniAuth providers.
+You can sync any combination of the following user attributes:
+
+- `name`
+- `email`
+- `location`
 
 When authenticating using LDAP, the user's name and email are always synced.
 

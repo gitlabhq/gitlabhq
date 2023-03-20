@@ -18,7 +18,7 @@ describe('LeaveGroupDropdownItem', () => {
         ...propsData,
       },
       directives: {
-        GlModal: createMockDirective(),
+        GlModal: createMockDirective('gl-modal'),
       },
       slots: {
         default: text,
@@ -30,10 +30,6 @@ describe('LeaveGroupDropdownItem', () => {
 
   beforeEach(() => {
     createComponent();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('renders a slot with red text', () => {

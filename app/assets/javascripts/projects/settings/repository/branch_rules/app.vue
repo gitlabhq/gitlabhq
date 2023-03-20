@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import branchRulesQuery from 'ee_else_ce/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql';
 import { expandSection } from '~/settings_panels';
 import { scrollToElement } from '~/lib/utils/common_utils';

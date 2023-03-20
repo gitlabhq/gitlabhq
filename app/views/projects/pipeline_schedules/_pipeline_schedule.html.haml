@@ -37,7 +37,7 @@
         - if can?(current_user, :play_pipeline_schedule, pipeline_schedule)
           = link_to play_pipeline_schedule_path(pipeline_schedule), method: :post, title: _('Play'), class: 'btn gl-button btn-default btn-icon' do
             = sprite_icon('play')
-        - if can?(current_user, :take_ownership_pipeline_schedule, pipeline_schedule)
+        - if can?(current_user, :admin_pipeline_schedule, pipeline_schedule) && pipeline_schedule.owner != current_user
           = render Pajamas::ButtonComponent.new(button_options: { class: 'js-take-ownership-button has-tooltip', title: s_('PipelineSchedule|Take ownership to edit'), data: { url: take_ownership_pipeline_schedule_path(pipeline_schedule) } }) do
             = s_('PipelineSchedules|Take ownership')
         - if can?(current_user, :update_pipeline_schedule, pipeline_schedule)

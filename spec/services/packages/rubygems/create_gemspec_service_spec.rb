@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Rubygems::CreateGemspecService do
+RSpec.describe Packages::Rubygems::CreateGemspecService, feature_category: :package_registry do
   include RubygemsHelpers
 
   let_it_be(:package_file) { create(:package_file, :gem) }

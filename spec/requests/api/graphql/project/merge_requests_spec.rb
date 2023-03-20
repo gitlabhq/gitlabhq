@@ -588,8 +588,9 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
         end
 
         let(:query) do
+          # Adding a no-op `not` filter to mimic the same query as the frontend does
           graphql_query_for(:project, { full_path: project.full_path }, <<~QUERY)
-          mergeRequests(mergedAfter: "2020-01-01", mergedBefore: "2020-01-05", first: 0) {
+          mergeRequests(mergedAfter: "2020-01-01", mergedBefore: "2020-01-05", first: 0, not: { labels: null }) {
             totalTimeToMerge
             count
           }

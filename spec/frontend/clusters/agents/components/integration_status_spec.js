@@ -27,10 +27,6 @@ describe('IntegrationStatus', () => {
   const findAgentStatus = () => wrapper.findByTestId('agent-status');
   const findAgentIntegrationStatusRows = () => wrapper.findAllComponents(AgentIntegrationStatusRow);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     lastUsedAt               | status               | iconName
     ${null}                  | ${'Never connected'} | ${'status-neutral'}

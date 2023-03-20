@@ -62,10 +62,6 @@ describe('Blob Embeddable', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('rendering', () => {
     it('renders correct components', () => {
       createComponent();

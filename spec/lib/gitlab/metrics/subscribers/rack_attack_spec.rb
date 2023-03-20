@@ -32,33 +32,6 @@ RSpec.describe Gitlab::Metrics::Subscribers::RackAttack, :request_store do
     end
   end
 
-  describe '#redis' do
-    it 'accumulates per-request RackAttack cache usage' do
-      freeze_time do
-        subscriber.redis(
-          ActiveSupport::Notifications::Event.new(
-            'redis.rack_attack', Time.current, Time.current + 1.second, '1', { operation: 'fetch' }
-          )
-        )
-        subscriber.redis(
-          ActiveSupport::Notifications::Event.new(
-            'redis.rack_attack', Time.current, Time.current + 2.seconds, '1', { operation: 'write' }
-          )
-        )
-        subscriber.redis(
-          ActiveSupport::Notifications::Event.new(
-            'redis.rack_attack', Time.current, Time.current + 3.seconds, '1', { operation: 'read' }
-          )
-        )
-      end
-
-      expect(Gitlab::SafeRequestStore[:rack_attack_instrumentation]).to eql(
-        rack_attack_redis_count: 3,
-        rack_attack_redis_duration_s: 6.0
-      )
-    end
-  end
-
   shared_examples 'log into auth logger' do
     context 'when matched throttle does not require user information' do
       let(:event) do

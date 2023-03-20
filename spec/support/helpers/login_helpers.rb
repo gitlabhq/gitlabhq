@@ -139,11 +139,6 @@ module LoginHelpers
     click_link_or_button "oauth-login-#{provider}"
   end
 
-  def fake_successful_u2f_authentication
-    allow(U2fRegistration).to receive(:authenticate).and_return(true)
-    FakeU2fDevice.new(page, nil).fake_u2f_authentication
-  end
-
   def fake_successful_webauthn_authentication
     allow_any_instance_of(Webauthn::AuthenticateService).to receive(:execute).and_return(true)
     FakeWebauthnDevice.new(page, nil).fake_webauthn_authentication
@@ -216,6 +211,15 @@ module LoginHelpers
                                                           urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS
                                                           urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorIGTOKEN)
     config
+  end
+
+  def prepare_provider_route(provider_name)
+    routes = Rails.application.routes
+    routes.disable_clear_and_finalize = true
+    routes.formatter.clear
+    routes.draw do
+      post "/users/auth/#{provider_name}" => "omniauth_callbacks##{provider_name}"
+    end
   end
 
   def stub_omniauth_provider(provider, context: Rails.application)

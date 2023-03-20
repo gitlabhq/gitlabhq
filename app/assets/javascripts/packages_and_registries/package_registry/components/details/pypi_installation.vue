@@ -28,6 +28,9 @@ export default {
     },
   },
   computed: {
+    isPrivatePackage() {
+      return !this.packageEntity.publicPackage;
+    },
     pypiPipCommand() {
       // eslint-disable-next-line @gitlab/require-i18n-strings
       return `pip install ${this.packageEntity.name} --index-url ${this.packageEntity.pypiUrl}`;
@@ -75,7 +78,7 @@ password = <your personal access token>`;
         :tracking-action="$options.tracking.TRACKING_ACTION_COPY_PIP_INSTALL_COMMAND"
         :tracking-label="$options.tracking.TRACKING_LABEL_CODE_INSTRUCTION"
       />
-      <template #description>
+      <template v-if="isPrivatePackage" #description>
         <gl-sprintf :message="$options.i18n.tokenText">
           <template #link="{ content }">
             <gl-link

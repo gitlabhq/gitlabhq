@@ -2,7 +2,6 @@ import { GlSprintf, GlModal, GlFormGroup, GlFormCheckbox, GlLoadingIcon } from '
 import { shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -66,8 +65,6 @@ describe('CustomNotificationsModal', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     mockAxios.restore();
   });
 
@@ -87,24 +84,23 @@ describe('CustomNotificationsModal', () => {
 
     describe('checkbox items', () => {
       beforeEach(async () => {
+        const endpointUrl = '/api/v4/notification_settings';
+
+        mockAxios
+          .onGet(endpointUrl)
+          .reply(HTTP_STATUS_OK, mockNotificationSettingsResponses.default);
+
         wrapper = createComponent();
 
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          events: [
-            { id: 'new_release', enabled: true, name: 'New release', loading: false },
-            { id: 'new_note', enabled: false, name: 'New note', loading: true },
-          ],
-        });
+        wrapper.findComponent(GlModal).vm.$emit('show');
 
-        await nextTick();
+        await waitForPromises();
       });
 
       it.each`
         index | eventId          | eventName        | enabled  | loading
         ${0}  | ${'new_release'} | ${'New release'} | ${true}  | ${false}
-        ${1}  | ${'new_note'}    | ${'New note'}    | ${false} | ${true}
+        ${1}  | ${'new_note'}    | ${'New note'}    | ${false} | ${false}
       `(
         'renders a checkbox for "$eventName" with checked=$enabled',
         async ({ index, eventName, enabled, loading }) => {
@@ -214,16 +210,9 @@ describe('CustomNotificationsModal', () => {
 
           wrapper = createComponent({ injectedProperties });
 
-          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-          // eslint-disable-next-line no-restricted-syntax
-          wrapper.setData({
-            events: [
-              { id: 'new_release', enabled: true, name: 'New release', loading: false },
-              { id: 'new_note', enabled: false, name: 'New note', loading: false },
-            ],
-          });
+          wrapper.findComponent(GlModal).vm.$emit('show');
 
-          await nextTick();
+          await waitForPromises();
 
           findCheckboxAt(1).vm.$emit('change', true);
 
@@ -241,19 +230,18 @@ describe('CustomNotificationsModal', () => {
       );
 
       it('shows a toast message when the request fails', async () => {
-        mockAxios.onPut('/api/v4/notification_settings').reply(HTTP_STATUS_NOT_FOUND, {});
+        const endpointUrl = '/api/v4/notification_settings';
+
+        mockAxios
+          .onGet(endpointUrl)
+          .reply(HTTP_STATUS_OK, mockNotificationSettingsResponses.default);
+
+        mockAxios.onPut(endpointUrl).reply(HTTP_STATUS_NOT_FOUND, {});
         wrapper = createComponent();
 
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          events: [
-            { id: 'new_release', enabled: true, name: 'New release', loading: false },
-            { id: 'new_note', enabled: false, name: 'New note', loading: false },
-          ],
-        });
+        wrapper.findComponent(GlModal).vm.$emit('show');
 
-        await nextTick();
+        await waitForPromises();
 
         findCheckboxAt(1).vm.$emit('change', true);
 

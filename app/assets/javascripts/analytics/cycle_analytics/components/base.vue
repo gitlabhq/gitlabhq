@@ -4,7 +4,7 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import ValueStreamMetrics from '~/analytics/shared/components/value_stream_metrics.vue';
 import { VSA_METRICS_GROUPS } from '~/analytics/shared/constants';
-import { toYmd } from '~/analytics/shared/utils';
+import { toYmd, generateValueStreamsDashboardLink } from '~/analytics/shared/utils';
 import PathNavigation from '~/analytics/cycle_analytics/components/path_navigation.vue';
 import StageTable from '~/analytics/cycle_analytics/components/stage_table.vue';
 import ValueStreamFilters from '~/analytics/cycle_analytics/components/value_stream_filters.vue';
@@ -48,12 +48,13 @@ export default {
       'selectedStageEvents',
       'selectedStageError',
       'stageCounts',
-      'endpoints',
       'features',
       'createdBefore',
       'createdAfter',
       'pagination',
       'hasNoAccessError',
+      'groupPath',
+      'namespace',
     ]),
     ...mapGetters(['pathNavigationData', 'filterParams']),
     isLoaded() {
@@ -98,8 +99,25 @@ export default {
       }
       return 0;
     },
+    hasCycleAnalyticsForGroups() {
+      return this.features?.cycleAnalyticsForGroups;
+    },
     metricsRequests() {
-      return this.features?.cycleAnalyticsForGroups ? METRICS_REQUESTS : SUMMARY_METRICS_REQUEST;
+      return this.hasCycleAnalyticsForGroups ? METRICS_REQUESTS : SUMMARY_METRICS_REQUEST;
+    },
+    showLinkToDashboard() {
+      return Boolean(
+        this.features?.groupLevelAnalyticsDashboard && this.features?.groupAnalyticsDashboardsPage,
+      );
+    },
+    dashboardsPath() {
+      const {
+        namespace: { fullPath },
+        groupPath,
+      } = this;
+      return this.showLinkToDashboard
+        ? generateValueStreamsDashboardLink(groupPath, [fullPath])
+        : null;
     },
     query() {
       return {
@@ -150,8 +168,7 @@ export default {
   <div>
     <h3>{{ $options.i18n.pageTitle }}</h3>
     <value-stream-filters
-      :group-id="endpoints.groupId"
-      :group-path="endpoints.groupPath"
+      :group-path="groupPath"
       :has-project-filter="false"
       :start-date="createdAfter"
       :end-date="createdBefore"
@@ -169,10 +186,11 @@ export default {
       />
     </div>
     <value-stream-metrics
-      :request-path="endpoints.fullPath"
+      :request-path="namespace.fullPath"
       :request-params="filterParams"
       :requests="metricsRequests"
       :group-by="$options.VSA_METRICS_GROUPS"
+      :dashboards-path="dashboardsPath"
     />
     <gl-loading-icon v-if="isLoading" size="lg" />
     <stage-table

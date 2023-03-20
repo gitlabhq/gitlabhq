@@ -28,7 +28,8 @@ module WorkItems
       progress: 10, # EE-only
       status: 11, # EE-only
       requirement_legacy: 12, # EE-only
-      test_reports: 13 # EE-only
+      test_reports: 13, # EE-only
+      notifications: 14
     }
 
     def self.available_widgets

@@ -25,10 +25,6 @@ describe('Manifests List', () => {
   const findRows = () => wrapper.findAllComponents(ManifestRow);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('has the correct title', () => {
     createComponent();
 

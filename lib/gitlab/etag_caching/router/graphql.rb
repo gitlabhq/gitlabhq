@@ -16,7 +16,7 @@ module Gitlab
           [
             %r(\Apipelines/sha/\w{7,40}\z),
             'ci_editor',
-            'pipeline_authoring'
+            'pipeline_composition'
           ],
           [
             %r(\Aon_demand_scan/counts/),

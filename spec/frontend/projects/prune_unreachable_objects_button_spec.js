@@ -22,15 +22,10 @@ describe('Project remove modal', () => {
     wrapper = shallowMountExtended(PruneObjectsButton, {
       propsData: defaultProps,
       directives: {
-        GlModal: createMockDirective(),
+        GlModal: createMockDirective('gl-modal'),
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   describe('intialized', () => {
     beforeEach(() => {

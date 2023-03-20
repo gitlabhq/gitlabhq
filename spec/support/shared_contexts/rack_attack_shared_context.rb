@@ -5,8 +5,7 @@ RSpec.shared_context 'rack attack cache store' do
     # Instead of test environment's :null_store so the throttles can increment
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
 
-    # Make time-dependent tests deterministic
-    freeze_time { example.run }
+    example.run
 
     Rack::Attack.cache.store = Rails.cache
   end

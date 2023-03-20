@@ -27,7 +27,8 @@
 
     .detail-page-header-actions.gl-align-self-start.is-merge-request.js-issuable-actions.gl-display-flex
       - if can_update_merge_request
-        = link_to _('Edit'), edit_project_merge_request_path(@project, @merge_request), class: "gl-display-none gl-md-display-block btn gl-button btn-default js-issuable-edit", data: { qa_selector: "edit_button" }
+        = render Pajamas::ButtonComponent.new(href: edit_project_merge_request_path(@project, @merge_request), button_options: {class: "gl-display-none gl-md-display-block js-issuable-edit", data: { qa_selector: "edit_button" }}) do
+          = _('Edit')
 
       - if @merge_request.source_project
         = render 'projects/merge_requests/code_dropdown'

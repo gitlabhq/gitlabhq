@@ -44,10 +44,6 @@ describe('ActivityEvents', () => {
   const findAllActivityHistoryItems = () => wrapper.findAllComponents(ActivityHistoryItem);
   const findSectionTitle = (at) => wrapper.findAllByTestId('activity-section-title').at(at);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('while the agentEvents query is loading', () => {
     it('displays a loading icon', async () => {
       createWrapper();

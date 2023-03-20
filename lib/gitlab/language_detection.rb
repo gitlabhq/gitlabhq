@@ -45,11 +45,11 @@ module Gitlab
     # Returns the ids of the programming languages that do not occur in the detection
     # as current repository languages
     def deletions
-      @repository_languages.map do |repo_lang|
+      @repository_languages.filter_map do |repo_lang|
         next if detection.key?(repo_lang.name)
 
         repo_lang.programming_language_id
-      end.compact
+      end
     end
 
     private

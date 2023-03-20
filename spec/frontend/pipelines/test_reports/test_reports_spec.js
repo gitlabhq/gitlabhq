@@ -60,10 +60,6 @@ describe('Test reports app', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when component is created', () => {
     it('should call fetchSummary when pipeline has test report', () => {
       createComponent();

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Repositories::ChangelogService do
+RSpec.describe Repositories::ChangelogService, feature_category: :source_code_management do
   describe '#execute' do
     let!(:project) { create(:project, :empty_repo) }
     let!(:creator) { project.creator }

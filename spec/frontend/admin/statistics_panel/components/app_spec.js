@@ -30,10 +30,6 @@ describe('Admin statistics app', () => {
     store = createStore();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findStats = (idx) => wrapper.findAll('.js-stats').at(idx);
 
   describe('template', () => {

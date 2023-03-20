@@ -12,13 +12,9 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
 
   describe 'GET #show' do
     def get_show
-      get(:show,
-          params: {
-            namespace_id: project.namespace,
-            project_id: project,
-            id: file_path,
-            inline: inline
-          }.merge(params))
+      get :show, params: {
+        namespace_id: project.namespace, project_id: project, id: file_path, inline: inline
+      }.merge(params)
     end
 
     subject { get_show }

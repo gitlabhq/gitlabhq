@@ -22,10 +22,6 @@ describe('IDE ActivityBar component', () => {
     wrapper = shallowMount(ActivityBar, { store });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('updateActivityBarView', () => {
     beforeEach(() => {
       mountComponent();

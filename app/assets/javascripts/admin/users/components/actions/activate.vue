@@ -41,7 +41,7 @@ export default {
           },
           actionPrimary: {
             text: I18N_USER_ACTIONS.activate,
-            attributes: [{ variant: 'confirm' }],
+            attributes: { variant: 'confirm' },
           },
           messageHtml,
         },

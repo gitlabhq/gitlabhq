@@ -94,9 +94,9 @@ RSpec.describe JiraConnectInstallations::ProxyLifecycleEventService, feature_cat
           expect(Gitlab::IntegrationsLogger).to receive(:info).with(
             integration: 'JiraConnect',
             message: 'Proxy lifecycle event received error response',
-            event_type: evnet_type,
-            status_code: 422,
-            body: 'Error message'
+            jira_event_type: evnet_type,
+            jira_status_code: 422,
+            jira_body: 'Error message'
           )
 
           execute_service

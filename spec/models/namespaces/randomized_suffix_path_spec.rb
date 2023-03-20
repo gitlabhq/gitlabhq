@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespaces::RandomizedSuffixPath, feature_category: :not_owned do
+RSpec.describe Namespaces::RandomizedSuffixPath, feature_category: :shared do
   let(:path) { 'backintime' }
 
   subject(:suffixed_path) { described_class.new(path) }

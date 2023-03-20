@@ -42,6 +42,12 @@ module Types
             null: false,
             description: 'Timestamp the achievement was last updated.'
 
+      field :user_achievements,
+            Types::Achievements::UserAchievementType.connection_type,
+            null: true,
+            alpha: { milestone: '15.10' },
+            description: "Recipients for the achievement."
+
       def avatar_url
         object.avatar_url(only_path: false)
       end

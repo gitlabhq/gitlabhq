@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RepositoryCheck::BatchWorker do
+RSpec.describe RepositoryCheck::BatchWorker, feature_category: :source_code_management do
   let(:shard_name) { 'default' }
 
   subject { described_class.new }

@@ -1,11 +1,11 @@
 ---
-stage: Release
-group: Release
+stage: Configure
+group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: howto, reference
 ---
 
-# Deploy boards (DEPRECATED) **(FREE)**
+# Deploy boards (deprecated) **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1589) in GitLab 9.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212320) from GitLab Premium to GitLab Free in 13.8.

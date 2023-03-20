@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Help Pages', feature_category: :not_owned do
+RSpec.describe 'Help Pages', feature_category: :shared do
   describe 'Get the main help page' do
     before do
       allow(File).to receive(:read).and_call_original

@@ -185,22 +185,14 @@ RSpec.describe Admin::UsersController do
       delete :destroy, params: { id: user.username }, format: :json
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(
-        Users::GhostUserMigration.where(user: user,
-                                        initiator_user: admin,
-                                        hard_delete: false)
-      ).to be_exists
+      expect(Users::GhostUserMigration.where(user: user, initiator_user: admin, hard_delete: false)).to be_exists
     end
 
     it 'initiates user removal and passes hard delete option' do
       delete :destroy, params: { id: user.username, hard_delete: true }, format: :json
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(
-        Users::GhostUserMigration.where(user: user,
-                                        initiator_user: admin,
-                                        hard_delete: true)
-      ).to be_exists
+      expect(Users::GhostUserMigration.where(user: user, initiator_user: admin, hard_delete: true)).to be_exists
     end
 
     context 'prerequisites for account deletion' do
@@ -231,11 +223,7 @@ RSpec.describe Admin::UsersController do
 
               expect(response).to redirect_to(admin_users_path)
               expect(flash[:notice]).to eq(_('The user is being deleted.'))
-              expect(
-                Users::GhostUserMigration.where(user: user,
-                                                initiator_user: admin,
-                                                hard_delete: true)
-              ).to be_exists
+              expect(Users::GhostUserMigration.where(user: user, initiator_user: admin, hard_delete: true)).to be_exists
             end
           end
         end
@@ -252,10 +240,7 @@ RSpec.describe Admin::UsersController do
       it 'initiates user removal', :sidekiq_inline do
         subject
 
-        expect(
-          Users::GhostUserMigration.where(user: user,
-                                          initiator_user: admin)
-        ).to be_exists
+        expect(Users::GhostUserMigration.where(user: user, initiator_user: admin)).to be_exists
       end
 
       it 'displays the rejection message' do

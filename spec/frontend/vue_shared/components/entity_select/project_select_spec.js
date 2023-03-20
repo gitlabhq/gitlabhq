@@ -63,11 +63,8 @@ describe('ProjectSelect', () => {
   };
   const openListbox = () => findListbox().vm.$emit('shown');
 
-  beforeAll(() => {
-    gon.api_version = apiVersion;
-  });
-
   beforeEach(() => {
+    gon.api_version = apiVersion;
     mock = new MockAdapter(axios);
   });
 

@@ -22,10 +22,6 @@ describe('DropdownValue', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when there is a color set', () => {
     it('renders the color', () => {
       expect(findColorItems()).toHaveLength(2);

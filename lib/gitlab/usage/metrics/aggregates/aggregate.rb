@@ -7,11 +7,6 @@ module Gitlab
         class Aggregate
           include Gitlab::Usage::TimeFrame
 
-          # TODO: define this missing event https://gitlab.com/gitlab-org/gitlab/-/issues/385080
-          EVENTS_NOT_DEFINED_YET = %w[
-            i_code_review_merge_request_widget_license_compliance_warning
-          ].freeze
-
           def initialize(recorded_at)
             @recorded_at = recorded_at
           end
@@ -84,7 +79,7 @@ module Gitlab
             return events if source != ::Gitlab::Usage::Metrics::Aggregates::REDIS_SOURCE
 
             events.select do |event|
-              ::Gitlab::UsageDataCounters::HLLRedisCounter.known_event?(event) || EVENTS_NOT_DEFINED_YET.include?(event)
+              ::Gitlab::UsageDataCounters::HLLRedisCounter.known_event?(event)
             end
           end
         end

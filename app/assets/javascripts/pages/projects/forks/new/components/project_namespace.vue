@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlButtonGroup, GlCollapsibleListbox } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { MINIMUM_SEARCH_LENGTH } from '~/graphql_shared/constants';
 import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';

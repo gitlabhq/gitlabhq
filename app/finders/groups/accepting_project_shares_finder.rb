@@ -25,7 +25,7 @@ module Groups
                  groups_with_guest_access_plus
                end
 
-      groups = groups.search(params[:search]) if params[:search].present?
+      groups = by_search(groups)
 
       sort(groups).with_route
     end

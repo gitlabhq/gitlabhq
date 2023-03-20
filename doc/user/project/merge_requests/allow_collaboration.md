@@ -61,7 +61,7 @@ In the following example:
 To change or add a commit to the contributor's merge request:
 
 1. Go to the merge request.
-1. In the upper right corner, select **Code**, then select **Check out branch**.
+1. In the upper-right corner, select **Code**, then select **Check out branch**.
 1. In the modal window, select **Copy** (**{copy-to-clipboard}**).
 1. In your terminal, go to your cloned version of the repository, and
    paste the commands. For example:

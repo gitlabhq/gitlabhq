@@ -5,6 +5,7 @@ module Gitlab
     module Project
       class RelationFactory < Base::RelationFactory
         OVERRIDES = { snippets: :project_snippets,
+                      commit_notes: 'Note',
                       ci_pipelines: 'Ci::Pipeline',
                       pipelines: 'Ci::Pipeline',
                       stages: 'Ci::Stage',
@@ -12,6 +13,7 @@ module Gitlab
                       triggers: 'Ci::Trigger',
                       pipeline_schedules: 'Ci::PipelineSchedule',
                       builds: 'Ci::Build',
+                      bridges: 'Ci::Bridge',
                       runners: 'Ci::Runner',
                       pipeline_metadata: 'Ci::PipelineMetadata',
                       hooks: 'ProjectHook',
@@ -37,7 +39,7 @@ module Gitlab
                       committer: 'MergeRequest::DiffCommitUser',
                       merge_request_diff_commits: 'MergeRequestDiffCommit' }.freeze
 
-        BUILD_MODELS = %i[Ci::Build commit_status].freeze
+        BUILD_MODELS = %i[Ci::Build Ci::Bridge commit_status generic_commit_status].freeze
 
         GROUP_REFERENCES = %w[group_id].freeze
 
@@ -83,7 +85,7 @@ module Gitlab
         def setup_models
           case @relation_name
           when :merge_request_diff_files then setup_diff
-          when :notes then setup_note
+          when :notes, :Note then setup_note
           when :'Ci::Pipeline' then setup_pipeline
           when *BUILD_MODELS then setup_build
           when :issues then setup_issue
@@ -142,7 +144,20 @@ module Gitlab
 
         def setup_pipeline
           @relation_hash.fetch('stages', []).each do |stage|
+            # old export files have statuses
             stage.statuses.each do |status|
+              status.pipeline = imported_object
+            end
+
+            stage.builds.each do |status|
+              status.pipeline = imported_object
+            end
+
+            stage.bridges.each do |status|
+              status.pipeline = imported_object
+            end
+
+            stage.generic_commit_statuses.each do |status|
               status.pipeline = imported_object
             end
           end

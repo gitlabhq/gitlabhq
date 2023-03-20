@@ -1,9 +1,8 @@
 <script>
 import { GlIcon, GlLink, GlPopover, GlLoadingIcon } from '@gitlab/ui';
-import { issuableTypes } from '~/boards/constants';
 import { TYPENAME_ISSUE, TYPENAME_EPIC } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import { truncate } from '~/lib/utils/text_utility';
 import { __, n__, s__, sprintf } from '~/locale';
 import { blockingIssuablesQueries } from './constants';
@@ -12,12 +11,12 @@ export default {
   i18n: {
     issuableType: {
       [TYPE_ISSUE]: __('issue'),
-      [issuableTypes.epic]: __('epic'),
+      [TYPE_EPIC]: __('epic'),
     },
   },
   graphQLIdType: {
     [TYPE_ISSUE]: TYPENAME_ISSUE,
-    [issuableTypes.epic]: TYPENAME_EPIC,
+    [TYPE_EPIC]: TYPENAME_EPIC,
   },
   referenceFormatter: {
     [TYPE_ISSUE]: (r) => r.split('/')[1],
@@ -43,7 +42,7 @@ export default {
       type: String,
       required: true,
       validator(value) {
-        return [TYPE_ISSUE, issuableTypes.epic].includes(value);
+        return [TYPE_ISSUE, TYPE_EPIC].includes(value);
       },
     },
   },
@@ -88,7 +87,7 @@ export default {
   },
   computed: {
     isEpic() {
-      return this.issuableType === issuableTypes.epic;
+      return this.issuableType === TYPE_EPIC;
     },
     displayedIssuables() {
       const { defaultDisplayLimit, referenceFormatter } = this.$options;

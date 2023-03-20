@@ -28,10 +28,6 @@ describe('DropdownHeader', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findSearchInput = () => wrapper.findComponent(GlSearchBoxByType);
   const findGoBackButton = () => wrapper.findByTestId('go-back-button');
   const findDropdownTitle = () => wrapper.findByTestId('dropdown-header-title');

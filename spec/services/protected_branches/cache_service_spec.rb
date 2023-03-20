@@ -3,7 +3,7 @@
 #
 require 'spec_helper'
 
-RSpec.describe ProtectedBranches::CacheService, :clean_gitlab_redis_cache do
+RSpec.describe ProtectedBranches::CacheService, :clean_gitlab_redis_cache, feature_category: :compliance_management do
   shared_examples 'execute with entity' do
     subject(:service) { described_class.new(entity, user) }
 

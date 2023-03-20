@@ -19,8 +19,8 @@ describe('CancelJobs component', () => {
   const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(CancelJobs, {
       directives: {
-        GlModal: createMockDirective(),
-        GlTooltip: createMockDirective(),
+        GlModal: createMockDirective('gl-modal'),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       propsData: {
         url: `${TEST_HOST}/cancel_jobs_modal.vue/cancelAll`,

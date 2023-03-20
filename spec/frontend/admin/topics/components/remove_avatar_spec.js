@@ -20,7 +20,7 @@ describe('RemoveAvatar', () => {
         name,
       },
       directives: {
-        GlModal: createMockDirective(),
+        GlModal: createMockDirective('gl-modal'),
       },
       stubs: {
         GlSprintf,
@@ -34,10 +34,6 @@ describe('RemoveAvatar', () => {
 
   beforeEach(() => {
     createComponent();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   describe('the button component', () => {

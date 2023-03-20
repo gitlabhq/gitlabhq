@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::UpdateStatisticsService do
+RSpec.describe Projects::UpdateStatisticsService, feature_category: :projects do
   using RSpec::Parameterized::TableSyntax
 
   let(:service) { described_class.new(project, nil, statistics: statistics) }

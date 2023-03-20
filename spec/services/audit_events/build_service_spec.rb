@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AuditEvents::BuildService do
+RSpec.describe AuditEvents::BuildService, feature_category: :audit_events do
   let(:author) { build_stubbed(:author, current_sign_in_ip: '127.0.0.1') }
   let(:deploy_token) { build_stubbed(:deploy_token, user: author) }
   let(:scope) { build_stubbed(:group) }

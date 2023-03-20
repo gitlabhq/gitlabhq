@@ -28,7 +28,7 @@ function factory(propsData = {}) {
       rowNumber: 123,
     },
     directives: {
-      GlHoverLoad: createMockDirective(),
+      GlHoverLoad: createMockDirective('gl-hover-load'),
     },
     mocks: {
       $router,
@@ -46,10 +46,6 @@ function factory(propsData = {}) {
 describe('Repository table row component', () => {
   const findRouterLink = () => vm.findComponent(RouterLinkStub);
   const findIntersectionObserver = () => vm.findComponent(GlIntersectionObserver);
-
-  afterEach(() => {
-    vm.destroy();
-  });
 
   it('renders table row', async () => {
     factory({

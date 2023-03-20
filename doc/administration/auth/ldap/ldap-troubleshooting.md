@@ -170,10 +170,10 @@ We have a workaround, based on toggling the access level of affected users:
 1. As an administrator, on the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the name of the affected user.
-1. In the upper right, select **Edit**.
+1. In the upper-right corner, select **Edit**.
 1. Change the user's access level from `Regular` to `Administrator` (or vice versa).
 1. At the bottom of the page, select **Save changes**.
-1. In the upper right, select **Edit** again.
+1. In the upper-right corner, select **Edit** again.
 1. Restore the user's original access level (`Regular` or `Administrator`)
    and select **Save changes** again.
 

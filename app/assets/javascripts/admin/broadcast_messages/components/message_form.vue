@@ -12,16 +12,25 @@ import {
 } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
-import { createAlert, VARIANT_DANGER } from '~/flash';
+import { createAlert, VARIANT_DANGER } from '~/alert';
 import { redirectTo } from '~/lib/utils/url_utility';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { BROADCAST_MESSAGES_PATH, THEMES, TYPES, TYPE_BANNER } from '../constants';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import SafeHtml from '~/vue_shared/directives/safe_html';
+import {
+  BROADCAST_MESSAGES_PATH,
+  MESSAGES_PREVIEW_PATH,
+  THEMES,
+  TYPES,
+  TYPE_BANNER,
+} from '../constants';
 import MessageFormGroup from './message_form_group.vue';
 import DatetimePicker from './datetime_picker.vue';
 
 const FORM_HEADERS = { headers: { 'Content-Type': 'application/json; charset=utf-8' } };
 
 export default {
+  DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
   name: 'MessageForm',
   components: {
     DatetimePicker,
@@ -35,6 +44,9 @@ export default {
     GlFormText,
     GlFormTextarea,
     MessageFormGroup,
+  },
+  directives: {
+    SafeHtml,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: ['targetAccessLevelOptions'],
@@ -81,6 +93,7 @@ export default {
       })),
       startsAt: new Date(this.broadcastMessage.startsAt.getTime()),
       endsAt: new Date(this.broadcastMessage.endsAt.getTime()),
+      renderedMessage: '',
     };
   },
   computed: {
@@ -91,7 +104,7 @@ export default {
       return this.message.trim() === '';
     },
     messagePreview() {
-      return this.messageBlank ? this.$options.i18n.messagePlaceholder : this.message;
+      return this.messageBlank ? this.$options.i18n.messagePlaceholder : this.renderedMessage;
     },
     isAddForm() {
       return !this.broadcastMessage.id;
@@ -112,6 +125,11 @@ export default {
         starts_at: this.startsAt.toISOString(),
         ends_at: this.endsAt.toISOString(),
       });
+    },
+  },
+  watch: {
+    message() {
+      this.renderPreview();
     },
   },
   methods: {
@@ -140,13 +158,25 @@ export default {
       }
       return true;
     },
+
+    async renderPreview() {
+      try {
+        const res = await axios.post(MESSAGES_PREVIEW_PATH, this.formPayload, FORM_HEADERS);
+        this.renderedMessage = res.data;
+      } catch (e) {
+        this.renderedMessage = '';
+      }
+    },
+  },
+  safeHtmlConfig: {
+    ADD_TAGS: ['use'],
   },
 };
 </script>
 <template>
   <gl-form @submit.prevent="onSubmit">
     <gl-broadcast-message class="gl-my-6" :type="type" :theme="theme" :dismissible="dismissable">
-      {{ messagePreview }}
+      <div v-safe-html:[$options.safeHtmlConfig]="messagePreview"></div>
     </gl-broadcast-message>
 
     <message-form-group :label="$options.i18n.message" label-for="message-textarea">
@@ -154,6 +184,7 @@ export default {
         id="message-textarea"
         v-model="message"
         size="sm"
+        :debounce="$options.DEFAULT_DEBOUNCE_AND_THROTTLE_MS"
         :placeholder="$options.i18n.messagePlaceholder"
       />
     </message-form-group>

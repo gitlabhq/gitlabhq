@@ -5,6 +5,10 @@ module Gitlab
     class Auditor
       attr_reader :scope, :name
 
+      PERMITTED_TARGET_CLASSES = [
+        ::Operations::FeatureFlag
+      ].freeze
+
       # Record audit events
       #
       # @param [Hash] context
@@ -113,7 +117,11 @@ module Gitlab
       end
 
       def audit_enabled?
-        authentication_event?
+        authentication_event? || permitted_target?
+      end
+
+      def permitted_target?
+        @target.class.in? PERMITTED_TARGET_CLASSES
       end
 
       def authentication_event?

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ContainerRepository::ThirdParty::DeleteTagsService do
+RSpec.describe Projects::ContainerRepository::ThirdParty::DeleteTagsService, feature_category: :container_registry do
   include_context 'container repository delete tags service shared context'
 
   let(:service) { described_class.new(repository, tags) }

@@ -26,10 +26,6 @@ describe('OverrideDropdown', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findGlLink = () => wrapper.findComponent(GlLink);
   const findGlDropdown = () => wrapper.findComponent(GlDropdown);
 

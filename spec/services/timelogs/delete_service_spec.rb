@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Timelogs::DeleteService do
+RSpec.describe Timelogs::DeleteService, feature_category: :team_planning do
   let_it_be(:author) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:issue) { create(:issue, project: project) }

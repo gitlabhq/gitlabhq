@@ -136,11 +136,17 @@ The `include` files are:
 - Always evaluated first and then merged with the content of the `.gitlab-ci.yml` file,
   regardless of the position of the `include` keyword.
 
-You can [nest](includes.md#use-nested-includes) up to 100 includes. In [GitLab 14.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/28987),
-the same file can be included multiple times in nested includes, but duplicates are ignored.
+You can have up to 150 includes per pipeline, including [nested](includes.md#use-nested-includes) includes:
 
-In [GitLab 12.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/28212),
-the time limit to resolve all files is 30 seconds.
+- In [GitLab 15.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367150) you can have up to 150 includes.
+  In nested includes, the same file can be included multiple times, but duplicated includes
+  count towards the limit.
+- From [GitLab 14.9 to GitLab 15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/28987), you can have up to 100 includes.
+  The same file can be included multiple times in nested includes, but duplicates are ignored.
+- In GitLab 14.9 and earlier you can have up to 100 includes, but the same file can not
+  be included multiple times.
+
+The time limit to resolve all files is 30 seconds.
 
 **Keyword type**: Global keyword.
 
@@ -153,6 +159,8 @@ the time limit to resolve all files is 30 seconds.
 
 **Additional details**:
 
+- Only [certain CI/CD variables](includes.md#use-variables-with-include) can be used
+  with `include` keywords.
 - Use merging to customize and override included CI/CD configurations with local
 - You can override included configuration by having the same job name or global keyword
   in the `.gitlab-ci.yml` file. The two configurations are merged together, and the
@@ -171,7 +179,7 @@ the time limit to resolve all files is 30 seconds.
 
 #### `include:local`
 
-Use `include:local` to include a file that is in the same repository as the project running the pipeline.
+Use `include:local` to include a file that is in the same repository as the configuration file containing the `include` keyword.
 Use `include:local` instead of symbolic links.
 
 **Keyword type**: Global keyword.
@@ -201,8 +209,8 @@ include: '.gitlab-ci-production.yml'
 
 - The `.gitlab-ci.yml` file and the local file must be on the same branch.
 - You can't include local files through Git submodules paths.
-- All [nested includes](includes.md#use-nested-includes) are executed in the scope of the same project,
-  so you can use local, project, remote, or template includes.
+- All [nested includes](includes.md#use-nested-includes) are executed in the scope of the project containing the configuration file with the `include` keyword, not the project running the pipeline.
+  You can use local, project, remote, or template includes.
 
 #### `include:project`
 
@@ -220,8 +228,7 @@ use `include:project` and `include:file`.
   The YAML files must have the `.yml` or `.yaml` extension.
 - `include:ref`: Optional. The ref to retrieve the file from. Defaults to the `HEAD` of the project
   when not specified.
-
-You can use [certain CI/CD variables](includes.md#use-variables-with-include).
+- You can use [certain CI/CD variables](includes.md#use-variables-with-include).
 
 **Example of `include:project`**:
 
@@ -252,8 +259,8 @@ include:
 
 **Additional details**:
 
-- All [nested includes](includes.md#use-nested-includes) are executed in the scope of the target project.
-  You can use `local` (relative to the target project), `project`, `remote`, or `template` includes.
+- All [nested includes](includes.md#use-nested-includes) are executed in the scope of the project containing the configuration file with the nested `include` keyword.
+  You can use `local` (relative to the project containing the configuration file with the `include` keyword), `project`, `remote`, or `template` includes.
 - When the pipeline starts, the `.gitlab-ci.yml` file configuration included by all methods is evaluated.
   The configuration is a snapshot in time and persists in the database. GitLab does not reflect any changes to
   the referenced `.gitlab-ci.yml` file configuration until the next pipeline starts.
@@ -422,23 +429,30 @@ A configuration with different pipeline names depending on the pipeline conditio
 
 ```yaml
 variables:
-  PIPELINE_NAME: 'Default pipeline name'  # A default is not required.
+  PROJECT1_PIPELINE_NAME: 'Default pipeline name'  # A default is not required.
 
 workflow:
-  name: '$PIPELINE_NAME'
+  name: '$PROJECT1_PIPELINE_NAME'
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       variables:
-        PIPELINE_NAME: 'MR pipeline: $CI_COMMIT_BRANCH'
+        PROJECT1_PIPELINE_NAME: 'MR pipeline: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME'
     - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3/'
       variables:
-        PIPELINE_NAME: 'Ruby 3 pipeline'
+        PROJECT1_PIPELINE_NAME: 'Ruby 3 pipeline'
 ```
 
 **Additional details**:
 
 - If the name is an empty string, the pipeline is not assigned a name. A name consisting
   of only CI/CD variables could evaluate to an empty string if all the variables are also empty.
+- `workflow:rules:variables` become [global variables](#variables) available in all jobs,
+  including [`trigger`](#trigger) jobs which forward variables to downstream pipelines by default.
+  If the downstream pipeline uses the same variable, the [variable is overwritten](../variables/index.md#cicd-variable-precedence)
+  by the upstream variable value. Be sure to either:
+  - Use a unique variable name in every project's pipeline configuration, like `PROJECT1_PIPELINE_NAME`.
+  - Use [`inherit:variables`](#inheritvariables) in the trigger job and list the
+    exact variables you want to forward to the downstream pipeline.
 
 #### `workflow:rules`
 
@@ -551,6 +565,16 @@ When the branch is something else:
 
 - job1's `DEPLOY_VARIABLE` is `job1-default-deploy`.
 - job2's `DEPLOY_VARIABLE` is `default-deploy`.
+
+**Additional details**:
+
+- `workflow:rules:variables` become [global variables](#variables) available in all jobs,
+  including [`trigger`](#trigger) jobs which forward variables to downstream pipelines by default.
+  If the downstream pipeline uses the same variable, the [variable is overwritten](../variables/index.md#cicd-variable-precedence)
+  by the upstream variable value. Be sure to either:
+  - Use unique variable names in every project's pipeline configuration, like `PROJECT1_VARIABLE_NAME`.
+  - Use [`inherit:variables`](#inheritvariables) in the trigger job and list the
+    exact variables you want to forward to the downstream pipeline.
 
 ## Job keywords
 
@@ -938,10 +962,8 @@ job:
 
 #### `artifacts:public`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49775) in GitLab 13.8
-> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's recommended for production use.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223273) in GitLab 13.8 [with a flag](../../user/feature_flags.md) named `non_public_artifacts`, disabled by default.
+> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/322454) in GitLab 15.10. Artifacts created with `artifacts:public` before 15.10 are not guaranteed to remain private after this update.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
@@ -1924,12 +1946,8 @@ rspec:
 
 ### `hooks`
 
-> Introduced in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`.
-The feature is not ready for production use.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356850) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/381840) in GitLab 15.10. Feature flag `ci_hooks_pre_get_sources_script` removed.
 
 Use `hooks` to specify lists of commands to execute on the runner
 at certain stages of job execution, like before retrieving the Git repository.
@@ -1943,7 +1961,8 @@ at certain stages of job execution, like before retrieving the Git repository.
 
 #### `hooks:pre_get_sources_script`
 
-> Introduced in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356850) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/381840) in GitLab 15.10. Feature flag `ci_hooks_pre_get_sources_script` removed.
 
 Use `hooks:pre_get_sources_script` to specify a list of commands to execute on the runner
 before retrieving the Git repository and any submodules. You can use it
@@ -4348,18 +4367,19 @@ child3:
 
 ### `variables`
 
-Use `variables` to define [CI/CD variables](../variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file),
-which are configurable values that are passed to jobs.
-
-Variables are always available in `script`, `before_script`, and `after_script` commands.
-You can also use variables as inputs in some job keywords.
+Use `variables` to define [CI/CD variables](../variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file) for jobs.
 
 **Keyword type**: Global and job keyword. You can use it at the global level,
 and also at the job level.
 
-If you define `variables` at the global level, each variable is copied to
-every job configuration when the pipeline is created. If the job already has that
-variable defined, the [job-level variable takes precedence](../variables/index.md#cicd-variable-precedence).
+If you define `variables` as a [global keyword](#keywords), it behaves like default variables
+for all jobs. Each variable is copied to every job configuration when the pipeline is created.
+If the job already has that variable defined, the [job-level variable takes precedence](../variables/index.md#cicd-variable-precedence).
+
+Variables defined at the global-level cannot be used as inputs for other global keywords
+like [`include`](includes.md#use-variables-with-include). These variables can only
+be used at the job-level, in `script`, `before_script`, and `after_script` sections,
+as well as inputs in some job keywords like [`rules`](../jobs/job_control.md#cicd-variable-expressions).
 
 **Possible inputs**: Variable name and value pairs:
 

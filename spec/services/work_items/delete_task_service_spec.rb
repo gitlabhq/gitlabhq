@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::DeleteTaskService do
+RSpec.describe WorkItems::DeleteTaskService, feature_category: :team_planning do
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
   let_it_be_with_refind(:task) { create(:work_item, project: project, author: developer) }

@@ -436,7 +436,8 @@ RSpec.describe GroupsHelper do
       it 'returns expected hash' do
         expect(subgroup_creation_data(subgroup)).to eq({
           import_existing_group_path: '/groups/new#import-group-pane',
-          parent_group_name: name
+          parent_group_name: name,
+          parent_group_url: group_url(group)
         })
       end
     end
@@ -445,7 +446,8 @@ RSpec.describe GroupsHelper do
       it 'returns expected hash' do
         expect(subgroup_creation_data(group)).to eq({
           import_existing_group_path: '/groups/new#import-group-pane',
-          parent_group_name: nil
+          parent_group_name: nil,
+          parent_group_url: nil
         })
       end
     end

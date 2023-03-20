@@ -32,10 +32,6 @@ describe('BadgeSettings component', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays modal if button for deleting a badge is clicked', async () => {
     const button = wrapper.find('[data-testid="delete-badge"]');
 

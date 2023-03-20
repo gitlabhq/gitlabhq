@@ -580,3 +580,31 @@ span.idiff {
   padding: 0;
   border-radius: 0 0 $border-radius-default $border-radius-default;
 }
+
+.blame-stream-container {
+  border-top: 1px solid $border-color;
+}
+
+.blame-stream-loading {
+  $gradient-size: 16px;
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -$gradient-size;
+  height: $gl-spacing-scale-10;
+  border-top: $gradient-size solid transparent;
+  background-color: $white;
+  box-sizing: content-box;
+  background-clip: content-box;
+
+  .gradient {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -$gradient-size;
+    height: $gradient-size;
+    background: linear-gradient(to top, $white, transparentize($white, 1));
+  }
+}

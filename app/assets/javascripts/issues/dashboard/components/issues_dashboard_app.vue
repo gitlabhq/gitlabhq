@@ -4,12 +4,11 @@ import * as Sentry from '@sentry/browser';
 import getIssuesQuery from 'ee_else_ce/issues/dashboard/queries/get_issues.query.graphql';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
-import { STATUS_CLOSED } from '~/issues/constants';
+import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import {
   CREATED_DESC,
   defaultTypeTokenOptions,
   i18n,
-  PAGE_SIZE,
   PARAM_STATE,
   UPDATED_DESC,
   urlSortParams,
@@ -49,7 +48,7 @@ import {
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
+import { DEFAULT_PAGE_SIZE, IssuableListTabs } from '~/vue_shared/issuable/list/constants';
 import getIssuesCountsQuery from '../queries/get_issues_counts.query.graphql';
 import { AutocompleteCache } from '../utils';
 
@@ -93,7 +92,7 @@ export default {
   data() {
     const state = getParameterByName(PARAM_STATE);
 
-    const defaultSortKey = state === IssuableStates.Closed ? UPDATED_DESC : CREATED_DESC;
+    const defaultSortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
     const dashboardSortKey = getSortKey(this.initialSort);
     const graphQLSortKey =
       isSortKey(this.initialSort?.toUpperCase()) && this.initialSort.toUpperCase();
@@ -110,7 +109,7 @@ export default {
       pageInfo: {},
       pageParams: getInitialPageParams(),
       sortKey,
-      state: state || IssuableStates.Opened,
+      state: state || STATUS_OPEN,
     };
   },
   apollo: {
@@ -132,7 +131,6 @@ export default {
       skip() {
         return !this.hasSearch;
       },
-      debounce: 200,
     },
     issuesCounts: {
       query: getIssuesCountsQuery,
@@ -149,7 +147,6 @@ export default {
       skip() {
         return !this.hasSearch;
       },
-      debounce: 200,
       context: {
         isSingleRequest: true,
       },
@@ -314,9 +311,9 @@ export default {
     tabCounts() {
       const { openedIssues, closedIssues, allIssues } = this.issuesCounts;
       return {
-        [IssuableStates.Opened]: openedIssues?.count,
-        [IssuableStates.Closed]: closedIssues?.count,
-        [IssuableStates.All]: allIssues?.count,
+        [STATUS_OPEN]: openedIssues?.count,
+        [STATUS_CLOSED]: closedIssues?.count,
+        [STATUS_ALL]: allIssues?.count,
       };
     },
     urlFilterParams() {
@@ -388,14 +385,14 @@ export default {
     handleNextPage() {
       this.pageParams = {
         afterCursor: this.pageInfo.endCursor,
-        firstPageSize: PAGE_SIZE,
+        firstPageSize: DEFAULT_PAGE_SIZE,
       };
       scrollUp();
     },
     handlePreviousPage() {
       this.pageParams = {
         beforeCursor: this.pageInfo.startCursor,
-        lastPageSize: PAGE_SIZE,
+        lastPageSize: DEFAULT_PAGE_SIZE,
       };
       scrollUp();
     },
@@ -461,12 +458,20 @@ export default {
     @sort="handleSort"
   >
     <template #nav-actions>
-      <gl-button :href="rssPath" icon="rss">
-        {{ $options.i18n.rssLabel }}
-      </gl-button>
-      <gl-button :href="calendarPath" icon="calendar">
-        {{ $options.i18n.calendarLabel }}
-      </gl-button>
+      <gl-button
+        v-gl-tooltip
+        :href="rssPath"
+        icon="rss"
+        :title="$options.i18n.rssLabel"
+        class="has-tooltip btn-icon"
+      />
+      <gl-button
+        v-gl-tooltip
+        :href="calendarPath"
+        icon="calendar"
+        :title="$options.i18n.calendarLabel"
+        class="has-tooltip btn-icon"
+      />
     </template>
 
     <template #timeframe="{ issuable = {} }">

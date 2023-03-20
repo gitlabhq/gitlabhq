@@ -16,7 +16,7 @@ describe('CsvImportExportButtons', () => {
     glModalDirective = jest.fn();
     return mountExtended(CsvImportExportButtons, {
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
         glModal: {
           bind(_, { value }) {
             glModalDirective(value);
@@ -32,10 +32,6 @@ describe('CsvImportExportButtons', () => {
       },
     });
   }
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   const findExportCsvButton = () => wrapper.findComponent(GlButton);
   const findImportDropdown = () => wrapper.findComponent(GlDropdown);

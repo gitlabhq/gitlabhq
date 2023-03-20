@@ -11,10 +11,6 @@ describe('~/whats_new/utils/get_drawer_body_height', () => {
     });
   });
 
-  afterEach(() => {
-    drawerWrapper.destroy();
-  });
-
   const setClientHeight = (el, height) => {
     Object.defineProperty(el, 'clientHeight', {
       get() {

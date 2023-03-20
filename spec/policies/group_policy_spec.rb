@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupPolicy, feature_category: :authentication_and_authorization do
+RSpec.describe GroupPolicy, feature_category: :system_access do
   include AdminModeHelper
   include_context 'GroupPolicy context'
 
@@ -933,13 +933,14 @@ RSpec.describe GroupPolicy, feature_category: :authentication_and_authorization 
   describe 'observability' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:allowed) { be_allowed(:read_observability) }
-    let(:disallowed) { be_disallowed(:read_observability) }
+    let(:allowed_admin) { be_allowed(:read_observability) && be_allowed(:admin_observability) }
+    let(:allowed_read) { be_allowed(:read_observability) && be_disallowed(:admin_observability) }
+    let(:disallowed) { be_disallowed(:read_observability) && be_disallowed(:admin_observability) }
 
     # rubocop:disable Layout/LineLength
     where(:feature_enabled, :admin_matcher, :owner_matcher, :maintainer_matcher, :developer_matcher, :reporter_matcher, :guest_matcher, :non_member_matcher, :anonymous_matcher) do
       false | ref(:disallowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed)
-      true | ref(:allowed) | ref(:allowed) | ref(:allowed) | ref(:allowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed)
+      true | ref(:allowed_admin) | ref(:allowed_admin) | ref(:allowed_admin) | ref(:allowed_read) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed)
     end
     # rubocop:enable Layout/LineLength
 
@@ -1296,9 +1297,9 @@ RSpec.describe GroupPolicy, feature_category: :authentication_and_authorization 
       end
     end
 
-    context 'create_runner_workflow flag enabled' do
+    context 'create_runner_workflow_for_namespace flag enabled' do
       before do
-        stub_feature_flags(create_runner_workflow: true)
+        stub_feature_flags(create_runner_workflow_for_namespace: [group])
       end
 
       context 'admin' do
@@ -1379,10 +1380,12 @@ RSpec.describe GroupPolicy, feature_category: :authentication_and_authorization 
       end
     end
 
-    context 'with create_runner_workflow flag disabled' do
+    context 'with create_runner_workflow_for_namespace flag disabled' do
       before do
-        stub_feature_flags(create_runner_workflow: false)
+        stub_feature_flags(create_runner_workflow_for_namespace: [other_group])
       end
+
+      let_it_be(:other_group) { create(:group) }
 
       context 'admin' do
         let(:current_user) { admin }
@@ -1566,6 +1569,24 @@ RSpec.describe GroupPolicy, feature_category: :authentication_and_authorization 
 
         it { is_expected.to(allowed ? be_allowed(policy) : be_disallowed(policy)) }
       end
+    end
+  end
+
+  describe 'achievements' do
+    let(:current_user) { owner }
+
+    specify { is_expected.to be_allowed(:read_achievement) }
+    specify { is_expected.to be_allowed(:admin_achievement) }
+    specify { is_expected.to be_allowed(:award_achievement) }
+
+    context 'with feature flag disabled' do
+      before do
+        stub_feature_flags(achievements: false)
+      end
+
+      specify { is_expected.to be_disallowed(:read_achievement) }
+      specify { is_expected.to be_disallowed(:admin_achievement) }
+      specify { is_expected.to be_disallowed(:award_achievement) }
     end
   end
 end

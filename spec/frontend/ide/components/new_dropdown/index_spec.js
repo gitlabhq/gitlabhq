@@ -30,10 +30,6 @@ describe('new dropdown component', () => {
     jest.spyOn(wrapper.vm.$refs.newModal, 'open').mockImplementation(() => {});
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders new file, upload and new directory links', () => {
     expect(findAllButtons().at(0).text()).toBe('New file');
     expect(findAllButtons().at(1).text()).toBe('Upload file');

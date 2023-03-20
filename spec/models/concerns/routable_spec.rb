@@ -74,6 +74,17 @@ RSpec.shared_examples 'routable resource with parent' do
   describe '#full_name' do
     it { expect(record.full_name).to eq "#{record.parent.human_name} / #{record.name}" }
 
+    context 'without route name' do
+      before do
+        stub_feature_flags(cached_route_lookups: true)
+        record.route.update_attribute(:name, nil)
+      end
+
+      it 'builds full name' do
+        expect(record.full_name).to eq("#{record.parent.human_name} / #{record.name}")
+      end
+    end
+
     it 'hits the cache when not preloaded' do
       forcibly_hit_cached_lookup(record, :full_name)
 

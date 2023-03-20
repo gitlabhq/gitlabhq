@@ -1,7 +1,7 @@
 <script>
 import { GlAvatar, GlFilteredSearchSuggestion } from '@gitlab/ui';
 import { compact } from 'lodash';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 
 import { OPTIONS_NONE_ANY } from '../constants';

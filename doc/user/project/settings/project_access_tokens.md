@@ -48,9 +48,6 @@ You cannot use project access tokens to create other group, project, or personal
 Project access tokens inherit the [default prefix setting](../../admin_area/settings/account_and_limit_settings.md#personal-access-token-prefix)
 configured for personal access tokens.
 
-NOTE:
-Project access tokens are not FIPS compliant and creation and use are disabled when [FIPS mode](../../../development/fips_compliance.md) is enabled.
-
 ## Create a project access token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89114) in GitLab 15.1, Owners can select Owner role for project access tokens.
@@ -121,12 +118,8 @@ The bot users for projects have [permissions](../../permissions.md#project-membe
 selected role and [scope](#scopes-for-a-project-access-token) of the project access token.
 
 - The name is set to the name of the token.
-- The username is set to `project_{project_id}_bot` for the first access token. For example, `project_123_bot`.
-- The email is set to `project{project_id}_bot@noreply.{Gitlab.config.gitlab.host}`. For example, `project123_bot@noreply.example.com`.
-- For additional access tokens in the same project, the username is set to `project_{project_id}_bot{bot_count}`. For
-  example, `project_123_bot1`.
-- For additional access tokens in the same project, the email is set to `project{project_id}_bot{bot_count}@noreply.{Gitlab.config.gitlab.host}`.
-  For example, `project123_bot1@noreply.example.com`.
+- The username is set to `project_{project_id}_bot_{random_string}`. For example, `project_123_bot_4ffca233d8298ea1`.
+- The email is set to `project_{project_id}_bot_{random_string}@noreply.{Gitlab.config.gitlab.host}`. For example, `project_123_bot_4ffca233d8298ea1@noreply.example.com`.
 
 API calls made with a project access token are associated with the corresponding bot user.
 
@@ -143,3 +136,7 @@ When the project access token is [revoked](#revoke-a-project-access-token):
 - All records are moved to a system-wide user with the username [Ghost User](../../profile/account/delete_account.md#associated-records).
 
 See also [Bot users for groups](../../group/settings/group_access_tokens.md#bot-users-for-groups).
+
+## Token availability
+
+Project access tokens are only available in paid subscriptions, and not available in trial subscriptions. For more information, see the ["What is included" section of the GitLab Trial FAQ](https://about.gitlab.com/free-trial/#what-is-included-in-my-free-trial-what-is-excluded).

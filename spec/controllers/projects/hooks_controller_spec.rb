@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::HooksController do
+RSpec.describe Projects::HooksController, feature_category: :integrations do
   include AfterNextHelpers
 
   let_it_be(:project) { create(:project) }
@@ -173,6 +173,16 @@ RSpec.describe Projects::HooksController do
     let(:params) { { namespace_id: project.namespace, project_id: project, id: hook } }
 
     it_behaves_like 'Web hook destroyer'
+
+    context 'when user does not have permission' do
+      let(:user) { create(:user, developer_projects: [project]) }
+
+      it 'renders a 404' do
+        delete :destroy, params: params
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   describe '#test' do

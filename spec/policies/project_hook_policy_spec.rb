@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectHookPolicy do
+RSpec.describe ProjectHookPolicy, feature_category: :integrations do
   let_it_be(:user) { create(:user) }
 
   let(:hook) { create(:project_hook) }
@@ -15,7 +15,7 @@ RSpec.describe ProjectHookPolicy do
     end
 
     it "cannot read and destroy web-hooks" do
-      expect(policy).to be_disallowed(:read_web_hook, :destroy_web_hook)
+      expect(policy).to be_disallowed(:destroy_web_hook)
     end
   end
 
@@ -25,7 +25,7 @@ RSpec.describe ProjectHookPolicy do
     end
 
     it "can read and destroy web-hooks" do
-      expect(policy).to be_allowed(:read_web_hook, :destroy_web_hook)
+      expect(policy).to be_allowed(:destroy_web_hook)
     end
   end
 end

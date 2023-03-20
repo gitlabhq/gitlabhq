@@ -182,7 +182,7 @@ export default {
           :checked="linkedIssueType"
         />
       </gl-form-group>
-      <p class="bold">
+      <p class="bold gl-mb-2">
         {{ issuableInputText }}
       </p>
     </template>

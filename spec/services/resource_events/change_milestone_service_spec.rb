@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ResourceEvents::ChangeMilestoneService do
+RSpec.describe ResourceEvents::ChangeMilestoneService, feature_category: :team_planning do
   let_it_be(:timebox) { create(:milestone) }
 
   let(:created_at_time) { Time.utc(2019, 12, 30) }

@@ -2,15 +2,10 @@
 
 class WebHook < ApplicationRecord
   include Sortable
+  include WebHooks::AutoDisabling
 
   InterpolationError = Class.new(StandardError)
 
-  MAX_FAILURES = 100
-  FAILURE_THRESHOLD = 3 # three strikes
-  EXCEEDED_FAILURE_THRESHOLD = FAILURE_THRESHOLD + 1
-  INITIAL_BACKOFF = 1.minute
-  MAX_BACKOFF = 1.day
-  BACKOFF_GROWTH_FACTOR = 2.0
   SECRET_MASK = '************'
 
   attr_encrypted :token,
@@ -78,46 +73,6 @@ class WebHook < ApplicationRecord
     'user/project/integrations/webhooks'
   end
 
-  def next_backoff
-    return MAX_BACKOFF if backoff_count >= 8 # optimization to prevent expensive exponentiation and possible overflows
-
-    (INITIAL_BACKOFF * (BACKOFF_GROWTH_FACTOR**backoff_count))
-      .clamp(INITIAL_BACKOFF, MAX_BACKOFF)
-      .seconds
-  end
-
-  def disable!
-    update_attribute(:recent_failures, EXCEEDED_FAILURE_THRESHOLD)
-  end
-
-  def enable!
-    return if recent_failures == 0 && disabled_until.nil? && backoff_count == 0
-
-    assign_attributes(recent_failures: 0, disabled_until: nil, backoff_count: 0)
-    save(validate: false)
-  end
-
-  # Don't actually back-off until FAILURE_THRESHOLD failures have been seen
-  # we mark the grace-period using the recent_failures counter
-  def backoff!
-    attrs = { recent_failures: next_failure_count }
-
-    if recent_failures >= FAILURE_THRESHOLD
-      attrs[:backoff_count] = next_backoff_count
-      attrs[:disabled_until] = next_backoff.from_now
-    end
-
-    assign_attributes(attrs)
-    save(validate: false) if changed?
-  end
-
-  def failed!
-    return unless recent_failures < MAX_FAILURES
-
-    assign_attributes(disabled_until: nil, backoff_count: 0, recent_failures: next_failure_count)
-    save(validate: false)
-  end
-
   # @return [Boolean] Whether or not the WebHook is currently throttled.
   def rate_limited?
     rate_limiter.rate_limited?
@@ -177,14 +132,6 @@ class WebHook < ApplicationRecord
 
   def reset_url_variables
     self.url_variables = {} if url_changed? && !encrypted_url_variables_changed?
-  end
-
-  def next_failure_count
-    recent_failures.succ.clamp(1, MAX_FAILURES)
-  end
-
-  def next_backoff_count
-    backoff_count.succ.clamp(1, MAX_FAILURES)
   end
 
   def initialize_url_variables

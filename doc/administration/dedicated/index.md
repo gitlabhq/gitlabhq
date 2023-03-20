@@ -27,6 +27,7 @@ To request the creation of a new GitLab Dedicated environment for your organizat
 - Desired instance subdomain: The main domain for GitLab Dedicated instances is `gitlab-dedicated.com`. You get to choose the subdomain name where your instance is accessible from (for example, `customer_name.gitlab-dedicated.com`).
 - Initial storage: Initial storage size for your repositories in GB.
 - Availability Zone IDs for PrivateLink: If you plan to later add a PrivateLink connection (either [inbound](#inbound-private-link) or [outbound](#outbound-private-link)) to your environment, and you require the connections to be available in specific Availability Zones, you must provide up to two [Availability Zone IDs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#az-ids) during onboarding. If not specified, GitLab will select two random Availability Zone IDs in which the connections will be available.
+- [KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html) for encrypted AWS services (if you are using that functionality).
 
 ### Maintenance window
 
@@ -44,6 +45,111 @@ Some downtime may be incurred during this window. This downtime is not counting 
 To change or update the configuration for your GitLab Dedicated instance, open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with your request. You can request configuration changes for the options originally specified during onboarding, or for any of the optional features below.
 
 The turnaround time for processing configuration change requests is [documented in the GitLab handbook](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/#handling-configuration-changes-for-tenant-environments).
+
+### Encrypted Data At Rest (BYOK)
+
+If you want your GitLab data to be encrypted at rest, the KMS keys used must be accessible by GitLab services. KMS keys can be used in two modes for this purpose:
+
+1. Per-service KMS keys (Backup, EBS, RDS, S3), or
+1. One KMS key for all services.
+
+If you use a key per service, all services must be encrypted at rest. Selective enablement of this feature is not supported.
+
+The keys provided have to reside in the same primary and secondary region specified during [onboarding](#onboarding).
+
+For instructions on how to create and manage KMS keys, visit [Managing keys](https://docs.aws.amazon.com/kms/latest/developerguide/getting-started.html) in the AWS KMS documentation.
+
+To create a KMS key using the AWS Console:
+
+1. In `Configure key`, select:
+    1. Key type: **Symmetrical**
+    1. Key usage: **Encrypt and decrypt**
+    1. `Advanced options`:
+        1. Key material origin: **KMS**
+        1. Regionality: **Multi-Region key**
+1. Enter your values for key alias, description, and tags.
+1. Select Key administrators (optionally allow or deny key administrators to delete the key).
+1. For Key usage permissions, add the GitLab AWS account using the **Other AWS accounts** dialog.
+
+The last page asks you to confirm the KMS key policy. It should look similar to the following example, populated with your account IDs and usernames:
+
+```json
+{
+    "Version": "2012-10-17",
+    "Id": "byok-key-policy",
+    "Statement": [
+        {
+            "Sid": "Enable IAM User Permissions",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::<CUSTOMER-ACCOUNT-ID>:root"
+            },
+            "Action": "kms:*",
+            "Resource": "*"
+        },
+        {
+            "Sid": "Allow access for Key Administrators",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": [
+                    "arn:aws:iam::<CUSTOMER-ACCOUNT-ID>:user/<CUSTOMER-USER>"
+                ]
+            },
+            "Action": [
+                "kms:Create*",
+                "kms:Describe*",
+                "kms:Enable*",
+                "kms:List*",
+                "kms:Put*",
+                "kms:Update*",
+                "kms:Revoke*",
+                "kms:Disable*",
+                "kms:Get*",
+                "kms:Delete*",
+                "kms:TagResource",
+                "kms:UntagResource",
+                "kms:ScheduleKeyDeletion",
+                "kms:CancelKeyDeletion",
+                "kms:ReplicateKey",
+                "kms:UpdatePrimaryRegion"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "Allow use of the key",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": [
+                    "arn:aws:iam::<GITLAB-ACCOUNT-ID>:root"
+                ]
+            },
+            "Action": [
+                "kms:Encrypt",
+                "kms:Decrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+                "kms:DescribeKey"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "Allow attachment of persistent resources",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": [
+                    "arn:aws:iam::<GITLAB-ACCOUNT-ID>:root"
+                ]
+            },
+            "Action": [
+                "kms:CreateGrant",
+                "kms:ListGrants",
+                "kms:RevokeGrant"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
 
 ### Inbound Private Link
 
@@ -97,7 +203,7 @@ Prerequisites:
 
 To activate SAML for your GitLab Dedicated instance:
 
-1. Read the [GitLab documentation about SAML](../../integration/saml.md#https://docs.gitlab.com/ee/integration/saml.html#configure-saml-on-your-idp) to gather all data your identity provider requires for configuration. You can also find some providers and their requirements in the [group SAML documentation](../../user/group/saml_sso/index.md#providers).
+1. Read the [GitLab documentation about SAML](../../integration/saml.md#https://docs.gitlab.com/ee/integration/saml.html#configure-saml-on-your-idp) to gather all data your identity provider requires for configuration. You can also find some providers and their requirements in the [group SAML documentation](../../user/group/saml_sso/index.md#set-up-identity-provider).
 1. To make the necessary changes, include in your [support ticket](#configuration-changes) the desired [SAML configuration block](../../integration/saml.md#configure-saml-support-in-gitlab) that will be set on the GitLab application. At a minimum, GitLab needs the following information to enable SAML for your instance:
    - Assertion consumer service URL
    - Certificate fingerprint or certificate

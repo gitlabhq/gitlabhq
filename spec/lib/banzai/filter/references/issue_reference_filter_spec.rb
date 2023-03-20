@@ -150,6 +150,15 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
       expect(link.attr('href')).to eq(issue_url)
     end
 
+    it 'includes a data-reference-format attribute for extended summary URL references' do
+      doc = reference_filter("Issue #{issue_url}+s")
+      link = doc.css('a').first
+
+      expect(link).to have_attribute('data-reference-format')
+      expect(link.attr('data-reference-format')).to eq('+s')
+      expect(link.attr('href')).to eq(issue_url)
+    end
+
     it 'supports an :only_path context' do
       doc = reference_filter("Issue #{written_reference}", only_path: true)
       link = doc.css('a').first.attr('href')

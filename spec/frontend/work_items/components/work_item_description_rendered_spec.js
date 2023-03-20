@@ -29,10 +29,6 @@ describe('WorkItemDescription', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders gfm', async () => {
     createComponent();
 

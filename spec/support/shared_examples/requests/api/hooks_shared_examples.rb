@@ -135,7 +135,7 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
 
       context 'the hook is backed-off' do
         before do
-          WebHook::FAILURE_THRESHOLD.times { hook.backoff! }
+          WebHooks::AutoDisabling::FAILURE_THRESHOLD.times { hook.backoff! }
           hook.backoff!
         end
 

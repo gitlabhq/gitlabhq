@@ -43,9 +43,7 @@ class Projects::PagesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to project_pages_path(@project),
-                    status: :found,
-                    notice: 'Pages were scheduled for removal'
+        redirect_to project_pages_path(@project), status: :found, notice: 'Pages were scheduled for removal'
       end
     end
   end
@@ -77,7 +75,15 @@ class Projects::PagesController < Projects::ApplicationController
   end
 
   def project_params_attributes
-    %i[pages_https_only]
+    attributes = %i[pages_https_only]
+
+    return attributes unless Feature.enabled?(:pages_unique_domain)
+
+    attributes + [
+      project_setting_attributes: [
+        :pages_unique_domain_enabled
+      ]
+    ]
   end
 end
 

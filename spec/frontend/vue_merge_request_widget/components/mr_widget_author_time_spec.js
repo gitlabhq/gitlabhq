@@ -23,10 +23,6 @@ describe('MrWidgetAuthorTime', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders provided action text', () => {
     expect(wrapper.text()).toContain('Merged by');
   });

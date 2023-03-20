@@ -15,10 +15,6 @@ describe('DropdownHeader', () => {
 
   const findButton = () => wrapper.findComponent(GlButton);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   beforeEach(() => {
     createComponent();
   });

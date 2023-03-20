@@ -40,6 +40,7 @@ describe('RefreshButton', () => {
 
   afterEach(() => {
     dispatch.mockReset();
+    // eslint-disable-next-line @gitlab/vtu-no-explicit-wrapper-destroy
     wrapper.destroy();
   });
 

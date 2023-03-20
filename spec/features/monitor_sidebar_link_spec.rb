@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures, feature_category: :not_owned do
+RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures, feature_category: :shared do
   let_it_be_with_reload(:project) { create(:project, :internal, :repository) }
   let_it_be(:user) { create(:user) }
 

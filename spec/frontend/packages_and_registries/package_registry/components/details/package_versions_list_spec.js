@@ -1,14 +1,18 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import DeleteModal from '~/packages_and_registries/package_registry/components/delete_modal.vue';
+import DeletePackageModal from '~/packages_and_registries/shared/components/delete_package_modal.vue';
 import PackageVersionsList from '~/packages_and_registries/package_registry/components/details/package_versions_list.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
 import VersionRow from '~/packages_and_registries/package_registry/components/details/version_row.vue';
 import Tracking from '~/tracking';
 import {
+  CANCEL_DELETE_PACKAGE_VERSION_TRACKING_ACTION,
   CANCEL_DELETE_PACKAGE_VERSIONS_TRACKING_ACTION,
+  DELETE_PACKAGE_VERSION_TRACKING_ACTION,
   DELETE_PACKAGE_VERSIONS_TRACKING_ACTION,
+  REQUEST_DELETE_PACKAGE_VERSION_TRACKING_ACTION,
   REQUEST_DELETE_PACKAGE_VERSIONS_TRACKING_ACTION,
 } from '~/packages_and_registries/package_registry/constants';
 import { packageData } from '../../mock_data';
@@ -22,7 +26,7 @@ describe('PackageVersionsList', () => {
       name: 'version 1',
     }),
     packageData({
-      id: `gid://gitlab/Packages::Package/112`,
+      id: 'gid://gitlab/Packages::Package/112',
       name: 'version 2',
     }),
   ];
@@ -31,8 +35,10 @@ describe('PackageVersionsList', () => {
     findLoader: () => wrapper.findComponent(PackagesListLoader),
     findRegistryList: () => wrapper.findComponent(RegistryList),
     findEmptySlot: () => wrapper.findComponent(EmptySlotStub),
-    findListRow: () => wrapper.findAllComponents(VersionRow),
+    findListRow: () => wrapper.findComponent(VersionRow),
+    findAllListRow: () => wrapper.findAllComponents(VersionRow),
     findDeletePackagesModal: () => wrapper.findComponent(DeleteModal),
+    findPackageListDeleteModal: () => wrapper.findComponent(DeletePackageModal),
   };
   const mountComponent = (props) => {
     wrapper = shallowMountExtended(PackageVersionsList, {
@@ -118,16 +124,16 @@ describe('PackageVersionsList', () => {
     });
 
     it('displays package version rows', () => {
-      expect(uiElements.findListRow().exists()).toEqual(true);
-      expect(uiElements.findListRow()).toHaveLength(packageList.length);
+      expect(uiElements.findAllListRow().exists()).toEqual(true);
+      expect(uiElements.findAllListRow()).toHaveLength(packageList.length);
     });
 
     it('binds the correct props', () => {
-      expect(uiElements.findListRow().at(0).props()).toMatchObject({
+      expect(uiElements.findAllListRow().at(0).props()).toMatchObject({
         packageEntity: expect.objectContaining(packageList[0]),
       });
 
-      expect(uiElements.findListRow().at(1).props()).toMatchObject({
+      expect(uiElements.findAllListRow().at(1).props()).toMatchObject({
         packageEntity: expect.objectContaining(packageList[1]),
       });
     });
@@ -156,6 +162,68 @@ describe('PackageVersionsList', () => {
       uiElements.findRegistryList().vm.$emit('next-page');
 
       expect(wrapper.emitted('next-page')).toHaveLength(1);
+    });
+  });
+
+  describe.each`
+    description                                                               | finderFunction                 | deletePayload
+    ${'when the user can destroy the package'}                                | ${uiElements.findListRow}      | ${packageList[0]}
+    ${'when the user can bulk destroy packages and deletes only one package'} | ${uiElements.findRegistryList} | ${[packageList[0]]}
+  `('$description', ({ finderFunction, deletePayload }) => {
+    let eventSpy;
+    const category = 'UI::NpmPackages';
+    const { findPackageListDeleteModal } = uiElements;
+
+    beforeEach(() => {
+      eventSpy = jest.spyOn(Tracking, 'event');
+      mountComponent({ canDestroy: true });
+      finderFunction().vm.$emit('delete', deletePayload);
+    });
+
+    it('passes itemToBeDeleted to the modal', () => {
+      expect(findPackageListDeleteModal().props('itemToBeDeleted')).toStrictEqual(packageList[0]);
+    });
+
+    it('requesting delete tracks the right action', () => {
+      expect(eventSpy).toHaveBeenCalledWith(
+        category,
+        REQUEST_DELETE_PACKAGE_VERSION_TRACKING_ACTION,
+        expect.any(Object),
+      );
+    });
+
+    describe('when modal confirms', () => {
+      beforeEach(() => {
+        findPackageListDeleteModal().vm.$emit('ok');
+      });
+
+      it('emits delete when modal confirms', () => {
+        expect(wrapper.emitted('delete')[0][0]).toEqual([packageList[0]]);
+      });
+
+      it('tracks the right action', () => {
+        expect(eventSpy).toHaveBeenCalledWith(
+          category,
+          DELETE_PACKAGE_VERSION_TRACKING_ACTION,
+          expect.any(Object),
+        );
+      });
+    });
+
+    it.each(['ok', 'cancel'])('resets itemToBeDeleted when modal emits %s', async (event) => {
+      await findPackageListDeleteModal().vm.$emit(event);
+
+      expect(findPackageListDeleteModal().props('itemToBeDeleted')).toBeNull();
+    });
+
+    it('canceling delete tracks the right action', () => {
+      findPackageListDeleteModal().vm.$emit('cancel');
+
+      expect(eventSpy).toHaveBeenCalledWith(
+        category,
+        CANCEL_DELETE_PACKAGE_VERSION_TRACKING_ACTION,
+        expect.any(Object),
+      );
     });
   });
 

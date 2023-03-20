@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license do
+RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_category: :importers do
   let_it_be(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
   let_it_be(:exportable_path) { 'project' }
   let_it_be(:user) { create(:user) }
@@ -223,20 +223,29 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license do
           expect(subject.dig(0, 'stages')).not_to be_empty
         end
 
-        it 'has pipeline statuses' do
-          expect(subject.dig(0, 'stages', 0, 'statuses')).not_to be_empty
-        end
-
         it 'has pipeline builds' do
-          builds_count = subject.dig(0, 'stages', 0, 'statuses')
-                           .count { |hash| hash['type'] == 'Ci::Build' }
+          count = subject.dig(0, 'stages', 0, 'builds').count
 
-          expect(builds_count).to eq(1)
+          expect(count).to eq(1)
         end
 
-        it 'has ci pipeline notes' do
-          expect(subject.first['notes']).not_to be_empty
+        it 'has pipeline generic_commit_statuses' do
+          count = subject.dig(0, 'stages', 0, 'generic_commit_statuses').count
+
+          expect(count).to eq(1)
         end
+
+        it 'has pipeline bridges' do
+          count = subject.dig(0, 'stages', 0, 'bridges').count
+
+          expect(count).to eq(1)
+        end
+      end
+
+      context 'with commit_notes' do
+        let(:relation_name) { :commit_notes }
+
+        it { is_expected.not_to be_empty }
       end
 
       context 'with labels' do
@@ -468,6 +477,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license do
     end
   end
 
+  # rubocop: disable Metrics/AbcSize
   def setup_project
     release = create(:release)
 
@@ -496,6 +506,8 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license do
     ci_build = create(:ci_build, project: project, when: nil)
     ci_build.pipeline.update!(project: project)
     create(:commit_status, project: project, pipeline: ci_build.pipeline)
+    create(:generic_commit_status, pipeline: ci_build.pipeline, ci_stage: ci_build.ci_stage, project: project)
+    create(:ci_bridge, pipeline: ci_build.pipeline, ci_stage: ci_build.ci_stage, project: project)
 
     create(:milestone, project: project)
     discussion_note = create(:discussion_note, noteable: issue, project: project)
@@ -528,4 +540,5 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license do
 
     project
   end
+  # rubocop: enable Metrics/AbcSize
 end

@@ -21,10 +21,6 @@ describe('vue_shared/components/confirm_fork_modal', () => {
       },
     });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('visible = false', () => {
     beforeEach(() => {
       wrapper = createComponent();

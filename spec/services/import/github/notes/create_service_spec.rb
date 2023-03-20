@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::Github::Notes::CreateService do
+RSpec.describe Import::Github::Notes::CreateService, feature_category: :importers do
   it 'does not support quick actions' do
     project = create(:project, :repository)
     user = create(:user)

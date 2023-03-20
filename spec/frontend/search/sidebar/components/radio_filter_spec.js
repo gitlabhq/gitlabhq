@@ -16,6 +16,10 @@ describe('RadioFilter', () => {
     setQuery: jest.fn(),
   };
 
+  const defaultGetters = {
+    currentScope: jest.fn(() => 'issues'),
+  };
+
   const defaultProps = {
     filterData: stateFilterData,
   };
@@ -27,6 +31,7 @@ describe('RadioFilter', () => {
         ...initialState,
       },
       actions: actionSpies,
+      getters: defaultGetters,
     });
 
     wrapper = shallowMount(RadioFilter, {
@@ -37,11 +42,6 @@ describe('RadioFilter', () => {
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   const findGlRadioButtonGroup = () => wrapper.findComponent(GlFormRadioGroup);
   const findGlRadioButtons = () => findGlRadioButtonGroup().findAllComponents(GlFormRadio);

@@ -57,7 +57,7 @@ RSpec.describe Packages::Debian::CreatePackageFileService, feature_category: :pa
 
         expect(package_file).to be_valid
         expect(package_file.file.read).to start_with('Format: 1.8')
-        expect(package_file.size).to eq(2143)
+        expect(package_file.size).to eq(2422)
         expect(package_file.file_name).to eq(file_name)
         expect(package_file.file_sha1).to eq('54321')
         expect(package_file.file_sha256).to eq('543212345')

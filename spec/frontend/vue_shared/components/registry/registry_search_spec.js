@@ -36,11 +36,6 @@ describe('Registry Search', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('searching', () => {
     it('has a filtered-search component', () => {
       mountComponent();

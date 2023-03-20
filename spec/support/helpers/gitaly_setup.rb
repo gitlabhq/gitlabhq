@@ -198,8 +198,23 @@ module GitalySetup
     end
 
     LOGGER.debug "Checking gitaly-ruby bundle...\n"
+
+    bundle_install unless bundle_check
+
+    abort 'bundle check failed' unless bundle_check
+  end
+
+  def bundle_check
+    bundle_cmd('check')
+  end
+
+  def bundle_install
+    bundle_cmd('install')
+  end
+
+  def bundle_cmd(cmd)
     out = ENV['CI'] ? $stdout : '/dev/null'
-    abort 'bundle check failed' unless system(env, 'bundle', 'check', out: out, chdir: gemfile_dir)
+    system(env, 'bundle', cmd, out: out, chdir: gemfile_dir)
   end
 
   def connect_proc(toml)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching do
+RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching, feature_category: :source_code_management do
   subject(:service) { described_class.new(project, user) }
 
   let_it_be(:project) { create(:project_empty_repo) }
@@ -108,7 +108,7 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching do
 
         control = RedisCommands::Recorder.new(pattern: ':branch_names:') { subject }
 
-        expect(control.by_command(:sadd).count).to eq(1)
+        expect(control).not_to exceed_redis_command_calls_limit(:sadd, 1)
       end
     end
 

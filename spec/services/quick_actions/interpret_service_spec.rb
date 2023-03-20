@@ -746,10 +746,10 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it 'assigns to users with escaped underscores' do
         user = create(:user)
         base = user.username
-        user.update!(username: "#{base}_")
+        user.update!(username: "#{base}_new")
         issuable.project.add_developer(user)
 
-        cmd = "/assign @#{base}\\_"
+        cmd = "/assign @#{base}\\_new"
 
         _, updates, _ = service.execute(cmd, issuable)
 

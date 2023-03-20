@@ -28,10 +28,6 @@ describe('DropdownContent', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('computed', () => {
     describe('dropdownContentsView', () => {
       it('returns string "dropdown-contents-create-view" when `showDropdownContentsCreateView` prop is `true`', () => {

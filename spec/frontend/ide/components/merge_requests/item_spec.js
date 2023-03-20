@@ -39,11 +39,6 @@ describe('IDE merge request item', () => {
     router = createRouter(store);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createComponent();

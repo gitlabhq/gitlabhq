@@ -28,10 +28,6 @@ describe('Batch comments diff file drafts component', () => {
     });
   }
 
-  afterEach(() => {
-    vm.destroy();
-  });
-
   it('renders list of draft notes', () => {
     factory();
 

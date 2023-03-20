@@ -4,11 +4,11 @@ module ApplicationSettingsHelper
   extend self
 
   delegate :allow_signup?,
-           :gravatar_enabled?,
-           :password_authentication_enabled_for_web?,
-           :akismet_enabled?,
-           :spam_check_endpoint_enabled?,
-           to: :'Gitlab::CurrentSettings.current_application_settings'
+    :gravatar_enabled?,
+    :password_authentication_enabled_for_web?,
+    :akismet_enabled?,
+    :spam_check_endpoint_enabled?,
+    to: :'Gitlab::CurrentSettings.current_application_settings'
 
   def user_oauth_applications?
     Gitlab::CurrentSettings.user_oauth_applications
@@ -248,7 +248,9 @@ module ApplicationSettingsHelper
       :default_project_visibility,
       :default_projects_limit,
       :default_snippet_visibility,
+      :default_syntax_highlighting_theme,
       :delete_inactive_projects,
+      :deny_all_requests_except_allowed,
       :disable_admin_oauth_scopes,
       :disable_feed_token,
       :disabled_oauth_sign_in_sources,
@@ -401,6 +403,7 @@ module ApplicationSettingsHelper
       :protected_paths_raw,
       :time_tracking_limit_to_hours,
       :two_factor_grace_period,
+      :update_runner_versions_enabled,
       :unique_ips_limit_enabled,
       :unique_ips_limit_per_user,
       :unique_ips_limit_time_window,
@@ -478,7 +481,9 @@ module ApplicationSettingsHelper
       :bulk_import_enabled,
       :allow_runner_registration_token,
       :user_defaults_to_private_profile,
-      :deactivation_email_additional_text
+      :deactivation_email_additional_text,
+      :projects_api_rate_limit_unauthenticated,
+      :gitlab_dedicated_instance
     ].tap do |settings|
       next if Gitlab.com?
 

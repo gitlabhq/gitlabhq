@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Gitlab::JiraImport::StuckJiraImportJobsWorker do
+RSpec.describe ::Gitlab::JiraImport::StuckJiraImportJobsWorker, feature_category: :importers do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
 

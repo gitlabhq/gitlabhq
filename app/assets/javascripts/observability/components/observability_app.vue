@@ -2,7 +2,7 @@
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 import { setUrlParams } from '~/lib/utils/url_utility';
 
-import { MESSAGE_EVENT_TYPE, SKELETON_VARIANTS_BY_ROUTE } from '../constants';
+import { MESSAGE_EVENT_TYPE, FULL_APP_DIMENSIONS } from '../constants';
 import ObservabilitySkeleton from './skeleton/index.vue';
 
 export default {
@@ -14,25 +14,33 @@ export default {
       type: String,
       required: true,
     },
+    inlineEmbed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    skeletonVariant: {
+      type: String,
+      required: false,
+      default: 'dashboards',
+    },
+    height: {
+      type: String,
+      required: false,
+      default: FULL_APP_DIMENSIONS.HEIGHT,
+    },
+    width: {
+      type: String,
+      required: false,
+      default: FULL_APP_DIMENSIONS.WIDTH,
+    },
   },
   computed: {
     iframeSrcWithParams() {
-      return setUrlParams(
+      return `${setUrlParams(
         { theme: darkModeEnabled() ? 'dark' : 'light', username: gon?.current_username },
         this.observabilityIframeSrc,
-      );
-    },
-    getSkeletonVariant() {
-      const [, variant] =
-        Object.entries(SKELETON_VARIANTS_BY_ROUTE).find(([path]) =>
-          this.$route.path.endsWith(path),
-        ) || [];
-
-      const DEFAULT_SKELETON = 'dashboards';
-
-      if (!variant) return DEFAULT_SKELETON;
-
-      return variant;
+      )}${this.inlineEmbed ? '&kiosk=inline-embed' : ''}`;
     },
   },
   mounted() {
@@ -54,38 +62,24 @@ export default {
           this.$refs.observabilitySkeleton.onContentLoaded();
           break;
         case MESSAGE_EVENT_TYPE.GOUI_ROUTE_UPDATE:
-          this.routeUpdateHandler(payload);
+          this.$emit('route-update', payload);
           break;
         default:
           break;
       }
-    },
-    routeUpdateHandler(payload) {
-      const isNewObservabilityPath = this.$route?.query?.observability_path !== payload?.url;
-
-      const shouldNotHandleMessage = !payload.url || !isNewObservabilityPath;
-
-      if (shouldNotHandleMessage) {
-        return;
-      }
-
-      // this will update the `observability_path` query param on each route change inside Observability UI
-      this.$router.replace({
-        name: this.$route.pathname,
-        query: { ...this.$route.query, observability_path: payload.url },
-      });
     },
   },
 };
 </script>
 
 <template>
-  <observability-skeleton ref="observabilitySkeleton" :variant="getSkeletonVariant">
+  <observability-skeleton ref="observabilitySkeleton" :variant="skeletonVariant">
     <iframe
       id="observability-ui-iframe"
       data-testid="observability-ui-iframe"
       frameborder="0"
-      height="100%"
+      :width="width"
+      :height="height"
       :src="iframeSrcWithParams"
       sandbox="allow-same-origin allow-forms allow-scripts"
     ></iframe>

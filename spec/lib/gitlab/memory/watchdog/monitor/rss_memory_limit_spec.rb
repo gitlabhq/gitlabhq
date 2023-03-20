@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'prometheus/client'
 require 'support/shared_examples/lib/gitlab/memory/watchdog/monitor_result_shared_examples'
 
-RSpec.describe Gitlab::Memory::Watchdog::Monitor::RssMemoryLimit do
+RSpec.describe Gitlab::Memory::Watchdog::Monitor::RssMemoryLimit, feature_category: :application_performance do
   let(:max_rss_limit_gauge) { instance_double(::Prometheus::Client::Gauge) }
   let(:memory_limit_bytes) { 2_097_152_000 }
   let(:worker_memory_bytes) { 1_048_576_000 }

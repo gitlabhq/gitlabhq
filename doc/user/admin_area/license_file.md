@@ -185,6 +185,13 @@ License.current.license_id
 License.current.data
 ```
 
+#### Interaction with licenses that start in the future
+
+```ruby
+# Future license data follows the same format as current license data it just uses a different modifier for the License prefix
+License.future_dated
+```
+
 #### Check if a project feature is available on the instance
 
 Features listed in [`features.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/gitlab_subscriptions/features.rb).

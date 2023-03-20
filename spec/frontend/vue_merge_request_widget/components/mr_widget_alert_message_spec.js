@@ -11,10 +11,6 @@ function createComponent(propsData = {}) {
 }
 
 describe('MrWidgetAlertMessage', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should render a GlAert', () => {
     createComponent({ type: 'danger' });
 

@@ -9,7 +9,6 @@ const defaultSlots = {
 };
 
 describe('ExperimentComponent', () => {
-  const oldGon = window.gon;
   let wrapper;
 
   const createComponent = (propsData = defaultProps, slots = defaultSlots) => {
@@ -19,12 +18,6 @@ describe('ExperimentComponent', () => {
   const mockVariant = (expectedVariant) => {
     window.gon = { experiment: { experiment_name: { variant: expectedVariant } } };
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-    window.gon = oldGon;
-  });
 
   describe('when variant and experiment is set', () => {
     it('renders control when it is the active variant', () => {

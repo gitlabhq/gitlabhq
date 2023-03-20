@@ -12,10 +12,6 @@ describe('Import entities status component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('success status', () => {
     const getStatusText = () => wrapper.findComponent(GlBadge).text();
     const getStatusIcon = () => wrapper.findComponent(GlBadge).props('icon');

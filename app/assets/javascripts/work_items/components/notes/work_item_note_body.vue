@@ -12,6 +12,11 @@ export default {
       type: Object,
       required: true,
     },
+    hasReplies: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   watch: {
     'note.bodyHtml': {

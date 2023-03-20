@@ -79,7 +79,7 @@ Consult these topics for information on contributing to specific GitLab features
   - [Adding a new Redis instance](redis/new_redis_instance.md)
 - [Sidekiq guidelines](sidekiq/index.md) for working with Sidekiq workers
 - [Working with Gitaly](gitaly.md)
-- [Elasticsearch integration docs](elasticsearch.md)
+- [Advanced search integration docs](advanced_search.md)
 - [Working with merge request diffs](diffs.md)
 - [Approval Rules](merge_request_concepts/approval_rules.md)
 - [Repository mirroring](repository_mirroring.md)
@@ -127,7 +127,6 @@ See [database guidelines](database/index.md).
 - [Security Scanners](integrations/secure.md)
 - [Secure Partner Integration](integrations/secure_partner_integration.md)
 - [How to run Jenkins in development environment](integrations/jenkins.md)
-- [How to run local CodeSandbox integration for Web IDE Live Preview](integrations/codesandbox.md)
 
 The following integration guides are internal. Some integrations require access to administrative accounts of third-party services and are available only for GitLab team members to contribute to:
 

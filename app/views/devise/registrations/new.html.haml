@@ -8,7 +8,7 @@
 = render "layouts/google_tag_manager_body"
 
 .signup-page
-  = render 'devise/shared/signup_box',
+  = render signup_box_template,
     url: registration_path(resource_name, glm_tracking_params.to_hash),
     button_text: _('Register'),
     borderless: Feature.enabled?(:restyle_login_page, @project),

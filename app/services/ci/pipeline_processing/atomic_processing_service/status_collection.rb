@@ -35,38 +35,38 @@ module Ci
           status_for_array(all_statuses, dag: false)
         end
 
+        # This methods gets composite status for processables at a given stage
+        def status_of_stage(stage_position)
+          strong_memoize("status_of_stage_#{stage_position}") do
+            stage_statuses = all_statuses_grouped_by_stage_position[stage_position].to_a
+
+            status_for_array(stage_statuses.flatten, dag: false)
+          end
+        end
+
         # This methods gets composite status for processables with given names
-        def status_for_names(names, dag:)
+        def status_of_processables(names, dag:)
           name_statuses = all_statuses_by_name.slice(*names)
 
           status_for_array(name_statuses.values, dag: dag)
         end
 
         # This methods gets composite status for processables before given stage
-        def status_for_prior_stage_position(position)
-          strong_memoize("status_for_prior_stage_position_#{position}") do
+        def status_of_processables_prior_to_stage(stage_position)
+          strong_memoize("status_of_processables_prior_to_stage_#{stage_position}") do
             stage_statuses = all_statuses_grouped_by_stage_position
-              .select { |stage_position, _| stage_position < position }
+              .select { |position, _| position < stage_position }
 
             status_for_array(stage_statuses.values.flatten, dag: false)
           end
         end
 
         # This methods gets a list of processables for a given stage
-        def created_processable_ids_for_stage_position(current_position)
-          all_statuses_grouped_by_stage_position[current_position]
+        def created_processable_ids_in_stage(stage_position)
+          all_statuses_grouped_by_stage_position[stage_position]
             .to_a
             .select { |processable| processable[:status] == 'created' }
             .map { |processable| processable[:id] }
-        end
-
-        # This methods gets composite status for processables at a given stage
-        def status_for_stage_position(current_position)
-          strong_memoize("status_for_stage_position_#{current_position}") do
-            stage_statuses = all_statuses_grouped_by_stage_position[current_position].to_a
-
-            status_for_array(stage_statuses.flatten, dag: false)
-          end
         end
 
         # This method returns a list of all processable, that are to be processed

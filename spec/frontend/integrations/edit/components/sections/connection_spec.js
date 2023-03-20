@@ -20,10 +20,6 @@ describe('IntegrationSectionConnection', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findActiveCheckbox = () => wrapper.findComponent(ActiveCheckbox);
   const findAllDynamicFields = () => wrapper.findAllComponents(DynamicField);
 

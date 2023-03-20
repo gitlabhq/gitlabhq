@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'user routing', :clean_gitlab_redis_sessions, feature_category: :authentication_and_authorization do
+RSpec.describe 'user routing', :clean_gitlab_redis_sessions, feature_category: :system_access do
   include SessionHelpers
 
   context 'when GitHub OAuth on project import is cancelled' do

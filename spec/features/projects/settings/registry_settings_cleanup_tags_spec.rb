@@ -38,6 +38,15 @@ feature_category: :projects do
       expect(section).to have_text 'Clean up image tags'
     end
 
+    it 'passes axe automated accessibility testing' do
+      subject
+
+      wait_for_requests
+
+      expect(page).to be_axe_clean.within('[data-testid="container-expiration-policy-project-settings"]')
+                                  .skipping :'link-in-text-block'
+    end
+
     it 'saves cleanup policy submit the form' do
       subject
 

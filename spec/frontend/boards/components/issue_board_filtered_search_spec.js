@@ -2,10 +2,10 @@ import { orderBy } from 'lodash';
 import { shallowMount } from '@vue/test-utils';
 import BoardFilteredSearch from 'ee_else_ce/boards/components/board_filtered_search.vue';
 import IssueBoardFilteredSpec from '~/boards/components/issue_board_filtered_search.vue';
-import issueBoardFilters from '~/boards/issue_board_filters';
+import issueBoardFilters from 'ee_else_ce/boards/issue_board_filters';
 import { mockTokens } from '../mock_data';
 
-jest.mock('~/boards/issue_board_filters');
+jest.mock('ee_else_ce/boards/issue_board_filters');
 
 describe('IssueBoardFilter', () => {
   let wrapper;
@@ -14,6 +14,9 @@ describe('IssueBoardFilter', () => {
 
   const createComponent = ({ isSignedIn = false } = {}) => {
     wrapper = shallowMount(IssueBoardFilteredSpec, {
+      propsData: {
+        boardId: 'gid://gitlab/Board/1',
+      },
       provide: {
         isSignedIn,
         releasesFetchPath: '/releases',
@@ -35,10 +38,6 @@ describe('IssueBoardFilter', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createComponent();
@@ -46,6 +45,11 @@ describe('IssueBoardFilter', () => {
 
     it('finds BoardFilteredSearch', () => {
       expect(findBoardsFilteredSearch().exists()).toBe(true);
+    });
+
+    it('emits setFilters when setFilters is emitted', () => {
+      findBoardsFilteredSearch().vm.$emit('setFilters');
+      expect(wrapper.emitted('setFilters')).toHaveLength(1);
     });
 
     it.each`

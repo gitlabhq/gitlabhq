@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AuthorizedProjectUpdate::UserRefreshFromReplicaWorker do
+RSpec.describe AuthorizedProjectUpdate::UserRefreshFromReplicaWorker, feature_category: :system_access do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { project.namespace.owner }
 

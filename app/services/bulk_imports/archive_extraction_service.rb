@@ -33,7 +33,6 @@ module BulkImports
       validate_symlink
 
       extract_archive
-      remove_symlinks
       tmpdir
     end
 
@@ -59,16 +58,6 @@ module BulkImports
 
     def extract_archive
       untar_xf(archive: filepath, dir: tmpdir)
-    end
-
-    def extracted_files
-      Dir.glob(File.join(tmpdir, '**', '*'))
-    end
-
-    def remove_symlinks
-      extracted_files.each do |path|
-        FileUtils.rm(path) if symlink?(path)
-      end
     end
   end
 end

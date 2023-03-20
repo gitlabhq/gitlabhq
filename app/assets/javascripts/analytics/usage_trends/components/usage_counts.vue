@@ -1,7 +1,7 @@
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { number } from '~/lib/utils/unit_format';
 import { __, s__ } from '~/locale';
 import usageTrendsCountQuery from '../graphql/queries/usage_trends_count.query.graphql';

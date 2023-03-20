@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IncidentManagement::PagerDuty::ProcessIncidentWorker do
+RSpec.describe IncidentManagement::PagerDuty::ProcessIncidentWorker, feature_category: :incident_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:incident_management_setting) { create(:project_incident_management_setting, project: project, pagerduty_active: true) }
 

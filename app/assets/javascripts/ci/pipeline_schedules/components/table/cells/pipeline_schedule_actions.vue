@@ -23,13 +23,20 @@ export default {
       type: Object,
       required: true,
     },
+    currentUser: {
+      type: Object,
+      required: true,
+    },
   },
   computed: {
     canPlay() {
       return this.schedule.userPermissions.playPipelineSchedule;
     },
+    isCurrentUserOwner() {
+      return this.schedule.owner.username === this.currentUser.username;
+    },
     canTakeOwnership() {
-      return this.schedule.userPermissions.takeOwnershipPipelineSchedule;
+      return !this.isCurrentUserOwner && this.schedule.userPermissions.adminPipelineSchedule;
     },
     canUpdate() {
       return this.schedule.userPermissions.updatePipelineSchedule;

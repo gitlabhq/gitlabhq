@@ -16,8 +16,6 @@ describe('Branch rule protection', () => {
 
   beforeEach(() => createComponent());
 
-  afterEach(() => wrapper.destroy());
-
   const findCard = () => wrapper.findComponent(GlCard);
   const findHeader = () => wrapper.findByText(protectionPropsMock.header);
   const findLink = () => wrapper.findComponent(GlLink);

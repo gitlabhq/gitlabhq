@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Metrics::Dashboard::PanelPreviewService do
+RSpec.describe Metrics::Dashboard::PanelPreviewService, feature_category: :metrics do
   let_it_be(:project) { create(:project) }
   let_it_be(:environment) { create(:environment, project: project) }
   let_it_be(:panel_yml) do

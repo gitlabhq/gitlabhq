@@ -33,7 +33,7 @@ NOTE:
 Only group, subgroup, or project Owners have the [permissions](../../permissions.md#project-members-permissions)
 to select Security Policy Project.
 
-Once your policy is complete, save it by selecting **Create via merge request**
+Once your policy is complete, save it by selecting **Configure with a merge request**
 at the bottom of the editor. You are redirected to the merge request on the project's
 configured security policy project. If one does not link to your project, a security
 policy project is automatically created. Existing policies can also be
@@ -44,7 +44,7 @@ Most policy changes take effect as soon as the merge request is merged. Any chan
 do not go through a merge request and are committed directly to the default branch may require up to 10 minutes
 before the policy changes take effect.
 
-![Scan Execution Policy Editor Rule Mode](img/scan_execution_policy_rule_mode_v15_5.png)
+![Scan Execution Policy Editor Rule Mode](img/scan_execution_policy_rule_mode_v15_9.png)
 
 ## Scan execution policies schema
 
@@ -88,7 +88,7 @@ This rule enforces the defined actions and schedules a scan on the provided date
 |------------|------|-----------------|-------------|
 | `type`     | `string` | `schedule` | The rule's type. |
 | `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). This field is required if the `agents` field is not set. |
-| `cadence`  | `string` | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. |
+| `cadence`  | `string` | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. Minimum of 15 minute intervals when used together with the `branches` field. |
 | `agents`   | `object` | | The name of the [GitLab agents](../../clusters/agent/index.md) where [Operational Container Scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. This field is required if the `branches` field is not set. |
 
 GitLab supports the following types of CRON syntax for the `cadence` field:
@@ -99,8 +99,18 @@ GitLab supports the following types of CRON syntax for the `cadence` field:
 NOTE:
 Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) we are using in our implementation, however, GitLab does not officially test or support them.
 
-NOTE:
-If using the `agents` field, required for `Operational Container Scanning`, the CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod. If not using the `agents` field, the CRON expression is evaluated in standard [UTC](https://www.timeanddate.com/worldclock/timezone/utc) time from GitLab.com. If you have a self-managed GitLab instance and have [changed the server time zone](../../../administration/timezone.md), the CRON expression is evaluated with the new time zone.
+When using the `schedule` rule type in conjunction with the `agents` field, note the following:
+
+- The GitLab Agent for Kubernetes checks every 30 seconds to see if there is an applicable policy. When a policy is found, the scans are executed according to the `cadence` defined.
+- The CRON expression is evaluated using the system-time of the Kubernetes-agent pod.
+
+When using the `schedule` rule type in conjunction with the `branches` field, note the following:
+
+- The cron worker runs on 15 minute intervals and starts any pipelines that were scheduled to run during the previous 15 minutes.
+- Based on your rule, you might expect scheduled pipelines to run with an offset of up to 15 minutes.
+- The CRON expression is evaluated in standard [UTC](https://www.timeanddate.com/worldclock/timezone/utc) time from GitLab.com. If you have a self-managed GitLab instance and have [changed the server time zone](../../../administration/timezone.md), the CRON expression is evaluated with the new time zone.
+
+![CRON worker diagram](img/scheduled_scan_execution_policies_diagram.png)
 
 ### `agent` schema
 
@@ -140,7 +150,7 @@ rule in the defined policy are met.
 
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
-| `scan` | `string` | `dast`, `secret_detection`, `sast`, `container_scanning`, `dependency_scanning` | The action's type. |
+| `scan` | `string` | `sast`, `sast_iac`, `dast`, `secret_detection`, `container_scanning`, `dependency_scanning` | The action's type. |
 | `site_profile` | `string` | Name of the selected [DAST site profile](../dast/proxy-based.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
 | `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/proxy-based.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
 | `variables` | `object` | | A set of CI variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI job supports for the specified scan. |

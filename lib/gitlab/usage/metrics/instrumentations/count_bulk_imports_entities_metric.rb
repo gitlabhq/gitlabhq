@@ -23,6 +23,7 @@ module Gitlab
             scope = super
             scope = scope.where(source_type: source_type) if source_type.present?
             scope = scope.where(status: status) if status.present?
+            scope = scope.where(has_failures: failures) if failures.present?
             scope
           end
 
@@ -32,6 +33,10 @@ module Gitlab
 
           def status
             options[:status]
+          end
+
+          def failures
+            options[:has_failures].to_s
           end
 
           def allowed_source_types

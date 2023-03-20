@@ -155,7 +155,7 @@ or a [CI/CD job token](../ci/jobs/ci_job_token.md) for authentication.
 
 With a CI/CD job token, the [triggered pipeline is a multi-project pipeline](../ci/pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api).
 The job that authenticates the request becomes associated with the upstream pipeline,
-which is visible on the [pipeline graph](../ci/pipelines/downstream_pipelines.md#view-multi-project-pipelines-in-pipeline-graphs).
+which is visible on the pipeline graph.
 
 If you use a trigger token in a job, the job is not associated with the upstream pipeline.
 

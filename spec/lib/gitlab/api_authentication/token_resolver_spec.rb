@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::APIAuthentication::TokenResolver, feature_category: :authentication_and_authorization do
+RSpec.describe Gitlab::APIAuthentication::TokenResolver, feature_category: :system_access do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :public) }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }

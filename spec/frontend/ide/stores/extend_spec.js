@@ -6,12 +6,10 @@ jest.mock('~/ide/stores/plugins/terminal', () => jest.fn());
 jest.mock('~/ide/stores/plugins/terminal_sync', () => jest.fn());
 
 describe('ide/stores/extend', () => {
-  let prevGon;
   let store;
   let el;
 
   beforeEach(() => {
-    prevGon = global.gon;
     store = {};
     el = {};
 
@@ -23,13 +21,12 @@ describe('ide/stores/extend', () => {
   });
 
   afterEach(() => {
-    global.gon = prevGon;
     terminalPlugin.mockClear();
     terminalSyncPlugin.mockClear();
   });
 
   const withGonFeatures = (features) => {
-    global.gon = { ...global.gon, features };
+    global.gon.features = features;
   };
 
   describe('terminalPlugin', () => {

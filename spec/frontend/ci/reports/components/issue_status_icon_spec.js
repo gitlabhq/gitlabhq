@@ -13,11 +13,6 @@ describe('IssueStatusIcon', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it.each([STATUS_SUCCESS, STATUS_NEUTRAL, STATUS_FAILED])(
     'renders "%s" state correctly',
     (status) => {

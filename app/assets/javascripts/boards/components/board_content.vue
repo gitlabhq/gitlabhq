@@ -3,9 +3,10 @@ import { GlAlert } from '@gitlab/ui';
 import { breakpoints } from '@gitlab/ui/dist/utils';
 import { sortBy, throttle } from 'lodash';
 import Draggable from 'vuedraggable';
-import { mapState, mapGetters, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import { contentTop } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
+import eventHub from '~/boards/eventhub';
 import { formatBoardLists } from 'ee_else_ce/boards/boards_util';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import { defaultSortableOptions } from '~/sortable/constants';
@@ -44,6 +45,14 @@ export default {
       type: String,
       required: true,
     },
+    filterParams: {
+      type: Object,
+      required: true,
+    },
+    isSwimlanesOn: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -80,7 +89,6 @@ export default {
   },
   computed: {
     ...mapState(['boardLists', 'error', 'addColumnForm']),
-    ...mapGetters(['isSwimlanesOn']),
     addColumnFormVisible() {
       return this.addColumnForm?.visible;
     },
@@ -92,7 +100,7 @@ export default {
         }),
         fullPath: this.fullPath,
         boardId: this.boardId,
-        filterParams: this.filterParams,
+        filters: this.filterParams,
       };
     },
     boardListsToUse() {
@@ -126,6 +134,12 @@ export default {
       return this.isApolloBoard ? this.apolloError : this.error;
     },
   },
+  created() {
+    eventHub.$on('updateBoard', this.refetchLists);
+  },
+  beforeDestroy() {
+    eventHub.$off('updateBoard', this.refetchLists);
+  },
   mounted() {
     this.setBoardHeight();
 
@@ -152,6 +166,9 @@ export default {
         this.boardHeight = `${window.innerHeight - this.$el.getBoundingClientRect().top}px`;
       }
     },
+    refetchLists() {
+      this.$apollo.queries.boardListsApollo.refetch();
+    },
   },
 };
 </script>
@@ -176,6 +193,7 @@ export default {
         ref="board"
         :board-id="boardId"
         :list="list"
+        :filters="filterParams"
         :data-draggable-item-type="$options.draggableItemTypes.list"
         :class="{ 'gl-xs-display-none!': addColumnFormVisible }"
       />
@@ -190,6 +208,7 @@ export default {
       ref="swimlanes"
       :lists="boardListsToUse"
       :can-admin-list="canAdminList"
+      :filters="filterParams"
       :style="{ height: boardHeight }"
     />
 

@@ -8,6 +8,15 @@ query rebaseQuery($projectPath: ID!, $iid: String!) {
       userPermissions {
         pushToSourceBranch
       }
+      pipelines {
+        nodes {
+          id
+          project {
+            id
+            fullPath
+          }
+        }
+      }
     }
   }
 }

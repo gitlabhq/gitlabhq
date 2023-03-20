@@ -9,11 +9,6 @@ describe('MRWidgetChecking', () => {
     wrapper = shallowMount(CheckingComponent, { propsData: { mr: {} } });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders loading icon', () => {
     expect(wrapper.findComponent(StateContainer).exists()).toBe(true);
     expect(wrapper.findComponent(StateContainer).props().status).toBe('loading');

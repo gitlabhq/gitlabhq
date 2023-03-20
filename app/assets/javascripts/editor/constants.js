@@ -1,3 +1,4 @@
+import { KeyMod, KeyCode } from 'monaco-editor';
 import { getModifierKey } from '~/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { s__, __, sprintf } from '~/locale';
@@ -15,14 +16,14 @@ export const EDITOR_TYPE_DIFF = 'vs.editor.IDiffEditor';
 export const EDITOR_CODE_INSTANCE_FN = 'createInstance';
 export const EDITOR_DIFF_INSTANCE_FN = 'createDiffInstance';
 
-export const EDITOR_TOOLBAR_LEFT_GROUP = 'left';
-export const EDITOR_TOOLBAR_RIGHT_GROUP = 'right';
+export const EDITOR_TOOLBAR_BUTTON_GROUPS = {
+  file: 'file', // external helpers (file-tree, etc.)
+  edit: 'edit', // formatting the text in the editor (bold, italic, add link, etc.)
+  settings: 'settings', // editor-wide settings (soft-wrap, full-screen, etc.)
+};
 
 export const SOURCE_EDITOR_INSTANCE_ERROR_NO_EL = s__(
   'SourceEditor|"el" parameter is required for createInstance()',
-);
-export const ERROR_INSTANCE_REQUIRED_FOR_EXTENSION = s__(
-  'SourceEditor|Source Editor instance is required to set up an extension.',
 );
 export const EDITOR_EXTENSION_DEFINITION_ERROR = s__(
   'SourceEditor|Extension definition should be either a class or a function',
@@ -73,7 +74,8 @@ export const EXTENSION_MARKDOWN_BUTTONS = [
     }),
     data: {
       mdTag: '**',
-      mdShortcuts: '["mod+b"]',
+      // eslint-disable-next-line no-bitwise
+      mdShortcuts: [KeyMod.CtrlCmd | KeyCode.KeyB],
     },
   },
   {
@@ -83,7 +85,8 @@ export const EXTENSION_MARKDOWN_BUTTONS = [
     }),
     data: {
       mdTag: '_',
-      mdShortcuts: '["mod+i"]',
+      // eslint-disable-next-line no-bitwise
+      mdShortcuts: [KeyMod.CtrlCmd | KeyCode.KeyI],
     },
   },
   {
@@ -93,7 +96,8 @@ export const EXTENSION_MARKDOWN_BUTTONS = [
     }),
     data: {
       mdTag: '~~',
-      mdShortcuts: '["mod+shift+x]',
+      // eslint-disable-next-line no-bitwise
+      mdShortcuts: [KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KeyX],
     },
   },
   {
@@ -114,13 +118,14 @@ export const EXTENSION_MARKDOWN_BUTTONS = [
   },
   {
     id: 'link',
-    label: sprintf(s__('MarkdownEditor|Add a link (%{modifier_key}K)'), {
+    label: sprintf(s__('MarkdownEditor|Add a link (%{modifierKey}K)'), {
       modifierKey,
     }),
     data: {
       mdTag: '[{text}](url)',
       mdSelect: 'url',
-      mdShortcuts: '["mod+k"]',
+      // eslint-disable-next-line no-bitwise
+      mdShortcuts: [KeyMod.CtrlCmd | KeyCode.KeyK],
     },
   },
   {
@@ -166,3 +171,4 @@ export const EXTENSION_MARKDOWN_BUTTONS = [
     },
   },
 ];
+export const EXTENSION_SOFTWRAP_ID = 'soft-wrap';

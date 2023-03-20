@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::CreateFromTaskService do
+RSpec.describe WorkItems::CreateFromTaskService, feature_category: :team_planning do
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:list_work_item, refind: true) { create(:work_item, project: project, description: "- [ ] Item to be converted\n    second line\n    third line") }

@@ -25,7 +25,6 @@ describe('GitlabVersionCheckBadge', () => {
 
   afterEach(() => {
     unmockTracking();
-    wrapper.destroy();
   });
 
   const findGlBadgeClickWrapper = () => wrapper.findByTestId('badge-click-wrapper');

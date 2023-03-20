@@ -90,7 +90,7 @@ As part of publishing a package, semantic-release increases the version number i
 
 <!-- markdownlint-disable MD044 -->
 
-1. On the top bar, in the upper right, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. On the left sidebar, select **Access Tokens**.
 1. In the **Token name** box, enter a token name.
 1. Under **select scopes**, select the **api** checkbox.

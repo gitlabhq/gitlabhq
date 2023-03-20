@@ -168,6 +168,17 @@ RSpec.describe API::MergeRequests, feature_category: :source_code_management do
         end
       end
 
+      context 'when DB timeouts occur' do
+        it 'returns a :request_timeout status' do
+          allow(MergeRequestsFinder).to receive(:new).and_raise(ActiveRecord::QueryCanceled)
+
+          path = endpoint_path + '?view=simple'
+          get api(path, user)
+
+          expect(response).to have_gitlab_http_status(:request_timeout)
+        end
+      end
+
       it 'returns an array of all merge_requests using simple mode' do
         path = endpoint_path + '?view=simple'
 

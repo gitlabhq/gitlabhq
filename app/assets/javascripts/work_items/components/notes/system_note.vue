@@ -70,7 +70,7 @@ export default {
       return [];
     },
     noteAnchorId() {
-      return `note_${this.note.id}`;
+      return `note_${this.noteId}`;
     },
     isTargetNote() {
       return this.targetNoteHash === this.noteAnchorId;

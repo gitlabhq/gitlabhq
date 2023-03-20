@@ -16,10 +16,6 @@ describe('RunnerPagination', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('When in between pages', () => {
     const mockPageInfo = {
       startCursor: mockStartCursor,

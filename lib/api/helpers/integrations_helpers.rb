@@ -191,6 +191,12 @@ module API
               name: :app_store_private_key,
               type: String,
               desc: 'The Apple App Store Connect Private Key'
+            },
+            {
+              required: true,
+              name: :app_store_private_key_file_name,
+              type: String,
+              desc: 'The Apple App Store Connect Private Key File Name'
             }
           ],
           'asana' => [
@@ -445,6 +451,20 @@ module API
               name: :external_wiki_url,
               type: String,
               desc: 'The URL of the external wiki'
+            }
+          ],
+          'google-play' => [
+            {
+              required: true,
+              name: :service_account_key,
+              type: String,
+              desc: 'The Google Play Service Account Key'
+            },
+            {
+              required: true,
+              name: :service_account_key_file_name,
+              type: String,
+              desc: 'The Google Play Service Account Key File Name'
             }
           ],
           'hangouts-chat' => [
@@ -897,6 +917,20 @@ module API
               type: String,
               desc: 'The product ID of ZenTao project'
             }
+          ],
+          'squash-tm' => [
+            {
+              required: true,
+              name: :url,
+              type: String,
+              desc: 'The Squash TM webhook URL'
+            },
+            {
+              required: false,
+              name: :token,
+              type: String,
+              desc: 'The secret token'
+            }
           ]
         }
       end
@@ -918,6 +952,7 @@ module API
           ::Integrations::EmailsOnPush,
           ::Integrations::Ewm,
           ::Integrations::ExternalWiki,
+          ::Integrations::GooglePlay,
           ::Integrations::HangoutsChat,
           ::Integrations::Harbor,
           ::Integrations::Irker,
@@ -934,6 +969,7 @@ module API
           ::Integrations::Redmine,
           ::Integrations::Slack,
           ::Integrations::SlackSlashCommands,
+          ::Integrations::SquashTm,
           ::Integrations::Teamcity,
           ::Integrations::Youtrack,
           ::Integrations::Zentao

@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobArtifacts::DestroyBatchService do
-  let(:artifacts) { Ci::JobArtifact.where(id: [artifact_with_file.id, artifact_without_file.id, trace_artifact.id]) }
+RSpec.describe Ci::JobArtifacts::DestroyBatchService, feature_category: :build_artifacts do
+  let(:artifacts) { Ci::JobArtifact.where(id: [artifact_with_file.id, artifact_without_file.id]) }
   let(:skip_projects_on_refresh) { false }
   let(:service) do
     described_class.new(
@@ -23,10 +23,6 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService do
 
   let_it_be(:undeleted_artifact, refind: true) do
     create(:ci_job_artifact)
-  end
-
-  let_it_be(:trace_artifact, refind: true) do
-    create(:ci_job_artifact, :trace, :expired)
   end
 
   describe '#execute' do
@@ -58,11 +54,6 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService do
       end
 
       execute
-    end
-
-    it 'preserves trace artifacts' do
-      expect { subject }
-        .to not_change { Ci::JobArtifact.exists?(trace_artifact.id) }
     end
 
     context 'when artifact belongs to a project that is undergoing stats refresh' do
@@ -287,7 +278,7 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService do
       end
 
       it 'reports the number of destroyed artifacts' do
-        is_expected.to eq(destroyed_artifacts_count: 0, statistics_updates: {}, status: :success)
+        is_expected.to eq(destroyed_artifacts_count: 0, destroyed_ids: [], statistics_updates: {}, status: :success)
       end
     end
   end

@@ -120,10 +120,6 @@ describe('BaseToken', () => {
   const getMockSuggestionListSuggestions = () =>
     JSON.parse(findMockSuggestionList().attributes('data-suggestions'));
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('data', () => {
     it('calls `getRecentlyUsedSuggestions` to populate `recentSuggestions` when `recentSuggestionsStorageKey` is defined', () => {
       wrapper = createComponent();

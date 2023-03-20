@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe DraftNotes::CreateService do
+RSpec.describe DraftNotes::CreateService, feature_category: :code_review_workflow do
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.target_project }
   let(:user) { merge_request.author }

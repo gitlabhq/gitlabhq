@@ -14,6 +14,7 @@ module Notes
     delegate :commands_executed_count, to: :interpret_service, allow_nil: true
 
     UPDATE_SERVICES = {
+      'WorkItem' => WorkItems::UpdateService,
       'Issue' => Issues::UpdateService,
       'MergeRequest' => MergeRequests::UpdateService,
       'Commit' => Commits::TagService
@@ -25,6 +26,8 @@ module Notes
     end
 
     def self.noteable_update_service_class(note)
+      return update_services['WorkItem'] if note.for_work_item?
+
       update_services[note.noteable_type]
     end
 
@@ -63,7 +66,11 @@ module Notes
       #   Follow-on issue to address this is here:
       #   https://gitlab.com/gitlab-org/gitlab/-/issues/328734
       service =
-        if noteable_update_service_class.respond_to?(:constructor_container_arg)
+        if noteable_update_service_class == WorkItems::UpdateService
+          parsed_params = note.noteable.transform_quick_action_params(update_params)
+
+          noteable_update_service_class.new(container: note.resource_parent, current_user: current_user, params: parsed_params[:common], widget_params: parsed_params[:widgets])
+        elsif noteable_update_service_class.respond_to?(:constructor_container_arg)
           noteable_update_service_class.new(**noteable_update_service_class.constructor_container_arg(note.resource_parent), current_user: current_user, params: update_params)
         else
           noteable_update_service_class.new(note.resource_parent, current_user, update_params)

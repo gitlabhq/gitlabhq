@@ -1,7 +1,7 @@
 import { KeyMod, KeyCode, Emitter } from 'monaco-editor';
 import { debounce } from 'lodash';
 import { BLOB_PREVIEW_ERROR } from '~/blob_edit/constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { sanitize } from '~/lib/dompurify';
 import axios from '~/lib/utils/axios_utils';
 import syntaxHighlight from '~/syntax_highlight';
@@ -14,7 +14,7 @@ import {
   EXTENSION_MARKDOWN_PREVIEW_UPDATE_DELAY,
   EXTENSION_MARKDOWN_PREVIEW_LABEL,
   EXTENSION_MARKDOWN_HIDE_PREVIEW_LABEL,
-  EDITOR_TOOLBAR_RIGHT_GROUP,
+  EDITOR_TOOLBAR_BUTTON_GROUPS,
 } from '../constants';
 
 const fetchPreview = (text, previewMarkdownPath) => {
@@ -116,7 +116,7 @@ export class EditorMarkdownPreviewExtension {
         label: EXTENSION_MARKDOWN_PREVIEW_LABEL,
         icon: 'live-preview',
         selected: false,
-        group: EDITOR_TOOLBAR_RIGHT_GROUP,
+        group: EDITOR_TOOLBAR_BUTTON_GROUPS.settings,
         category: 'primary',
         selectedLabel: EXTENSION_MARKDOWN_HIDE_PREVIEW_LABEL,
         onClick: () => instance.togglePreview(),

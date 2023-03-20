@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Database::PartitionManagementWorker do
+RSpec.describe Database::PartitionManagementWorker, feature_category: :database do
   describe '#perform' do
     subject { described_class.new.perform }
 

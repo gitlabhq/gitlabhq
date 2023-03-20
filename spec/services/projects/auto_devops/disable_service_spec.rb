@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Projects::AutoDevops::DisableService, '#execute' do
+RSpec.describe Projects::AutoDevops::DisableService, '#execute', feature_category: :auto_devops do
   let(:project) { create(:project, :repository, :auto_devops) }
   let(:auto_devops) { project.auto_devops }
 

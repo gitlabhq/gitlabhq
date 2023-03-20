@@ -20,9 +20,9 @@ jest.mock('~/editor/extensions/source_editor_toolbar_ext');
 
 const PREVIEW_MARKDOWN_PATH = '/foo/bar/preview_markdown';
 const defaultExtensions = [
+  { definition: ToolbarExtension },
   { definition: SourceEditorExtension },
   { definition: FileTemplateExtension },
-  { definition: ToolbarExtension },
 ];
 const markdownExtensions = [
   { definition: EditorMarkdownExtension },

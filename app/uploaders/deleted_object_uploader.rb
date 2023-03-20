@@ -3,7 +3,7 @@
 class DeletedObjectUploader < GitlabUploader
   include ObjectStorage::Concern
 
-  storage_options Gitlab.config.artifacts
+  storage_location :artifacts
 
   def store_dir
     model.store_dir

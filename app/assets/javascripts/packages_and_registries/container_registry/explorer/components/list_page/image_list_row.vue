@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlIcon, GlSprintf, GlSkeletonLoader, GlButton } from '@gitlab/ui';
+import { GlTooltipDirective, GlSprintf, GlSkeletonLoader, GlButton } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { n__ } from '~/locale';
 import Tracking from '~/tracking';
@@ -28,7 +28,6 @@ export default {
     DeleteButton,
     GlSprintf,
     GlButton,
-    GlIcon,
     ListItem,
     GlSkeletonLoader,
     CleanupStatus,
@@ -80,8 +79,8 @@ export default {
     },
     tagsCountText() {
       return n__(
-        'ContainerRegistry|%{count} Tag',
-        'ContainerRegistry|%{count} Tags',
+        'ContainerRegistry|%{count} tag',
+        'ContainerRegistry|%{count} tags',
         this.item.tagsCount,
       );
     },
@@ -152,7 +151,6 @@ export default {
         <span v-if="deleting">{{ $options.i18n.ROW_SCHEDULED_FOR_DELETION }}</span>
         <template v-else>
           <span class="gl-display-flex gl-align-items-center" data-testid="tags-count">
-            <gl-icon name="tag" class="gl-mr-2" />
             <gl-sprintf :message="tagsCountText">
               <template #count>
                 {{ item.tagsCount }}

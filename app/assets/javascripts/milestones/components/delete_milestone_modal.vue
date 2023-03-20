@@ -1,6 +1,6 @@
 <script>
 import { GlSprintf, GlModal } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import { redirectTo } from '~/lib/utils/url_utility';
@@ -103,7 +103,7 @@ Once deleted, it cannot be undone or recovered.`),
   },
   primaryProps: {
     text: s__('Milestones|Delete milestone'),
-    attributes: [{ variant: 'danger' }, { category: 'primary' }],
+    attributes: { variant: 'danger', category: 'primary' },
   },
   cancelProps: {
     text: __('Cancel'),

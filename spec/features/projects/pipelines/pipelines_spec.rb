@@ -278,6 +278,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
         end
 
         before do
+          stub_feature_flags(lazy_load_pipeline_dropdown_actions: false)
           visit_project_pipelines
         end
 
@@ -312,6 +313,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
         end
 
         before do
+          stub_feature_flags(lazy_load_pipeline_dropdown_actions: false)
           visit_project_pipelines
         end
 
@@ -695,7 +697,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
           end
 
           context 'when variables are specified' do
-            it 'creates a new pipeline with variables', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/375552' do
+            it 'creates a new pipeline with variables' do
               page.within(find("[data-testid='ci-variable-row']")) do
                 find("[data-testid='pipeline-form-ci-variable-key']").set('key_name')
                 find("[data-testid='pipeline-form-ci-variable-value']").set('value')
@@ -721,7 +723,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
 
           it { expect(page).to have_content('Missing CI config file') }
 
-          it 'creates a pipeline after first request failed and a valid gitlab-ci.yml file is available when trying again', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/375552' do
+          it 'creates a pipeline after first request failed and a valid gitlab-ci.yml file is available when trying again' do
             stub_ci_pipeline_to_return_yaml_file
 
             expect do

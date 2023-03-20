@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
+RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
   using RSpec::Parameterized::TableSyntax
 
   subject(:setting) { described_class.create_from_defaults }
@@ -23,6 +23,20 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
     it { expect(setting.id).to eq(1) }
     it { expect(setting.repository_storages_weighted).to eq({}) }
     it { expect(setting.kroki_formats).to eq({}) }
+  end
+
+  describe 'associations' do
+    it do
+      is_expected.to belong_to(:self_monitoring_project).class_name('Project')
+        .with_foreign_key(:instance_administration_project_id)
+        .inverse_of(:application_setting)
+    end
+
+    it do
+      is_expected.to belong_to(:instance_group).class_name('Group')
+        .with_foreign_key(:instance_administrators_group_id)
+        .inverse_of(:application_setting)
+    end
   end
 
   describe 'validations' do
@@ -132,6 +146,9 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
     it { is_expected.to allow_value(false).for(:user_defaults_to_private_profile) }
     it { is_expected.not_to allow_value(nil).for(:user_defaults_to_private_profile) }
 
+    it { is_expected.to allow_values([true, false]).for(:deny_all_requests_except_allowed) }
+    it { is_expected.not_to allow_value(nil).for(:deny_all_requests_except_allowed) }
+
     it 'ensures max_pages_size is an integer greater than 0 (or equal to 0 to indicate unlimited/maximum)' do
       is_expected.to validate_numericality_of(:max_pages_size).only_integer.is_greater_than_or_equal_to(0)
                        .is_less_than(::Gitlab::Pages::MAX_SIZE / 1.megabyte)
@@ -182,7 +199,8 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
     it { is_expected.not_to allow_value('default' => 101).for(:repository_storages_weighted).with_message("value for 'default' must be between 0 and 100") }
     it { is_expected.not_to allow_value('default' => 100, shouldntexist: 50).for(:repository_storages_weighted).with_message("can't include: shouldntexist") }
 
-    %i[notes_create_limit search_rate_limit search_rate_limit_unauthenticated users_get_by_id_limit].each do |setting|
+    %i[notes_create_limit search_rate_limit search_rate_limit_unauthenticated users_get_by_id_limit
+      projects_api_rate_limit_unauthenticated].each do |setting|
       it { is_expected.to allow_value(400).for(setting) }
       it { is_expected.not_to allow_value('two').for(setting) }
       it { is_expected.not_to allow_value(nil).for(setting) }
@@ -209,6 +227,12 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
     it { is_expected.to allow_value('disabled').for(:whats_new_variant) }
     it { is_expected.not_to allow_value(nil).for(:whats_new_variant) }
 
+    it { is_expected.to allow_value('http://example.com/').for(:public_runner_releases_url) }
+    it { is_expected.not_to allow_value(nil).for(:public_runner_releases_url) }
+
+    it { is_expected.to allow_value([true, false]).for(:update_runner_versions_enabled) }
+    it { is_expected.not_to allow_value(nil).for(:update_runner_versions_enabled) }
+
     it { is_expected.not_to allow_value(['']).for(:valid_runner_registrars) }
     it { is_expected.not_to allow_value(['OBVIOUSLY_WRONG']).for(:valid_runner_registrars) }
     it { is_expected.not_to allow_value(%w(project project)).for(:valid_runner_registrars) }
@@ -227,6 +251,10 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
     it { is_expected.to allow_value(true).for(:allow_runner_registration_token) }
     it { is_expected.to allow_value(false).for(:allow_runner_registration_token) }
     it { is_expected.not_to allow_value(nil).for(:allow_runner_registration_token) }
+
+    it { is_expected.to allow_value(true).for(:gitlab_dedicated_instance) }
+    it { is_expected.to allow_value(false).for(:gitlab_dedicated_instance) }
+    it { is_expected.not_to allow_value(nil).for(:gitlab_dedicated_instance) }
 
     context 'when deactivate_dormant_users is enabled' do
       before do
@@ -318,7 +346,7 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
       end
     end
 
-    describe 'default_branch_name validaitions' do
+    describe 'default_branch_name validations' do
       context "when javascript tags get sanitized properly" do
         it "gets sanitized properly" do
           setting.update!(default_branch_name: "hello<script>alert(1)</script>")
@@ -582,6 +610,23 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
         end
 
         it_behaves_like 'usage ping enabled'
+      end
+    end
+
+    describe 'setting validated as `addressable_url` configured with external URI' do
+      before do
+        # Use any property that has the `addressable_url` validation.
+        setting.help_page_documentation_base_url = 'http://example.com'
+      end
+
+      it 'is valid by default' do
+        expect(setting).to be_valid
+      end
+
+      it 'is invalid when unpersisted `deny_all_requests_except_allowed` property is true' do
+        setting.deny_all_requests_except_allowed = true
+
+        expect(setting).not_to be_valid
       end
     end
 
@@ -1124,6 +1169,11 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
       it { is_expected.to allow_value(*Gitlab::I18n.available_locales).for(:default_preferred_language) }
       it { is_expected.not_to allow_value(nil, '', 'invalid_locale').for(:default_preferred_language) }
     end
+
+    context 'for default_syntax_highlighting_theme' do
+      it { is_expected.to allow_value(*Gitlab::ColorSchemes.valid_ids).for(:default_syntax_highlighting_theme) }
+      it { is_expected.not_to allow_value(nil, 0, Gitlab::ColorSchemes.available_schemes.size + 1).for(:default_syntax_highlighting_theme) }
+    end
   end
 
   context 'restrict creating duplicates' do
@@ -1141,6 +1191,17 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
 
     it 'raises an exception' do
       expect { described_class.create_from_defaults }.to raise_error(/table is missing a primary key constraint/)
+    end
+  end
+
+  describe 'ADDRESSABLE_URL_VALIDATION_OPTIONS' do
+    it 'is applied to all addressable_url validated properties' do
+      url_validators = described_class.validators.select { |validator| validator.is_a?(AddressableUrlValidator) }
+
+      url_validators.each do |validator|
+        expect(validator.options).to match(hash_including(described_class::ADDRESSABLE_URL_VALIDATION_OPTIONS)),
+          "#{validator.attributes} should use ADDRESSABLE_URL_VALIDATION_OPTIONS"
+      end
     end
   end
 
@@ -1472,6 +1533,52 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
   describe '.personal_access_tokens_disabled?' do
     it 'is false' do
       expect(setting.personal_access_tokens_disabled?).to eq(false)
+    end
+  end
+
+  describe 'email_confirmation_setting prefixes' do
+    before do
+      described_class.create_from_defaults
+    end
+
+    context 'when feature flag `soft_email_confirmation` is not enabled' do
+      before do
+        stub_feature_flags(soft_email_confirmation: false)
+      end
+
+      where(:email_confirmation_setting, :off, :soft, :hard) do
+        'off'  | true  | false | false
+        'soft' | false | true  | false
+        'hard' | false | false | true
+      end
+
+      with_them do
+        it 'returns the correct value when prefixed' do
+          stub_application_setting_enum('email_confirmation_setting', email_confirmation_setting)
+
+          expect(described_class.last.email_confirmation_setting_off?).to be off
+          expect(described_class.last.email_confirmation_setting_soft?).to be soft
+          expect(described_class.last.email_confirmation_setting_hard?).to be hard
+        end
+      end
+
+      it 'calls super' do
+        expect(described_class.last.email_confirmation_setting_off?).to be true
+        expect(described_class.last.email_confirmation_setting_soft?).to be false
+        expect(described_class.last.email_confirmation_setting_hard?).to be false
+      end
+    end
+
+    context 'when feature flag `soft_email_confirmation` is enabled' do
+      before do
+        stub_feature_flags(soft_email_confirmation: true)
+      end
+
+      it 'returns correct value when enum is prefixed' do
+        expect(described_class.last.email_confirmation_setting_off?).to be false
+        expect(described_class.last.email_confirmation_setting_soft?).to be true
+        expect(described_class.last.email_confirmation_setting_hard?).to be false
+      end
     end
   end
 end

@@ -33,7 +33,6 @@ describe('pipeline graph action component', () => {
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
   });
 
   describe('render', () => {

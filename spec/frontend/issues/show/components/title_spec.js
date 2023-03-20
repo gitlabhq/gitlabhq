@@ -1,96 +1,59 @@
-import Vue, { nextTick } from 'vue';
+import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import titleComponent from '~/issues/show/components/title.vue';
-import eventHub from '~/issues/show/event_hub';
-import Store from '~/issues/show/stores';
+import Title from '~/issues/show/components/title.vue';
 
 describe('Title component', () => {
-  let vm;
-  beforeEach(() => {
+  let wrapper;
+
+  const getTitleHeader = () => wrapper.findByTestId('issue-title');
+
+  const createWrapper = (props) => {
     setHTMLFixture(`<title />`);
 
-    const Component = Vue.extend(titleComponent);
-    const store = new Store({
-      titleHtml: '',
-      descriptionHtml: '',
-      issuableRef: '',
-    });
-    vm = new Component({
+    wrapper = shallowMountExtended(Title, {
       propsData: {
         issuableRef: '#1',
         titleHtml: 'Testing <img />',
         titleText: 'Testing',
-        showForm: false,
-        formState: store.formState,
+        ...props,
       },
-    }).$mount();
-  });
+    });
+  };
 
   afterEach(() => {
     resetHTMLFixture();
   });
 
   it('renders title HTML', () => {
-    expect(vm.$el.querySelector('.title').innerHTML.trim()).toBe('Testing <img>');
-  });
+    createWrapper();
 
-  it('updates page title when changing titleHtml', async () => {
-    const spy = jest.spyOn(vm, 'setPageTitle');
-    vm.titleHtml = 'test';
-
-    await nextTick();
-    expect(spy).toHaveBeenCalled();
+    expect(getTitleHeader().element.innerHTML.trim()).toBe('Testing <img>');
   });
 
   it('animates title changes', async () => {
-    vm.titleHtml = 'test';
+    createWrapper();
 
-    await nextTick();
+    await wrapper.setProps({
+      titleHtml: 'test',
+    });
 
-    expect(vm.$el.querySelector('.title').classList).toContain('issue-realtime-pre-pulse');
+    expect(getTitleHeader().classes('issue-realtime-pre-pulse')).toBe(true);
+
     jest.runAllTimers();
-
     await nextTick();
 
-    expect(vm.$el.querySelector('.title').classList).toContain('issue-realtime-trigger-pulse');
+    expect(getTitleHeader().classes('issue-realtime-trigger-pulse')).toBe(true);
   });
 
   it('updates page title after changing title', async () => {
-    vm.titleHtml = 'changed';
-    vm.titleText = 'changed';
+    createWrapper();
 
-    await nextTick();
+    await wrapper.setProps({
+      titleHtml: 'changed',
+      titleText: 'changed',
+    });
+
     expect(document.querySelector('title').textContent.trim()).toContain('changed');
-  });
-
-  describe('inline edit button', () => {
-    it('should not show by default', () => {
-      expect(vm.$el.querySelector('.btn-edit')).toBeNull();
-    });
-
-    it('should not show if canUpdate is false', () => {
-      vm.showInlineEditButton = true;
-      vm.canUpdate = false;
-
-      expect(vm.$el.querySelector('.btn-edit')).toBeNull();
-    });
-
-    it('should show if showInlineEditButton and canUpdate', () => {
-      vm.showInlineEditButton = true;
-      vm.canUpdate = true;
-
-      expect(vm.$el.querySelector('.btn-edit')).toBeDefined();
-    });
-
-    it('should trigger open.form event when clicked', async () => {
-      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-      vm.showInlineEditButton = true;
-      vm.canUpdate = true;
-
-      await nextTick();
-      vm.$el.querySelector('.btn-edit').click();
-
-      expect(eventHub.$emit).toHaveBeenCalledWith('open.form');
-    });
   });
 });

@@ -29,7 +29,11 @@ export default {
     GlLink,
     GlSprintf,
   },
-  inject: ['issuableType'],
+  inject: {
+    issuableType: {
+      default: null,
+    },
+  },
   props: {
     issuableId: {
       type: String,
@@ -52,13 +56,11 @@ export default {
     primaryProps() {
       return {
         text: s__('CreateTimelogForm|Save'),
-        attributes: [
-          {
-            variant: 'confirm',
-            disabled: this.submitDisabled,
-            loading: this.isLoading,
-          },
-        ],
+        attributes: {
+          variant: 'confirm',
+          disabled: this.submitDisabled,
+          loading: this.isLoading,
+        },
       };
     },
     cancelProps() {

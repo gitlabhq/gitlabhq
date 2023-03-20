@@ -29,18 +29,14 @@ describe('RunnerTag', () => {
         ...props,
       },
       directives: {
-        GlTooltip: createMockDirective(),
-        GlResizeObserver: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
+        GlResizeObserver: createMockDirective('gl-resize-observer'),
       },
     });
   };
 
   beforeEach(() => {
     createComponent();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('Displays tag text', () => {

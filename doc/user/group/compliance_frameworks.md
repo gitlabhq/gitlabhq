@@ -34,6 +34,10 @@ default framework cannot be deleted.
 
 A compliance framework that is set to default has a **default** label.
 
+NOTE:
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/394630), only group owners can apply the default compliance framework when creating
+new projects or importing projects.
+
 ### Set and remove as default
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375038) in GitLab 15.7.
@@ -94,7 +98,8 @@ mutation {
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/331231) in GitLab 14.2.
 
 Group owners can configure a compliance pipeline in a project separate to other projects. By default, the compliance
-pipeline configuration (`.gitlab-ci.yml` file) is run instead of the pipeline configuration of labeled projects.
+pipeline configuration (for example, `.compliance-gitlab-ci.yml`) is run instead of the pipeline configuration (for example, `.gitlab-ci.yml`) of labeled
+projects.
 
 However, the compliance pipeline configuration can reference the `.gitlab-ci.yml` file of the labeled projects so that:
 
@@ -208,15 +213,46 @@ audit trail:
     - "# No after scripts."
 
 include:  # Execute individual project's configuration (if project contains .gitlab-ci.yml)
-  project: '$CI_PROJECT_PATH'
-  file: '$CI_CONFIG_PATH'
-  ref: '$CI_COMMIT_SHA' # Must be defined or MR pipelines always use the use default branch
-  rules:
-    - if: $CI_PROJECT_PATH != "my-group/project-1" # Must be the hardcoded path to the project that hosts this configuration.
+  - project: '$CI_PROJECT_PATH'
+    file: '$CI_CONFIG_PATH'
+    ref: '$CI_COMMIT_SHA' # Must be defined or MR pipelines always use the use default branch
+    rules:
+      - if: $CI_PROJECT_PATH != "my-group/project-1" # Must be the hardcoded path to the project that hosts this configuration.
 ```
 
 The `rules` configuration in the `include` definition avoids circular inclusion in case the compliance pipeline must be able to run in the host project itself.
 You can leave it out if your compliance pipeline only ever runs in labeled projects.
+
+#### Compliance pipelines and custom pipeline configuration hosted externally
+
+The example above assumes that all projects host their pipeline configuration in the same project.
+If any projects use [configuration hosted externally to the project](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file):
+
+- The `include` section in the example compliance pipeline configuration must be adjusted.
+  For example, using [`include:rules`](../../ci/yaml/includes.md#use-rules-with-include):
+
+  ```yaml
+  include:
+    # If the custom path variables are defined, include the project's external config file.
+    - project: '$PROTECTED_PIPELINE_CI_PROJECT_PATH'
+      file: '$PROTECTED_PIPELINE_CI_CONFIG_PATH'
+      ref: '$PROTECTED_PIPELINE_CI_REF'
+      rules:
+        - if: $PROTECTED_PIPELINE_CI_PROJECT_PATH && $PROTECTED_PIPELINE_CI_CONFIG_PATH && $PROTECTED_PIPELINE_CI_REF
+    # If any custom path variable is not defined, include the project's internal config file as normal.
+    - project: '$CI_PROJECT_PATH'
+      file: '$CI_CONFIG_PATH'
+      ref: '$CI_COMMIT_SHA'
+      rules:
+        - if: $PROTECTED_PIPELINE_CI_PROJECT_PATH == null || $PROTECTED_PIPELINE_CI_CONFIG_PATH == null || $PROTECTED_PIPELINE_CI_REF == null
+  ```
+
+- [CI/CD variables](../../ci/variables/index.md) must be added to projects with external
+  pipeline configuration. In this example:
+
+  - `PROTECTED_PIPELINE_CI_PROJECT_PATH`: The path to the project hosting the configuration file, for example `group/subgroup/project`.
+  - `PROTECTED_PIPELINE_CI_CONFIG_PATH`: The path to the configuration file in the project, for example `path/to/.gitlab-ci.yml`.
+  - `PROTECTED_PIPELINE_CI_REF`: The ref to use when retrieving the configuration file, for example `main`.
 
 #### Compliance pipelines in merge requests originating in project forks
 

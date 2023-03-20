@@ -1,0 +1,22 @@
+diff --git a/node_modules/@vue/vue3-jest/lib/process.js b/node_modules/@vue/vue3-jest/lib/process.js
+index a8d1c5c..a6b2036 100644
+--- a/node_modules/@vue/vue3-jest/lib/process.js
++++ b/node_modules/@vue/vue3-jest/lib/process.js
+@@ -108,12 +108,17 @@ function processTemplate(descriptor, filename, config) {
+     (descriptor.script && descriptor.script.lang)
+   const isTS = /^typescript$|tsx?$/.test(lang)
+ 
++  const compiler = typeof vueJestConfig.compiler === 'string'
++    ? require(vueJestConfig.compiler)
++    : vueJestConfig.compiler
++
+   const result = compileTemplate({
+     id: filename,
+     source: template.content,
+     filename,
+     preprocessLang: template.lang,
+     preprocessOptions: vueJestConfig[template.lang],
++    compiler,
+     compilerOptions: {
+       bindingMetadata: bindings,
+       mode: 'module',

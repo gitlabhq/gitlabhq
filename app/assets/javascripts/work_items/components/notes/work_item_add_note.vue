@@ -5,7 +5,6 @@ import { clearDraft } from '~/lib/utils/autosave';
 import Tracking from '~/tracking';
 import { ASC } from '~/notes/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { updateCommentState } from '~/work_items/graphql/cache_utils';
 import { getWorkItemQuery } from '../../utils';
 import createNoteMutation from '../../graphql/notes/create_work_item_note.mutation.graphql';
 import { TRACKING_CATEGORY_SHOW, i18n } from '../../constants';
@@ -115,10 +114,35 @@ export default {
         this.workItemType
       }`;
     },
+    isLockedOutOrSignedOut() {
+      return !this.signedIn || !this.canUpdate;
+    },
+    lockedOutUserWarningInReplies() {
+      return this.addPadding && this.isLockedOutOrSignedOut;
+    },
     timelineEntryClass() {
       return {
-        'timeline-entry gl-mb-3': true,
-        'gl-p-4': this.addPadding,
+        'timeline-entry gl-mb-3 note note-wrapper note-comment': true,
+        'gl-bg-gray-10 gl-rounded-bottom-left-base gl-rounded-bottom-right-base gl-p-5! gl-mx-n3 gl-mb-n2!': this
+          .lockedOutUserWarningInReplies,
+      };
+    },
+    timelineEntryInnerClass() {
+      return {
+        'timeline-entry-inner': true,
+        'gl-pb-3': this.addPadding,
+      };
+    },
+    timelineContentClass() {
+      return {
+        'timeline-content': true,
+        'gl-border-0! gl-pl-0!': !this.addPadding,
+      };
+    },
+    parentClass() {
+      return {
+        'gl-relative gl-display-flex gl-align-items-flex-start gl-flex-wrap-nowrap': !this
+          .isEditing,
       };
     },
     isProjectArchived() {
@@ -142,7 +166,6 @@ export default {
     async updateWorkItem(commentText) {
       this.isSubmitting = true;
       this.$emit('replying', commentText);
-      const { queryVariables, fetchByIid } = this;
 
       try {
         this.track('add_work_item_comment');
@@ -160,7 +183,6 @@ export default {
             if (createNoteData.data?.createNote?.errors?.length) {
               throw new Error(createNoteData.data?.createNote?.errors[0]);
             }
-            updateCommentState(store, createNoteData, fetchByIid, queryVariables);
           },
         });
         clearDraft(this.autosaveKey);
@@ -189,23 +211,29 @@ export default {
       :work-item-type="workItemType"
       :is-project-archived="isProjectArchived"
     />
-    <div v-else class="gl-relative gl-display-flex gl-align-items-flex-start gl-flex-wrap-nowrap">
-      <gl-avatar :src="$options.constantOptions.avatarUrl" :size="32" class="gl-mr-3" />
-      <work-item-comment-form
-        v-if="isEditing"
-        :work-item-type="workItemType"
-        :aria-label="__('Add a comment')"
-        :is-submitting="isSubmitting"
-        :autosave-key="autosaveKey"
-        @submitForm="updateWorkItem"
-        @cancelEditing="cancelEditing"
-      />
-      <gl-button
-        v-else
-        class="gl-flex-grow-1 gl-justify-content-start! gl-text-secondary!"
-        @click="isEditing = true"
-        >{{ __('Add a comment') }}</gl-button
-      >
+    <div v-else :class="timelineEntryInnerClass">
+      <div class="timeline-avatar gl-float-left">
+        <gl-avatar :src="$options.constantOptions.avatarUrl" :size="32" class="gl-mr-3" />
+      </div>
+      <div :class="timelineContentClass">
+        <div :class="parentClass">
+          <work-item-comment-form
+            v-if="isEditing"
+            :work-item-type="workItemType"
+            :aria-label="__('Add a reply')"
+            :is-submitting="isSubmitting"
+            :autosave-key="autosaveKey"
+            @submitForm="updateWorkItem"
+            @cancelEditing="cancelEditing"
+          />
+          <gl-button
+            v-else
+            class="gl-flex-grow-1 gl-justify-content-start! gl-text-secondary!"
+            @click="isEditing = true"
+            >{{ __('Add a reply') }}</gl-button
+          >
+        </div>
+      </div>
     </div>
   </li>
 </template>

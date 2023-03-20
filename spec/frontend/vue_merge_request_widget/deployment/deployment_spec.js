@@ -32,10 +32,6 @@ describe('Deployment component', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('always renders DeploymentInfo', () => {
     expect(wrapper.findComponent(DeploymentInfo).exists()).toBe(true);
   });

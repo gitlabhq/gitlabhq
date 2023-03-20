@@ -4,7 +4,7 @@ import { GlLoadingIcon, GlTable } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { resolvers } from '~/ci/ci_variable_list/graphql/settings';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -41,7 +41,7 @@ import {
   mockAdminVariables,
 } from '../mocks';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
@@ -53,6 +53,7 @@ const mockProvide = {
 
 const defaultProps = {
   areScopedVariablesAvailable: true,
+  pageInfo: {},
   hideEnvironmentScope: false,
   refetchAfterMutation: false,
 };
@@ -105,345 +106,378 @@ describe('Ci Variable Shared Component', () => {
     mockVariables = jest.fn();
   });
 
-  describe('while queries are being fetch', () => {
-    beforeEach(() => {
-      createComponentWithApollo({ isLoading: true });
-    });
+  describe.each`
+    isVariablePagesEnabled | text
+    ${true}                | ${'enabled'}
+    ${false}               | ${'disabled'}
+  `('When Pages FF is $text', ({ isVariablePagesEnabled }) => {
+    const featureFlagProvide = isVariablePagesEnabled
+      ? { glFeatures: { ciVariablesPages: true } }
+      : {};
 
-    it('shows a loading icon', () => {
-      expect(findLoadingIcon().exists()).toBe(true);
-      expect(findCiTable().exists()).toBe(false);
-    });
-  });
-
-  describe('when queries are resolved', () => {
-    describe('successfully', () => {
-      beforeEach(async () => {
-        mockEnvironments.mockResolvedValue(mockProjectEnvironments);
-        mockVariables.mockResolvedValue(mockProjectVariables);
-
-        await createComponentWithApollo({ provide: createProjectProvide() });
+    describe('while queries are being fetch', () => {
+      beforeEach(() => {
+        createComponentWithApollo({ isLoading: true });
       });
 
-      it('passes down the expected max variable limit as props', () => {
-        expect(findCiSettings().props('maxVariableLimit')).toBe(
-          mockProjectVariables.data.project.ciVariables.limit,
-        );
-      });
-
-      it('passes down the expected environments as props', () => {
-        expect(findCiSettings().props('environments')).toEqual([prodName, devName]);
-      });
-
-      it('passes down the expected variables as props', () => {
-        expect(findCiSettings().props('variables')).toEqual(
-          mockProjectVariables.data.project.ciVariables.nodes,
-        );
-      });
-
-      it('createAlert was not called', () => {
-        expect(createAlert).not.toHaveBeenCalled();
+      it('shows a loading icon', () => {
+        expect(findLoadingIcon().exists()).toBe(true);
+        expect(findCiTable().exists()).toBe(false);
       });
     });
 
-    describe('with an error for variables', () => {
-      beforeEach(async () => {
-        mockEnvironments.mockResolvedValue(mockProjectEnvironments);
-        mockVariables.mockRejectedValue();
+    describe('when queries are resolved', () => {
+      describe('successfully', () => {
+        beforeEach(async () => {
+          mockEnvironments.mockResolvedValue(mockProjectEnvironments);
+          mockVariables.mockResolvedValue(mockProjectVariables);
 
-        await createComponentWithApollo();
+          await createComponentWithApollo({
+            provide: { ...createProjectProvide(), ...featureFlagProvide },
+          });
+        });
+
+        it('passes down the expected max variable limit as props', () => {
+          expect(findCiSettings().props('maxVariableLimit')).toBe(
+            mockProjectVariables.data.project.ciVariables.limit,
+          );
+        });
+
+        it('passes down the expected environments as props', () => {
+          expect(findCiSettings().props('environments')).toEqual([prodName, devName]);
+        });
+
+        it('passes down the expected variables as props', () => {
+          expect(findCiSettings().props('variables')).toEqual(
+            mockProjectVariables.data.project.ciVariables.nodes,
+          );
+        });
+
+        it('createAlert was not called', () => {
+          expect(createAlert).not.toHaveBeenCalled();
+        });
       });
 
-      it('calls createAlert with the expected error message', () => {
-        expect(createAlert).toHaveBeenCalledWith({ message: variableFetchErrorText });
+      describe('with an error for variables', () => {
+        beforeEach(async () => {
+          mockEnvironments.mockResolvedValue(mockProjectEnvironments);
+          mockVariables.mockRejectedValue();
+
+          await createComponentWithApollo({ provide: featureFlagProvide });
+        });
+
+        it('calls createAlert with the expected error message', () => {
+          expect(createAlert).toHaveBeenCalledWith({ message: variableFetchErrorText });
+        });
+      });
+
+      describe('with an error for environments', () => {
+        beforeEach(async () => {
+          mockEnvironments.mockRejectedValue();
+          mockVariables.mockResolvedValue(mockProjectVariables);
+
+          await createComponentWithApollo({ provide: featureFlagProvide });
+        });
+
+        it('calls createAlert with the expected error message', () => {
+          expect(createAlert).toHaveBeenCalledWith({ message: environmentFetchErrorText });
+        });
       });
     });
 
-    describe('with an error for environments', () => {
-      beforeEach(async () => {
-        mockEnvironments.mockRejectedValue();
-        mockVariables.mockResolvedValue(mockProjectVariables);
+    describe('environment query', () => {
+      describe('when there is an environment key in queryData', () => {
+        beforeEach(async () => {
+          mockEnvironments.mockResolvedValue(mockProjectEnvironments);
+          mockVariables.mockResolvedValue(mockProjectVariables);
 
-        await createComponentWithApollo();
+          await createComponentWithApollo({
+            props: { ...createProjectProps() },
+            provide: featureFlagProvide,
+          });
+        });
+
+        it('is executed', () => {
+          expect(mockVariables).toHaveBeenCalled();
+        });
       });
 
-      it('calls createAlert with the expected error message', () => {
-        expect(createAlert).toHaveBeenCalledWith({ message: environmentFetchErrorText });
+      describe('when there isnt an environment key in queryData', () => {
+        beforeEach(async () => {
+          mockVariables.mockResolvedValue(mockGroupVariables);
+
+          await createComponentWithApollo({
+            props: { ...createGroupProps() },
+            provide: featureFlagProvide,
+          });
+        });
+
+        it('is skipped', () => {
+          expect(mockVariables).not.toHaveBeenCalled();
+        });
       });
     });
-  });
 
-  describe('environment query', () => {
-    describe('when there is an environment key in queryData', () => {
-      beforeEach(async () => {
-        mockEnvironments.mockResolvedValue(mockProjectEnvironments);
-        mockVariables.mockResolvedValue(mockProjectVariables);
+    describe('mutations', () => {
+      const groupProps = createGroupProps();
 
-        await createComponentWithApollo({ props: { ...createProjectProps() } });
-      });
-
-      it('is executed', () => {
-        expect(mockVariables).toHaveBeenCalled();
-      });
-    });
-
-    describe('when there isnt an environment key in queryData', () => {
       beforeEach(async () => {
         mockVariables.mockResolvedValue(mockGroupVariables);
 
-        await createComponentWithApollo({ props: { ...createGroupProps() } });
-      });
-
-      it('is skipped', () => {
-        expect(mockVariables).not.toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe('mutations', () => {
-    const groupProps = createGroupProps();
-
-    beforeEach(async () => {
-      mockVariables.mockResolvedValue(mockGroupVariables);
-
-      await createComponentWithApollo({
-        customHandlers: [[getGroupVariables, mockVariables]],
-        props: groupProps,
-      });
-    });
-    it.each`
-      actionName  | mutation                                           | event
-      ${'add'}    | ${groupProps.mutationData[ADD_MUTATION_ACTION]}    | ${'add-variable'}
-      ${'update'} | ${groupProps.mutationData[UPDATE_MUTATION_ACTION]} | ${'update-variable'}
-      ${'delete'} | ${groupProps.mutationData[DELETE_MUTATION_ACTION]} | ${'delete-variable'}
-    `(
-      'calls the right mutation from propsData when user performs $actionName variable',
-      async ({ event, mutation }) => {
-        jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue();
-
-        await findCiSettings().vm.$emit(event, newVariable);
-
-        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-          mutation,
-          variables: {
-            endpoint: mockProvide.endpoint,
-            fullPath: groupProps.fullPath,
-            id: convertToGraphQLId(TYPENAME_GROUP, groupProps.id),
-            variable: newVariable,
-          },
-        });
-      },
-    );
-
-    it.each`
-      actionName  | event
-      ${'add'}    | ${'add-variable'}
-      ${'update'} | ${'update-variable'}
-      ${'delete'} | ${'delete-variable'}
-    `(
-      'throws with the specific graphql error if present when user performs $actionName variable',
-      async ({ event }) => {
-        const graphQLErrorMessage = 'There is a problem with this graphQL action';
-        jest
-          .spyOn(wrapper.vm.$apollo, 'mutate')
-          .mockResolvedValue({ data: { ciVariableMutation: { errors: [graphQLErrorMessage] } } });
-        await findCiSettings().vm.$emit(event, newVariable);
-        await nextTick();
-
-        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalled();
-        expect(createAlert).toHaveBeenCalledWith({ message: graphQLErrorMessage });
-      },
-    );
-
-    it.each`
-      actionName  | event
-      ${'add'}    | ${'add-variable'}
-      ${'update'} | ${'update-variable'}
-      ${'delete'} | ${'delete-variable'}
-    `(
-      'throws generic error on failure with no graphql errors and user performs $actionName variable',
-      async ({ event }) => {
-        jest.spyOn(wrapper.vm.$apollo, 'mutate').mockImplementationOnce(() => {
-          throw new Error();
-        });
-        await findCiSettings().vm.$emit(event, newVariable);
-
-        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalled();
-        expect(createAlert).toHaveBeenCalledWith({ message: genericMutationErrorText });
-      },
-    );
-
-    describe('without fullpath and ID props', () => {
-      beforeEach(async () => {
-        mockVariables.mockResolvedValue(mockAdminVariables);
-
         await createComponentWithApollo({
-          customHandlers: [[getAdminVariables, mockVariables]],
-          props: createInstanceProps(),
+          customHandlers: [[getGroupVariables, mockVariables]],
+          props: groupProps,
+          provide: featureFlagProvide,
         });
       });
-
-      it('does not pass fullPath and ID to the mutation', async () => {
-        jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue();
-
-        await findCiSettings().vm.$emit('add-variable', newVariable);
-
-        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-          mutation: wrapper.props().mutationData[ADD_MUTATION_ACTION],
-          variables: {
-            endpoint: mockProvide.endpoint,
-            variable: newVariable,
-          },
-        });
-      });
-    });
-  });
-
-  describe('Props', () => {
-    const mockGroupCiVariables = mockGroupVariables.data.group.ciVariables;
-    const mockProjectCiVariables = mockProjectVariables.data.project.ciVariables;
-
-    describe('in a specific context as', () => {
       it.each`
-        name          | mockVariablesValue      | mockEnvironmentsValue      | withEnvironments | expectedEnvironments | propsFn                | provideFn               | mutation             | maxVariableLimit
-        ${'project'}  | ${mockProjectVariables} | ${mockProjectEnvironments} | ${true}          | ${['prod', 'dev']}   | ${createProjectProps}  | ${createProjectProvide} | ${null}              | ${mockProjectCiVariables.limit}
-        ${'group'}    | ${mockGroupVariables}   | ${[]}                      | ${false}         | ${[]}                | ${createGroupProps}    | ${createGroupProvide}   | ${getGroupVariables} | ${mockGroupCiVariables.limit}
-        ${'instance'} | ${mockAdminVariables}   | ${[]}                      | ${false}         | ${[]}                | ${createInstanceProps} | ${() => {}}             | ${getAdminVariables} | ${0}
+        actionName  | mutation                                           | event
+        ${'add'}    | ${groupProps.mutationData[ADD_MUTATION_ACTION]}    | ${'add-variable'}
+        ${'update'} | ${groupProps.mutationData[UPDATE_MUTATION_ACTION]} | ${'update-variable'}
+        ${'delete'} | ${groupProps.mutationData[DELETE_MUTATION_ACTION]} | ${'delete-variable'}
       `(
-        'passes down all the required props when its a $name component',
-        async ({
-          mutation,
-          maxVariableLimit,
-          mockVariablesValue,
-          mockEnvironmentsValue,
-          withEnvironments,
-          expectedEnvironments,
-          propsFn,
-          provideFn,
-        }) => {
-          const props = propsFn();
-          const provide = provideFn();
+        'calls the right mutation from propsData when user performs $actionName variable',
+        async ({ event, mutation }) => {
+          jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue();
 
-          mockVariables.mockResolvedValue(mockVariablesValue);
+          await findCiSettings().vm.$emit(event, newVariable);
 
-          if (withEnvironments) {
-            mockEnvironments.mockResolvedValue(mockEnvironmentsValue);
-          }
-
-          let customHandlers = null;
-
-          if (mutation) {
-            customHandlers = [[mutation, mockVariables]];
-          }
-
-          await createComponentWithApollo({ customHandlers, props, provide });
-
-          expect(findCiSettings().props()).toEqual({
-            areScopedVariablesAvailable: wrapper.props().areScopedVariablesAvailable,
-            hideEnvironmentScope: defaultProps.hideEnvironmentScope,
-            isLoading: false,
-            maxVariableLimit,
-            variables: wrapper.props().queryData.ciVariables.lookup(mockVariablesValue.data)?.nodes,
-            entity: props.entity,
-            environments: expectedEnvironments,
+          expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
+            mutation,
+            variables: {
+              endpoint: mockProvide.endpoint,
+              fullPath: groupProps.fullPath,
+              id: convertToGraphQLId(TYPENAME_GROUP, groupProps.id),
+              variable: newVariable,
+            },
           });
         },
       );
-    });
 
-    describe('refetchAfterMutation', () => {
       it.each`
-        bool     | text
-        ${true}  | ${'refetches the variables'}
-        ${false} | ${'does not refetch the variables'}
-      `('when $bool it $text', async ({ bool }) => {
-        await createComponentWithApollo({
-          props: { ...createInstanceProps(), refetchAfterMutation: bool },
+        actionName  | event
+        ${'add'}    | ${'add-variable'}
+        ${'update'} | ${'update-variable'}
+        ${'delete'} | ${'delete-variable'}
+      `(
+        'throws with the specific graphql error if present when user performs $actionName variable',
+        async ({ event }) => {
+          const graphQLErrorMessage = 'There is a problem with this graphQL action';
+          jest
+            .spyOn(wrapper.vm.$apollo, 'mutate')
+            .mockResolvedValue({ data: { ciVariableMutation: { errors: [graphQLErrorMessage] } } });
+          await findCiSettings().vm.$emit(event, newVariable);
+          await nextTick();
+
+          expect(wrapper.vm.$apollo.mutate).toHaveBeenCalled();
+          expect(createAlert).toHaveBeenCalledWith({ message: graphQLErrorMessage });
+        },
+      );
+
+      it.each`
+        actionName  | event
+        ${'add'}    | ${'add-variable'}
+        ${'update'} | ${'update-variable'}
+        ${'delete'} | ${'delete-variable'}
+      `(
+        'throws generic error on failure with no graphql errors and user performs $actionName variable',
+        async ({ event }) => {
+          jest.spyOn(wrapper.vm.$apollo, 'mutate').mockImplementationOnce(() => {
+            throw new Error();
+          });
+          await findCiSettings().vm.$emit(event, newVariable);
+
+          expect(wrapper.vm.$apollo.mutate).toHaveBeenCalled();
+          expect(createAlert).toHaveBeenCalledWith({ message: genericMutationErrorText });
+        },
+      );
+
+      describe('without fullpath and ID props', () => {
+        beforeEach(async () => {
+          mockVariables.mockResolvedValue(mockAdminVariables);
+
+          await createComponentWithApollo({
+            customHandlers: [[getAdminVariables, mockVariables]],
+            props: createInstanceProps(),
+            provide: featureFlagProvide,
+          });
         });
 
-        jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({ data: {} });
-        jest.spyOn(wrapper.vm.$apollo.queries.ciVariables, 'refetch').mockImplementation(jest.fn());
+        it('does not pass fullPath and ID to the mutation', async () => {
+          jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue();
 
-        await findCiSettings().vm.$emit('add-variable', newVariable);
+          await findCiSettings().vm.$emit('add-variable', newVariable);
 
-        await nextTick();
-
-        if (bool) {
-          expect(wrapper.vm.$apollo.queries.ciVariables.refetch).toHaveBeenCalled();
-        } else {
-          expect(wrapper.vm.$apollo.queries.ciVariables.refetch).not.toHaveBeenCalled();
-        }
+          expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
+            mutation: wrapper.props().mutationData[ADD_MUTATION_ACTION],
+            variables: {
+              endpoint: mockProvide.endpoint,
+              variable: newVariable,
+            },
+          });
+        });
       });
     });
 
-    describe('Validators', () => {
-      describe('queryData', () => {
-        let error;
+    describe('Props', () => {
+      const mockGroupCiVariables = mockGroupVariables.data.group.ciVariables;
+      const mockProjectCiVariables = mockProjectVariables.data.project.ciVariables;
 
-        beforeEach(async () => {
-          mockVariables.mockResolvedValue(mockGroupVariables);
-        });
+      describe('in a specific context as', () => {
+        it.each`
+          name          | mockVariablesValue      | mockEnvironmentsValue      | withEnvironments | expectedEnvironments | propsFn                | provideFn               | mutation             | maxVariableLimit
+          ${'project'}  | ${mockProjectVariables} | ${mockProjectEnvironments} | ${true}          | ${['prod', 'dev']}   | ${createProjectProps}  | ${createProjectProvide} | ${null}              | ${mockProjectCiVariables.limit}
+          ${'group'}    | ${mockGroupVariables}   | ${[]}                      | ${false}         | ${[]}                | ${createGroupProps}    | ${createGroupProvide}   | ${getGroupVariables} | ${mockGroupCiVariables.limit}
+          ${'instance'} | ${mockAdminVariables}   | ${[]}                      | ${false}         | ${[]}                | ${createInstanceProps} | ${() => {}}             | ${getAdminVariables} | ${0}
+        `(
+          'passes down all the required props when its a $name component',
+          async ({
+            mutation,
+            maxVariableLimit,
+            mockVariablesValue,
+            mockEnvironmentsValue,
+            withEnvironments,
+            expectedEnvironments,
+            propsFn,
+            provideFn,
+          }) => {
+            const props = propsFn();
+            const provide = provideFn();
 
-        it('will mount component with right data', async () => {
-          try {
+            mockVariables.mockResolvedValue(mockVariablesValue);
+
+            if (withEnvironments) {
+              mockEnvironments.mockResolvedValue(mockEnvironmentsValue);
+            }
+
+            let customHandlers = null;
+
+            if (mutation) {
+              customHandlers = [[mutation, mockVariables]];
+            }
+
             await createComponentWithApollo({
-              customHandlers: [[getGroupVariables, mockVariables]],
-              props: { ...createGroupProps() },
+              customHandlers,
+              props,
+              provide: { ...provide, ...featureFlagProvide },
             });
-          } catch (e) {
-            error = e;
-          } finally {
-            expect(wrapper.exists()).toBe(true);
-            expect(error).toBeUndefined();
-          }
-        });
 
-        it('will not mount component with wrong data', async () => {
-          try {
-            await createComponentWithApollo({
-              customHandlers: [[getGroupVariables, mockVariables]],
-              props: { ...createGroupProps(), queryData: { wrongKey: {} } },
+            expect(findCiSettings().props()).toEqual({
+              areScopedVariablesAvailable: wrapper.props().areScopedVariablesAvailable,
+              hideEnvironmentScope: defaultProps.hideEnvironmentScope,
+              pageInfo: defaultProps.pageInfo,
+              isLoading: false,
+              maxVariableLimit,
+              variables: wrapper.props().queryData.ciVariables.lookup(mockVariablesValue.data)
+                ?.nodes,
+              entity: props.entity,
+              environments: expectedEnvironments,
             });
-          } catch (e) {
-            error = e;
-          } finally {
-            expect(wrapper.exists()).toBe(false);
-            expect(error.toString()).toContain('custom validator check failed for prop');
+          },
+        );
+      });
+
+      describe('refetchAfterMutation', () => {
+        it.each`
+          bool     | text
+          ${true}  | ${'refetches the variables'}
+          ${false} | ${'does not refetch the variables'}
+        `('when $bool it $text', async ({ bool }) => {
+          await createComponentWithApollo({
+            props: { ...createInstanceProps(), refetchAfterMutation: bool },
+            provide: featureFlagProvide,
+          });
+
+          jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({ data: {} });
+          jest
+            .spyOn(wrapper.vm.$apollo.queries.ciVariables, 'refetch')
+            .mockImplementation(jest.fn());
+
+          await findCiSettings().vm.$emit('add-variable', newVariable);
+
+          await nextTick();
+
+          if (bool) {
+            expect(wrapper.vm.$apollo.queries.ciVariables.refetch).toHaveBeenCalled();
+          } else {
+            expect(wrapper.vm.$apollo.queries.ciVariables.refetch).not.toHaveBeenCalled();
           }
         });
       });
 
-      describe('mutationData', () => {
-        let error;
+      describe('Validators', () => {
+        describe('queryData', () => {
+          let error;
 
-        beforeEach(async () => {
-          mockVariables.mockResolvedValue(mockGroupVariables);
+          beforeEach(async () => {
+            mockVariables.mockResolvedValue(mockGroupVariables);
+          });
+
+          it('will mount component with right data', async () => {
+            try {
+              await createComponentWithApollo({
+                customHandlers: [[getGroupVariables, mockVariables]],
+                props: { ...createGroupProps() },
+                provide: featureFlagProvide,
+              });
+            } catch (e) {
+              error = e;
+            } finally {
+              expect(wrapper.exists()).toBe(true);
+              expect(error).toBeUndefined();
+            }
+          });
+
+          it('will not mount component with wrong data', async () => {
+            try {
+              await createComponentWithApollo({
+                customHandlers: [[getGroupVariables, mockVariables]],
+                props: { ...createGroupProps(), queryData: { wrongKey: {} } },
+                provide: featureFlagProvide,
+              });
+            } catch (e) {
+              error = e;
+            } finally {
+              expect(wrapper.exists()).toBe(false);
+              expect(error.toString()).toContain('custom validator check failed for prop');
+            }
+          });
         });
 
-        it('will mount component with right data', async () => {
-          try {
-            await createComponentWithApollo({
-              props: { ...createGroupProps() },
-            });
-          } catch (e) {
-            error = e;
-          } finally {
-            expect(wrapper.exists()).toBe(true);
-            expect(error).toBeUndefined();
-          }
-        });
+        describe('mutationData', () => {
+          let error;
 
-        it('will not mount component with wrong data', async () => {
-          try {
-            await createComponentWithApollo({
-              props: { ...createGroupProps(), mutationData: { wrongKey: {} } },
-            });
-          } catch (e) {
-            error = e;
-          } finally {
-            expect(wrapper.exists()).toBe(false);
-            expect(error.toString()).toContain('custom validator check failed for prop');
-          }
+          beforeEach(async () => {
+            mockVariables.mockResolvedValue(mockGroupVariables);
+          });
+
+          it('will mount component with right data', async () => {
+            try {
+              await createComponentWithApollo({
+                props: { ...createGroupProps() },
+                provide: featureFlagProvide,
+              });
+            } catch (e) {
+              error = e;
+            } finally {
+              expect(wrapper.exists()).toBe(true);
+              expect(error).toBeUndefined();
+            }
+          });
+
+          it('will not mount component with wrong data', async () => {
+            try {
+              await createComponentWithApollo({
+                props: { ...createGroupProps(), mutationData: { wrongKey: {} } },
+                provide: featureFlagProvide,
+              });
+            } catch (e) {
+              error = e;
+            } finally {
+              expect(wrapper.exists()).toBe(false);
+              expect(error.toString()).toContain('custom validator check failed for prop');
+            }
+          });
         });
       });
     });

@@ -17,6 +17,10 @@ describe('GlobalSearchSidebarFilters', () => {
     resetQuery: jest.fn(),
   };
 
+  const defaultGetters = {
+    currentScope: () => 'issues',
+  };
+
   const createComponent = (initialState) => {
     const store = new Vuex.Store({
       state: {
@@ -24,16 +28,13 @@ describe('GlobalSearchSidebarFilters', () => {
         ...initialState,
       },
       actions: actionSpies,
+      getters: defaultGetters,
     });
 
     wrapper = shallowMount(ResultsFilters, {
       store,
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   const findSidebarForm = () => wrapper.find('form');
   const findStatusFilter = () => wrapper.findComponent(StatusFilter);
@@ -142,7 +143,11 @@ describe('GlobalSearchSidebarFilters', () => {
     ${'blobs'}          | ${false}
   `(`ConfidentialityFilter`, ({ scope, showFilter }) => {
     beforeEach(() => {
-      createComponent({ urlQuery: { scope } });
+      defaultGetters.currentScope = () => scope;
+      createComponent();
+    });
+    afterEach(() => {
+      defaultGetters.currentScope = () => 'issues';
     });
 
     it(`does${showFilter ? '' : ' not'} render when scope is ${scope}`, () => {
@@ -162,7 +167,11 @@ describe('GlobalSearchSidebarFilters', () => {
     ${'blobs'}          | ${false}
   `(`StatusFilter`, ({ scope, showFilter }) => {
     beforeEach(() => {
-      createComponent({ urlQuery: { scope } });
+      defaultGetters.currentScope = () => scope;
+      createComponent();
+    });
+    afterEach(() => {
+      defaultGetters.currentScope = () => 'issues';
     });
 
     it(`does${showFilter ? '' : ' not'} render when scope is ${scope}`, () => {

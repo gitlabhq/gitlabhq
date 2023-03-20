@@ -33,7 +33,6 @@ class ApplicationController < ActionController::Base
   before_action :check_password_expiration, if: :html_request?
   before_action :ldap_security_check
   before_action :default_headers
-  before_action :default_cache_headers
   before_action :add_gon_variables, if: :html_request?
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
@@ -260,10 +259,7 @@ class ApplicationController < ActionController::Base
 
     respond_to do |format|
       format.html do
-        render template,
-               layout: "errors",
-               status: status,
-               locals: { message: message }
+        render template, layout: "errors", status: status, locals: { message: message }
       end
       format.any { head status }
     end
@@ -317,10 +313,6 @@ class ApplicationController < ActionController::Base
     headers['X-XSS-Protection'] = '1; mode=block'
     headers['X-UA-Compatible'] = 'IE=edge'
     headers['X-Content-Type-Options'] = 'nosniff'
-  end
-
-  def default_cache_headers
-    headers['Pragma'] = 'no-cache' # HTTP 1.0 compatibility
   end
 
   def stream_csv_headers(csv_filename)

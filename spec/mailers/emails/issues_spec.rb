@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'email_spec'
 
-RSpec.describe Emails::Issues do
+RSpec.describe Emails::Issues, feature_category: :team_planning do
   include EmailSpec::Matchers
 
   it 'adds email methods to Notify' do
@@ -54,38 +54,6 @@ RSpec.describe Emails::Issues do
 
     subject { Notify.issues_csv_email(user, empty_project, "dummy content", export_status) }
 
-    include_context 'gitlab email notification'
-
-    it 'attachment has csv mime type' do
-      expect(attachment.mime_type).to eq 'text/csv'
-    end
-
-    it 'generates a useful filename' do
-      expect(attachment.filename).to include(Date.today.year.to_s)
-      expect(attachment.filename).to include('issues')
-      expect(attachment.filename).to include('myproject')
-      expect(attachment.filename).to end_with('.csv')
-    end
-
-    it 'mentions number of issues and project name' do
-      expect(subject).to have_content '3'
-      expect(subject).to have_content empty_project.name
-    end
-
-    it "doesn't need to mention truncation by default" do
-      expect(subject).not_to have_content 'truncated'
-    end
-
-    context 'when truncated' do
-      let(:export_status) { { truncated: true, rows_expected: 12, rows_written: 10 } }
-
-      it 'mentions that the csv has been truncated' do
-        expect(subject).to have_content 'truncated'
-      end
-
-      it 'mentions the number of issues written and expected' do
-        expect(subject).to have_content '10 of 12 issues'
-      end
-    end
+    it_behaves_like 'export csv email', 'issues'
   end
 end

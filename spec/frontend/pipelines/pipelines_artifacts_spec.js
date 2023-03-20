@@ -34,11 +34,6 @@ describe('Pipelines Artifacts dropdown', () => {
   const findAllGlDropdownItems = () =>
     wrapper.findComponent(GlDropdown).findAllComponents(GlDropdownItem);
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('should render a dropdown with all the provided artifacts', () => {
     createComponent();
 

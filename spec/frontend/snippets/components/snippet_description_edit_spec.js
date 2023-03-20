@@ -30,10 +30,6 @@ describe('Snippet Description Edit component', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('rendering', () => {
     it('matches the snapshot', () => {
       expect(wrapper.element).toMatchSnapshot();

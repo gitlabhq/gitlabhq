@@ -7,7 +7,9 @@ product_stage: create
 product_group: editor
 product_category: web_ide
 value_type: number
-status: active
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111351
+milestone_removed: 15.9
 time_frame: 28d
 data_source: redis_hll
 distribution:

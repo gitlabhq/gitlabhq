@@ -15,10 +15,6 @@ describe('Batch comments drafts count component', () => {
     wrapper = mount(DraftsCount, { store });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders count', () => {
     expect(wrapper.text()).toContain('1');
   });

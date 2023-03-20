@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issuable::ProcessAssignees do
+RSpec.describe Issuable::ProcessAssignees, feature_category: :team_planning do
   describe '#execute' do
     it 'returns assignee_ids when add_assignee_ids and remove_assignee_ids are not specified' do
       process = Issuable::ProcessAssignees.new(assignee_ids: %w(5 7 9),

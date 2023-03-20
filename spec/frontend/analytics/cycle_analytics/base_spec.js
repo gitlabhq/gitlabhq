@@ -31,13 +31,15 @@ Vue.use(Vuex);
 
 let wrapper;
 
-const { id: groupId, path: groupPath } = currentGroup;
+const { path } = currentGroup;
+const groupPath = `groups/${path}`;
 const defaultState = {
   currentGroup,
   createdBefore,
   createdAfter,
   stageCounts,
-  endpoints: { fullPath, groupId, groupPath },
+  groupPath,
+  namespace: { fullPath },
 };
 
 function createStore({ initialState = {}, initialGetters = {} }) {
@@ -93,11 +95,6 @@ describe('Value stream analytics component', () => {
     wrapper = createComponent({ initialState: { selectedStage, selectedStageEvents, pagination } });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders the path navigation component', () => {
     expect(findPathNavigation().exists()).toBe(true);
   });
@@ -139,7 +136,6 @@ describe('Value stream analytics component', () => {
 
   it('passes the paths to the filter bar', () => {
     expect(findFilters().props()).toEqual({
-      groupId,
       groupPath,
       endDate: createdBefore,
       hasDateRangeFilter: true,
@@ -157,6 +153,10 @@ describe('Value stream analytics component', () => {
     expect(findPagination().exists()).toBe(true);
   });
 
+  it('does not render a link to the value streams dashboard', () => {
+    expect(findOverviewMetrics().props('dashboardsPath')).toBeNull();
+  });
+
   describe('with `cycleAnalyticsForGroups=true` license', () => {
     beforeEach(() => {
       wrapper = createComponent({ initialState: { features: { cycleAnalyticsForGroups: true } } });
@@ -164,6 +164,23 @@ describe('Value stream analytics component', () => {
 
     it('passes requests prop to the metrics component', () => {
       hasMetricsRequests(['time summary', 'recent activity']);
+    });
+  });
+
+  describe('with `groupAnalyticsDashboardsPage=true` and `groupLevelAnalyticsDashboard=true` license', () => {
+    beforeEach(() => {
+      wrapper = createComponent({
+        initialState: {
+          features: { groupAnalyticsDashboardsPage: true, groupLevelAnalyticsDashboard: true },
+        },
+      });
+    });
+
+    it('renders a link to the value streams dashboard', () => {
+      expect(findOverviewMetrics().props('dashboardsPath')).toBeDefined();
+      expect(findOverviewMetrics().props('dashboardsPath')).toBe(
+        '/groups/foo/-/analytics/dashboards/value_streams_dashboard?query=full/path/to/foo',
+      );
     });
   });
 

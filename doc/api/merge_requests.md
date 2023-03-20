@@ -1174,7 +1174,8 @@ Example response:
 
 ## List merge request pipelines
 
-Get a list of merge request pipelines.
+Get a list of merge request pipelines. The pagination parameters `page` and
+`per_page` can be used to restrict the list of merge request pipelines.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/pipelines

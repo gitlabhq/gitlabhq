@@ -59,11 +59,6 @@ describe('clipboard button', () => {
     expect(wrapper.vm.$root.$emit).toHaveBeenCalledWith('bv::hide::tooltip', 'clipboard-button-1');
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('without gfm', () => {
     beforeEach(() => {
       createWrapper({

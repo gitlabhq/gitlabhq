@@ -55,7 +55,6 @@ describe('CommitFormModal', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     axiosMock.restore();
   });
 
@@ -166,7 +165,7 @@ describe('CommitFormModal', () => {
 
     it('Changes the target_project_id input value', async () => {
       createComponent(shallowMount, {}, {}, { isCherryPick: true });
-      findProjectsDropdown().vm.$emit('selectProject', '_changed_project_value_');
+      findProjectsDropdown().vm.$emit('input', '_changed_project_value_');
 
       await nextTick();
 

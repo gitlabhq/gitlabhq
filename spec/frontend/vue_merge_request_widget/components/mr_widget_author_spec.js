@@ -29,7 +29,6 @@ describe('MrWidgetAuthor', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     window.gl = oldWindowGl;
   });
 

@@ -54,7 +54,7 @@ export default {
           },
           actionPrimary: {
             text: I18N_USER_ACTIONS.reject,
-            attributes: [{ variant: 'danger' }],
+            attributes: { variant: 'danger' },
           },
           messageHtml,
         },

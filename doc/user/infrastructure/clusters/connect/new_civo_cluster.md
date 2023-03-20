@@ -117,18 +117,18 @@ To remove all resources:
 
 1. Add the following to your `.gitlab-ci.yml` file:
 
-    ```yaml
-    stages:
-      - init
-      - validate
-      - build
-      - deploy
-      - cleanup
+   ```yaml
+   stages:
+     - init
+     - validate
+     - build
+     - deploy
+     - cleanup
 
-    destroy:
-      extends: .destroy
-      needs: []
-    ```
+   destroy:
+     extends: .destroy
+     needs: []
+   ```
 
 1. On the left sidebar, select **CI/CD > Pipelines** and select the most recent pipeline.
 1. For the `destroy` job, select **Play** (**{play}**).

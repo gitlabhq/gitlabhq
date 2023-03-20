@@ -331,7 +331,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
     include_context 'server metrics call'
 
     context 'when a worker has a feature category' do
-      let(:worker_category) { 'authentication_and_authorization' }
+      let(:worker_category) { 'system_access' }
 
       it 'uses that category for metrics' do
         expect(completion_seconds_metric).to receive(:observe).with(a_hash_including(feature_category: worker_category), anything)

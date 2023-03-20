@@ -4,7 +4,7 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Gitaly developers guide
+# Gitaly development guidelines
 
 [Gitaly](https://gitlab.com/gitlab-org/gitaly) is a high-level Git RPC service used by GitLab Rails,
 Workhorse and GitLab Shell.
@@ -14,7 +14,7 @@ Workhorse and GitLab Shell.
 <!-- vale gitlab.Spelling = NO -->
 
 In May 2019, Bob Van Landuyt
-hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`)
+hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/-/issues/1`)
 on the [Gitaly project](https://gitlab.com/gitlab-org/gitaly). It included how to contribute to it as a
 Ruby developer, and shared domain-specific knowledge with anyone who may work in this part of the
 codebase in the future.
@@ -257,13 +257,13 @@ Here are the steps to gate a new feature in Gitaly behind a feature flag.
 
 1. Create a package scoped flag name:
 
-   ```golang
+   ```go
    var findAllTagsFeatureFlag = "go-find-all-tags"
    ```
 
 1. Create a switch in the code using the `featureflag` package:
 
-   ```golang
+   ```go
    if featureflag.IsEnabled(ctx, findAllTagsFeatureFlag) {
      // go implementation
    } else {
@@ -273,7 +273,7 @@ Here are the steps to gate a new feature in Gitaly behind a feature flag.
 
 1. Create Prometheus metrics:
 
-   ```golang
+   ```go
    var findAllTagsRequests = prometheus.NewCounterVec(
      prometheus.CounterOpts{
        Name: "gitaly_find_all_tags_requests_total",
@@ -297,7 +297,7 @@ Here are the steps to gate a new feature in Gitaly behind a feature flag.
 
 1. Set headers in tests:
 
-   ```golang
+   ```go
    import (
      "google.golang.org/grpc/metadata"
 

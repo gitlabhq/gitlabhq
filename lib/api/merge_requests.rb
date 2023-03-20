@@ -8,6 +8,10 @@ module API
 
     before { authenticate_non_get! }
 
+    rescue_from ActiveRecord::QueryCanceled do |_e|
+      render_api_error!({ error: 'Request timed out' }, 408)
+    end
+
     helpers Helpers::MergeRequestsHelpers
 
     # These endpoints are defined in `TimeTrackingEndpoints` and is shared by

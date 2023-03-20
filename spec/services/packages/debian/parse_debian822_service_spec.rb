@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Debian::ParseDebian822Service, feature_category: :package_registry do
@@ -76,14 +77,19 @@ RSpec.describe Packages::Debian::ParseDebian822Service, feature_category: :packa
           'Multi-Arch' => 'same',
           'Depends' => '${shlibs:Depends}, ${misc:Depends}',
           'Description' => "Some mostly empty lib\nUsed in GitLab tests.\n\nTesting another paragraph."
-         },
+        },
         'Package: sample-udeb' => {
-           'Package' => 'sample-udeb',
-           'Package-Type' => 'udeb',
-           'Architecture' => 'any',
-           'Depends' => 'installed-base',
-           'Description' => 'Some mostly empty udeb'
-         }
+          'Package' => 'sample-udeb',
+          'Package-Type' => 'udeb',
+          'Architecture' => 'any',
+          'Depends' => 'installed-base',
+          'Description' => 'Some mostly empty udeb'
+        },
+        'Package: sample-ddeb' => {
+          'Package' => 'sample-ddeb',
+          'Architecture' => 'any',
+          'Description' => 'Some fake Ubuntu ddeb'
+        }
       }
 
       expect(subject.execute.to_s).to eq(expected.to_s)

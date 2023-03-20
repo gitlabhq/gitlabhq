@@ -50,6 +50,7 @@ Blueprint statuses you can use:
 - "accepted"
 - "ongoing"
 - "implemented"
+- "postponed"
 - "rejected"
 
 -->
@@ -125,6 +126,9 @@ but keep it simple!  This should have enough detail that reviewers can
 understand exactly what you're proposing, but should not include things like
 API designs or implementation. The "Design Details" section below is for the
 real nitty-gritty.
+
+You might want to consider including the pros and cons of the proposed solution so that they can be
+compared with the pros and cons of alternatives.
 -->
 
 ## Design and implementation details
@@ -152,4 +156,13 @@ If it's helpful to include workflow diagrams or any other related images.
 Diagrams authored in GitLab flavored markdown are preferred. In cases where
 that is not feasible, images should be placed under `images/` in the same
 directory as the `index.md` for the proposal.
+-->
+
+## Alternative Solutions
+
+<!--
+It might be a good idea to include a list of alternative solutions or paths considered, although it is not required. Include pros and cons for
+each alternative solution/path.
+
+"Do nothing" and its pros and cons could be included in the list too.
 -->

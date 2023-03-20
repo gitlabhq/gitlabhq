@@ -3,7 +3,7 @@
 module Admin
   module Ci
     class VariablesController < ApplicationController
-      feature_category :pipeline_authoring
+      feature_category :pipeline_composition
 
       def show
         respond_to do |format|
@@ -32,10 +32,7 @@ module Admin
       end
 
       def render_instance_variables
-        render status: :ok,
-               json: {
-                 variables: ::Ci::InstanceVariableSerializer.new.represent(variables)
-               }
+        render status: :ok, json: { variables: ::Ci::InstanceVariableSerializer.new.represent(variables) }
       end
 
       def render_error(errors)

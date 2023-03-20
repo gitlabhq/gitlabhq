@@ -1,13 +1,80 @@
+@mixin active-toggle {
+  background-color: $gray-50 !important;
+  mix-blend-mode: multiply;
+
+  .gl-dark & {
+    mix-blend-mode: screen;
+  }
+
+  .notification {
+    border-color: $gray-50;
+  }
+}
+
+@mixin notification-dot($color, $size, $top, $left) {
+  background-color: $color;
+  border: 2px solid $gray-10; // Same as the sidebar's background color.
+  position: absolute;
+  height: $size;
+  width: $size;
+  top: $top;
+  left: $left;
+  border-radius: 50%;
+  transition: background-color 100ms linear, border-color 100ms linear;
+}
+
 .super-sidebar {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
   top: 0;
-  width: $contextual-sidebar-width;
-  z-index: 600;
+  bottom: 0;
+  left: 0;
+  background-color: var(--gray-10, $gray-10);
+  border-right: 1px solid $t-gray-a-08;
+  transform: translate3d(0, 0, 0);
+  width: $super-sidebar-width;
+  z-index: $super-sidebar-z-index;
+
+  &:focus {
+    @include gl-focus;
+  }
+
+  &.super-sidebar-loading {
+    transform: translate3d(-100%, 0, 0);
+
+    @include media-breakpoint-up(xl) {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  &:not(.super-sidebar-loading) {
+    transition: transform $gl-transition-duration-medium;
+  }
 
   .user-bar {
     background-color: $t-gray-a-04;
 
     .tanuki-logo {
       @include gl-vertical-align-middle;
+    }
+
+    .user-bar-item {
+      @include gl-rounded-base;
+      @include gl-p-2;
+      @include gl-bg-transparent;
+      @include gl-border-none;
+
+      &:hover,
+      &:focus,
+      &:active {
+        @include active-toggle;
+      }
+
+      &:focus,
+      &:active {
+        @include gl-focus;
+      }
     }
   }
 
@@ -17,16 +84,23 @@
 
   .counter:hover,
   .counter:focus,
-  .gl-dropdown-custom-toggle:hover .counter,
-  .gl-dropdown-custom-toggle:focus .counter,
-  .gl-dropdown-custom-toggle[aria-expanded='true'] .counter {
+  .counter[aria-expanded='true'] {
     background-color: $gray-50;
     border-color: transparent;
+    box-shadow: none;
     mix-blend-mode: multiply;
+
+    .gl-dark & {
+      mix-blend-mode: screen;
+    }
 
     .gl-icon {
       color: var(--gray-700, $gray-700);
     }
+  }
+
+  .context-switcher-search-box input {
+    @include gl-font-sm;
   }
 
   .context-switcher-toggle {
@@ -36,19 +110,14 @@
   }
 
   .btn-with-notification {
-    mix-blend-mode: unset !important; // Our tertiary buttons otherwise use another mix-blend mode, making border-color semi-transparent.
     position: relative;
 
-    .notification {
-      background-color: $blue-500;
-      border: 2px solid $gray-10; // Same as the sidebar's background color.
-      position: absolute;
-      height: 9px;
-      width: 9px;
-      top: 5px;
-      left: 22px;
-      border-radius: 50%;
-      transition: background-color 100ms linear, border-color 100ms linear;
+    .notification-dot-info {
+      @include notification-dot($blue-500, 9px, 5px, 22px);
+    }
+
+    .notification-dot-warning {
+      @include notification-dot($orange-300, 12px, 1px, 19px);
     }
 
     &:hover,
@@ -58,8 +127,93 @@
       }
     }
   }
+
+  .gl-new-dropdown-toggle[aria-expanded='true'] {
+    @include active-toggle;
+  }
+
+  .gl-new-dropdown-custom-toggle {
+    .btn-with-notification {
+      mix-blend-mode: unset; // Our tertiary buttons otherwise use another mix-blend mode, making border-color semi-transparent.
+    }
+
+    [aria-expanded='true'] {
+      @include active-toggle;
+    }
+  }
+}
+
+.super-sidebar-skip-to {
+  z-index: $super-sidebar-z-index;
+}
+
+.super-sidebar-overlay {
+  display: none;
+}
+
+.page-with-super-sidebar {
+  padding-left: 0;
+  transition: padding-left $gl-transition-duration-medium;
+
+  &:not(.page-with-super-sidebar-collapsed) {
+    .super-sidebar-overlay {
+      display: block;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: $black-transparent;
+      z-index: $super-sidebar-z-index - 1;
+
+      @include media-breakpoint-up(md) {
+        display: none;
+      }
+    }
+  }
+
+  @include media-breakpoint-up(xl) {
+    padding-left: $super-sidebar-width;
+
+    .super-sidebar-toggle {
+      display: none;
+    }
+  }
+}
+
+.page-with-super-sidebar-collapsed {
+  .super-sidebar {
+    transform: translate3d(-100%, 0, 0);
+  }
+
+  @include media-breakpoint-up(xl) {
+    padding-left: 0;
+
+    .super-sidebar-toggle {
+      display: block;
+    }
+  }
+}
+
+.container-limited .super-sidebar-toggle {
+  @media (min-width: $super-sidebar-toggle-position-breakpoint) {
+    position: absolute;
+    left: $gl-spacing-scale-3;
+    top: $gl-spacing-scale-3;
+    margin: 0;
+  }
 }
 
 .with-performance-bar .super-sidebar {
   top: $performance-bar-height;
+}
+
+.gl-dark {
+  .super-sidebar {
+    .gl-new-dropdown-custom-toggle {
+      .btn-with-notification.btn-with-notification {
+        mix-blend-mode: unset;
+      }
+    }
+  }
 }

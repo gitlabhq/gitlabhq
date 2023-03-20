@@ -34,10 +34,6 @@ describe('Text editor component', () => {
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findEditor = () => wrapper.findComponent(MockSourceEditor);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when status is valid', () => {
     beforeEach(() => {
       createComponent();

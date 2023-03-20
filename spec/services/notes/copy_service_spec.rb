@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Notes::CopyService do
+RSpec.describe Notes::CopyService, feature_category: :team_planning do
   describe '#initialize' do
     let_it_be(:noteable) { create(:issue) }
 

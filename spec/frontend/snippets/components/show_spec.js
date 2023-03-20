@@ -50,10 +50,6 @@ describe('Snippet view app', () => {
     stubPerformanceWebAPI();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders loader while the query is in flight', () => {
     createComponent({ loading: true });
     expect(findLoadingIcon().exists()).toBe(true);

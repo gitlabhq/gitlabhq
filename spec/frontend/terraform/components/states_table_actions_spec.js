@@ -1,4 +1,4 @@
-import { GlDropdown, GlModal, GlSprintf } from '@gitlab/ui';
+import { GlDropdown, GlModal, GlSprintf, GlFormInput } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -85,6 +85,7 @@ describe('StatesTableActions', () => {
   const findDownloadBtn = () => wrapper.find('[data-testid="terraform-state-download"]');
   const findRemoveBtn = () => wrapper.find('[data-testid="terraform-state-remove"]');
   const findRemoveModal = () => wrapper.findComponent(GlModal);
+  const findFormInput = () => wrapper.findComponent(GlFormInput);
 
   beforeEach(() => {
     return createComponent();
@@ -96,7 +97,6 @@ describe('StatesTableActions', () => {
     toast = null;
     unlockResponse = null;
     updateStateResponse = null;
-    wrapper.destroy();
   });
 
   describe('when the state is loading', () => {
@@ -296,9 +296,7 @@ describe('StatesTableActions', () => {
 
         describe('when state name is present', () => {
           beforeEach(async () => {
-            // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-            // eslint-disable-next-line no-restricted-syntax
-            await wrapper.setData({ removeConfirmText: defaultProps.state.name });
+            await findFormInput().vm.$emit('input', defaultProps.state.name);
 
             findRemoveModal().vm.$emit('ok');
 

@@ -42,7 +42,7 @@ For self-managed GitLab, before you can use GitLab for your Terraform state file
 
 - An administrator must [set up Terraform state storage](../../../administration/terraform_state.md).
 - You must enable the **Infrastructure** menu for your project. Go to **Settings > General**,
-  expand **Visibility, project features, permissions**, and under **Operations**, turn on the toggle.
+  expand **Visibility, project features, permissions**, and under **Infrastructure**, turn on the toggle.
 
 ## Initialize a Terraform state as a backend by using GitLab CI/CD
 
@@ -58,7 +58,7 @@ WARNING:
 Like any other job artifact, Terraform plan data is viewable by anyone with the Guest role on the repository.
 Neither Terraform nor GitLab encrypts the plan file by default. If your Terraform plan
 includes sensitive data, like passwords, access tokens, or certificates, you should
-encrypt plan output or modify the project visibility settings. We also strongly recommend that you **disable** 
+encrypt plan output or modify the project visibility settings. We also strongly recommend that you **disable**
 [public pipelines](../../../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects)
 by setting the artifact's public flag to false (`public: false`). This setting ensures artifacts are
 accessible only to GitLab Administrators and project members with the Reporter role and above.

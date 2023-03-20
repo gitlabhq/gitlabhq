@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlDatepicker, GlTooltipDirective, GlLink, GlPopover } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { dateInWords, formatDate, parsePikadayDate } from '~/lib/utils/datetime_utility';
 import { __, sprintf } from '~/locale';
@@ -53,6 +53,16 @@ export default {
       required: false,
       type: Boolean,
       default: false,
+    },
+    minDate: {
+      required: false,
+      type: Date,
+      default: null,
+    },
+    maxDate: {
+      required: false,
+      type: Date,
+      default: null,
     },
   },
   data() {
@@ -292,6 +302,8 @@ export default {
         v-if="!isLoading"
         ref="datePicker"
         class="gl-relative"
+        :min-date="minDate"
+        :max-date="maxDate"
         :default-date="parsedDate"
         :first-day="firstDay"
         show-clear-button

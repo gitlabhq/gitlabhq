@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Milestones::CreateService do
+RSpec.describe Milestones::CreateService, feature_category: :team_planning do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 

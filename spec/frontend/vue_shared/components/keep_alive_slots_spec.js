@@ -37,10 +37,6 @@ describe('~/vue_shared/components/keep_alive_slots.vue', () => {
       isVisible: x.isVisible(),
     }));
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createComponent();

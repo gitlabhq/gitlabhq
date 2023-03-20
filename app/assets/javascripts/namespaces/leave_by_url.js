@@ -1,4 +1,4 @@
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { initRails } from '~/lib/utils/rails_ujs';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';

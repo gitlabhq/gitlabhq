@@ -68,9 +68,9 @@ module Resolvers
 
       def preloads
         super.merge({
-                      full_path: [:route, { namespace: [:route] }],
-                      web_url: [:route, { namespace: [:route] }]
-                    })
+          full_path: [:route, { namespace: [:route] }],
+          web_url: [:route, { namespace: [:route] }]
+        })
       end
     end
   end

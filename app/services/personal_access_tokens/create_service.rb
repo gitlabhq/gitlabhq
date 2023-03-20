@@ -2,11 +2,12 @@
 
 module PersonalAccessTokens
   class CreateService < BaseService
-    def initialize(current_user:, target_user:, params: {})
+    def initialize(current_user:, target_user:, params: {}, concatenate_errors: true)
       @current_user = current_user
       @target_user = target_user
       @params = params.dup
       @ip_address = @params.delete(:ip_address)
+      @concatenate_errors = concatenate_errors
     end
 
     def execute
@@ -19,7 +20,10 @@ module PersonalAccessTokens
         notification_service.access_token_created(target_user, token.name)
         ServiceResponse.success(payload: { personal_access_token: token })
       else
-        ServiceResponse.error(message: token.errors.full_messages.to_sentence, payload: { personal_access_token: token })
+        message = token.errors.full_messages
+        message = message.to_sentence if @concatenate_errors
+
+        ServiceResponse.error(message: message, payload: { personal_access_token: token })
       end
     end
 

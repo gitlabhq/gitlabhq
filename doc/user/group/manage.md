@@ -1,6 +1,6 @@
 ---
-stage: Manage
-group: Organization
+stage: Data Stores
+group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -155,7 +155,7 @@ You can sort members by **Account**, **Access granted**, **Max role**, or **Last
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Group information > Members**.
-1. Above the list of members, in the upper right, from the **Account** list, select
+1. Above the list of members, in the upper-right corner, from the **Account** list, select
    the criteria to filter by.
 1. To switch the sort between ascending and descending, to the right of the **Account** list, select the
    arrow (**{sort-lowest}** or **{sort-highest}**).
@@ -348,7 +348,7 @@ If you need to copy a group to a different GitLab instance,
 When transferring groups, note:
 
 - Changing a group's parent can have unintended side effects. See [what happens when a repository path changes](../project/repository/index.md#what-happens-when-a-repository-path-changes).
-- You can only transfer groups to groups you manage.
+- You must have the Owner role in the source and target group.
 - You must update your local repositories to point to the new location.
 - If the immediate parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects change to match the new parent group's visibility.
 - Only explicit group membership is transferred, not inherited membership. If the group's owners have only inherited membership, this leaves the group without an owner. In this case, the user transferring the group becomes the group's owner.

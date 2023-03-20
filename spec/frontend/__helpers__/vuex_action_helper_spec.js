@@ -83,6 +83,20 @@ describe.each([testActionFn, testActionFnWithOptionsArg])(
       });
     });
 
+    describe('given an async action (chaining off a dispatch)', () => {
+      it('mocks dispatch accurately', () => {
+        const asyncAction = ({ commit, dispatch }) => {
+          return dispatch('ACTION').then(() => {
+            commit('MUTATION');
+          });
+        };
+
+        assertion = { actions: [{ type: 'ACTION' }], mutations: [{ type: 'MUTATION' }] };
+
+        return testAction(asyncAction, null, {}, assertion.mutations, assertion.actions);
+      });
+    });
+
     describe('given an async action (returning a promise)', () => {
       const data = { FOO: 'BAR' };
 

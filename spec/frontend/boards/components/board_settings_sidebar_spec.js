@@ -48,7 +48,7 @@ describe('BoardSettingsSidebar', () => {
           isIssueBoard: true,
         },
         directives: {
-          GlModal: createMockDirective(),
+          GlModal: createMockDirective('gl-modal'),
         },
         stubs: {
           GlDrawer: stubComponent(GlDrawer, {
@@ -65,8 +65,6 @@ describe('BoardSettingsSidebar', () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
-    wrapper.destroy();
-    wrapper = null;
   });
 
   it('finds a MountingPortal component', () => {

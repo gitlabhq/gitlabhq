@@ -10,9 +10,8 @@ Gitaly is configured via a [TOML](https://github.com/toml-lang/toml)
 configuration file. Unlike installations from source, in Omnibus GitLab, you
 would not edit this file directly.
 
-The configuration file is passed as an argument to the `gitaly`
-executable. This is usually done by either Omnibus GitLab or your
-[init](https://en.wikipedia.org/wiki/Init) script.
+The configuration file is passed as an argument to the `gitaly` executable, which is usually done by either Omnibus
+GitLab or your [init](https://en.wikipedia.org/wiki/Init) script.
 
 An [example configuration file](https://gitlab.com/gitlab-org/gitaly/blob/master/config.toml.example)
 can be found in the Gitaly project.
@@ -42,7 +41,7 @@ prometheus_listen_addr = "localhost:9236"
 ### Authentication
 
 Gitaly can be configured to reject requests that do not contain a
-specific bearer token in their headers. This is a security measure to
+specific bearer token in their headers, which is a security measure to
 be used when serving requests over TCP:
 
 ```toml
@@ -70,7 +69,7 @@ Remember to disable `transitioning` when you are done
 changing your token settings.
 
 All authentication attempts are counted in Prometheus under
-the [`gitaly_authentications_total` metric](monitoring.md#useful-queries).
+the [`gitaly_authentications_total` metric](monitoring.md#queries).
 
 ### TLS
 

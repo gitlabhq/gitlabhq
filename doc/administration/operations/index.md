@@ -8,6 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Keep your GitLab instance up and running smoothly.
 
+- [Upgrading GitLab](../../update/index.md).
 - [Rake tasks](../../raketasks/index.md): Tasks for common administration and operational processes such as
   [cleaning up unneeded items from GitLab instance](../../raketasks/cleanup.md), integrity checks,
   and more.

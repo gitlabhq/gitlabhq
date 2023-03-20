@@ -37,10 +37,6 @@ describe('GroupsComponent', () => {
     Vue.component('GroupItem', GroupItemComponent);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('methods', () => {
     describe('change', () => {
       it('should emit `fetchPage` event when page is changed via pagination', () => {

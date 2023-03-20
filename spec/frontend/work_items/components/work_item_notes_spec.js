@@ -9,10 +9,13 @@ import SystemNote from '~/work_items/components/notes/system_note.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
 import WorkItemAddNote from '~/work_items/components/notes/work_item_add_note.vue';
-import ActivityFilter from '~/work_items/components/notes/activity_filter.vue';
+import WorkItemNotesActivityHeader from '~/work_items/components/notes/work_item_notes_activity_header.vue';
 import workItemNotesQuery from '~/work_items/graphql/notes/work_item_notes.query.graphql';
 import workItemNotesByIidQuery from '~/work_items/graphql/notes/work_item_notes_by_iid.query.graphql';
 import deleteWorkItemNoteMutation from '~/work_items/graphql/notes/delete_work_item_notes.mutation.graphql';
+import workItemNoteCreatedSubscription from '~/work_items/graphql/notes/work_item_note_created.subscription.graphql';
+import workItemNoteUpdatedSubscription from '~/work_items/graphql/notes/work_item_note_updated.subscription.graphql';
+import workItemNoteDeletedSubscription from '~/work_items/graphql/notes/work_item_note_deleted.subscription.graphql';
 import { DEFAULT_PAGE_SIZE_NOTES, WIDGET_TYPE_NOTES } from '~/work_items/constants';
 import { ASC, DESC } from '~/notes/constants';
 import {
@@ -21,6 +24,9 @@ import {
   mockWorkItemNotesByIidResponse,
   mockMoreWorkItemNotesResponse,
   mockWorkItemNotesResponseWithComments,
+  workItemNotesCreateSubscriptionResponse,
+  workItemNotesUpdateSubscriptionResponse,
+  workItemNotesDeleteSubscriptionResponse,
 } from '../mock_data';
 
 const mockWorkItemId = workItemQueryResponse.data.workItem.id;
@@ -53,10 +59,9 @@ describe('WorkItemNotes component', () => {
 
   const findAllSystemNotes = () => wrapper.findAllComponents(SystemNote);
   const findAllListItems = () => wrapper.findAll('ul.timeline > *');
-  const findActivityLabel = () => wrapper.find('label');
   const findWorkItemAddNote = () => wrapper.findComponent(WorkItemAddNote);
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findSortingFilter = () => wrapper.findComponent(ActivityFilter);
+  const findActivityHeader = () => wrapper.findComponent(WorkItemNotesActivityHeader);
   const findSystemNoteAtIndex = (index) => findAllSystemNotes().at(index);
   const findAllWorkItemCommentNotes = () => wrapper.findAllComponents(WorkItemDiscussion);
   const findWorkItemCommentNoteAtIndex = (index) => findAllWorkItemCommentNotes().at(index);
@@ -73,6 +78,15 @@ describe('WorkItemNotes component', () => {
   const deleteWorkItemNoteMutationSuccessHandler = jest.fn().mockResolvedValue({
     data: { destroyNote: { note: null, __typename: 'DestroyNote' } },
   });
+  const notesCreateSubscriptionHandler = jest
+    .fn()
+    .mockResolvedValue(workItemNotesCreateSubscriptionResponse);
+  const notesUpdateSubscriptionHandler = jest
+    .fn()
+    .mockResolvedValue(workItemNotesUpdateSubscriptionResponse);
+  const notesDeleteSubscriptionHandler = jest
+    .fn()
+    .mockResolvedValue(workItemNotesDeleteSubscriptionResponse);
   const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
   const createComponent = ({
@@ -86,6 +100,9 @@ describe('WorkItemNotes component', () => {
         [workItemNotesQuery, defaultWorkItemNotesQueryHandler],
         [workItemNotesByIidQuery, workItemNotesByIidQueryHandler],
         [deleteWorkItemNoteMutation, deleteWINoteMutationHandler],
+        [workItemNoteCreatedSubscription, notesCreateSubscriptionHandler],
+        [workItemNoteUpdatedSubscription, notesUpdateSubscriptionHandler],
+        [workItemNoteDeletedSubscription, notesDeleteSubscriptionHandler],
       ]),
       propsData: {
         workItemId,
@@ -95,11 +112,6 @@ describe('WorkItemNotes component', () => {
         fullPath: 'test-path',
         fetchByIid,
         workItemType: 'task',
-      },
-      provide: {
-        glFeatures: {
-          useIidInWorkItemsPath: fetchByIid,
-        },
       },
       stubs: {
         GlModal: stubComponent(GlModal, { methods: { show: showModal } }),
@@ -111,8 +123,8 @@ describe('WorkItemNotes component', () => {
     createComponent();
   });
 
-  it('renders activity label', () => {
-    expect(findActivityLabel().exists()).toBe(true);
+  it('has the work item note activity header', () => {
+    expect(findActivityHeader().exists()).toBe(true);
   });
 
   it('passes correct props to comment form component', async () => {
@@ -203,26 +215,22 @@ describe('WorkItemNotes component', () => {
       await waitForPromises();
     });
 
-    it('filter exists', () => {
-      expect(findSortingFilter().exists()).toBe(true);
-    });
-
-    it('sorts the list when the `changeSortOrder` event is emitted', async () => {
+    it('sorts the list when the `changeSort` event is emitted', async () => {
       expect(findSystemNoteAtIndex(0).props('note').id).toEqual(firstSystemNodeId);
 
-      await findSortingFilter().vm.$emit('changeSortOrder', DESC);
+      await findActivityHeader().vm.$emit('changeSort', DESC);
 
       expect(findSystemNoteAtIndex(0).props('note').id).not.toEqual(firstSystemNodeId);
     });
 
     it('puts form at start of list in when sorting by newest first', async () => {
-      await findSortingFilter().vm.$emit('changeSortOrder', DESC);
+      await findActivityHeader().vm.$emit('changeSort', DESC);
 
       expect(findAllListItems().at(0).is(WorkItemAddNote)).toEqual(true);
     });
 
     it('puts form at end of list in when sorting by oldest first', async () => {
-      await findSortingFilter().vm.$emit('changeSortOrder', ASC);
+      await findActivityHeader().vm.$emit('changeSort', ASC);
 
       expect(findAllListItems().at(-1).is(WorkItemAddNote)).toEqual(true);
     });
@@ -333,5 +341,32 @@ describe('WorkItemNotes component', () => {
     expect(wrapper.emitted('error')).toEqual([
       ['Something went wrong when deleting a comment. Please try again'],
     ]);
+  });
+
+  describe('Notes subscriptions', () => {
+    beforeEach(async () => {
+      createComponent({
+        defaultWorkItemNotesQueryHandler: workItemNotesWithCommentsQueryHandler,
+      });
+      await waitForPromises();
+    });
+
+    it('has create notes subscription', () => {
+      expect(notesCreateSubscriptionHandler).toHaveBeenCalledWith({
+        noteableId: mockWorkItemId,
+      });
+    });
+
+    it('has delete notes subscription', () => {
+      expect(notesDeleteSubscriptionHandler).toHaveBeenCalledWith({
+        noteableId: mockWorkItemId,
+      });
+    });
+
+    it('has update notes subscription', () => {
+      expect(notesUpdateSubscriptionHandler).toHaveBeenCalledWith({
+        noteableId: mockWorkItemId,
+      });
+    });
   });
 });

@@ -31,11 +31,6 @@ describe('Project Feature Settings', () => {
       },
     });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('Hidden name input', () => {
     it('should set the hidden name input if the name exists', () => {
       wrapper = mountComponent();

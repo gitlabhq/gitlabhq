@@ -541,9 +541,9 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   describe '.stale', :freeze_time do
     subject { described_class.stale }
 
-    let!(:runner1) { create(:ci_runner, :instance, created_at: 4.months.ago, contacted_at: 3.months.ago + 10.seconds) }
-    let!(:runner2) { create(:ci_runner, :instance, created_at: 4.months.ago, contacted_at: 3.months.ago - 1.second) }
-    let!(:runner3) { create(:ci_runner, :instance, created_at: 3.months.ago - 1.second, contacted_at: nil) }
+    let!(:runner1) { create(:ci_runner, :instance, created_at: 4.months.ago, contacted_at: 3.months.ago + 1.second) }
+    let!(:runner2) { create(:ci_runner, :instance, created_at: 4.months.ago, contacted_at: 3.months.ago) }
+    let!(:runner3) { create(:ci_runner, :instance, created_at: 3.months.ago, contacted_at: nil) }
     let!(:runner4) { create(:ci_runner, :instance, created_at: 2.months.ago, contacted_at: nil) }
 
     it 'returns stale runners' do
@@ -551,7 +551,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
-  describe '#stale?', :clean_gitlab_redis_cache do
+  describe '#stale?', :clean_gitlab_redis_cache, :freeze_time do
     let(:runner) { build(:ci_runner, :instance) }
 
     subject { runner.stale? }
@@ -570,11 +570,11 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       using RSpec::Parameterized::TableSyntax
 
       where(:created_at, :contacted_at, :expected_stale?) do
-        nil                       | nil                          | false
-        3.months.ago - 1.second   | 3.months.ago - 0.001.seconds | true
-        3.months.ago - 1.second   | 3.months.ago + 1.hour        | false
-        3.months.ago - 1.second   | nil                          | true
-        3.months.ago + 1.hour     | nil                          | false
+        nil                     | nil                     | false
+        3.months.ago            | 3.months.ago            | true
+        3.months.ago            | (3.months - 1.hour).ago | false
+        3.months.ago            | nil                     | true
+        (3.months - 1.hour).ago | nil                     | false
       end
 
       with_them do
@@ -588,9 +588,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
             runner.contacted_at = contacted_at
           end
 
-          specify do
-            is_expected.to eq(expected_stale?)
-          end
+          it { is_expected.to eq(expected_stale?) }
         end
 
         context 'with cache value' do
@@ -599,9 +597,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
             stub_redis_runner_contacted_at(contacted_at.to_s)
           end
 
-          specify do
-            is_expected.to eq(expected_stale?)
-          end
+          it { is_expected.to eq(expected_stale?) }
         end
 
         def stub_redis_runner_contacted_at(value)
@@ -617,7 +613,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
-  describe '.online' do
+  describe '.online', :freeze_time do
     subject { described_class.online }
 
     let!(:runner1) { create(:ci_runner, :instance, contacted_at: 2.hours.ago) }
@@ -626,7 +622,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     it { is_expected.to match_array([runner2]) }
   end
 
-  describe '#online?', :clean_gitlab_redis_cache do
+  describe '#online?', :clean_gitlab_redis_cache, :freeze_time do
     let(:runner) { build(:ci_runner, :instance) }
 
     subject { runner.online? }
@@ -891,8 +887,8 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
-  describe '#status' do
-    let(:runner) { build(:ci_runner, :instance, created_at: 4.months.ago) }
+  describe '#status', :freeze_time do
+    let(:runner) { build(:ci_runner, :instance, created_at: 3.months.ago) }
     let(:legacy_mode) {}
 
     subject { runner.status(legacy_mode) }
@@ -948,7 +944,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
     context 'contacted recently' do
       before do
-        runner.contacted_at = (3.months - 1.hour).ago
+        runner.contacted_at = (3.months - 1.second).ago
       end
 
       it { is_expected.to eq(:offline) }
@@ -956,7 +952,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
     context 'contacted long time ago' do
       before do
-        runner.contacted_at = (3.months + 1.second).ago
+        runner.contacted_at = 3.months.ago
       end
 
       context 'with legacy_mode enabled' do
@@ -971,7 +967,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
-  describe '#deprecated_rest_status' do
+  describe '#deprecated_rest_status', :freeze_time do
     let(:runner) { create(:ci_runner, :instance, contacted_at: 1.second.ago) }
 
     subject { runner.deprecated_rest_status }
@@ -994,8 +990,8 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
     context 'contacted long time ago' do
       before do
-        runner.created_at = 1.year.ago
-        runner.contacted_at = 1.year.ago
+        runner.created_at = 3.months.ago
+        runner.contacted_at = 3.months.ago
       end
 
       it { is_expected.to eq(:stale) }
@@ -1076,13 +1072,13 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
-  describe '#heartbeat' do
-    let(:runner) { create(:ci_runner, :project) }
+  describe '#heartbeat', :freeze_time do
+    let(:runner) { create(:ci_runner, :project, version: '15.0.0') }
     let(:executor) { 'shell' }
-    let(:version) { '15.0.1' }
+    let(:values) { { architecture: '18-bit', config: { gpus: "all" }, executor: executor, version: version } }
 
     subject(:heartbeat) do
-      runner.heartbeat(architecture: '18-bit', config: { gpus: "all" }, executor: executor, version: version)
+      runner.heartbeat(values)
     end
 
     context 'when database was updated recently' do
@@ -1090,29 +1086,61 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
         runner.contacted_at = Time.current
       end
 
-      it 'updates cache' do
-        expect_redis_update
-        expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).not_to receive(:perform_async)
+      context 'when version is changed' do
+        let(:version) { '15.0.1' }
 
-        heartbeat
+        before do
+          allow(Ci::Runners::ProcessRunnerVersionUpdateWorker).to receive(:perform_async).with(version)
+        end
 
-        expect(runner.runner_version).to be_nil
+        it 'updates cache' do
+          expect_redis_update
+
+          heartbeat
+
+          expect(runner.runner_version).to be_nil
+        end
+
+        it 'schedules version information update' do
+          heartbeat
+
+          expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).to have_received(:perform_async).with(version).once
+        end
+
+        context 'when fetching runner releases is disabled' do
+          before do
+            stub_application_setting(update_runner_versions_enabled: false)
+          end
+
+          it 'does not schedule version information update' do
+            heartbeat
+
+            expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).not_to have_received(:perform_async)
+          end
+        end
       end
 
       context 'with only ip_address specified', :freeze_time do
-        subject(:heartbeat) do
-          runner.heartbeat(ip_address: '1.1.1.1')
+        let(:values) do
+          { ip_address: '1.1.1.1' }
         end
 
         it 'updates only ip_address' do
-          attrs = Gitlab::Json.dump(ip_address: '1.1.1.1', contacted_at: Time.current)
-
-          Gitlab::Redis::Cache.with do |redis|
-            redis_key = runner.send(:cache_attribute_key)
-            expect(redis).to receive(:set).with(redis_key, attrs, any_args)
-          end
+          expect_redis_update(values.merge(contacted_at: Time.current))
 
           heartbeat
+        end
+
+        context 'with new version having been cached' do
+          let(:version) { '15.0.1' }
+
+          before do
+            runner.cache_attributes(version: version)
+          end
+
+          it 'does not lose cached version value' do
+            expect { heartbeat }.not_to change { runner.version }.from(version)
+          end
         end
       end
     end
@@ -1121,65 +1149,81 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       before do
         runner.contacted_at = 2.hours.ago
 
-        allow(Ci::Runners::ProcessRunnerVersionUpdateWorker).to receive(:perform_async)
+        allow(Ci::Runners::ProcessRunnerVersionUpdateWorker).to receive(:perform_async).with(version)
       end
 
-      context 'with invalid runner' do
-        before do
-          runner.runner_projects.delete_all
+      context 'when version is changed' do
+        let(:version) { '15.0.1' }
+
+        context 'with invalid runner' do
+          before do
+            runner.runner_projects.delete_all
+          end
+
+          it 'still updates redis cache and database' do
+            expect(runner).to be_invalid
+
+            expect_redis_update
+            does_db_update
+
+            expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).to have_received(:perform_async).with(version).once
+          end
         end
 
-        it 'still updates redis cache and database' do
-          expect(runner).to be_invalid
-
+        it 'updates redis cache and database' do
           expect_redis_update
           does_db_update
-
-          expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).to have_received(:perform_async).once
+          expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).to have_received(:perform_async).with(version).once
         end
       end
 
       context 'with unchanged runner version' do
-        let(:runner) { create(:ci_runner, version: version) }
+        let(:version) { runner.version }
 
         it 'does not schedule ci_runner_versions update' do
           heartbeat
 
           expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).not_to have_received(:perform_async)
         end
-      end
 
-      it 'updates redis cache and database' do
-        expect_redis_update
-        does_db_update
-        expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).to have_received(:perform_async).once
-      end
+        Ci::Runner::EXECUTOR_NAME_TO_TYPES.each_key do |executor|
+          context "with #{executor} executor" do
+            let(:executor) { executor }
 
-      %w(custom shell docker docker-windows docker-ssh ssh parallels virtualbox docker+machine docker-ssh+machine kubernetes some-unknown-type).each do |executor|
-        context "with #{executor} executor" do
-          let(:executor) { executor }
+            it 'updates with expected executor type' do
+              expect_redis_update
 
-          it 'updates with expected executor type' do
+              heartbeat
+
+              expect(runner.reload.read_attribute(:executor_type)).to eq(expected_executor_type)
+            end
+
+            def expected_executor_type
+              executor.gsub(/[+-]/, '_')
+            end
+          end
+        end
+
+        context 'with an unknown executor type' do
+          let(:executor) { 'some-unknown-type' }
+
+          it 'updates with unknown executor type' do
             expect_redis_update
 
             heartbeat
 
-            expect(runner.reload.read_attribute(:executor_type)).to eq(expected_executor_type)
-          end
-
-          def expected_executor_type
-            return 'unknown' if executor == 'some-unknown-type'
-
-            executor.gsub(/[+-]/, '_')
+            expect(runner.reload.read_attribute(:executor_type)).to eq('unknown')
           end
         end
       end
     end
 
-    def expect_redis_update
+    def expect_redis_update(values = anything)
+      values_json = values == anything ? anything : Gitlab::Json.dump(values)
+
       Gitlab::Redis::Cache.with do |redis|
         redis_key = runner.send(:cache_attribute_key)
-        expect(redis).to receive(:set).with(redis_key, anything, any_args)
+        expect(redis).to receive(:set).with(redis_key, values_json, any_args).and_call_original
       end
     end
 
@@ -1991,6 +2035,61 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
       it 'returns runner matching the composed scope' do
         is_expected.to contain_exactly(inactive_runner_14_0_0)
+      end
+    end
+  end
+
+  describe '.with_creator' do
+    subject { described_class.with_creator }
+
+    let!(:user) { create(:admin) }
+    let!(:runner) { create(:ci_runner, creator: user) }
+
+    it { is_expected.to contain_exactly(runner) }
+  end
+
+  describe '#ensure_token' do
+    let(:runner) { described_class.new(registration_type: registration_type) }
+    let(:token) { 'an_existing_secret_token' }
+    let(:static_prefix) { described_class::CREATED_RUNNER_TOKEN_PREFIX }
+
+    context 'when runner is initialized without a token' do
+      context 'with registration_token' do
+        let(:registration_type) { :registration_token }
+
+        it 'generates a token' do
+          expect { runner.ensure_token }.to change { runner.token }.from(nil)
+        end
+      end
+
+      context 'with authenticated_user' do
+        let(:registration_type) { :authenticated_user }
+
+        it 'generates a token with prefix' do
+          expect { runner.ensure_token }.to change { runner.token }.from(nil).to(a_string_starting_with(static_prefix))
+        end
+      end
+    end
+
+    context 'when runner is initialized with a token' do
+      before do
+        runner.set_token(token)
+      end
+
+      context 'with registration_token' do
+        let(:registration_type) { :registration_token }
+
+        it 'does not change the existing token' do
+          expect { runner.ensure_token }.not_to change { runner.token }.from(token)
+        end
+      end
+
+      context 'with authenticated_user' do
+        let(:registration_type) { :authenticated_user }
+
+        it 'does not change the existing token' do
+          expect { runner.ensure_token }.not_to change { runner.token }.from(token)
+        end
       end
     end
   end

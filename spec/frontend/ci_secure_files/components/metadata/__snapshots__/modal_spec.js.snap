@@ -15,7 +15,7 @@ exports[`Secure File Metadata Modal when a .cer file is supplied matches cer the
   >
      
     <table
-      aria-busy="false"
+      aria-busy=""
       aria-colcount="2"
       class="table b-table gl-table"
       role="table"
@@ -196,7 +196,7 @@ exports[`Secure File Metadata Modal when a .mobileprovision file is supplied mat
   >
      
     <table
-      aria-busy="false"
+      aria-busy=""
       aria-colcount="2"
       class="table b-table gl-table"
       role="table"

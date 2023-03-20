@@ -103,7 +103,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Portuguese
   - Diogo Trindade - [GitLab](https://gitlab.com/luisdiogo2071317), [Crowdin](https://crowdin.com/profile/ldiogotrindade)
 - Portuguese, Brazilian
-  - Paulo George Gomes Bezerra - [GitLab](https://gitlab.com/paulobezerra), [Crowdin](https://crowdin.com/profile/paulogomes.rep)
+  - Paulo George Gomes Bezerra - [GitLab](https://gitlab.com/paulobezerra)
   - André Gama - [GitLab](https://gitlab.com/andregamma), [Crowdin](https://crowdin.com/profile/ToeOficial)
   - Eduardo Addad de Oliveira - [GitLab](https://gitlab.com/eduardoaddad), [Crowdin](https://crowdin.com/profile/eduardoaddad)
   - Horberlan Brito - [GitLab](https://gitlab.com/horberlan), [Crowdin](https://crowdin.com/profile/horberlan)

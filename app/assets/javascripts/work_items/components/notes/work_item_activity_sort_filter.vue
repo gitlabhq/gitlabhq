@@ -1,0 +1,116 @@
+<script>
+import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import Tracking from '~/tracking';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
+
+export default {
+  components: {
+    GlDropdown,
+    GlDropdownItem,
+    LocalStorageSync,
+  },
+  mixins: [Tracking.mixin()],
+  props: {
+    loading: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+    workItemType: {
+      type: String,
+      required: true,
+    },
+    sortFilterProp: {
+      type: String,
+      required: true,
+    },
+    filterOptions: {
+      type: Array,
+      required: true,
+    },
+    trackingLabel: {
+      type: String,
+      required: true,
+    },
+    trackingAction: {
+      type: String,
+      required: true,
+    },
+    filterEvent: {
+      type: String,
+      required: true,
+    },
+    defaultSortFilterProp: {
+      type: String,
+      required: true,
+    },
+    storageKey: {
+      type: String,
+      required: true,
+    },
+  },
+  computed: {
+    tracking() {
+      return {
+        category: TRACKING_CATEGORY_SHOW,
+        label: this.trackingLabel,
+        property: `type_${this.workItemType}`,
+      };
+    },
+    getDropdownSelectedText() {
+      return this.selectedSortOption.text;
+    },
+    selectedSortOption() {
+      return (
+        this.filterOptions.find(({ key }) => this.sortFilterProp === key) ||
+        this.defaultSortFilterProp
+      );
+    },
+  },
+  methods: {
+    setDiscussionFilterOption(filterValue) {
+      this.$emit(this.filterEvent, filterValue);
+    },
+    fetchFilteredDiscussions(filterValue) {
+      if (this.isSortDropdownItemActive(filterValue)) {
+        return;
+      }
+      this.track(this.trackingAction);
+      this.$emit(this.filterEvent, filterValue);
+    },
+    isSortDropdownItemActive(value) {
+      return value === this.sortFilterProp;
+    },
+  },
+};
+</script>
+
+<template>
+  <div class="gl-display-inline-block gl-vertical-align-bottom">
+    <local-storage-sync
+      :value="sortFilterProp"
+      :storage-key="storageKey"
+      as-string
+      @input="setDiscussionFilterOption"
+    />
+    <gl-dropdown
+      class="gl-xs-w-full"
+      size="small"
+      :text="getDropdownSelectedText"
+      :disabled="loading"
+      right
+    >
+      <gl-dropdown-item
+        v-for="{ text, key, testid } in filterOptions"
+        :key="text"
+        :data-testid="testid"
+        is-check-item
+        :is-checked="isSortDropdownItemActive(key)"
+        @click="fetchFilteredDiscussions(key)"
+      >
+        {{ text }}
+      </gl-dropdown-item>
+    </gl-dropdown>
+  </div>
+</template>

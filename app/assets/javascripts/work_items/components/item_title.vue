@@ -48,6 +48,7 @@ export default {
       id="item-title"
       ref="titleEl"
       role="textbox"
+      data-testid="work-item-title"
       :aria-label="__('Title')"
       :data-placeholder="placeholder"
       :contenteditable="!disabled"

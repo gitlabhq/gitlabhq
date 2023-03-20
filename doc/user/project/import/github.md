@@ -30,10 +30,8 @@ When importing projects:
   imported with a naming scheme similar to `GH-SHA-username/pull-request-number/fork-name/branch`. This may lead to
   a discrepancy in branches compared to those of the GitHub repository.
 
-For additional technical details, refer to the [GitHub Importer](../../../development/github_importer.md)
-developer documentation.
-
-For an overview of the import process, see the video [Migrating from GitHub to GitLab](https://youtu.be/VYOXuOg9tQI).
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview of the import process, see [Migrating from GitHub to GitLab](https://youtu.be/VYOXuOg9tQI).
 
 ## Prerequisites
 
@@ -62,7 +60,7 @@ prerequisites for those imports.
 If you are importing from GitHub Enterprise to a self-managed GitLab instance:
 
 - You must first enable the [GitHub integration](../../../integration/github.md).
-- If GitLab is behind a HTTP/HTTPS proxy, you must populate the [allowlist for local requests](../../../security/webhooks.md#create-an-allowlist-for-local-requests)
+- If GitLab is behind an HTTP/HTTPS proxy, you must populate the [allowlist for local requests](../../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains)
   with `github.com` and `api.github.com` to solve the hostname. For more information, read the issue
   [Importing a GitHub project requires DNS resolution even when behind a proxy](https://gitlab.com/gitlab-org/gitlab/-/issues/37941).
 
@@ -209,17 +207,18 @@ The following items of a project are imported:
 - Repository description.
 - Git repository data.
 - Branch protection rules. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22650) in GitLab 15.4.
+- Collaborators (members). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10.
 - Issues.
 - Pull requests.
 - Wiki pages.
 - Milestones.
 - Labels.
-- Release note descriptions.
+- Release notes content.
 - Attachments for:
   - Release notes. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15620) in GitLab 15.4.
-  - Comments and notes. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
+  - Comments. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
   - Issue description. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
-  - Merge Request description. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
+  - Pull Request description. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
 
   All attachment imports are disabled by default behind
   `github_importer_attachments_import` [feature flag](../../../administration/feature_flags.md). From GitLab 15.5, can
@@ -232,7 +231,7 @@ The following items of a project are imported:
 - Pull request "merged by" information.
 - Pull request comments replies in discussions. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336596) in
   GitLab 14.5.
-- Diff Notes suggestions. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340624) in GitLab 14.7.
+- Pull request review comments suggestions. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340624) in GitLab 14.7.
 - Issue events and pull requests events. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7673) in GitLab 15.4
   with `github_importer_issue_events_import` [feature flag](../../../administration/feature_flags.md) disabled by default.
   From GitLab 15.5, can be imported [as an additional item](#select-additional-items-to-import). The feature flag was
@@ -267,39 +266,25 @@ Mapping GitHub rule **Require status checks to pass before merging** to
 into GitLab due to technical difficulties. You can still create [external status checks](../merge_requests/status_checks.md)
 manually.
 
-## Alternative way to import notes and diff notes
+### Collaborators (members)
 
-When GitHub Importer runs on extremely large projects not all notes & diff notes can be imported due to GitHub API `issues_comments` & `pull_requests_comments` endpoints limitation.
-Not all pages can be fetched due to the following error coming from GitHub API: `In order to keep the API fast for everyone, pagination is limited for this resource. Check the rel=last link relation in the Link response header to see how far back you can traverse.`.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10.
 
-An [alternative approach](#select-additional-items-to-import) for importing comments is available.
+These GitHub collaborator roles are mapped to these GitLab [member roles](../../permissions.md#roles):
 
-Instead of using `issues_comments` and `pull_requests_comments`, use individual resources `issue_comments` and `pull_request_comments` instead to pull notes from one object at a time.
-This allows us to carry over any missing comments, however it increases the number of network requests required to perform the import, which means its execution takes a longer time.
+| GitHub role | Mapped GitLab role |
+|:------------|:-------------------|
+| Read        | Guest              |
+| Triage      | Reporter           |
+| Write       | Developer          |
+| Maintain    | Maintainer         |
+| Admin       | Owner              |
 
-## Reduce GitHub API request objects per page
+GitHub Enterprise Cloud has
+[custom repository roles](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-peoples-access-to-your-organization-with-roles/about-custom-repository-roles).
+These roles aren't supported and cause partial imports.
 
-Some GitHub API endpoints may return a 500 or 502 error for project imports from large repositories.
-To reduce the chance of such errors, you can enable the feature flag
-`github_importer_lower_per_page_limit` in the group project importing the data. This reduces the
-page size from 100 to 50.
-
-To enable this feature flag, start a [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
-and run the following `enable` command:
-
-```ruby
-group = Group.find_by_full_path('my/group/fullpath')
-
-# Enable
-Feature.enable(:github_importer_lower_per_page_limit, group)
-```
-
-To disable the feature, run this command:
-
-```ruby
-# Disable
-Feature.disable(:github_importer_lower_per_page_limit, group)
-```
+To import GitHub collaborators, you must have at least the Write role on the GitHub project. Otherwise collaborators import is skipped.
 
 ## Import from GitHub Enterprise on an internal network
 
@@ -443,3 +428,47 @@ repository to be imported manually. Administrators can manually import the repos
    # Trigger import from second step
    Gitlab::GithubImport::Stage::ImportRepositoryWorker.perform_async(project.id)
    ```
+
+### Errors when importing large projects
+
+The GitHub importer might encounter some errors when importing large projects.
+
+#### Alternative way to import notes and diff notes
+
+When the GitHub importer runs on extremely large projects, not all notes and diff notes can be imported due to the GitHub API `issues_comments` and `pull_requests_comments` endpoint limitations.
+
+If it's not possible to fetch all pages, the GitHub API might return the following error:
+
+```plaintext
+In order to keep the API fast for everyone, pagination is limited for this resource. Check the rel=last link relation in the Link response header to see how far back you can traverse.
+```
+
+An [alternative approach](#select-additional-items-to-import) for importing comments is available.
+
+Instead of using `issues_comments` and `pull_requests_comments`, use individual resources to pull notes from one object at a time. This way, you can carry over any missing comments. However, execution takes longer because this method increases the number of network requests required to perform the import.
+
+#### Reduce GitHub API request objects per page
+
+Some GitHub API endpoints might return a `500` or `502` error for project imports from large repositories.
+To reduce the chance of these errors, in the group project importing the data, enable the
+`github_importer_lower_per_page_limit` feature flag. When enabled, the flag reduces the
+page size from `100` to `50`.
+
+To enable this feature flag:
+
+1. Start a [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Run the following `enable` command:
+
+   ```ruby
+   group = Group.find_by_full_path('my/group/fullpath')
+
+   # Enable
+   Feature.enable(:github_importer_lower_per_page_limit, group)
+   ```
+
+To disable the feature flag, run this command:
+
+```ruby
+# Disable
+Feature.disable(:github_importer_lower_per_page_limit, group)
+```

@@ -28,10 +28,6 @@ describe('Deployment View App button', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findReviewAppLink = () => wrapper.findComponent(ReviewAppLink);
   const findMrWigdetDeploymentDropdown = () => wrapper.findComponent(GlDropdown);
   const findMrWigdetDeploymentDropdownIcon = () =>

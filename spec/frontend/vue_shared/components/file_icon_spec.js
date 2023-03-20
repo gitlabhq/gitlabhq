@@ -16,10 +16,6 @@ describe('File Icon component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should render a span element and an icon', () => {
     createComponent({
       fileName: 'test.js',

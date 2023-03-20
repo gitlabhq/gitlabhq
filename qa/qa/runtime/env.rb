@@ -376,13 +376,13 @@ module QA
 
       # Specifies the token that can be used for the GitHub API
       def github_access_token
-        ENV['GITHUB_ACCESS_TOKEN'].to_s.strip
+        ENV['QA_GITHUB_ACCESS_TOKEN'].to_s.strip
       end
 
       def require_github_access_token!
         return unless github_access_token.empty?
 
-        raise ArgumentError, "Please provide GITHUB_ACCESS_TOKEN"
+        raise ArgumentError, "Please provide QA_GITHUB_ACCESS_TOKEN"
       end
 
       def require_admin_access_token!
@@ -463,6 +463,16 @@ module QA
         enabled?(ENV['QA_SAVE_TEST_METRICS'], default: false)
       end
 
+      def ee_license
+        return ENV["QA_EE_LICENSE"] if ENV["QA_EE_LICENSE"]
+
+        ENV["EE_LICENSE"].tap do |license|
+          next unless license
+
+          Runtime::Logger.warn("EE_LICENSE environment variable is deprecated, please use QA_EE_LICENSE instead!")
+        end
+      end
+
       def ee_activation_code
         ENV['QA_EE_ACTIVATION_CODE']
       end
@@ -512,6 +522,10 @@ module QA
 
       def chrome_default_download_path
         ENV['DEFAULT_CHROME_DOWNLOAD_PATH'] || Dir.tmpdir
+      end
+
+      def super_sidebar_enabled?
+        enabled?(ENV['QA_SUPER_SIDEBAR_ENABLED'], default: false)
       end
 
       def require_slack_env!

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::SignupService do
+RSpec.describe Users::SignupService, feature_category: :system_access do
   let(:user) { create(:user, setup_for_company: true) }
 
   describe '#execute' do
@@ -48,11 +48,7 @@ RSpec.describe Users::SignupService do
         expect(user.reload.setup_for_company).to be(false)
       end
 
-      context 'when on .com' do
-        before do
-          allow(Gitlab).to receive(:com?).and_return(true)
-        end
-
+      context 'when on SaaS', :saas do
         it 'returns an error result when setup_for_company is missing' do
           result = update_user(user, setup_for_company: '')
 

@@ -2,9 +2,9 @@ import $ from 'jquery';
 import Visibility from 'visibilityjs';
 import Vue from 'vue';
 import Api from '~/api';
-import { createAlert, VARIANT_INFO } from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
-import { TYPE_ISSUE } from '~/issues/constants';
+import { STATUS_CLOSED, STATUS_REOPENED, TYPE_ISSUE } from '~/issues/constants';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
@@ -19,7 +19,6 @@ import { mergeUrlParams } from '~/lib/utils/url_utility';
 import sidebarTimeTrackingEventHub from '~/sidebar/event_hub';
 import TaskList from '~/task_list';
 import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
-import SidebarStore from '~/sidebar/stores/sidebar_store';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_NOTE } from '~/graphql_shared/constants';
 import notesEventHub from '../event_hub';
@@ -407,7 +406,7 @@ export const emitStateChangedEvent = ({ getters }, data) => {
   const event = new CustomEvent(EVENT_ISSUABLE_VUE_APP_CHANGE, {
     detail: {
       data,
-      isClosed: getters.openState === constants.CLOSED,
+      isClosed: getters.openState === STATUS_CLOSED,
     },
   });
 
@@ -415,9 +414,9 @@ export const emitStateChangedEvent = ({ getters }, data) => {
 };
 
 export const toggleIssueLocalState = ({ commit }, newState) => {
-  if (newState === constants.CLOSED) {
+  if (newState === STATUS_CLOSED) {
     commit(types.CLOSE_ISSUE);
-  } else if (newState === constants.REOPENED) {
+  } else if (newState === STATUS_REOPENED) {
     commit(types.REOPEN_ISSUE);
   }
 };
@@ -467,12 +466,17 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
 
   const processQuickActions = (res) => {
     const {
-      errors: { commands_only: commandsOnly, command_names: commandNames } = {
+      errors: { commands_only: commandsOnly } = {
         commands_only: null,
         command_names: [],
       },
+      command_names: commandNames,
     } = res;
-    let message = commandsOnly;
+    const message = commandsOnly;
+
+    if (commandNames?.indexOf('submit_review') >= 0) {
+      dispatch('batchComments/clearDrafts');
+    }
 
     /*
      The following reply means that quick actions have been successfully applied:
@@ -489,13 +493,6 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
         message.some((m) => m.includes('Made this issue confidential'))
       ) {
         confidentialWidget.setConfidentiality();
-      }
-
-      const commands = ['approve', 'merge', 'assign_reviewer', 'assign'];
-      const commandUpdatesAttentionRequest = commandNames[0].some((c) => commands.includes(c));
-
-      if (commandUpdatesAttentionRequest && SidebarStore.singleton.currentUserHasAttention) {
-        message = sprintf(__('%{message}. Your attention request was removed.'), { message });
       }
 
       $('.js-gfm-input').trigger('clear-commands-cache.atwho');
@@ -759,10 +756,10 @@ export const submitSuggestion = (
 
       const errorMessage = err.response.data?.message;
 
-      const flashMessage = errorMessage || defaultMessage;
+      const alertMessage = errorMessage || defaultMessage;
 
       createAlert({
-        message: flashMessage,
+        message: alertMessage,
         parent: flashContainer,
       });
     })
@@ -795,10 +792,10 @@ export const submitSuggestionBatch = ({ commit, dispatch, state }, { message, fl
 
       const errorMessage = err.response.data?.message;
 
-      const flashMessage = errorMessage || defaultMessage;
+      const alertMessage = errorMessage || defaultMessage;
 
       createAlert({
-        message: flashMessage,
+        message: alertMessage,
         parent: flashContainer,
       });
     })

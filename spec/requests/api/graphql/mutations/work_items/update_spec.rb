@@ -7,10 +7,11 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
+  let_it_be(:author) { create(:user).tap { |user| project.add_reporter(user) } }
   let_it_be(:developer) { create(:user).tap { |user| project.add_developer(user) } }
   let_it_be(:reporter) { create(:user).tap { |user| project.add_reporter(user) } }
   let_it_be(:guest) { create(:user).tap { |user| project.add_guest(user) } }
-  let_it_be(:work_item, refind: true) { create(:work_item, project: project) }
+  let_it_be(:work_item, refind: true) { create(:work_item, project: project, author: author) }
 
   let(:work_item_event) { 'CLOSE' }
   let(:input) { { 'stateEvent' => work_item_event, 'title' => 'updated title' } }
@@ -837,6 +838,140 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
             before do
               work_item.update!(milestone: old_milestone)
+            end
+          end
+        end
+      end
+    end
+
+    context 'when updating notifications subscription' do
+      let_it_be(:current_user) { reporter }
+      let(:input) { { 'notificationsWidget' => { 'subscribed' => desired_state } } }
+
+      let(:fields) do
+        <<~FIELDS
+        workItem {
+          widgets {
+            type
+            ... on WorkItemWidgetNotifications {
+              subscribed
+            }
+          }
+        }
+        errors
+        FIELDS
+      end
+
+      subject(:update_work_item) { post_graphql_mutation(mutation, current_user: current_user) }
+
+      shared_examples 'subscription updated successfully' do
+        let_it_be(:subscription) do
+          create(
+            :subscription, project: project,
+            user: current_user,
+            subscribable: work_item,
+            subscribed: !desired_state
+          )
+        end
+
+        it "updates existing work item's subscription state" do
+          expect do
+            update_work_item
+            subscription.reload
+          end.to change(subscription, :subscribed).to(desired_state)
+            .and(change { work_item.reload.subscribed?(reporter, project) }.to(desired_state))
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(mutation_response['workItem']['widgets']).to include(
+            {
+              'subscribed' => desired_state,
+              'type' => 'NOTIFICATIONS'
+            }
+          )
+        end
+      end
+
+      shared_examples 'subscription update ignored' do
+        context 'when user is subscribed with a subscription record' do
+          let_it_be(:subscription) do
+            create(
+              :subscription, project: project,
+              user: current_user,
+              subscribable: work_item,
+              subscribed: !desired_state
+            )
+          end
+
+          it 'ignores the update request' do
+            expect do
+              update_work_item
+              subscription.reload
+            end.to not_change(subscription, :subscribed)
+              .and(not_change { work_item.subscribed?(current_user, project) })
+
+            expect(response).to have_gitlab_http_status(:success)
+          end
+        end
+
+        context 'when user is subscribed by being a participant' do
+          let_it_be(:current_user) { author }
+
+          it 'ignores the update request' do
+            expect do
+              update_work_item
+            end.to not_change(Subscription, :count)
+              .and(not_change { work_item.subscribed?(current_user, project) })
+
+            expect(response).to have_gitlab_http_status(:success)
+          end
+        end
+      end
+
+      context 'when work item update fails' do
+        let_it_be(:desired_state) { false }
+        let(:input) { { 'title' => nil, 'notificationsWidget' => { 'subscribed' => desired_state } } }
+
+        it_behaves_like 'subscription update ignored'
+      end
+
+      context 'when user cannot update work item' do
+        let_it_be(:desired_state) { false }
+
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?)
+            .with(current_user, :update_subscription, work_item).and_return(false)
+        end
+
+        it_behaves_like 'subscription update ignored'
+      end
+
+      context 'when user can update work item' do
+        context 'when subscribing to notifications' do
+          let_it_be(:desired_state) { true }
+
+          it_behaves_like 'subscription updated successfully'
+        end
+
+        context 'when unsubscribing from notifications' do
+          let_it_be(:desired_state) { false }
+
+          it_behaves_like 'subscription updated successfully'
+
+          context 'when user is subscribed by being a participant' do
+            let_it_be(:current_user) { author }
+
+            it 'creates a subscription with desired state' do
+              expect { update_work_item }.to change(Subscription, :count).by(1)
+                .and(change { work_item.reload.subscribed?(author, project) }.to(desired_state))
+
+              expect(response).to have_gitlab_http_status(:success)
+              expect(mutation_response['workItem']['widgets']).to include(
+                {
+                  'subscribed' => desired_state,
+                  'type' => 'NOTIFICATIONS'
+                }
+              )
             end
           end
         end

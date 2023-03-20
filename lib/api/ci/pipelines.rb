@@ -199,7 +199,7 @@ module API
           use :pagination
         end
 
-        get ':id/pipelines/:pipeline_id/bridges', urgency: :low, feature_category: :pipeline_authoring do
+        get ':id/pipelines/:pipeline_id/bridges', urgency: :low, feature_category: :pipeline_composition do
           authorize!(:read_build, user_project)
 
           pipeline = user_project.all_pipelines.find(params[:pipeline_id])
@@ -225,7 +225,7 @@ module API
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
         end
-        get ':id/pipelines/:pipeline_id/variables', feature_category: :pipeline_authoring, urgency: :low do
+        get ':id/pipelines/:pipeline_id/variables', feature_category: :pipeline_composition, urgency: :low do
           authorize! :read_pipeline_variable, pipeline
 
           present pipeline.variables, with: Entities::Ci::Variable

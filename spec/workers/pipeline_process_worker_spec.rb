@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PipelineProcessWorker do
+RSpec.describe PipelineProcessWorker, feature_category: :continuous_integration do
   let_it_be(:pipeline) { create(:ci_pipeline) }
 
   include_examples 'an idempotent worker' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe LooseForeignKeys::CleanerService do
+RSpec.describe LooseForeignKeys::CleanerService, feature_category: :database do
   let(:schema) { ApplicationRecord.connection.current_schema }
   let(:deleted_records) do
     [

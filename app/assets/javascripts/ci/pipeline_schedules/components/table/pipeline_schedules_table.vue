@@ -59,6 +59,10 @@ export default {
       type: Array,
       required: true,
     },
+    currentUser: {
+      type: Object,
+      required: true,
+    },
   },
 };
 </script>
@@ -94,6 +98,7 @@ export default {
     <template #cell(actions)="{ item }">
       <pipeline-schedule-actions
         :schedule="item"
+        :current-user="currentUser"
         @showTakeOwnershipModal="$emit('showTakeOwnershipModal', $event)"
         @showDeleteModal="$emit('showDeleteModal', $event)"
         @playPipelineSchedule="$emit('playPipelineSchedule', $event)"

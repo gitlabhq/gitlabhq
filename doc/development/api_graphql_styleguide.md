@@ -875,7 +875,7 @@ module Types
     graphql_name 'IssuableSeverity'
     description 'Incident severity'
 
-    ::IssuableSeverity.severities.keys.each do |severity|
+    ::IssuableSeverity.severities.each_key do |severity|
       value severity.upcase, value: severity, description: "#{severity.titleize} severity."
     end
   end

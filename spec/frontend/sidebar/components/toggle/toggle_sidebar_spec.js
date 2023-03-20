@@ -17,10 +17,6 @@ describe('ToggleSidebar', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findGlButton = () => wrapper.findComponent(GlButton);
 
   it('should render the "chevron-double-lg-left" icon when collapsed', () => {

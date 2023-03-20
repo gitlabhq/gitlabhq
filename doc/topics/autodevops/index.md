@@ -185,6 +185,7 @@ and clear the **Default to Auto DevOps pipeline** checkbox.
 ### Deploy your app to a cloud provider
 
 - [Use Auto DevOps to deploy to a Kubernetes cluster on Google Kubernetes Engine (GKE)](cloud_deployments/auto_devops_with_gke.md)
+- [Use Auto DevOps to deploy to a Kubernetes cluster on Amazon Elastic Kubernetes Service (EKS)](cloud_deployments/auto_devops_with_eks.md)
 - [Use Auto DevOps to deploy to EC2](cloud_deployments/auto_devops_with_ec2.md)
 - [Use Auto DevOps to deploy to ECS](cloud_deployments/auto_devops_with_ecs.md)
 

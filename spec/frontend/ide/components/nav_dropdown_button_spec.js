@@ -9,10 +9,6 @@ describe('NavDropdownButton component', () => {
   const TEST_MR_ID = '12345';
   let wrapper;
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const createComponent = ({ props = {}, state = {} } = {}) => {
     const store = createStore();
     store.replaceState(state);

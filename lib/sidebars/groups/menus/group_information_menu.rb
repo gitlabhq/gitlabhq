@@ -28,6 +28,11 @@ module Sidebars
           { path: 'groups#subgroups' }
         end
 
+        override :serialize_as_menu_item_args
+        def serialize_as_menu_item_args
+          nil
+        end
+
         private
 
         def activity_menu_item
@@ -38,6 +43,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Activity'),
             link: activity_group_path(context.group),
+            super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::PlanMenu,
             active_routes: { path: 'groups#activity' },
             item_id: :activity
           )
@@ -51,6 +57,8 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Labels'),
             link: group_labels_path(context.group),
+            super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::PlanMenu,
+            super_sidebar_before: :activity,
             active_routes: { controller: :labels },
             item_id: :labels
           )
@@ -64,6 +72,8 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Members'),
             link: group_group_members_path(context.group),
+            sprite_icon: context.is_super_sidebar ? 'users' : nil,
+            super_sidebar_parent: ::Sidebars::StaticMenu,
             active_routes: { path: 'group_members#index' },
             item_id: :members
           )

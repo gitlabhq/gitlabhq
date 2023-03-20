@@ -31,7 +31,7 @@ Facebook. Facebook generates an app ID and secret key for you to use.
 
 1. Choose "Next"
 
-1. Choose "Skip Quick Start" in the upper right corner
+1. In the upper-right corner, select **Skip Quick Start**.
 
 1. Choose "Settings" in the menu on the left
 

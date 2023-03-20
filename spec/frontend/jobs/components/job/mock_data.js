@@ -50,7 +50,32 @@ export const mockJobWithVariablesResponse = {
   },
 };
 
-export const mockJobMutationData = {
+export const mockJobPlayMutationData = {
+  data: {
+    jobPlay: {
+      job: {
+        id: 'gid://gitlab/Ci::Build/401',
+        manualVariables: {
+          nodes: [
+            {
+              id: 'gid://gitlab/Ci::JobVariable/151',
+              key: 'new key',
+              value: 'new value',
+              __typename: 'CiManualVariable',
+            },
+          ],
+          __typename: 'CiManualVariableConnection',
+        },
+        webPath: '/Commit451/lab-coat/-/jobs/401',
+        __typename: 'CiJob',
+      },
+      errors: [],
+      __typename: 'JobPlayPayload',
+    },
+  },
+};
+
+export const mockJobRetryMutationData = {
   data: {
     jobRetry: {
       job: {

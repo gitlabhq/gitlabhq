@@ -14,7 +14,7 @@ RSpec.describe 'admin/application_settings/ci_cd.html.haml' do
     allow(view).to receive(:current_user).and_return(user)
   end
 
-  describe 'CI CD Runner Registration' do
+  describe 'CI CD Runners' do
     it 'has the setting section' do
       render
 
@@ -26,6 +26,9 @@ RSpec.describe 'admin/application_settings/ci_cd.html.haml' do
 
       expect(rendered).to have_content("Runner registration")
       expect(rendered).to have_content(s_("Runners|If both settings are disabled, new runners cannot be registered."))
+      expect(rendered).to have_content(
+        s_("Runners|Fetch GitLab Runner release version data from GitLab.com")
+      )
     end
   end
 end

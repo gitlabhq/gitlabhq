@@ -4,6 +4,7 @@ mutation updateEpicStartDate($input: UpdateEpicInput!) {
       id
       startDateIsFixed
       startDateFixed
+      startDate
       startDateFromMilestones
     }
     errors

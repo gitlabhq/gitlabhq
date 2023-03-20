@@ -47,6 +47,7 @@ Rails.application.configure do
   config.lookbook.page_paths = ["#{config.root}/spec/components/docs"]
   config.lookbook.preview_params_options_eval = true
   config.lookbook.preview_display_options = {
+    layout: %w[fixed fluid],
     theme: ["light", "dark (alpha)"]
   }
 
@@ -74,6 +75,8 @@ Rails.application.configure do
 
   # BetterErrors live shell (REPL) on every stack frame
   BetterErrors::Middleware.allow_ip!("127.0.0.1/0")
+  # Disable REPL due to security concerns.
+  BetterErrors.binding_of_caller_available = false
 
   # Reassign some performance related settings when we profile the app
   if Gitlab::Utils.to_boolean(ENV['RAILS_PROFILE'].to_s)

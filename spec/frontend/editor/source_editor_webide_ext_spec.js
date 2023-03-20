@@ -13,7 +13,6 @@ describe('Source Editor Web IDE Extension', () => {
     editorEl = document.getElementById('editor');
     editor = new SourceEditor();
   });
-  afterEach(() => {});
 
   describe('onSetup', () => {
     it.each`

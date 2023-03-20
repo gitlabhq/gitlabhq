@@ -49,10 +49,6 @@ describe('ProjectDropdown', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when loading projects', () => {
     beforeEach(() => {
       createComponent({

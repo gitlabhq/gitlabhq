@@ -101,7 +101,7 @@ To set up GitLab and its components to accommodate up to 2,000 users:
    environment.
 1. [Configure the object storage](#configure-the-object-storage) used for
    shared data objects.
-1. [Configure Advanced Search](#configure-advanced-search) (optional) for faster,
+1. [Configure advanced search](#configure-advanced-search) (optional) for faster,
    more advanced code search across your entire GitLab instance.
 
 ## Configure the external load balancer
@@ -459,7 +459,7 @@ To configure the Gitaly server, on the server node you want to use for Gitaly:
    storage paths, enable the network listener, and to configure the token:
 
    NOTE:
-   You can't remove the `default` entry from `git_data_dirs` because [GitLab requires it](../gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage).
+   You can't remove the `default` entry from `gitaly['configuration'][:storage]` because [GitLab requires it](../gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage).
 
 <!--
 Updates to example must be made at:
@@ -493,30 +493,48 @@ Updates to example must be made at:
    # Gitaly
    gitaly['enable'] = true
 
-   # Make Gitaly accept connections on all network interfaces. You must use
-   # firewalls to restrict access to this address/port.
-   # Comment out following line if you only want to support TLS connections
-   gitaly['listen_addr'] = "0.0.0.0:8075"
-   gitaly['prometheus_listen_addr'] = "0.0.0.0:9236"
-
-   # Gitaly and GitLab use two shared secrets for authentication, one to authenticate gRPC requests
-   # to Gitaly, and a second for authentication callbacks from GitLab-Shell to the GitLab internal API.
-   # The following two values must be the same as their respective values
-   # of the GitLab Rails application setup
-   gitaly['auth_token'] = 'gitalysecret'
+   # The secret token is used for authentication callbacks from Gitaly to the GitLab internal API.
+   # This must match the respective value in GitLab Rails application setup.
    gitlab_shell['secret_token'] = 'shellsecret'
 
    # Set the network addresses that the exporters used for monitoring will listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'
 
-   git_data_dirs({
-     'default' => {
-       'path' => '/var/opt/gitlab/git-data'
-     },
-     'storage1' => {
-       'path' => '/mnt/gitlab/git-data'
-     },
-   })
+   gitaly['configuration'] = {
+      # ...
+      #
+      # Make Gitaly accept connections on all network interfaces. You must use
+      # firewalls to restrict access to this address/port.
+      # Comment out following line if you only want to support TLS connections
+      listen_addr: '0.0.0.0:8075',
+      prometheus_listen_addr: '0.0.0.0:9236',
+      # Gitaly Auth Token
+      # Should be the same as praefect_internal_token
+      auth: {
+         # ...
+         #
+         # Gitaly's authentication token is used to authenticate gRPC requests to Gitaly. This must match
+         # the respective value in GitLab Rails application setup.
+         token: 'gitalysecret',
+      },
+      # Gitaly Pack-objects cache
+      # Recommended to be enabled for improved performance but can notably increase disk I/O
+      # Refer to https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#pack-objects-cache for more info
+      pack_objects_cache: {
+         # ...
+         enabled: true,
+      },
+      storage: [
+         {
+            name: 'default',
+            path: '/var/opt/gitlab/git-data',
+         },
+         {
+            name: 'storage1',
+            path: '/mnt/gitlab/git-data',
+         },
+      ],
+   }
    ```
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
@@ -574,9 +592,14 @@ To configure Gitaly with TLS:
    <!-- Updates to following example must also be made at https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab -->
 
    ```ruby
-   gitaly['tls_listen_addr'] = "0.0.0.0:9999"
-   gitaly['certificate_path'] = "/etc/gitlab/ssl/cert.pem"
-   gitaly['key_path'] = "/etc/gitlab/ssl/key.pem"
+   gitaly['configuration'] = {
+      # ...
+      tls_listen_addr: '0.0.0.0:9999',
+      tls: {
+         certificate_path: '/etc/gitlab/ssl/cert.pem',
+         key_path: '/etc/gitlab/ssl/key.pem',
+      },
+   }
    ```
 
 1. Delete `gitaly['listen_addr']` to allow only encrypted connections.
@@ -911,9 +934,9 @@ GitLab Runner returns job logs in chunks which Omnibus GitLab caches temporarily
 
 While sharing the job logs through NFS is supported, it's recommended to avoid the need to use NFS by enabling [incremental logging](../job_logs.md#incremental-logging-architecture) (required when no NFS node has been deployed). Incremental logging uses Redis instead of disk space for temporary caching of job logs.
 
-## Configure Advanced Search **(PREMIUM SELF)**
+## Configure advanced search **(PREMIUM SELF)**
 
-You can leverage Elasticsearch and [enable Advanced Search](../../integration/advanced_search/elasticsearch.md)
+You can leverage Elasticsearch and [enable advanced search](../../integration/advanced_search/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.
 
 Elasticsearch cluster design and requirements are dependent on your specific

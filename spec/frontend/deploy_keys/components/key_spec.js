@@ -26,11 +26,6 @@ describe('Deploy keys key', () => {
     store.keys = data;
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('enabled key', () => {
     const deployKey = data.enabled_keys[0];
 

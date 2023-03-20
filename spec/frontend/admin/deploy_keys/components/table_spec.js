@@ -9,10 +9,10 @@ import { stubComponent } from 'helpers/stub_component';
 import DeployKeysTable from '~/admin/deploy_keys/components/table.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 
 jest.mock('~/api');
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
 describe('DeployKeysTable', () => {
@@ -90,10 +90,6 @@ describe('DeployKeysTable', () => {
       });
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   it('renders page title', () => {
     createComponent();
@@ -242,7 +238,7 @@ describe('DeployKeysTable', () => {
 
     itRendersTheEmptyState();
 
-    it('displays flash', () => {
+    it('displays alert', () => {
       expect(createAlert).toHaveBeenCalledWith({
         message: DeployKeysTable.i18n.apiErrorMessage,
         captureError: true,

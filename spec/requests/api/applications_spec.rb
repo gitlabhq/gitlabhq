@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Applications, :api, feature_category: :authentication_and_authorization do
+RSpec.describe API::Applications, :api, feature_category: :system_access do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user) { create(:user) }
   let_it_be(:scopes) { 'api' }
@@ -10,7 +10,9 @@ RSpec.describe API::Applications, :api, feature_category: :authentication_and_au
   let!(:application) { create(:application, name: 'another_application', owner: nil, redirect_uri: 'http://other_application.url', scopes: scopes) }
 
   describe 'POST /applications' do
-    it_behaves_like 'POST request permissions for admin mode', { name: 'application_name', redirect_uri: 'http://application.url', scopes: 'api' }
+    it_behaves_like 'POST request permissions for admin mode' do
+      let(:params) { { name: 'application_name', redirect_uri: 'http://application.url', scopes: 'api' } }
+    end
 
     context 'authenticated and authorized user' do
       it 'creates and returns an OAuth application' do
@@ -22,7 +24,7 @@ RSpec.describe API::Applications, :api, feature_category: :authentication_and_au
 
         expect(json_response).to be_a Hash
         expect(json_response['application_id']).to eq application.uid
-        expect(json_response['secret']).to eq application.secret
+        expect(application.secret_matches?(json_response['secret'])).to eq(true)
         expect(json_response['callback_url']).to eq application.redirect_uri
         expect(json_response['confidential']).to eq application.confidential
         expect(application.scopes.to_s).to eq('api')

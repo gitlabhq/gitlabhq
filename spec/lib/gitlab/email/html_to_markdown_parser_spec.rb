@@ -1,17 +1,21 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'kramdown'
+require 'html2text'
+require 'fast_spec_helper'
+require 'support/helpers/fixture_helpers'
 
 RSpec.describe Gitlab::Email::HtmlToMarkdownParser, feature_category: :service_desk do
+  include FixtureHelpers
+
   subject { described_class.convert(html) }
 
   describe '.convert' do
     let(:html) { fixture_file("lib/gitlab/email/basic.html") }
 
     it 'parses html correctly' do
-      expect(subject)
-      .to eq(
-        <<-BODY.strip_heredoc.chomp
+      expect(subject).to eq(
+        <<~BODY.chomp
           Hello, World!
           This is some e-mail content. Even though it has whitespace and newlines, the e-mail converter will handle it correctly.
           *Even* mismatched tags.

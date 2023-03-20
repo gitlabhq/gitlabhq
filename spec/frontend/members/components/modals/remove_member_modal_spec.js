@@ -54,10 +54,6 @@ describe('RemoveMemberModal', () => {
   const findGlModal = () => wrapper.findComponent(GlModal);
   const findUserDeletionObstaclesList = () => wrapper.findComponent(UserDeletionObstaclesList);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe.each`
     state                          | memberModelType                     | isAccessRequest | isInvite | actionText               | removeSubMembershipsCheckboxExpected | unassignIssuablesCheckboxExpected | message                                                                                                           | userDeletionObstacles | isPartOfOncall
     ${'removing a group member'}   | ${MEMBER_MODEL_TYPE_GROUP_MEMBER}   | ${false}        | ${false} | ${'Remove member'}       | ${true}                              | ${true}                           | ${'Are you sure you want to remove Jane Doe from the Gitlab Org / Gitlab Test project?'}                          | ${{}}                 | ${false}

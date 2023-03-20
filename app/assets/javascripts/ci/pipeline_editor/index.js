@@ -12,6 +12,7 @@ import getPipelineEtag from './graphql/queries/client/pipeline_etag.query.graphq
 import { resolvers } from './graphql/resolvers';
 import typeDefs from './graphql/typedefs.graphql';
 import PipelineEditorApp from './pipeline_editor_app.vue';
+import createStore from './store';
 
 export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
   const el = document.querySelector(selector);
@@ -29,12 +30,12 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     ciExamplesHelpPagePath,
     ciHelpPagePath,
     ciLintPath,
+    ciTroubleshootingPath,
     defaultBranch,
     emptyStateIllustrationPath,
     helpPaths,
     includesHelpPagePath,
     lintHelpPagePath,
-    lintUnavailableHelpPagePath,
     needsHelpPagePath,
     newMergeRequestPath,
     pipelinePagePath,
@@ -111,14 +112,18 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     },
   });
 
+  const store = createStore();
+
   return new Vue({
     el,
+    store,
     apolloProvider,
     provide: {
       ciConfigPath,
       ciExamplesHelpPagePath,
       ciHelpPagePath,
       ciLintPath,
+      ciTroubleshootingPath,
       configurationPaths,
       dataMethod: 'graphql',
       defaultBranch,
@@ -126,7 +131,6 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
       helpPaths,
       includesHelpPagePath,
       lintHelpPagePath,
-      lintUnavailableHelpPagePath,
       needsHelpPagePath,
       newMergeRequestPath,
       pipelinePagePath,

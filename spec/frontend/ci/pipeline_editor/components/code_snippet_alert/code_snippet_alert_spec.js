@@ -41,10 +41,6 @@ describe('EE - CodeSnippetAlert', () => {
     createWrapper();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it("provides a link to the feature's documentation", () => {
     const docsLink = findDocsLink();
 

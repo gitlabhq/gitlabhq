@@ -8,10 +8,15 @@ module UsersHelper
     }
   end
 
+  def user_clear_status_at(user)
+    # The user.status can be nil when the user has no status, so we need to protect against that case.
+    # iso8601 is the official RFC supported format for frontend parsing of date:
+    # https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/Date
+    user.status&.clear_status_at&.to_s(:iso8601)
+  end
+
   def user_link(user)
-    link_to(user.name, user_path(user),
-            title: user.email,
-            class: 'has-tooltip commit-committer-link')
+    link_to(user.name, user_path(user), title: user.email, class: 'has-tooltip commit-committer-link')
   end
 
   def user_email_help_text(user)
@@ -79,9 +84,9 @@ module UsersHelper
     return unless user.status
 
     content_tag :span,
-                class: 'user-status-emoji has-tooltip',
-                title: user.status.message_html,
-                data: { html: true, placement: 'top' } do
+      class: 'user-status-emoji has-tooltip',
+      title: user.status.message_html,
+      data: { html: true, placement: 'top' } do
       emoji_icon user.status.emoji
     end
   end
@@ -168,6 +173,19 @@ module UsersHelper
     user.public_email.present?
   end
 
+  def trials_link_url
+    'https://about.gitlab.com/free-trial/'
+  end
+
+  def user_profile_tabs_app_data(user)
+    {
+      followees: user.followees.count,
+      followers: user.followers.count,
+      user_calendar_path: user_calendar_path(user, :json),
+      utc_offset: local_timezone_instance(user.timezone).now.utc_offset
+    }
+  end
+
   private
 
   def admin_users_paths
@@ -209,10 +227,6 @@ module UsersHelper
     end
 
     tabs
-  end
-
-  def trials_link_url
-    'https://about.gitlab.com/free-trial/'
   end
 
   def trials_allowed?(user)

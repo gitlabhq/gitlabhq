@@ -26,10 +26,6 @@ describe('Alert integration settings form', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should match the default snapshot', () => {
     expect(wrapper.element).toMatchSnapshot();
   });

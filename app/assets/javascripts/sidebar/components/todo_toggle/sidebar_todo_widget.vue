@@ -1,7 +1,8 @@
 <script>
 import { GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { produce } from 'immer';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
+import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import Tracking from '~/tracking';
@@ -83,7 +84,7 @@ export default {
   },
   computed: {
     isMergeRequest() {
-      return this.glFeatures.movedMrSidebar && this.issuableType === 'merge_request';
+      return this.glFeatures.movedMrSidebar && this.issuableType === TYPE_MERGE_REQUEST;
     },
     todoIdQuery() {
       return todoQueries[this.issuableType].query;

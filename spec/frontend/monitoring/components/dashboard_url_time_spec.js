@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import {
   queryToObject,
@@ -18,7 +18,7 @@ import { defaultTimeRange } from '~/vue_shared/constants';
 import { dashboardProps } from '../fixture_data';
 import { mockProjectDir } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility');
 
 describe('dashboard invalid url parameters', () => {

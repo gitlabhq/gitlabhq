@@ -7,6 +7,7 @@ import {
   EDITOR_TYPE_DIFF,
   EXTENSION_BASE_LINE_LINK_ANCHOR_CLASS,
   EXTENSION_BASE_LINE_NUMBERS_CLASS,
+  EXTENSION_SOFTWRAP_ID,
 } from '~/editor/constants';
 import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
 import EditorInstance from '~/editor/source_editor_instance';
@@ -35,8 +36,18 @@ describe('The basis for an Source Editor extension', () => {
       },
     };
   };
-  const createInstance = (baseInstance = {}) => {
-    return new EditorInstance(baseInstance);
+  const baseInstance = {
+    getOption: jest.fn(),
+  };
+
+  const createInstance = (base = baseInstance) => {
+    return new EditorInstance(base);
+  };
+
+  const toolbar = {
+    addItems: jest.fn(),
+    updateItem: jest.fn(),
+    removeItems: jest.fn(),
   };
 
   beforeEach(() => {
@@ -47,6 +58,66 @@ describe('The basis for an Source Editor extension', () => {
   afterEach(() => {
     jest.clearAllMocks();
     resetHTMLFixture();
+  });
+
+  describe('onSetup callback', () => {
+    let instance;
+    beforeEach(() => {
+      instance = createInstance();
+
+      instance.toolbar = toolbar;
+    });
+
+    it('adds correct buttons to the toolbar', () => {
+      instance.use({ definition: SourceEditorExtension });
+      expect(instance.toolbar.addItems).toHaveBeenCalledWith([
+        expect.objectContaining({
+          id: EXTENSION_SOFTWRAP_ID,
+        }),
+      ]);
+    });
+
+    it('does not fail if toolbar is not available', () => {
+      instance.toolbar = null;
+      expect(() => instance.use({ definition: SourceEditorExtension })).not.toThrow();
+    });
+
+    it.each`
+      optionValue  | expectSelected
+      ${'on'}      | ${true}
+      ${'off'}     | ${false}
+      ${'foo'}     | ${false}
+      ${undefined} | ${false}
+      ${null}      | ${false}
+    `(
+      'correctly sets the initial state of the button when wordWrap option is "$optionValue"',
+      ({ optionValue, expectSelected }) => {
+        instance.getOption.mockReturnValue(optionValue);
+        instance.use({ definition: SourceEditorExtension });
+        expect(instance.toolbar.addItems).toHaveBeenCalledWith([
+          expect.objectContaining({
+            selected: expectSelected,
+          }),
+        ]);
+      },
+    );
+  });
+
+  describe('onBeforeUnuse', () => {
+    let instance;
+    let extension;
+
+    beforeEach(() => {
+      instance = createInstance();
+
+      instance.toolbar = toolbar;
+      extension = instance.use({ definition: SourceEditorExtension });
+    });
+    it('removes the registered buttons from the toolbar', () => {
+      expect(instance.toolbar.removeItems).not.toHaveBeenCalled();
+      instance.unuse(extension);
+      expect(instance.toolbar.removeItems).toHaveBeenCalledWith([EXTENSION_SOFTWRAP_ID]);
+    });
   });
 
   describe('onUse callback', () => {
@@ -66,6 +137,7 @@ describe('The basis for an Source Editor extension', () => {
       '$description the line linking for $instanceType instance',
       ({ instanceType, shouldBeCalled }) => {
         const instance = createInstance({
+          ...baseInstance,
           getEditorType: jest.fn().mockReturnValue(instanceType),
           onMouseMove: jest.fn(),
           onMouseDown: jest.fn(),
@@ -82,10 +154,44 @@ describe('The basis for an Source Editor extension', () => {
     );
   });
 
+  describe('toggleSoftwrap', () => {
+    let instance;
+
+    beforeEach(() => {
+      instance = createInstance();
+
+      instance.toolbar = toolbar;
+      instance.use({ definition: SourceEditorExtension });
+    });
+
+    it.each`
+      currentWordWrap | newWordWrap | expectSelected
+      ${'on'}         | ${'off'}    | ${false}
+      ${'off'}        | ${'on'}     | ${true}
+      ${'foo'}        | ${'on'}     | ${true}
+      ${undefined}    | ${'on'}     | ${true}
+      ${null}         | ${'on'}     | ${true}
+    `(
+      'correctly updates wordWrap option in editor and the state of the button when currentWordWrap is "$currentWordWrap"',
+      ({ currentWordWrap, newWordWrap, expectSelected }) => {
+        instance.getOption.mockReturnValue(currentWordWrap);
+        instance.updateOptions = jest.fn();
+        instance.toggleSoftwrap();
+        expect(instance.updateOptions).toHaveBeenCalledWith({
+          wordWrap: newWordWrap,
+        });
+        expect(instance.toolbar.updateItem).toHaveBeenCalledWith(EXTENSION_SOFTWRAP_ID, {
+          selected: expectSelected,
+        });
+      },
+    );
+  });
+
   describe('highlightLines', () => {
     const revealSpy = jest.fn();
     const decorationsSpy = jest.fn();
     const instance = createInstance({
+      ...baseInstance,
       revealLineInCenter: revealSpy,
       deltaDecorations: decorationsSpy,
     });
@@ -174,6 +280,7 @@ describe('The basis for an Source Editor extension', () => {
 
     beforeEach(() => {
       instance = createInstance({
+        ...baseInstance,
         deltaDecorations: decorationsSpy,
         lineDecorations,
       });
@@ -188,6 +295,7 @@ describe('The basis for an Source Editor extension', () => {
 
   describe('setupLineLinking', () => {
     const instance = {
+      ...baseInstance,
       onMouseMove: jest.fn(),
       onMouseDown: jest.fn(),
       deltaDecorations: jest.fn(),

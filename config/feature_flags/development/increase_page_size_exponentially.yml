@@ -1,8 +1,0 @@
----
-name: increase_page_size_exponentially
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66174
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/369434
-milestone: '14.1'
-type: development
-group: group::source code
-default_enabled: false

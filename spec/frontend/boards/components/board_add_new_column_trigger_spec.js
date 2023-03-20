@@ -17,7 +17,7 @@ describe('BoardAddNewColumnTrigger', () => {
   const mountComponent = () => {
     wrapper = mountExtended(BoardAddNewColumnTrigger, {
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       store: createStore(),
     });
@@ -25,10 +25,6 @@ describe('BoardAddNewColumnTrigger', () => {
 
   beforeEach(() => {
     mountComponent();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   describe('when button is active', () => {

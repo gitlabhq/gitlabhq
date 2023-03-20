@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::FfMergeService do
+RSpec.describe MergeRequests::FfMergeService, feature_category: :code_review_workflow do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:merge_request) do

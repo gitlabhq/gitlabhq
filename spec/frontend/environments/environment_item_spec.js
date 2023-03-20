@@ -56,10 +56,6 @@ describe('Environment item', () => {
     findUpcomingDeployment().findComponent(GlAvatarLink);
   const findUpcomingDeploymentAvatar = () => findUpcomingDeployment().findComponent(GlAvatar);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when item is not folder', () => {
     it('should render environment name', () => {
       expect(wrapper.find('.environment-name').text()).toContain(environment.name);
@@ -388,10 +384,6 @@ describe('Environment item', () => {
           tableData,
         },
       });
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
     });
 
     it('should render folder icon and name', () => {

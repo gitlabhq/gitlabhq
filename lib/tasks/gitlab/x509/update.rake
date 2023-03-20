@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'logger'
-
 desc "GitLab | X509 | Update signatures when certificate store has changed"
 namespace :gitlab do
   namespace :x509 do
     task update_signatures: :environment do
+      require 'logger'
+
       update_certificates
     end
 

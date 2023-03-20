@@ -20,10 +20,6 @@ describe('Design management large image component', () => {
     stubPerformanceWebAPI();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders loading state', () => {
     createComponent({
       isLoading: true,

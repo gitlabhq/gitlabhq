@@ -29,10 +29,6 @@ describe('Blob Content component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('rendering', () => {
     it('renders loader if `loading: true`', () => {
       createComponent({ loading: true });

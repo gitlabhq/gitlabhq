@@ -9,11 +9,12 @@ function factory(propsData = {}) {
   wrapper = shallowMount(Category, { propsData });
 }
 
-describe('Emoji category component', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
+const triggerGlIntersectionObserver = () => {
+  wrapper.findComponent(GlIntersectionObserver).vm.$emit('appear');
+  return nextTick();
+};
 
+describe('Emoji category component', () => {
   beforeEach(() => {
     factory({
       category: 'Activity',
@@ -26,25 +27,19 @@ describe('Emoji category component', () => {
   });
 
   it('renders group', async () => {
-    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-    // eslint-disable-next-line no-restricted-syntax
-    await wrapper.setData({ renderGroup: true });
+    await triggerGlIntersectionObserver();
 
     expect(wrapper.findComponent(EmojiGroup).attributes('rendergroup')).toBe('true');
   });
 
   it('renders group on appear', async () => {
-    wrapper.findComponent(GlIntersectionObserver).vm.$emit('appear');
-
-    await nextTick();
+    await triggerGlIntersectionObserver();
 
     expect(wrapper.findComponent(EmojiGroup).attributes('rendergroup')).toBe('true');
   });
 
   it('emits appear event on appear', async () => {
-    wrapper.findComponent(GlIntersectionObserver).vm.$emit('appear');
-
-    await nextTick();
+    await triggerGlIntersectionObserver();
 
     expect(wrapper.emitted().appear[0]).toEqual(['Activity']);
   });

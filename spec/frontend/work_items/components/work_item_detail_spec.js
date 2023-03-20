@@ -99,9 +99,7 @@ describe('WorkItemDetail component', () => {
     subscriptionHandler = titleSubscriptionHandler,
     confidentialityMock = [updateWorkItemMutation, jest.fn()],
     error = undefined,
-    workItemsMvcEnabled = false,
     workItemsMvc2Enabled = false,
-    fetchByIid = false,
   } = {}) => {
     const handlers = [
       [workItemQuery, handler],
@@ -124,9 +122,7 @@ describe('WorkItemDetail component', () => {
       },
       provide: {
         glFeatures: {
-          workItemsMvc: workItemsMvcEnabled,
           workItemsMvc2: workItemsMvc2Enabled,
-          useIidInWorkItemsPath: fetchByIid,
         },
         hasIssueWeightsFeature: true,
         hasIterationsFeature: true,
@@ -149,7 +145,6 @@ describe('WorkItemDetail component', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     setWindowLocation('');
   });
 
@@ -420,6 +415,12 @@ describe('WorkItemDetail component', () => {
         expect(findParentButton().props('icon')).toBe(mockParent.parent.workItemType.iconName);
       });
 
+      it('shows parent title and iid', () => {
+        expect(findParentButton().text()).toBe(
+          `${mockParent.parent.title} #${mockParent.parent.iid}`,
+        );
+      });
+
       it('sets the parent breadcrumb URL pointing to issue page when parent type is `Issue`', () => {
         expect(findParentButton().attributes().href).toBe('../../issues/5');
       });
@@ -440,6 +441,11 @@ describe('WorkItemDetail component', () => {
         await waitForPromises();
 
         expect(findParentButton().attributes().href).toBe(mockParentObjective.parent.webUrl);
+      });
+
+      it('shows work item type and iid', () => {
+        const { iid, workItemType } = workItemQueryResponse.data.workItem;
+        expect(findParent().text()).toContain(`${workItemType.name} #${iid}`);
       });
     });
   });
@@ -626,7 +632,7 @@ describe('WorkItemDetail component', () => {
     });
   });
 
-  it('calls the global ID work item query when `useIidInWorkItemsPath` feature flag is false', async () => {
+  it('calls the global ID work item query when there is no `iid_path` parameter in URL', async () => {
     createComponent();
     await waitForPromises();
 
@@ -636,20 +642,10 @@ describe('WorkItemDetail component', () => {
     expect(successByIidHandler).not.toHaveBeenCalled();
   });
 
-  it('calls the global ID work item query when `useIidInWorkItemsPath` feature flag is true but there is no `iid_path` parameter in URL', async () => {
-    createComponent({ fetchByIid: true });
-    await waitForPromises();
-
-    expect(successHandler).toHaveBeenCalledWith({
-      id: workItemQueryResponse.data.workItem.id,
-    });
-    expect(successByIidHandler).not.toHaveBeenCalled();
-  });
-
-  it('calls the IID work item query when `useIidInWorkItemsPath` feature flag is true and `iid_path` route parameter is present', async () => {
+  it('calls the IID work item query when `iid_path` route parameter is present', async () => {
     setWindowLocation(`?iid_path=true`);
 
-    createComponent({ fetchByIid: true, iidPathQueryParam: 'true' });
+    createComponent();
     await waitForPromises();
 
     expect(successHandler).not.toHaveBeenCalled();
@@ -659,10 +655,10 @@ describe('WorkItemDetail component', () => {
     });
   });
 
-  it('calls the IID work item query when `useIidInWorkItemsPath` feature flag is true and `iid_path` route parameter is present and is a modal', async () => {
+  it('calls the IID work item query when `iid_path` route parameter is present and is a modal', async () => {
     setWindowLocation(`?iid_path=true`);
 
-    createComponent({ fetchByIid: true, iidPathQueryParam: 'true', isModal: true });
+    createComponent({ isModal: true });
     await waitForPromises();
 
     expect(successHandler).not.toHaveBeenCalled();
@@ -748,19 +744,8 @@ describe('WorkItemDetail component', () => {
   });
 
   describe('notes widget', () => {
-    it('does not render notes by default', async () => {
+    it('renders notes by default', async () => {
       createComponent();
-      await waitForPromises();
-
-      expect(findNotesWidget().exists()).toBe(false);
-    });
-
-    it('renders notes when the work_items_mvc flag is on', async () => {
-      const notesWorkItem = workItemResponseFactory({
-        notesWidgetPresent: true,
-      });
-      const handler = jest.fn().mockResolvedValue(notesWorkItem);
-      createComponent({ workItemsMvcEnabled: true, handler });
       await waitForPromises();
 
       expect(findNotesWidget().exists()).toBe(true);

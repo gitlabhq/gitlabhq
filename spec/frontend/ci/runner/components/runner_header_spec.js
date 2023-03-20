@@ -42,10 +42,6 @@ describe('RunnerHeader', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays the runner status', () => {
     createComponent({
       mountFn: mountExtended,

@@ -60,9 +60,13 @@ RSpec.describe BlobPresenter do
   describe '#pipeline_editor_path' do
     context 'when blob is .gitlab-ci.yml' do
       before do
-        project.repository.create_file(user, '.gitlab-ci.yml', '',
-        message: 'Add a ci file',
-        branch_name: 'main')
+        project.repository.create_file(
+          user,
+          '.gitlab-ci.yml',
+          '',
+          message: 'Add a ci file',
+          branch_name: 'main'
+        )
       end
 
       let(:blob) { repository.blob_at('main', '.gitlab-ci.yml') }

@@ -12,7 +12,7 @@ RSpec.describe 'Slack slash commands', :js, feature_category: :integrations do
   it 'shows a token placeholder' do
     token_placeholder = find_field('Token')['placeholder']
 
-    expect(token_placeholder).to eq('XXxxXXxxXXxxXXxxXXxxXXxx')
+    expect(token_placeholder).to eq('')
   end
 
   it 'shows a help message' do

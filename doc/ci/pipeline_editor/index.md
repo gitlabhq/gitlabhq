@@ -70,7 +70,7 @@ simulations in the [CI Lint tool](../lint.md#simulate-a-pipeline).
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357219) in GitLab 15.1.
 
 You can review configuration added with the [`include`](../yaml/index.md#include)
-keyword in the pipeline editor. In the upper right, select the file tree (**{file-tree}**)
+keyword in the pipeline editor. In the upper-right corner, select the file tree (**{file-tree}**)
 to see a list of all included configuration files. Selected files open in a new tab
 for review.
 

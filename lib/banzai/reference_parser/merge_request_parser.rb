@@ -19,17 +19,21 @@ module Banzai
       end
 
       def records_for_nodes(nodes)
+        node_includes = [
+          :author,
+          :assignees,
+          {
+            # These associations are primarily used for checking permissions.
+            # Eager loading these ensures we don't end up running dozens of
+            # queries in this process.
+            target_project: [{ namespace: :route }, :project_feature, :route]
+          }
+        ]
+        node_includes << :milestone if context.options[:extended_preload]
+
         @merge_requests_for_nodes ||= grouped_objects_for_nodes(
           nodes,
-          MergeRequest.includes(
-            :author,
-            :assignees,
-            {
-              # These associations are primarily used for checking permissions.
-              # Eager loading these ensures we don't end up running dozens of
-              # queries in this process.
-              target_project: [{ namespace: :route }, :project_feature, :route]
-            }),
+          MergeRequest.includes(node_includes),
           self.class.data_attribute
         )
       end

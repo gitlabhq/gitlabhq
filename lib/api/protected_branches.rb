@@ -109,13 +109,15 @@ module API
         failure [
           { code: 422, message: 'Push access levels access level has already been taken' },
           { code: 404, message: '404 Project Not Found' },
-          { code: 401, message: '401 Unauthorized' }
+          { code: 401, message: '401 Unauthorized' },
+          { code: 400, message: '400 Bad request' }
         ]
       end
       params do
         requires :name, type: String, desc: 'The name of the branch', documentation: { example: 'main' }
         optional :allow_force_push, type: Boolean,
-                                    desc: 'Allow force push for all users with push access.'
+                                    desc: 'Allow force push for all users with push access.',
+                                    allow_blank: false
 
         use :optional_params_ee
       end

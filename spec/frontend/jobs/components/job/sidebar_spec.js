@@ -48,10 +48,6 @@ describe('Sidebar details block', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('without terminal path', () => {
     it('does not render terminal link', async () => {
       createWrapper();

@@ -17,12 +17,17 @@ module Sidebars
 
         override :title
         def title
-          _('Security & Compliance')
+          _('Security and Compliance')
         end
 
         override :sprite_icon
         def sprite_icon
           'shield'
+        end
+
+        override :pick_into_super_sidebar?
+        def pick_into_super_sidebar?
+          true
         end
 
         private
@@ -33,7 +38,7 @@ module Sidebars
           end
 
           ::Sidebars::MenuItem.new(
-            title: _('Configuration'),
+            title: _('Security configuration'),
             link: project_security_configuration_path(context.project),
             active_routes: { path: configuration_menu_item_paths },
             item_id: :configuration

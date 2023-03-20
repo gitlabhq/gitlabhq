@@ -21,15 +21,15 @@ Spamcheck is only available for package-based installations:
 
 1. Edit `/etc/gitlab/gitlab.rb` and enable Spamcheck:
 
-    ```ruby
-    spamcheck['enable'] = true
-    ```
+   ```ruby
+   spamcheck['enable'] = true
+   ```
 
 1. Reconfigure GitLab:
 
-    ```shell
-    sudo gitlab-ctl reconfigure
-    ```
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
 
 1. Verify that the new services `spamcheck` and `spam-classifier` are
    up and running:

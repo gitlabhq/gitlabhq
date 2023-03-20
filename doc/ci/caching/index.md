@@ -139,13 +139,14 @@ You can override cache settings without overwriting the global cache by using
 `policy` for one job:
 
 ```yaml
-cache: &global_cache
-  key: $CI_COMMIT_REF_SLUG
-  paths:
-    - node_modules/
-    - public/
-    - vendor/
-  policy: pull-push
+default:
+  cache: &global_cache
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+      - public/
+      - vendor/
+    policy: pull-push
 
 job:
   cache:
@@ -570,7 +571,7 @@ You can clear the cache in the GitLab UI:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **CI/CD > Pipelines**.
-1. In the upper right, select **Clear runner caches**.
+1. In the upper-right corner, select **Clear runner caches**.
 
 On the next commit, your CI/CD jobs use a new cache.
 

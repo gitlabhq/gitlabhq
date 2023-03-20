@@ -26,18 +26,13 @@ describe('AdminUserAvatar component', () => {
         ...props,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       stubs: {
         GlAvatarLabeled,
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   describe('when initialized', () => {
     beforeEach(() => {

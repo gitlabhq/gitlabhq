@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Maven::FindOrCreatePackageService do
+RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :package_registry do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
@@ -41,6 +41,15 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService do
 
         it_behaves_like 'assigns build to package'
         it_behaves_like 'assigns status to package'
+      end
+    end
+
+    shared_examples 'returning an error' do |with_message: ''|
+      it { expect { subject }.not_to change { project.package_files.count } }
+
+      it 'returns an error', :aggregate_failures do
+        expect(subject.payload).to be_empty
+        expect(subject.errors).to include(with_message)
       end
     end
 
@@ -128,11 +137,19 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService do
 
       let!(:existing_package) { create(:maven_package, name: path, version: version, project: project) }
 
-      it { expect { subject }.not_to change { project.package_files.count } }
+      let(:existing_file_name) { file_name }
+      let(:jar_file) { existing_package.package_files.with_file_name_like('%.jar').first }
 
-      it 'returns an error', :aggregate_failures do
-        expect(subject.payload).to be_empty
-        expect(subject.errors).to include('Duplicate package is not allowed')
+      before do
+        jar_file.update_column(:file_name, existing_file_name)
+      end
+
+      it_behaves_like 'returning an error', with_message: 'Duplicate package is not allowed'
+
+      context 'for a SNAPSHOT version' do
+        let(:version) { '1.0.0-SNAPSHOT' }
+
+        it_behaves_like 'returning an error', with_message: 'Duplicate package is not allowed'
       end
 
       context 'when uploading to the versionless package which contains metadata about all versions' do
@@ -144,8 +161,7 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService do
 
       context 'when uploading different non-duplicate files to the same package' do
         before do
-          package_file = existing_package.package_files.find_by(file_name: 'my-app-1.0-20180724.124855-1.jar')
-          package_file.destroy!
+          jar_file.destroy!
         end
 
         it_behaves_like 'reuse existing package'
@@ -166,6 +182,27 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService do
 
         it_behaves_like 'reuse existing package'
       end
+
+      context 'when uploading a similar package file name with a classifier' do
+        let(:existing_file_name) { 'test.jar' }
+        let(:file_name) { 'test-javadoc.jar' }
+
+        it_behaves_like 'reuse existing package'
+
+        context 'for a SNAPSHOT version' do
+          let(:version) { '1.0.0-SNAPSHOT' }
+          let(:existing_file_name) { 'test-1.0-20230303.163304-1.jar' }
+          let(:file_name) { 'test-1.0-20230303.163304-1-javadoc.jar' }
+
+          it_behaves_like 'reuse existing package'
+        end
+      end
+    end
+
+    context 'with a very large file name' do
+      let(:params) { super().merge(file_name: 'a' * (described_class::MAX_FILE_NAME_LENGTH + 1)) }
+
+      it_behaves_like 'returning an error', with_message: 'File name is too long'
     end
   end
 end

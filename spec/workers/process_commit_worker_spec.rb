@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProcessCommitWorker do
+RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
   let(:worker) { described_class.new }
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }

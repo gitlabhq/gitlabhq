@@ -71,10 +71,6 @@ describe('MR Popover', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('shows skeleton-loader while apollo is loading', () => {
     mountComponent();
 

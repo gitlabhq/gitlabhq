@@ -39,8 +39,8 @@ Each event is defined in a separate YAML file consisting of the following fields
 | `product_category`     | no       | The [product category](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/categories.yml) for the event.                                                                         |
 | `milestone`            | no       | The milestone when the event is introduced.                                                                                                                                                 |
 | `introduced_by_url`    | no       | The URL to the merge request that introduced the event.                                                                                                                                     |
-| `distributions`        | yes      | The [distributions](https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/#definitions) where the tracked feature is available. Can be set to one or more of `ce` or `ee`.  |
-| `tiers`                | yes      | The [tiers]( https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/) where the tracked feature is available. Can be set to one or more of `free`, `premium`, or `ultimate`. |
+| `distributions`        | yes      | The [distributions](https://about.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/#definitions) where the tracked feature is available. Can be set to one or more of `ce` or `ee`.  |
+| `tiers`                | yes      | The [tiers](https://about.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/) where the tracked feature is available. Can be set to one or more of `free`, `premium`, or `ultimate`. |
 
 ### Example event definition
 
@@ -79,14 +79,13 @@ tiers:
 Use the dedicated [event definition generator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/generators/gitlab/snowplow_event_definition_generator.rb)
 to create new event definitions.
 
-The `category` and `action` of each event are included in the filename to enforce uniqueness.
+The `category` and `action` of each event are included in the filename to standardize file naming.
 
 The generator takes three options:
 
 - `--ee`: Indicates if the event is for EE.
 - `--category=CATEGORY`: Indicates the `category` of the event.
 - `--action=ACTION`: Indicates the `action` of the event.
-- `--force`: Overwrites the existing event definition, if one already exists.
 
 ```shell
 bundle exec rails generate gitlab:snowplow_event_definition --category Groups::EmailCampaignsController --action click

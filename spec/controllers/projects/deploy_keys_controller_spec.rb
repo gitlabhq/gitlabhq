@@ -276,9 +276,9 @@ RSpec.describe Projects::DeployKeysController do
     let(:extra_params) { {} }
 
     subject do
-      put :update, params: extra_params.reverse_merge(id: deploy_key.id,
-                                                      namespace_id: project.namespace,
-                                                      project_id: project)
+      put :update, params: extra_params.reverse_merge(
+        id: deploy_key.id, namespace_id: project.namespace, project_id: project
+      )
     end
 
     def deploy_key_params(title, can_push)
@@ -330,9 +330,7 @@ RSpec.describe Projects::DeployKeysController do
       context 'when a different deploy key id param is injected' do
         let(:extra_params) { deploy_key_params('updated title', '1') }
         let(:hacked_params) do
-          extra_params.reverse_merge(id: other_deploy_key_id,
-                                     namespace_id: project.namespace,
-                                     project_id: project)
+          extra_params.reverse_merge(id: other_deploy_key_id, namespace_id: project.namespace, project_id: project)
         end
 
         subject { put :update, params: hacked_params }

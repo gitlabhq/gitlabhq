@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AutoMergeService do
+RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 

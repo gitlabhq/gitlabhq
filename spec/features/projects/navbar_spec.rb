@@ -22,6 +22,7 @@ RSpec.describe 'Project navbar', :with_license, feature_category: :projects do
     insert_package_nav(_('Deployments'))
     insert_infrastructure_registry_nav
     insert_infrastructure_google_cloud_nav
+    insert_infrastructure_aws_nav
   end
 
   it_behaves_like 'verified navigation bar' do

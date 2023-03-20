@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DeleteContainerRepositoryWorker do
+RSpec.describe DeleteContainerRepositoryWorker, feature_category: :container_registry do
   let_it_be(:repository) { create(:container_repository) }
 
   let(:project) { repository.project }

@@ -6,12 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Apple App Store **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104888) in GitLab 15.8 [with a flag](../../../administration/feature_flags.md) named `apple_app_store_integration`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104888) in GitLab 15.8 [with a flag](../../../administration/feature_flags.md) named `apple_app_store_integration`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385335) in GitLab 15.10. Feature flag `apple_app_store_integration` removed.
 
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `apple_app_store_integration`. On GitLab.com, this feature is not available.
-
-The Apple App Store integration makes it easy to configure your CI/CD pipelines to connect to [App Store Connect](https://appstoreconnect.apple.com) to build and release apps for iOS, iPadOS, macOS, tvOS, and watchOS.
+With the Apple App Store integration, you can configure your CI/CD pipelines to connect to [App Store Connect](https://appstoreconnect.apple.com) to build and release apps for iOS, iPadOS, macOS, tvOS, and watchOS.
 
 The integration is designed to be able to work out of the box with [fastlane](http://fastlane.tools/), but can be used with other build tools as well.
 

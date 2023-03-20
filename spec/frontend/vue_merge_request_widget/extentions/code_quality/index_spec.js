@@ -61,7 +61,6 @@ describe('Code Quality extension', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mock.restore();
   });
 

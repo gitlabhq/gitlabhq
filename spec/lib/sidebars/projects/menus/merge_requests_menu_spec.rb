@@ -2,13 +2,26 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Projects::Menus::MergeRequestsMenu do
+RSpec.describe Sidebars::Projects::Menus::MergeRequestsMenu, feature_category: :navigation do
   let_it_be(:project) { create(:project, :repository) }
 
   let(:user) { project.first_owner }
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project) }
 
   subject { described_class.new(context) }
+
+  it_behaves_like 'serializable as super_sidebar_menu_args' do
+    let(:menu) { subject }
+    let(:extra_attrs) do
+      {
+        item_id: :project_merge_request_list,
+        sprite_icon: 'git-merge',
+        pill_count: menu.pill_count,
+        has_pill: menu.has_pill?,
+        super_sidebar_parent: ::Sidebars::StaticMenu
+      }
+    end
+  end
 
   describe '#render?' do
     context 'when repository is not present' do

@@ -59,10 +59,6 @@ describe('behaviors/components/json_table', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findTable = () => wrapper.findComponent(GlTable);
   const findTableCaption = () => wrapper.findByTestId('slot-table-caption');
   const findFilterInput = () => wrapper.findComponent(GlFormInput);

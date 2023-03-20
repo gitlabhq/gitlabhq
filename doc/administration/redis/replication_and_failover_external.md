@@ -32,15 +32,15 @@ Note the Redis node's IP address or hostname, port, and password (if required).
 1. Configure the GitLab application servers with the appropriate connection details
    for your external Redis service in your `/etc/gitlab/gitlab.rb` file:
 
-    ```ruby
-    redis['enable'] = false
+   ```ruby
+   redis['enable'] = false
 
-    gitlab_rails['redis_host'] = 'redis.example.com'
-    gitlab_rails['redis_port'] = 6379
+   gitlab_rails['redis_host'] = 'redis.example.com'
+   gitlab_rails['redis_port'] = 6379
 
-    # Required if Redis authentication is configured on the Redis node
-    gitlab_rails['redis_password'] = 'Redis Password'
-    ```
+   # Required if Redis authentication is configured on the Redis node
+   gitlab_rails['redis_password'] = 'Redis Password'
+   ```
 
 1. Reconfigure for the changes to take effect:
 

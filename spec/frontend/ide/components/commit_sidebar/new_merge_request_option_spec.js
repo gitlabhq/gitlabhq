@@ -33,14 +33,10 @@ describe('NewMergeRequestOption component', () => {
         },
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('when the `shouldHideNewMrOption` getter returns false', () => {
     beforeEach(() => {

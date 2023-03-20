@@ -96,10 +96,6 @@ describe('~/environments/components/environments_app.vue', () => {
     paginationMock = jest.fn();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should request available environments if the scope is invalid', async () => {
     await createWrapperWithMocked({
       environmentsApp: resolvedEnvironmentsApp,

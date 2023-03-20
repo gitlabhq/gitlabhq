@@ -137,10 +137,6 @@ describe('Web IDE link component', () => {
     localStorage.setItem(PREFERRED_EDITOR_RESET_KEY, 'true');
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findActionsButton = () => wrapper.findComponent(ActionsButton);
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
   const findModal = () => wrapper.findComponent(GlModal);

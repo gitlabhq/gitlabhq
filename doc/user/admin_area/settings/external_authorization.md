@@ -43,9 +43,6 @@ using Omnibus, learn to install a custom CA in the
 Alternatively, learn where to install custom certificates by using
 `openssl version -d`.
 
-When external authorization is enabled, [deploy tokens](../../project/deploy_tokens/index.md)
- and [deploy keys](../../project/deploy_keys/index.md) can't be used for Git operations.
-
 ## Configuration
 
 The external authorization service can be enabled by an administrator:
@@ -54,6 +51,26 @@ The external authorization service can be enabled by an administrator:
 1. On the left sidebar, select **Settings > General**.
 1. Expand **External authorization**.
 1. Complete the fields.
+1. Select **Save changes**.
+
+### Allow external authorization with deploy tokens and deploy keys
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386656) in GitLab 15.9.
+
+You can set your instance to allow external authorization for Git operations with
+[deploy tokens](../../project/deploy_tokens/index.md) or [deploy keys](../../project/deploy_keys/index.md).
+
+Prerequisites:
+
+- You must be using classification labels without a service URL for external authorization.
+
+To allow authorization with deploy tokens and keys:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **External authorization**, and:
+   - Leave the service URL field empty.
+   - Select **Allow deploy tokens and deploy keys to be used with external authorization**.
 1. Select **Save changes**.
 
 ## How it works
@@ -106,7 +123,7 @@ You can use your own classification label in the project's
 label" box. When no classification label is specified on a project, the default
 label defined in the [global settings](#configuration) is used.
 
-The label is shown on all project pages in the upper right corner.
+On all project pages, in the upper-right corner, the label appears.
 
 ![classification label on project page](img/classification_label_on_project_page_v14_8.png)
 

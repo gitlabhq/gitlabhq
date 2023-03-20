@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::RelatedBranchesService do
+RSpec.describe Issues::RelatedBranchesService, feature_category: :team_planning do
   let_it_be(:project) { create(:project, :repository, :public, public_builds: false) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:issue) { create(:issue, project: project) }

@@ -1,7 +1,7 @@
 <script>
 import { GlResizeObserverDirective, GlEmptyState } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';

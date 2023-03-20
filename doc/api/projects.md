@@ -1,6 +1,6 @@
 ---
-stage: Manage
-group: Organization
+stage: Data Stores
+group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -1433,6 +1433,7 @@ Supported attributes:
 |-------------------------------------------------------------|----------------|------------------------|-------------|
 | `id`                                                        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `allow_merge_on_skipped_pipeline`                           | boolean        | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
+| `allow_pipeline_trigger_approve_deployment` **(PREMIUM)**   | boolean        | **{dotted-circle}** No | Set whether or not a pipeline triggerer is allowed to approve deployments. |
 | `only_allow_merge_if_all_status_checks_passed` **(ULTIMATE)** | boolean | **{dotted-circle}** No | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false.<br/><br/>[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 with feature flag `only_allow_merge_if_all_status_checks_passed` disabled by default. The feature flag was enabled by default in GitLab 15.9. |
 | `analytics_access_level`                                    | string         | **{dotted-circle}** No | One of `disabled`, `private` or `enabled` |
 | `approvals_before_merge` **(PREMIUM)**                      | integer        | **{dotted-circle}** No | How many approvers should approve merge request by default. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). |
@@ -2244,9 +2245,12 @@ POST /projects/:id/restore
 
 ## Upload a file
 
+> - Maximum attachment size enforcement [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57250) in GitLab 13.11 [with a flag](../administration/feature_flags.md) named `enforce_max_attachment_size_upload_api`. Disabled by default.
+> - Maximum attachment size [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62542) in GitLab 13.11.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112450) in GitLab 15.10. Feature flag `enforce_max_attachment_size_upload_api` removed.
+
 Uploads a file to the specified project to be used in an issue or merge request
-description, or a comment. GitLab versions 14.0 and later
-[enforce](#max-attachment-size-enforcement) this limit.
+description, or a comment.
 
 ```plaintext
 POST /projects/:id/uploads
@@ -2281,42 +2285,6 @@ Returned object:
 The returned `url` is relative to the project path. The returned `full_path` is
 the absolute path to the file. In Markdown contexts, the link is expanded when
 the format in `markdown` is used.
-
-### Max attachment size enforcement
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57250) in GitLab 13.11.
-
-GitLab 13.11 added enforcement of the [maximum attachment size limit](../user/admin_area/settings/account_and_limit_settings.md#max-attachment-size) behind the `enforce_max_attachment_size_upload_api` feature flag. GitLab 14.0 enables this by default.
-To disable this enforcement:
-
-**In Omnibus installations:**
-
-1. Enter the Rails console:
-
-   ```shell
-   sudo gitlab-rails console
-   ```
-
-1. Disable the feature flag:
-
-   ```ruby
-   Feature.disable(:enforce_max_attachment_size_upload_api)
-   ```
-
-**In installations from source:**
-
-1. Enter the Rails console:
-
-   ```shell
-   cd /home/git/gitlab
-   sudo -u git -H bundle exec rails console -e production
-   ```
-
-1. Disable the feature flag:
-
-   ```ruby
-   Feature.disable(:enforce_max_attachment_size_upload_api)
-   ```
 
 ## Upload a project avatar
 

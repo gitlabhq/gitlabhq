@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Redis guidelines
+# Redis development guidelines
 
 ## Redis instances
 
@@ -185,6 +185,26 @@ it 'avoids N+1 Redis calls to forks_count key' do
   control = RedisCommands::Recorder.new(pattern: 'forks_count') { visit_page }
 
   expect(control.count).to eq(1)
+end
+```
+
+You also can use special matchers `exceed_redis_calls_limit` and
+`exceed_redis_command_calls_limit` to define an upper limit for
+a number of Redis calls:
+
+```ruby
+it 'avoids N+1 Redis calls' do
+  control = RedisCommands::Recorder.new { visit_page }
+
+  expect(control).not_to exceed_redis_calls_limit(1)
+end
+```
+
+```ruby
+it 'avoids N+1 sadd Redis calls' do
+  control = RedisCommands::Recorder.new { visit_page }
+
+  expect(control).not_to exceed_redis_command_calls_limit(:sadd, 1)
 end
 ```
 

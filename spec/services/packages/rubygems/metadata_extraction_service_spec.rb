@@ -2,7 +2,7 @@
 require 'spec_helper'
 require 'rubygems/package'
 
-RSpec.describe Packages::Rubygems::MetadataExtractionService do
+RSpec.describe Packages::Rubygems::MetadataExtractionService, feature_category: :package_registry do
   include RubygemsHelpers
 
   let_it_be(:package) { create(:rubygems_package) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Groups::Menus::GroupInformationMenu do
+RSpec.describe Sidebars::Groups::Menus::GroupInformationMenu, feature_category: :navigation do
   let_it_be(:owner) { create(:user) }
   let_it_be(:root_group) do
     build(:group, :private).tap do |g|
@@ -13,6 +13,10 @@ RSpec.describe Sidebars::Groups::Menus::GroupInformationMenu do
   let(:group) { root_group }
   let(:user) { owner }
   let(:context) { Sidebars::Groups::Context.new(current_user: user, container: group) }
+
+  it_behaves_like 'not serializable as super_sidebar_menu_args' do
+    let(:menu) { described_class.new(context) }
+  end
 
   describe '#title' do
     subject { described_class.new(context).title }

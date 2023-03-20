@@ -17,7 +17,7 @@ job classes:
 1. [Routing rules](#routing-rules) are used on GitLab.com. They direct jobs
    inside the application to queue names configured by administrators. This
    lowers the load on Redis, which is important on very large-scale deployments.
-1. [Queue selectors](#queue-selectors) perform the job selection outside the
+1. [Queue selectors](#queue-selectors-deprecated) perform the job selection outside the
    application, when starting the Sidekiq process. This was used on GitLab.com
    until September 2021, and is retained for compatibility reasons.
 
@@ -106,11 +106,19 @@ not a recommendation.
    sudo gitlab-ctl reconfigure
    ```
 
-## Queue selectors
+<!--- start_remove The following content will be removed on remove_date: '2024-08-22' -->
+
+## Queue selectors (deprecated)
 
 > - [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/45) in GitLab 12.8.
 > - [Sidekiq cluster, including queue selector, moved](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/181) to GitLab Free in 12.10.
 > - [Renamed from `experimental_queue_selector` to `queue_selector`](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/147) in GitLab 13.6.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390787) in GitLab 15.9.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390787) in GitLab 15.9
+and is planned for removal in 17.0. Most instances should have [all processes to listen to all queues](extra_sidekiq_processes.md#start-multiple-processes).
+Another alternative is to use [routing rules](#routing-rules) (be warned this is an advanced setting). This change is a breaking change.
 
 The `queue_selector` option allows queue groups to be selected in a more general
 way using a [worker matching query](#worker-matching-query). After
@@ -141,7 +149,12 @@ syntax.
    sudo gitlab-ctl reconfigure
    ```
 
-### Negate settings
+### Negate settings (deprecated)
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390787) in GitLab 15.9
+and is planned for removal in 17.0. Most instances should have [all processes to listen to all queues](extra_sidekiq_processes.md#start-multiple-processes).
+Another alternative is to use [routing rules](#routing-rules) (be warned this is an advanced setting). This change is a breaking change.
 
 This allows you to have the Sidekiq process work on every queue **except** the
 ones you list. This is generally only used when there are multiple Sidekiq
@@ -168,7 +181,7 @@ nodes. In this example, we exclude all import-related jobs from a Sidekiq node.
 
 We recommend GitLab deployments add more Sidekiq processes listening to all queues, as in the
 [Reference Architectures](../reference_architectures/index.md). For very large-scale deployments, we recommend
-[routing rules](#routing-rules) instead of [queue selectors](#queue-selectors). We use routing rules on GitLab.com as
+[routing rules](#routing-rules) instead of [queue selectors](#queue-selectors-deprecated). We use routing rules on GitLab.com as
 it helps to lower the load on Redis.
 
 To migrate from queue selectors to routing rules:
@@ -255,11 +268,13 @@ in a queue group entry is 1, while `min_concurrency` is set to `0`, and `max_con
 concurrency is set to `2` instead. A concurrency of `2` might be too low in most cases, except for very highly-CPU
 bound tasks.
 
+<!--- end_remove -->
+
 ## Worker matching query
 
 GitLab provides a query syntax to match a worker based on its attributes. This
 query syntax is employed by both [routing rules](#routing-rules) and
-[queue selectors](#queue-selectors). A query includes two components:
+[queue selectors](#queue-selectors-deprecated). A query includes two components:
 
 - Attributes that can be selected.
 - Operators used to construct a query.

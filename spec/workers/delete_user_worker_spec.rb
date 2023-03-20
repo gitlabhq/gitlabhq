@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DeleteUserWorker do
+RSpec.describe DeleteUserWorker, feature_category: :user_management do
   let!(:user)         { create(:user) }
   let!(:current_user) { create(:user) }
 

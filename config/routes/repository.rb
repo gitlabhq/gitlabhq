@@ -75,6 +75,7 @@ scope format: false do
 
     get '/tree/*id', to: 'tree#show', as: :tree
     get '/raw/*id', to: 'raw#show', as: :raw
+    get '/blame_page/*id', to: 'blame#page', as: :blame_page
     get '/blame/*id', to: 'blame#show', as: :blame
 
     get '/commits', to: 'commits#commits_root', as: :commits_root

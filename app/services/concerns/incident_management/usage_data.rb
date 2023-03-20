@@ -13,8 +13,6 @@ module IncidentManagement
       namespace = target.try(:namespace)
       project = target.try(:project)
 
-      return unless Feature.enabled?(:route_hll_to_snowplow_phase2, target.try(:namespace))
-
       Gitlab::Tracking.event(
         self.class.to_s,
         event,

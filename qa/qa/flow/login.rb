@@ -21,8 +21,8 @@ module QA
       def sign_in(as: nil, address: :gitlab, skip_page_validation: false, admin: false)
         Page::Main::Login.perform { |p| p.redirect_to_login_page(address) }
 
-        unless Page::Main::Login.perform(&:on_login_page?)
-          Page::Main::Menu.perform(&:sign_out) if Page::Main::Menu.perform(&:signed_in?)
+        if !Page::Main::Login.perform(&:on_login_page?) && Page::Main::Menu.perform(&:signed_in?)
+          Page::Main::Menu.perform(&:sign_out)
         end
 
         Page::Main::Login.perform do |login|

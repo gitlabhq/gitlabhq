@@ -132,6 +132,42 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
             it_behaves_like 'project commits'
           end
 
+          context 'with author parameter' do
+            let(:params) { { author: 'Zaporozhets' } }
+
+            it 'returns only this author commits' do
+              get api(route, user), params: params
+
+              expect(response).to have_gitlab_http_status(:ok)
+
+              author_names = json_response.map { |commit| commit['author_name'] }.uniq
+
+              expect(author_names).to contain_exactly('Dmitriy Zaporozhets')
+            end
+
+            context 'when author is missing' do
+              let(:params) { { author: '' } }
+
+              it 'returns all commits' do
+                get api(route, user), params: params
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(json_response.count).to eq(20)
+              end
+            end
+
+            context 'when author does not exists' do
+              let(:params) { { author: 'does not exist' } }
+
+              it 'returns an empty list' do
+                get api(route, user), params: params
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(json_response).to eq([])
+              end
+            end
+          end
+
           context 'when repository does not exist' do
             let(:project) { create(:project, creator: user, path: 'my.project') }
 
@@ -425,6 +461,27 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
   describe "POST /projects/:id/repository/commits" do
     let!(:url) { "/projects/#{project_id}/repository/commits" }
 
+    context 'when unauthenticated', 'and project is public' do
+      let_it_be(:project) { create(:project, :public, :repository) }
+      let(:params) do
+        {
+          branch: 'master',
+          commit_message: 'message',
+          actions: [
+            {
+              action: 'create',
+              file_path: '/test.rb',
+              content: 'puts 8'
+            }
+          ]
+        }
+      end
+
+      it_behaves_like '401 response' do
+        let(:request) { post api(url), params: params }
+      end
+    end
+
     it 'returns a 403 unauthorized for user without permissions' do
       post api(url, guest)
 
@@ -523,7 +580,6 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           let(:property) { 'g_edit_by_web_ide' }
           let(:label) { 'usage_activity_by_stage_monthly.create.action_monthly_active_users_ide_edit' }
           let(:context) { [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event_name).to_context] }
-          let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         end
 
         context 'counts.web_ide_commits Snowplow event tracking' do
@@ -1776,7 +1832,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
     context 'when unauthenticated', 'and project is public' do
       let_it_be(:project) { create(:project, :public, :repository) }
 
-      it_behaves_like '403 response' do
+      it_behaves_like '401 response' do
         let(:request) { post api(route), params: { branch: 'master' } }
       end
     end
@@ -1956,7 +2012,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
     context 'when unauthenticated', 'and project is public' do
       let_it_be(:project) { create(:project, :public, :repository) }
 
-      it_behaves_like '403 response' do
+      it_behaves_like '401 response' do
         let(:request) { post api(route), params: { branch: branch } }
       end
     end

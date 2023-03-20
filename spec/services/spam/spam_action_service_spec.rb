@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Spam::SpamActionService do
+RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency do
   include_context 'includes Spam constants'
 
   let(:issue) { create(:issue, project: project, author: author) }

@@ -41,10 +41,6 @@ describe('IssueCount', () => {
       createComponent({ maxIssueCount, itemsSize });
     });
 
-    afterEach(() => {
-      vm.destroy();
-    });
-
     it('contains issueSize in the template', () => {
       expect(vm.find('[data-testid="board-items-count"]').text()).toEqual(String(itemsSize));
     });
@@ -64,10 +60,6 @@ describe('IssueCount', () => {
       maxIssueCount = 2;
 
       createComponent({ maxIssueCount, itemsSize });
-    });
-
-    afterEach(() => {
-      vm.destroy();
     });
 
     it('contains issueSize in the template', () => {

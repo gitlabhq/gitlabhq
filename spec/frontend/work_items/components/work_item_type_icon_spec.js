@@ -9,17 +9,13 @@ function createComponent(propsData) {
   wrapper = shallowMount(WorkItemTypeIcon, {
     propsData,
     directives: {
-      GlTooltip: createMockDirective(),
+      GlTooltip: createMockDirective('gl-tooltip'),
     },
   });
 }
 
 describe('Work Item type component', () => {
   const findIcon = () => wrapper.findComponent(GlIcon);
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe.each`
     workItemType           | workItemIconName      | iconName                     | text              | showTooltipOnHover

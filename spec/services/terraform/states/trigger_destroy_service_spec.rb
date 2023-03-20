@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Terraform::States::TriggerDestroyService do
+RSpec.describe Terraform::States::TriggerDestroyService, feature_category: :infrastructure_as_code do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user, maintainer_projects: [project]) }
 

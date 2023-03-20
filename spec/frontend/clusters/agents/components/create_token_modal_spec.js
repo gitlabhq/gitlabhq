@@ -119,7 +119,6 @@ describe('CreateTokenModal', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     apolloProvider = null;
     createResponse = null;
   });

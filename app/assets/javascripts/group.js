@@ -1,6 +1,6 @@
 import { debounce } from 'lodash';
 
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import { getGroupPathAvailability } from '~/rest_api';
 import axios from '~/lib/utils/axios_utils';

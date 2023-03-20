@@ -17,6 +17,10 @@ module Gitlab
           end
         end
 
+        def internal_include_prepended?
+          true
+        end
+
         def source
           :external_project_source
         end

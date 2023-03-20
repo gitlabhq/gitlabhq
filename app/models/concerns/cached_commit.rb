@@ -14,4 +14,9 @@ module CachedCommit
   def parent_ids
     []
   end
+
+  # These are not saved
+  def referenced_by
+    []
+  end
 end

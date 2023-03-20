@@ -3,7 +3,7 @@
 exports[`NewCluster renders the cluster component correctly 1`] = `
 "<div class=\\"gl-pt-4\\">
   <h4>Enter your Kubernetes cluster certificate details</h4>
-  <p>Enter details about your cluster. <b-link-stub href=\\"/help/user/project/clusters/add_existing_cluster\\" event=\\"click\\" routertag=\\"a\\" class=\\"gl-link\\">How do I use a certificate to connect to my cluster?</b-link-stub>
+  <p>Enter details about your cluster. <b-link-stub href=\\"/help/user/project/clusters/add_existing_cluster\\" class=\\"gl-link\\">How do I use a certificate to connect to my cluster?</b-link-stub>
   </p>
 </div>"
 `;

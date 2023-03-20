@@ -4,7 +4,7 @@ module Projects
   module Ci
     module PrometheusMetrics
       class HistogramsController < Projects::ApplicationController
-        feature_category :pipeline_authoring
+        feature_category :pipeline_composition
 
         respond_to :json, only: [:create]
 

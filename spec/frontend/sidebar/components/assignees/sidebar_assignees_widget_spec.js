@@ -5,8 +5,8 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
-import { IssuableType } from '~/issues/constants';
+import { createAlert } from '~/alert';
+import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import SidebarAssigneesRealtime from '~/sidebar/components/assignees/assignees_realtime.vue';
 import IssuableAssignees from '~/sidebar/components/assignees/issuable_assignees.vue';
 import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
@@ -17,7 +17,7 @@ import updateIssueAssigneesMutation from '~/sidebar/queries/update_issue_assigne
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import { issuableQueryResponse, updateIssueAssigneesMutationResponse } from '../../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const updateIssueAssigneesMutationSuccess = jest
   .fn()
@@ -98,10 +98,7 @@ describe('Sidebar assignees widget', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     fakeApollo = null;
-    delete gon.current_username;
   });
 
   describe('with passed initial assignees', () => {
@@ -397,7 +394,7 @@ describe('Sidebar assignees widget', () => {
   });
 
   it('does not render invite members link on non-issue sidebar', async () => {
-    createComponent({ props: { issuableType: IssuableType.MergeRequest } });
+    createComponent({ props: { issuableType: TYPE_MERGE_REQUEST } });
     await waitForPromises();
     expect(findInviteMembersLink().exists()).toBe(false);
   });

@@ -2,7 +2,7 @@
 import importGroupIllustration from '@gitlab/svgs/dist/illustrations/group-import.svg';
 import newGroupIllustration from '@gitlab/svgs/dist/illustrations/group-new.svg';
 
-import { __, s__ } from '~/locale';
+import { s__ } from '~/locale';
 import NewNamespacePage from '~/vue_shared/new_namespace/new_namespace_page.vue';
 import createGroupDescriptionDetails from './create_group_description_details.vue';
 
@@ -11,6 +11,15 @@ export default {
     NewNamespacePage,
   },
   props: {
+    groupsUrl: {
+      type: String,
+      required: true,
+    },
+    parentGroupUrl: {
+      type: String,
+      required: false,
+      default: null,
+    },
     parentGroupName: {
       type: String,
       required: false,
@@ -28,8 +37,16 @@ export default {
     },
   },
   computed: {
-    initialBreadcrumb() {
-      return this.parentGroupName || __('New group');
+    initialBreadcrumbs() {
+      return this.parentGroupUrl
+        ? [
+            { text: this.parentGroupName, href: this.parentGroupUrl },
+            { text: s__('GroupsNew|New subgroup'), href: '#' },
+          ]
+        : [
+            { text: s__('GroupsNew|Groups'), href: this.groupsUrl },
+            { text: s__('GroupsNew|New group'), href: '#' },
+          ];
     },
     panels() {
       return [
@@ -68,7 +85,7 @@ export default {
 <template>
   <new-namespace-page
     :jump-to-last-persisted-panel="hasErrors"
-    :initial-breadcrumb="initialBreadcrumb"
+    :initial-breadcrumbs="initialBreadcrumbs"
     :panels="panels"
     :title="s__('GroupsNew|Create new group')"
     persistence-key="new_group_last_active_tab"

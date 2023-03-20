@@ -45,10 +45,6 @@ describe('Job Status Token', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('passes config correctly', () => {
     expect(findFilteredSearchToken().props('config')).toEqual(defaultProps.config);
   });

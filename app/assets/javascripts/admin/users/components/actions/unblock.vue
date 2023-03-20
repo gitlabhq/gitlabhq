@@ -32,7 +32,7 @@ export default {
           },
           actionPrimary: {
             text: I18N_USER_ACTIONS.unblock,
-            attributes: [{ variant: 'confirm' }],
+            attributes: { variant: 'confirm' },
           },
         },
       });

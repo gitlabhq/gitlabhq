@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Generic::CreatePackageFileService do
+RSpec.describe Packages::Generic::CreatePackageFileService, feature_category: :package_registry do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:pipeline) { create(:ci_pipeline, user: user) }

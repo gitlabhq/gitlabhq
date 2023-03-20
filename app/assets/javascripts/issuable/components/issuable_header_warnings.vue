@@ -2,7 +2,7 @@
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
 import { sprintf, __ } from '~/locale';
-import { TYPE_ISSUE, WorkspaceType } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_MERGE_REQUEST, WORKSPACE_PROJECT } from '~/issues/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 
@@ -13,7 +13,7 @@ const NoteableTypeText = {
 
 export default {
   TYPE_ISSUE,
-  WorkspaceType,
+  WORKSPACE_PROJECT,
   components: {
     GlIcon,
     ConfidentialityBadge,
@@ -32,7 +32,7 @@ export default {
       return this.getNoteableData.confidential;
     },
     isMergeRequest() {
-      return this.getNoteableData.targetType === 'merge_request';
+      return this.getNoteableData.targetType === TYPE_MERGE_REQUEST;
     },
     warningIconsMeta() {
       return [
@@ -60,7 +60,7 @@ export default {
     <confidentiality-badge
       v-if="isConfidential"
       data-testid="confidential"
-      :workspace-type="$options.WorkspaceType.project"
+      :workspace-type="$options.WORKSPACE_PROJECT"
       :issuable-type="$options.TYPE_ISSUE"
     />
     <template v-for="meta in warningIconsMeta">

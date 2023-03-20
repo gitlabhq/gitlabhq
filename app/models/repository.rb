@@ -48,7 +48,7 @@ class Repository
   # For example, for entry `:commit_count` there's a method called `commit_count` which
   # stores its data in the `commit_count` cache key.
   CACHED_METHODS = %i(size commit_count readme_path contribution_guide
-                      changelog license_blob license_licensee license_gitaly gitignore
+                      changelog license_blob license_gitaly gitignore
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? root_ref merged_branch_names
                       has_visible_content? issue_template_names_hash merge_request_template_names_hash
@@ -60,7 +60,7 @@ class Repository
   METHOD_CACHES_FOR_FILE_TYPES = {
     readme: %i(readme_path),
     changelog: :changelog,
-    license: %i(license_blob license_licensee license_gitaly),
+    license: %i(license_blob license_gitaly),
     contributing: :contribution_guide,
     gitignore: :gitignore,
     gitlab_ci: :gitlab_ci_yml,
@@ -161,7 +161,8 @@ class Repository
       first_parent: !!opts[:first_parent],
       order: opts[:order],
       literal_pathspec: opts.fetch(:literal_pathspec, true),
-      trailers: opts[:trailers]
+      trailers: opts[:trailers],
+      include_referenced_by: opts[:include_referenced_by]
     }
 
     commits = Gitlab::Git::Commit.where(options)
@@ -655,24 +656,13 @@ class Repository
   end
 
   def license
-    if Feature.enabled?(:license_from_gitaly)
-      license_gitaly
-    else
-      license_licensee
-    end
+    license_gitaly
   end
-
-  def license_licensee
-    return unless exists?
-
-    raw_repository.license(false)
-  end
-  cache_method :license_licensee
 
   def license_gitaly
     return unless exists?
 
-    raw_repository.license(true)
+    raw_repository.license
   end
   cache_method :license_gitaly
 
@@ -844,6 +834,26 @@ class Repository
     commit_files(user, **options)
   end
 
+  def move_dir_files(user, path, previous_path, **options)
+    regex = Regexp.new("^#{Regexp.escape(previous_path + '/')}", 'i')
+    files = ls_files(options[:branch_name])
+
+    options[:actions] = files.each_with_object([]) do |item, list|
+      next unless item =~ regex
+
+      list.push(
+        action: :move,
+        file_path: "#{path}/#{item[regex.match(item)[0].size..]}",
+        previous_path: item,
+        infer_content: true
+      )
+    end
+
+    return if options[:actions].blank?
+
+    commit_files(user, **options)
+  end
+
   def delete_file(user, path, **options)
     options[:actions] = [{ action: :delete, file_path: path }]
 
@@ -948,6 +958,8 @@ class Repository
   end
 
   def merged_to_root_ref?(branch_or_name)
+    return unless head_commit
+
     branch = Gitlab::Git::Branch.find(self, branch_or_name)
 
     if branch
@@ -960,7 +972,7 @@ class Repository
   end
 
   def root_ref_sha
-    @root_ref_sha ||= commit(root_ref).sha
+    @root_ref_sha ||= head_commit.sha
   end
 
   # If this method is not provided a set of branch names to check merge status,

@@ -25,11 +25,8 @@ module QA
         #
         # @return [void]
         def configure_allure
-          # Match job names like ee:relative, ce:update etc. and set as execution environment
-          env_matcher = /^(?<env>\w{2}:\S+)/
-
           AllureRspec.configure do |config|
-            config.results_directory = 'tmp/allure-results'
+            config.results_directory = ENV['QA_ALLURE_RESULTS_DIRECTORY'] || 'tmp/allure-results'
             config.clean_results_directory = true
 
             # automatically attach links to testcases and issues
@@ -38,11 +35,11 @@ module QA
             config.issue_tag = :issue
             config.link_issue_pattern = '{}'
 
-            config.environment_properties = environment_info if Env.running_in_ci?
-
-            # Set custom environment name to separate same specs executed on different environments
-            if Env.running_in_ci? && Env.ci_job_name.match?(env_matcher)
-              config.environment = Env.ci_job_name.match(env_matcher).named_captures['env']
+            if Env.running_in_ci?
+              config.environment_properties = environment_info
+              # Set custom environment name to separate same specs executed in different jobs
+              # Drop number postfixes from parallel jobs by only matching non whitespace characters
+              config.environment = Env.ci_job_name.match(/^\S+/)[0]
             end
           end
         end
@@ -77,7 +74,7 @@ module QA
             config.add_formatter(QA::Support::Formatters::AllureMetadataFormatter)
             config.add_formatter(AllureRspecFormatter)
 
-            config.append_after do |example|
+            config.append_after do
               Allure.add_attachment(
                 name: 'browser.log',
                 source: Capybara.current_session.driver.browser.logs.get(:browser).map(&:to_s).join("\n\n"),
@@ -92,7 +89,7 @@ module QA
         #
         # @return [Hash]
         def environment_info
-          lambda do
+          -> do
             return {} unless Env.admin_personal_access_token || Env.personal_access_token
 
             client = Env.admin_personal_access_token ? API::Client.as_admin : API::Client.new

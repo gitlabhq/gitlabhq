@@ -142,7 +142,7 @@ RSpec.describe Ci::CreatePipelineService, # rubocop: disable RSpec/FilePath
 
     describe 'pipeline includes count' do
       before do
-        stub_const('Gitlab::Ci::Config::External::Context::MAX_INCLUDES', 2)
+        stub_const('Gitlab::Ci::Config::External::Context::TEMP_MAX_INCLUDES', 2)
       end
 
       context 'when the includes count exceeds the maximum' do

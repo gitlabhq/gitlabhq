@@ -1,12 +1,11 @@
 <script>
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import { mapActions } from 'vuex';
 import { orderBy } from 'lodash';
 import BoardFilteredSearch from 'ee_else_ce/boards/components/board_filtered_search.vue';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
-import issueBoardFilters from '~/boards/issue_board_filters';
+import issueBoardFilters from 'ee_else_ce/boards/issue_board_filters';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
@@ -47,11 +46,18 @@ export default {
   },
   components: { BoardFilteredSearch },
   inject: ['isSignedIn', 'releasesFetchPath', 'fullPath', 'isGroupBoard'],
+  props: {
+    board: {
+      type: Object,
+      required: false,
+      default: () => {},
+    },
+  },
   computed: {
     tokensCE() {
       const { issue, incident } = this.$options.i18n;
       const { types } = this.$options;
-      const { fetchUsers, fetchLabels } = issueBoardFilters(
+      const { fetchUsers, fetchLabels, fetchMilestones } = issueBoardFilters(
         this.$apollo,
         this.fullPath,
         this.isGroupBoard,
@@ -135,7 +141,7 @@ export default {
           token: MilestoneToken,
           unique: true,
           shouldSkipSort: true,
-          fetchMilestones: this.fetchMilestones,
+          fetchMilestones,
         },
         {
           icon: 'issues',
@@ -176,7 +182,6 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['fetchMilestones']),
     preloadedUsers() {
       return gon?.current_user_id
         ? [
@@ -194,5 +199,10 @@ export default {
 </script>
 
 <template>
-  <board-filtered-search data-testid="issue-board-filtered-search" :tokens="tokens" />
+  <board-filtered-search
+    data-testid="issue-board-filtered-search"
+    :tokens="tokens"
+    :board="board"
+    @setFilters="$emit('setFilters', $event)"
+  />
 </template>

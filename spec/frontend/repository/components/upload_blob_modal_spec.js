@@ -4,13 +4,13 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn(),
   joinPaths: () => '/new_upload',
@@ -53,14 +53,9 @@ describe('UploadBlobModal', () => {
   const findBranchName = () => wrapper.findComponent(GlFormInput);
   const findMrToggle = () => wrapper.findComponent(GlToggle);
   const findUploadDropzone = () => wrapper.findComponent(UploadDropzone);
-  const actionButtonDisabledState = () => findModal().props('actionPrimary').attributes[0].disabled;
-  const cancelButtonDisabledState = () => findModal().props('actionCancel').attributes[0].disabled;
-  const actionButtonLoadingState = () => findModal().props('actionPrimary').attributes[0].loading;
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
+  const actionButtonDisabledState = () => findModal().props('actionPrimary').attributes.disabled;
+  const cancelButtonDisabledState = () => findModal().props('actionCancel').attributes.disabled;
+  const actionButtonLoadingState = () => findModal().props('actionPrimary').attributes.loading;
 
   describe.each`
     canPushCode | displayBranchName | displayForkedBranchMessage
@@ -110,9 +105,7 @@ describe('UploadBlobModal', () => {
       if (canPushCode) {
         describe('when changing the branch name', () => {
           it('displays the MR toggle', async () => {
-            // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-            // eslint-disable-next-line no-restricted-syntax
-            wrapper.setData({ target: 'Not main' });
+            createComponent({ targetBranch: 'Not main' });
 
             await nextTick();
 
@@ -123,12 +116,10 @@ describe('UploadBlobModal', () => {
 
       describe('completed form', () => {
         beforeEach(() => {
-          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-          // eslint-disable-next-line no-restricted-syntax
-          wrapper.setData({
-            file: { type: 'jpg' },
-            filePreviewURL: 'http://file.com?format=jpg',
-          });
+          findUploadDropzone().vm.$emit(
+            'change',
+            new File(['http://file.com?format=jpg'], 'file.jpg'),
+          );
         });
 
         it('enables the upload button when the form is completed', () => {
@@ -184,7 +175,7 @@ describe('UploadBlobModal', () => {
             await waitForPromises();
           });
 
-          it('creates a flash error', () => {
+          it('creates an alert error', () => {
             expect(createAlert).toHaveBeenCalledWith({
               message: 'Error uploading file. Please try again.',
             });
@@ -199,13 +190,6 @@ describe('UploadBlobModal', () => {
   );
 
   describe('blob file submission type', () => {
-    const submitForm = async () => {
-      wrapper.vm.uploadFile = jest.fn();
-      wrapper.vm.replaceFile = jest.fn();
-      wrapper.vm.submitForm();
-      await nextTick();
-    };
-
     const submitRequest = async () => {
       mock = new MockAdapter(axios);
       findModal().vm.$emit('primary', mockEvent);
@@ -223,13 +207,6 @@ describe('UploadBlobModal', () => {
 
       it('display the defaul primary button text', () => {
         expect(findModal().props('actionPrimary').text).toBe('Upload file');
-      });
-
-      it('calls the default uploadFile when the form submit', async () => {
-        await submitForm();
-
-        expect(wrapper.vm.uploadFile).toHaveBeenCalled();
-        expect(wrapper.vm.replaceFile).not.toHaveBeenCalled();
       });
 
       it('makes a POST request', async () => {
@@ -259,13 +236,6 @@ describe('UploadBlobModal', () => {
 
       it('display the passed primary button text', () => {
         expect(findModal().props('actionPrimary').text).toBe(primaryBtnText);
-      });
-
-      it('calls the replaceFile when the form submit', async () => {
-        await submitForm();
-
-        expect(wrapper.vm.replaceFile).toHaveBeenCalled();
-        expect(wrapper.vm.uploadFile).not.toHaveBeenCalled();
       });
 
       it('makes a PUT request', async () => {

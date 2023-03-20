@@ -46,11 +46,6 @@ describe('Deploy freeze modal', () => {
     wrapper.findComponent(TimezoneDropdown).trigger('input');
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('Basic interactions', () => {
     it('button is disabled when freeze period is invalid', () => {
       expect(submitDeployFreezeButton().attributes('disabled')).toBe('true');

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe ApplicationController do
+RSpec.describe ApplicationController, feature_category: :shared do
   include TermsHelper
 
   let(:user) { create(:user) }
@@ -736,23 +736,11 @@ RSpec.describe ApplicationController do
       end
     end
 
-    context 'user not logged in' do
-      it 'sets the default headers' do
-        get :index
+    it 'sets the default headers' do
+      get :index
 
-        expect(response.headers['Cache-Control']).to be_nil
-        expect(response.headers['Pragma']).to be_nil
-      end
-    end
-
-    context 'user logged in' do
-      it 'sets the default headers' do
-        sign_in(user)
-
-        get :index
-
-        expect(response.headers['Pragma']).to eq 'no-cache'
-      end
+      expect(response.headers['Cache-Control']).to be_nil
+      expect(response.headers['Pragma']).to be_nil
     end
   end
 
@@ -779,7 +767,6 @@ RSpec.describe ApplicationController do
       subject
 
       expect(response.headers['Cache-Control']).to eq 'private, no-store'
-      expect(response.headers['Pragma']).to eq 'no-cache'
       expect(response.headers['Expires']).to eq 'Fri, 01 Jan 1990 00:00:00 GMT'
     end
 

@@ -74,7 +74,7 @@ Cluster:
 ### Unavailable repositories
 
 > - From GitLab 13.0 through 14.0, repositories became read-only if they were outdated on the primary but fully up to date on a healthy secondary. `dataloss` sub-command displays read-only repositories by default through these versions.
-> - Since GitLab 14.1, Praefect contains more responsive failover logic which immediately fails over to one of the fully up to date secondaries rather than placing the repository in read-only mode. Since GitLab 14.1, the `dataloss` sub-command displays repositories which are unavailable due to having no fully up to date copies on healthy Gitaly nodes.
+> - From GitLab 14.1, Praefect contains more responsive failover logic which immediately fails over to one of the fully up to date secondaries rather than placing the repository in read-only mode. From GitLab 14.1, the `dataloss` sub-command displays repositories which are unavailable due to having no fully up to date copies on healthy Gitaly nodes.
 
 A repository is unavailable if all of its up to date replicas are unavailable. Unavailable repositories are
 not accessible through Praefect to prevent serving stale data that may break automated tooling.
@@ -277,15 +277,33 @@ The reconciliation frequency can be changed via the configuration. The value can
 Examples:
 
 ```ruby
-praefect['reconciliation_scheduling_interval'] = '5m' # the default value
+praefect['configuration'] = {
+   # ...
+   reconciliation: {
+      # ...
+      scheduling_interval: '5m', # the default value
+   },
+}
 ```
 
 ```ruby
-praefect['reconciliation_scheduling_interval'] = '30s' # reconcile every 30 seconds
+praefect['configuration'] = {
+   # ...
+   reconciliation: {
+      # ...
+      scheduling_interval: '30s', # reconcile every 30 seconds
+   },
+}
 ```
 
 ```ruby
-praefect['reconciliation_scheduling_interval'] = '0' # disable the feature
+praefect['configuration'] = {
+   # ...
+   reconciliation: {
+      # ...
+      scheduling_interval: '0', # disable the feature
+   },
+}
 ```
 
 ### Manual reconciliation
@@ -334,16 +352,21 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
   sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml remove-repository -virtual-storage <virtual-storage> -repository <repository> -apply
   ```
 
-- `-virtual-storage` is the virtual storage the repository is located in. Virtual storages are configured in `/etc/gitlab/gitlab.rb` under `praefect['virtual_storages]` and looks like the following:
+- `-virtual-storage` is the virtual storage the repository is located in. Virtual storages are configured in `/etc/gitlab/gitlab.rb` under `praefect['configuration']['virtual_storage]` and looks like the following:
 
   ```ruby
-  praefect['virtual_storages'] = {
-    'default' => {
-      ...
-    },
-    'storage-1' => {
-      ...
-    }
+  praefect['configuration'] = {
+    # ...
+    virtual_storage: [
+      {
+        # ...
+        name: 'default',
+      },
+      {
+        # ...
+        name: 'storage-1',
+      },
+    ],
   }
   ```
 
@@ -415,16 +438,21 @@ The `track-repository` Praefect sub-command adds repositories on disk to the Pra
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml track-repository -virtual-storage <virtual-storage> -authoritative-storage <storage-name> -repository <repository> -replicate-immediately
 ```
 
-- `-virtual-storage` is the virtual storage the repository is located in. Virtual storages are configured in `/etc/gitlab/gitlab.rb` under `praefect['virtual_storages]` and looks like the following:
+- `-virtual-storage` is the virtual storage the repository is located in. Virtual storages are configured in `/etc/gitlab/gitlab.rb` under `praefect['configuration'][:virtual_storage]` and looks like the following:
 
   ```ruby
-  praefect['virtual_storages'] = {
-    'default' => {
-      ...
-    },
-    'storage-1' => {
-      ...
-    }
+  praefect['configuration'] = {
+    # ...
+    virtual_storage: [
+      {
+        # ...
+        name: 'default',
+      },
+      {
+        # ...
+        name: 'storage-1',
+      },
+    ],
   }
   ```
 
@@ -473,7 +501,7 @@ The command validates that all entries:
 
 - Are formatted correctly and contain required fields.
 - Correspond to a valid Git repository on disk.
-- Are not currently tracked in the Praefect tracking database.
+- Are not tracked in the Praefect tracking database.
 
 If any entry fails these checks, the command aborts prior to attempting to track a repository.
 

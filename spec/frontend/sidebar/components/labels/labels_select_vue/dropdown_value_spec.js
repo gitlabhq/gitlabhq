@@ -28,10 +28,6 @@ describe('DropdownValue', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('methods', () => {
     describe('labelFilterUrl', () => {
       it('returns a label filter URL based on provided label param', () => {

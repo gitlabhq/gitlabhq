@@ -8,10 +8,11 @@ import { METRIC_TYPE_SUMMARY } from '~/api/analytics_api';
 import { VSA_METRICS_GROUPS, METRICS_POPOVER_CONTENT } from '~/analytics/shared/constants';
 import { prepareTimeMetricsData } from '~/analytics/shared/utils';
 import MetricTile from '~/analytics/shared/components/metric_tile.vue';
-import { createAlert } from '~/flash';
+import ValueStreamsDashboardLink from '~/analytics/shared/components/value_streams_dashboard_link.vue';
+import { createAlert } from '~/alert';
 import { group } from './mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('ValueStreamMetrics', () => {
   let wrapper;
@@ -37,6 +38,7 @@ describe('ValueStreamMetrics', () => {
     });
   };
 
+  const findVSDLink = () => wrapper.findComponent(ValueStreamsDashboardLink);
   const findMetrics = () => wrapper.findAllComponents(MetricTile);
   const findMetricsGroups = () => wrapper.findAllByTestId('vsa-metrics-group');
 
@@ -47,10 +49,6 @@ describe('ValueStreamMetrics', () => {
       ...fields,
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('with successful requests', () => {
     beforeEach(() => {
@@ -165,6 +163,25 @@ describe('ValueStreamMetrics', () => {
           });
         });
       });
+    });
+  });
+
+  describe('Value Streams Dashboard Link', () => {
+    it('will render when a dashboardsPath is set', async () => {
+      wrapper = createComponent({ groupBy: VSA_METRICS_GROUPS, dashboardsPath: 'fake-group-path' });
+      await waitForPromises();
+
+      const vsdLink = findVSDLink();
+
+      expect(vsdLink.exists()).toBe(true);
+      expect(vsdLink.props()).toEqual({ requestPath: 'fake-group-path' });
+    });
+
+    it('does not render without a dashboardsPath', async () => {
+      wrapper = createComponent({ groupBy: VSA_METRICS_GROUPS });
+      await waitForPromises();
+
+      expect(findVSDLink().exists()).toBe(false);
     });
   });
 

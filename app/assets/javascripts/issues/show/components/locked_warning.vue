@@ -1,7 +1,13 @@
 <script>
 import { GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
-import { IssuableType } from '~/issues/constants';
+import {
+  TYPE_ALERT,
+  TYPE_EPIC,
+  TYPE_ISSUE,
+  TYPE_MERGE_REQUEST,
+  TYPE_TEST_CASE,
+} from '~/issues/constants';
 
 export const i18n = Object.freeze({
   alertMessage: __(
@@ -20,7 +26,9 @@ export default {
       type: String,
       required: true,
       validator(value) {
-        return Object.values(IssuableType).includes(value);
+        return [TYPE_ALERT, TYPE_EPIC, TYPE_ISSUE, TYPE_MERGE_REQUEST, TYPE_TEST_CASE].includes(
+          value,
+        );
       },
     },
   },

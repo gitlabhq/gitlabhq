@@ -35,7 +35,6 @@ describe('Sidebar Participants Widget', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 

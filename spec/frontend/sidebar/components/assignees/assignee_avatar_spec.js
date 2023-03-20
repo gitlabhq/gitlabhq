@@ -7,7 +7,6 @@ const TEST_AVATAR = `${TEST_HOST}/avatar.png`;
 const TEST_DEFAULT_AVATAR_URL = `${TEST_HOST}/default/avatar/url.png`;
 
 describe('AssigneeAvatar', () => {
-  let origGon;
   let wrapper;
 
   function createComponent(props = {}) {
@@ -24,13 +23,7 @@ describe('AssigneeAvatar', () => {
   }
 
   beforeEach(() => {
-    origGon = window.gon;
     window.gon = { default_avatar_url: TEST_DEFAULT_AVATAR_URL };
-  });
-
-  afterEach(() => {
-    window.gon = origGon;
-    wrapper.destroy();
   });
 
   const findImg = () => wrapper.find('img');

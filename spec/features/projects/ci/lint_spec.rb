@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'CI Lint', :js, feature_category: :pipeline_authoring do
+RSpec.describe 'CI Lint', :js, feature_category: :pipeline_composition do
   include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
 
   let_it_be(:project) { create(:project, :repository) }

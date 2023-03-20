@@ -3,6 +3,7 @@
 module Users
   class ValidateManualOtpService < BaseService
     include ::Gitlab::Auth::Otp::Fortinet
+    include ::Gitlab::Auth::Otp::DuoAuth
 
     def initialize(current_user)
       @current_user = current_user
@@ -10,6 +11,8 @@ module Users
                     ::Gitlab::Auth::Otp::Strategies::FortiAuthenticator::ManualOtp.new(current_user)
                   elsif forti_token_cloud_enabled?(current_user)
                     ::Gitlab::Auth::Otp::Strategies::FortiTokenCloud.new(current_user)
+                  elsif duo_auth_enabled?(current_user)
+                    ::Gitlab::Auth::Otp::Strategies::DuoAuth::ManualOtp.new(current_user)
                   else
                     ::Gitlab::Auth::Otp::Strategies::Devise.new(current_user)
                   end

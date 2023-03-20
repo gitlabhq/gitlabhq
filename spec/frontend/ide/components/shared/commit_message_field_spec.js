@@ -23,10 +23,6 @@ describe('CommitMessageField', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findTextArea = () => wrapper.find('textarea');
   const findHighlights = () => wrapper.findByTestId('highlights');
   const findHighlightsText = () => wrapper.findByTestId('highlights-text');

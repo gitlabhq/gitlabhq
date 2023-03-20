@@ -219,7 +219,7 @@ Geo requires an EE license. To visit the Geo sites in your browser, you need a r
 
    # Using a full image address
    GITLAB_QA_ACCESS_TOKEN=your-token-here gitlab-qa Test::Integration::Geo registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:examplesha123456789 --no-teardown
-    ```
+   ```
 
    You can use the `--no-tests` option to build the containers only, and then run the [`EE::Scenario::Test::Geo` scenario](https://gitlab.com/gitlab-org/gitlab/-/blob/f7272b77e80215c39d1ffeaed27794c220dbe03f/qa/qa/ee/scenario/test/geo.rb) from your GDK to complete setup and run tests. However, there might be configuration issues if your GDK and the containers are based on different GitLab versions. With the `--no-teardown` option, GitLab-QA uses the same GitLab version for the GitLab containers and the GitLab QA container used to configure the Geo setup.
 
@@ -369,15 +369,15 @@ To run the LDAP tests on your local with TLS disabled, follow these steps:
 
 1. Run the GitLab container:
 
-  ```shell
-  sudo docker run \
-    --hostname localhost \
-    --net test \
-    --publish 443:443 --publish 80:80 --publish 22:22 \
-    --name gitlab \
-    --env GITLAB_OMNIBUS_CONFIG="gitlab_rails['ldap_enabled'] = true; gitlab_rails['ldap_servers'] = {\"main\"=>{\"label\"=>\"LDAP\", \"host\"=>\"ldap-server.test\", \"port\"=>389, \"uid\"=>\"uid\", \"bind_dn\"=>\"cn=admin,dc=example,dc=org\", \"password\"=>\"admin\", \"encryption\"=>\"plain\", \"verify_certificates\"=>false, \"base\"=>\"dc=example,dc=org\", \"user_filter\"=>\"\", \"group_base\"=>\"ou=Global Groups,dc=example,dc=org\", \"admin_group\"=>\"AdminGroup\", \"external_groups\"=>\"\", \"sync_ssh_keys\"=>false}}; gitlab_rails['ldap_sync_worker_cron'] = '* * * * *'; gitlab_rails['ldap_group_sync_worker_cron'] = '* * * * *'; " \
-  gitlab/gitlab-ee:latest
-  ```
+   ```shell
+   sudo docker run \
+     --hostname localhost \
+     --net test \
+     --publish 443:443 --publish 80:80 --publish 22:22 \
+     --name gitlab \
+     --env GITLAB_OMNIBUS_CONFIG="gitlab_rails['ldap_enabled'] = true; gitlab_rails['ldap_servers'] = {\"main\"=>{\"label\"=>\"LDAP\", \"host\"=>\"ldap-server.test\", \"port\"=>389, \"uid\"=>\"uid\", \"bind_dn\"=>\"cn=admin,dc=example,dc=org\", \"password\"=>\"admin\", \"encryption\"=>\"plain\", \"verify_certificates\"=>false, \"base\"=>\"dc=example,dc=org\", \"user_filter\"=>\"\", \"group_base\"=>\"ou=Global Groups,dc=example,dc=org\", \"admin_group\"=>\"AdminGroup\", \"external_groups\"=>\"\", \"sync_ssh_keys\"=>false}}; gitlab_rails['ldap_sync_worker_cron'] = '* * * * *'; gitlab_rails['ldap_group_sync_worker_cron'] = '* * * * *'; " \
+   gitlab/gitlab-ee:latest
+   ```
 
 1. Run an LDAP test from [`gitlab/qa`](https://gitlab.com/gitlab-org/gitlab/-/tree/d5447ebb5f99d4c72780681ddf4dc25b0738acba/qa) directory:
 

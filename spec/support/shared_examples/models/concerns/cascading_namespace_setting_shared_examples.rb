@@ -171,15 +171,59 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
   end
 
   describe "##{settings_attribute_name}=" do
-    before do
-      subgroup_settings.update!(settings_attribute_name => nil)
-      group_settings.update!(settings_attribute_name => true)
+    using RSpec::Parameterized::TableSyntax
+
+    where(:parent_value, :current_subgroup_value, :new_subgroup_value, :expected_subgroup_value_after_update) do
+      true  | nil   |  true   | nil
+      true  | nil   | "true"  | nil
+      true  | false |  true   | true
+      true  | false | "true"  | true
+      true  | true  |  false  | false
+      true  | true  | "false" | false
+      false | nil   |  false  | nil
+      false | nil   |  true   | true
+      false | true  |  false  | false
+      false | false |  true   | true
     end
 
-    it 'does not save the value locally when it matches the cascaded value' do
-      subgroup_settings.update!(settings_attribute_name => true)
+    with_them do
+      before do
+        subgroup_settings.update!(settings_attribute_name => current_subgroup_value)
+        group_settings.update!(settings_attribute_name => parent_value)
+      end
 
-      expect(subgroup_settings.read_attribute(settings_attribute_name)).to eq(nil)
+      it 'validates starting values from before block', :aggregate_failures do
+        expect(group_settings.reload.read_attribute(settings_attribute_name)).to eq(parent_value)
+        expect(subgroup_settings.reload.read_attribute(settings_attribute_name)).to eq(current_subgroup_value)
+      end
+
+      it 'does not save the value locally when it matches cascaded value', :aggregate_failures do
+        subgroup_settings.send("#{settings_attribute_name}=", new_subgroup_value)
+
+        # Verify dirty value
+        expect(subgroup_settings.read_attribute(settings_attribute_name)).to eq(expected_subgroup_value_after_update)
+
+        subgroup_settings.save!
+
+        # Verify persisted value
+        expect(subgroup_settings.reload.read_attribute(settings_attribute_name))
+          .to eq(expected_subgroup_value_after_update)
+      end
+
+      context 'when mass assigned' do
+        before do
+          subgroup_settings.attributes =
+            { settings_attribute_name => new_subgroup_value, "lock_#{settings_attribute_name}" => false }
+        end
+
+        it 'does not save the value locally when it matches cascaded value', :aggregate_failures do
+          subgroup_settings.save!
+
+          # Verify persisted value
+          expect(subgroup_settings.reload.read_attribute(settings_attribute_name))
+            .to eq(expected_subgroup_value_after_update)
+        end
+      end
     end
   end
 

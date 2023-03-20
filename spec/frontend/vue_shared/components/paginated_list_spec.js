@@ -33,10 +33,6 @@ describe('Pagination links component', () => {
     [glPaginatedList] = wrapper.vm.$children;
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Paginated List Component', () => {
     describe('props', () => {
       // We test attrs and not props because we pass through to child component using v-bind:"$attrs"

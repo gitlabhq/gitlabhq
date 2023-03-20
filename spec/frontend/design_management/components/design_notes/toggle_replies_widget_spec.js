@@ -23,10 +23,6 @@ describe('Toggle replies widget component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when replies are collapsed', () => {
     beforeEach(() => {
       createComponent();

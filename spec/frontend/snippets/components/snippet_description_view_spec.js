@@ -17,10 +17,6 @@ describe('Snippet Description component', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('matches the snapshot', () => {
     expect(wrapper.element).toMatchSnapshot();
   });

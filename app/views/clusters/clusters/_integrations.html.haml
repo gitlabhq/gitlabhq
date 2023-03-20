@@ -6,7 +6,7 @@
     - if can?(current_user, :admin_cluster, @cluster)
       .sub-section.form-group
         = gitlab_ui_form_for @prometheus_integration, as: :integration, namespace: :prometheus, url: @cluster.integrations_path, method: :post, html: { class: 'js-cluster-integrations-form' } do |prometheus_form|
-          = prometheus_form.hidden_field :application_type
+          = prometheus_form.hidden_field :application_type, value: @prometheus_integration.application_type
           .form-group.gl-form-group
             - help_text = s_('ClusterIntegration|Allows GitLab to query a specifically configured in-cluster Prometheus for metrics.')
             - help_link = link_to(_('More information.'), help_page_path("user/clusters/integrations", anchor: "prometheus-cluster-integration"), target: '_blank', rel: 'noopener noreferrer')

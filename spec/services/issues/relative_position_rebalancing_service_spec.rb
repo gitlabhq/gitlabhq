@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::RelativePositionRebalancingService, :clean_gitlab_redis_shared_state do
+RSpec.describe Issues::RelativePositionRebalancingService, :clean_gitlab_redis_shared_state, feature_category: :team_planning do
   let_it_be(:project, reload: true) { create(:project, :repository_disabled, skip_disk_validation: true) }
   let_it_be(:user) { project.creator }
   let_it_be(:start) { RelativePositioning::START_POSITION }

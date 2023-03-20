@@ -1,8 +1,0 @@
----
-name: use_iid_in_work_items_path
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101451
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/378349
-milestone: '15.5'
-type: development
-group: group::project management
-default_enabled: false

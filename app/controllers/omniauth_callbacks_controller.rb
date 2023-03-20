@@ -12,7 +12,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   protect_from_forgery except: [:cas3, :failure] + AuthHelper.saml_providers, with: :exception, prepend: true
 
-  feature_category :authentication_and_authorization
+  feature_category :system_access
 
   def handle_omniauth
     omniauth_flow(Gitlab::Auth::OAuth)
@@ -20,6 +20,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   AuthHelper.providers_for_base_controller.each do |provider|
     alias_method provider, :handle_omniauth
+  end
+
+  # overridden in EE
+  def openid_connect
+    handle_omniauth
   end
 
   # Extend the standard implementation to also increment

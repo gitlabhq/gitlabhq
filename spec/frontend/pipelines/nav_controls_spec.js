@@ -1,23 +1,20 @@
-import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NavControls from '~/pipelines/components/pipelines_list/nav_controls.vue';
 
 describe('Pipelines Nav Controls', () => {
   let wrapper;
 
   const createComponent = (props) => {
-    wrapper = shallowMount(NavControls, {
+    wrapper = shallowMountExtended(NavControls, {
       propsData: {
         ...props,
       },
     });
   };
 
-  const findRunPipeline = () => wrapper.find('.js-run-pipeline');
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
+  const findRunPipelineButton = () => wrapper.findByTestId('run-pipeline-button');
+  const findCiLintButton = () => wrapper.findByTestId('ci-lint-button');
+  const findClearCacheButton = () => wrapper.findByTestId('clear-cache-button');
 
   it('should render link to create a new pipeline', () => {
     const mockData = {
@@ -28,9 +25,9 @@ describe('Pipelines Nav Controls', () => {
 
     createComponent(mockData);
 
-    const runPipeline = findRunPipeline();
-    expect(runPipeline.text()).toContain('Run pipeline');
-    expect(runPipeline.attributes('href')).toBe(mockData.newPipelinePath);
+    const runPipelineButton = findRunPipelineButton();
+    expect(runPipelineButton.text()).toContain('Run pipeline');
+    expect(runPipelineButton.attributes('href')).toBe(mockData.newPipelinePath);
   });
 
   it('should not render link to create pipeline if no path is provided', () => {
@@ -42,7 +39,7 @@ describe('Pipelines Nav Controls', () => {
 
     createComponent(mockData);
 
-    expect(findRunPipeline().exists()).toBe(false);
+    expect(findRunPipelineButton().exists()).toBe(false);
   });
 
   it('should render link for CI lint', () => {
@@ -54,9 +51,10 @@ describe('Pipelines Nav Controls', () => {
     };
 
     createComponent(mockData);
+    const ciLintButton = findCiLintButton();
 
-    expect(wrapper.find('.js-ci-lint').text().trim()).toContain('CI lint');
-    expect(wrapper.find('.js-ci-lint').attributes('href')).toBe(mockData.ciLintPath);
+    expect(ciLintButton.text()).toContain('CI lint');
+    expect(ciLintButton.attributes('href')).toBe(mockData.ciLintPath);
   });
 
   describe('Reset Runners Cache', () => {
@@ -70,16 +68,13 @@ describe('Pipelines Nav Controls', () => {
     });
 
     it('should render button for resetting runner caches', () => {
-      expect(wrapper.find('.js-clear-cache').text().trim()).toContain('Clear runner caches');
+      expect(findClearCacheButton().text()).toContain('Clear runner caches');
     });
 
-    it('should emit postAction event when reset runner cache button is clicked', async () => {
-      jest.spyOn(wrapper.vm, '$emit').mockImplementation(() => {});
+    it('should emit postAction event when reset runner cache button is clicked', () => {
+      findClearCacheButton().vm.$emit('click');
 
-      wrapper.find('.js-clear-cache').vm.$emit('click');
-      await nextTick();
-
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('resetRunnersCache', 'foo');
+      expect(wrapper.emitted('resetRunnersCache')).toEqual([['foo']]);
     });
   });
 });

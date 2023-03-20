@@ -54,9 +54,6 @@ describe('ProjectStorageDetail', () => {
   beforeEach(() => {
     createComponent();
   });
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('with storage types', () => {
     it.each(storageTypes)(

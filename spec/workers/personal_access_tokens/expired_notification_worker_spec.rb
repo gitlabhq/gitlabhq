@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PersonalAccessTokens::ExpiredNotificationWorker, type: :worker do
+RSpec.describe PersonalAccessTokens::ExpiredNotificationWorker, type: :worker, feature_category: :system_access do
   subject(:worker) { described_class.new }
 
   describe '#perform' do

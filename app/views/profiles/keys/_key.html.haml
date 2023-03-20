@@ -35,7 +35,7 @@
           = ssh_key_usage_types.invert[key.usage_type]
       .gl-display-flex.gl-float-right
         - if key.can_delete?
-          - if key.signing? && !is_admin && Feature.enabled?(:revoke_ssh_signatures)
+          - if key.signing? && !is_admin
             = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-confirm-modal-button', data: ssh_key_revoke_modal_data(key, revoke_profile_key_path(key)) }) do
               = _('Revoke')
           .gl-pl-3

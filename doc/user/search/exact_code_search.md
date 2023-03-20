@@ -20,9 +20,12 @@ When performing any Code search in GitLab it will choose to use "Exact Code
 Search" powered by [Zoekt](https://github.com/sourcegraph/zoekt) if the project
 is part of an enabled Group.
 
-The main differences between Zoekt and [Advanced Search](advanced_search.md)
+The main differences between Zoekt and [advanced search](advanced_search.md)
 are that Zoekt provides exact substring matching as well as allows you to
 search for regular expressions. Since it allows searching for regular
 expressions, certain special characters will require escaping. Backslash can
 escape special characters and wrapping in double quotes can be used for phrase
 searches.
+
+To understand the possible filtering options, see the
+[Zoekt query syntax](https://github.com/sourcegraph/zoekt/blob/main/doc/query_syntax.md).

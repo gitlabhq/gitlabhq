@@ -21,7 +21,7 @@ dont-interrupt-me:
   script:
     - echo "This jobs makes sure this pipeline won't be interrupted! See https://docs.gitlab.com/ee/ci/yaml/#interruptible."
 
-rspec foss-impact:
+.base-rspec-foss-impact:
   extends: .rspec-base-pg12-as-if-foss
   needs:
     - pipeline: $PARENT_PIPELINE_ID
@@ -37,9 +37,6 @@ rspec foss-impact:
   variables:
     RSPEC_TESTS_FILTER_FILE: "${RSPEC_MATCHING_TESTS_FOSS_PATH}"
     RSPEC_TESTS_MAPPING_ENABLED: "true"
-<% if Integer(parallel_value) > 1 %>
-  parallel: <%= parallel_value %>
-<% end %>
   script:
     - !reference [.base-script, script]
     - rspec_paralellized_job "--tag ~quarantine --tag ~level:migration --tag ~zoekt"
@@ -48,3 +45,46 @@ rspec foss-impact:
     paths:
       - "${RSPEC_MATCHING_TESTS_FOSS_PATH}"
       - tmp/capybara/
+
+<% if rspec_files_per_test_level[:migration][:files].size > 0 %>
+rspec migration foss-impact:
+  extends: .base-rspec-foss-impact
+<% if rspec_files_per_test_level[:migration][:parallelization] > 1 %>
+  parallel: <%= rspec_files_per_test_level[:migration][:parallelization] %>
+<% end %>
+  script:
+    - !reference [.base-script, script]
+    - rspec_paralellized_job "--tag ~quarantine --tag ~zoekt"
+<% end %>
+
+<% if rspec_files_per_test_level[:background_migration][:files].size > 0 %>
+rspec background_migration foss-impact:
+  extends: .base-rspec-foss-impact
+<% if rspec_files_per_test_level[:background_migration][:parallelization] > 1 %>
+  parallel: <%= rspec_files_per_test_level[:background_migration][:parallelization] %>
+<% end %>
+<% end %>
+
+<% if rspec_files_per_test_level[:unit][:files].size > 0 %>
+rspec unit foss-impact:
+  extends: .base-rspec-foss-impact
+<% if rspec_files_per_test_level[:unit][:parallelization] > 1 %>
+  parallel: <%= rspec_files_per_test_level[:unit][:parallelization] %>
+<% end %>
+<% end %>
+
+<% if rspec_files_per_test_level[:integration][:files].size > 0 %>
+rspec integration foss-impact:
+  extends: .base-rspec-foss-impact
+<% if rspec_files_per_test_level[:integration][:parallelization] > 1 %>
+  parallel: <%= rspec_files_per_test_level[:integration][:parallelization] %>
+<% end %>
+<% end %>
+
+<% if rspec_files_per_test_level[:system][:files].size > 0 %>
+rspec system foss-impact:
+  extends: .base-rspec-foss-impact
+<% if rspec_files_per_test_level[:system][:parallelization] > 1 %>
+  parallel: <%= rspec_files_per_test_level[:system][:parallelization] %>
+<% end %>
+<% end %>

@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import { mockBranches } from 'jest/vue_shared/components/filtered_search_bar/mock_data';
 import Api from '~/api';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { HTTP_STATUS_OK, HTTP_STATUS_SERVICE_UNAVAILABLE } from '~/lib/utils/http_status';
 import * as actions from '~/vue_shared/components/filtered_search_bar/store/modules/filters/actions';
 import * as types from '~/vue_shared/components/filtered_search_bar/store/modules/filters/mutation_types';
@@ -15,7 +15,7 @@ const labelsEndpoint = 'fake_labels_endpoint';
 const groupEndpoint = 'fake_group_endpoint';
 const projectEndpoint = 'fake_project_endpoint';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Filters actions', () => {
   let state;
@@ -165,14 +165,8 @@ describe('Filters actions', () => {
   });
 
   describe('fetchAuthors', () => {
-    let restoreVersion;
     beforeEach(() => {
-      restoreVersion = gon.api_version;
       gon.api_version = 'v1';
-    });
-
-    afterEach(() => {
-      gon.api_version = restoreVersion;
     });
 
     describe('success', () => {
@@ -305,15 +299,9 @@ describe('Filters actions', () => {
 
   describe('fetchAssignees', () => {
     describe('success', () => {
-      let restoreVersion;
       beforeEach(() => {
         mock.onAny().replyOnce(HTTP_STATUS_OK, filterUsers);
-        restoreVersion = gon.api_version;
         gon.api_version = 'v1';
-      });
-
-      afterEach(() => {
-        gon.api_version = restoreVersion;
       });
 
       it('dispatches RECEIVE_ASSIGNEES_SUCCESS with received data and groupEndpoint set', () => {
@@ -350,15 +338,9 @@ describe('Filters actions', () => {
     });
 
     describe('error', () => {
-      let restoreVersion;
       beforeEach(() => {
         mock.onAny().replyOnce(HTTP_STATUS_SERVICE_UNAVAILABLE);
-        restoreVersion = gon.api_version;
         gon.api_version = 'v1';
-      });
-
-      afterEach(() => {
-        gon.api_version = restoreVersion;
       });
 
       it('dispatches RECEIVE_ASSIGNEES_ERROR and groupEndpoint set', () => {

@@ -22,7 +22,7 @@ RSpec.describe 'projects/pipeline_schedules/_pipeline_schedule' do
       let(:user) { maintainer }
 
       before do
-        allow(view).to receive(:can?).with(maintainer, :take_ownership_pipeline_schedule, pipeline_schedule).and_return(true)
+        allow(view).to receive(:can?).with(maintainer, :admin_pipeline_schedule, pipeline_schedule).and_return(true)
       end
 
       it 'non-owner can take ownership of pipeline' do
@@ -36,7 +36,7 @@ RSpec.describe 'projects/pipeline_schedules/_pipeline_schedule' do
       let(:user) { owner }
 
       before do
-        allow(view).to receive(:can?).with(owner, :take_ownership_pipeline_schedule, pipeline_schedule).and_return(false)
+        allow(view).to receive(:can?).with(owner, :admin_pipeline_schedule, pipeline_schedule).and_return(false)
       end
 
       it 'owner cannot take ownership of pipeline' do

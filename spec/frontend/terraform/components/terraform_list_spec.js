@@ -63,11 +63,6 @@ describe('TerraformList', () => {
   const findStatesTable = () => wrapper.findComponent(StatesTable);
   const findTab = () => wrapper.findComponent(GlTab);
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('when the terraform query has succeeded', () => {
     describe('when there is a list of terraform states', () => {
       const states = [

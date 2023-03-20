@@ -15,10 +15,6 @@ describe('google_cloud/components/incubation_banner', () => {
     wrapper = mount(IncubationBanner);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('contains alert', () => {
     expect(findAlert().exists()).toBe(true);
   });

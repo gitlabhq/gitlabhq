@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService do
+RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService, feature_category: :container_registry do
   using RSpec::Parameterized::TableSyntax
 
   include_context 'for a cleanup tags service'
@@ -11,11 +11,13 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :private) }
 
-  let(:repository) { create(:container_repository, :root, :import_done, project: project) }
+  let(:repository) { create(:container_repository, :root, project: project) }
   let(:service) { described_class.new(container_repository: repository, current_user: user, params: params) }
   let(:tags) { %w[latest A Ba Bb C D E] }
 
   before do
+    allow(repository).to receive(:migrated?).and_return(true)
+
     project.add_maintainer(user) if user
 
     stub_container_registry_config(enabled: true)
@@ -146,6 +148,20 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService do
 
       it_behaves_like 'when running a container_expiration_policy',
                       delete_expectations: [%w[Ba Bb C]]
+    end
+
+    context 'with no tags page' do
+      let(:tags_page_size) { 1000 }
+      let(:deleted) { [] }
+      let(:params) { {} }
+
+      before do
+        allow(repository.gitlab_api_client)
+          .to receive(:tags)
+          .and_return({})
+      end
+
+      it { is_expected.to eq(expected_service_response(status: :success, deleted: [], original_size: 0)) }
     end
   end
 

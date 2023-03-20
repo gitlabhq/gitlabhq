@@ -85,14 +85,10 @@ module Gitlab
       def parallel_import
         raise 'Batch settings must be defined for parallel import' if parallel_import_batch.blank?
 
-        if Feature.enabled?(:improved_spread_parallel_import)
-          improved_spread_parallel_import
-        else
-          spread_parallel_import
-        end
+        spread_parallel_import
       end
 
-      def improved_spread_parallel_import
+      def spread_parallel_import
         enqueued_job_counter = 0
 
         each_object_to_import do |object|
@@ -106,33 +102,6 @@ module Gitlab
         end
 
         job_waiter
-      end
-
-      def spread_parallel_import
-        waiter = JobWaiter.new
-
-        import_arguments = []
-
-        each_object_to_import do |object|
-          repr = object_representation(object)
-
-          import_arguments << [project.id, repr.to_hash, waiter.key]
-
-          waiter.jobs_remaining += 1
-        end
-
-        # rubocop:disable Scalability/BulkPerformWithContext
-        Gitlab::ApplicationContext.with_context(project: project) do
-          sidekiq_worker_class.bulk_perform_in(
-            1.second,
-            import_arguments,
-            batch_size: parallel_import_batch[:size],
-            batch_delay: parallel_import_batch[:delay]
-          )
-        end
-        # rubocop:enable Scalability/BulkPerformWithContext
-
-        waiter
       end
 
       # The method that will be called for traversing through all the objects to

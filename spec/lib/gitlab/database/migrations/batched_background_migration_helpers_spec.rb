@@ -482,16 +482,46 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
         .not_to raise_error
     end
 
-    it 'logs a warning when migration does not exist' do
-      expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
+    context 'when specified migration does not exist' do
+      let(:lab_key) { 'DBLAB_ENVIRONMENT' }
 
-      create(:batched_background_migration, :active, migration_attributes.merge(gitlab_schema: :gitlab_something_else))
+      context 'when DBLAB_ENVIRONMENT is not set' do
+        it 'logs a warning' do
+          stub_env(lab_key, nil)
+          expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
 
-      expect(Gitlab::AppLogger).to receive(:warn)
-        .with("Could not find batched background migration for the given configuration: #{configuration}")
+          create(:batched_background_migration, :active, migration_attributes.merge(gitlab_schema: :gitlab_something_else))
 
-      expect { ensure_batched_background_migration_is_finished }
-        .not_to raise_error
+          expect(Gitlab::AppLogger).to receive(:warn)
+            .with("Could not find batched background migration for the given configuration: #{configuration}")
+
+          expect { ensure_batched_background_migration_is_finished }
+            .not_to raise_error
+        end
+      end
+
+      context 'when DBLAB_ENVIRONMENT is set' do
+        it 'raises an error' do
+          stub_env(lab_key, 'foo')
+          expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
+
+          create(:batched_background_migration, :active, migration_attributes.merge(gitlab_schema: :gitlab_something_else))
+
+          expect { ensure_batched_background_migration_is_finished }
+            .to raise_error(Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers::NonExistentMigrationError)
+        end
+      end
+    end
+
+    context 'when within transaction' do
+      before do
+        allow(migration).to receive(:transaction_open?).and_return(true)
+      end
+
+      it 'does raise an exception' do
+        expect { ensure_batched_background_migration_is_finished }
+          .to raise_error /`ensure_batched_background_migration_is_finished` cannot be run inside a transaction./
+      end
     end
 
     it 'finalizes the migration' do

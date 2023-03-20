@@ -1109,6 +1109,66 @@ RSpec.describe API::Projects, feature_category: :projects do
         end.not_to exceed_query_limit(control)
       end
     end
+
+    context 'rate limiting' do
+      let_it_be(:current_user) { create(:user) }
+
+      shared_examples_for 'does not log request and does not block the request' do
+        specify do
+          request
+          request
+
+          expect(response).not_to have_gitlab_http_status(:too_many_requests)
+          expect(Gitlab::AuthLogger).not_to receive(:error)
+        end
+      end
+
+      before do
+        stub_application_setting(projects_api_rate_limit_unauthenticated: 1)
+      end
+
+      context 'when the user is signed in' do
+        it_behaves_like 'does not log request and does not block the request' do
+          def request
+            get api('/projects', current_user)
+          end
+        end
+      end
+
+      context 'when the user is not signed in' do
+        let_it_be(:current_user) { nil }
+
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :projects_api_rate_limit_unauthenticated do
+          def request
+            get api('/projects', current_user)
+          end
+        end
+      end
+
+      context 'when the feature flag `rate_limit_for_unauthenticated_projects_api_access` is disabled' do
+        before do
+          stub_feature_flags(rate_limit_for_unauthenticated_projects_api_access: false)
+        end
+
+        context 'when the user is not signed in' do
+          let_it_be(:current_user) { nil }
+
+          it_behaves_like 'does not log request and does not block the request' do
+            def request
+              get api('/projects', current_user)
+            end
+          end
+        end
+
+        context 'when the user is signed in' do
+          it_behaves_like 'does not log request and does not block the request' do
+            def request
+              get api('/projects', current_user)
+            end
+          end
+        end
+      end
+    end
   end
 
   describe 'POST /projects' do
@@ -2006,19 +2066,6 @@ RSpec.describe API::Projects, feature_category: :projects do
       end
     end
 
-    context 'with upload size enforcement disabled' do
-      before do
-        stub_feature_flags(enforce_max_attachment_size_upload_api: false)
-      end
-
-      it "returns 200" do
-        post api("/projects/#{project.id}/uploads/authorize", user), headers: headers
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['MaximumSize']).to eq(1.gigabyte)
-      end
-    end
-
     context 'with no Workhorse headers' do
       it "returns 403" do
         post api("/projects/#{project.id}/uploads/authorize", user)
@@ -2094,14 +2141,6 @@ RSpec.describe API::Projects, feature_category: :projects do
       end
 
       it_behaves_like 'capped upload attachments', true
-    end
-
-    context 'with upload size enforcement disabled' do
-      before do
-        stub_feature_flags(enforce_max_attachment_size_upload_api: false)
-      end
-
-      it_behaves_like 'capped upload attachments', false
     end
   end
 
@@ -2228,9 +2267,9 @@ RSpec.describe API::Projects, feature_category: :projects do
   end
 
   describe 'GET /project/:id/share_locations' do
-    let_it_be(:root_group) { create(:group, :public, name: 'root group') }
-    let_it_be(:project_group1) { create(:group, :public, parent: root_group, name: 'group1') }
-    let_it_be(:project_group2) { create(:group, :public, parent: root_group, name: 'group2') }
+    let_it_be(:root_group) { create(:group, :public, name: 'root group', path: 'root-group-path') }
+    let_it_be(:project_group1) { create(:group, :public, parent: root_group, name: 'group1', path: 'group-1-path') }
+    let_it_be(:project_group2) { create(:group, :public, parent: root_group, name: 'group2', path: 'group-2-path') }
     let_it_be(:project) { create(:project, :private, group: project_group1) }
 
     shared_examples_for 'successful groups response' do
@@ -2280,10 +2319,22 @@ RSpec.describe API::Projects, feature_category: :projects do
         end
 
         context 'when searching by group name' do
-          let(:params) { { search: 'group1' } }
+          context 'searching by group name' do
+            it_behaves_like 'successful groups response' do
+              let(:params) { { search: 'group1' } }
+              let(:expected_groups) { [project_group1] }
+            end
+          end
 
-          it_behaves_like 'successful groups response' do
-            let(:expected_groups) { [project_group1] }
+          context 'searching by full group path' do
+            let_it_be(:project_group2_subgroup) do
+              create(:group, :public, parent: project_group2, name: 'subgroup', path: 'subgroup-path')
+            end
+
+            it_behaves_like 'successful groups response' do
+              let(:params) { { search: 'root-group-path/group-2-path/subgroup-path' } }
+              let(:expected_groups) { [project_group2_subgroup] }
+            end
           end
         end
       end

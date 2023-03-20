@@ -7,6 +7,18 @@ RSpec.describe 'User views an open merge request', feature_category: :code_revie
     create(:merge_request, source_project: project, target_project: project, description: '# Description header')
   end
 
+  context 'feature flags' do
+    let_it_be(:project) { create(:project, :public, :repository) }
+
+    it 'pushes content_editor_on_issues feature flag to frontend' do
+      stub_feature_flags(content_editor_on_issues: true)
+
+      visit merge_request_path(merge_request)
+
+      expect(page).to have_pushed_frontend_feature_flags(contentEditorOnIssues: true)
+    end
+  end
+
   context 'when a merge request does not have repository' do
     let(:project) { create(:project, :public, :repository) }
 

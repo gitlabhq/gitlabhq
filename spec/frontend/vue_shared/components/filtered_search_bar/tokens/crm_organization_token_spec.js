@@ -8,7 +8,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { OPTIONS_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
@@ -22,7 +22,7 @@ import {
   mockProjectCrmOrganizationsQueryResponse,
 } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const defaultStubs = {
   Portal: true,
@@ -78,7 +78,6 @@ describe('CrmOrganizationToken', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 
@@ -158,7 +157,7 @@ describe('CrmOrganizationToken', () => {
         });
       });
 
-      it('calls `createAlert` with flash error message when request fails', async () => {
+      it('calls `createAlert` with alert error message when request fails', async () => {
         mountComponent();
 
         jest.spyOn(wrapper.vm.$apollo, 'query').mockRejectedValue({});

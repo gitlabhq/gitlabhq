@@ -17,6 +17,9 @@
         = s_('Preferences|Color theme')
       %p
         = s_('Preferences|Customize the color of GitLab.')
+      - if show_super_sidebar?
+        %p
+          = s_('Preferences|Note: You have the new navigation enabled, so only Dark Mode theme significantly changes GitLab\'s appearance.')
     .col-lg-8.application-theme
       .row
         - Gitlab::Themes.each do |theme|

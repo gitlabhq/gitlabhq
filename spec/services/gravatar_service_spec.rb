@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GravatarService do
+RSpec.describe GravatarService, feature_category: :user_profile do
   describe '#execute' do
     let(:url) { 'http://example.com/avatar?hash=%{hash}&size=%{size}&email=%{email}&username=%{username}' }
 

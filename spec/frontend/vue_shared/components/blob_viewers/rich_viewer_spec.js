@@ -24,10 +24,6 @@ describe('Blob Rich Viewer component', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the passed content without transformations', () => {
     expect(wrapper.html()).toContain(content);
   });

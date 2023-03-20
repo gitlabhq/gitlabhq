@@ -600,7 +600,8 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
                       endCursor
                       hasNextPage
                       hasPreviousPage
-                  }
+                  },
+                  repositoryCount
               }
           }
         TEXT
@@ -707,44 +708,30 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
       end
     end
 
-    describe '#search_repos_by_name' do
-      let(:expected_query) { 'test in:name is:public,private user:user repo:repo1 repo:repo2 org:org1 org:org2' }
+    describe '#count_repos_by_relation_type_graphql' do
+      relation_types = {
+        'owned' => ' in:name is:public,private user:user',
+        'collaborated' => ' in:name is:public,private repo:repo1 repo:repo2',
+        'organization' => 'org:org1 org:org2'
+      }
 
-      it 'searches for repositories based on name' do
-        expect(client.octokit).to receive(:search_repositories).with(expected_query, {})
+      relation_types.each do |relation_type, expected_query|
+        expected_graphql_params = "type: REPOSITORY, query: \"#{expected_query}\""
+        expected_graphql =
+          <<-TEXT
+          {
+            search(#{expected_graphql_params}) {
+              repositoryCount
+            }
+          }
+          TEXT
 
-        client.search_repos_by_name('test')
-      end
-
-      context 'when pagination options present' do
-        it 'searches for repositories via expected query' do
-          expect(client.octokit).to receive(:search_repositories).with(
-            expected_query, { page: 2, per_page: 25 }
+        it 'returns count by relation_type' do
+          expect(client.octokit).to receive(:post).with(
+            '/graphql', { query: expected_graphql }.to_json
           )
 
-          client.search_repos_by_name('test', { page: 2, per_page: 25 })
-        end
-      end
-
-      context 'when Faraday error received from octokit', :aggregate_failures do
-        let(:error_class) { described_class::CLIENT_CONNECTION_ERROR }
-        let(:info_params) { { 'error.class': error_class } }
-
-        it 'retries on error and succeeds' do
-          allow_retry(:search_repositories)
-
-          expect(Gitlab::Import::Logger).to receive(:info).with(hash_including(info_params)).once
-
-          expect(client.search_repos_by_name('test')).to eq({})
-        end
-
-        it 'retries and does not succeed' do
-          allow(client.octokit)
-            .to receive(:search_repositories)
-            .with(expected_query, {})
-            .and_raise(error_class, 'execution expired')
-
-          expect { client.search_repos_by_name('test') }.to raise_error(error_class, 'execution expired')
+          client.count_repos_by_relation_type_graphql(relation_type: relation_type)
         end
       end
     end

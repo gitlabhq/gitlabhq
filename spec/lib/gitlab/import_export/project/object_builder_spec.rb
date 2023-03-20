@@ -86,13 +86,16 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
                                    'group' => group)).to eq(group_label)
     end
 
-    it 'creates a new label' do
+    it 'creates a new project label' do
       label = described_class.build(Label,
                                    'title' => 'group label',
                                    'project' => project,
-                                   'group' => project.group)
+                                   'group' => project.group,
+                                   'group_id' => project.group.id)
 
       expect(label.persisted?).to be true
+      expect(label).to be_an_instance_of(ProjectLabel)
+      expect(label.group_id).to be_nil
     end
   end
 

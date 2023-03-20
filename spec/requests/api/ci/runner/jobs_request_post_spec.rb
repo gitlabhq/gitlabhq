@@ -831,19 +831,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               end
             end
           end
-
-          context 'when the FF ci_hooks_pre_get_sources_script is disabled' do
-            before do
-              stub_feature_flags(ci_hooks_pre_get_sources_script: false)
-            end
-
-            it 'does not return the pre_get_sources_script' do
-              request_job
-
-              expect(response).to have_gitlab_http_status(:created)
-              expect(json_response).not_to have_key('hooks')
-            end
-          end
         end
 
         describe 'port support' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issuable::DestroyLabelLinksService do
+RSpec.describe Issuable::DestroyLabelLinksService, feature_category: :team_planning do
   describe '#execute' do
     context 'when target is an Issue' do
       let_it_be(:target) { create(:issue) }

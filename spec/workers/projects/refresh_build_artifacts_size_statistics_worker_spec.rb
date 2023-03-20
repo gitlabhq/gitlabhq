@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsWorker do
+RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsWorker, feature_category: :build_artifacts do
   let(:worker) { described_class.new }
 
   describe '#perform_work' do

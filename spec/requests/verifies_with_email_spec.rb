@@ -42,7 +42,7 @@ feature_category: :user_management do
   shared_examples_for 'two factor prompt or successful login' do
     it 'shows the 2FA prompt when enabled or redirects to the root path' do
       if user.two_factor_enabled?
-        expect(response.body).to include('Two-factor authentication code')
+        expect(response.body).to include('Enter verification code')
       else
         expect(response).to redirect_to(root_path)
       end

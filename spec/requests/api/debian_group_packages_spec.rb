@@ -31,9 +31,11 @@ RSpec.describe API::DebianGroupPackages, feature_category: :package_registry do
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/:component/binary-:architecture/Packages' do
-      let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{component.name}/binary-#{architecture.name}/Packages" }
+      let(:target_component_file) { component_file }
+      let(:target_component_name) { component.name }
+      let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{target_component_name}/binary-#{architecture.name}/Packages" }
 
-      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /Description: This is an incomplete Packages file/
+      it_behaves_like 'Debian packages index endpoint', /Description: This is an incomplete Packages file/
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/:component/binary-:architecture/Packages.gz' do
@@ -43,27 +45,37 @@ RSpec.describe API::DebianGroupPackages, feature_category: :package_registry do
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/:component/binary-:architecture/by-hash/SHA256/:file_sha256' do
-      let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{component.name}/binary-#{architecture.name}/by-hash/SHA256/#{component_file_older_sha256.file_sha256}" }
+      let(:target_component_file) { component_file_older_sha256 }
+      let(:target_component_name) { component.name }
+      let(:target_sha256) { target_component_file.file_sha256 }
+      let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{target_component_name}/binary-#{architecture.name}/by-hash/SHA256/#{target_sha256}" }
 
-      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^Other SHA256$/
+      it_behaves_like 'Debian packages index sha256 endpoint', /^Other SHA256$/
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/:component/source/Sources' do
-      let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{component.name}/source/Sources" }
+      let(:target_component_file) { component_file_sources }
+      let(:target_component_name) { component.name }
+      let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{target_component_name}/source/Sources" }
 
-      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /Description: This is an incomplete Sources file/
+      it_behaves_like 'Debian packages index endpoint', /^Description: This is an incomplete Sources file$/
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/:component/source/by-hash/SHA256/:file_sha256' do
-      let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{component.name}/source/by-hash/SHA256/#{component_file_sources_older_sha256.file_sha256}" }
+      let(:target_component_file) { component_file_sources_older_sha256 }
+      let(:target_component_name) { component.name }
+      let(:target_sha256) { target_component_file.file_sha256 }
+      let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{target_component_name}/source/by-hash/SHA256/#{target_sha256}" }
 
-      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^Other SHA256$/
+      it_behaves_like 'Debian packages index sha256 endpoint', /^Other SHA256$/
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/:component/debian-installer/binary-:architecture/Packages' do
-      let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{component.name}/debian-installer/binary-#{architecture.name}/Packages" }
+      let(:target_component_file) { component_file_di }
+      let(:target_component_name) { component.name }
+      let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{target_component_name}/debian-installer/binary-#{architecture.name}/Packages" }
 
-      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /Description: This is an incomplete D-I Packages file/
+      it_behaves_like 'Debian packages index endpoint', /Description: This is an incomplete D-I Packages file/
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/:component/debian-installer/binary-:architecture/Packages.gz' do
@@ -73,9 +85,12 @@ RSpec.describe API::DebianGroupPackages, feature_category: :package_registry do
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/:component/debian-installer/binary-:architecture/by-hash/SHA256/:file_sha256' do
-      let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{component.name}/debian-installer/binary-#{architecture.name}/by-hash/SHA256/#{component_file_di_older_sha256.file_sha256}" }
+      let(:target_component_file) { component_file_di_older_sha256 }
+      let(:target_component_name) { component.name }
+      let(:target_sha256) { target_component_file.file_sha256 }
+      let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{target_component_name}/debian-installer/binary-#{architecture.name}/by-hash/SHA256/#{target_sha256}" }
 
-      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^Other SHA256$/
+      it_behaves_like 'Debian packages index sha256 endpoint', /^Other SHA256$/
     end
 
     describe 'GET groups/:id/-/packages/debian/pool/:codename/:project_id/:letter/:package_name/:package_version/:file_name' do
@@ -89,6 +104,7 @@ RSpec.describe API::DebianGroupPackages, feature_category: :package_registry do
         'sample_1.2.3~alpha2.dsc'             | /^Format: 3.0 \(native\)/
         'libsample0_1.2.3~alpha2_amd64.deb'   | /^!<arch>/
         'sample-udeb_1.2.3~alpha2_amd64.udeb' | /^!<arch>/
+        'sample-ddeb_1.2.3~alpha2_amd64.ddeb' | /^!<arch>/
         'sample_1.2.3~alpha2_amd64.buildinfo' | /Build-Tainted-By/
         'sample_1.2.3~alpha2_amd64.changes'   | /urgency=medium/
       end

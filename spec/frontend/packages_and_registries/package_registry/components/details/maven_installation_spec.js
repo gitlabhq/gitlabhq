@@ -35,7 +35,7 @@ describe('MavenInstallation', () => {
   <artifactId>appName</artifactId>
   <version>appVersion</version>
 </dependency>`;
-  const mavenCommandStr = 'mvn dependency:get -Dartifact=appGroup:appName:appVersion';
+  const mavenCommandStr = 'mvn install';
   const mavenSetupXml = `<repositories>
   <repository>
     <id>gitlab-maven</id>
@@ -78,10 +78,6 @@ describe('MavenInstallation', () => {
       },
     });
   }
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('install command switch', () => {
     it('has the installation title component', () => {

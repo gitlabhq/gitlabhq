@@ -16,7 +16,6 @@ RSpec.describe Member, feature_category: :subgroups do
   describe 'Associations' do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:member_namespace) }
-    it { is_expected.to belong_to(:member_role) }
     it { is_expected.to have_one(:member_task) }
   end
 
@@ -170,96 +169,6 @@ RSpec.describe Member, feature_category: :subgroups do
 
         it 'is not valid' do
           expect(new_member).not_to be_valid
-        end
-      end
-    end
-
-    context 'member role access level' do
-      let_it_be_with_reload(:member) { create(:group_member, access_level: Gitlab::Access::DEVELOPER) }
-
-      context 'when no member role is associated' do
-        it 'is valid' do
-          expect(member).to be_valid
-        end
-      end
-
-      context 'when member role is associated' do
-        let!(:member_role) do
-          create(
-            :member_role,
-            members: [member],
-            base_access_level: Gitlab::Access::DEVELOPER,
-            namespace: member.member_namespace
-          )
-        end
-
-        context 'when member role matches access level' do
-          it 'is valid' do
-            expect(member).to be_valid
-          end
-        end
-
-        context 'when member role does not match access level' do
-          it 'is invalid' do
-            member_role.base_access_level = Gitlab::Access::MAINTAINER
-
-            expect(member).not_to be_valid
-          end
-        end
-
-        context 'when access_level is changed' do
-          it 'is invalid' do
-            member.access_level = Gitlab::Access::MAINTAINER
-
-            expect(member).not_to be_valid
-            expect(member.errors[:access_level]).to include(
-              _("cannot be changed since member is associated with a custom role")
-            )
-          end
-        end
-      end
-    end
-
-    context 'member role namespace' do
-      let_it_be_with_reload(:member) { create(:group_member) }
-
-      context 'when no member role is associated' do
-        it 'is valid' do
-          expect(member).to be_valid
-        end
-      end
-
-      context 'when member role is associated' do
-        let_it_be(:member_role) do
-          create(:member_role, members: [member], namespace: member.group, base_access_level: member.access_level)
-        end
-
-        context 'when member#member_namespace is a group within hierarchy of member_role#namespace' do
-          it 'is valid' do
-            member.member_namespace = create(:group, parent: member_role.namespace)
-
-            expect(member).to be_valid
-          end
-        end
-
-        context 'when member#member_namespace is a project within hierarchy of member_role#namespace' do
-          it 'is valid' do
-            project = create(:project, group: member_role.namespace)
-            member.member_namespace = Namespace.find(project.parent_id)
-
-            expect(member).to be_valid
-          end
-        end
-
-        context 'when member#member_namespace is outside hierarchy of member_role#namespace' do
-          it 'is invalid' do
-            member.member_namespace = create(:group)
-
-            expect(member).not_to be_valid
-            expect(member.errors[:member_namespace]).to include(
-              _("must be in same hierarchy as custom role's namespace")
-            )
-          end
         end
       end
     end
@@ -771,6 +680,24 @@ RSpec.describe Member, feature_category: :subgroups do
 
     it 'is not a valid email format' do
       expect(described_class.valid_email?('foo@example.com')).to eq(true)
+    end
+  end
+
+  describe '.filter_by_user_type' do
+    let_it_be(:service_account) { create(:user, :service_account) }
+    let_it_be(:service_account_member) { create(:group_member, user: service_account) }
+    let_it_be(:other_member) { create(:group_member) }
+
+    context 'when the user type is valid' do
+      it 'returns service accounts' do
+        expect(described_class.filter_by_user_type('service_account')).to match_array([service_account_member])
+      end
+    end
+
+    context 'when the user type is invalid' do
+      it 'returns nil' do
+        expect(described_class.filter_by_user_type('invalid_type')).to eq(nil)
+      end
     end
   end
 

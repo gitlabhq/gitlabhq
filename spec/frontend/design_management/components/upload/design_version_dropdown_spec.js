@@ -42,10 +42,6 @@ describe('Design management design version dropdown component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findAllListboxItems = () => wrapper.findAllComponents(GlListboxItem);
   const findVersionLink = (index) => wrapper.findAllComponents(GlListboxItem).at(index);

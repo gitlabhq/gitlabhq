@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::GroupLinksController, feature_category: :authentication_and_authorization do
+RSpec.describe Projects::GroupLinksController, feature_category: :system_access do
   let_it_be(:group) { create(:group, :private) }
   let_it_be(:group2) { create(:group, :private) }
   let_it_be(:project) { create(:project, :private, group: group2) }

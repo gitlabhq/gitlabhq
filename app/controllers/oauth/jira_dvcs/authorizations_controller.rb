@@ -16,10 +16,12 @@ class Oauth::JiraDvcs::AuthorizationsController < ApplicationController
   def new
     session[:redirect_uri] = params['redirect_uri']
 
-    redirect_to oauth_authorization_path(client_id: params['client_id'],
-                                         response_type: 'code',
-                                         scope: normalize_scope(params['scope']),
-                                         redirect_uri: oauth_jira_dvcs_callback_url)
+    redirect_to oauth_authorization_path(
+      client_id: params['client_id'],
+      response_type: 'code',
+      scope: normalize_scope(params['scope']),
+      redirect_uri: oauth_jira_dvcs_callback_url
+    )
   end
 
   # 2. Handle the callback call as we were a Github Enterprise instance client.

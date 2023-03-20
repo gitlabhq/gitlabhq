@@ -16,10 +16,6 @@ describe('Sidebar invite members component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when directly inviting members', () => {
     beforeEach(() => {
       createComponent();

@@ -31,10 +31,6 @@ export default {
       required: false,
       default: true,
     },
-    groupId: {
-      type: Number,
-      required: true,
-    },
     groupPath: {
       type: String,
       required: true,
@@ -82,9 +78,7 @@ export default {
       <div>
         <projects-dropdown-filter
           v-if="hasProjectFilter"
-          :key="groupId"
           class="js-projects-dropdown-filter project-select gl-mb-2 gl-lg-mb-0"
-          :group-id="groupId"
           :group-namespace="groupPath"
           :query-params="projectsQueryParams"
           :multi-select="$options.multiProjectSelect"

@@ -49,7 +49,7 @@ You can view audit events scoped to a group or project.
 To view a group's audit events:
 
 1. Go to the group.
-1. On the left sidebar, select **Security & Compliance > Audit Events**.
+1. On the left sidebar, select **Security and Compliance > Audit Events**.
 
 Group events do not include project audit events. Group events can also be accessed using the
 [Group Audit Events API](../api/audit_events.md#group-audit-events). Group event queries are limited to a maximum of 30
@@ -120,7 +120,7 @@ Successful sign-in events are the only audit events available at all tiers. To s
 1. Select your avatar.
 1. Select **Edit profile > Authentication log**.
 
-After upgrading to a paid tier, you can see also see successful sign-in events on audit event pages.
+After upgrading to a paid tier, you can also see successful sign-in events on audit event pages.
 
 ## Filter audit events
 
@@ -313,6 +313,15 @@ The following actions on projects generate project audit events:
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) in GitLab 15.6.
 - An environment is protected or unprotected.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216164) in GitLab 15.8.
+
+### GitLab agent for Kubernetes events
+
+The following actions on projects generate agent audit events:
+
+- A cluster agent token is created.
+  Introduced in GitLab 15.9
+- A cluster agent token is revoked.
+  Introduced in GitLab 15.9
 
 ### Instance events **(PREMIUM SELF)**
 

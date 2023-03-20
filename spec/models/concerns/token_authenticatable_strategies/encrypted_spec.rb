@@ -2,16 +2,20 @@
 
 require 'spec_helper'
 
-RSpec.describe TokenAuthenticatableStrategies::Encrypted do
+RSpec.describe TokenAuthenticatableStrategies::Encrypted, feature_category: :system_access do
   let(:model) { double(:model) }
   let(:instance) { double(:instance) }
+  let(:original_token) { 'my-value' }
+  let(:resource) { double(:resource) }
+  let(:options) { other_options.merge(encrypted: encrypted_option) }
+  let(:other_options) { {} }
 
   let(:encrypted) do
-    TokenAuthenticatableStrategies::EncryptionHelper.encrypt_token('my-value')
+    TokenAuthenticatableStrategies::EncryptionHelper.encrypt_token(original_token)
   end
 
   let(:encrypted_with_static_iv) do
-    Gitlab::CryptoHelper.aes256_gcm_encrypt('my-value')
+    Gitlab::CryptoHelper.aes256_gcm_encrypt(original_token)
   end
 
   subject(:strategy) do
@@ -19,7 +23,7 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
   end
 
   describe '#token_fields' do
-    let(:options) { { encrypted: :required } }
+    let(:encrypted_option) { :required }
 
     it 'includes the encrypted field' do
       expect(strategy.token_fields).to contain_exactly('some_field', 'some_field_encrypted')
@@ -27,49 +31,69 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
   end
 
   describe '#find_token_authenticatable' do
-    context 'when encryption is required' do
-      let(:options) { { encrypted: :required } }
-
-      it 'finds the encrypted resource by cleartext' do
-        allow(model).to receive(:where)
-          .and_return(model)
-        allow(model).to receive(:find_by)
-          .with('some_field_encrypted' => [encrypted, encrypted_with_static_iv])
-          .and_return('encrypted resource')
-
-        expect(subject.find_token_authenticatable('my-value'))
-          .to eq 'encrypted resource'
+    shared_examples 'finds the resource' do
+      it 'finds the resource by cleartext' do
+        expect(subject.find_token_authenticatable(original_token))
+          .to eq(resource)
       end
+    end
 
-      context 'when a prefix is required' do
-        let(:options) { { encrypted: :required, prefix: 'GR1348941' } }
+    shared_examples 'does not find any resource' do
+      it 'does not find any resource by cleartext' do
+        expect(subject.find_token_authenticatable(original_token))
+          .to be_nil
+      end
+    end
 
-        it 'finds the encrypted resource by cleartext' do
-          allow(model).to receive(:where)
-            .and_return(model)
-          allow(model).to receive(:find_by)
-            .with('some_field_encrypted' => [encrypted, encrypted_with_static_iv])
-            .and_return('encrypted resource')
+    shared_examples 'finds the resource with/without setting require_prefix_for_validation' do
+      let(:standard_runner_token_prefix) { 'GR1348941' }
+      it_behaves_like 'finds the resource'
 
-          expect(subject.find_token_authenticatable('my-value'))
-            .to be_nil
+      context 'when a require_prefix_for_validation is provided' do
+        let(:other_options) { { format_with_prefix: :format_with_prefix_method, require_prefix_for_validation: true } }
+
+        before do
+          allow(resource).to receive(:format_with_prefix_method).and_return(standard_runner_token_prefix)
+        end
+
+        it_behaves_like 'does not find any resource'
+
+        context 'when token starts with prefix' do
+          let(:original_token) { "#{standard_runner_token_prefix}plain_token" }
+
+          it_behaves_like 'finds the resource'
         end
       end
     end
 
-    context 'when encryption is optional' do
-      let(:options) { { encrypted: :optional } }
+    context 'when encryption is required' do
+      let(:encrypted_option) { :required }
+      let(:resource) { double(:encrypted_resource) }
 
-      it 'finds the encrypted resource by cleartext' do
+      before do
         allow(model).to receive(:where)
           .and_return(model)
         allow(model).to receive(:find_by)
           .with('some_field_encrypted' => [encrypted, encrypted_with_static_iv])
-          .and_return('encrypted resource')
-
-        expect(subject.find_token_authenticatable('my-value'))
-          .to eq 'encrypted resource'
+          .and_return(resource)
       end
+
+      it_behaves_like 'finds the resource with/without setting require_prefix_for_validation'
+    end
+
+    context 'when encryption is optional' do
+      let(:encrypted_option) { :optional }
+      let(:resource) { double(:encrypted_resource) }
+
+      before do
+        allow(model).to receive(:where)
+          .and_return(model)
+        allow(model).to receive(:find_by)
+          .with('some_field_encrypted' => [encrypted, encrypted_with_static_iv])
+          .and_return(resource)
+      end
+
+      it_behaves_like 'finds the resource with/without setting require_prefix_for_validation'
 
       it 'uses insecure strategy when encrypted token cannot be found' do
         allow(subject.send(:insecure_strategy))
@@ -85,68 +109,27 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
         expect(subject.find_token_authenticatable('my-value'))
           .to eq 'plaintext resource'
       end
-
-      context 'when a prefix is required' do
-        let(:options) { { encrypted: :optional, prefix: 'GR1348941' } }
-
-        it 'finds the encrypted resource by cleartext' do
-          allow(model).to receive(:where)
-            .and_return(model)
-          allow(model).to receive(:find_by)
-            .with('some_field_encrypted' => [encrypted, encrypted_with_static_iv])
-            .and_return('encrypted resource')
-
-          expect(subject.find_token_authenticatable('my-value'))
-            .to be_nil
-        end
-      end
     end
 
     context 'when encryption is migrating' do
-      let(:options) { { encrypted: :migrating } }
+      let(:encrypted_option) { :migrating }
+      let(:resource) { double(:cleartext_resource) }
 
-      it 'finds the cleartext resource by cleartext' do
+      before do
         allow(model).to receive(:where)
           .and_return(model)
         allow(model).to receive(:find_by)
-          .with('some_field' => 'my-value')
-          .and_return('cleartext resource')
-
-        expect(subject.find_token_authenticatable('my-value'))
-          .to eq 'cleartext resource'
+          .with('some_field' => original_token)
+          .and_return(resource)
       end
 
-      it 'returns nil if resource cannot be found' do
-        allow(model).to receive(:where)
-          .and_return(model)
-        allow(model).to receive(:find_by)
-          .with('some_field' => 'my-value')
-          .and_return(nil)
-
-        expect(subject.find_token_authenticatable('my-value'))
-          .to be_nil
-      end
-
-      context 'when a prefix is required' do
-        let(:options) { { encrypted: :migrating, prefix: 'GR1348941' } }
-
-        it 'finds the encrypted resource by cleartext' do
-          allow(model).to receive(:where)
-            .and_return(model)
-          allow(model).to receive(:find_by)
-            .with('some_field' => 'my-value')
-            .and_return('cleartext resource')
-
-          expect(subject.find_token_authenticatable('my-value'))
-            .to be_nil
-        end
-      end
+      it_behaves_like 'finds the resource with/without setting require_prefix_for_validation'
     end
   end
 
   describe '#get_token' do
     context 'when encryption is required' do
-      let(:options) { { encrypted: :required } }
+      let(:encrypted_option) { :required }
 
       it 'returns decrypted token when an encrypted with static iv token is present' do
         allow(instance).to receive(:read_attribute)
@@ -166,7 +149,7 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
     end
 
     context 'when encryption is optional' do
-      let(:options) { { encrypted: :optional } }
+      let(:encrypted_option) { :optional }
 
       it 'returns decrypted token when an encrypted token is present' do
         allow(instance).to receive(:read_attribute)
@@ -198,7 +181,7 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
     end
 
     context 'when encryption is migrating' do
-      let(:options) { { encrypted: :migrating } }
+      let(:encrypted_option) { :migrating }
 
       it 'returns cleartext token when an encrypted token is present' do
         allow(instance).to receive(:read_attribute)
@@ -228,7 +211,7 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
 
   describe '#set_token' do
     context 'when encryption is required' do
-      let(:options) { { encrypted: :required } }
+      let(:encrypted_option) { :required }
 
       it 'writes encrypted token and returns it' do
         expect(instance).to receive(:[]=)
@@ -239,7 +222,7 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
     end
 
     context 'when encryption is optional' do
-      let(:options) { { encrypted: :optional } }
+      let(:encrypted_option) { :optional }
 
       it 'writes encrypted token and removes plaintext token and returns it' do
         expect(instance).to receive(:[]=)
@@ -252,7 +235,7 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
     end
 
     context 'when encryption is migrating' do
-      let(:options) { { encrypted: :migrating } }
+      let(:encrypted_option) { :migrating }
 
       it 'writes encrypted token and writes plaintext token' do
         expect(instance).to receive(:[]=)

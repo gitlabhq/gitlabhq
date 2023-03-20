@@ -75,7 +75,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
         end
 
         context 'email confirmation' do
-          context 'when `email_confirmation_setting` is set to `hard`' do
+          context 'when email confirmation setting is set to `hard`' do
             before do
               stub_application_setting_enum('email_confirmation_setting', 'hard')
             end
@@ -122,7 +122,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
         end
 
         context 'email confirmation' do
-          context 'when `email_confirmation_setting` is set to `hard`' do
+          context 'when email confirmation setting is set to `hard`' do
             before do
               stub_application_setting_enum('email_confirmation_setting', 'hard')
               stub_feature_flags(identity_verification: false)
@@ -157,7 +157,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
         stub_feature_flags(identity_verification: false)
       end
 
-      context 'when `email_confirmation_setting` is set to `off`' do
+      context 'when email confirmation setting is set to `off`' do
         it 'signs the user in' do
           stub_application_setting_enum('email_confirmation_setting', 'off')
 
@@ -166,103 +166,97 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
         end
       end
 
-      context 'when `email_confirmation_setting` is set to `hard`' do
+      context 'when email confirmation setting is set to `hard`' do
         before do
           stub_application_setting_enum('email_confirmation_setting', 'hard')
+          allow(User).to receive(:allow_unconfirmed_access_for).and_return 0
         end
 
-        context 'when soft email confirmation is not enabled' do
-          before do
-            stub_feature_flags(soft_email_confirmation: false)
-            allow(User).to receive(:allow_unconfirmed_access_for).and_return 0
-          end
+        it 'does not authenticate the user and sends a confirmation email' do
+          expect { subject }.to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
+          expect(controller.current_user).to be_nil
+        end
 
-          it 'does not authenticate the user and sends a confirmation email' do
-            expect { subject }.to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
-            expect(controller.current_user).to be_nil
-          end
+        it 'tracks an almost there redirect' do
+          post_create
 
-          it 'tracks an almost there redirect' do
-            post_create
+          expect_snowplow_event(
+            category: described_class.name,
+            action: 'render',
+            user: User.find_by(email: base_user_params[:email])
+          )
+        end
 
-            expect_snowplow_event(
-              category: described_class.name,
-              action: 'render',
-              user: User.find_by(email: base_user_params[:email])
-            )
-          end
+        context 'when registration is triggered from an accepted invite' do
+          context 'when it is part from the initial invite email', :snowplow do
+            let_it_be(:member) { create(:project_member, :invited, invite_email: user_params.dig(:user, :email)) }
 
-          context 'when registration is triggered from an accepted invite' do
-            context 'when it is part from the initial invite email', :snowplow do
-              let_it_be(:member) { create(:project_member, :invited, invite_email: user_params.dig(:user, :email)) }
+            let(:originating_member_id) { member.id }
+            let(:session_params) do
+              {
+                invite_email: user_params.dig(:user, :email),
+                originating_member_id: originating_member_id
+              }
+            end
 
-              let(:originating_member_id) { member.id }
-              let(:session_params) do
-                {
-                  invite_email: user_params.dig(:user, :email),
-                  originating_member_id: originating_member_id
-                }
-              end
+            context 'when member exists from the session key value' do
+              it 'tracks the invite acceptance' do
+                subject
 
-              context 'when member exists from the session key value' do
-                it 'tracks the invite acceptance' do
-                  subject
+                expect_snowplow_event(
+                  category: 'RegistrationsController',
+                  action: 'accepted',
+                  label: 'invite_email',
+                  property: member.id.to_s,
+                  user: member.reload.user
+                )
 
-                  expect_snowplow_event(
-                    category: 'RegistrationsController',
-                    action: 'accepted',
-                    label: 'invite_email',
-                    property: member.id.to_s,
-                    user: member.reload.user
-                  )
-
-                  expect_snowplow_event(
-                    category: 'RegistrationsController',
-                    action: 'create_user',
-                    label: 'invited',
-                    user: member.reload.user
-                  )
-                end
-              end
-
-              context 'when member does not exist from the session key value' do
-                let(:originating_member_id) { nil }
-
-                it 'does not track invite acceptance' do
-                  subject
-
-                  expect_no_snowplow_event(
-                    category: 'RegistrationsController',
-                    action: 'accepted',
-                    label: 'invite_email'
-                  )
-
-                  expect_snowplow_event(
-                    category: 'RegistrationsController',
-                    action: 'create_user',
-                    label: 'signup',
-                    user: member.reload.user
-                  )
-                end
+                expect_snowplow_event(
+                  category: 'RegistrationsController',
+                  action: 'create_user',
+                  label: 'invited',
+                  user: member.reload.user
+                )
               end
             end
 
-            context 'when invite email matches email used on registration' do
-              let(:session_params) { { invite_email: user_params.dig(:user, :email) } }
+            context 'when member does not exist from the session key value' do
+              let(:originating_member_id) { nil }
 
-              it 'signs the user in without sending a confirmation email', :aggregate_failures do
-                expect { subject }.not_to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
-                expect(controller.current_user).to be_confirmed
+              it 'does not track invite acceptance' do
+                subject
+
+                expect_no_snowplow_event(
+                  category: 'RegistrationsController',
+                  action: 'accepted',
+                  label: 'invite_email'
+                )
+
+                expect_snowplow_event(
+                  category: 'RegistrationsController',
+                  action: 'create_user',
+                  label: 'signup',
+                  user: member.reload.user
+                )
               end
             end
+          end
 
-            context 'when invite email does not match the email used on registration' do
-              let(:session_params) { { invite_email: 'bogus@email.com' } }
+          context 'when invite email matches email used on registration' do
+            let(:session_params) { { invite_email: user_params.dig(:user, :email) } }
 
-              it 'does not authenticate the user and sends a confirmation email', :aggregate_failures do
-                expect { subject }.to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
-                expect(controller.current_user).to be_nil
-              end
+            it 'signs the user in without sending a confirmation email', :aggregate_failures do
+              expect { subject }.not_to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
+              expect(controller.current_user).to be_confirmed
+            end
+          end
+
+          context 'when invite email does not match the email used on registration' do
+            let(:session_params) { { invite_email: 'bogus@email.com' } }
+
+            it 'does not authenticate the user and sends a confirmation email', :aggregate_failures do
+              expect { subject }.to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
+              expect(controller.current_user).to be_nil
             end
           end
         end
@@ -286,45 +280,45 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
             expect(controller.current_user).to be_nil
           end
         end
+      end
 
-        context 'when soft email confirmation is enabled' do
-          before do
-            stub_feature_flags(soft_email_confirmation: true)
-            allow(User).to receive(:allow_unconfirmed_access_for).and_return 2.days
+      context 'when email confirmation setting is set to `soft`' do
+        before do
+          stub_application_setting_enum('email_confirmation_setting', 'soft')
+          allow(User).to receive(:allow_unconfirmed_access_for).and_return 2.days
+        end
+
+        it 'authenticates the user and sends a confirmation email' do
+          expect { subject }.to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
+          expect(controller.current_user).to be_present
+          expect(response).to redirect_to(users_sign_up_welcome_path)
+        end
+
+        it 'does not track an almost there redirect' do
+          post_create
+
+          expect_no_snowplow_event(
+            category: described_class.name,
+            action: 'render',
+            user: User.find_by(email: base_user_params[:email])
+          )
+        end
+
+        context 'when invite email matches email used on registration' do
+          let(:session_params) { { invite_email: user_params.dig(:user, :email) } }
+
+          it 'signs the user in without sending a confirmation email', :aggregate_failures do
+            expect { subject }.not_to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
+            expect(controller.current_user).to be_confirmed
           end
+        end
 
-          it 'authenticates the user and sends a confirmation email' do
+        context 'when invite email does not match the email used on registration' do
+          let(:session_params) { { invite_email: 'bogus@email.com' } }
+
+          it 'authenticates the user and sends a confirmation email without confirming', :aggregate_failures do
             expect { subject }.to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
-            expect(controller.current_user).to be_present
-            expect(response).to redirect_to(users_sign_up_welcome_path)
-          end
-
-          it 'does not track an almost there redirect' do
-            post_create
-
-            expect_no_snowplow_event(
-              category: described_class.name,
-              action: 'render',
-              user: User.find_by(email: base_user_params[:email])
-            )
-          end
-
-          context 'when invite email matches email used on registration' do
-            let(:session_params) { { invite_email: user_params.dig(:user, :email) } }
-
-            it 'signs the user in without sending a confirmation email', :aggregate_failures do
-              expect { subject }.not_to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
-              expect(controller.current_user).to be_confirmed
-            end
-          end
-
-          context 'when invite email does not match the email used on registration' do
-            let(:session_params) { { invite_email: 'bogus@email.com' } }
-
-            it 'authenticates the user and sends a confirmation email without confirming', :aggregate_failures do
-              expect { subject }.to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
-              expect(controller.current_user).not_to be_confirmed
-            end
+            expect(controller.current_user).not_to be_confirmed
           end
         end
       end
@@ -756,8 +750,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
         m.call(*args)
 
         expect(Gitlab::ApplicationContext.current)
-          .to include('meta.user' => user.username,
-                      'meta.caller_id' => 'RegistrationsController#destroy')
+          .to include('meta.user' => user.username, 'meta.caller_id' => 'RegistrationsController#destroy')
       end
 
       post :destroy

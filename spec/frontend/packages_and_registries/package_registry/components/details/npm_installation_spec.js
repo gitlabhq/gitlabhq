@@ -51,10 +51,6 @@ describe('NpmInstallation', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders all the messages', () => {
     expect(wrapper.element).toMatchSnapshot();
   });

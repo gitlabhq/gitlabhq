@@ -588,6 +588,20 @@ RSpec.describe WikiPage do
         expect(page.content).to eq new_content
       end
 
+      context 'when page combine with directory' do
+        it 'moving the file and directory' do
+          wiki.create_page('testpage/testtitle', 'content')
+          wiki.create_page('testpage', 'content')
+
+          page = wiki.find_page('testpage')
+          page.update(title: 'testfolder/testpage')
+
+          page = wiki.find_page('testfolder/testpage/testtitle')
+
+          expect(page.slug).to eq 'testfolder/testpage/testtitle'
+        end
+      end
+
       describe 'in subdir' do
         it 'moves the page to the root folder if the title is preceded by /' do
           page = create_wiki_page(container, title: 'foo/Existing Page')

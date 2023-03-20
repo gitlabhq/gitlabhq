@@ -17,11 +17,6 @@ describe('PackagesListLoader', () => {
 
   beforeEach(createComponent);
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('desktop loader', () => {
     it('produces the right loader', () => {
       expect(findDesktopShapes().findAll('rect[width="1000"]')).toHaveLength(20);

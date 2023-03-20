@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::CreatePackageFileService do
+RSpec.describe Packages::CreatePackageFileService, feature_category: :package_registry do
   let_it_be(:package) { create(:maven_package) }
   let_it_be(:user) { create(:user) }
 

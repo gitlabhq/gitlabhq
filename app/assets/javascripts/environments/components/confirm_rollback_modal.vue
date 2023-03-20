@@ -135,7 +135,7 @@ export default {
   csrf,
   cancelProps: {
     text: __('Cancel'),
-    attributes: [{ variant: 'danger' }],
+    attributes: { variant: 'danger' },
   },
   docsPath: helpPagePath('ci/environments/index.md', { anchor: 'retry-or-roll-back-a-deployment' }),
 };

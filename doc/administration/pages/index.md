@@ -631,34 +631,6 @@ are stored.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
-Alternatively, if you have existing Pages deployed you can follow
-the below steps to do a no downtime transfer to a new storage location.
-
-1. Pause Pages deployments by setting the following in `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   sidekiq['queue_selector'] = true
-   sidekiq['queue_groups'] = [
-     "feature_category!=pages"
-   ]
-   ```
-
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-1. `rsync` contents from the current storage location to the new storage location: `sudo rsync -avzh --progress /var/opt/gitlab/gitlab-rails/shared/pages/ /mnt/storage/pages`
-1. Set the new storage location in `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_rails['pages_path'] = "/mnt/storage/pages"
-   ```
-
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-1. Verify Pages are still being served up as expected.
-1. Resume Pages deployments by removing from `/etc/gitlab/gitlab.rb` the `sidekiq` setting set above.
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-1. Trigger a new Pages deployment and verify it's working as expected.
-1. Remove the old Pages storage location: `sudo rm -rf /var/opt/gitlab/gitlab-rails/shared/pages`
-1. Verify Pages are still being served up as expected.
-
 ## Configure listener for reverse proxy requests
 
 Follow the steps below to configure the proxy listener of GitLab Pages.
@@ -683,23 +655,23 @@ Follow the steps below to configure the proxy listener of GitLab Pages.
 
 ## Set global maximum size of each GitLab Pages site **(FREE SELF)**
 
-Prerequisites:
+Prerequisite:
 
-- Only GitLab administrators can edit this setting.
+- You must have administrator access to the instance.
 
 To set the global maximum pages size for a project:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
-1. Enter a value under **Maximum size of pages**.
+1. In **Maximum size of pages**, enter a value. The default is `100`.
 1. Select **Save changes**.
 
 ## Set maximum size of each GitLab Pages site in a group **(PREMIUM SELF)**
 
-Prerequisites:
+Prerequisite:
 
-- You must have at least the Maintainer role for the group.
+- You must have administrator access to the instance.
 
 To set the maximum size of each GitLab Pages site in a group, overriding the inherited setting:
 
@@ -711,9 +683,9 @@ To set the maximum size of each GitLab Pages site in a group, overriding the inh
 
 ## Set maximum size of GitLab Pages site in a project **(PREMIUM SELF)**
 
-Prerequisites:
+Prerequisite:
 
-- You must have at least the Maintainer role for the project.
+- You must have administrator access to the instance.
 
 To set the maximum size of GitLab Pages site in a project, overriding the inherited setting:
 
@@ -729,7 +701,7 @@ To set the maximum size of GitLab Pages site in a project, overriding the inheri
 
 Prerequisite:
 
-- You must be an administrator of a self-managed GitLab instance.
+- You must have administrator access to the instance.
 
 To set the maximum number of GitLab Pages custom domains for a project:
 
@@ -891,7 +863,7 @@ Incorrect configuration of these values may result in intermittent
 or persistent errors, or the Pages Daemon serving old content.
 
 NOTE:
-Expiry, interval and timeout flags use [Golang's duration formatting](https://pkg.go.dev/time#ParseDuration).
+Expiry, interval and timeout flags use [Go duration formatting](https://pkg.go.dev/time#ParseDuration).
 A duration string is a possibly signed sequence of decimal numbers,
 each with optional fraction and a unit suffix, such as `300ms`, `1.5h` or `2h45m`.
 Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`.

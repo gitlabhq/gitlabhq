@@ -37,10 +37,6 @@ describe('UserProfileSetStatusWrapper', () => {
   const findInput = (name) => wrapper.find(`[name="${name}"]`);
   const findSetStatusForm = () => wrapper.findComponent(SetStatusForm);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders `SetStatusForm` component and passes expected props', () => {
     createComponent();
 

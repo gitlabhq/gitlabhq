@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AuthorizedProjectUpdate::ProjectRecalculateService, '#execute' do
+RSpec.describe AuthorizedProjectUpdate::ProjectRecalculateService, '#execute', feature_category: :projects do
   let_it_be(:project) { create(:project) }
 
   subject(:execute) { described_class.new(project).execute }

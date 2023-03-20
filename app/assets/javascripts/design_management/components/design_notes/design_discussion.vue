@@ -1,16 +1,19 @@
 <script>
 import { GlButton, GlLink, GlTooltipDirective } from '@gitlab/ui';
-import { ApolloMutation } from 'vue-apollo';
-import { createAlert } from '~/flash';
-import { s__ } from '~/locale';
+import * as Sentry from '@sentry/browser';
+import { createAlert } from '~/alert';
+import { __, s__ } from '~/locale';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import { updateGlobalTodoCount } from '~/sidebar/utils';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';
-import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../../constants';
+import { TYPENAME_NOTE, TYPENAME_DISCUSSION } from '~/graphql_shared/constants';
+import { ACTIVE_DISCUSSION_SOURCE_TYPES, DELETE_NOTE_ERROR_MSG } from '../../constants';
 import createNoteMutation from '../../graphql/mutations/create_note.mutation.graphql';
 import toggleResolveDiscussionMutation from '../../graphql/mutations/toggle_resolve_discussion.mutation.graphql';
+import destroyNoteMutation from '../../graphql/mutations/destroy_note.mutation.graphql';
 import activeDiscussionQuery from '../../graphql/queries/active_discussion.query.graphql';
 import getDesignQuery from '../../graphql/queries/get_design.query.graphql';
 import allVersionsMixin from '../../mixins/all_versions';
@@ -23,8 +26,14 @@ import DesignReplyForm from './design_reply_form.vue';
 import ToggleRepliesWidget from './toggle_replies_widget.vue';
 
 export default {
+  i18n: {
+    deleteNote: {
+      confirmationText: __('Are you sure you want to delete this comment?'),
+      primaryModalBtnText: __('Delete comment'),
+      errorText: DELETE_NOTE_ERROR_MSG,
+    },
+  },
   components: {
-    ApolloMutation,
     DesignNote,
     DesignNotePin,
     DesignNoteSignedOut,
@@ -97,9 +106,9 @@ export default {
   },
   data() {
     return {
-      discussionComment: '',
       isFormRendered: false,
       activeDiscussion: {},
+      noteToDelete: null,
       isResolving: false,
       shouldChangeResolvedStatus: false,
       areRepliesCollapsed: this.discussion.resolved,
@@ -107,10 +116,9 @@ export default {
     };
   },
   computed: {
-    mutationPayload() {
+    mutationVariables() {
       return {
         noteableId: this.noteableId,
-        body: this.discussionComment,
         discussionId: this.discussion.id,
       };
     },
@@ -156,19 +164,21 @@ export default {
     onDone({ data: { createNote } }) {
       if (hasErrors(createNote)) {
         createAlert({ message: ADD_DISCUSSION_COMMENT_ERROR });
+      } else {
+        /**
+         * https://gitlab.com/gitlab-org/gitlab/-/issues/388314
+         *
+         * Hide the form once the create note mutation is completed.
+         */
+        this.hideForm();
       }
-      this.discussionComment = '';
-      this.hideForm();
+
       if (this.shouldChangeResolvedStatus) {
         this.toggleResolvedStatus();
       }
     },
-    onCreateNoteError(err) {
-      this.$emit('create-note-error', err);
-    },
     hideForm() {
       this.isFormRendered = false;
-      this.discussionComment = '';
     },
     showForm() {
       this.$emit('open-form', this.discussion.id);
@@ -219,13 +229,65 @@ export default {
       const { source } = activeDiscussion;
       return ALLOWED_ACTIVE_DISCUSSION_SOURCES.includes(source) && this.isDiscussionActive;
     },
+    async showDeleteNoteConfirmationModal(note) {
+      const isLast = note?.discussion?.notes?.nodes.length === 1;
+      this.noteToDelete = { ...note, isLast };
+
+      const confirmed = await confirmAction(this.$options.i18n.deleteNote.confirmationText, {
+        primaryBtnVariant: 'danger',
+        primaryBtnText: this.$options.i18n.deleteNote.primaryModalBtnText,
+      });
+
+      if (confirmed) {
+        await this.deleteNote();
+      }
+    },
+    async deleteNote() {
+      const { id, discussion, isLast } = this.noteToDelete;
+      try {
+        await this.$apollo.mutate({
+          mutation: destroyNoteMutation,
+          variables: {
+            input: {
+              id,
+            },
+          },
+          update: (cache, { data }) => {
+            const { errors } = data.destroyNote;
+
+            if (errors?.length) {
+              this.$emit('delete-note-error', errors[0]);
+            }
+
+            const objectToIdentify = isLast
+              ? { __typename: TYPENAME_DISCUSSION, id: discussion?.id }
+              : { __typename: TYPENAME_NOTE, id };
+
+            cache.modify({
+              id: cache.identify(objectToIdentify),
+              fields: (_, { DELETE }) => DELETE,
+            });
+          },
+          optimisticResponse: {
+            destroyNote: {
+              note: null,
+              errors: [],
+              __typename: 'DestroyNotePayload',
+            },
+          },
+        });
+      } catch (error) {
+        this.$emit('delete-note-error', this.$options.i18n.deleteNote.errorText);
+        Sentry.captureException(error);
+      }
+    },
   },
   createNoteMutation,
 };
 </script>
 
 <template>
-  <div class="design-discussion-wrapper">
+  <div class="design-discussion-wrapper" @click="$emit('update-active-discussion')">
     <design-note-pin :is-resolved="discussion.resolved" :label="discussion.index" />
     <ul
       class="design-discussion bordered-box gl-relative gl-p-0 gl-list-style-none"
@@ -235,9 +297,10 @@ export default {
         :note="firstNote"
         :markdown-preview-path="markdownPreviewPath"
         :is-resolving="isResolving"
+        :is-discussion="true"
         :noteable-id="noteableId"
         :class="{ 'gl-bg-blue-50': isDiscussionActive }"
-        @error="$emit('update-note-error', $event)"
+        @delete-note="showDeleteNoteConfirmationModal($event)"
       >
         <template v-if="isLoggedIn && discussion.resolvable" #resolve-discussion>
           <gl-button
@@ -279,8 +342,9 @@ export default {
         :markdown-preview-path="markdownPreviewPath"
         :is-resolving="isResolving"
         :noteable-id="noteableId"
+        :is-discussion="false"
         :class="{ 'gl-bg-blue-50': isDiscussionActive }"
-        @error="$emit('update-note-error', $event)"
+        @delete-note="showDeleteNoteConfirmationModal($event)"
       />
       <li
         v-show="isReplyPlaceholderVisible"
@@ -296,33 +360,24 @@ export default {
             :placeholder-text="__('Reply…')"
             @focus="showForm"
           />
-          <apollo-mutation
+          <design-reply-form
             v-else
-            #default="{ mutate, loading }"
-            :mutation="$options.createNoteMutation"
-            :variables="{
-              input: mutationPayload,
-            }"
-            @done="onDone"
-            @error="onCreateNoteError"
+            :design-note-mutation="$options.createNoteMutation"
+            :mutation-variables="mutationVariables"
+            :markdown-preview-path="markdownPreviewPath"
+            :noteable-id="noteableId"
+            :discussion-id="discussion.id"
+            :is-discussion="false"
+            @note-submit-complete="onDone"
+            @cancel-form="hideForm"
           >
-            <design-reply-form
-              v-model="discussionComment"
-              :is-saving="loading"
-              :markdown-preview-path="markdownPreviewPath"
-              :noteable-id="noteableId"
-              :discussion-id="discussion.id"
-              @submit-form="mutate"
-              @cancel-form="hideForm"
-            >
-              <template v-if="discussion.resolvable" #resolve-checkbox>
-                <label data-testid="resolve-checkbox">
-                  <input v-model="shouldChangeResolvedStatus" type="checkbox" />
-                  {{ resolveCheckboxText }}
-                </label>
-              </template>
-            </design-reply-form>
-          </apollo-mutation>
+            <template v-if="discussion.resolvable" #resolve-checkbox>
+              <label data-testid="resolve-checkbox">
+                <input v-model="shouldChangeResolvedStatus" type="checkbox" />
+                {{ resolveCheckboxText }}
+              </label>
+            </template>
+          </design-reply-form>
         </template>
       </li>
     </ul>

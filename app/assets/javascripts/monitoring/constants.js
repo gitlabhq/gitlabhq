@@ -226,12 +226,6 @@ export const OVERVIEW_DASHBOARD_PATH = 'config/prometheus/common_metrics.yml';
  */
 export const OUT_OF_THE_BOX_DASHBOARDS_PATH_PREFIX = 'config/prometheus/';
 
-export const OPERATORS = {
-  greaterThan: '>',
-  equalTo: '==',
-  lessThan: '<',
-};
-
 /**
  * Dashboard yml files support custom user-defined variables that
  * are rendered as input elements in the monitoring dashboard.

@@ -38,11 +38,6 @@ describe('JiraIssuesImportStatus', () => {
       },
     });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('when Jira import is neither in progress nor finished', () => {
     beforeEach(() => {
       wrapper = mountComponent();

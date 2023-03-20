@@ -82,6 +82,8 @@ module Gitlab
       module Duration
         extend self
 
+        STATUSES = %w[success failed running canceled].freeze
+
         Period = Struct.new(:first, :last) do
           def duration
             last - first
@@ -90,13 +92,14 @@ module Gitlab
 
         # rubocop: disable CodeReuse/ActiveRecord
         def from_pipeline(pipeline)
-          status = %w[success failed running canceled]
-          builds = pipeline.processables.latest
-            .where(status: status).where.not(started_at: nil).order(:started_at)
+          builds =
+            self_and_downstreams_builds_of_pipeline(pipeline)
 
           from_builds(builds)
         end
         # rubocop: enable CodeReuse/ActiveRecord
+
+        private
 
         def from_builds(builds)
           now = Time.now
@@ -112,8 +115,6 @@ module Gitlab
         def from_periods(periods)
           process_duration(process_periods(periods))
         end
-
-        private
 
         def process_periods(periods)
           return periods if periods.empty?
@@ -137,6 +138,20 @@ module Gitlab
         def merge(previous, current)
           Period.new(previous.first, [previous.last, current.last].max)
         end
+
+        # rubocop: disable CodeReuse/ActiveRecord
+        def self_and_downstreams_builds_of_pipeline(pipeline)
+          ::Ci::Build
+            .select(:id, :type, :started_at, :finished_at)
+            .in_pipelines(
+              pipeline.self_and_downstreams.select(:id)
+            )
+            .with_status(STATUSES)
+            .latest
+            .where.not(started_at: nil)
+            .order(:started_at)
+        end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         # rubocop: disable CodeReuse/ActiveRecord
         def process_duration(periods)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe FlushCounterIncrementsWorker, :counter_attribute do
+RSpec.describe FlushCounterIncrementsWorker, :counter_attribute, feature_category: :shared do
   let(:project_statistics) { create(:project_statistics) }
   let(:model) { CounterAttributeModel.find(project_statistics.id) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AuditEventSaveType do
+RSpec.describe AuditEventSaveType, feature_category: :audit_events do
   subject(:target) { Object.new.extend(described_class) }
 
   describe '#should_save_database? and #should_save_stream?' do

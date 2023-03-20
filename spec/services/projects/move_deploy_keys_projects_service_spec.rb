@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::MoveDeployKeysProjectsService do
+RSpec.describe Projects::MoveDeployKeysProjectsService, feature_category: :continuous_delivery do
   let!(:user) { create(:user) }
   let!(:project_with_deploy_keys) { create(:project, namespace: user.namespace) }
   let!(:target_project) { create(:project, namespace: user.namespace) }

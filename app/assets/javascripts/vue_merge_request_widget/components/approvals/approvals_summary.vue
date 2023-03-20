@@ -1,5 +1,4 @@
 <script>
-import { GlSkeletonLoader } from '@gitlab/ui';
 import { toNounSeriesText } from '~/lib/utils/grammar';
 import { n__, sprintf } from '~/locale';
 import {
@@ -10,49 +9,21 @@ import {
 import UserAvatarList from '~/vue_shared/components/user_avatar/user_avatar_list.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { getApprovalRuleNamesLeft } from 'ee_else_ce/vue_merge_request_widget/mappers';
-import approvedByQuery from 'ee_else_ce/vue_merge_request_widget/components/approvals/queries/approved_by.query.graphql';
 
 export default {
-  apollo: {
-    approvalState: {
-      query: approvedByQuery,
-      variables() {
-        return {
-          projectPath: this.projectPath,
-          iid: this.iid,
-        };
-      },
-      update: (data) => data.project.mergeRequest,
-    },
-  },
   components: {
-    GlSkeletonLoader,
     UserAvatarList,
   },
   props: {
-    projectPath: {
-      type: String,
-      required: true,
-    },
-    iid: {
-      type: String,
-      required: true,
-    },
-    updatedCount: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
     multipleApprovalRulesAvailable: {
       type: Boolean,
       required: false,
       default: false,
     },
-  },
-  data() {
-    return {
-      approvalState: {},
-    };
+    approvalState: {
+      type: Object,
+      required: true,
+    },
   },
   computed: {
     approvers() {
@@ -134,37 +105,20 @@ export default {
       return gon.current_user_id;
     },
   },
-  watch: {
-    updatedCount() {
-      this.$apollo.queries.approvalState.refetch();
-    },
-  },
 };
 </script>
 
 <template>
   <div data-qa-selector="approvals_summary_content">
-    <div
-      v-if="$apollo.queries.approvalState.loading"
-      class="gl-display-inline-block gl-vertical-align-middle"
-      style="width: 132px; height: 24px"
-    >
-      <gl-skeleton-loader :width="132" :height="24">
-        <rect width="100" height="24" x="0" y="0" rx="4" />
-        <circle cx="120" cy="12" r="12" />
-      </gl-skeleton-loader>
-    </div>
-    <template v-else>
-      <span class="gl-font-weight-bold">{{ approvalLeftMessage }}</span>
-      <template v-if="hasApprovers">
-        <span v-if="approvalLeftMessage">{{ message }}</span>
-        <span v-else class="gl-font-weight-bold">{{ message }}</span>
-        <user-avatar-list
-          class="gl-display-inline-block gl-vertical-align-middle gl-pt-1"
-          :img-size="24"
-          :items="approvers"
-        />
-      </template>
+    <span class="gl-font-weight-bold">{{ approvalLeftMessage }}</span>
+    <template v-if="hasApprovers">
+      <span v-if="approvalLeftMessage">{{ message }}</span>
+      <span v-else class="gl-font-weight-bold">{{ message }}</span>
+      <user-avatar-list
+        class="gl-display-inline-block gl-vertical-align-middle gl-pt-1"
+        :img-size="24"
+        :items="approvers"
+      />
     </template>
   </div>
 </template>

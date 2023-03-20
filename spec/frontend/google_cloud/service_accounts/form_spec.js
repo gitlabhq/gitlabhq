@@ -17,10 +17,6 @@ describe('google_cloud/service_accounts/form', () => {
     wrapper = shallowMount(ServiceAccountsForm, { propsData, stubs: { GlFormCheckbox } });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('contains header', () => {
     expect(findHeader().exists()).toBe(true);
   });

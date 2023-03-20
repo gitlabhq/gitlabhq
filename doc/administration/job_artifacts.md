@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Pipeline Insights
+group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -276,7 +276,7 @@ to clean up orphaned artifacts.
 ### Migrating from object storage to local storage
 
 To migrate back to local storage, you must
-[selectively disable the artifacts storage](object_storage.md#selectively-disabling-object-storage).
+[selectively disable the artifacts storage](object_storage.md#disable-object-storage-for-specific-features).
 
 ## Expiring artifacts
 

@@ -120,6 +120,14 @@ module Gitlab
       []
     end
 
+    def failed?
+      false
+    end
+
+    def error
+      nil
+    end
+
     private
 
     def collection_for(scope)

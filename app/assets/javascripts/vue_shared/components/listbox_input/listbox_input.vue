@@ -1,5 +1,5 @@
 <script>
-import { GlFormGroup, GlListbox } from '@gitlab/ui';
+import { GlFormGroup, GlCollapsibleListbox } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 const MIN_ITEMS_COUNT_FOR_SEARCHING = 10;
@@ -10,9 +10,9 @@ export default {
   },
   components: {
     GlFormGroup,
-    GlListbox,
+    GlCollapsibleListbox,
   },
-  model: GlListbox.model,
+  model: GlCollapsibleListbox.model,
   props: {
     label: {
       type: String,
@@ -39,7 +39,7 @@ export default {
       default: null,
     },
     items: {
-      type: GlListbox.props.items.type,
+      type: GlCollapsibleListbox.props.items.type,
       required: true,
     },
     disabled: {
@@ -116,7 +116,7 @@ export default {
 
 <template>
   <component :is="wrapperComponent" :label="label" :description="description" v-bind="$attrs">
-    <gl-listbox
+    <gl-collapsible-listbox
       :selected="selected"
       :toggle-text="toggleText"
       :items="filteredItems"

@@ -14,8 +14,6 @@ describe('ForkSuggestion component', () => {
 
   beforeEach(() => createComponent());
 
-  afterEach(() => wrapper.destroy());
-
   const { i18n } = ForkSuggestion;
   const findMessage = () => wrapper.findByTestId('message');
   const findForkButton = () => wrapper.findByTestId('fork');

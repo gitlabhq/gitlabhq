@@ -15,6 +15,7 @@ query getPackageDetails(
     updatedAt
     status
     canDestroy
+    publicPackage
     npmUrl
     mavenUrl
     conanUrl

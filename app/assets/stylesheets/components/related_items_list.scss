@@ -6,6 +6,8 @@ $item-remove-button-space: 42px;
 .related-items-list {
   padding: $gl-padding-4;
   padding-right: $gl-padding-6;
+  border-bottom-left-radius: $gl-border-size-3;
+  border-bottom-right-radius: $gl-border-size-3;
 
   &,
   .list-item:last-child {
@@ -33,6 +35,14 @@ $item-remove-button-space: 42px;
 .item-body {
   position: relative;
   line-height: $gl-line-height;
+  border: 1px solid transparent;
+  border-radius: $gl-border-radius-base;
+
+  &:hover,
+  &:focus-within {
+    background-color: $white;
+    border-color: $gray-50;
+  }
 
   .merge-request-status.closed {
     color: $red-500;
@@ -61,6 +71,7 @@ $item-remove-button-space: 42px;
 
     .sortable-link {
       color: $gray-900;
+      font-weight: 500;
     }
   }
 
@@ -84,16 +95,6 @@ $item-remove-button-space: 42px;
   .board-card-weight {
     &.board-card-info {
       margin-right: 0;
-    }
-  }
-
-  .item-attributes-area {
-    > * {
-      margin-left: 8px;
-    }
-
-    @include media-breakpoint-down(sm) {
-      margin-left: -8px;
     }
   }
 
@@ -147,7 +148,7 @@ $item-remove-button-space: 42px;
 }
 
 .item-path-id {
-  font-size: $gl-font-size-xs;
+  font-size: $gl-font-size-small;
   white-space: nowrap;
 
   .path-id-text {
@@ -156,32 +157,13 @@ $item-remove-button-space: 42px;
   }
 }
 
-.btn-item-remove {
-  position: absolute;
-  top: $gl-padding-4 / 2;
-  right: 0;
-  padding: $gl-padding-4;
-  margin-right: $gl-padding-4 / 2;
-  line-height: 0;
-  border-color: transparent;
-  background-color: transparent;
-  color: $gl-text-color-secondary;
-
-  .related-items-tree & {
-    position: relative;
-    top: initial;
-    padding: $btn-sm-side-margin;
-    margin-right: initial;
-  }
-
-  &:hover {
-    color: $gl-text-color;
-    border-color: $border-color;
-  }
-}
-
 .mr-ci-status {
   line-height: 0;
+
+  a:focus {
+    @include gl-rounded-full;
+    @include gl-focus;
+  }
 }
 
 @include media-breakpoint-down(xs) {
@@ -191,10 +173,6 @@ $item-remove-button-space: 42px;
 }
 
 @include media-breakpoint-up(sm) {
-  .item-info-area {
-    flex-basis: 100%;
-  }
-
   .sortable-link {
     max-width: 90%;
   }
@@ -265,18 +243,7 @@ $item-remove-button-space: 42px;
     }
   }
 
-  .btn-item-remove {
-    position: relative;
-    top: initial;
-    padding: $btn-sm-side-margin;
-    margin-right: $gl-padding-4 / 2;
-  }
-
   .sortable-link {
     line-height: 1.3;
-  }
-
-  .item-info-area {
-    flex-basis: auto;
   }
 }

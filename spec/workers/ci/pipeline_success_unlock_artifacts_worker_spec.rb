@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineSuccessUnlockArtifactsWorker do
+RSpec.describe Ci::PipelineSuccessUnlockArtifactsWorker, feature_category: :build_artifacts do
   describe '#perform' do
     subject(:perform) { described_class.new.perform(pipeline_id) }
 

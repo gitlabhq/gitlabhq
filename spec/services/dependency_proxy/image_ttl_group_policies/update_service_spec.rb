@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::DependencyProxy::ImageTtlGroupPolicies::UpdateService do
+RSpec.describe ::DependencyProxy::ImageTtlGroupPolicies::UpdateService, feature_category: :dependency_proxy do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_reload(:group) { create(:group) }

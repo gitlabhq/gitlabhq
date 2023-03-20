@@ -22,10 +22,6 @@ describe('SignInLegacyButton', () => {
 
   const findButton = () => wrapper.findComponent(GlButton);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays a button', () => {
     createComponent();
 

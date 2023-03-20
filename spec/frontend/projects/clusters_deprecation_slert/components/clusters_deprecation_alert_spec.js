@@ -26,10 +26,6 @@ describe('ClustersDeprecationAlert', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     it('should render a non-dismissible warning alert', () => {
       expect(findAlert().props()).toMatchObject({

@@ -1286,7 +1286,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       let_it_be(:has_active_license) { true }
 
       it 'displays the correct messagee' do
-        expect(subject).to eq(s_('Clusters|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd} or reach out to GitLab support.'))
+        expect(subject).to eq(s_('Clusters|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}. Contact GitLab Support if you have any additional questions.'))
       end
     end
 
@@ -1373,9 +1373,36 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
           source_name: source_project.full_name,
           source_path: project_path(source_project),
           ahead_compare_path: ahead_path,
-          behind_compare_path: behind_path
+          behind_compare_path: behind_path,
+          source_default_branch: source_project.default_branch
         })
       end
     end
+  end
+
+  describe '#remote_mirror_setting_enabled?' do
+    it 'returns false' do
+      expect(helper.remote_mirror_setting_enabled?).to be_falsy
+    end
+  end
+
+  describe '#http_clone_url_to_repo' do
+    before do
+      allow(project).to receive(:http_url_to_repo).and_return('http_url_to_repo')
+    end
+
+    subject { helper.http_clone_url_to_repo(project) }
+
+    it { expect(subject).to eq('http_url_to_repo') }
+  end
+
+  describe '#ssh_clone_url_to_repo' do
+    before do
+      allow(project).to receive(:ssh_url_to_repo).and_return('ssh_url_to_repo')
+    end
+
+    subject { helper.ssh_clone_url_to_repo(project) }
+
+    it { expect(subject).to eq('ssh_url_to_repo') }
   end
 end

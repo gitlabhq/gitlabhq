@@ -18,10 +18,6 @@ describe('DateTimePickerInput', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders label above the input', () => {
     createComponent({
       label: inputLabel,

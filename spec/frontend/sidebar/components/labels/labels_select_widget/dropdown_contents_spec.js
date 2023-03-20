@@ -66,10 +66,6 @@ describe('DropdownContent', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findCreateView = () => wrapper.findComponent(DropdownContentsCreateView);
   const findLabelsView = () => wrapper.findComponent(DropdownContentsLabelsView);
   const findDropdownHeader = () => wrapper.findComponent(DropdownHeaderStub);

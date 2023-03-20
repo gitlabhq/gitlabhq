@@ -1,0 +1,8 @@
+---
+name: npm_allow_packages_in_multiple_projects
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111775
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/391692
+milestone: '15.10'
+type: development
+group: group::package registry
+default_enabled: false

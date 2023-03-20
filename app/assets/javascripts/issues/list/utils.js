@@ -16,6 +16,7 @@ import {
   TOKEN_TYPE_HEALTH,
   TOKEN_TYPE_LABEL,
 } from '~/vue_shared/components/filtered_search_bar/constants';
+import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 import {
   ALTERNATIVE_FILTER,
   API_PARAM,
@@ -35,7 +36,6 @@ import {
   MILESTONE_DUE_ASC,
   MILESTONE_DUE_DESC,
   NORMAL_FILTER,
-  PAGE_SIZE,
   PARAM_ASSIGNEE_ID,
   POPULARITY_ASC,
   POPULARITY_DESC,
@@ -56,7 +56,7 @@ import {
 
 export const getInitialPageParams = (
   pageSize,
-  firstPageSize = pageSize ?? PAGE_SIZE,
+  firstPageSize = pageSize ?? DEFAULT_PAGE_SIZE,
   lastPageSize,
   afterCursor,
   beforeCursor,
@@ -289,9 +289,9 @@ const formatData = (token) => {
 };
 
 export const convertToApiParams = (filterTokens) => {
-  const params = {};
-  const not = {};
-  const or = {};
+  const params = new Map();
+  const not = new Map();
+  const or = new Map();
 
   filterTokens
     .filter((token) => token.type !== FILTERED_SEARCH_TERM)
@@ -307,32 +307,34 @@ export const convertToApiParams = (filterTokens) => {
         obj = params;
       }
       const data = formatData(token);
-      Object.assign(obj, {
-        [apiField]: obj[apiField] ? [obj[apiField], data].flat() : data,
-      });
+      obj.set(apiField, obj.has(apiField) ? [obj.get(apiField), data].flat() : data);
     });
 
-  if (Object.keys(not).length) {
-    Object.assign(params, { not });
+  if (not.size) {
+    params.set('not', Object.fromEntries(not));
   }
 
-  if (Object.keys(or).length) {
-    Object.assign(params, { or });
+  if (or.size) {
+    params.set('or', Object.fromEntries(or));
   }
 
-  return params;
+  return Object.fromEntries(params);
 };
 
-export const convertToUrlParams = (filterTokens) =>
-  filterTokens
+export const convertToUrlParams = (filterTokens) => {
+  const urlParamsMap = filterTokens
     .filter((token) => token.type !== FILTERED_SEARCH_TERM)
     .reduce((acc, token) => {
       const filterType = getFilterType(token);
       const urlParam = filters[token.type][URL_PARAM][token.value.operator]?.[filterType];
-      return Object.assign(acc, {
-        [urlParam]: acc[urlParam] ? [acc[urlParam], token.value.data].flat() : token.value.data,
-      });
-    }, {});
+      return acc.set(
+        urlParam,
+        acc.has(urlParam) ? [acc.get(urlParam), token.value.data].flat() : token.value.data,
+      );
+    }, new Map());
+
+  return Object.fromEntries(urlParamsMap);
+};
 
 export const convertToSearchQuery = (filterTokens) =>
   filterTokens

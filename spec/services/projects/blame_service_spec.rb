@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::BlameService, :aggregate_failures do
+RSpec.describe Projects::BlameService, :aggregate_failures, feature_category: :source_code_management do
   subject(:service) { described_class.new(blob, commit, params) }
 
   let_it_be(:project) { create(:project, :repository) }

@@ -31,6 +31,8 @@
 # * <tt>allow_blank</tt> - Allow urls to be +blank+. Default: +false+
 # * <tt>allow_nil</tt> - Allow urls to be +nil+. Default: +false+
 # * <tt>ports</tt> - Allowed ports. Default: +all+.
+# * <tt>deny_all_requests_except_allowed</tt> - Deny all requests. Default: Respects the instance app setting.
+#                                               Note: Regardless of whether enforced during validation, an HTTP request that uses the URI may still be blocked.
 # * <tt>enforce_user</tt> - Validate user format. Default: +false+
 # * <tt>enforce_sanitization</tt> - Validate that there are no html/css/js tags. Default: +false+
 #
@@ -54,6 +56,7 @@ class AddressableUrlValidator < ActiveModel::EachValidator
     allow_localhost: true,
     allow_local_network: true,
     ascii_only: false,
+    deny_all_requests_except_allowed: Gitlab::UrlBlocker::DENY_ALL_REQUESTS_EXCEPT_ALLOWED_DEFAULT,
     enforce_user: false,
     enforce_sanitization: false,
     dns_rebind_protection: false

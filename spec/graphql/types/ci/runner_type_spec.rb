@@ -9,11 +9,11 @@ RSpec.describe GitlabSchema.types['CiRunner'], feature_category: :runner do
 
   it 'contains attributes related to a runner' do
     expected_fields = %w[
-      id description created_at contacted_at maximum_timeout access_level active paused status
+      id description created_by created_at contacted_at machines maximum_timeout access_level active paused status
       version short_sha revision locked run_untagged ip_address runner_type tag_list
-      project_count job_count admin_url edit_admin_url user_permissions executor_name architecture_name platform_name
-      maintenance_note maintenance_note_html groups projects jobs token_expires_at owner_project job_execution_status
-      ephemeral_authentication_token
+      project_count job_count admin_url edit_admin_url register_admin_url user_permissions executor_name
+      architecture_name platform_name maintenance_note maintenance_note_html groups projects jobs token_expires_at
+      owner_project job_execution_status ephemeral_authentication_token
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

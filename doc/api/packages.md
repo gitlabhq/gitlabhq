@@ -352,6 +352,9 @@ Can return the following status codes:
 - `204 No Content`, if the package was deleted successfully.
 - `404 Not Found`, if the package was not found.
 
+If [request forwarding](../user/packages/package_registry/supported_functionality.md#forwarding-requests) is enabled,
+deleting a package can introduce a [dependency confusion risk](../user/packages/package_registry/supported_functionality.md#deleting-packages).
+
 ## Delete a package file
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32107) in GitLab 13.12.

@@ -7,6 +7,8 @@ module Gitlab
     #
     # Job arguments needed must be defined explicitly,
     # see https://docs.gitlab.com/ee/development/database/batched_background_migrations.html#job-arguments.
+    # rubocop:disable Metrics/ClassLength
+    # rubocop:disable Metrics/ParameterLists
     class BatchedMigrationJob
       include Gitlab::Database::DynamicModelHelpers
       include Gitlab::ClassAttributes
@@ -60,7 +62,8 @@ module Gitlab
       end
 
       def initialize(
-        start_id:, end_id:, batch_table:, batch_column:, sub_batch_size:, pause_ms:, job_arguments: [], connection:
+        start_id:, end_id:, batch_table:, batch_column:, sub_batch_size:, pause_ms:, job_arguments: [], connection:,
+        sub_batch_exception: nil
       )
 
         @start_id = start_id
@@ -71,6 +74,7 @@ module Gitlab
         @pause_ms = pause_ms
         @job_arguments = job_arguments
         @connection = connection
+        @sub_batch_exception = sub_batch_exception
       end
 
       def filter_batch(relation)
@@ -87,7 +91,8 @@ module Gitlab
 
       private
 
-      attr_reader :start_id, :end_id, :batch_table, :batch_column, :sub_batch_size, :pause_ms, :connection
+      attr_reader :start_id, :end_id, :batch_table, :batch_column, :sub_batch_size,
+        :pause_ms, :connection, :sub_batch_exception
 
       def each_sub_batch(batching_arguments: {}, batching_scope: nil)
         all_batching_arguments = { column: batch_column, of: sub_batch_size }.merge(batching_arguments)
@@ -98,6 +103,10 @@ module Gitlab
         sub_batch_relation.each_batch(**all_batching_arguments) do |relation|
           batch_metrics.instrument_operation(operation_name) do
             yield relation
+          rescue *Gitlab::Database::BackgroundMigration::BatchedJob::TIMEOUT_EXCEPTIONS => exception
+            exception_class = sub_batch_exception || exception.class
+
+            raise exception_class, exception
           end
 
           sleep([pause_ms, 0].max * 0.001)
@@ -137,3 +146,5 @@ module Gitlab
     end
   end
 end
+# rubocop:enable Metrics/ClassLength
+# rubocop:enable Metrics/ParameterLists

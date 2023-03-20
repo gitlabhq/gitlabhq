@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Widgets::AssigneesService::UpdateService, :freeze_time do
+RSpec.describe WorkItems::Widgets::AssigneesService::UpdateService, :freeze_time, feature_category: :portfolio_management do
   let_it_be(:reporter) { create(:user) }
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:new_assignee) { create(:user) }

@@ -14,7 +14,7 @@ import {
   sastDiffSuccessMock,
   secretDetectionDiffSuccessMock,
 } from 'jest/vue_shared/security_reports/mock_data';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import HelpIcon from '~/vue_shared/security_reports/components/help_icon.vue';
@@ -26,7 +26,7 @@ import {
 import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/graphql/queries/security_report_merge_request_download_paths.query.graphql';
 import SecurityReportsApp from '~/vue_shared/security_reports/security_reports_app.vue';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 Vue.use(VueApollo);
 Vue.use(Vuex);
@@ -73,10 +73,6 @@ describe('Security reports app', () => {
 
   const findDownloadDropdown = () => wrapper.findComponent(SecurityReportDownloadDropdown);
   const findHelpIconComponent = () => wrapper.findComponent(HelpIcon);
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('given the artifacts query is loading', () => {
     beforeEach(() => {

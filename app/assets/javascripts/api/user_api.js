@@ -1,5 +1,5 @@
 import { DEFAULT_PER_PAGE } from '~/api';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import axios from '../lib/utils/axios_utils';
 import { buildApiUrl } from './api_utils';

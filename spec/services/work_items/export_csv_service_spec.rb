@@ -30,9 +30,8 @@ RSpec.describe WorkItems::ExportCsvService, :with_license, feature_category: :te
   end
 
   describe '#email' do
-    # TODO - will be implemented as part of https://gitlab.com/gitlab-org/gitlab/-/issues/379082
-    xit 'emails csv' do
-      expect { subject.email(user) }.o change { ActionMailer::Base.deliveries.count }.from(0).to(1)
+    it 'emails csv' do
+      expect { subject.email(user) }.to change { ActionMailer::Base.deliveries.count }.from(0).to(1)
     end
   end
 

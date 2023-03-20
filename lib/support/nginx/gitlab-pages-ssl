@@ -38,8 +38,10 @@ server {
   ssl_session_cache shared:SSL:10m;
   ssl_session_tickets off;
 
-  ssl_protocols TLSv1.2 TLSv1.3;
-  ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+  # These settings are in line with the modern settings from https://ssl-config.mozilla.org/
+  # and are supported by all still-supported browsers since 2019. If you have specific needs
+  # for older settings, please consult the intermediate settings there.
+  ssl_protocols TLSv1.3;
   ssl_prefer_server_ciphers off;
 
   ## See app/controllers/application_controller.rb for headers set
@@ -52,11 +54,6 @@ server {
   # ssl_stapling on;
   # ssl_stapling_verify on;
   # ssl_trusted_certificate /etc/nginx/ssl/stapling.trusted.crt;
-
-  ## [Optional] Generate a stronger DHE parameter:
-  ##   sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
-  ##
-  # ssl_dhparam /etc/ssl/certs/dhparam.pem;
 
   ## [Optional] Enable HTTP Strict Transport Security
   # add_header Strict-Transport-Security "max-age=63072000; includeSubDomains";

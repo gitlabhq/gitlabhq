@@ -1,0 +1,21 @@
+%section.settings.as-projects-api-limits.no-animate#js-projects-api-limits-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
+      = _('Projects API rate limit')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Set the per-IP address rate limit applicable to unauthenticated requests for getting a list of projects via the API.')
+      = link_to _('Learn more.'), help_page_path('user/admin_area/settings/rate_limit_on_projects_api.md'), target: '_blank', rel: 'noopener noreferrer'
+  .settings-content
+    = gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-projects-api-limits-settings'), html: { class: 'fieldset-form' } do |f|
+      = form_errors(@application_setting)
+
+      %fieldset
+        .form-group
+          = f.label :projects_api_rate_limit_unauthenticated, _('Maximum requests per 10 minutes per IP address'), class: 'label-bold'
+          = f.number_field :projects_api_rate_limit_unauthenticated, class: 'form-control gl-form-input'
+          .form-text.gl-text-gray-600
+            = _("Set this number to 0 to disable the limit.")
+
+      = f.submit _('Save changes'), data: { qa_selector: 'save_changes_button' }, pajamas_button: true

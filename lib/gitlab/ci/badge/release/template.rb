@@ -11,9 +11,11 @@ module Gitlab::Ci
         }.freeze
         KEY_WIDTH_DEFAULT = 90
         VALUE_WIDTH_DEFAULT = 54
+        VALUE_WIDTH_MAXIMUM = 200
 
         def initialize(badge)
           @tag = badge.tag || "none"
+          @value_width = badge.customization[:value_width]
           super
         end
 
@@ -30,7 +32,11 @@ module Gitlab::Ci
         end
 
         def value_width
-          VALUE_WIDTH_DEFAULT
+          if @value_width && @value_width.between?(1, VALUE_WIDTH_MAXIMUM)
+            @value_width
+          else
+            VALUE_WIDTH_DEFAULT
+          end
         end
 
         def value_color

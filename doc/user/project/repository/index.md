@@ -25,7 +25,7 @@ You can add files to a repository:
 - When you create a project.
 - After you create a project:
   - By using [the web editor](web_editor.md).
-  - [From the command line](../../../gitlab-basics/command-line-commands.md).
+  - From the command line.
 
 ## Commit changes to a repository
 
@@ -235,9 +235,9 @@ The size can differ slightly from one instance to another due to compression, ho
 Administrators can set a [repository size limit](../../admin_area/settings/account_and_limit_settings.md).
 [GitLab sets the size limits for GitLab.com](../../gitlab_com/index.md#account-and-limit-settings).
 
-## Repository contributor graph
+## Repository contributor statistics
 
-All code contributors are displayed under your project's **Repository > Contributors**.
+All code contributors are displayed under your project's **Repository > Contributor statistics**.
 
 The graph shows the contributor with the most commits to the fewest.
 

@@ -24,10 +24,6 @@ describe('Commit component', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should render a fork icon if it does not represent a tag', () => {
     createComponent({
       tag: false,

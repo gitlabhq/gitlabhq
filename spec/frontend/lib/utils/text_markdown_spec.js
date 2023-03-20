@@ -1,12 +1,16 @@
 import $ from 'jquery';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import {
   insertMarkdownText,
   keypressNoteText,
   compositionStartNoteText,
   compositionEndNoteText,
   updateTextForToolbarBtn,
+  resolveSelectedImage,
 } from '~/lib/utils/text_markdown';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import '~/lib/utils/jquery_at_who';
+import axios from '~/lib/utils/axios_utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
 describe('init markdown', () => {
@@ -14,6 +18,7 @@ describe('init markdown', () => {
   let textArea;
   let indentButton;
   let outdentButton;
+  let axiosMock;
 
   beforeAll(() => {
     setHTMLFixture(
@@ -32,6 +37,14 @@ describe('init markdown', () => {
 
     // needed for the underlying insertText to work
     document.execCommand = jest.fn(() => false);
+  });
+
+  beforeEach(() => {
+    axiosMock = new AxiosMockAdapter(axios);
+  });
+
+  afterEach(() => {
+    axiosMock.restore();
   });
 
   afterAll(() => {
@@ -703,6 +716,55 @@ describe('init markdown', () => {
 
           expect(textArea.value).toEqual(`before \n${selected}\nafter `);
         });
+      });
+    });
+  });
+
+  describe('resolveSelectedImage', () => {
+    const markdownPreviewPath = '/markdown/preview';
+    const imageMarkdown = '![image](/uploads/image.png)';
+    const imageAbsoluteUrl = '/abs/uploads/image.png';
+
+    describe('when textarea cursor is positioned on an image', () => {
+      beforeEach(() => {
+        axiosMock.onPost(markdownPreviewPath, { text: imageMarkdown }).reply(HTTP_STATUS_OK, {
+          body: `
+        <p><a href="${imageAbsoluteUrl}"><img src="${imageAbsoluteUrl}"></a></p>
+        `,
+        });
+      });
+
+      it('returns the image absolute URL, markdown, and filename', async () => {
+        textArea.value = `image ${imageMarkdown}`;
+        textArea.setSelectionRange(8, 8);
+        expect(await resolveSelectedImage(textArea, markdownPreviewPath)).toEqual({
+          imageURL: imageAbsoluteUrl,
+          imageMarkdown,
+          filename: 'image.png',
+        });
+      });
+    });
+
+    describe('when textarea cursor is not positioned on an image', () => {
+      it.each`
+        markdown                    | selectionRange
+        ${`image ${imageMarkdown}`} | ${[4, 4]}
+        ${`!2 (issue)`}             | ${[2, 2]}
+      `('returns null', async ({ markdown, selectionRange }) => {
+        textArea.value = markdown;
+        textArea.setSelectionRange(...selectionRange);
+        expect(await resolveSelectedImage(textArea, markdownPreviewPath)).toBe(null);
+      });
+    });
+
+    describe('when textarea cursor is positioned between images', () => {
+      it('returns null', async () => {
+        const position = imageMarkdown.length + 1;
+
+        textArea.value = `${imageMarkdown}\n\n${imageMarkdown}`;
+        textArea.setSelectionRange(position, position);
+
+        expect(await resolveSelectedImage(textArea, markdownPreviewPath)).toBe(null);
       });
     });
   });

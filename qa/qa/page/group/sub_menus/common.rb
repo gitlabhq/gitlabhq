@@ -21,7 +21,7 @@ module QA
           private
 
           def sidebar_element
-            :group_sidebar
+            QA::Runtime::Env.super_sidebar_enabled? ? :navbar : :group_sidebar
           end
         end
       end

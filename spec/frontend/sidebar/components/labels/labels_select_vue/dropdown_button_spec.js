@@ -29,10 +29,6 @@ describe('DropdownButton', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findDropdownButton = () => wrapper.findComponent(GlButton);
   const findDropdownText = () => wrapper.find('.dropdown-toggle-text');
   const findDropdownIcon = () => wrapper.findComponent(GlIcon);

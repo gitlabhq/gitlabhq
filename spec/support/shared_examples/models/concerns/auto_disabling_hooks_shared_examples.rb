@@ -61,6 +61,20 @@ disabled_until: disabled_until)
       # Nothing is missing
       expect(find_hooks.executable.to_a + find_hooks.disabled.to_a).to match_array(find_hooks.to_a)
     end
+
+    context 'when the flag is disabled' do
+      before do
+        stub_feature_flags(auto_disabling_web_hooks: false)
+      end
+
+      it 'causes all hooks to be considered executable' do
+        expect(find_hooks.executable.count).to eq(16)
+      end
+
+      it 'causes no hooks to be considered disabled' do
+        expect(find_hooks.disabled).to be_empty
+      end
+    end
   end
 
   describe '#executable?', :freeze_time do
@@ -108,6 +122,16 @@ disabled_until: disabled_until)
       it 'has the correct state' do
         expect(web_hook.executable?).to eq(executable)
       end
+
+      context 'when the flag is disabled' do
+        before do
+          stub_feature_flags(auto_disabling_web_hooks: false)
+        end
+
+        it 'is always executable' do
+          expect(web_hook).to be_executable
+        end
+      end
     end
   end
 
@@ -151,7 +175,7 @@ disabled_until: disabled_until)
 
     context 'when we have exhausted the grace period' do
       before do
-        hook.update!(recent_failures: WebHook::FAILURE_THRESHOLD)
+        hook.update!(recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD)
       end
 
       context 'when the hook is permanently disabled' do
@@ -172,6 +196,16 @@ disabled_until: disabled_until)
         def run_expectation
           expect { hook.backoff! }.to change { hook.backoff_count }.by(1)
         end
+
+        context 'when the flag is disabled' do
+          before do
+            stub_feature_flags(auto_disabling_web_hooks: false)
+          end
+
+          it 'does not increment backoff count' do
+            expect { hook.failed! }.not_to change { hook.backoff_count }
+          end
+        end
       end
     end
   end
@@ -181,12 +215,32 @@ disabled_until: disabled_until)
       def run_expectation
         expect { hook.failed! }.to change { hook.recent_failures }.by(1)
       end
+
+      context 'when the flag is disabled' do
+        before do
+          stub_feature_flags(auto_disabling_web_hooks: false)
+        end
+
+        it 'does not increment recent failure count' do
+          expect { hook.failed! }.not_to change { hook.recent_failures }
+        end
+      end
     end
   end
 
   describe '#disable!' do
     it 'disables a hook' do
       expect { hook.disable! }.to change { hook.executable? }.from(true).to(false)
+    end
+
+    context 'when the flag is disabled' do
+      before do
+        stub_feature_flags(auto_disabling_web_hooks: false)
+      end
+
+      it 'does not disable the hook' do
+        expect { hook.disable! }.not_to change { hook.executable? }
+      end
     end
 
     it 'does nothing if the hook is already disabled' do
@@ -210,7 +264,7 @@ disabled_until: disabled_until)
     end
 
     it 'allows FAILURE_THRESHOLD initial failures before we back-off' do
-      WebHook::FAILURE_THRESHOLD.times do
+      WebHooks::AutoDisabling::FAILURE_THRESHOLD.times do
         hook.backoff!
         expect(hook).not_to be_temporarily_disabled
       end
@@ -221,12 +275,22 @@ disabled_until: disabled_until)
 
     context 'when hook has been told to back off' do
       before do
-        hook.update!(recent_failures: WebHook::FAILURE_THRESHOLD)
+        hook.update!(recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD)
         hook.backoff!
       end
 
       it 'is true' do
         expect(hook).to be_temporarily_disabled
+      end
+
+      context 'when the flag is disabled' do
+        before do
+          stub_feature_flags(auto_disabling_web_hooks: false)
+        end
+
+        it 'is false' do
+          expect(hook).not_to be_temporarily_disabled
+        end
       end
     end
   end
@@ -244,6 +308,16 @@ disabled_until: disabled_until)
       it 'is true' do
         expect(hook).to be_permanently_disabled
       end
+
+      context 'when the flag is disabled' do
+        before do
+          stub_feature_flags(auto_disabling_web_hooks: false)
+        end
+
+        it 'is false' do
+          expect(hook).not_to be_permanently_disabled
+        end
+      end
     end
   end
 
@@ -258,15 +332,31 @@ disabled_until: disabled_until)
       end
 
       it { is_expected.to eq :disabled }
+
+      context 'when the flag is disabled' do
+        before do
+          stub_feature_flags(auto_disabling_web_hooks: false)
+        end
+
+        it { is_expected.to eq(:executable) }
+      end
     end
 
     context 'when hook has been backed off' do
       before do
-        hook.update!(recent_failures: WebHook::FAILURE_THRESHOLD + 1)
+        hook.update!(recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD + 1)
         hook.disabled_until = 1.hour.from_now
       end
 
       it { is_expected.to eq :temporarily_disabled }
+
+      context 'when the flag is disabled' do
+        before do
+          stub_feature_flags(auto_disabling_web_hooks: false)
+        end
+
+        it { is_expected.to eq(:executable) }
+      end
     end
   end
 end

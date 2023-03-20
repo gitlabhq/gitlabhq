@@ -107,11 +107,11 @@ To address the above two scenarios, it is advised to do the following prior to u
    as your GitLab version. Both versions [should be the same](https://docs.gitlab.com/runner/#gitlab-runner-versions).
 1. Unpause your runners and unblock new jobs from starting by reverting the previous `/etc/gitlab/gitlab.rb` change.
 
-## Checking for pending Advanced Search migrations **(PREMIUM SELF)**
+## Checking for pending advanced search migrations **(PREMIUM SELF)**
 
 This section is only applicable if you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md) **(PREMIUM SELF)**.
 
-Major releases require all [Advanced Search migrations](../integration/advanced_search/elasticsearch.md#advanced-search-migrations)
+Major releases require all [advanced search migrations](../integration/advanced_search/elasticsearch.md#advanced-search-migrations)
 to be finished from the most recent minor release in your current version
 before the major version upgrade. You can find pending migrations by
 running the following command:
@@ -129,16 +129,16 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
 ```
 
-### What do you do if your Advanced Search migrations are stuck?
+### What do you do if your advanced search migrations are stuck?
 
-In GitLab 15.0, an Advanced Search migration named `DeleteOrphanedCommit` can be permanently stuck
+In GitLab 15.0, an advanced search migration named `DeleteOrphanedCommit` can be permanently stuck
 in a pending state across upgrades. This issue
 [is corrected in GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89539).
 
-If you are a self-managed customer who uses GitLab 15.0 with Advanced Search, you will experience performance degradation.
+If you are a self-managed customer who uses GitLab 15.0 with advanced search, you will experience performance degradation.
 To clean up the migration, upgrade to 15.1 or later.
 
-For other Advanced Search migrations stuck in pending, see [how to retry a halted migration](../integration/advanced_search/elasticsearch.md#retry-a-halted-migration).
+For other advanced search migrations stuck in pending, see [how to retry a halted migration](../integration/advanced_search/elasticsearch.md#retry-a-halted-migration).
 
 ### What do you do for the error `Elasticsearch version not compatible`
 
@@ -166,7 +166,7 @@ It's also important to ensure that any [background migrations have been fully co
 before upgrading to a new major version.
 
 If you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md) **(PREMIUM SELF)**, then
-[ensure all Advanced Search migrations are completed](#checking-for-pending-advanced-search-migrations) in the last minor version in
+[ensure all advanced search migrations are completed](#checking-for-pending-advanced-search-migrations) in the last minor version in
 your current version
 before proceeding with the major version upgrade.
 
@@ -196,11 +196,11 @@ accordingly, while also consulting the
 
 NOTE:
 When not explicitly specified, upgrade GitLab to the latest available patch
-release rather than the first patch release, for example `13.8.8` instead of `13.8.0`.
-This includes versions you must stop at on the upgrade path as there may
+release of the `major`.`minor` release rather than the first patch release, for example `13.8.8` instead of `13.8.0`.
+This includes `major`.`minor` versions you must stop at on the upgrade path as there may
 be fixes for issues relating to the upgrade process.
 Specifically around a [major version](#upgrading-to-a-new-major-version),
-crucial database schema and migration patches are included in the latest patch releases.
+crucial database schema and migration patches may be included in the latest patch releases.
 
 ## Upgrading between editions
 
@@ -237,7 +237,7 @@ possible.
 
 ## Version-specific upgrading instructions
 
-Each month, major, minor, or patch releases of GitLab are published along with a
+Each month, major or minor as well as possibly patch releases of GitLab are published along with a
 [release post](https://about.gitlab.com/releases/categories/releases/).
 You should read the release posts for all versions you're passing over.
 At the end of major and minor release posts, there are three sections to look for specifically:
@@ -264,10 +264,31 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 15.10.0
+
+- Gitaly configuration changes significantly in Omnibus GitLab 16.0. You can begin migrating to the new structure in Omnibus GitLab 15.10 while backwards compatibility is
+  maintained in the lead up to Omnibus GitLab 16.0. [Read more about this change](#gitaly-omnibus-gitlab-configuration-structure-change).
+
 ### 15.9.0
 
-- This version removes `SanitizeConfidentialTodos` background migration [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87908/diffs) in 15.6, which removed any user inaccessible to-do items. Make sure that this migration is finished before upgrading to 15.9.
-- As part of the [CI Partitioning effort](../architecture/blueprints/ci_data_decay/pipeline_partitioning.md), a [new Foreign Key](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107547) was added to `ci_builds_needs`. On GitLab instances with large CI tables, adding this constraint can take longer than usual. Make sure that this migration is finished before upgrading to 15.9.
+- **Upgrade to patch release 15.9.3 or later**. This provides fixes for two database migration bugs:
+  - Patch releases 15.9.0, 15.9.1, 15.9.2 have [a bug that can cause data loss](#user-profile-data-loss-bug-in-159x) from the user profile fields.
+  - The second [bug fix](https://gitlab.com/gitlab-org/gitlab/-/issues/394760) ensures it is possible to upgrade directly from 15.4.x.
+- As part of the [CI Partitioning effort](../architecture/blueprints/ci_data_decay/pipeline_partitioning.md), a [new Foreign Key](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107547) was added to `ci_builds_needs`. On GitLab instances with large CI tables, adding this constraint can take longer than usual.
+- Praefect's metadata verifier's [invalid metadata deletion behavior](../administration/gitaly/praefect.md#enable-deletions) is now enabled by default.
+
+  The metadata verifier processes replica records in the Praefect database and verifies the replicas actually exist on the Gitaly nodes. If the replica doesn't exist, its
+  metadata record is deleted. This enables Praefect to fix situations where a replica has a metadata record indicating it's fine but, in reality, it doesn't exist on disk.
+  After the metadata record is deleted, Praefect's reconciler schedules a replication job to recreate the replica.
+
+  Because of past issues with the state management logic, there may be invalid metadata records in the database. These could exist, for example, because of incomplete
+  deletions of repositories or partially completed renames. The verifier deletes these stale replica records of affected repositories. These repositories may show up as
+  unavailable repositories in the metrics and `praefect dataloss` sub-command because of the replica records being removed. If you encounter such repositories, remove
+  the repository using `praefect remove-repository` to remove the repository's remaining records.
+
+  You can find repositories with invalid metadata records prior in GitLab 15.0 and later by searching for the log records outputted by the verifier. [Read more about repository verification, and to see an example log entry](../administration/gitaly/praefect.md#repository-verification).
+- Praefect configuration changes significantly in Omnibus GitLab 16.0. You can begin migrating to the new structure in Omnibus GitLab 15.9 while backwards compatibility is
+  maintained in the lead up to Omnibus GitLab 16.0. [Read more about this change](#praefect-omnibus-gitlab-configuration-structure-change).
 
 ### 15.8.2
 
@@ -364,6 +385,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   consistent in our documentation and product defaults.
 
   For example, previously:
+  
   - Omnibus GitLab default (`sidekiq['max_concurrency']`): 50
   - From source installation default: 50
   - Helm chart default (`gitlab.sidekiq.concurrency`): 25
@@ -476,7 +498,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 15.5.3
 
-- GitLab 15.4.0 introduced a default [Sidekiq routing rule](../administration/sidekiq/extra_sidekiq_routing.md) that routes all jobs to the `default` queue. For instances using [queue selectors](../administration/sidekiq/processing_specific_job_classes.md#queue-selectors), this will cause [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
+- GitLab 15.4.0 introduced a default [Sidekiq routing rule](../administration/sidekiq/processing_specific_job_classes.md#routing-rules) that routes all jobs to the `default` queue. For instances using [queue selectors](../administration/sidekiq/processing_specific_job_classes.md#queue-selectors-deprecated), this causes [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
   - The default routing rule has been reverted in 15.5.4, so upgrading to that version or later will return to the previous behavior.
   - If a GitLab instance now listens only to the `default` queue (which is not currently recommended), it will be required to add this routing rule back in `/etc/gitlab/gitlab.rb`:
 
@@ -488,7 +510,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 15.5.2
 
-- GitLab 15.4.0 introduced a default [Sidekiq routing rule](../administration/sidekiq/extra_sidekiq_routing.md) that routes all jobs to the `default` queue. For instances using [queue selectors](../administration/sidekiq/processing_specific_job_classes.md#queue-selectors), this will cause [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
+- GitLab 15.4.0 introduced a default [Sidekiq routing rule](../administration/sidekiq/processing_specific_job_classes.md#routing-rules) that routes all jobs to the `default` queue. For instances using [queue selectors](../administration/sidekiq/processing_specific_job_classes.md#queue-selectors-deprecated), this causes [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
   - The default routing rule has been reverted in 15.5.4, so upgrading to that version or later will return to the previous behavior.
   - If a GitLab instance now listens only to the `default` queue (which is not currently recommended), it will be required to add this routing rule back in `/etc/gitlab/gitlab.rb`:
 
@@ -500,7 +522,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 15.5.1
 
-- GitLab 15.4.0 introduced a default [Sidekiq routing rule](../administration/sidekiq/extra_sidekiq_routing.md) that routes all jobs to the `default` queue. For instances using [queue selectors](../administration/sidekiq/processing_specific_job_classes.md#queue-selectors), this will cause [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
+- GitLab 15.4.0 introduced a default [Sidekiq routing rule](../administration/sidekiq/processing_specific_job_classes.md#routing-rules) that routes all jobs to the `default` queue. For instances using [queue selectors](../administration/sidekiq/processing_specific_job_classes.md#queue-selectors-deprecated), this causes [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
   - The default routing rule has been reverted in 15.5.4, so upgrading to that version or later will return to the previous behavior.
   - If a GitLab instance now listens only to the `default` queue (which is not currently recommended), it will be required to add this routing rule back in `/etc/gitlab/gitlab.rb`:
 
@@ -512,7 +534,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 15.5.0
 
-- GitLab 15.4.0 introduced a default [Sidekiq routing rule](../administration/sidekiq/extra_sidekiq_routing.md) that routes all jobs to the `default` queue. For instances using [queue selectors](../administration/sidekiq/processing_specific_job_classes.md#queue-selectors), this will cause [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
+- GitLab 15.4.0 introduced a default [Sidekiq routing rule](../administration/sidekiq/processing_specific_job_classes.md#routing-rules) that routes all jobs to the `default` queue. For instances using [queue selectors](../administration/sidekiq/processing_specific_job_classes.md#queue-selectors-deprecated), this causes [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
   - The default routing rule has been reverted in 15.5.4, so upgrading to that version or later will return to the previous behavior.
   - If a GitLab instance now listens only to the `default` queue (which is not currently recommended), it will be required to add this routing rule back in `/etc/gitlab/gitlab.rb`:
 
@@ -564,7 +586,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 - GitLab 15.4.0 includes a [batched background migration](background_migrations.md#batched-background-migrations) to [remove incorrect values from `expire_at` in `ci_job_artifacts` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89318).
   This migration might take hours or days to complete on larger GitLab instances.
 - By default, Gitaly and Praefect nodes use the time server at `pool.ntp.org`. If your instance can not connect to `pool.ntp.org`, [configure the `NTP_HOST` variable](../administration/gitaly/praefect.md#customize-time-server-setting).
-- GitLab 15.4.0 introduced a default [Sidekiq routing rule](../administration/sidekiq/extra_sidekiq_routing.md) that routes all jobs to the `default` queue. For instances using [queue selectors](../administration/sidekiq/processing_specific_job_classes.md#queue-selectors), this will cause [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
+- GitLab 15.4.0 introduced a default [Sidekiq routing rule](../administration/sidekiq/processing_specific_job_classes.md#routing-rules) that routes all jobs to the `default` queue. For instances using [queue selectors](../administration/sidekiq/processing_specific_job_classes.md#queue-selectors-deprecated), this causes [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
   - The default routing rule has been reverted in 15.4.5, so upgrading to that version or later will return to the previous behavior.
   - If a GitLab instance now listens only to the `default` queue (which is not currently recommended), it will be required to add this routing rule back in `/etc/gitlab/gitlab.rb`:
 
@@ -705,6 +727,8 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
   Gitaly. The previous implementation in GitLab Shell was removed in GitLab 15.0. With this change, global server hooks are stored only inside a subdirectory named after the
   hook type. Global server hooks can no longer be a single hook file in the root of the custom hooks directory. For example, you must use `<custom_hooks_dir>/<hook_name>.d/*` rather
   than `<custom_hooks_dir>/<hook_name>`.
+  - Use `gitaly['custom_hooks_dir']` in `gitlab.rb` ([introduced in 14.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4208))
+    for Omnibus GitLab. This replaces `gitlab_shell['custom_hooks_dir']`.
 - [Incorrect deletion of object storage files on Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/371397) can occur in certain situations. See [Geo: Incorrect object storage LFS file deletion on secondary site issue in GitLab 15.0.0 to 15.3.2](#geo-incorrect-object-storage-lfs-file-deletion-on-secondary-sites-in-gitlab-1500-to-1532).
 - The `FF_GITLAB_REGISTRY_HELPER_IMAGE` [feature flag](../administration/feature_flags.md#enable-or-disable-the-feature) is removed and helper images are always pulled from GitLab Registry.
 - The `AES256-GCM-SHA384` SSL cipher is no longer allowed by NGINX.
@@ -804,13 +828,13 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 [background migration `PopulateTopicsNonPrivateProjectsCount`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79140)
 that may remain stuck permanently in a **pending** state.
 
-    To clean up this stuck job, run the following in the [GitLab Rails Console](../administration/operations/rails_console.md):
+  To clean up this stuck job, run the following in the [GitLab Rails Console](../administration/operations/rails_console.md):
 
-    ```ruby
-        Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "PopulateTopicsNonPrivateProjectsCount").find_each do |job|
-          puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("PopulateTopicsNonPrivateProjectsCount", job.arguments)
-        end
-    ```
+  ```ruby
+  Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "PopulateTopicsNonPrivateProjectsCount").find_each do |job|
+    puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("PopulateTopicsNonPrivateProjectsCount", job.arguments)
+  end
+  ```
 
 - If upgrading from a version earlier than 14.3.0, to avoid
   [an issue with job retries](https://gitlab.com/gitlab-org/gitlab/-/issues/357822), first upgrade
@@ -883,11 +907,11 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
 
   To clean up this stuck job, run the following in the [GitLab Rails Console](../administration/operations/rails_console.md):
 
-    ```ruby
-        Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "UpdateVulnerabilityOccurrencesLocation").find_each do |job|
-          puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("UpdateVulnerabilityOccurrencesLocation", job.arguments)
-        end
-    ```
+  ```ruby
+  Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "UpdateVulnerabilityOccurrencesLocation").find_each do |job|
+    puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("UpdateVulnerabilityOccurrencesLocation", job.arguments)
+  end
+  ```
 
 - Upgrading to 14.5 (or later) [might encounter a one hour timeout](https://gitlab.com/gitlab-org/gitlab/-/issues/354211)
   owing to a long running database data change.
@@ -928,13 +952,13 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
 [background migration `PopulateTopicsTotalProjectsCountCache`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71033)
 that may remain stuck permanently in a **pending** state when the instance lacks records that match the migration's target.
 
-    To clean up this stuck job, run the following in the [GitLab Rails Console](../administration/operations/rails_console.md):
+  To clean up this stuck job, run the following in the [GitLab Rails Console](../administration/operations/rails_console.md):
 
-    ```ruby
-        Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "PopulateTopicsTotalProjectsCountCache").find_each do |job|
-          puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("PopulateTopicsTotalProjectsCountCache", job.arguments)
-        end
-    ```
+  ```ruby
+  Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "PopulateTopicsTotalProjectsCountCache").find_each do |job|
+    puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("PopulateTopicsTotalProjectsCountCache", job.arguments)
+  end
+  ```
 
 ### 14.3.0
 
@@ -1425,6 +1449,330 @@ After upgraded to 11.11.8 you can safely upgrade to 12.0.Z.
 See our [documentation on upgrade paths](../policy/maintenance.md#upgrade-recommendations)
 for more information.
 
+### User profile data loss bug in 15.9.x
+
+There is a database migration bug in 15.9.0, 15.9.1, and 15.9.2 that can cause data loss from the user profile fields `linkedin`, `twitter`, `skype`, `website_url`, `location`, and `organization`.
+
+This bug is fixed in patch releases 15.9.3 and later.
+
+The following upgrade path also works around the bug:
+
+1. Upgrade to GitLab 15.6.x, 15.7.x, or 15.8.x.
+1. [Ensure batched background migrations](background_migrations.md#batched-background-migrations) are complete.
+1. Upgrade to an earlier GitLab 15.9 patch release that doesn't have the bug fix.
+
+It is not then required to upgrade to 15.9.3 or higher for this issue.
+
+[Read the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/393216) for more information.
+
+### Gitaly: Omnibus GitLab configuration structure change
+
+Gitaly configuration structure in Omnibus GitLab [changes](https://gitlab.com/gitlab-org/gitaly/-/issues/4467) in GitLab 16.0 to be consistent with the Gitaly configuration
+structure used in source installs.
+
+As a result of this change, a single hash under `gitaly['configuration']` holds most Gitaly
+configuration. Some `gitaly['..']` configuration options will continue to be used by Omnibus GitLab 16.0 and later:
+
+- `enable`
+- `dir`
+- `log_directory`
+- `bin_path`
+- `env_directory`
+- `env`
+- `open_files_ulimit`
+- `consul_service_name`
+- `consul_service_meta`
+
+Migrate by moving your existing configuration under the new structure. The new structure is supported from Omnibus GitLab 15.10.
+
+The new structure is documented below with the old keys described in a comment above the new keys. When applying the new structure to your configuration:
+
+1. Replace the `...` with the value from the old key.
+1. Skip any keys you haven't configured a value for previously.
+1. Remove the old keys from the configuration once migrated.
+1. Optional but recommended. Include a trailing comma for all hash keys so the hash remains valid when keys are re-ordered or additional keys are added.
+
+  ```ruby
+gitaly['configuration'] = {
+  # gitaly['socket_path']
+  socket_path: ...,
+  # gitaly['runtime_dir']
+  runtime_dir: ...,
+  # gitaly['listen_addr']
+  listen_addr: ...,
+  # gitaly['prometheus_listen_addr']
+  prometheus_listen_addr: ...,
+  # gitaly['tls_listen_addr']
+  tls_listen_addr: ...,
+  tls: {
+    # gitaly['certificate_path']
+    certificate_path: ...,
+    # gitaly['key_path']
+    key_path: ...,
+  },
+  # gitaly['graceful_restart_timeout']
+  graceful_restart_timeout: ...,
+  logging: {
+    # gitaly['logging_level']
+    level: ...,
+    # gitaly['logging_format']
+    format: ...,
+    # gitaly['logging_sentry_dsn']
+    sentry_dsn: ...,
+    # gitaly['logging_ruby_sentry_dsn']
+    ruby_sentry_dsn: ...,
+    # gitaly['logging_sentry_environment']
+    sentry_environment: ...,
+    # gitaly['log_directory']
+    dir: ...,
+  },
+  prometheus: {
+    # gitaly['prometheus_grpc_latency_buckets']. The old value was configured as a string
+    # such as '[0, 1, 2]'. The new value must be an array like [0, 1, 2].
+    grpc_latency_buckets: ...,
+  },
+  auth: {
+    # gitaly['auth_token']
+    token: ...,
+    # gitaly['auth_transitioning']
+    transitioning: ...,
+  },
+  git: {
+    # gitaly['git_catfile_cache_size']
+    catfile_cache_size: ...,
+    # gitaly['git_bin_path']
+    bin_path: ...,
+    # gitaly['use_bundled_git']
+    use_bundled_binaries: ...,
+    # gitaly['gpg_signing_key_path']
+    signing_key: ...,
+    # gitaly['gitconfig']. This is still an array but the type of the elements have changed.
+    config: [
+      {
+        # Previously the elements contained 'section', and 'subsection' in addition to 'key'. Now
+        # these all should be concatenated into just 'key', separated by dots. For example,
+        # {section: 'first', subsection: 'middle', key: 'last', value: 'value'}, should become
+        # {key: 'first.middle.last', value: 'value'}.
+        key: ...,
+        value: ...,
+      },
+    ],
+  },
+  'gitaly-ruby': {
+    # gitaly['ruby_max_rss']
+    max_rss: ...,
+    # gitaly['ruby_graceful_restart_timeout']
+    graceful_restart_timeout: ...,
+    # gitaly['ruby_restart_delay']
+    restart_delay: ...,
+    # gitaly['ruby_num_workers']
+    num_workers: ...,
+  },
+  # gitaly['storage']. While the structure is the same, the string keys in the array elements
+  # should be replaced by symbols as elsewhere. {'key' => 'value'}, should become {key: 'value'}.
+  storage: ...,
+  hooks: {
+    # gitaly['custom_hooks_dir']
+    custom_hooks_dir: ...,
+  },
+  daily_maintenance: {
+    # gitaly['daily_maintenance_disabled']
+    disabled: ...,
+    # gitaly['daily_maintenance_start_hour']
+    start_hour: ...,
+    # gitaly['daily_maintenance_start_minute']
+    start_minute: ...,
+    # gitaly['daily_maintenance_duration']
+    duration: ...,
+    # gitaly['daily_maintenance_storages']
+    storages: ...,
+  },
+  cgroups: {
+    # gitaly['cgroups_mountpoint']
+    mountpoint: ...,
+    # gitaly['cgroups_hierarchy_root']
+    hierarchy_root: ...,
+    # gitaly['cgroups_memory_bytes']
+    memory_bytes: ...,
+    # gitaly['cgroups_cpu_shares']
+    cpu_shares: ...,
+    repositories: {
+      # gitaly['cgroups_repositories_count']
+      count: ...,
+      # gitaly['cgroups_repositories_memory_bytes']
+      memory_bytes: ...,
+      # gitaly['cgroups_repositories_cpu_shares']
+      cpu_shares: ...,
+    }
+  },
+  # gitaly['concurrency']. While the structure is the same, the string keys in the array elements
+  # should be replaced by symbols as elsewhere. {'key' => 'value'}, should become {key: 'value'}.
+  concurrency: ...,
+  # gitaly['rate_limiting']. While the structure is the same, the string keys in the array elements
+  # should be replaced by symbols as elsewhere. {'key' => 'value'}, should become {key: 'value'}.
+  rate_limiting: ...,
+  pack_objects_cache: {
+    # gitaly['pack_objects_cache_enabled']
+    enabled: ...,
+    # gitaly['pack_objects_cache_dir']
+    dir: ...,
+    # gitaly['pack_objects_cache_max_age']
+    max_age: ...,
+  }
+}
+```
+
+### Praefect: Omnibus GitLab configuration structure change
+
+Praefect configuration structure in Omnibus GitLab [changes](https://gitlab.com/gitlab-org/gitaly/-/issues/4467) in GitLab 16.0 to be consistent with the Praefect configuration
+structure used in source installs.
+
+As a result of this change, a single hash under `praefect['configuration']` holds most Praefect
+configuration. Some `praefect['..']` configuration options will continue to be used by Omnibus GitLab 16.0 and later:
+
+- `enable`
+- `dir`
+- `log_directory`
+- `env_directory`
+- `env`
+- `wrapper_path`
+- `auto_migrate`
+- `consul_service_name`
+
+Migrate by moving your existing configuration under the new structure. The new structure is supported from Omnibus GitLab 15.9.
+
+The new structure is documented below with the old keys described in a comment above the new keys. When applying the new structure to your configuration:
+
+1. Replace the `...` with the value from the old key.
+1. Skip any keys you haven't configured a value for previously.
+1. Remove the old keys from the configuration once migrated.
+1. Optional but recommended. Include a trailing comma for all hash keys so the hash remains valid when keys are re-ordered or additional keys are added.
+
+```ruby
+praefect['configuration'] = {
+  # praefect['listen_addr']
+  listen_addr: ...,
+  # praefect['socket_path']
+  socket_path: ...,
+  # praefect['prometheus_listen_addr']
+  prometheus_listen_addr: ...,
+  # praefect['tls_listen_addr']
+  tls_listen_addr: ...,
+  # praefect['separate_database_metrics']
+  prometheus_exclude_database_from_default_metrics: ...,
+  auth: {
+    # praefect['auth_token']
+    token: ...,
+    # praefect['auth_transitioning']
+    transitioning: ...,
+  },
+  logging: {
+    # praefect['logging_format']
+    format: ...,
+    # praefect['logging_level']
+    level: ...,
+  },
+  failover: {
+    # praefect['failover_enabled']
+    enabled: ...,
+  },
+  background_verification: {
+    # praefect['background_verification_delete_invalid_records']
+    delete_invalid_records: ...,
+    # praefect['background_verification_verification_interval']
+    verification_interval: ...,
+  },
+  reconciliation: {
+    # praefect['reconciliation_scheduling_interval']
+    scheduling_interval: ...,
+    # praefect['reconciliation_histogram_buckets']. The old value was configured as a string
+    # such as '[0, 1, 2]'. The new value must be an array like [0, 1, 2].
+    histogram_buckets: ...,
+  },
+  tls: {
+    # praefect['certificate_path']
+    certificate_path: ...,
+    # praefect['key_path']
+    key_path: ...,
+  },
+  database: {
+    # praefect['database_host']
+    host: ...,
+    # praefect['database_port']
+    port: ...,
+    # praefect['database_user']
+    user: ...,
+    # praefect['database_password']
+    password: ...,
+    # praefect['database_dbname']
+    dbname: ...,
+    # praefect['database_sslmode']
+    sslmode: ...,
+    # praefect['database_sslcert']
+    sslcert: ...,
+    # praefect['database_sslkey']
+    sslkey: ...,
+    # praefect['database_sslrootcert']
+    sslrootcert: ...,
+    session_pooled: {
+      # praefect['database_direct_host']
+      host: ...,
+      # praefect['database_direct_port']
+      port: ...,
+      # praefect['database_direct_user']
+      user: ...,
+      # praefect['database_direct_password']
+      password: ...,
+      # praefect['database_direct_dbname']
+      dbname: ...,
+      # praefect['database_direct_sslmode']
+      sslmode: ...,
+      # praefect['database_direct_sslcert']
+      sslcert: ...,
+      # praefect['database_direct_sslkey']
+      sslkey: ...,
+      # praefect['database_direct_sslrootcert']
+      sslrootcert: ...,
+    }
+  },
+  sentry: {
+    # praefect['sentry_dsn']
+    sentry_dsn: ...,
+    # praefect['sentry_environment']
+    sentry_environment: ...,
+  },
+  prometheus: {
+    # praefect['prometheus_grpc_latency_buckets']. The old value was configured as a string
+    # such as '[0, 1, 2]'. The new value must be an array like [0, 1, 2].
+    grpc_latency_buckets: ...,
+  },
+  # praefect['graceful_stop_timeout']
+  graceful_stop_timeout: ...,
+
+  # praefect['virtual_storages']. The old value was a hash map but the new value is an array.
+  virtual_storage: [
+    {
+      # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]. The name was previously the key in
+      # the 'virtual_storages' hash.
+      name: ...,
+      # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]['nodes'][NODE_NAME]. The old value was a hash map
+      # but the new value is an array.
+      node: [
+        {
+          # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]['nodes'][NODE_NAME]. Use NODE_NAME key as the
+          # storage.
+          storage: ...,
+          # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]['nodes'][NODE_NAME]['address'].
+          address: ...,
+          # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]['nodes'][NODE_NAME]['token'].
+          token: ...,
+        },
+      ],
+    }
+  ]
+}
+```
+
 ### Change to Praefect-generated replica paths in GitLab 15.3
 
 New Git repositories created in Gitaly cluster no longer use the `@hashed` storage path.
@@ -1438,19 +1786,26 @@ and pass the `@hashed` storage path to `-relative-path`.
 
 With this information, you can correctly install [server hooks](../administration/server_hooks.md).
 
-### Maintenance mode issue in GitLab 13.9 to 14.4
+### Geo: LFS transfers redirect to primary from secondary site mid-session in GitLab 15.1.0 to 15.3.2
 
-When [Maintenance mode](../administration/maintenance_mode/index.md) is enabled, users cannot sign in with SSO, SAML, or LDAP.
+LFS transfers can [redirect to the primary from secondary site mid-session](https://gitlab.com/gitlab-org/gitlab/-/issues/371571) causing failed pull and clone requests in GitLab 15.1.0 to 15.3.2 when [Geo proxying](../administration/geo/secondary_proxy/index.md) is enabled. Geo proxying is enabled by default in GitLab 15.1 and later.
 
-Users who were signed in before Maintenance mode was enabled, continue to be signed in. If the administrator who enabled Maintenance mode loses their session, then they can't disable Maintenance mode via the UI. In that case, you can [disable Maintenance mode via the API or Rails console](../administration/maintenance_mode/index.md#disable-maintenance-mode).
+This issue is resolved in GitLab 15.3.3, so customers with the following configuration should upgrade to 15.3.3 or later:
 
-[This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in GitLab 14.5.0 and backported into 14.4.3 and 14.3.5.
+- LFS is enabled.
+- LFS objects are being replicated across Geo sites.
+- Repositories are being pulled by using a Geo secondary site.
 
-### LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2
+### Geo: Incorrect object storage LFS file deletion on secondary sites in GitLab 15.0.0 to 15.3.2
 
-When Geo is enabled, LFS objects fail to be saved for imported or mirrored projects.
+[Incorrect deletion of object storage files on Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/371397)
+can occur in GitLab 15.0.0 to 15.3.2 in the following situations:
 
-[This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/352368) was fixed in GitLab 14.8.0 and backported into 14.7.3.
+- GitLab-managed object storage replication is disabled, and LFS objects are created while importing a project with object storage enabled.
+- GitLab-managed replication to sync object storage is enabled and subsequently disabled.
+
+This issue is resolved in 15.3.3. Customers who have both LFS enabled and LFS objects being replicated across Geo sites
+should upgrade directly to 15.3.3 to reduce the risk of data loss on secondary sites.
 
 ### PostgreSQL segmentation fault issue
 
@@ -1466,26 +1821,19 @@ by a database engine bug that causes a segmentation fault.
 
 Read more [in the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/364763).
 
-### Geo: Incorrect object storage LFS file deletion on secondary sites in GitLab 15.0.0 to 15.3.2
+### LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2
 
-[Incorrect deletion of object storage files on Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/371397)
-can occur in GitLab 15.0.0 to 15.3.2 in the following situations:
+When Geo is enabled, LFS objects fail to be saved for imported or mirrored projects.
 
-- GitLab-managed object storage replication is disabled, and LFS objects are created while importing a project with object storage enabled.
-- GitLab-managed replication to sync object storage is enabled and subsequently disabled.
+[This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/352368) was fixed in GitLab 14.8.0 and backported into 14.7.3.
 
-This issue is resolved in 15.3.3. Customers who have both LFS enabled and LFS objects being replicated across Geo sites
-should upgrade directly to 15.3.3 to reduce the risk of data loss on secondary sites.
+### Maintenance mode issue in GitLab 13.9 to 14.4
 
-### Geo: LFS transfers redirect to primary from secondary site mid-session in GitLab 15.1.0 to 15.3.2
+When [Maintenance mode](../administration/maintenance_mode/index.md) is enabled, users cannot sign in with SSO, SAML, or LDAP.
 
-LFS transfers can [redirect to the primary from secondary site mid-session](https://gitlab.com/gitlab-org/gitlab/-/issues/371571) causing failed pull and clone requests in GitLab 15.1.0 to 15.3.2 when [Geo proxying](../administration/geo/secondary_proxy/index.md) is enabled. Geo proxying is enabled by default in GitLab 15.1 and later.
+Users who were signed in before Maintenance mode was enabled, continue to be signed in. If the administrator who enabled Maintenance mode loses their session, then they can't disable Maintenance mode via the UI. In that case, you can [disable Maintenance mode via the API or Rails console](../administration/maintenance_mode/index.md#disable-maintenance-mode).
 
-This issue is resolved in GitLab 15.3.3, so customers with the following configuration should upgrade to 15.3.3 or later:
-
-- LFS is enabled.
-- LFS objects are being replicated across Geo sites.
-- Repositories are being pulled by using a Geo secondary site.
+[This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in GitLab 14.5.0 and backported into 14.4.3 and 14.3.5.
 
 ## Miscellaneous
 

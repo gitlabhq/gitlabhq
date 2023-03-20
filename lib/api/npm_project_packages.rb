@@ -69,7 +69,7 @@ module API
         if created_package[:status] == :error
           render_api_error!(created_package[:message], created_package[:http_status])
         else
-          track_package_event('push_package', :npm, category: 'API::NpmPackages', project: project, user: current_user, namespace: project.namespace)
+          track_package_event('push_package', :npm, category: 'API::NpmPackages', project: project, namespace: project.namespace)
           created_package
         end
       end

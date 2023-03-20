@@ -38,10 +38,6 @@ describe('UncollapsedReviewerList component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('single reviewer', () => {
     const user = userDataMock();
 

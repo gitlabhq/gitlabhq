@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Verify' do
-    describe 'Pipeline with prefill variables' do
+    describe 'Pipeline with prefill variables', product_group: :pipeline_security do
       let(:prefill_variable_description1) { Faker::Lorem.sentence }
       let(:prefill_variable_value1) { Faker::Lorem.word }
       let(:prefill_variable_value5) { Faker::Lorem.word }
@@ -54,11 +54,6 @@ module QA
         # Navigate to Run Pipeline page
         Page::Project::Menu.perform(&:click_ci_cd_pipelines)
         Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
-
-        # Sometimes the variables will not be prefilled because of reactive cache so we revisit the page again.
-        # TODO: Investigate alternatives to deal with cache implementation
-        # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/381233
-        page.refresh
       end
 
       it 'shows only variables with description as prefill variables on the run pipeline page',

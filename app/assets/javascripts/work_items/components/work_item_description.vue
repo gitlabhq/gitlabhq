@@ -255,7 +255,6 @@ export default {
         enable-autocomplete
         supports-quick-actions
         init-on-autofocus
-        use-bottom-toolbar
         @input="setDescriptionText"
         @keydown.meta.enter="updateWorkItem"
         @keydown.ctrl.enter="updateWorkItem"

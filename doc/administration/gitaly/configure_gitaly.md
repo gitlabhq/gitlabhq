@@ -143,10 +143,16 @@ Gitaly and GitLab use two shared secrets for authentication:
 To configure the _Gitaly token_, edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   gitaly['auth_token'] = 'abc123secret'
+   gitaly['configuration'] = {
+      # ...
+      auth: {
+        # ...
+        token: 'abc123secret',
+      },
+   }
    ```
 
-There are two ways to configure the _GitLab Shell token_.
+Configure the _GitLab Shell token_ in one of two ways.
 
 Method 1 (recommended):
 
@@ -230,14 +236,21 @@ Updates to example must be made at:
    # Don't forget to copy `/etc/gitlab/gitlab-secrets.json` from Gitaly client to Gitaly server.
    gitlab_rails['internal_api_url'] = 'https://gitlab.example.com'
 
-   # Make Gitaly accept connections on all network interfaces. You must use
-   # firewalls to restrict access to this address/port.
-   # Comment out following line if you only want to support TLS connections
-   gitaly['listen_addr'] = "0.0.0.0:8075"
-
-   # Authentication token to ensure only authorized servers can communicate with
-   # Gitaly server
-   gitaly['auth_token'] = 'AUTH_TOKEN'
+   gitaly['configuration'] = {
+      # ...
+      #
+      # Make Gitaly accept connections on all network interfaces. You must use
+      # firewalls to restrict access to this address/port.
+      # Comment out following line if you only want to support TLS connections
+      listen_addr: '0.0.0.0:8075',
+      auth: {
+        # ...
+        #
+        # Authentication token to ensure only authorized servers can communicate with
+        # Gitaly server
+        token: 'AUTH_TOKEN',
+      },
+   }
    ```
 
 1. Append the following to `/etc/gitlab/gitlab.rb` for each respective Gitaly server:
@@ -247,24 +260,33 @@ Updates to example must be made at:
    On `gitaly1.internal`:
 
    ```ruby
-   git_data_dirs({
-     'default' => {
-       'path' => '/var/opt/gitlab/git-data'
-     },
-     'storage1' => {
-       'path' => '/mnt/gitlab/git-data'
-     },
-   })
+   gitaly['configuration'] = {
+      # ...
+      storage: [
+         {
+            name: 'default',
+            path: '/var/opt/gitlab/git-data',
+         },
+         {
+            name: 'storage1',
+            path: '/mnt/gitlab/git-data',
+         },
+      ],
+   }
    ```
 
    On `gitaly2.internal`:
 
    ```ruby
-   git_data_dirs({
-     'storage2' => {
-       'path' => '/srv/gitlab/git-data'
-     },
-   })
+   gitaly['configuration'] = {
+      # ...
+      storage: [
+         {
+            name: 'storage2',
+            path: '/srv/gitlab/git-data',
+         },
+      ],
+   }
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
@@ -461,17 +483,28 @@ example:
 git_data_dirs({
   'default' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
   # Address of the GitLab server that also has Gitaly running on it
-  'storage1' => { 'gitaly_address' => 'tcp://gitlab.internal:8075', 'path' => '/mnt/gitlab/git-data' },
+  'storage1' => { 'gitaly_address' => 'tcp://gitlab.internal:8075' },
   'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
 })
 
-# Make Gitaly accept connections on all network interfaces
-gitaly['listen_addr'] = "0.0.0.0:8075"
-
-# Or for TLS
-gitaly['tls_listen_addr'] = "0.0.0.0:9999"
-gitaly['certificate_path'] = "/etc/gitlab/ssl/cert.pem"
-gitaly['key_path'] = "/etc/gitlab/ssl/key.pem"
+gitaly['configuration'] = {
+  # ...
+  #
+  # Make Gitaly accept connections on all network interfaces
+  listen_addr: '0.0.0.0:8075',
+  # Or for TLS
+  tls_listen_addr: '0.0.0.0:9999',
+  tls: {
+    certificate_path:  '/etc/gitlab/ssl/cert.pem',
+    key_path: '/etc/gitlab/ssl/key.pem',
+  },
+  storage: [
+    {
+      name: 'storage1',
+      path: '/mnt/gitlab/git-data',
+    },
+  ],
+}
 ```
 
 `path` can be included only for storage shards on the local Gitaly server.
@@ -523,9 +556,6 @@ To disable Gitaly on a GitLab server:
 
 ## Enable TLS support
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22602) in GitLab 11.8.
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/3160) in GitLab 13.6, outgoing TLS connections to GitLab provide client certificates if configured.
-
 Gitaly supports TLS encryption. To communicate with a Gitaly instance that listens for secure
 connections, use the `tls://` URL scheme in the `gitaly_address` of the corresponding
 storage entry in the GitLab configuration.
@@ -542,6 +572,8 @@ Additionally, the certificate (or its certificate authority) must be installed o
 
 - Gitaly servers.
 - Gitaly clients that communicate with it.
+
+If you use a load balancer, it must be able to negotiate HTTP/2 using the ALPN TLS extension.
 
 ### Certificate requirements
 
@@ -600,16 +632,21 @@ To configure Gitaly with TLS:
    <!-- Updates to following example must also be made at https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab -->
 
    ```ruby
-   gitaly['tls_listen_addr'] = "0.0.0.0:9999"
-   gitaly['certificate_path'] = "/etc/gitlab/ssl/cert.pem"
-   gitaly['key_path'] = "/etc/gitlab/ssl/key.pem"
+   gitaly['configuration'] = {
+      # ...
+      tls_listen_addr: '0.0.0.0:9999',
+      tls: {
+        certificate_path: '/etc/gitlab/ssl/cert.pem',
+        key_path: '/etc/gitlab/ssl/key.pem',
+      },
+   }
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 1. Verify Gitaly traffic is being served over TLS by
    [observing the types of Gitaly connections](#observe-type-of-gitaly-connections).
 1. Optional. Improve security by:
-   1. Disabling non-TLS connections by commenting out or deleting `gitaly['listen_addr']` in
+   1. Disabling non-TLS connections by commenting out or deleting `gitaly['configuration'][:listen_addr]` in
       `/etc/gitlab/gitlab.rb`.
    1. Saving the file.
    1. [Reconfiguring GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
@@ -693,7 +730,7 @@ To configure Gitaly with TLS:
 ### Observe type of Gitaly connections
 
 For information on observing the type of Gitaly connections being served, see the
-[relevant documentation](monitoring.md#useful-queries).
+[relevant documentation](monitoring.md#queries).
 
 ## `gitaly-ruby`
 
@@ -708,14 +745,13 @@ Gitaly Go process. Some examples of things that are implemented in `gitaly-ruby`
 - RPCs that deal with wikis.
 - RPCs that create commits on behalf of a user, such as merge commits.
 
-We recommend:
+Recommended settings:
 
 - At least 300 MB memory per worker.
 - No more than one worker per core.
 
 NOTE:
-`gitaly-ruby` is planned to be eventually removed. To track progress, see the
-[Remove the Gitaly-Ruby sidecar](https://gitlab.com/groups/gitlab-org/-/epics/2862) epic.
+[Epic 2862](https://gitlab.com/groups/gitlab-org/-/epics/2862) proposes to remove `gitaly-ruby`.
 
 ### Configure number of `gitaly-ruby` workers
 
@@ -733,9 +769,16 @@ settings:
 1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   # Default is 2 workers. The minimum is 2; 1 worker is always reserved as
-   # a passive stand-by.
-   gitaly['ruby_num_workers'] = 4
+   gitaly['configuration'] = {
+      # ...
+      'gitaly-ruby': {
+        # ...
+        #
+        # Default is 2 workers. The minimum is 2; 1 worker is always reserved as
+        # a passive stand-by.
+        num_workers: 4
+      },
+   }
    ```
 
 1. Save the file, and then [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
@@ -775,21 +818,23 @@ example:
 
 ```ruby
 # in /etc/gitlab/gitlab.rb
-
-gitaly['concurrency'] = [
-  {
-    'rpc' => "/gitaly.SmartHTTPService/PostUploadPackWithSidechannel",
-    'max_per_repo' => 20,
-    'max_queue_time' => "1s",
-    'max_queue_size' => 10
-  },
-  {
-    'rpc' => "/gitaly.SSHService/SSHUploadPackWithSidechannel",
-    'max_per_repo' => 20
-    'max_queue_time' => "1s",
-    'max_queue_size' => 10
-  }
-]
+gitaly['configuration'] = {
+   # ...
+   concurrency: [
+      {
+         rpc: '/gitaly.SmartHTTPService/PostUploadPackWithSidechannel',
+         max_per_repo: 20,
+         max_queue_time: '1s',
+         max_queue_size: 10,
+      },
+      {
+         rpc: '/gitaly.SSHService/SSHUploadPackWithSidechannel',
+         max_per_repo: 20,
+         max_queue_time: '1s',
+         max_queue_size: 10,
+      },
+   ],
+}
 ```
 
 - `rpc` is the name of the RPC to set a concurrency limit for per repository.
@@ -834,7 +879,7 @@ performance.
 
 You can use control groups (cgroups) in Linux to impose limits on how much memory and CPU can be consumed by Gitaly processes.
 See the [`cgroups` Linux man page](https://man7.org/linux/man-pages/man7/cgroups.7.html) for more information.
-cgroups can be useful for protecting the system against unexpected resource exhaustion because of over consumption of memory and CPU.
+cgroups can help protect the system against unexpected resource exhaustion because of over consumption of memory and CPU.
 
 Some Git operations can consume notable resources up to the point of exhaustion in situations such as:
 
@@ -861,43 +906,60 @@ When these limits are reached, performance may be reduced and users may be disco
 
 ### Configure repository cgroups (new method)
 
-> This method of configuring repository cgroups was introduced in GitLab 15.1.
+> - This method of configuring repository cgroups was introduced in GitLab 15.1.
+> - `cpu_quota_us`[introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5422) in GitLab 15.10.
 
 To configure repository cgroups in Gitaly using the new method, use the following settings for the new configuration method
-to `gitaly['cgroups']` in `/etc/gitlab/gitlab.rb`:
+to `gitaly['configuration'][:cgroups]` in `/etc/gitlab/gitlab.rb`:
 
-- `cgroups_mountpoint` is where the parent cgroup directory is mounted. Defaults to `/sys/fs/cgroup`.
-- `cgroups_hierarchy_root` is the parent cgroup under which Gitaly creates groups, and
+- `mountpoint` is where the parent cgroup directory is mounted. Defaults to `/sys/fs/cgroup`.
+- `hierarchy_root` is the parent cgroup under which Gitaly creates groups, and
    is expected to be owned by the user and group Gitaly runs as. Omnibus GitLab
    creates the set of directories `mountpoint/<cpu|memory>/hierarchy_root`
    when Gitaly starts.
-- `cgroups_memory_bytes` is the total memory limit that is imposed collectively on all
+- `memory_bytes` is the total memory limit that is imposed collectively on all
    Git processes that Gitaly spawns. 0 implies no limit.
-- `cgroups_cpu_shares` is the CPU limit that is imposed collectively on all Git
+- `cpu_shares` is the CPU limit that is imposed collectively on all Git
    processes that Gitaly spawns. 0 implies no limit. The maximum is 1024 shares,
    which represents 100% of CPU.
-- `cgroups_repositories_count` is the number of cgroups in the cgroups pool. Each time a new Git
+- `cpu_quota_us` is the [`cfs_quota_us`](https://docs.kernel.org/scheduler/sched-bwc.html#management)
+  to throttle the cgroups' processes if they exceed this quota value. We set
+  `cfs_period_us` to `100ms` so 1 core is `100000`. 0 implies no limit.
+- `repositories.count` is the number of cgroups in the cgroups pool. Each time a new Git
   command is spawned, Gitaly assigns it to one of these cgroups based
   on the repository the command is for. A circular hashing algorithm assigns
   Git commands to these cgroups, so a Git command for a repository is
   always assigned to the same cgroup.
-- `cgroups_repositories_memory_bytes` is the total memory limit imposed on all Git processes contained in a repository cgroup.
-  0 implies no limit. This value cannot exceed that of the top level `cgroups_memory_bytes`.
-- `cgroups_repositories_cpu_shares` is the CPU limit that is imposed on all Git processes contained in a repository cgroup.
+- `repositories.memory_bytes` is the total memory limit imposed on all Git processes contained in a repository cgroup.
+  0 implies no limit. This value cannot exceed that of the top level `memory_bytes`.
+- `repositories.cpu_shares` is the CPU limit that is imposed on all Git processes contained in a repository cgroup.
   0 implies no limit. The maximum is 1024 shares, which represents 100% of CPU.
-  This value cannot exceed that of the top level`cgroups_cpu_shares`.
+  This value cannot exceed that of the top level`cpu_shares`.
+- `repositories.cpu_quota_us` is the [`cfs_quota_us`](https://docs.kernel.org/scheduler/sched-bwc.html#management)
+  that is imposed on all Git processes contained in a repository cgroup. A Git
+  process can't use more then the given quota. We set
+  `cfs_period_us` to `100ms` so 1 core is `100000`. 0 implies no limit.
 
 For example:
 
 ```ruby
 # in /etc/gitlab/gitlab.rb
-gitaly['cgroups_mountpoint'] = "/sys/fs/cgroup"
-gitaly['cgroups_hierarchy_root'] => "gitaly"
-gitaly['cgroups_memory_bytes'] = 64424509440,  # 60gb
-gitaly['cgroups_cpu_shares'] = 1024
-gitaly['cgroups_repositories_count'] => 1000,
-gitaly['cgroups_repositories_memory_bytes'] => 32212254720 # 20gb
-gitaly['cgroups_repositories_cpu_shares'] => 512
+gitaly['configuration'] = {
+  # ...
+  cgroups: {
+    mountpoint: '/sys/fs/cgroup',
+    hierarchy_root: 'gitaly',
+    memory_bytes: 64424509440, # 60gb
+    cpu_shares: 1024,
+    cpu_quota_us: 400000 # 4 cores
+    repositories: {
+      count: 1000,
+      memory_bytes: 32212254720, # 20gb
+      cpu_shares: 512,
+      cpu_quota_us: 200000 # 2 cores
+    },
+  },
+}
 ```
 
 ### Configure repository cgroups (legacy method)
@@ -953,14 +1015,14 @@ This strategy has two main benefits:
   to 3 child cgroups can concurrently burst up to their max. In general, all
   1000 cgroups would use much less than the 20 GB.
 
-## Background Repository Optimization
+## Background repository optimization
 
 Empty directories and unneeded configuration settings may accumulate in a repository and
 slow down Git operations. Gitaly can schedule a daily background task with a maximum duration
 to clean up these items and improve performance.
 
 WARNING:
-This is an experimental feature and may place significant load on the host while running.
+Background repository optimization is an experimental feature and may place significant load on the host while running.
 Make sure to schedule this during off-peak hours and keep the duration short (for example, 30-60 minutes).
 
 **For Omnibus GitLab**
@@ -968,10 +1030,16 @@ Make sure to schedule this during off-peak hours and keep the duration short (fo
 Edit `/etc/gitlab/gitlab.rb` and add:
 
 ```ruby
-gitaly['daily_maintenance_start_hour'] = 4
-gitaly['daily_maintenance_start_minute'] = 30
-gitaly['daily_maintenance_duration'] = '30m'
-gitaly['daily_maintenance_storages'] = ["default"]
+gitaly['configuration'] = {
+  # ...
+  daily_maintenance: {
+    # ...
+    start_hour: 4,
+    start_minute: 30,
+    duration: '30m',
+    storages: ['default'],
+  },
+}
 ```
 
 **For installations from source**
@@ -1006,7 +1074,7 @@ server" and "Gitaly client" refers to the same machine.
 ### Verify authentication monitoring
 
 Before rotating a Gitaly authentication token, verify that you can
-[monitor the authentication behavior](monitoring.md#useful-queries) of your GitLab installation using
+[monitor the authentication behavior](monitoring.md#queries) of your GitLab installation using
 Prometheus.
 
 You can then continue the rest of the procedure.
@@ -1018,7 +1086,13 @@ transitioning" mode as follows:
 
 ```ruby
 # in /etc/gitlab/gitlab.rb
-gitaly['auth_transitioning'] = true
+gitaly['configuration'] = {
+  # ...
+  auth: {
+    # ...
+    transitioning: true,
+  },
+}
 ```
 
 After you have made this change, your [Prometheus query](#verify-authentication-monitoring)
@@ -1038,8 +1112,13 @@ To update to a new Gitaly authentication token, on each Gitaly client **and** Gi
 
    ```ruby
    # in /etc/gitlab/gitlab.rb
-
-   gitaly['auth_token'] = '<new secret token>'
+   gitaly['configuration'] = {
+      # ...
+      auth: {
+         # ...
+         token: '<new secret token>',
+      },
+   }
    ```
 
 1. Restart Gitaly:
@@ -1069,7 +1148,13 @@ your Gitaly servers as follows:
 
 ```ruby
 # in /etc/gitlab/gitlab.rb
-gitaly['auth_transitioning'] = false
+gitaly['configuration'] = {
+  # ...
+  auth: {
+    # ...
+    transitioning: false,
+  },
+}
 ```
 
 WARNING:
@@ -1088,16 +1173,10 @@ result as you did at the start. For example:
 
 ## Pack-objects cache **(FREE SELF)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/372) in GitLab 13.11.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-
 [Gitaly](index.md), the service that provides storage for Git
 repositories, can be configured to cache a short rolling window of Git
 fetch responses. This can reduce server load when your server receives
 lots of CI fetch traffic.
-
-### Overview
 
 The pack-objects cache wraps `git pack-objects`, an internal part of
 Git that gets invoked indirectly via the PostUploadPack and
@@ -1135,27 +1214,33 @@ disk write IO, it is off by default.
 
 ### Configure the cache
 
-These are the configuration settings for the pack-objects cache. Each
-setting is discussed in greater detail below.
+These configuration settings are available for the pack-objects cache. Each setting is discussed in greater detail
+below.
 
-|Setting|Default|Description|
-|:---|:---|:---|
-|`enabled`|`false`|Turns on the cache. When off, Gitaly runs a dedicated `git pack-objects` process for each request. |
-|`dir`|`<PATH TO FIRST STORAGE>/+gitaly/PackObjectsCache`|Local directory where cache files get stored.|
-|`max_age`|`5m` (5 minutes)|Cache entries older than this get evicted and removed from disk.|
+| Setting   | Default                                            | Description                                                                                        |
+|:----------|:---------------------------------------------------|:---------------------------------------------------------------------------------------------------|
+| `enabled` | `false`                                            | Turns on the cache. When off, Gitaly runs a dedicated `git pack-objects` process for each request. |
+| `dir`     | `<PATH TO FIRST STORAGE>/+gitaly/PackObjectsCache` | Local directory where cache files get stored.                                                      |
+| `max_age` | `5m` (5 minutes)                                   | Cache entries older than this get evicted and removed from disk.                                   |
 
 In `/etc/gitlab/gitlab.rb`, set:
 
 ```ruby
-gitaly['pack_objects_cache_enabled'] = true
-## gitaly['pack_objects_cache_dir'] = '/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache'
-## gitaly['pack_objects_cache_max_age'] = '5m'
+gitaly['configuration'] = {
+  # ...
+  pack_objects_cache: {
+    # ...
+    enabled: true,
+    # dir: '/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache',
+    # max_age: '5m',
+  },
+}
 ```
 
 #### `enabled` defaults to `false`
 
-The cache is disabled by default. This is because in some cases, it
-can create an [extreme increase](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/4010#note_534564684)
+The cache is disabled by default because in some cases, it can create an
+[extreme increase](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/4010#note_534564684)
 in the number of bytes written to disk. On GitLab.com, we have verified
 that our repository storage disks can handle this extra workload, but
 we felt we cannot assume this is true everywhere.
@@ -1198,7 +1283,7 @@ The amount of space required depends on:
 - The size of the `max_age` cache eviction window.
 
 If your users pull 100 MB/s and you use a 5 minute window, then on average you have
-`5*60*100MB = 30GB` of data in your cache directory. This is an expected average, not
+`5*60*100MB = 30GB` of data in your cache directory. This average is an expected average, not
 a guarantee. Peak size may exceed this average.
 
 #### Cache eviction window `max_age`
@@ -1208,11 +1293,9 @@ cache hit and the average amount of storage used by cache files.
 Entries older than `max_age` get evicted from the in-memory metadata
 store, and deleted from disk.
 
-Eviction does not interfere with ongoing requests, so it is OK
-for `max_age` to be less than the time it takes to do a fetch over a
-slow connection. This is because Unix filesystems do not truly delete
-a file until all processes that are reading the deleted file have
-closed it.
+Eviction does not interfere with ongoing requests. It is OK for `max_age` to be less than the time it takes to do a
+fetch over a slow connection because Unix filesystems do not truly delete a file until all processes that are reading
+the deleted file have closed it.
 
 ### Observe the cache
 
@@ -1315,7 +1398,32 @@ process repositories that do not pass consistency checks.
 For Omnibus GitLab installations, edit `/etc/gitlab/gitlab.rb` and set the
 following keys (in this example, to disable the `hasDotgit` consistency check):
 
-- In [GitLab 15.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6800) and later:
+- In [GitLab 15.10](https://gitlab.com/gitlab-org/gitaly/-/issues/4754) and later:
+
+  ```ruby
+  ignored_blobs = "/etc/gitlab/instance_wide_ignored_git_blobs.txt"
+
+  gitaly['configuration'] = {
+    # ...
+    git: {
+      # ...
+      config: [
+        # Populate a file with one unabbreviated SHA-1 per line.
+        # See https://git-scm.com/docs/git-config#Documentation/git-config.txt-fsckskipList
+        { key: "fsck.skipList", value: ignored_blobs },
+        { key: "fetch.fsck.skipList", value: ignored_blobs },
+        { key: "receive.fsck.skipList", value: ignored_blobs },
+
+        { key: "fsck.hasDotgit", value: "ignore" },
+        { key: "fetch.fsck.hasDotgit", value: "ignore" },
+        { key: "receive.fsck.hasDotgit", value: "ignore" },
+        { key: "fsck.missingSpaceBeforeEmail", value: "ignore" },
+      ],
+    },
+  }
+  ```
+
+- In [GitLab 15.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6800) to GitLab 15.9:
 
   ```ruby
   ignored_blobs = "/etc/gitlab/instance_wide_ignored_git_blobs.txt"
@@ -1423,7 +1531,13 @@ proposed in issue [19185](https://gitlab.com/gitlab-org/gitlab/-/issues/19185).
 1. Edit `/etc/gitlab/gitlab.rb` and configure `gitaly['gpg_signing_key_path']`:
 
    ```ruby
-   gitaly['gpg_signing_key_path'] = "/etc/gitlab/gitaly/signing_key.gpg"
+   gitaly['configuration'] = {
+      # ...
+      git: {
+        # ...
+        signing_key: '/etc/gitlab/gitaly/signing_key.gpg',
+      },
+   }
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).

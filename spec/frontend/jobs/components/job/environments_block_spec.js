@@ -51,11 +51,6 @@ describe('Environments block', () => {
   const findEnvironmentLink = () => wrapper.find('[data-testid="job-environment-link"]');
   const findClusterLink = () => wrapper.find('[data-testid="job-cluster-link"]');
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('with last deployment', () => {
     it('renders info for most recent deployment', () => {
       createComponent({

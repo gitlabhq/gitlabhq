@@ -6,12 +6,12 @@ describe('Experimental new project creation app', () => {
   let wrapper;
 
   const createComponent = (propsData) => {
-    wrapper = shallowMount(App, { propsData });
+    wrapper = shallowMount(App, {
+      propsData: { projectsUrl: '/dashboard/projects', ...propsData },
+    });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
+  const findNewNamespacePage = () => wrapper.findComponent(NewNamespacePage);
 
   it('passes custom new project guideline text to underlying component', () => {
     const DEMO_GUIDELINES = 'Demo guidelines';
@@ -34,11 +34,28 @@ describe('Experimental new project creation app', () => {
 
     expect(
       Boolean(
-        wrapper
-          .findComponent(NewNamespacePage)
+        findNewNamespacePage()
           .props()
           .panels.find((p) => p.name === 'cicd_for_external_repo'),
       ),
     ).toBe(isCiCdAvailable);
+  });
+
+  it('creates correct breadcrumbs for top-level projects', () => {
+    createComponent();
+
+    expect(findNewNamespacePage().props('initialBreadcrumbs')).toEqual([
+      { href: '/dashboard/projects', text: 'Projects' },
+      { href: '#', text: 'New project' },
+    ]);
+  });
+
+  it('creates correct breadcrumbs for projects within groups', () => {
+    createComponent({ parentGroupUrl: '/parent-group', parentGroupName: 'Parent Group' });
+
+    expect(findNewNamespacePage().props('initialBreadcrumbs')).toEqual([
+      { href: '/parent-group', text: 'Parent Group' },
+      { href: '#', text: 'New project' },
+    ]);
   });
 });

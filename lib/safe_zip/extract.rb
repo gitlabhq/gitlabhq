@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 module SafeZip
+  # SafeZip::Extract provides a safe interface
+  # to extract specific directories or files within a `zip` archive.
+  #
+  # @example Extract directories to destination
+  #   SafeZip::Extract.new(archive_file).extract(directories: ['app/', 'test/'], to: destination_path)
+  # @example Extract files to destination
+  #   SafeZip::Extract.new(archive_file).extract(files: ['index.html', 'app/index.js'], to: destination_path)
   class Extract
     Error = Class.new(StandardError)
     PermissionDeniedError = Class.new(Error)
@@ -17,6 +24,20 @@ module SafeZip
       @archive_path = archive_file
     end
 
+    # extract given files or directories from the archive into the destination path
+    #
+    # @param [Hash] opts the options for extraction.
+    # @option opts [Array<String] :files list of files to be extracted
+    # @option opts [Array<String] :directories list of directories to be extracted
+    # @option opts [String] :to destination path
+    #
+    # @raise [PermissionDeniedError]
+    # @raise [SymlinkSourceDoesNotExistError]
+    # @raise [UnsupportedEntryError]
+    # @raise [EntrySizeError]
+    # @raise [AlreadyExistsError]
+    # @raise [NoMatchingError]
+    # @raise [ExtractError]
     def extract(opts = {})
       params = SafeZip::ExtractParams.new(**opts)
 

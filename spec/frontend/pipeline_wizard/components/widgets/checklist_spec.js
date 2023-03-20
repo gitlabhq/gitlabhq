@@ -39,10 +39,6 @@ describe('Pipeline Wizard - Checklist Widget', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('creates the component', () => {
     createComponent();
     expect(wrapper.exists()).toBe(true);

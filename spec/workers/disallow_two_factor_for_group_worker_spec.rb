@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DisallowTwoFactorForGroupWorker do
+RSpec.describe DisallowTwoFactorForGroupWorker, feature_category: :subgroups do
   let_it_be(:group) { create(:group, require_two_factor_authentication: true) }
   let_it_be(:user) { create(:user, require_two_factor_authentication_from_group: true) }
 

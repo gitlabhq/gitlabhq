@@ -23,7 +23,6 @@ const fixture = 'snippets/show.html';
 let mockAxios;
 
 window.project_uploads_path = `${TEST_HOST}/uploads`;
-window.gon = window.gon || {};
 window.gl = window.gl || {};
 gl.utils = gl.utils || {};
 gl.utils.disableButtonIfEmptyField = () => {};

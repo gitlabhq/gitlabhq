@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespaces::StatisticsRefresherService, '#execute' do
+RSpec.describe Namespaces::StatisticsRefresherService, '#execute', feature_category: :subgroups do
   let(:group) { create(:group) }
   let(:subgroup) { create(:group, parent: group) }
   let(:projects) { create_list(:project, 5, namespace: group) }

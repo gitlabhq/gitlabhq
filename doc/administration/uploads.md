@@ -8,6 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Uploads represent all user data that may be sent to GitLab as a single file. For example, avatars and note attachments are uploads. Uploads are integral to GitLab functionality and therefore cannot be disabled.
 
+NOTE:
+Attachments added to comments or descriptions are deleted **only** when the parent project or group
+is deleted. Attachments remain in file storage even when the comment or resource (like issue, merge
+request, epic) where they were uploaded is deleted.
+
 ## Using local storage
 
 This is the default configuration. To change the location where the uploads are

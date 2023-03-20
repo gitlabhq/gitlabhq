@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu do
+RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu, feature_category: :navigation do
   let_it_be(:project) { create(:project) }
 
   let_it_be(:harbor_integration) { create(:harbor_integration, project: project) }
@@ -11,6 +11,10 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu do
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project) }
 
   subject { described_class.new(context) }
+
+  it_behaves_like 'not serializable as super_sidebar_menu_args' do
+    let(:menu) { subject }
+  end
 
   describe '#render?' do
     context 'when menu does not have any menu item to show' do

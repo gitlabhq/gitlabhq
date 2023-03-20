@@ -220,3 +220,74 @@ Example response:
   "duration":null
 }
 ```
+
+## Add a merge request to a merge train
+
+Add a merge request to the merge train targeting the merge request's target branch.
+
+```plaintext
+POST /projects/:id/merge_trains/merge_requests/:merge_request_iid
+```
+
+Supported attributes:
+
+| Attribute                      | Type           | Required | Description |
+| ------------------------------ | -------------- | -------- | ----------- |
+| `id`                           | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `merge_request_iid`            | integer        | yes      | The internal ID of the merge request. |
+| `when_pipeline_succeeds`       | boolean        | no       | If true, the merge request is added to the merge train when the pipeline succeeds. When false or unspecified, the merge request is added directly to the merge train. |
+| `sha`                          | string         | no       | If present, the SHA must match the `HEAD` of the source branch, otherwise the merge fails. |
+| `squash`                       | boolean        | no       | If true, the commits are squashed into a single commit on merge. |
+
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/597/merge_trains/merge_requests/1"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 267,
+    "merge_request": {
+      "id": 273,
+      "iid": 1,
+      "project_id": 597,
+      "title": "My title 9",
+      "description": null,
+      "state": "opened",
+      "created_at": "2022-10-31T19:06:05.725Z",
+      "updated_at": "2022-10-31T19:06:05.725Z",
+      "web_url": "http://localhost/namespace18/project21/-/merge_requests/1"
+    },
+    "user": {
+      "id": 933,
+      "username": "user12",
+      "name": "Sidney Jones31",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/6c8365de387cb3db10ecc7b1880203c4?s=80\u0026d=identicon",
+      "web_url": "http://localhost/user12"
+    },
+    "pipeline": {
+      "id": 273,
+      "iid": 1,
+      "project_id": 598,
+      "sha": "b83d6e391c22777fca1ed3012fce84f633d7fed0",
+      "ref": "main",
+      "status": "pending",
+      "source": "push",
+      "created_at": "2022-10-31T19:06:06.231Z",
+      "updated_at": "2022-10-31T19:06:06.231Z",
+      "web_url": "http://localhost/namespace19/project22/-/pipelines/273"
+    },
+    "created_at": "2022-10-31T19:06:06.237Z",
+    "updated_at":"2022-10-31T19:06:06.237Z",
+    "target_branch":"main",
+    "status":"idle",
+    "merged_at":null,
+    "duration":null
+  }
+]
+```

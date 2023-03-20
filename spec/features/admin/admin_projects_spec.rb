@@ -161,4 +161,29 @@ RSpec.describe "Admin::Projects", feature_category: :projects do
       expect(page).to have_current_path(dashboard_projects_path, ignore_query: true, url: false)
     end
   end
+
+  describe 'project edit' do
+    it 'updates project details' do
+      project = create(:project, :private, name: 'Garfield', description: 'Funny Cat')
+
+      visit edit_admin_namespace_project_path({ id: project.to_param, namespace_id: project.namespace.to_param })
+
+      aggregate_failures do
+        expect(page).to have_content(project.name)
+        expect(page).to have_content(project.description)
+      end
+
+      fill_in 'Project name', with: 'Scooby-Doo'
+      fill_in 'Project description (optional)', with: 'Funny Dog'
+
+      click_button 'Save changes'
+
+      visit edit_admin_namespace_project_path({ id: project.to_param, namespace_id: project.namespace.to_param })
+
+      aggregate_failures do
+        expect(page).to have_content('Scooby-Doo')
+        expect(page).to have_content('Funny Dog')
+      end
+    end
+  end
 end

@@ -68,8 +68,6 @@ module Gitlab
           track_unique_action_by_merge_request(MR_CREATE_ACTION, merge_request)
 
           project = merge_request.target_project
-          return unless Feature.enabled?(:route_hll_to_snowplow_phase2, project.namespace)
-
           Gitlab::Tracking.event(
             name,
             :create,
@@ -99,8 +97,6 @@ module Gitlab
           track_unique_action_by_user(MR_APPROVE_ACTION, user)
 
           project = merge_request.target_project
-          return unless Feature.enabled?(:route_hll_to_snowplow_phase2, project.namespace)
-
           Gitlab::Tracking.event(
             name,
             :approve,

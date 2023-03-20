@@ -1,6 +1,6 @@
 import { escape } from 'lodash';
 import Vue from 'vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';

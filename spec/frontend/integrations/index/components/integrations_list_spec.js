@@ -13,10 +13,6 @@ describe('IntegrationsList', () => {
     wrapper = shallowMountExtended(IntegrationsList, { propsData });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('provides correct `integrations` prop to the IntegrationsTable instance', () => {
     createComponent({ integrations: [...mockInactiveIntegrations, ...mockActiveIntegrations] });
 

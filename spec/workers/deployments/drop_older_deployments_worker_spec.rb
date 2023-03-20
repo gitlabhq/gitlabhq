@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Deployments::DropOlderDeploymentsWorker do
+RSpec.describe Deployments::DropOlderDeploymentsWorker, feature_category: :continuous_delivery do
   subject { described_class.new.perform(deployment&.id) }
 
   describe '#perform' do

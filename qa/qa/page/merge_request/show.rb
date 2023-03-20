@@ -31,6 +31,7 @@ module QA
 
         view 'app/assets/javascripts/diffs/components/tree_list.vue' do
           element :file_tree_container
+          element :diff_tree_search
         end
 
         view 'app/assets/javascripts/diffs/components/diff_file_header.vue' do
@@ -215,12 +216,23 @@ module QA
 
         def has_file?(file_name)
           open_file_tree
+
+          return true if has_element?(:file_name_content, file_name: file_name)
+
+          # Since the file tree uses virtual scrolling, search for file in case it is outside of viewport
+          search_file_tree(file_name)
           has_element?(:file_name_content, file_name: file_name)
         end
 
         def has_no_file?(file_name)
-          open_file_tree
+          # Since the file tree uses virtual scrolling, search for file to ensure non-existence
+          search_file_tree(file_name)
           has_no_element?(:file_name_content, file_name: file_name)
+        end
+
+        def search_file_tree(file_name)
+          open_file_tree
+          fill_element(:diff_tree_search, file_name)
         end
 
         def open_file_tree
@@ -231,6 +243,17 @@ module QA
           refresh
 
           has_element?(:merge_button)
+        end
+
+        def has_no_merge_button?
+          refresh
+
+          has_no_element?(:merge_button)
+        end
+
+        RSpec::Matchers.define :have_merge_button do
+          match(&:has_merge_button?)
+          match_when_negated(&:has_no_merge_button?)
         end
 
         def has_pipeline_status?(text)
@@ -386,6 +409,7 @@ module QA
             click_element(:dropdown_button)
             click_element(:edit_in_ide_button)
           end
+          page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
         end
 
         def add_suggestion_to_diff(suggestion, line)

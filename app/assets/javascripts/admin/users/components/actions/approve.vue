@@ -43,7 +43,7 @@ export default {
           },
           actionPrimary: {
             text: I18N_USER_ACTIONS.approve,
-            attributes: [{ variant: 'confirm', 'data-qa-selector': 'approve_user_confirm_button' }],
+            attributes: { variant: 'confirm', 'data-qa-selector': 'approve_user_confirm_button' },
           },
           messageHtml,
         },

@@ -18,10 +18,6 @@ describe('MRWidgetSuggestPipeline', () => {
   describe('template', () => {
     let wrapper;
 
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     describe('core functionality', () => {
       const findOkBtn = () => wrapper.find('[data-testid="ok"]');
       let trackingSpy;

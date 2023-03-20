@@ -17,7 +17,7 @@ describe('CsvExportModal', () => {
         ...props,
       },
       provide: {
-        issuableType: 'issues',
+        issuableType: 'issue',
         ...injectedProperties,
       },
       stubs: {
@@ -29,19 +29,15 @@ describe('CsvExportModal', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findModal = () => wrapper.findComponent(GlModal);
   const findIcon = () => wrapper.findComponent(GlIcon);
 
   describe('template', () => {
     describe.each`
-      issuableType        | modalTitle
-      ${'issues'}         | ${'Export issues'}
-      ${'merge-requests'} | ${'Export merge requests'}
-    `('with the issuableType "$issuableType"', ({ issuableType, modalTitle }) => {
+      issuableType       | modalTitle                 | dataTrackLabel
+      ${'issue'}         | ${'Export issues'}         | ${'export_issues_csv'}
+      ${'merge_request'} | ${'Export merge requests'} | ${'export_merge-requests_csv'}
+    `('with the issuableType "$issuableType"', ({ issuableType, modalTitle, dataTrackLabel }) => {
       beforeEach(() => {
         wrapper = createComponent({ injectedProperties: { issuableType } });
       });
@@ -57,9 +53,9 @@ describe('CsvExportModal', () => {
             href: 'export/csv/path',
             variant: 'confirm',
             'data-method': 'post',
-            'data-qa-selector': `export_${issuableType}_button`,
+            'data-qa-selector': `export_issues_button`,
             'data-track-action': 'click_button',
-            'data-track-label': `export_${issuableType}_csv`,
+            'data-track-label': dataTrackLabel,
           },
         });
       });

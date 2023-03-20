@@ -106,11 +106,11 @@ RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
       end
     end
 
-    describe 'Contributors' do
+    describe 'Contributor statistics' do
       it 'has a link to the project contributors path' do
         render
 
-        expect(rendered).to have_link('Contributors', href: project_graph_path(project, current_ref, ref_type: 'heads'))
+        expect(rendered).to have_link('Contributor statistics', href: project_graph_path(project, current_ref, ref_type: 'heads'))
       end
     end
 
@@ -122,11 +122,11 @@ RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
       end
     end
 
-    describe 'Compare' do
+    describe 'Compare revisions' do
       it 'has a link to the project compare path' do
         render
 
-        expect(rendered).to have_link('Compare', href: project_compare_index_path(project, from: project.repository.root_ref, to: current_ref))
+        expect(rendered).to have_link('Compare revisions', href: project_compare_index_path(project, from: project.repository.root_ref, to: current_ref))
       end
     end
   end
@@ -310,7 +310,7 @@ RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
       it 'top level navigation link is not visible' do
         render
 
-        expect(rendered).not_to have_link('Security & Compliance')
+        expect(rendered).not_to have_link('Security and Compliance')
       end
     end
 
@@ -322,11 +322,11 @@ RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
       end
 
       it 'top level navigation link is visible' do
-        expect(rendered).to have_link('Security & Compliance')
+        expect(rendered).to have_link('Security and Compliance')
       end
 
       it 'security configuration link is visible' do
-        expect(rendered).to have_link('Configuration', href: project_security_configuration_path(project))
+        expect(rendered).to have_link('Security configuration', href: project_security_configuration_path(project))
       end
     end
   end

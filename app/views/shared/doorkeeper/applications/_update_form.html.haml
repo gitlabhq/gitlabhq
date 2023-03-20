@@ -1,0 +1,3 @@
+- path = local_assigns.fetch(:path)
+= form_for(@application, url: path, html: {class: 'gl-display-inline-block', method: "put"}) do |f|
+  = submit_tag s_('AuthorizedApplication|Renew secret'), data: { confirm: s_("AuthorizedApplication|Are you sure you want to renew this secret? Any applications using the old secret will no longer be able to authenticate with GitLab."), confirm_btn_variant: "danger" }, aria: { label: s_('AuthorizedApplication|Renew secret') }, class: 'gl-button btn btn-md btn-default'

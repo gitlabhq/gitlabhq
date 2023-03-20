@@ -12,6 +12,7 @@ query getContainerRepositoryTags(
   containerRepository(id: $id) {
     id
     tagsCount
+    canDelete
     tags(after: $after, before: $before, first: $first, last: $last, name: $name, sort: $sort) {
       nodes {
         digest

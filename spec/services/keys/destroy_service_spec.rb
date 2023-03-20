@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Keys::DestroyService do
+RSpec.describe Keys::DestroyService, feature_category: :source_code_management do
   let(:user) { create(:user) }
 
   subject { described_class.new(user) }

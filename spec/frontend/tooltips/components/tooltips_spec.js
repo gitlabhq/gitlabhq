@@ -30,11 +30,6 @@ describe('tooltips/components/tooltips.vue', () => {
 
   const allTooltips = () => wrapper.findAllComponents(GlTooltip);
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('addTooltips', () => {
     let target;
 

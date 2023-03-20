@@ -1,4 +1,4 @@
-= sprintf(s_('Notify|Merge request %{merge_request} was %{mr_status}'), { merge_request: @merge_request.to_reference, mr_status: sanitize_name(@updated_by.name) })
+= sprintf(s_('Notify|Merge request %{merge_request} was %{mr_status} by %{updated_by}'), { merge_request: @merge_request.to_reference, mr_status: @mr_status, updated_by: sanitize_name(@updated_by.name) })
 
 = sprintf(s_('Notify|Merge request URL: %{merge_request_url}'), { merge_request_url: project_merge_request_url(@merge_request.target_project, @merge_request) })
 

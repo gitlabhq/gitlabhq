@@ -35,10 +35,6 @@ describe('Pipeline Url Component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should render pipeline url table cell', () => {
     createComponent();
 

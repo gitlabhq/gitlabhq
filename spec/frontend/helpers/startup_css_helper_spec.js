@@ -21,15 +21,8 @@ describe('waitForCSSLoaded', () => {
   });
 
   describe('when gon features is not provided', () => {
-    let originalGon;
-
     beforeEach(() => {
-      originalGon = window.gon;
       window.gon = null;
-    });
-
-    afterEach(() => {
-      window.gon = originalGon;
     });
 
     it('should invoke the action right away', async () => {

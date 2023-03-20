@@ -106,7 +106,7 @@ describe('TrainingProviderList component', () => {
         projectFullPath: testProjectPath,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       propsData: {
         securityTrainingEnabled: true,
@@ -132,7 +132,6 @@ describe('TrainingProviderList component', () => {
   const toggleFirstProvider = () => findFirstToggle().vm.$emit('change', testProviderIds[0]);
 
   afterEach(() => {
-    wrapper.destroy();
     apolloProvider = null;
   });
 

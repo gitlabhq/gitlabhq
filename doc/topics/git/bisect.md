@@ -1,76 +1,11 @@
 ---
-stage: Create
-group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-comments: false
+redirect_to: 'index.md'
+remove_date: '2023-06-09'
 ---
 
-# Bisect **(FREE)**
+This document was moved to [another location](index.md).
 
-- Find a commit that introduced a bug
-- Works through a process of elimination
-- Specify a known good and bad revision to begin
-
-## Bisect sample workflow
-
-1. Start the bisect process
-1. Enter the bad revision (usually latest commit)
-1. Enter a known good revision (commit/branch)
-1. Run code to see if bug still exists
-1. Tell bisect the result
-1. Repeat the previous 2 items until you find the offending commit
-
-## Setup
-
-```shell
-  mkdir bisect-ex
-  cd bisect-ex
-  touch index.html
-  git add -A
-  git commit -m "starting out"
-  vi index.html
-  # Add all good
-  git add -A
-  git commit -m "second commit"
-  vi index.html
-  # Add all good 2
-  git add -A
-  git commit -m "third commit"
-  vi index.html
-```
-
-```shell
-  # Add all good 3
-  git add -A
-  git commit -m "fourth commit"
-  vi index.html
-  # This looks bad
-  git add -A
-  git commit -m "fifth commit"
-  vi index.html
-  # Really bad
-  git add -A
-  git commit -m "sixth commit"
-  vi index.html
-  # again just bad
-  git add -A
-  git commit -m "seventh commit"
-```
-
-## Commands
-
-```shell
-  git bisect start
-  # Test your code
-  git bisect bad
-  git bisect next
-  # Say yes to the warning
-  # Test
-  git bisect good
-  # Test
-  git bisect bad
-  # Test
-  git bisect good
-  # done
-  git bisect reset
-```
+<!-- This redirect file can be deleted after <2023-06-09>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

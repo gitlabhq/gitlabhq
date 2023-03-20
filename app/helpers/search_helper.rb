@@ -204,7 +204,9 @@ module SearchHelper
 
       if search_has_project?
         hash[:project] = { id: @project.id, name: @project.name }
-        hash[:project_metadata] = { issues_path: project_issues_path(@project), mr_path: project_merge_requests_path(@project) }
+        hash[:project_metadata] = { mr_path: project_merge_requests_path(@project) }
+        hash[:project_metadata][:issues_path] = project_issues_path(@project) if @project.feature_available?(:issues, current_user)
+
         hash[:code_search] = search_scope.nil?
         hash[:ref] = @ref if @ref && can?(current_user, :read_code, @project)
       end

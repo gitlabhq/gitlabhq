@@ -20,10 +20,6 @@ describe('ShaMismatch', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should render warning message', () => {
     expect(wrapper.text()).toContain('Merge blocked: new changes were just added.');
   });

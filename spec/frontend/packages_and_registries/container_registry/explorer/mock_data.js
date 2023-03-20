@@ -177,11 +177,12 @@ export const tagsMock = [
   },
 ];
 
-export const imageTagsMock = (nodes = tagsMock) => ({
+export const imageTagsMock = ({ nodes = tagsMock, canDelete = true } = {}) => ({
   data: {
     containerRepository: {
       id: containerRepositoryMock.id,
       tagsCount: nodes.length,
+      canDelete,
       tags: {
         nodes,
         pageInfo: { ...tagsPageInfo },

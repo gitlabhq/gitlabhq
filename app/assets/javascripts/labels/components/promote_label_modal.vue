@@ -1,6 +1,6 @@
 <script>
 import { GlSprintf, GlModal } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { s__, __, sprintf } from '~/locale';
@@ -9,7 +9,7 @@ import eventHub from '../event_hub';
 export default {
   primaryProps: {
     text: s__('Labels|Promote Label'),
-    attributes: [{ variant: 'confirm' }],
+    attributes: { variant: 'confirm' },
   },
   cancelProps: {
     text: __('Cancel'),

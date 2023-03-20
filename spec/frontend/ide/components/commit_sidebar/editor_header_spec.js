@@ -1,7 +1,9 @@
-import { mount } from '@vue/test-utils';
+import { GlModal } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import EditorHeader from '~/ide/components/commit_sidebar/editor_header.vue';
+import { stubComponent } from 'helpers/stub_component';
 import { createStore } from '~/ide/stores';
 import { file } from '../../helpers';
 
@@ -12,9 +14,10 @@ const TEST_FILE_PATH = 'test/file/path';
 describe('IDE commit editor header', () => {
   let wrapper;
   let store;
+  const showMock = jest.fn();
 
   const createComponent = (fileProps = {}) => {
-    wrapper = mount(EditorHeader, {
+    wrapper = shallowMount(EditorHeader, {
       store,
       propsData: {
         activeFile: {
@@ -23,21 +26,16 @@ describe('IDE commit editor header', () => {
           ...fileProps,
         },
       },
+      stubs: {
+        GlModal: stubComponent(GlModal, {
+          methods: { show: showMock },
+        }),
+      },
     });
   };
 
   const findDiscardModal = () => wrapper.findComponent({ ref: 'discardModal' });
   const findDiscardButton = () => wrapper.findComponent({ ref: 'discardButton' });
-
-  beforeEach(() => {
-    store = createStore();
-    jest.spyOn(store, 'dispatch').mockImplementation();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   it.each`
     fileProps                            | shouldExist
@@ -52,20 +50,19 @@ describe('IDE commit editor header', () => {
   });
 
   describe('discard button', () => {
-    beforeEach(() => {
-      createComponent();
-
-      const modal = findDiscardModal();
-      jest.spyOn(modal.vm, 'show');
-
-      findDiscardButton().trigger('click');
-    });
-
     it('opens a dialog confirming discard', () => {
-      expect(findDiscardModal().vm.show).toHaveBeenCalled();
+      createComponent();
+      findDiscardButton().vm.$emit('click');
+
+      expect(showMock).toHaveBeenCalled();
     });
 
     it('calls discardFileChanges if dialog result is confirmed', () => {
+      store = createStore();
+      jest.spyOn(store, 'dispatch').mockImplementation();
+
+      createComponent();
+
       expect(store.dispatch).not.toHaveBeenCalled();
 
       findDiscardModal().vm.$emit('primary');

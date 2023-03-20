@@ -24,10 +24,6 @@ describe('~/notes/components/notes_activity_header.vue', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createComponent();

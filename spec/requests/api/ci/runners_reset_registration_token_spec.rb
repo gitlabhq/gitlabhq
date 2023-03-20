@@ -3,10 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
-  subject { post api("#{prefix}/runners/reset_registration_token", user) }
+  let_it_be(:admin_mode) { false }
+
+  subject { post api("#{prefix}/runners/reset_registration_token", user, admin_mode: admin_mode) }
 
   shared_examples 'bad request' do |result|
-    it 'returns 400 error' do
+    it 'returns 400 error', :aggregate_failures do
       expect { subject }.not_to change { get_token }
 
       expect(response).to have_gitlab_http_status(:bad_request)
@@ -15,7 +17,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
   end
 
   shared_examples 'unauthenticated' do
-    it 'returns 401 error' do
+    it 'returns 401 error', :aggregate_failures do
       expect { subject }.not_to change { get_token }
 
       expect(response).to have_gitlab_http_status(:unauthorized)
@@ -23,7 +25,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
   end
 
   shared_examples 'unauthorized' do
-    it 'returns 403 error' do
+    it 'returns 403 error', :aggregate_failures do
       expect { subject }.not_to change { get_token }
 
       expect(response).to have_gitlab_http_status(:forbidden)
@@ -31,7 +33,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
   end
 
   shared_examples 'not found' do |scope|
-    it 'returns 404 error' do
+    it 'returns 404 error', :aggregate_failures do
       expect { subject }.not_to change { get_token }
 
       expect(response).to have_gitlab_http_status(:not_found)
@@ -58,7 +60,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
   end
 
   shared_context 'when authorized' do |scope|
-    it 'resets runner registration token' do
+    it 'resets runner registration token', :aggregate_failures do
       expect { subject }.to change { get_token }
 
       expect(response).to have_gitlab_http_status(:success)
@@ -99,6 +101,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
 
       include_context 'when authorized', 'instance' do
         let_it_be(:user) { create(:user, :admin) }
+        let_it_be(:admin_mode) { true }
 
         def get_token
           ApplicationSetting.current_without_cache.runners_registration_token

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::AutocompleteService do
+RSpec.describe Projects::AutocompleteService, feature_category: :projects do
   describe '#issues' do
     describe 'confidential issues' do
       let(:author) { create(:user) }

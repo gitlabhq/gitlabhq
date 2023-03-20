@@ -174,7 +174,7 @@ RSpec.describe 'Merge request > User creates image diff notes', :js, feature_cat
   end
 
   shared_examples 'onion skin' do
-    it 'resets opacity when toggling between view modes' do
+    it 'resets opacity when toggling between view modes', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/393331' do
       # Simulate dragging onion-skin slider
       drag_and_drop_by(find('.dragger'), -30, 0)
 

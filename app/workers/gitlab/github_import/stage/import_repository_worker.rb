@@ -72,7 +72,7 @@ module Gitlab
 
           return unless last_github_issue
 
-          Issue.track_project_iid!(project, last_github_issue[:number])
+          Issue.track_namespace_iid!(project.project_namespace, last_github_issue[:number])
         end
       end
     end

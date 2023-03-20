@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::UpdateService, :mailer do
+RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
@@ -191,7 +191,6 @@ RSpec.describe Issues::UpdateService, :mailer do
           it_behaves_like 'an incident management tracked event', :incident_management_incident_change_confidential
 
           it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-            let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
             let(:namespace) { issue.namespace }
             let(:category) { described_class.to_s }
             let(:label) { 'redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly' }
@@ -696,7 +695,6 @@ RSpec.describe Issues::UpdateService, :mailer do
           it_behaves_like 'an incident management tracked event', :incident_management_incident_assigned
 
           it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-            let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
             let(:namespace) { issue.namespace }
             let(:category) { described_class.to_s }
             let(:label) { 'redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly' }

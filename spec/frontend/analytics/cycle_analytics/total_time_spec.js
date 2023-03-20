@@ -10,10 +10,6 @@ describe('TotalTime', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('with a valid time object', () => {
     it.each`
       time

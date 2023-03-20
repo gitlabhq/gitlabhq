@@ -62,11 +62,11 @@ export default {
       return {
         primary: {
           text: __('Yes, delete project'),
-          attributes: [
-            { variant: 'danger' },
-            { disabled: this.confirmDisabled },
-            { 'data-qa-selector': 'confirm_delete_button' },
-          ],
+          attributes: {
+            variant: 'danger',
+            disabled: this.confirmDisabled,
+            'data-qa-selector': 'confirm_delete_button',
+          },
         },
         cancel: {
           text: __('Cancel, keep project'),

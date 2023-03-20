@@ -6,9 +6,9 @@ module RuboCop
       class Json < RuboCop::Cop::Base
         extend RuboCop::Cop::AutoCorrector
 
-        MSG = <<~EOL
+        MSG = <<~TEXT
           Prefer `Gitlab::Json` over calling `JSON` directly. See https://docs.gitlab.com/ee/development/json.html
-        EOL
+        TEXT
 
         AVAILABLE_METHODS = %i[parse parse! load decode dump generate encode pretty_generate].to_set.freeze
 
@@ -41,7 +41,7 @@ module RuboCop
         end
 
         def cbased(node)
-          return unless %r{/ee/}.match?(node.location.expression.source_buffer.name)
+          return unless node.location.expression.source_buffer.name.include?('/ee/')
 
           "::"
         end

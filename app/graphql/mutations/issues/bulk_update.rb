@@ -14,7 +14,8 @@ module Mutations
 
       argument :parent_id, ::Types::GlobalIDType[::IssueParent],
         required: true,
-        description: 'Global ID of the parent that the bulk update will be scoped to . ' \
+        description: 'Global ID of the parent to which the bulk update will be scoped. ' \
+                     'The parent can be a project **(FREE)** or a group **(PREMIUM)**. ' \
                      'Example `IssueParentID` are `"gid://gitlab/Project/1"` and `"gid://gitlab/Group/1"`.'
 
       argument :ids, [::Types::GlobalIDType[::Issue]],
@@ -30,6 +31,22 @@ module Mutations
       argument :milestone_id, ::Types::GlobalIDType[::Milestone],
         required: false,
         description: 'Global ID of the milestone that will be assigned to the issues.'
+
+      argument :state_event, Types::IssueStateEventEnum,
+        description: 'Close or reopen an issue.',
+        required: false
+
+      argument :add_label_ids, [::Types::GlobalIDType[::Label]],
+        description: 'Global ID array of the labels that will be added to the issues. ',
+        required: false
+
+      argument :remove_label_ids, [::Types::GlobalIDType[::Label]],
+        description: 'Global ID array of the labels that will be removed from the issues. ',
+        required: false
+
+      argument :subscription_event, Types::IssuableSubscriptionEventEnum,
+        description: 'Subscribe to or unsubscribe from issue notifications.',
+        required: false
 
       field :updated_issue_count, GraphQL::Types::Int,
         null: true,
@@ -74,7 +91,7 @@ module Mutations
       end
 
       def prepared_params(attributes, ids)
-        prepared = { issuable_ids: model_ids_from(ids).uniq }
+        prepared = attributes.except(*global_id_arguments).merge(issuable_ids: model_ids_from(ids).uniq)
 
         global_id_arguments.each do |argument|
           next unless attributes.key?(argument)
@@ -92,7 +109,7 @@ module Mutations
       end
 
       def global_id_arguments
-        %i[assignee_ids milestone_id]
+        %i[assignee_ids milestone_id add_label_ids remove_label_ids]
       end
 
       def model_ids_from(attributes)

@@ -147,4 +147,4 @@ We no longer use this optimization for `gitlab-org/gitlab` because the [pack-obj
 allows Gitaly to serve the full CI/CD fetch traffic now. See [Git fetch caching](#git-fetch-caching).
 
 The pre-clone step works by using the `CI_PRE_CLONE_SCRIPT` variable
-[defined by GitLab.com shared runners](../../ci/runners/saas/linux_saas_runner.md#pre-clone-script).
+[defined by GitLab.com shared runners](../../ci/runners/saas/linux_saas_runner.md#pre-clone-script-deprecated).

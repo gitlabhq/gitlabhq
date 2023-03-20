@@ -131,7 +131,7 @@ namespace :gitlab do
       end
     end
 
-    desc 'This adjusts and cleans db/structure.sql - it runs after db:structure:dump'
+    desc 'This adjusts and cleans db/structure.sql - it runs after db:schema:dump'
     task :clean_structure_sql do |task_name|
       ActiveRecord::Base.configurations.configs_for(env_name: ActiveRecord::Tasks::DatabaseTasks.env).each do |db_config|
         structure_file = ActiveRecord::Tasks::DatabaseTasks.dump_filename(db_config.name)
@@ -147,26 +147,13 @@ namespace :gitlab do
       Rake::Task[task_name].reenable
     end
 
-    # Inform Rake that custom tasks should be run every time rake db:structure:dump is run
-    #
-    # Rails 6.1 deprecates db:structure:dump in favor of db:schema:dump
-    Rake::Task['db:structure:dump'].enhance do
-      Rake::Task['gitlab:db:clean_structure_sql'].invoke
-    end
-
     # Inform Rake that custom tasks should be run every time rake db:schema:dump is run
     Rake::Task['db:schema:dump'].enhance do
       Rake::Task['gitlab:db:clean_structure_sql'].invoke
     end
 
     ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
-      # Inform Rake that custom tasks should be run every time rake db:structure:dump is run
-      #
-      # Rails 6.1 deprecates db:structure:dump in favor of db:schema:dump
-      Rake::Task["db:structure:dump:#{name}"].enhance do
-        Rake::Task['gitlab:db:clean_structure_sql'].invoke
-      end
-
+      # Inform Rake that custom tasks should be run every time rake db:schema:dump is run
       Rake::Task["db:schema:dump:#{name}"].enhance do
         Rake::Task['gitlab:db:clean_structure_sql'].invoke
       end
@@ -313,6 +300,36 @@ namespace :gitlab do
       end
     end
 
+    namespace :validate_async_constraints do
+      each_database(databases) do |database_name|
+        task database_name, [:pick] => :environment do |_, args|
+          args.with_defaults(pick: 2)
+
+          if Feature.disabled?(:database_async_foreign_key_validation, type: :ops)
+            puts <<~NOTE.color(:yellow)
+              Note: database async foreign key validation feature is currently disabled.
+
+              Enable with: Feature.enable(:database_async_foreign_key_validation)
+            NOTE
+            exit
+          end
+
+          Gitlab::Database::EachDatabase.each_database_connection(only: database_name) do
+            Gitlab::Database::AsyncConstraints.validate_pending_entries!(how_many: args[:pick].to_i)
+          end
+        end
+      end
+
+      task :all, [:pick] => :environment do |_, args|
+        default_pick = Gitlab.dev_or_test_env? ? 1000 : 2
+        args.with_defaults(pick: default_pick)
+
+        each_database(databases) do |database_name|
+          Rake::Task["gitlab:db:validate_async_constraints:#{database_name}"].invoke(args[:pick])
+        end
+      end
+    end
+
     desc 'Check if there have been user additions to the database'
     task active: :environment do
       if ActiveRecord::Base.connection.migration_context.needs_migration?
@@ -433,13 +450,15 @@ namespace :gitlab do
 
       desc 'Generate database docs yaml'
       task generate: :environment do
+        next if Gitlab.jh?
+
         FileUtils.mkdir_p(DB_DOCS_PATH)
         FileUtils.mkdir_p(EE_DICTIONARY_PATH) if Gitlab.ee?
 
         Rails.application.eager_load!
 
         version = Gem::Version.new(File.read('VERSION'))
-        milestone = version.release.segments[0..1].join('.')
+        milestone = version.release.segments.first(2).join('.')
 
         classes = {}
 
@@ -459,6 +478,7 @@ namespace :gitlab do
             .reject(&:abstract_class)
             .reject { |c| c.name =~ /^(?:EE::)?Gitlab::(?:BackgroundMigration|DatabaseImporters)::/ }
             .reject { |c| c.name =~ /^HABTM_/ }
+            .reject { |c| c < Gitlab::Database::Migration[1.0]::MigrationRecord }
             .each { |c| classes[c.table_name] << c.name if classes.has_key?(c.table_name) }
 
           sources.each do |source_name|
@@ -488,7 +508,7 @@ namespace :gitlab do
               end
 
               if existing_metadata['classes'] && existing_metadata['classes'].sort != table_metadata['classes'].sort
-                existing_metadata['classes'] = table_metadata['classes']
+                existing_metadata['classes'] = (existing_metadata['classes'] + table_metadata['classes']).uniq.sort
                 outdated = true
               end
 

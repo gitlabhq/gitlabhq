@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Releases::DestroyService do
+RSpec.describe Releases::DestroyService, feature_category: :release_orchestration do
   let(:project) { create(:project, :repository) }
   let(:mainatiner) { create(:user) }
   let(:repoter) { create(:user) }

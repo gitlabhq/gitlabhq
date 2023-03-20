@@ -2,6 +2,7 @@
 
 module MergeRequestsHelper
   include Gitlab::Utils::StrongMemoize
+  include CompareHelper
 
   def create_mr_button_from_event?(event)
     create_mr_button?(from: event.branch_name, source_project: event.project)
@@ -185,6 +186,7 @@ module MergeRequestsHelper
       endpoint_metadata: @endpoint_metadata_url,
       endpoint_batch: diffs_batch_project_json_merge_request_path(project, merge_request, 'json', params),
       endpoint_coverage: @coverage_path,
+      endpoint_diff_for_path: diff_for_path_namespace_project_merge_request_path(format: 'json', id: merge_request.iid, namespace_id: project.namespace.path, project_id: project.path),
       help_page_path: help_page_path('user/project/merge_requests/reviews/suggestions.md'),
       current_user_data: @current_user_data,
       update_current_user_path: @update_current_user_path,
@@ -198,7 +200,8 @@ module MergeRequestsHelper
       default_suggestion_commit_message: default_suggestion_commit_message,
       source_project_default_url: @merge_request.source_project && default_url_to_repo(@merge_request.source_project),
       source_project_full_path: @merge_request.source_project&.full_path,
-      is_forked: @project.forked?.to_s
+      is_forked: @project.forked?.to_s,
+      saved_replies_new_path: profile_saved_replies_path
     }
   end
 

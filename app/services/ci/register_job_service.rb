@@ -244,7 +244,6 @@ module Ci
     def assign_runner!(build, params)
       build.runner_id = runner.id
       build.runner_session_attributes = params[:session] if params[:session].present?
-      build.ensure_metadata.runner_machine = runner_machine if runner_machine
 
       failure_reason, _ = pre_assign_runner_checks.find { |_, check| check.call(build, params) }
 
@@ -256,6 +255,7 @@ module Ci
         @metrics.increment_queue_operation(:runner_pre_assign_checks_success)
 
         build.run!
+        build.runner_machine = runner_machine if runner_machine
       end
 
       !failure_reason

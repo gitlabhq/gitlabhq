@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'OpenID Connect requests', feature_category: :authentication_and_authorization do
+RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
   let(:user) do
     create(
       :user,

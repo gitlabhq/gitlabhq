@@ -6,7 +6,7 @@ describe('App component', () => {
   let wrapper;
 
   const createComponent = (propsData = {}) => {
-    wrapper = shallowMount(App, { propsData });
+    wrapper = shallowMount(App, { propsData: { groupsUrl: '/dashboard/groups', ...propsData } });
   };
 
   const findNewNamespacePage = () => wrapper.findComponent(NewNamespacePage);
@@ -16,24 +16,31 @@ describe('App component', () => {
       .props('panels')
       .find((panel) => panel.name === 'create-group-pane');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('creates correct component for group creation', () => {
     createComponent();
 
-    expect(findNewNamespacePage().props('initialBreadcrumb')).toBe('New group');
+    expect(findNewNamespacePage().props('initialBreadcrumbs')).toEqual([
+      { href: '/dashboard/groups', text: 'Groups' },
+      { href: '#', text: 'New group' },
+    ]);
     expect(findCreateGroupPanel().title).toBe('Create group');
   });
 
   it('creates correct component for subgroup creation', () => {
-    const props = { parentGroupName: 'parent', importExistingGroupPath: '/path' };
+    const detailProps = {
+      parentGroupName: 'parent',
+      importExistingGroupPath: '/path',
+    };
+
+    const props = { ...detailProps, parentGroupUrl: '/parent' };
 
     createComponent(props);
 
-    expect(findNewNamespacePage().props('initialBreadcrumb')).toBe('parent');
+    expect(findNewNamespacePage().props('initialBreadcrumbs')).toEqual([
+      { href: '/parent', text: 'parent' },
+      { href: '#', text: 'New subgroup' },
+    ]);
     expect(findCreateGroupPanel().title).toBe('Create subgroup');
-    expect(findCreateGroupPanel().detailProps).toEqual(props);
+    expect(findCreateGroupPanel().detailProps).toEqual(detailProps);
   });
 });

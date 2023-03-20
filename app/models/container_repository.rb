@@ -69,7 +69,7 @@ class ContainerRepository < ApplicationRecord
   scope :with_migration_import_started_at_nil_or_before, ->(timestamp) { where("COALESCE(migration_import_started_at, '01-01-1970') < ?", timestamp) }
   scope :with_migration_pre_import_started_at_nil_or_before, ->(timestamp) { where("COALESCE(migration_pre_import_started_at, '01-01-1970') < ?", timestamp) }
   scope :with_migration_pre_import_done_at_nil_or_before, ->(timestamp) { where("COALESCE(migration_pre_import_done_at, '01-01-1970') < ?", timestamp) }
-  scope :with_stale_ongoing_cleanup, ->(threshold) { cleanup_ongoing.where('expiration_policy_started_at < ?', threshold) }
+  scope :with_stale_ongoing_cleanup, ->(threshold) { cleanup_ongoing.expiration_policy_started_at_nil_or_before(threshold) }
   scope :with_stale_delete_at, ->(threshold) { where('delete_started_at < ?', threshold) }
   scope :import_in_process, -> { where(migration_state: %w[pre_importing pre_import_done importing]) }
 
@@ -395,7 +395,7 @@ class ContainerRepository < ApplicationRecord
   end
 
   def migrated?
-    (self.created_at && MIGRATION_PHASE_1_ENDED_AT < self.created_at) || import_done?
+    Gitlab.com?
   end
 
   def last_import_step_done_at
@@ -509,7 +509,11 @@ class ContainerRepository < ApplicationRecord
   end
 
   def start_expiration_policy!
-    update!(expiration_policy_started_at: Time.zone.now, last_cleanup_deleted_tags_count: nil)
+    update!(
+      expiration_policy_started_at: Time.zone.now,
+      last_cleanup_deleted_tags_count: nil,
+      expiration_policy_cleanup_status: :cleanup_ongoing
+    )
   end
 
   def size

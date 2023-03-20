@@ -10,10 +10,6 @@ describe('GlCountdown', () => {
     jest.spyOn(Date, 'now').mockImplementation(() => new Date(now).getTime());
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when there is time remaining', () => {
     beforeEach(async () => {
       wrapper = mount(GlCountdown, {

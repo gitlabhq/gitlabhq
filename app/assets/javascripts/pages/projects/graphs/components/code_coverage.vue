@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlButton, GlListbox, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlButton, GlCollapsibleListbox, GlSprintf } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
 import { get } from 'lodash';
 import { formatDate } from '~/lib/utils/datetime_utility';
@@ -12,7 +12,7 @@ export default {
     GlAlert,
     GlAreaChart,
     GlButton,
-    GlListbox,
+    GlCollapsibleListbox,
     GlSprintf,
   },
   props: {
@@ -98,7 +98,7 @@ export default {
     mappedCoverages() {
       return this.dailyCoverageData?.map((item, index) => ({
         // A numerical index makes an item into a group header, so
-        // convert these to strings to get non-header GlListbox items
+        // convert these to strings to get non-header GlCollapsibleListbox items
         value: index.toString(),
         text: item.group_name,
       }));
@@ -182,7 +182,7 @@ export default {
           {{ __('It seems that there is currently no available data for code coverage') }}
         </span>
       </gl-alert>
-      <gl-listbox
+      <gl-collapsible-listbox
         v-if="canShowData"
         :items="mappedCoverages"
         :selected="selectedCoverageIndex.toString()"

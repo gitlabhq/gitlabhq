@@ -18,10 +18,6 @@ describe('IntegrationSectionTrigger', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findAllTriggerFields = () => wrapper.findAllComponents(TriggerField);
 
   describe('template', () => {

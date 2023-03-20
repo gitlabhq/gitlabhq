@@ -43,13 +43,46 @@ RSpec.describe 'list of badges', feature_category: :continuous_integration do
 
   it 'user changes current ref of build status badge', :js do
     page.within('.pipeline-status') do
-      first('.js-project-refs-dropdown').click
+      find('.ref-selector').click
+      wait_for_requests
 
-      page.within '.project-refs-form' do
-        click_link 'improve/awesome'
+      page.within('.ref-selector') do
+        fill_in 'Search by Git revision', with: 'improve/awesome'
+        wait_for_requests
+        find('li', text: 'improve/awesome', match: :prefer_exact).click
       end
 
       expect(page).to have_content 'badges/improve/awesome/pipeline.svg'
+    end
+  end
+
+  it 'user changes current ref of coverage status badge', :js do
+    page.within('.coverage-report') do
+      find('.ref-selector').click
+      wait_for_requests
+
+      page.within('.ref-selector') do
+        fill_in 'Search by Git revision', with: 'improve/awesome'
+        wait_for_requests
+        find('li', text: 'improve/awesome', match: :prefer_exact).click
+      end
+
+      expect(page).to have_content 'badges/improve/awesome/coverage.svg'
+    end
+  end
+
+  it 'user changes current ref of latest release status badge', :js do
+    page.within('.Latest-Release') do
+      find('.ref-selector').click
+      wait_for_requests
+
+      page.within('.ref-selector') do
+        fill_in 'Search by Git revision', with: 'improve/awesome'
+        wait_for_requests
+        find('li', text: 'improve/awesome', match: :prefer_exact).click
+      end
+
+      expect(page).to have_content '-/badges/release.svg'
     end
   end
 end

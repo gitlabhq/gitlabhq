@@ -17,23 +17,26 @@ Changes:
  .
    * Initial release
 Checksums-Sha1:
- 375ba20ea1789e1e90d469c3454ce49a431d0442 671 sample_1.2.3~alpha2.dsc
- c5cfc111ea924842a89a06d5673f07dfd07de8ca 864 sample_1.2.3~alpha2.tar.xz
+ 443c98a4cf4acd21e2259ae8f2d60fc9932de353 724 sample_1.2.3~alpha2.dsc
+ 4a9cb2a7c77a68dc0fe54ba8ecef133a7c949e9d 964 sample_1.2.3~alpha2.tar.xz
  5248b95600e85bfe7f63c0dfce330a75f5777366 1124 libsample0_1.2.3~alpha2_amd64.deb
+ 9c5af97cf8dfbe8126c807f540c88757f382b307 1068 sample-ddeb_1.2.3~alpha2_amd64.ddeb
  fcd5220b1501ec150ccf37f06e4da919a8612be4 1164 sample-dev_1.2.3~binary_amd64.deb
  e42e8f2fe04ed1bb73b44a187674480d0e49dcba 736 sample-udeb_1.2.3~alpha2_amd64.udeb
- 661f7507efa6fdd3763c95581d0baadb978b7ef5 5507 sample_1.2.3~alpha2_amd64.buildinfo
+ bcc4ca85f17a31066b726cd4e04485ab24a682c6 6032 sample_1.2.3~alpha2_amd64.buildinfo
 Checksums-Sha256:
- 81fc156ba937cdb6215362cc4bf6b8dc47be9b4253ba0f1a4ab10c7ea0c4c4e5 671 sample_1.2.3~alpha2.dsc
- 40e4682bb24a73251ccd7c7798c0094a649091e5625d6a14bcec9b4e7174f3da 864 sample_1.2.3~alpha2.tar.xz
+ f91070524a59bbb3a1f05a78409e92cb9ee86470b34018bc0b93bd5b2dd3868c 724 sample_1.2.3~alpha2.dsc
+ c9d05185ca158bb804977fa9d7b922e8a0f644a2da41f99d2787dd61b1e2e2c5 964 sample_1.2.3~alpha2.tar.xz
  1c383a525bfcba619c7305ccd106d61db501a6bbaf0003bf8d0c429fbdb7fcc1 1124 libsample0_1.2.3~alpha2_amd64.deb
+ a6bcc8a4b010f99ce0ea566ac69088e1910e754593c77f2b4942e3473e784e4d 1068 sample-ddeb_1.2.3~alpha2_amd64.ddeb
  b8aa8b73a14bc1e0012d4c5309770f5160a8ea7f9dfe6f45222ea6b8a3c35325 1164 sample-dev_1.2.3~binary_amd64.deb
  2b0c152b3ab4cc07663350424de972c2b7621d69fe6df2e0b94308a191e4632f 736 sample-udeb_1.2.3~alpha2_amd64.udeb
- d0c169e9caa5b303a914b27b5adf69768fe6687d4925905b7d0cd9c0f9d4e56c 5507 sample_1.2.3~alpha2_amd64.buildinfo
+ 5a3dac17c4ff0d49fa5f47baa973902b59ad2ee05147062b8ed8f19d196731d1 6032 sample_1.2.3~alpha2_amd64.buildinfo
 Files:
- ceccb6bb3e45ce6550b24234d4023e0f 671 libs optional sample_1.2.3~alpha2.dsc
- d5ca476e4229d135a88f9c729c7606c9 864 libs optional sample_1.2.3~alpha2.tar.xz
+ 629921cfc477bfa84adfd2ccaba89783 724 libs optional sample_1.2.3~alpha2.dsc
+ adc69e57cda38d9bb7c8d59cacfb6869 964 libs optional sample_1.2.3~alpha2.tar.xz
  fb0842b21adc44207996296fe14439dd 1124 libs optional libsample0_1.2.3~alpha2_amd64.deb
+ 90d1107471eed48c73ad78b19ac83639 1068 libs optional sample-ddeb_1.2.3~alpha2_amd64.ddeb
  5fafc04dcae1525e1367b15413e5a5c7 1164 libdevel optional sample-dev_1.2.3~binary_amd64.deb
  72b1dd7d98229e2fb0355feda1d3a165 736 libs optional sample-udeb_1.2.3~alpha2_amd64.udeb
- 12a5ac4f16ad75f8741327ac23b4c0d7 5507 libs optional sample_1.2.3~alpha2_amd64.buildinfo
+ cc07ff4d741aec132816f9bd67c6875d 6032 libs optional sample_1.2.3~alpha2_amd64.buildinfo

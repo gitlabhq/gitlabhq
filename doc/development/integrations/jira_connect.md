@@ -4,7 +4,7 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Set up a development environment
+# Set up a Jira development environment
 
 The following are required to install and test the app:
 
@@ -101,23 +101,23 @@ The following steps describe setting up an environment to test the GitLab OAuth 
 
 1. Start a Gitpod session and open the rails console.
 
-    ```shell
-    bundle exec rails console
-    ```
+   ```shell
+   bundle exec rails console
+   ```
 
 1. Enable the feature flag.
 
-    ```shell
-    Feature.enable(:jira_connect_oauth)
-    ```
+   ```shell
+   Feature.enable(:jira_connect_oauth)
+   ```
 
 1. On your GitLab instance, go to **Admin > Applications**.
 1. Create a new application with the following settings:
-    - Name: `Jira Connect`
-    - Redirect URI: `YOUR_GITPOD_INSTANCE/-/jira_connect/oauth_callbacks`
-    - Scopes: `api`
-    - Trusted: **No**
-    - Confidential: **No**
+   - Name: `Jira Connect`
+   - Redirect URI: `YOUR_GITPOD_INSTANCE/-/jira_connect/oauth_callbacks`
+   - Scopes: `api`
+   - Trusted: **No**
+   - Confidential: **No**
 1. Copy the Application ID.
 1. Go to **Admin > Settings > General**.
 1. Scroll down and expand the GitLab for Jira App section.

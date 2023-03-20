@@ -36,9 +36,6 @@ class SessionsController < Devise::SessionsController
   before_action :save_failed_login, if: :action_new_and_failed_login?
   before_action :load_recaptcha
   before_action :set_invite_params, only: [:new]
-  before_action do
-    push_frontend_feature_flag(:webauthn)
-  end
 
   after_action :log_failed_login, if: :action_new_and_failed_login?
   after_action :verify_known_sign_in, only: [:create]
@@ -56,7 +53,7 @@ class SessionsController < Devise::SessionsController
   # token mismatch.
   protect_from_forgery with: :exception, prepend: true, except: :destroy
 
-  feature_category :authentication_and_authorization
+  feature_category :system_access
   urgency :low
 
   CAPTCHA_HEADER = 'X-GitLab-Show-Login-Captcha'
@@ -72,8 +69,7 @@ class SessionsController < Devise::SessionsController
     super do |resource|
       # User has successfully signed in, so clear any unused reset token
       if resource.reset_password_token.present?
-        resource.update(reset_password_token: nil,
-                        reset_password_sent_at: nil)
+        resource.update(reset_password_token: nil, reset_password_sent_at: nil)
       end
 
       if resource.deactivated?
@@ -311,10 +307,8 @@ class SessionsController < Devise::SessionsController
   def authentication_method
     if user_params[:otp_attempt]
       AuthenticationEvent::TWO_FACTOR
-    elsif user_params[:device_response] && Feature.enabled?(:webauthn)
+    elsif user_params[:device_response]
       AuthenticationEvent::TWO_FACTOR_WEBAUTHN
-    elsif user_params[:device_response] && !Feature.enabled?(:webauthn)
-      AuthenticationEvent::TWO_FACTOR_U2F
     else
       AuthenticationEvent::STANDARD
     end

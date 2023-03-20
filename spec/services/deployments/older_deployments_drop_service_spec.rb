@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Deployments::OlderDeploymentsDropService do
+RSpec.describe Deployments::OlderDeploymentsDropService, feature_category: :continuous_delivery do
   let(:environment) { create(:environment) }
   let(:deployment) { create(:deployment, environment: environment) }
   let(:service) { described_class.new(deployment) }

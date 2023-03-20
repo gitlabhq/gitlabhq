@@ -24,10 +24,6 @@ const createComponent = ({ provide = {} } = {}) => {
   });
 };
 
-afterEach(() => {
-  wrapper.destroy();
-});
-
 const findNewSubgroupLink = () =>
   wrapper.findByRole('link', {
     name: new RegExp(SubgroupsAndProjectsEmptyState.i18n.withLinks.subgroup.title),

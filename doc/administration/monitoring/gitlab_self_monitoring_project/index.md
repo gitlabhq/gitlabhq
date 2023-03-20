@@ -4,7 +4,7 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Self-monitoring project (DEPRECATED) **(FREE SELF)**
+# Self-monitoring project (deprecated) **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32351) in GitLab 12.7 [with a flag](../../feature_flags.md) named `self_monitoring_project`. Disabled by default.
 > - Generally available in GitLab 12.8. [Feature flag `self_monitoring_project`](https://gitlab.com/gitlab-org/gitlab/-/issues/198511) removed.

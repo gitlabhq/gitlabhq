@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::BlockService do
+RSpec.describe Users::BlockService, feature_category: :user_management do
   let_it_be(:current_user) { create(:admin) }
 
   subject(:service) { described_class.new(current_user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TestHooks::SystemService do
+RSpec.describe TestHooks::SystemService, feature_category: :code_testing do
   include AfterNextHelpers
 
   describe '#execute' do

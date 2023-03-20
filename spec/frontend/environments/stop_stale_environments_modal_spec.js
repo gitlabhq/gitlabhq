@@ -18,7 +18,6 @@ describe('~/environments/components/stop_stale_environments_modal.vue', () => {
   let wrapper;
   let mock;
   let before;
-  let originalGon;
 
   const createWrapper = (opts = {}) =>
     shallowMount(StopStaleEnvironmentsModal, {
@@ -28,8 +27,7 @@ describe('~/environments/components/stop_stale_environments_modal.vue', () => {
     });
 
   beforeEach(() => {
-    originalGon = window.gon;
-    window.gon = { api_version: 'v4' };
+    window.gon.api_version = 'v4';
 
     mock = new MockAdapter(axios);
     jest.spyOn(axios, 'post');
@@ -39,9 +37,7 @@ describe('~/environments/components/stop_stale_environments_modal.vue', () => {
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
     jest.resetAllMocks();
-    window.gon = originalGon;
   });
 
   it('sets the correct min and max dates', async () => {

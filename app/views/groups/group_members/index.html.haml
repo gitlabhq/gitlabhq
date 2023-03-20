@@ -1,6 +1,9 @@
 - add_page_specific_style 'page_bundles/members'
 - page_title _('Group members')
 
+= content_for :page_level_alert do
+  = render_if_exists 'shared/unlimited_members_during_trial_alert', group: @group.root_ancestor
+
 .row.gl-mt-3
   .col-lg-12
     .gl-display-flex.gl-flex-wrap
@@ -16,7 +19,6 @@
             trigger_source: 'group-members-page',
             display_text: _('Invite members') } }
         = render 'groups/invite_groups_modal', group: @group, reload_page_on_submit: true
-        = render 'groups/invite_members_modal', group: @group, reload_page_on_submit: true
 
     = render_if_exists 'groups/group_members/ldap_sync'
 

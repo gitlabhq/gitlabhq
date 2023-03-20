@@ -17,17 +17,7 @@ RSpec.describe IssueEntity do
     context 'when issue is of type task' do
       let(:resource) { create(:issue, :task, project: project) }
 
-      context 'when use_iid_in_work_items_path feature flag is disabled' do
-        before do
-          stub_feature_flags(use_iid_in_work_items_path: false)
-        end
-
-        # This was already a path and not a url when the work items change was introduced
-        it 'has a work item path' do
-          expect(subject[:web_url]).to eq(project_work_items_path(project, resource.id))
-        end
-      end
-
+      # This was already a path and not a url when the work items change was introduced
       it 'has a work item path with iid' do
         expect(subject[:web_url]).to eq(project_work_items_path(project, resource.iid, iid_path: true))
       end

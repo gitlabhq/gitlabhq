@@ -33,6 +33,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 
   before_action only: [:show, :diffs] do
+    push_frontend_feature_flag(:content_editor_on_issues, project)
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
     push_frontend_feature_flag(:issue_assignees_widget, @project)
     push_frontend_feature_flag(:refactor_security_extension, @project)
@@ -40,10 +41,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:moved_mr_sidebar, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
     push_frontend_feature_flag(:realtime_mr_status_change, project)
-  end
-
-  before_action do
-    push_frontend_feature_flag(:permit_all_shared_groups_for_approval, @project)
+    push_frontend_feature_flag(:saved_replies, current_user)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :discussions]
@@ -383,10 +381,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
             @merge_request.merge_request_reviewers.map(&:cache_key)
           ]
 
-          render_cached(@merge_request,
-                        with: serializer,
-                        cache_context: ->(_) { [Digest::SHA256.hexdigest(cache_context.to_s)] },
-                        serializer: params[:serializer])
+          render_cached(
+            @merge_request,
+            with: serializer,
+            cache_context: ->(_) { [Digest::SHA256.hexdigest(cache_context.to_s)] },
+            serializer: params[:serializer]
+          )
         else
           render json: serializer.represent(@merge_request, serializer: params[:serializer])
         end
@@ -485,8 +485,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         AutoMergeService.new(project, current_user, merge_params).update(merge_request)
       else
         AutoMergeService.new(project, current_user, merge_params)
-          .execute(merge_request,
-                   params[:auto_merge_strategy] || AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
+          .execute(merge_request, params[:auto_merge_strategy] || AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
       end
     else
       @merge_request.merge_async(current_user.id, merge_params)

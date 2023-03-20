@@ -345,7 +345,7 @@ Keep in mind that:
 - When you add `:hover` styles, in most cases you should add `:focus` styles too so that the styling is applied for both mouse **and** keyboard users.
 - If you remove an interactive element's `outline`, make sure you maintain visual focus state in another way such as with `box-shadow`.
 
-See the [Pajamas Keyboard-only page](https://design.gitlab.com/accessibility-audits/keyboard-only/) for more detail.
+See the [Pajamas Keyboard-only page](https://design.gitlab.com/accessibility/keyboard-only) for more detail.
 
 ## `tabindex`
 
@@ -515,6 +515,55 @@ General examples of these are dialogs (modals) and tabs.
 GitLab-specific examples are assignee and label dropdowns.
 Building such widgets require ARIA to make them understandable to screen readers.
 Proper research and testing should be done to ensure compliance with [WCAG](https://www.w3.org/WAI/standards-guidelines/wcag/).
+
+## Automated accessibility testing with axe
+
+You can use [axe-core](https://github.com/dequelabs/axe-core) [gems](https://github.com/dequelabs/axe-core-gems)
+to run automated accessibility tests in feature tests.
+
+Axe provides the custom matcher `be_axe_clean`, which can be used like the following:
+
+```ruby
+# spec/features/settings_spec.rb
+it 'passes axe automated accessibility testing', :js do
+  visit_settings_page
+
+  wait_for_requests # ensures page is fully loaded
+
+  expect(page).to be_axe_clean
+end
+```
+
+If needed, you can scope testing to a specific area of the page by using `within`.
+
+Axe also provides specific [clauses](https://github.com/dequelabs/axe-core-gems/blob/develop/packages/axe-core-rspec/README.md#clauses),
+for example:
+
+```ruby
+expect(page).to be_axe_clean.within '[data-testid="element"]'
+
+# run only WCAG 2.0 Level AA rules
+expect(page).to be_axe_clean.according_to :wcag2aa
+
+# specifies which rule to skip
+expect(page).to be_axe_clean.skipping :'link-in-text-block'
+
+# clauses can be chained
+expect(page).to be_axe_clean.within('[data-testid="element"]')
+                            .according_to(:wcag2aa)
+```
+
+Axe does not test hidden regions, such as inactive menus or modal windows. To test
+hidden regions for accessibility, write tests that activate or render the regions visible
+and run the matcher again.
+
+### Known accessibility violations
+
+This section documents violations where a recommendation differs with the [design system](https://design.gitlab.com/):
+
+- `link-in-text-block`: For now, use the `skipping` clause to skip `:'link-in-text-block'`
+  rule to fix the violation. After this is fixed as part of [issue 1444](https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/1444)
+  and underline is added to the `GlLink` component, this clause can be removed.
 
 ## Resources
 

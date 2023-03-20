@@ -32,7 +32,7 @@ describe('Issuable Time Tracker', () => {
   const mountComponent = ({ props = {}, issuableType = 'issue', loading = false } = {}) => {
     return mount(TimeTracker, {
       propsData: { ...defaultProps, ...props },
-      directives: { GlTooltip: createMockDirective() },
+      directives: { GlTooltip: createMockDirective('gl-tooltip') },
       stubs: {
         transition: stubTransition(),
       },
@@ -52,10 +52,6 @@ describe('Issuable Time Tracker', () => {
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('Initialization', () => {
     beforeEach(() => {

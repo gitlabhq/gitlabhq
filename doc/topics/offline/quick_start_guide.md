@@ -214,3 +214,89 @@ and Praefect servers so they can use an accessible NTP server.
 On offline instances, the [GitLab Geo check Rake task](../../administration/geo/replication/troubleshooting.md#can-geo-detect-the-current-site-correctly)
 always fails because it uses `pool.ntp.org`. This error can be ignored but you can
 [read more about how to work around it](../../administration/geo/replication/troubleshooting.md#message-machine-clock-is-synchronized--exception).
+
+## Enabling the package metadata database
+
+Enabling the package metadata database is required to enable [license scanning of CycloneDX files](../../user/compliance/license_scanning_of_cyclonedx_files).
+This process will require usage of the GitLab License Database, which is licensed under the [EE License](https://storage.googleapis.com/prod-export-license-bucket-1a6c642fc4de57d4/v1/LICENSE).
+Please note the following in relation to use of the License Database:
+
+- We may change or discontinue all or any part of the License Database, at any time and without notice, at our sole discretion.
+- The License Database may contain links to third-party websites or resources. We provide these links only as a convenience and are not responsible for any third-party data, content, products, or services from those websites or resources or links displayed on such websites.
+- The License Database is based in part on information made available by third parties, and GitLab is not responsible for the accuracy or completeness of content made available.
+
+### Using the gsutil tool to download the package metadata exports
+
+1. Install the [`gsutil`](https://cloud.google.com/storage/docs/gsutil_install) tool.
+1. Find the root of the GitLab Rails directory.
+
+   ```shell
+   export GITLAB_RAILS_ROOT_DIR="$(gitlab-rails runner 'puts Rails.root.to_s')"
+   echo $GITLAB_RAILS_ROOT_DIR
+   ```
+
+1. Download the package metadata exports.
+
+   ```shell
+   # To download the package metadata exports, an outbound connection to Google Cloud Storage bucket must be allowed.
+   mkdir $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata_db/
+   gsutil -m rsync -r -d gs://prod-export-license-bucket-1a6c642fc4de57d4 $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata_db/
+
+   # Alternatively, if the GitLab instance is not allowed to connect to the Google Cloud Storage bucket, the package metadata
+   # exports can be downloaded using a machine with the allowed access, and then copied to the root of the GitLab Rails directory.
+   rsync rsync://example_username@gitlab.example.com/package_metadata_db $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata_db/
+   ```
+
+### Using the Google Cloud Storage REST API to download the package metadata exports
+
+The package metadata exports can also be downloaded using the Google Cloud Storage API. The contents are available at [https://storage.googleapis.com/storage/v1/b/prod-export-license-bucket-1a6c642fc4de57d4/o](https://storage.googleapis.com/storage/v1/b/prod-export-license-bucket-1a6c642fc4de57d4/o). The following is an example of how this can be downloaded using [cURL](https://curl.se/) and [jq](https://stedolan.github.io/jq/).
+
+```shell
+#!/bin/bash
+
+set -euo pipefail
+
+GITLAB_RAILS_ROOT_DIR="$(gitlab-rails runner 'puts Rails.root.to_s')"
+PKG_METADATA_DIR="$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata_db"
+PKG_METADATA_MANIFEST_OUTPUT_FILE="/tmp/license_db_export_manifest.json"
+PKG_METADATA_DOWNLOADS_OUTPUT_FILE="/tmp/license_db_object_links.tsv"
+
+# Download the contents of the bucket
+curl --silent --show-error --request GET "https://storage.googleapis.com/storage/v1/b/prod-export-license-bucket-1a6c642fc4de57d4/o" > "$PKG_METADATA_MANIFEST_OUTPUT_FILE"
+
+# Parse the links and names for the bucket objects and output them into a tsv file
+jq -r '.items[] | [.name, .mediaLink] | @tsv' "$PKG_METADATA_MANIFEST_OUTPUT_FILE" > "$PKG_METADATA_DOWNLOADS_OUTPUT_FILE"
+
+echo -e "Saving package metadata exports to $PKG_METADATA_DIR\n"
+
+# Track how many objects will be downloaded
+INDEX=1
+TOTAL_OBJECT_COUNT="$(wc -l $PKG_METADATA_DOWNLOADS_OUTPUT_FILE | awk '{print $1}')"
+
+# Download the objects
+while IFS= read -r line; do
+   FILE="$(echo -n $line | awk '{print $1}')"
+   URL="$(echo -n $line | awk '{print $2}')"
+   OUTPUT_DIR="$(dirname $PKG_METADATA_DIR/$FILE)"
+   OUTPUT_PATH="$PKG_METADATA_DIR/$FILE"
+
+   echo "Downloading $FILE"
+
+   curl --progress-bar --create-dirs --output "$OUTPUT_PATH" --request "GET" "$URL"
+
+   echo -e "$INDEX of $TOTAL_OBJECT_COUNT objects downloaded\n"
+
+   let INDEX=(INDEX+1)
+done < "$PKG_METADATA_DOWNLOADS_OUTPUT_FILE"
+
+echo "All objects saved to $PKG_METADATA_DIR"
+```
+
+### Automatic synchronization
+
+Your GitLab instance is synchronized [every hour](https://gitlab.com/gitlab-org/gitlab/-/blob/d4331343d26d6e2a81fadd8f7ecd72f7cb74d04d/config/initializers/1_settings.rb#L831-832) with the contents of the `package_metadata_db` directory.
+To automatically update your local copy with the upstream changes, a cron job can be added to periodically download new exports. For example, the following crontabs can be added to setup a cron job that runs every 30 minutes.
+
+```plaintext
+*/30 * * * * gsutil -m rsync -r -d gs://prod-export-license-bucket-1a6c642fc4de57d4 $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata_db/
+```

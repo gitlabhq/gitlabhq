@@ -29,10 +29,6 @@ describe('Form component', () => {
     wrapper = mountFn(SettingsForm, { propsData });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Enable inactive project deletion', () => {
     it('has the checkbox', () => {
       createComponent();

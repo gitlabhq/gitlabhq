@@ -14,6 +14,7 @@ RSpec.describe GitlabSchema.types['Achievement'], feature_category: :user_profil
       description
       created_at
       updated_at
+      user_achievements
     ]
   end
 

@@ -73,6 +73,18 @@ module Gitlab
               validate_hash!
             end
 
+            # This method is overridden to load context into the memoized result
+            # or to lazily load context via BatchLoader
+            def preload_context
+              # no-op
+            end
+
+            def preload_content
+              # calling the `content` method either loads content into the memoized result
+              # or lazily loads it via BatchLoader
+              content
+            end
+
             def validate_location!
               if invalid_location_type?
                 errors.push("Included file `#{masked_location}` needs to be a string")
@@ -93,20 +105,25 @@ module Gitlab
 
             protected
 
+            def content_result
+              strong_memoize(:content_hash) do
+                ::Gitlab::Ci::Config::Yaml
+                  .load_result!(content, project: context.project)
+              end
+            end
+
+            def content_hash
+              return unless content_result.valid?
+
+              content_result.content
+            end
+
             def expanded_content_hash
               return unless content_hash
 
               strong_memoize(:expanded_content_hash) do
                 expand_includes(content_hash)
               end
-            end
-
-            def content_hash
-              strong_memoize(:content_hash) do
-                ::Gitlab::Ci::Config::Yaml.load!(content)
-              end
-            rescue Gitlab::Config::Loader::FormatError
-              nil
             end
 
             def validate_hash!

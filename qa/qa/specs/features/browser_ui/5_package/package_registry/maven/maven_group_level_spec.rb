@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, :reliable, product_group: :package_registry do
+  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, :reliable, product_group: :package_registry, feature_flag: { name: 'maven_central_request_forwarding', scope: :global } do
     describe 'Maven group level endpoint' do
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
@@ -41,11 +41,7 @@ module QA
             'using a ci job token' => {
               authentication_token_type: :ci_job_token,
               maven_header_name: 'Job-Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347579',
-              quarantine: {
-                issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/373189',
-                type: :stale
-              }
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347579'
             }
           }
         end
@@ -57,6 +53,8 @@ module QA
               use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: package_project)
               use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: client_project)
             when :ci_job_token
+              package_project_inbound_job_token_disabled
+              client_project_inbound_job_token_disabled
               '${CI_JOB_TOKEN}'
             when :project_deploy_token
               use_ci_variable(name: 'GROUP_DEPLOY_TOKEN', value: group_deploy_token.token, project: package_project)
@@ -64,7 +62,7 @@ module QA
             end
           end
 
-          it 'pushes and pulls a maven package', testcase: params[:testcase], quarantine: params[:quarantine] do
+          it 'pushes and pulls a maven package', testcase: params[:testcase] do
             Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
               Resource::Repository::Commit.fabricate_via_api! do |commit|
                 gitlab_ci_yaml = ERB.new(read_fixture('package_managers/maven/group/producer', 'gitlab_ci.yaml.erb')).result(binding)
@@ -220,6 +218,99 @@ module QA
           Page::Project::Pipeline::Show.perform do |pipeline|
             pipeline.click_job('deploy')
           end
+        end
+      end
+    end
+
+    describe 'Maven request forwarding' do
+      include Runtime::Fixtures
+
+      let(:group_id) { 'com.gitlab.qa' }
+      let(:artifact_id) { "maven-#{SecureRandom.hex(8)}" }
+      let(:package_name) { "#{group_id}/#{artifact_id}".tr('.', '/') }
+      let(:package_version) { '1.3.7' }
+      let(:personal_access_token) { Runtime::Env.personal_access_token }
+      let(:group) { Resource::Group.fabricate_via_api! }
+
+      let(:imported_project) do
+        Resource::ProjectImportedFromURL.fabricate_via_browser_ui! do |project|
+          project.name = "maven_imported_project"
+          project.group = group
+          project.gitlab_repository_path = 'https://gitlab.com/gitlab-org/quality/imported-projects/maven.git'
+        end
+      end
+
+      let(:gitlab_address_with_port) do
+        uri = URI.parse(Runtime::Scenario.gitlab_address)
+        "#{uri.scheme}://#{uri.host}:#{uri.port}"
+      end
+
+      let(:package) do
+        Resource::Package.init do |package|
+          package.name = package_name
+          package.project = imported_project
+        end
+      end
+
+      let(:runner) do
+        Resource::ProjectRunner.fabricate! do |runner|
+          runner.name = "qa-runner-#{Time.now.to_i}"
+          runner.tags = ["runner-for-#{imported_project.group.name}"]
+          runner.executor = :docker
+          runner.token = imported_project.group.reload!.runners_token
+        end
+      end
+
+      before do
+        Runtime::Feature.enable(:maven_central_request_forwarding)
+        Flow::Login.sign_in_unless_signed_in
+
+        imported_project
+        runner
+      end
+
+      after do
+        Runtime::Feature.disable(:maven_central_request_forwarding)
+
+        runner.remove_via_api!
+        package.remove_via_api!
+        imported_project.remove_via_api!
+      end
+
+      it(
+        'uses GitLab as a mirror of the central proxy',
+        :skip_live_env,
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/375988',
+        quarantine: {
+          type: :investigating,
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/378221'
+        }
+      ) do
+        Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+          Resource::Repository::Commit.fabricate_via_api! do |commit|
+            settings_xml = ERB.new(read_fixture('package_managers/maven/group/consumer/request_forwarding', 'settings.xml.erb')).result(binding)
+            gitlab_ci_yaml = ERB.new(read_fixture('package_managers/maven/group/consumer/request_forwarding', 'gitlab_ci.yaml.erb')).result(binding)
+
+            commit.project = imported_project
+            commit.commit_message = 'Add files'
+            commit.add_files(
+              [
+                { file_path: '.gitlab-ci.yml', content: gitlab_ci_yaml },
+                { file_path: 'settings.xml', content: settings_xml }
+              ])
+          end
+        end
+
+        imported_project.visit!
+
+        Flow::Pipeline.visit_latest_pipeline
+
+        Page::Project::Pipeline::Show.perform do |pipeline|
+          pipeline.click_job('install')
+        end
+
+        Page::Project::Job::Show.perform do |job|
+          expect(job).to be_successful(timeout: 800)
         end
       end
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_composition do
   let(:entry) { described_class.new(config, name: :rspec) }
 
   it_behaves_like 'with inheritable CI config' do
@@ -727,27 +727,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_autho
                    root_variables_inheritance: true,
                    scheduling_type: :stage,
                    id_tokens: { TEST_ID_TOKEN: { aud: 'https://gitlab.com' } })
-        end
-
-        context 'when the FF ci_hooks_pre_get_sources_script is disabled' do
-          before do
-            stub_feature_flags(ci_hooks_pre_get_sources_script: false)
-          end
-
-          it 'returns correct value' do
-            expect(entry.value)
-              .to eq(name: :rspec,
-                     before_script: %w[ls pwd],
-                     script: %w[rspec],
-                     stage: 'test',
-                     ignore: false,
-                     after_script: %w[cleanup],
-                     only: { refs: %w[branches tags] },
-                     job_variables: {},
-                     root_variables_inheritance: true,
-                     scheduling_type: :stage,
-                     id_tokens: { TEST_ID_TOKEN: { aud: 'https://gitlab.com' } })
-          end
         end
       end
     end

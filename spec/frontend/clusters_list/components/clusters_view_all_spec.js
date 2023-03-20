@@ -60,10 +60,6 @@ describe('ClustersViewAllComponent', () => {
     createWrapper();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when agents and clusters are not loaded', () => {
     const initialState = {
       loadingClusters: true,

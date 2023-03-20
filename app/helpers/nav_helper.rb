@@ -9,10 +9,29 @@ module NavHelper
     header_links.include?(link)
   end
 
+  def page_has_sidebar?
+    defined?(@left_sidebar) && @left_sidebar
+  end
+
+  def page_has_collapsed_sidebar?
+    page_has_sidebar? && collapsed_sidebar?
+  end
+
+  def page_has_collapsed_super_sidebar?
+    page_has_sidebar? && collapsed_super_sidebar?
+  end
+
   def page_with_sidebar_class
     class_name = page_gutter_class
-    class_name << 'page-with-contextual-sidebar' if defined?(@left_sidebar) && @left_sidebar
-    class_name << 'page-with-icon-sidebar' if collapsed_sidebar? && @left_sidebar
+
+    if show_super_sidebar?
+      class_name << 'page-with-super-sidebar' if page_has_sidebar?
+      class_name << 'page-with-super-sidebar-collapsed' if page_has_collapsed_super_sidebar?
+    else
+      class_name << 'page-with-contextual-sidebar' if page_has_sidebar?
+      class_name << 'page-with-icon-sidebar' if page_has_collapsed_sidebar?
+    end
+
     class_name -= ['right-sidebar-expanded'] if defined?(@right_sidebar) && !@right_sidebar
 
     class_name
@@ -66,10 +85,20 @@ module NavHelper
   end
 
   def show_super_sidebar?
-    Feature.enabled?(:super_sidebar_nav, current_user) && current_user&.use_new_navigation
+    Feature.enabled?(:super_sidebar_nav, current_user) && current_user&.use_new_navigation && super_sidebar_supported?
   end
 
   private
+
+  # This is a temporary measure until we support all other existing sidebars:
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/391500
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/391501
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/391502
+  def super_sidebar_supported?
+    return true if @nav.nil?
+
+    %w(your_work explore project group profile user_profile).include?(@nav)
+  end
 
   def get_header_links
     links = if current_user

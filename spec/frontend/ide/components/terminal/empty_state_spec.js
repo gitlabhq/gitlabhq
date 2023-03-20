@@ -16,10 +16,6 @@ describe('IDE TerminalEmptyState', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('does not show illustration, if no path specified', () => {
     factory();
 

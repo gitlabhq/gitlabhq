@@ -507,6 +507,8 @@ If needed, you can scope interactions within a specific area of the page by usin
 As you will likely be scoping to an element such as a `div`, which typically does not have a label,
 you may use a `data-testid` selector in this case.
 
+You can use the `be_axe_clean` matcher to run [axe automated accessibility testing](../fe_guide/accessibility.md#automated-accessibility-testing-with-axe) in feature tests.
+
 ##### Externalized contents
 
 Test expectations against externalized contents should call the same

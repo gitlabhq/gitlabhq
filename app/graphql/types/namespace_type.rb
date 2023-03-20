@@ -68,7 +68,9 @@ module Types
           null: true,
           alpha: { milestone: '15.8' },
           description: "Achievements for the namespace. " \
-                       "Returns `null` if the `achievements` feature flag is disabled."
+                       "Returns `null` if the `achievements` feature flag is disabled.",
+          extras: [:lookahead],
+          resolver: ::Resolvers::Achievements::AchievementsResolver
 
     markdown_field :description_html, null: true
 
@@ -82,10 +84,6 @@ module Types
 
     def root_storage_statistics
       Gitlab::Graphql::Loaders::BatchRootStorageStatisticsLoader.new(object.id).find
-    end
-
-    def achievements
-      object.achievements if Feature.enabled?(:achievements, object)
     end
   end
 end

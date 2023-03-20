@@ -183,18 +183,6 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
       let_it_be(:task) { create(:issue, :task, project: project) }
 
       shared_examples 'redirects to show work item page' do
-        context 'when use_iid_in_work_items_path feature flag is disabled' do
-          before do
-            stub_feature_flags(use_iid_in_work_items_path: false)
-          end
-
-          it 'redirects to work item page' do
-            make_request
-
-            expect(response).to redirect_to(project_work_items_path(project, task.id, query))
-          end
-        end
-
         it 'redirects to work item page using iid' do
           make_request
 
@@ -585,15 +573,13 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
     end
 
     def reorder_issue(issue, move_after_id: nil, move_before_id: nil)
-      put :reorder,
-           params: {
-               namespace_id: project.namespace.to_param,
-               project_id: project,
-               id: issue.iid,
-               move_after_id: move_after_id,
-               move_before_id: move_before_id
-           },
-           format: :json
+      put :reorder, params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: issue.iid,
+        move_after_id: move_after_id,
+        move_before_id: move_before_id
+      }, format: :json
     end
   end
 
@@ -601,14 +587,12 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
     let(:issue_params) { { title: 'New title' } }
 
     subject do
-      put :update,
-        params: {
-          namespace_id: project.namespace,
-          project_id: project,
-          id: issue.to_param,
-          issue: issue_params
-        },
-        format: :json
+      put :update, params: {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: issue.to_param,
+        issue: issue_params
+      }, format: :json
     end
 
     before do
@@ -1927,12 +1911,11 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
       end
 
       it 'redirects from an old issue/designs correctly' do
-        get :designs,
-            params: {
-              namespace_id: project.namespace,
-              project_id: project,
-              id: issue
-            }
+        get :designs, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          id: issue
+        }
 
         expect(response).to redirect_to(designs_project_issue_path(new_project, issue))
         expect(response).to have_gitlab_http_status(:moved_permanently)

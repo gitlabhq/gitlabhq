@@ -34,10 +34,6 @@ describe('Design management pagination component', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('hides components when designs are empty', () => {
     expect(wrapper.element).toMatchSnapshot();
   });

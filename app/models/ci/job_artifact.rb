@@ -132,7 +132,7 @@ module Ci
     PLAN_LIMIT_PREFIX = 'ci_max_artifact_size_'
 
     belongs_to :project
-    belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
+    belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id, inverse_of: :job_artifacts
 
     mount_file_store_uploader JobArtifactUploader, skip_store_file: true
 
@@ -176,6 +176,8 @@ module Ci
     scope :erasable, -> do
       where(file_type: self.erasable_file_types)
     end
+
+    scope :non_trace, -> { where.not(file_type: [:trace]) }
 
     scope :downloadable, -> { where(file_type: DOWNLOADABLE_TYPES) }
     scope :unlocked, -> { joins(job: :pipeline).merge(::Ci::Pipeline.unlocked) }

@@ -1,25 +1,18 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness, feature_category: :pipeline_authoring do
+RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness, feature_category: :pipeline_composition do
   let(:project)     { create(:project, :repository) }
   let(:user)        { project.first_owner }
   let(:ref)         { 'refs/heads/master' }
   let(:source)      { :push }
-  let(:service)     { described_class.new(project, user, { ref: ref }) }
-  let(:response)    { execute_service }
+  let(:service)     { described_class.new(project, user, initialization_params) }
+  let(:response)    { service.execute(source) }
   let(:pipeline)    { response.payload }
   let(:build_names) { pipeline.builds.pluck(:name) }
 
-  def execute_service(before: '00000000', variables_attributes: nil)
-    params = { ref: ref, before: before, after: project.commit(ref).sha, variables_attributes: variables_attributes }
-
-    described_class
-      .new(project, user, params)
-      .execute(source) do |pipeline|
-      yield(pipeline) if block_given?
-    end
-  end
+  let(:base_initialization_params) { { ref: ref, before: '00000000', after: project.commit(ref).sha, variables_attributes: nil } }
+  let(:initialization_params)      { base_initialization_params }
 
   context 'job:rules' do
     let(:regular_job) { find_job('regular-job') }
@@ -516,10 +509,9 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
           )
         end
 
+        let(:initialization_params) { base_initialization_params.merge(before: nil) }
         let(:changed_file) { 'file2.txt' }
         let(:ref) { 'feature_2' }
-
-        let(:response) { execute_service(before: nil) }
 
         context 'for jobs rules' do
           let(:config) do
@@ -1230,9 +1222,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
     end
 
     context 'with pipeline variables' do
-      let(:pipeline) do
-        execute_service(variables_attributes: variables_attributes).payload
-      end
+      let(:initialization_params) { base_initialization_params.merge(variables_attributes: variables_attributes) }
 
       let(:config) do
         <<-EOY
@@ -1267,10 +1257,10 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
     end
 
     context 'with trigger variables' do
-      let(:pipeline) do
-        execute_service do |pipeline|
+      let(:response) do
+        service.execute(source) do |pipeline|
           pipeline.variables.build(variables)
-        end.payload
+        end
       end
 
       let(:config) do
@@ -1434,10 +1424,10 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         [{ key: 'SOME_VARIABLE', secret_value: 'SOME_VAL' }]
       end
 
-      let(:pipeline) do
-        execute_service do |pipeline|
+      let(:response) do
+        service.execute(source) do |pipeline|
           pipeline.variables.build(variables)
-        end.payload
+        end
       end
 
       let(:config) do

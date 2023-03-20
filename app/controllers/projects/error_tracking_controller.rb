@@ -74,8 +74,7 @@ class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseControlle
 
   def render_errors(result)
     unless result[:status] == :success
-      render json: { message: result[:message] },
-             status: result[:http_status] || :bad_request
+      render json: { message: result[:message] }, status: result[:http_status] || :bad_request
     end
   end
 

@@ -12,10 +12,6 @@ describe('content/components/wrappers/footnote_definition', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders footnote label as a readyonly element', () => {
     const label = 'footnote';
 

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'fileutils'
-
 module Tasks
   module Gitlab
     module Assets
@@ -78,6 +76,8 @@ namespace :gitlab do
 
     desc 'GitLab | Assets | Compile all frontend assets'
     task :compile do
+      require 'fileutils'
+
       require_dependency 'gitlab/task_helpers'
 
       puts "Assets SHA256 for `master`: #{Tasks::Gitlab::Assets.master_assets_sha256.inspect}"

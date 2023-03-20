@@ -41,6 +41,7 @@ eos
       line_code: '2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_14',
       line_code_path: 'files/ruby/popen.rb',
       del_line_code: '2f6fcd96b88b36ce98c38da085c795a27d92a3dd_13_13',
+      referenced_by: [],
       message: <<eos
 Change some files
 Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
@@ -56,6 +57,7 @@ eos
       author_full_name: "Sytse Sijbrandij",
       author_email: "sytse@gitlab.com",
       files_changed_count: 1,
+      referenced_by: [],
       message: <<eos
 Add directory structure for tree_helper spec
 
@@ -74,6 +76,7 @@ eos
       sha: "913c66a37b4a45b9769037c55c2d238bd0942d2e",
       author_full_name: "Dmitriy Zaporozhets",
       author_email: "dmitriy.zaporozhets@gmail.com",
+      referenced_by: [],
       message: <<eos
 Files, encoding and much more
 Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
@@ -89,6 +92,7 @@ eos
       author_email: "dmitriy.zaporozhets@gmail.com",
       old_blob_id: '33f3729a45c02fc67d00adb1b8bca394b0e761d9',
       new_blob_id: '2f63565e7aac07bcdadb654e253078b727143ec4',
+      referenced_by: [],
       message: <<eos
 Modified image
 Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>

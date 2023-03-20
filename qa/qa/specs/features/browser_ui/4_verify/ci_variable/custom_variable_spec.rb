@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner do
+  RSpec.describe 'Verify', :runner, product_group: :pipeline_security do
     describe 'Pipeline with customizable variable' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
       let(:pipeline_job_name) { 'customizable-variable' }
@@ -51,11 +51,6 @@ module QA
         project.visit!
         Page::Project::Menu.perform(&:click_ci_cd_pipelines)
         Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
-
-        # Sometimes the variables will not be prefilled because of reactive cache so we revisit the page again.
-        # TODO: Investigate alternatives to deal with cache implementation
-        # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/381233
-        page.refresh
       end
 
       after do

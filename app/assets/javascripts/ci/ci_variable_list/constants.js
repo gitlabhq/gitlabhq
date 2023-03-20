@@ -2,6 +2,11 @@ import { __, s__ } from '~/locale';
 
 export const ADD_CI_VARIABLE_MODAL_ID = 'add-ci-variable';
 
+export const SORT_DIRECTIONS = {
+  ASC: 'KEY_ASC',
+  DESC: 'KEY_DESC',
+};
+
 // This const will be deprecated once we remove VueX from the section
 export const displayText = {
   variableText: __('Variable'),

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Config::Loader::Yaml, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Config::Loader::Yaml, feature_category: :pipeline_composition do
   let(:loader) { described_class.new(yml) }
 
   let(:yml) do
@@ -180,6 +180,32 @@ RSpec.describe Gitlab::Config::Loader::Yaml, feature_category: :pipeline_authori
           }
         }
       )
+    end
+  end
+
+  describe '#blank?' do
+    context 'when the loaded YAML is empty' do
+      let(:yml) do
+        <<~YAML
+        # only comments here
+        YAML
+      end
+
+      it 'returns true' do
+        expect(loader).to be_blank
+      end
+    end
+
+    context 'when the loaded YAML has content' do
+      let(:yml) do
+        <<~YAML
+        test: value
+        YAML
+      end
+
+      it 'returns false' do
+        expect(loader).not_to be_blank
+      end
     end
   end
 end

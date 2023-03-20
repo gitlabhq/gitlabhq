@@ -5,7 +5,7 @@ module Gitlab
     LOGGERS = [Gitlab::AppTextLogger, Gitlab::AppJsonLogger].freeze
 
     def self.loggers
-      if Gitlab::Utils.to_boolean(ENV.fetch('UNSTRUCTURED_RAILS_LOG', 'true'))
+      if Gitlab::Utils.to_boolean(ENV.fetch('UNSTRUCTURED_RAILS_LOG', 'false'))
         LOGGERS
       else
         [Gitlab::AppJsonLogger]

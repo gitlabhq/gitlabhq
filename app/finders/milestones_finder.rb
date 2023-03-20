@@ -15,6 +15,7 @@
 class MilestonesFinder
   include FinderMethods
   include TimeFrameFilter
+  include UpdatedAtFilter
 
   attr_reader :params
 
@@ -30,9 +31,12 @@ class MilestonesFinder
     items = by_groups_and_projects(items)
     items = by_title(items)
     items = by_search_title(items)
+    items = by_search(items)
     items = by_state(items)
     items = by_timeframe(items)
     items = containing_date(items)
+    items = by_updated_at(items)
+    items = by_iids(items)
 
     order(items)
   end
@@ -67,6 +71,12 @@ class MilestonesFinder
     end
   end
 
+  def by_search(items)
+    return items if params[:search].blank?
+
+    items.search(params[:search])
+  end
+
   def by_state(items)
     Milestone.filter_by_state(items, params[:state])
   end
@@ -83,5 +93,11 @@ class MilestonesFinder
 
   def sort_by_expired_last?(sort_by)
     EXPIRED_LAST_SORTS.include?(sort_by)
+  end
+
+  def by_iids(items)
+    return items unless params[:iids].present? && !params[:include_parent_milestones]
+
+    items.by_iid(params[:iids])
   end
 end

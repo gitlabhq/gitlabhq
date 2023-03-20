@@ -4,12 +4,17 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project import/export API **(FREE)**
+# Project import and export API **(FREE)**
 
-See also:
+Use the project import and export API to import and export projects using file transfers.
 
-- [Project import/export documentation](../user/project/settings/import_export.md).
-- [Project import/export administration Rake tasks](../administration/raketasks/project_import_export.md). **(FREE SELF)**
+For more information, see:
+
+- [Migrating projects using file exports](../user/project/settings/import_export.md)
+- [Project import and export Rake tasks](../administration/raketasks/project_import_export.md)
+
+Before using the project import and export API, you might want to use the
+[group import and export API](group_import_export.md).
 
 ## Schedule an export
 
@@ -135,6 +140,7 @@ POST /projects/import
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
+<!-- markdownlint-disable-next-line gitlab.SentenceSpacing -->
 | `namespace` | integer/string | no | The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/>Requires at least the Maintainer role on the destination group to import to. Using the Developer role for this purpose was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0. |
 | `name` | string | no | The name of the project to be imported. Defaults to the path of the project if not provided |
 | `file` | string | yes | The file to be uploaded |

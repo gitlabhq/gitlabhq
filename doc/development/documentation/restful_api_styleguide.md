@@ -132,7 +132,7 @@ To deprecate an attribute:
    ```
 
 To widely announce a deprecation, or if it's a breaking change,
-[update the deprecations and removals documentation pages](../deprecation_guidelines/index.md#update-the-deprecations-and-removals-documentation-pages).
+[update the REST API deprecations and removals page](../../api/rest/deprecations.md).
 
 ## Method description
 

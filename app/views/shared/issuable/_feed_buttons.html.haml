@@ -1,8 +1,8 @@
 - show_calendar_button = local_assigns.fetch(:show_calendar_button, true)
 
-= render Pajamas::ButtonComponent.new(href: safe_params.merge(rss_url_options), icon: 'rss', button_options: { class: 'has-tooltip', 'aria-label': _('Subscribe to RSS feed'), data: { container: 'body', testid: 'rss-feed-link' } }) do
-  = _('Subscribe to RSS feed')
+= render Pajamas::ButtonComponent.new(href: safe_params.merge(rss_url_options), button_options: { class: 'has-tooltip btn-icon', title: _('Subscribe to RSS feed'), 'aria-label': _('Subscribe to RSS feed'), data: { container: 'body', testid: 'rss-feed-link' } }) do
+  = sprite_icon('rss')
 
 - if show_calendar_button
-  = render Pajamas::ButtonComponent.new(href: safe_params.merge(calendar_url_options), icon: 'calendar', button_options: { class: 'has-tooltip', 'aria-label': _('Subscribe to calendar'), data: { container: 'body' } }) do
-    = _('Subscribe to calendar')
+  = render Pajamas::ButtonComponent.new(href: safe_params.merge(calendar_url_options), button_options: { class: 'has-tooltip btn-icon', title: _('Subscribe to calendar'), 'aria-label': _('Subscribe to calendar'), data: { container: 'body' } }) do
+    = sprite_icon('calendar')

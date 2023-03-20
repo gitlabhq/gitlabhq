@@ -50,15 +50,10 @@ describe('tags list row', () => {
       },
       propsData,
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   describe('checkbox', () => {
     it('exists', () => {
@@ -283,26 +278,30 @@ describe('tags list row', () => {
         textSrOnly: true,
         category: 'tertiary',
         right: true,
+        disabled: false,
       });
     });
 
-    it.each`
-      canDelete | digest   | disabled | buttonDisabled
-      ${true}   | ${null}  | ${true}  | ${true}
-      ${false}  | ${'foo'} | ${true}  | ${true}
-      ${false}  | ${null}  | ${true}  | ${true}
-      ${true}   | ${'foo'} | ${true}  | ${true}
-      ${true}   | ${'foo'} | ${false} | ${false}
-    `(
-      'is $visible that is visible when canDelete is $canDelete and digest is $digest and disabled is $disabled',
-      ({ canDelete, digest, disabled, buttonDisabled }) => {
-        mountComponent({ ...defaultProps, tag: { ...tag, canDelete, digest }, disabled });
+    it('has the correct classes', () => {
+      mountComponent();
 
-        expect(findAdditionalActionsMenu().props('disabled')).toBe(buttonDisabled);
-        expect(findAdditionalActionsMenu().classes('gl-opacity-0')).toBe(buttonDisabled);
-        expect(findAdditionalActionsMenu().classes('gl-pointer-events-none')).toBe(buttonDisabled);
-      },
-    );
+      expect(findAdditionalActionsMenu().classes('gl-opacity-0')).toBe(false);
+      expect(findAdditionalActionsMenu().classes('gl-pointer-events-none')).toBe(false);
+    });
+
+    it('is not rendered when tag.canDelete is false', () => {
+      mountComponent({ ...defaultProps, tag: { ...tag, canDelete: false } });
+
+      expect(findAdditionalActionsMenu().exists()).toBe(false);
+    });
+
+    it('is hidden when disabled prop is set to true', () => {
+      mountComponent({ ...defaultProps, disabled: true });
+
+      expect(findAdditionalActionsMenu().props('disabled')).toBe(true);
+      expect(findAdditionalActionsMenu().classes('gl-opacity-0')).toBe(true);
+      expect(findAdditionalActionsMenu().classes('gl-pointer-events-none')).toBe(true);
+    });
 
     describe('delete button', () => {
       it('exists and has the correct attrs', () => {

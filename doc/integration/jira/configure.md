@@ -4,7 +4,7 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configure the Jira integration **(FREE)**
+# Configure Jira **(FREE)**
 
 You can set up the [Jira integration](index.md#jira-integration)
 by configuring your project settings in GitLab.
@@ -13,10 +13,10 @@ and for self-managed GitLab, at an [instance level](../../user/admin_area/settin
 
 Prerequisites:
 
-- Ensure your GitLab installation does not use a [relative URL](development_panel.md#limitations).
+- Ensure your GitLab installation does not use a [relative URL](https://docs.gitlab.com/omnibus/settings/configuration.html#configure-a-relative-url-for-gitlab).
 - For **Jira Server**, ensure you have a Jira username and password.
   See [authentication in Jira](index.md#authentication-in-jira).
-- For **Jira on Atlassian cloud**, ensure you have an API token
+- For **Jira Cloud**, ensure you have an API token
   and the email address you used to create the token.
   See [authentication in Jira](index.md#authentication-in-jira).
 

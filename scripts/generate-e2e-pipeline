@@ -27,7 +27,7 @@ variables:
   GIT_STRATEGY: "clone" # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio
   GIT_SUBMODULE_STRATEGY: "none"
   GITLAB_QA_CACHE_KEY: "$qa_cache_key"
-  GITLAB_VERSION: "$(cat VERSION)"
+  GITLAB_SEMVER_VERSION: "$(cat VERSION)"
   QA_EXPORT_TEST_METRICS: "${QA_EXPORT_TEST_METRICS:-true}"
   QA_FEATURE_FLAGS: "${QA_FEATURE_FLAGS}"
   QA_FRAMEWORK_CHANGES: "${QA_FRAMEWORK_CHANGES:-false}"
@@ -41,6 +41,7 @@ YML
 echo "Using .gitlab/ci/review-apps/main.gitlab-ci.yml and .gitlab/ci/package-and-test/main.gitlab-ci.yml"
 cp .gitlab/ci/review-apps/main.gitlab-ci.yml "$REVIEW_PIPELINE_YML"
 echo "$variables" >>"$REVIEW_PIPELINE_YML"
+
 cp .gitlab/ci/package-and-test/main.gitlab-ci.yml "$OMNIBUS_PIPELINE_YML"
 echo "$variables" >>"$OMNIBUS_PIPELINE_YML"
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::CleanupPackageRegistryWorker do
+RSpec.describe Packages::CleanupPackageRegistryWorker, feature_category: :package_registry do
   describe '#perform' do
     let_it_be_with_reload(:package_files) { create_list(:package_file, 2, :pending_destruction) }
     let_it_be(:policy) { create(:packages_cleanup_policy, :runnable) }

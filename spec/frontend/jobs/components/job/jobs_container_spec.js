@@ -68,10 +68,6 @@ describe('Jobs List block', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders a list of jobs', () => {
     createComponent({
       jobs: [job, retried, active],

@@ -47,8 +47,8 @@ describe('Create Timelog Form', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findDocsLink = () => wrapper.findByTestId('timetracking-docs-link');
   const findSaveButton = () => findModal().props('actionPrimary');
-  const findSaveButtonLoadingState = () => findSaveButton().attributes[0].loading;
-  const findSaveButtonDisabledState = () => findSaveButton().attributes[0].disabled;
+  const findSaveButtonLoadingState = () => findSaveButton().attributes.loading;
+  const findSaveButtonDisabledState = () => findSaveButton().attributes.disabled;
 
   const submitForm = () => findForm().trigger('submit');
 

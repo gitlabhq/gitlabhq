@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Conan::CreatePackageFileService do
+RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :package_registry do
   include WorkhorseHelpers
 
   let_it_be(:package) { create(:conan_package) }

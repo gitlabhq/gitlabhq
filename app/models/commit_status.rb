@@ -6,17 +6,17 @@ class CommitStatus < Ci::ApplicationRecord
   include Importable
   include AfterCommitQueue
   include Presentable
-  include EnumWithNil
   include BulkInsertableAssociations
   include TaggableQueries
 
   self.table_name = 'ci_builds'
+  self.primary_key = :id
   partitionable scope: :pipeline
 
   belongs_to :user
   belongs_to :project
-  belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id
-  belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
+  belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id, inverse_of: :statuses
+  belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline', inverse_of: :auto_canceled_jobs
   belongs_to :ci_stage, class_name: 'Ci::Stage', foreign_key: :stage_id
 
   has_many :needs, class_name: 'Ci::BuildNeed', foreign_key: :build_id, inverse_of: :build
@@ -26,7 +26,7 @@ class CommitStatus < Ci::ApplicationRecord
   enum scheduling_type: { stage: 0, dag: 1 }, _prefix: true
   # We use `Enums::Ci::CommitStatus.failure_reasons` here so that EE can more easily
   # extend this `Hash` with new values.
-  enum_with_nil failure_reason: Enums::Ci::CommitStatus.failure_reasons
+  enum failure_reason: Enums::Ci::CommitStatus.failure_reasons
 
   delegate :commit, to: :pipeline
   delegate :sha, :short_sha, :before_sha, to: :pipeline
@@ -42,14 +42,6 @@ class CommitStatus < Ci::ApplicationRecord
   end
 
   scope :order_id_desc, -> { order(id: :desc) }
-
-  scope :exclude_ignored, -> do
-    # We want to ignore failed but allowed to fail jobs.
-    #
-    # TODO, we also skip ignored optional manual actions.
-    where("allow_failure = ? OR status IN (?)",
-      false, all_state_names - [:failed, :canceled, :manual])
-  end
 
   scope :latest, -> { where(retried: [false, nil]) }
   scope :retried, -> { where(retried: true) }
@@ -237,10 +229,6 @@ class CommitStatus < Ci::ApplicationRecord
     regex = %r{([\b\s:]+((\[.*\])|(\d+[\s:\/\\]+\d+))){1,3}\s*\z}
 
     name.to_s.sub(regex, '').strip
-  end
-
-  def failed_but_allowed?
-    allow_failure? && (failed? || canceled?)
   end
 
   # Time spent running.

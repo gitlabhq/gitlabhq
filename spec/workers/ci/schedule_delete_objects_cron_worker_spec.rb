@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ScheduleDeleteObjectsCronWorker do
+RSpec.describe Ci::ScheduleDeleteObjectsCronWorker, feature_category: :continuous_integration do
   let(:worker) { described_class.new }
 
   describe '#perform' do

@@ -1,5 +1,5 @@
 <script>
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';

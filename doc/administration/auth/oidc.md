@@ -561,6 +561,254 @@ Example installations from source configuration (file path: `config/gitlab.yml`)
     }
 ```
 
+## Configure users based on OIDC group membership **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209898) in GitLab 15.10.
+
+You can configure OIDC group membership to:
+
+- Require users to be members of a certain group.
+- Assign users [external roles](../../user/admin_area/external_users.md), or as
+  administrators based on group membership.
+
+GitLab checks these groups on each sign in and updates user attributes as necessary.
+This feature **does not** allow you to automatically add users to GitLab
+[groups](../../user/group/index.md).
+
+### Required groups
+
+Your identity provider (IdP) must pass group information to GitLab in the OIDC response. To use this
+response to require users to be members of a certain group, configure GitLab to identify:
+
+- Where to look for the groups in the OIDC response, using the `groups_attribute` setting.
+- Which group membership is required to sign in, using the `required_groups` setting.
+
+If you do not set `required_groups` or leave the setting empty, any user authenticated by the IdP through OIDC can use GitLab.
+
+For Omnibus GitLab:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['omniauth_providers'] = [
+     {
+       name: "openid_connect",
+       label: "Provider name",
+       args: {
+         name: "openid_connect",
+         scope: ["openid","profile","email"],
+         response_type: "code",
+         issuer: "<your_oidc_url>",
+         discovery: true,
+         client_auth_method: "query",
+         uid_field: "<uid_field>",
+         client_options: {
+           identifier: "<your_oidc_client_id>",
+           secret: "<your_oidc_client_secret>",
+           redirect_uri: "<your_gitlab_url>/users/auth/openid_connect/callback",
+           gitlab: {
+             groups_attribute: "groups",
+             required_groups: ["Developer"]
+           }
+         }
+       }
+     }
+   ]
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+   for the changes to take effect.
+
+For installation from source:
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     omniauth:
+       providers:
+        - { name: 'openid_connect',
+            label: 'Provider name',
+         args: {
+           name: 'openid_connect',
+           scope: ['openid','profile','email'],
+           response_type: 'code',
+           issuer: '<your_oidc_url>',
+           discovery: true,
+           client_auth_method: 'query',
+           uid_field: '<uid_field>',
+           client_options: {
+             identifier: '<your_oidc_client_id>',
+             secret: '<your_oidc_client_secret>',
+             redirect_uri: '<your_gitlab_url>/users/auth/openid_connect/callback',
+             gitlab: {
+               groups_attribute: "groups",
+               required_groups: ["Developer"]
+             }
+           }
+         }
+       }
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#installations-from-source)
+   for the changes to take effect.
+
+### External groups
+
+Your IdP must pass group information to GitLab in the OIDC response. To use this
+response to identify users as [external users](../../user/admin_area/external_users.md)
+based on group membership, configure GitLab to identify:
+
+- Where to look for the groups in the OIDC response, using the `groups_attribute` setting.
+- Which group memberships should identify a user as an
+  [external user](../../user/admin_area/external_users.md), using the
+ `external_groups` setting.
+
+For Omnibus GitLab:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['omniauth_providers'] = [
+     {
+       name: "openid_connect",
+       label: "Provider name",
+       args: {
+         name: "openid_connect",
+         scope: ["openid","profile","email"],
+         response_type: "code",
+         issuer: "<your_oidc_url>",
+         discovery: true,
+         client_auth_method: "query",
+         uid_field: "<uid_field>",
+         client_options: {
+           identifier: "<your_oidc_client_id>",
+           secret: "<your_oidc_client_secret>",
+           redirect_uri: "<your_gitlab_url>/users/auth/openid_connect/callback",
+           gitlab: {
+             groups_attribute: "groups",
+             external_groups: ["Freelancer"]
+           }
+         }
+       }
+     }
+   ]
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+   for the changes to take effect.
+
+For installation from source:
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     omniauth:
+       providers:
+        - { name: 'openid_connect',
+            label: 'Provider name',
+         args: {
+           name: 'openid_connect',
+           scope: ['openid','profile','email'],
+           response_type: 'code',
+           issuer: '<your_oidc_url>',
+           discovery: true,
+           client_auth_method: 'query',
+           uid_field: '<uid_field>',
+           client_options: {
+             identifier: '<your_oidc_client_id>',
+             secret: '<your_oidc_client_secret>',
+             redirect_uri: '<your_gitlab_url>/users/auth/openid_connect/callback',
+             gitlab: {
+               groups_attribute: "groups",
+               external_groups: ["Freelancer"]
+             }
+           }
+         }
+       }
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#installations-from-source)
+   for the changes to take effect.
+
+### Administrator groups
+
+Your IdP must pass group information to GitLab in the OIDC response. To use this
+response to assign users as administrator based on group membership, configure GitLab to identify:
+
+- Where to look for the groups in the OIDC response, using the `groups_attribute` setting.
+- Which group memberships grant the user administrator access, using the
+ `admin_groups` setting.
+
+For Omnibus GitLab:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['omniauth_providers'] = [
+     {
+       name: "openid_connect",
+       label: "Provider name",
+       args: {
+         name: "openid_connect",
+         scope: ["openid","profile","email"],
+         response_type: "code",
+         issuer: "<your_oidc_url>",
+         discovery: true,
+         client_auth_method: "query",
+         uid_field: "<uid_field>",
+         client_options: {
+           identifier: "<your_oidc_client_id>",
+           secret: "<your_oidc_client_secret>",
+           redirect_uri: "<your_gitlab_url>/users/auth/openid_connect/callback",
+           gitlab: {
+             groups_attribute: "groups",
+             admin_groups: ["Admin"]
+           }
+         }
+       }
+     }
+   ]
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+   for the changes to take effect.
+
+For installation from source:
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     omniauth:
+       providers:
+        - { name: 'openid_connect',
+            label: 'Provider name',
+         args: {
+           name: 'openid_connect',
+           scope: ['openid','profile','email'],
+           response_type: 'code',
+           issuer: '<your_oidc_url>',
+           discovery: true,
+           client_auth_method: 'query',
+           uid_field: '<uid_field>',
+           client_options: {
+             identifier: '<your_oidc_client_id>',
+             secret: '<your_oidc_client_secret>',
+             redirect_uri: '<your_gitlab_url>/users/auth/openid_connect/callback',
+             gitlab: {
+               groups_attribute: "groups",
+               admin_groups: ["Admin"]
+             }
+           }
+         }
+       }
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#installations-from-source)
+   for the changes to take effect.
+
 ## Troubleshooting
 
 1. Ensure `discovery` is set to `true`. If you set it to `false`, you must

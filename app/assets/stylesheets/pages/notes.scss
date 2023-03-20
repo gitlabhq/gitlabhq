@@ -1,5 +1,14 @@
-$system-note-icon-size: 2rem;
+$avatar-icon-size: 2rem;
+$avatar-m-top: 0.5rem;
+$avatar-m-ratio: 2;
+$avatar-m-left: $avatar-m-top * $avatar-m-ratio;
+
+$system-note-icon-size: 1.5rem;
 $system-note-svg-size: 1rem;
+$icon-size-diff: $avatar-icon-size - $system-note-icon-size;
+
+$system-note-icon-m-top: $avatar-m-top + $icon-size-diff - 0.1rem;
+$system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
 @mixin vertical-line($left) {
   &::before {
@@ -35,6 +44,15 @@ $system-note-svg-size: 1rem;
 
   &.timeline > .timeline-entry {
     margin: $gl-padding 0;
+
+    &.system-note {
+      margin-top: $gl-spacing-scale-1;
+      margin-bottom: 0;
+
+      .note-header-info {
+        padding-left: $gl-spacing-scale-4;
+      }
+    }
 
     &.system-note,
     &.note-form {
@@ -113,7 +131,7 @@ $system-note-svg-size: 1rem;
             background-color: $white;
 
             .timeline-content:not(.flash-container) {
-              padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
+              padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 18px;
             }
 
             .timeline-discussion-body-footer {
@@ -270,7 +288,7 @@ $system-note-svg-size: 1rem;
     }
 
     &.is-editing {
-      .note-header,
+      .note-actions,
       .note-text,
       .edited-text {
         display: none;
@@ -447,7 +465,7 @@ $system-note-svg-size: 1rem;
       height: $system-note-icon-size;
       border: 1px solid $gray-50;
       border-radius: $system-note-icon-size;
-      margin: -6px 0 0;
+      margin: -$gl-spacing-scale-1 0 0 $gl-spacing-scale-2;
 
       svg {
         width: $system-note-svg-size;
@@ -591,8 +609,8 @@ $system-note-svg-size: 1rem;
       }
 
       .timeline-entry-inner .timeline-icon {
-        margin-top: $grid-size;
-        margin-left: 14px;
+        margin-top: $system-note-icon-m-top;
+        margin-left: $system-note-icon-m-left;
       }
     }
   }
@@ -672,7 +690,7 @@ $system-note-svg-size: 1rem;
 
   .discussion-reply-holder {
     border-top: 0;
-    border-radius: 0 0 $border-radius-default $border-radius-default;
+    border-radius: 0 0 $gl-border-radius-base $gl-border-radius-base;
     position: relative;
 
     .discussion-form {
@@ -1134,7 +1152,7 @@ $system-note-svg-size: 1rem;
     }
 
     .timeline-avatar {
-      margin: $gl-padding-8 0 0 $gl-padding;
+      margin: $avatar-m-top 0 0 $avatar-m-left;
     }
   }
 

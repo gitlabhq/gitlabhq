@@ -5,7 +5,7 @@ import { nextTick } from 'vue';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -13,7 +13,7 @@ import PipelinesManualActions from '~/pipelines/components/pipelines_list/pipeli
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 import { TRACKING_CATEGORIES } from '~/pipelines/constants';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 
 describe('Pipelines Actions dropdown', () => {
@@ -37,9 +37,6 @@ describe('Pipelines Actions dropdown', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-
     mock.restore();
     confirmAction.mockReset();
   });

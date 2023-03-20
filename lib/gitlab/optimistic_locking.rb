@@ -10,8 +10,11 @@ module Gitlab
       start_time = Gitlab::Metrics::System.monotonic_time
       retry_attempts = 0
 
+      # prevent scope override, see https://gitlab.com/gitlab-org/gitlab/-/issues/391186
+      klass = subject.is_a?(ActiveRecord::Relation) ? subject.klass : subject.class
+
       begin
-        subject.transaction do
+        klass.transaction do
           yield(subject)
         end
       rescue ActiveRecord::StaleObjectError

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Files::CreateService do
+RSpec.describe Files::CreateService, feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:user) { create(:user, :commit_email) }

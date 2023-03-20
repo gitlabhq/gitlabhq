@@ -19,11 +19,6 @@ describe('DeletePackageModal', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('when itemToBeDeleted prop is defined', () => {
     beforeEach(() => {
       mountComponent();

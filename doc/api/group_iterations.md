@@ -22,6 +22,8 @@ GET /groups/:id/iterations?state=opened
 GET /groups/:id/iterations?state=closed
 GET /groups/:id/iterations?search=version
 GET /groups/:id/iterations?include_ancestors=false
+GET /groups/:id/iterations?updated_before=2013-10-02T09%3A24%3A18Z
+GET /groups/:id/iterations?updated_after=2013-10-02T09%3A24%3A18Z
 ```
 
 | Attribute           | Type    | Required | Description |
@@ -29,6 +31,8 @@ GET /groups/:id/iterations?include_ancestors=false
 | `state`             | string  | no       | 'Return `opened`, `upcoming`, `current (previously started)`, `closed`, or `all` iterations. Filtering by `started` state is deprecated starting with 14.1, use `current` instead.' |
 | `search`            | string  | no       | Return only iterations with a title matching the provided string.                              |
 | `include_ancestors` | boolean | no       | Include iterations from parent group and its ancestors. Defaults to `true`.                    |
+| `updated_before`    | datetime | no      | Return only iterations updated before the given datetime. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378662) in GitLab 15.10. |
+| `updated_after`     | datetime | no      | Return only iterations updated after the given datetime. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378662) in GitLab 15.10. |
 
 Example request:
 

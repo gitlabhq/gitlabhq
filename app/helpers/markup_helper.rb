@@ -80,9 +80,7 @@ module MarkupHelper
         )
     )
 
-    # since <img> tags are stripped, this can leave empty <a> tags hanging around
-    # (as our markdown wraps images in links)
-    strip_empty_link_tags(text).html_safe
+    render_links(text)
   end
 
   def markdown(text, context = {})
@@ -171,9 +169,22 @@ module MarkupHelper
     { project: wiki.container }
   end
 
-  def strip_empty_link_tags(text)
+  # Sanitize and style user references links
+  #
+  # @param String text the string to be sanitized
+  #
+  # 1. Remove empty <a> tags which are caused by the <img> tags being stripped
+  #   (as our markdown wraps images in links)
+  # 2. Strip all link tags, except user references, leaving just the link text
+  # 3. Add a highlight class for current user's references
+  #
+  # @return sanitized HTML string
+  def render_links(text)
     scrubber = Loofah::Scrubber.new do |node|
-      node.remove if node.name == 'a' && node.children.empty?
+      next unless node.name == 'a'
+      next node.remove if node.children.empty?
+      next node.replace(node.children) if node['data-reference-type'] != 'user'
+      next node.append_class('current-user') if current_user && node['data-user'] == current_user.id.to_s
     end
 
     sanitize text, scrubber: scrubber

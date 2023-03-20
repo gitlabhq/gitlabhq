@@ -45,9 +45,6 @@ describe('group_settings/components/shared_runners_form', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-
     updateGroup.mockReset();
   });
 

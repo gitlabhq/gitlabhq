@@ -8,7 +8,13 @@ RSpec.describe Board do
 
   describe 'relationships' do
     it { is_expected.to belong_to(:project) }
-    it { is_expected.to have_many(:lists).order(list_type: :asc, position: :asc).dependent(:delete_all) }
+
+    it do
+      is_expected.to have_many(:lists).order(list_type: :asc, position: :asc).dependent(:delete_all)
+        .inverse_of(:board)
+    end
+
+    it { is_expected.to have_many(:destroyable_lists).order(list_type: :asc, position: :asc).inverse_of(:board) }
   end
 
   describe 'validations' do

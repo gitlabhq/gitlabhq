@@ -23,11 +23,6 @@ describe('ExpirationToggle', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('structure', () => {
     it('has an input component', () => {
       mountComponent();

@@ -29,11 +29,6 @@ describe('DiffsColors component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('mounts', () => {
     createComponent();
 

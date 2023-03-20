@@ -161,5 +161,81 @@ module EachBatch
         break unless stop
       end
     end
+
+    # Iterates over the relation and counts the rows. The counting
+    # logic is combined with the iteration query which saves one query
+    # compared to a standard each_batch approach.
+    #
+    # Basic usage:
+    # count, _last_value = Project.each_batch_count
+    #
+    # The counting can be stopped by passing a block and making the last statement true.
+    # Example:
+    #
+    # query_count = 0
+    # count, last_value = Project.each_batch_count do
+    #   query_count += 1
+    #   query_count == 5 # stop counting after 5 loops
+    # end
+    #
+    # Resume where the previous counting has stopped:
+    #
+    # count, last_value = Project.each_batch_count(last_count: count, last_value: last_value)
+    #
+    # Another example, counting issues in project:
+    #
+    # project = Project.find(1)
+    # count, _ = project.issues.each_batch_count(column: :iid)
+    def each_batch_count(of: 1000, column: :id, last_count: 0, last_value: nil)
+      arel_table = self.arel_table
+      window = Arel::Nodes::Window.new.order(arel_table[column])
+      last_value_column = Arel::Nodes::NamedFunction
+        .new('LAST_VALUE', [arel_table[column]])
+        .over(window)
+        .as(column.to_s)
+
+      loop do
+        count_column = Arel::Nodes::Addition
+          .new(Arel::Nodes::NamedFunction.new('ROW_NUMBER', []).over(window), last_count)
+          .as('count')
+
+        projections = [count_column, last_value_column]
+        scope = limit(1).offset(of - 1)
+        scope = scope.where(arel_table[column].gt(last_value)) if last_value
+        new_count, last_value = scope.pick(*projections)
+
+        # When reaching the last batch the offset query might return no data, to address this
+        # problem, we invoke a specialized query that takes the last row out of the resultset.
+        # We could do this for each batch, however it would add unnecessary overhead to all
+        # queries.
+        if new_count.nil?
+          inner_query = scope
+            .select(*projections)
+            .limit(nil)
+            .offset(nil)
+            .arel
+            .as(quoted_table_name)
+
+          new_count, last_value =
+            unscoped
+            .from(inner_query)
+            .order(count: :desc)
+            .limit(1)
+            .pick(:count, column)
+
+          last_count = new_count if new_count
+          last_value = nil
+          break
+        end
+
+        last_count = new_count
+
+        if block_given?
+          should_break = yield(last_count, last_value)
+          break if should_break
+        end
+      end
+      [last_count, last_value]
+    end
   end
 end

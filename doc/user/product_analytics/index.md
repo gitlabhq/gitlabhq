@@ -8,9 +8,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - Introduced in GitLab 15.4 as an [Alpha](../../policy/alpha-beta-support.md#alpha-features) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
 > - `cube_api_proxy` revised to only reference the [Product Analytics API](../../api/product_analytics.md) in GitLab 15.6.
+> - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `cube_api_proxy`.
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_internal_preview`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
@@ -50,6 +51,7 @@ Product Analytics uses several tools:
 
 > - Introduced in GitLab 15.6 behind the [feature flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
 > - Moved to be behind the [feature flag](../../administration/feature_flags.md) named `product_analytics_admin_settings` in GitLab 15.7. Disabled by default.
+> - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_admin_settings`.
@@ -205,3 +207,47 @@ The `afterDate` filter is not supported. Please use `beforeDate` or `inDateRange
     }
 }
 ```
+
+## Raw data export
+
+Exporting the raw event data from the underlying storage engine can help you debug and create datasets for data analysis.
+
+### Export raw data with Cube queries
+
+You can [query the raw data with the REST API](../../api/product_analytics.md#send-query-request-to-cube) and convert the JSON output to any required format.
+
+You can export the raw data for a specific dimension by passing a list of dimensions to the `dimensions` key. For example, the following query outputs the raw data for the attributes listed:
+
+```json
+POST /api/v4/projects/PROJECT_ID/product_analytics/request/load?queryType=multi
+
+{
+  "dimensions": [
+    "TrackedEvents.docEncoding",
+    "TrackedEvents.docHost",
+    "TrackedEvents.docPath",
+    "TrackedEvents.docSearch",
+    "TrackedEvents.eventType",
+    "TrackedEvents.idsAjsAnonymousId",
+    "TrackedEvents.localTzOffset",
+    "TrackedEvents.pageTitle",
+    "TrackedEvents.src",
+    "TrackedEvents.utcTime",
+    "TrackedEvents.vpSize"
+  ],
+  "order": {
+    "TrackedEvents.apiKey": "asc"
+  }
+}
+```
+
+If the request is successful, the returned JSON includes an array of rows of results.
+
+### Caveats
+
+Because Cube acts as an abstraction layer between the raw data and the API, the exported raw data has some caveats:
+
+- Data is grouped by the selected dimensions. Therefore, the exported data might be incomplete, unless including both `utcTime` and `userAnonymousId`.
+- Data is by default limited to 10,000 rows, but you can increase the limit to maximum 50,000 rows. If your dataset has more than 50,000 rows, you need to paginate through the results by using the `limit` and `offset` parameters.
+- Data is always returned in JSON format. If you need it in a different format, you need to convert the JSON to the required format using a scripting language of your choice.
+- [Issue 391683](https://gitlab.com/gitlab-org/gitlab/-/issues/391683) tracks the implementation of a more scalable export solution.

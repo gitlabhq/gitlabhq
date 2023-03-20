@@ -48,6 +48,30 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
     end
   end
 
+  context 'when issue description has task list items' do
+    before do
+      description = '- [ ] I am a task
+
+| Table |
+|-------|
+| <ul><li>[ ] I am inside a table</li><ul> |'
+      issue.update!(description: description)
+
+      sign_in(user)
+      visit project_issue_path(project, issue)
+    end
+
+    it 'shows task actions ellipsis button when hovering over the task list item, but not within a table', :aggregate_failures do
+      find('li', text: 'I am a task').hover
+
+      expect(page).to have_button 'Task actions'
+
+      find('li', text: 'I am inside a table').hover
+
+      expect(page).not_to have_button 'Task actions'
+    end
+  end
+
   context 'when issue description has xss snippet' do
     before do
       issue.update!(description: '![xss" onload=alert(1);//](a)')

@@ -65,10 +65,6 @@ describe('Test reports suite table', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should render a message when there are no test cases', () => {
     createComponent({ suite: [] });
 

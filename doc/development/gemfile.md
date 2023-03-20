@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Gemfile guidelines
+# Gemfile development guidelines
 
 When adding a new entry to `Gemfile`, or upgrading an existing dependency pay
 attention to the following rules.
@@ -60,6 +60,8 @@ This means that new dependencies should, at a minimum, meet the following criter
 - There are no issues open that we know may impact the availability or performance of GitLab.
 - The project is tested using some form of test automation. The test suite must be passing
   using the Ruby version currently used by GitLab.
+- CI builds for all supported platforms must succeed using the new dependency. For more information, see
+  how to [build a package for testing](build_test_package.md#building-a-package-for-testing).
 - If the project uses a C extension, consider requesting an additional review from a C or MRI
   domain expert. C extensions can greatly impact GitLab stability and performance.
 
@@ -95,6 +97,8 @@ does not contain any hidden dependencies on our application code.
 In general, we want to think carefully before doing this as there are
 also disadvantages:
 
+### Potential disadvantages
+
 1. Gems - even those maintained by GitLab - do not necessarily go
    through the same [code review process](code_review.md) as the main
    Rails application.
@@ -106,9 +110,23 @@ also disadvantages:
    community's needs. In general, if we are not using the latest version
    of our own gem, that might be a warning sign.
 
+### Create and publish a Ruby gem
+
 In the case where we do want to extract some library code we've written
 to a gem, go through these steps:
 
+1. Determine a suitable name for the gem. If it's a GitLab-owned gem, prefix
+   the gem name with `gitlab-`. For example, `gitlab-sidekiq-fetcher`.
+1. Create the gem or fork as necessary.
+1. Ensure the `gitlab_rubygems` group is an owner of the new gem by running:
+
+   ```shell
+   gem owner <gem-name> --add gitlab_rubygems
+   ```
+
+1. [Publish the gem to rubygems.org](https://guides.rubygems.org/publishing/#publishing-to-rubygemsorg)
+1. Visit `https://rubygems.org/gems/<gem-name>` and verify that the gem published
+   successfully and `gitlab_rubygems` is also an owner.
 1. Start with the code in the Rails application. Here it's fine to have
    the code in `lib/` and loaded automatically. We can skip this step if
    the step below makes more sense initially.

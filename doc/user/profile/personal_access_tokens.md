@@ -45,9 +45,6 @@ For examples of how you can use a personal access token to authenticate with the
 Alternately, GitLab administrators can use the API to create [impersonation tokens](../../api/rest/index.md#impersonation-tokens).
 Use impersonation tokens to automate authentication as a specific user.
 
-NOTE:
-Personal access tokens are not FIPS compliant and creation and use are disabled when [FIPS mode](../../development/fips_compliance.md) is enabled.
-
 ## Create a personal access token
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days is populated in the UI.
@@ -225,7 +222,7 @@ Remember this if you set up an automation pipeline that depends on authenticatio
 
 ### Unrevoke a personal access token **(FREE SELF)**
 
-If a personal access token is revoked accidentally by any method, administrators can unrevoke that token.
+If a personal access token is revoked accidentally by any method, administrators can unrevoke that token. By default, a daily job deletes revoked tokens at 1:00 AM system time.
 
 WARNING:
 Running the following commands changes data directly. This could be damaging if not done correctly, or under the right conditions. You should first run these commands in a test environment with a backup of the instance ready to be restored, just in case.

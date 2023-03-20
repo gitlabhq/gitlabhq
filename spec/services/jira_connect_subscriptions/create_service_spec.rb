@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnectSubscriptions::CreateService do
+RSpec.describe JiraConnectSubscriptions::CreateService, feature_category: :integrations do
   let_it_be(:installation) { create(:jira_connect_installation) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:group) { create(:group) }

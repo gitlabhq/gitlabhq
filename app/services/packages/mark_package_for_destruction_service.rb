@@ -13,7 +13,8 @@ module Packages
       package.sync_maven_metadata(current_user)
 
       service_response_success('Package was successfully marked as pending destruction')
-    rescue StandardError
+    rescue StandardError => e
+      track_exception(e)
       service_response_error('Failed to mark the package as pending destruction', 400)
     end
 
@@ -29,6 +30,14 @@ module Packages
 
     def user_can_delete_package?
       can?(current_user, :destroy_package, package.project)
+    end
+
+    def track_exception(error)
+      Gitlab::ErrorTracking.track_exception(
+        error,
+        project_id: package.project_id,
+        package_id: package.id
+      )
     end
   end
 end

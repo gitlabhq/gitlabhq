@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Rpm::ParsePackageService do
+RSpec.describe Packages::Rpm::ParsePackageService, feature_category: :package_registry do
   let(:package_file) { File.open('spec/fixtures/packages/rpm/hello-0.0.1-1.fc29.x86_64.rpm') }
 
   describe 'dynamic private methods' do

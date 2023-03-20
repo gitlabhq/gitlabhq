@@ -3,6 +3,17 @@
 module ActiveRecord
   module Associations
     class Preloader
+      def initialize(records: nil, associations: nil)
+        super()
+
+        @records = records
+        @associations = associations
+      end
+
+      def call
+        preload(@records, @associations)
+      end
+
       class NullPreloader
         def self.new(*args, **kwargs)
           self

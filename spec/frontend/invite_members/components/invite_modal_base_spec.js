@@ -54,10 +54,6 @@ describe('InviteModalBase', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findFormSelect = () => wrapper.findComponent(GlFormSelect);
   const findFormSelectOptions = () => findFormSelect().findAllComponents('option');
   const findDatepicker = () => wrapper.findComponent(GlDatepicker);
@@ -66,8 +62,8 @@ describe('InviteModalBase', () => {
   const findIntroText = () => wrapper.findByTestId('modal-base-intro-text').text();
   const findMembersFormGroup = () => wrapper.findByTestId('members-form-group');
   const findDisabledInput = () => wrapper.findByTestId('disabled-input');
-  const findCancelButton = () => wrapper.find('.js-modal-action-cancel');
-  const findActionButton = () => wrapper.find('.js-modal-action-primary');
+  const findCancelButton = () => wrapper.findByTestId('invite-modal-cancel');
+  const findActionButton = () => wrapper.findByTestId('invite-modal-submit');
 
   describe('rendering the modal', () => {
     let trackingSpy;
@@ -88,20 +84,19 @@ describe('InviteModalBase', () => {
     });
 
     it('renders the Cancel button text correctly', () => {
-      expect(wrapper.findComponent(GlModal).props('actionCancel')).toMatchObject({
-        text: CANCEL_BUTTON_TEXT,
-      });
+      expect(findCancelButton().text()).toBe(CANCEL_BUTTON_TEXT);
     });
 
     it('renders the Invite button correctly', () => {
-      expect(wrapper.findComponent(GlModal).props('actionPrimary')).toMatchObject({
-        text: INVITE_BUTTON_TEXT,
-        attributes: {
-          variant: 'confirm',
-          disabled: false,
-          loading: false,
-          'data-qa-selector': 'invite_button',
-        },
+      const actionButton = findActionButton();
+
+      expect(actionButton.text()).toBe(INVITE_BUTTON_TEXT);
+      expect(actionButton.attributes('data-qa-selector')).toBe('invite_button');
+
+      expect(actionButton.props()).toMatchObject({
+        variant: 'confirm',
+        disabled: false,
+        loading: false,
       });
     });
 
@@ -235,7 +230,7 @@ describe('InviteModalBase', () => {
       },
     });
 
-    expect(wrapper.findComponent(GlModal).props('actionPrimary').attributes.loading).toBe(true);
+    expect(findActionButton().props('loading')).toBe(true);
   });
 
   it('with invalidFeedbackMessage, set members form group exception state', () => {

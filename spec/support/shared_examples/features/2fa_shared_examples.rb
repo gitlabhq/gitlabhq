@@ -6,8 +6,6 @@ RSpec.shared_examples 'hardware device for 2fa' do |device_type|
 
   def register_device(device_type, **kwargs)
     case device_type.downcase
-    when "u2f"
-      register_u2f_device(**kwargs)
     when "webauthn"
       register_webauthn_device(**kwargs)
     else

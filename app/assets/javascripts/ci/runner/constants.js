@@ -105,9 +105,14 @@ export const I18N_JOBS = s__('Runners|Jobs');
 export const I18N_ASSIGNED_PROJECTS = s__('Runners|Assigned Projects (%{projectCount})');
 export const I18N_FILTER_PROJECTS = s__('Runners|Filter projects');
 export const I18N_CLEAR_FILTER_PROJECTS = __('Clear');
-export const I18N_NONE = __('None');
 export const I18N_NO_JOBS_FOUND = s__('Runners|This runner has not run any jobs.');
 export const I18N_NO_PROJECTS_FOUND = __('No projects found');
+
+// Runner registration
+
+export const I18N_REGISTRATION_SUCCESS = s__("Runners|You've created a new runner!");
+
+export const RUNNER_REGISTRATION_POLLING_INTERVAL_MS = 2000;
 
 // Styles
 
@@ -128,6 +133,8 @@ export const PARAM_KEY_MEMBERSHIP = 'membership';
 export const PARAM_KEY_SORT = 'sort';
 export const PARAM_KEY_AFTER = 'after';
 export const PARAM_KEY_BEFORE = 'before';
+
+export const PARAM_KEY_PLATFORM = 'platform';
 
 // CiRunnerType
 
@@ -182,9 +189,62 @@ export const MACOS_PLATFORM = 'osx';
 export const WINDOWS_PLATFORM = 'windows';
 export const AWS_PLATFORM = 'aws';
 
+export const DOWNLOAD_LOCATIONS = {
+  [LINUX_PLATFORM]: [
+    {
+      arch: 'amd64',
+      url:
+        'https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64',
+    },
+    {
+      arch: '386',
+      url:
+        'https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-386',
+    },
+    {
+      arch: 'arm',
+      url:
+        'https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-arm',
+    },
+    {
+      arch: 'arm64',
+      url:
+        'https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-arm64',
+    },
+  ],
+  [MACOS_PLATFORM]: [
+    {
+      arch: 'amd64',
+      url:
+        'https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-darwin-amd64',
+    },
+    {
+      arch: 'arm64',
+      url:
+        'https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-darwin-arm64',
+    },
+  ],
+  [WINDOWS_PLATFORM]: [
+    {
+      arch: 'amd64',
+      url:
+        'https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-windows-amd64.exe',
+    },
+    {
+      arch: '386',
+      url:
+        'https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-windows-386.exe',
+    },
+  ],
+};
+
 export const DEFAULT_PLATFORM = LINUX_PLATFORM;
 
 // Runner docs are in a separate repository and are not shipped with GitLab
 // they are rendered as external URLs.
+export const INSTALL_HELP_URL = 'https://docs.gitlab.com/runner/install';
+export const EXECUTORS_HELP_URL = 'https://docs.gitlab.com/runner/executors/';
+export const SERVICE_COMMANDS_HELP_URL =
+  'https://docs.gitlab.com/runner/commands/#service-related-commands';
 export const DOCKER_HELP_URL = 'https://docs.gitlab.com/runner/install/docker.html';
 export const KUBERNETES_HELP_URL = 'https://docs.gitlab.com/runner/install/kubernetes.html';

@@ -293,10 +293,13 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
   end
 
   describe '#issuable_reference' do
+    let(:project_namespace) { build_stubbed(:project_namespace) }
+    let(:project) { build_stubbed(:project, project_namespace: project_namespace) }
+
     context 'when show_full_reference truthy' do
       it 'display issuable full reference' do
         assign(:show_full_reference, true)
-        issue = build_stubbed(:issue)
+        issue = build_stubbed(:issue, project: project)
 
         expect(helper.issuable_reference(issue)).to eql(issue.to_reference(full: true))
       end
@@ -305,12 +308,10 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     context 'when show_full_reference falsey' do
       context 'when @group present' do
         it 'display issuable reference to @group' do
-          project = build_stubbed(:project)
-
           assign(:show_full_reference, nil)
           assign(:group, project.namespace)
 
-          issue = build_stubbed(:issue)
+          issue = build_stubbed(:issue, project: project)
 
           expect(helper.issuable_reference(issue)).to eql(issue.to_reference(project.namespace))
         end
@@ -318,13 +319,11 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
 
       context 'when @project present' do
         it 'display issuable reference to @project' do
-          project = build_stubbed(:project)
-
           assign(:show_full_reference, nil)
           assign(:group, nil)
           assign(:project, project)
 
-          issue = build_stubbed(:issue)
+          issue = build_stubbed(:issue, project: project)
 
           expect(helper.issuable_reference(issue)).to eql(issue.to_reference(project))
         end
@@ -333,8 +332,11 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
   end
 
   describe '#issuable_project_reference' do
+    let(:project_namespace) { build_stubbed(:project_namespace) }
+    let(:project) { build_stubbed(:project, project_namespace: project_namespace) }
+
     it 'display project name and simple reference with `#` to an issue' do
-      issue = build_stubbed(:issue)
+      issue = build_stubbed(:issue, project: project)
 
       expect(helper.issuable_project_reference(issue)).to eq("#{issue.project.full_name} ##{issue.iid}")
     end
@@ -430,7 +432,8 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
           action: "show",
           namespace_id: "foo",
           project_id: "bar",
-          id: incident.iid
+          id: incident.iid,
+          incident_tab: 'timeline'
         }).permit!
       end
 
@@ -441,7 +444,9 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
         expected_data = {
           issueType: 'incident',
           hasLinkedAlerts: false,
-          canUpdateTimelineEvent: true
+          canUpdateTimelineEvent: true,
+          currentPath: "/foo/bar/-/issues/incident/#{incident.iid}/timeline",
+          currentTab: 'timeline'
         }
 
         expect(helper.issuable_initial_data(incident)).to match(hash_including(expected_data))

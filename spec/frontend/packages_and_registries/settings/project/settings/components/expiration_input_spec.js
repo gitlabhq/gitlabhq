@@ -38,11 +38,6 @@ describe('ExpirationInput', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('structure', () => {
     it('has a label', () => {
       mountComponent();

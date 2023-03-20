@@ -9,7 +9,7 @@ import {
   GlButton,
   GlAlert,
 } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { ContentTypeMultipartFormData } from '~/lib/utils/headers';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
@@ -106,23 +106,19 @@ export default {
     primaryOptions() {
       return {
         text: this.primaryBtnText,
-        attributes: [
-          {
-            variant: 'confirm',
-            loading: this.loading,
-            disabled: !this.formCompleted || this.loading,
-          },
-        ],
+        attributes: {
+          variant: 'confirm',
+          loading: this.loading,
+          disabled: !this.formCompleted || this.loading,
+        },
       };
     },
     cancelOptions() {
       return {
         text: SECONDARY_OPTIONS_TEXT,
-        attributes: [
-          {
-            disabled: this.loading,
-          },
-        ],
+        attributes: {
+          disabled: this.loading,
+        },
       };
     },
     formattedFileSize() {

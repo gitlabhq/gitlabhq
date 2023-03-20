@@ -32,10 +32,6 @@ describe('Alert Details Sidebar To Do', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findToDoButton = () => wrapper.find('[data-testid="alert-todo-button"]');
 
   describe('updating the alert to do', () => {

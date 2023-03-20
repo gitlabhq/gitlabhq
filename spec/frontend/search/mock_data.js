@@ -653,3 +653,10 @@ export const TEST_FILTER_DATA = {
     JSON: { label: 'JSON', value: 'JSON', count: 15 },
   },
 };
+
+export const SMALL_MOCK_AGGREGATIONS = [
+  {
+    name: 'language',
+    buckets: TEST_RAW_BUCKETS,
+  },
+];

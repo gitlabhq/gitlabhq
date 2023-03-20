@@ -11,8 +11,7 @@ RSpec.describe ProfilesController, :request_store do
       sign_in(user)
       new_password = User.random_password
       expect do
-        post :update,
-             params: { user: { password: new_password, password_confirmation: new_password } }
+        post :update, params: { user: { password: new_password, password_confirmation: new_password } }
       end.not_to change { user.reload.encrypted_password }
 
       expect(response).to have_gitlab_http_status(:found)
@@ -23,8 +22,7 @@ RSpec.describe ProfilesController, :request_store do
     it 'allows an email update from a user without an external email address' do
       sign_in(user)
 
-      put :update,
-          params: { user: { email: "john@gmail.com", name: "John", validation_password: password } }
+      put :update, params: { user: { email: "john@gmail.com", name: "John", validation_password: password } }
 
       user.reload
 
@@ -37,8 +35,7 @@ RSpec.describe ProfilesController, :request_store do
       create(:email, :confirmed, user: user, email: 'john@gmail.com')
       sign_in(user)
 
-      put :update,
-          params: { user: { email: "john@gmail.com", name: "John" } }
+      put :update, params: { user: { email: "john@gmail.com", name: "John" } }
 
       user.reload
 
@@ -54,8 +51,7 @@ RSpec.describe ProfilesController, :request_store do
       ldap_user.create_user_synced_attributes_metadata(provider: 'ldap', name_synced: true, email_synced: true)
       sign_in(ldap_user)
 
-      put :update,
-          params: { user: { email: "john@gmail.com", name: "John" } }
+      put :update, params: { user: { email: "john@gmail.com", name: "John" } }
 
       ldap_user.reload
 
@@ -71,8 +67,7 @@ RSpec.describe ProfilesController, :request_store do
       ldap_user.create_user_synced_attributes_metadata(provider: 'ldap', name_synced: true, email_synced: true, location_synced: false)
       sign_in(ldap_user)
 
-      put :update,
-          params: { user: { email: "john@gmail.com", name: "John", location: "City, Country" } }
+      put :update, params: { user: { email: "john@gmail.com", name: "John", location: "City, Country" } }
 
       ldap_user.reload
 
@@ -85,10 +80,7 @@ RSpec.describe ProfilesController, :request_store do
     it 'allows setting a user status', :freeze_time do
       sign_in(user)
 
-      put(
-        :update,
-        params: { user: { status: { message: 'Working hard!', availability: 'busy', clear_status_after: '8_hours' } } }
-      )
+      put :update, params: { user: { status: { message: 'Working hard!', availability: 'busy', clear_status_after: '8_hours' } } }
 
       expect(user.reload.status.message).to eq('Working hard!')
       expect(user.reload.status.availability).to eq('busy')
@@ -183,22 +175,14 @@ RSpec.describe ProfilesController, :request_store do
     end
 
     it 'updates a username using JSON request' do
-      put :update_username,
-          params: {
-            user: { username: new_username }
-          },
-          format: :json
+      put :update_username, params: { user: { username: new_username } }, format: :json
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['message']).to eq(s_('Profiles|Username successfully changed'))
     end
 
     it 'renders an error message when the username was not updated' do
-      put :update_username,
-          params: {
-            user: { username: 'invalid username.git' }
-          },
-          format: :json
+      put :update_username, params: { user: { username: 'invalid username.git' } }, format: :json
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
       expect(json_response['message']).to match(/Username change failed/)

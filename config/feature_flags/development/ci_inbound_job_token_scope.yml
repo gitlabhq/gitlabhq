@@ -1,8 +1,0 @@
----
-name: ci_inbound_job_token_scope
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/99165
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/376063
-milestone: '15.5'
-type: development
-group: group::pipeline execution
-default_enabled: true

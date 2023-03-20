@@ -36,10 +36,6 @@ describe('SuggestionDiffRow', () => {
   const findNewLineWrapper = () => wrapper.find('.new_line');
   const findSuggestionContent = () => wrapper.find('[data-testid="suggestion-diff-content"]');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('renders correctly', () => {
     it('renders the correct base suggestion markup', () => {
       factory({

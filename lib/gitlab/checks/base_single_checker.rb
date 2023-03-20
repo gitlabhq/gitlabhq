@@ -5,7 +5,7 @@ module Gitlab
     class BaseSingleChecker < BaseChecker
       attr_reader :change_access
 
-      delegate(*SingleChangeAccess::ATTRIBUTES, to: :change_access)
+      delegate(*SingleChangeAccess::ATTRIBUTES, :branch_ref?, :tag_ref?, to: :change_access)
 
       def initialize(change_access)
         @change_access = change_access

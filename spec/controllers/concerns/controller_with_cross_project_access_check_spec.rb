@@ -25,9 +25,7 @@ RSpec.describe ControllerWithCrossProjectAccessCheck do
         # `described_class` is not available in this context
         include ControllerWithCrossProjectAccessCheck
 
-        requires_cross_project_access :index, show: false,
-                                              unless: -> { unless_condition },
-                                              if: -> { if_condition }
+        requires_cross_project_access :index, show: false, unless: -> { unless_condition }, if: -> { if_condition }
 
         def index
           head :ok
@@ -86,9 +84,10 @@ RSpec.describe ControllerWithCrossProjectAccessCheck do
 
         requires_cross_project_access
 
-        skip_cross_project_access_check index: true, show: false,
-                                        unless: -> { unless_condition },
-                                        if: -> { if_condition }
+        skip_cross_project_access_check index: true,
+          show: false,
+          unless: -> { unless_condition },
+          if: -> { if_condition }
 
         def index
           head :ok

@@ -155,13 +155,13 @@ To limit impact on GitLab.com, a process exists to validate them asynchronously
 during weekend hours. Due to generally lower traffic and fewer deployments,
 FK validation can proceed at a lower level of risk.
 
-### Schedule foreign key validation for a low-impact time
+#### Schedule foreign key validation for a low-impact time
 
 1. [Schedule the FK to be validated](#schedule-the-fk-to-be-validated).
 1. [Verify the MR was deployed and the FK is valid in production](#verify-the-mr-was-deployed-and-the-fk-is-valid-in-production).
 1. [Add a migration to validate the FK synchronously](#add-a-migration-to-validate-the-fk-synchronously).
 
-### Schedule the FK to be validated
+#### Schedule the FK to be validated
 
 1. Create a merge request containing a post-deployment migration, which prepares
    the foreign key for asynchronous validation.
@@ -198,7 +198,7 @@ def down
 end
 ```
 
-### Verify the MR was deployed and the FK is valid in production
+#### Verify the MR was deployed and the FK is valid in production
 
 1. Verify that the post-deploy migration was executed on GitLab.com using ChatOps with
    `/chatops run auto_deploy status <merge_sha>`. If the output returns `db/gprd`,
@@ -208,7 +208,7 @@ end
 1. Use [Database Lab](database_lab.md) to check if validation was successful.
    Ensure the output does not indicate the foreign key is `NOT VALID`.
 
-### Add a migration to validate the FK synchronously
+#### Add a migration to validate the FK synchronously
 
 After the foreign key is valid on the production database, create a second
 merge request that validates the foreign key synchronously. The schema changes
@@ -240,19 +240,20 @@ end
 
 ```
 
-## Test database FK changes locally
+### Test database FK changes locally
 
 You must test the database foreign key changes locally before creating a merge request.
 
-### Verify the foreign keys validated asynchronously
+#### Verify the foreign keys validated asynchronously
 
 Use the asynchronous helpers on your local environment to test changes for
 validating a foreign key:
 
-1. Enable the feature flags by running `Feature.enable(:database_async_foreign_key_validation)`
-   and `Feature.enable(:database_reindexing)` in the Rails console.
+1. Enable the feature flag by running `Feature.enable(:database_async_foreign_key_validation)`
+   in the Rails console.
 1. Run `bundle exec rails db:migrate` so that it creates an entry in the async validation table.
-1. Run `bundle exec rails gitlab:db:reindex` so that the FK is validated asynchronously.
+1. Run `bundle exec rails gitlab:db:validate_async_constraints:all` so that the FK is validated
+   asynchronously on all databases.
 1. To verify the foreign key, open the PostgreSQL console using the
    [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/postgresql.md)
    command `gdk psql` and run the command `\d+ table_name` to check that your

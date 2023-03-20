@@ -71,7 +71,7 @@ export default {
     <ci-icon :status="status" />
 
     <template v-if="showText">
-      <span class="gl-ml-2">{{ status.text }}</span>
+      <span class="gl-ml-2 gl-white-space-nowrap">{{ status.text }}</span>
     </template>
   </gl-link>
 </template>

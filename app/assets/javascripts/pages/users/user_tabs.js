@@ -247,15 +247,15 @@ export default class UserTabs {
     $calendarWrap.find('.calendar-hint').text(calendarHint);
 
     // eslint-disable-next-line no-new
-    new ActivityCalendar(
-      '.tab-pane.active .js-contrib-calendar',
-      '.tab-pane.active .user-calendar-activities',
-      data,
+    new ActivityCalendar({
+      container: '.tab-pane.active .js-contrib-calendar',
+      activitiesContainer: '.tab-pane.active .user-calendar-activities',
+      timestamps: data,
       calendarActivitiesPath,
       utcOffset,
-      gon.first_day_of_week,
+      firstDayOfWeek: gon.first_day_of_week,
       monthsAgo,
-    );
+    });
   }
 
   toggleLoading(status) {

@@ -68,10 +68,7 @@ export default {
       },
     },
     showTagNameValidationError() {
-      return (
-        this.isInputDirty &&
-        (this.validationErrors.isTagNameEmpty || this.validationErrors.existingRelease)
-      );
+      return this.isInputDirty && !this.validationErrors.tagNameValidation.isValid;
     },
     tagNameInputId() {
       return uniqueId('tag-name-input-');
@@ -80,9 +77,7 @@ export default {
       return uniqueId('create-from-selector-');
     },
     tagFeedback() {
-      return this.validationErrors.existingRelease
-        ? __('Selected tag is already in use. Choose another option.')
-        : __('Tag name is required.');
+      return this.validationErrors.tagNameValidation.validationErrors[0];
     },
   },
   methods: {

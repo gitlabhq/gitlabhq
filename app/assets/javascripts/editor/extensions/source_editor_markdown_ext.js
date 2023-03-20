@@ -1,5 +1,5 @@
 import { insertMarkdownText } from '~/lib/utils/text_markdown';
-import { EDITOR_TOOLBAR_RIGHT_GROUP, EXTENSION_MARKDOWN_BUTTONS } from '../constants';
+import { EDITOR_TOOLBAR_BUTTON_GROUPS, EXTENSION_MARKDOWN_BUTTONS } from '../constants';
 
 export class EditorMarkdownExtension {
   static get extensionName() {
@@ -8,6 +8,7 @@ export class EditorMarkdownExtension {
 
   onSetup(instance) {
     this.toolbarButtons = [];
+    this.actions = [];
     if (instance.toolbar) {
       this.setupToolbar(instance);
     }
@@ -17,14 +18,30 @@ export class EditorMarkdownExtension {
     if (instance.toolbar) {
       instance.toolbar.removeItems(ids);
     }
+    this.actions.forEach((action) => {
+      action.dispose();
+    });
+    this.actions = [];
   }
 
   setupToolbar(instance) {
     this.toolbarButtons = EXTENSION_MARKDOWN_BUTTONS.map((btn) => {
+      if (btn.data.mdShortcuts) {
+        this.actions.push(
+          instance.addAction({
+            id: btn.id,
+            label: btn.label,
+            keybindings: btn.data.mdShortcuts,
+            run(inst) {
+              inst.insertMarkdown(btn.data);
+            },
+          }),
+        );
+      }
       return {
         ...btn,
         icon: btn.id,
-        group: EDITOR_TOOLBAR_RIGHT_GROUP,
+        group: EDITOR_TOOLBAR_BUTTON_GROUPS.edit,
         category: 'tertiary',
         onClick: (e) => instance.insertMarkdown(e),
       };
@@ -66,12 +83,8 @@ export class EditorMarkdownExtension {
         instance.setPosition(pos);
       },
       insertMarkdown: (instance, e) => {
-        const {
-          mdTag: tag,
-          mdBlock: blockTag,
-          mdPrepend,
-          mdSelect: select,
-        } = e.currentTarget.dataset;
+        const { mdTag: tag, mdBlock: blockTag, mdPrepend, mdSelect: select } =
+          e.currentTarget?.dataset || e;
 
         insertMarkdownText({
           tag,

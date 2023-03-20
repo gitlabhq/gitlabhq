@@ -18,10 +18,6 @@ describe('Sidebar Confidentiality Content', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('emits `expandSidebar` event on collapsed icon click', () => {
     createComponent();
     findCollapsedIcon().trigger('click');

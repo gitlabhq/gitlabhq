@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UpdateContainerRegistryInfoService do
+RSpec.describe UpdateContainerRegistryInfoService, feature_category: :container_registry do
   let_it_be(:application_settings) { Gitlab::CurrentSettings }
   let_it_be(:api_url) { 'http://registry.gitlab' }
 

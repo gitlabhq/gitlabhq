@@ -20,7 +20,7 @@ module Packages
       loggable_arguments 0
 
       def perform(container_type, distribution_id)
-        @container_type = container_type
+        @container_type = container_type.to_sym
         @distribution_id = distribution_id
 
         return unless distribution

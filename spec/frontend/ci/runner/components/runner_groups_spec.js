@@ -23,10 +23,6 @@ describe('RunnerGroups', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('Shows a heading', () => {
     createComponent();
 

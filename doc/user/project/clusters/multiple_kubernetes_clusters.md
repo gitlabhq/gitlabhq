@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Multiple clusters per project with cluster certificates (DEPRECATED) **(FREE)**
+# Multiple clusters per project with cluster certificates (deprecated) **(FREE)**
 
 > - Introduced in GitLab 10.3
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35094) from GitLab Premium to GitLab Free in 13.2.

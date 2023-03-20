@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { escape } from 'lodash';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { backOff } from '~/lib/utils/common_utils';
 import { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';

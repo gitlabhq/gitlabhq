@@ -1,6 +1,7 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { file } from 'jest/ide/helpers';
 import { commitActionTypes, PERMISSION_CREATE_MR } from '~/ide/constants';
 import eventHub from '~/ide/eventhub';
@@ -39,12 +40,14 @@ describe('IDE commit module actions', () => {
   let mock;
   let store;
   let router;
+  let trackingSpy;
 
   beforeEach(() => {
     store = createStore();
     router = createRouter(store);
     gon.api_version = 'v1';
     mock = new MockAdapter(axios);
+    trackingSpy = mockTracking(undefined, undefined, jest.spyOn);
     jest.spyOn(router, 'push').mockImplementation();
 
     mock
@@ -53,7 +56,7 @@ describe('IDE commit module actions', () => {
   });
 
   afterEach(() => {
-    delete gon.api_version;
+    unmockTracking();
     mock.restore();
   });
 
@@ -81,17 +84,10 @@ describe('IDE commit module actions', () => {
   });
 
   describe('updateBranchName', () => {
-    let originalGon;
-
     beforeEach(() => {
-      originalGon = window.gon;
-      window.gon = { current_username: 'johndoe' };
+      window.gon.current_username = 'johndoe';
 
       store.state.currentBranchId = 'main';
-    });
-
-    afterEach(() => {
-      window.gon = originalGon;
     });
 
     it('updates store with new branch name', async () => {
@@ -430,6 +426,28 @@ describe('IDE commit module actions', () => {
           });
         });
       });
+
+      describe('learnGitlabSource', () => {
+        describe('learnGitlabSource is true', () => {
+          it('tracks commit', async () => {
+            store.state.learnGitlabSource = true;
+
+            await store.dispatch('commit/commitChanges');
+
+            expect(trackingSpy).toHaveBeenCalledWith(undefined, 'commit', {
+              label: 'web_ide_learn_gitlab_source',
+            });
+          });
+        });
+
+        describe('learnGitlabSource is false', () => {
+          it('does not track commit', async () => {
+            await store.dispatch('commit/commitChanges');
+
+            expect(trackingSpy).not.toHaveBeenCalled();
+          });
+        });
+      });
     });
 
     describe('success response with failed message', () => {
@@ -446,6 +464,26 @@ describe('IDE commit module actions', () => {
         const alert = document.querySelector('.flash-container');
 
         expect(alert.textContent.trim()).toBe('failed message');
+      });
+
+      describe('learnGitlabSource', () => {
+        describe('learnGitlabSource is true', () => {
+          it('does not track commit', async () => {
+            store.state.learnGitlabSource = true;
+
+            await store.dispatch('commit/commitChanges');
+
+            expect(trackingSpy).not.toHaveBeenCalled();
+          });
+        });
+
+        describe('learnGitlabSource is false', () => {
+          it('does not track commit', async () => {
+            await store.dispatch('commit/commitChanges');
+
+            expect(trackingSpy).not.toHaveBeenCalled();
+          });
+        });
       });
     });
 
@@ -465,6 +503,26 @@ describe('IDE commit module actions', () => {
           ['commit/UPDATE_LOADING', false, undefined],
           ['commit/SET_ERROR', createUnexpectedCommitError(), undefined],
         ]);
+      });
+
+      describe('learnGitlabSource', () => {
+        describe('learnGitlabSource is true', () => {
+          it('does not track commit', async () => {
+            store.state.learnGitlabSource = true;
+
+            await store.dispatch('commit/commitChanges').catch(() => {});
+
+            expect(trackingSpy).not.toHaveBeenCalled();
+          });
+        });
+
+        describe('learnGitlabSource is false', () => {
+          it('does not track commit', async () => {
+            await store.dispatch('commit/commitChanges').catch(() => {});
+
+            expect(trackingSpy).not.toHaveBeenCalled();
+          });
+        });
       });
     });
 

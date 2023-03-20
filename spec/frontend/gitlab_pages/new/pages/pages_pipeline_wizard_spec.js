@@ -50,10 +50,6 @@ describe('PagesPipelineWizard', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('shows the pipeline wizard', () => {
     expect(findPipelineWizardWrapper().exists()).toBe(true);
   });

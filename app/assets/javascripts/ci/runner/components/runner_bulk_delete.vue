@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlModalDirective, GlModal, GlSprintf } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __, s__, n__, sprintf } from '~/locale';
 import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.graphql';
 import BulkRunnerDelete from '../graphql/list/bulk_runner_delete.mutation.graphql';

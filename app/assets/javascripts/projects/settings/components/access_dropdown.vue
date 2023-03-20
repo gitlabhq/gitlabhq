@@ -9,7 +9,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { debounce, intersectionWith, groupBy, differenceBy, intersectionBy } from 'lodash';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __, s__, n__ } from '~/locale';
 import { getUsers, getGroups, getDeployKeys } from '../api/access_dropdown_api';
 import { LEVEL_TYPES, ACCESS_LEVELS } from '../constants';
@@ -86,7 +86,10 @@ export default {
       return groupBy(this.preselectedItems, 'type');
     },
     showDeployKeys() {
-      return this.accessLevel === ACCESS_LEVELS.PUSH && this.deployKeys.length;
+      return (
+        (this.accessLevel === ACCESS_LEVELS.PUSH || this.accessLevel === ACCESS_LEVELS.CREATE) &&
+        this.deployKeys.length
+      );
     },
     toggleLabel() {
       const counts = Object.entries(this.selected).reduce((acc, [key, value]) => {

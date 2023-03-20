@@ -12,10 +12,11 @@ necessary to import GitHub projects into a GitLab instance.
 
 The GitHub importer offers two different types of importers: a sequential
 importer and a parallel importer. The Rake task `import:github` uses the
-sequential importer, while everything else uses the parallel importer. The
-difference between these two importers is quite simple: the sequential importer
-does all work in a single thread, making it more useful for debugging purposes
-or Rake tasks. The parallel importer, on the other hand, uses Sidekiq.
+sequential importer, and everything else uses the parallel importer. The
+difference between these two importers is:
+
+- The sequential importer does all the work in a single thread, so it's more suited for debugging purposes or Rake tasks.
+- The parallel importer uses Sidekiq.
 
 ## Requirements
 
@@ -179,10 +180,10 @@ Advancing stages is done in one of two ways:
 The first approach should only be used by workers that perform all their work in
 a single thread, while `AdvanceStageWorker` should be used for everything else.
 
-The way `AdvanceStageWorker` works is fairly simple. When scheduling a job it
+When you schedule a job, `AdvanceStageWorker`
 is given a project ID, a list of Redis keys, and the name of the next
 stage. The Redis keys (produced by `Gitlab::JobWaiter`) are used to check if the
-currently running stage has been completed or not. If the stage has not yet been
+running stage has been completed or not. If the stage has not yet been
 completed `AdvanceStageWorker` reschedules itself. After a stage finishes
 `AdvanceStageworker` refreshes the import JID (more on this below) and
 schedule the worker of the next stage.
@@ -323,14 +324,6 @@ The last log entry reports the number of objects fetched and imported:
   "import_stage": "Gitlab::GithubImport::Stage::FinishImportWorker"
 }
 ```
-
-## Errors when importing large projects
-
-The GitHub importer may encounter errors when importing large projects. For help with this, see the
-documentation for the following use cases:
-
-- [Alternative way to import notes and diff notes](../user/project/import/github.md#alternative-way-to-import-notes-and-diff-notes)
-- [Reduce GitHub API request objects per page](../user/project/import/github.md#reduce-github-api-request-objects-per-page)
 
 ## Metrics dashboards
 

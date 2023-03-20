@@ -97,11 +97,13 @@ export default {
 
 <template>
   <div :data-link-type="listLinkType">
-    <h4 v-if="heading" class="gl-font-base mt-0">{{ heading }}</h4>
-    <div
-      class="related-issues-token-body bordered-box bg-white"
-      :class="{ 'sortable-container': canReorder }"
+    <h4
+      v-if="heading"
+      class="gl-font-sm gl-font-weight-semibold gl-text-gray-700 gl-mx-2 gl-mt-3 gl-mb-2"
     >
+      {{ heading }}
+    </h4>
+    <div class="related-issues-token-body" :class="{ 'sortable-container': canReorder }">
       <div v-if="isFetching" class="gl-mb-2" data-qa-selector="related_issues_loading_placeholder">
         <gl-loading-icon
           ref="loadingIcon"
@@ -121,7 +123,7 @@ export default {
           }"
           :data-key="issue.id"
           :data-ordering-id="issuableOrderingId(issue)"
-          class="js-related-issues-token-list-item list-item pt-0 pb-0"
+          class="js-related-issues-token-list-item list-item pt-0 pb-0 gl-border-b-0!"
         >
           <related-issuable-item
             :id-key="issue.id"

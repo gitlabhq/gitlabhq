@@ -6,6 +6,9 @@
 - page_itemtype    'http://schema.org/Person'
 - add_page_specific_style 'page_bundles/profile'
 - link_classes = "flex-grow-1 mx-1 "
+- if show_super_sidebar?
+  - @left_sidebar = true
+  - nav "user_profile"
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
@@ -43,137 +46,129 @@
               = _('Follow')
 
     .profile-header{ class: [('with-no-profile-tabs' if profile_tabs.empty?)] }
-      .avatar-holder
-        = link_to avatar_icon_for_user(@user, 400, current_user: current_user), target: '_blank', rel: 'noopener noreferrer' do
-          = render Pajamas::AvatarComponent.new(@user, alt: "", size: 96, avatar_options: { itemprop: "image" })
-
-      - if @user.blocked? || !@user.confirmed?
-        .user-info
-          %h1.cover-title
-            = user_display_name(@user)
-        = render "users/profile_basic_info"
-      - else
-        .user-info
-          %h1.cover-title{ itemprop: 'name' }
-            = @user.name
-            - if @user.pronouns.present?
-              %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle
-                = "(#{@user.pronouns})"
-            - if @user.status&.busy?
-              %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle= s_("UserProfile|(Busy)")
-
-          - if @user.pronunciation.present?
-            .gl-align-items-center
-              %p.gl-mb-4.gl-text-gray-500= s_("UserProfile|Pronounced as: %{pronunciation}") % { pronunciation: @user.pronunciation }
-
-          - if @user.status&.customized?
-            .cover-status.gl-display-inline-flex.gl-align-items-center
-              = emoji_icon(@user.status.emoji, class: 'gl-mr-2')
-              = markdown_field(@user.status, :message)
+      .gl-display-inline-block.gl-mx-8.gl-vertical-align-top
+        .avatar-holder
+          = link_to avatar_icon_for_user(@user, 400, current_user: current_user), target: '_blank', rel: 'noopener noreferrer' do
+            = render Pajamas::AvatarComponent.new(@user, alt: "", size: 96, avatar_options: { itemprop: "image" })
+        #js-user-achievements{ data: { root_url: root_url, user_id: @user.id } }
+      .gl-display-inline-block.gl-vertical-align-top.gl-text-left
+        - if @user.blocked? || !@user.confirmed?
+          .user-info
+            %h1.cover-title.gl-my-0
+              = user_display_name(@user)
           = render "users/profile_basic_info"
-          .gl-text-gray-900.mb-1.mb-sm-2
-            - unless @user.location.blank?
-              = render 'middle_dot_divider', stacking: true, itemprop: 'address', itemscope: true, itemtype: 'https://schema.org/PostalAddress' do
-                = sprite_icon('location', css_class: 'fgray')
-                %span{ itemprop: 'addressLocality' }
-                  = @user.location
+        - else
+          .user-info
+            %h1.cover-title.gl-my-0{ itemprop: 'name' }
+              = @user.name
+              - if @user.pronouns.present?
+                %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle
+                  = "(#{@user.pronouns})"
+              - if @user.status&.busy?
+                %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle= s_("UserProfile|(Busy)")
+
+            - if @user.pronunciation.present?
+              .gl-align-items-center
+                %p.gl-mb-4.gl-text-gray-500.gl-max-w-80.gl-mx-auto= s_("UserProfile|Pronounced as: %{pronunciation}") % { pronunciation: @user.pronunciation }
+
+            - if @user.status&.customized?
+              .cover-status.gl-display-inline-flex.gl-align-items-center.gl-mb-3
+                = emoji_icon(@user.status.emoji, class: 'gl-mr-2')
+                = markdown_field(@user.status, :message)
+            = render "users/profile_basic_info"
             - user_local_time = local_time(@user.timezone)
-            - unless user_local_time.nil?
-              = render 'middle_dot_divider', stacking: true, data: { testid: 'user-local-time' } do
-                = sprite_icon('clock', css_class: 'fgray')
-                %span
-                  = user_local_time
-            - unless work_information(@user).blank?
-              = render 'middle_dot_divider', stacking: true do
-                = sprite_icon('work', css_class: 'fgray')
-                %span
-                  = work_information(@user, with_schema_markup: true)
-          .gl-text-gray-900
-            - unless @user.skype.blank?
-              = render 'middle_dot_divider' do
-                = link_to "skype:#{@user.skype}", class: 'gl-hover-text-decoration-none', title: "Skype" do
-                  = sprite_icon('skype', css_class: 'skype-icon')
-            - unless @user.linkedin.blank?
-              = render 'middle_dot_divider' do
-                = link_to linkedin_url(@user), class: 'gl-hover-text-decoration-none', title: "LinkedIn", target: '_blank', rel: 'noopener noreferrer nofollow' do
-                  = sprite_icon('linkedin', css_class: 'linkedin-icon')
-            - unless @user.twitter.blank?
-              = render 'middle_dot_divider', breakpoint: 'sm' do
-                = link_to twitter_url(@user), class: 'gl-hover-text-decoration-none', title: "Twitter", target: '_blank', rel: 'noopener noreferrer nofollow' do
-                  = sprite_icon('twitter', css_class: 'twitter-icon')
-            - unless @user.discord.blank?
-              = render 'middle_dot_divider', breakpoint: 'sm' do
-                = link_to discord_url(@user), class: 'gl-hover-text-decoration-none', title: "Discord", target: '_blank', rel: 'noopener noreferrer nofollow' do
-                  = sprite_icon('discord', css_class: 'discord-icon')
-            - unless @user.website_url.blank?
-              = render 'middle_dot_divider', stacking: true do
-                - if Feature.enabled?(:security_auto_fix) && @user.bot?
-                  = sprite_icon('question', css_class: 'gl-text-blue-600')
-                = link_to @user.short_website_url, @user.full_website_url, target: '_blank', rel: 'me noopener noreferrer nofollow', itemprop: 'url'
-            - if display_public_email?(@user)
-              = render 'middle_dot_divider', stacking: true do
-                = link_to @user.public_email, "mailto:#{@user.public_email}", itemprop: 'email'
-          .gl-text-gray-900
-            = sprite_icon('users', css_class: 'gl-vertical-align-middle gl-text-gray-500')
-            = render 'middle_dot_divider' do
-              = link_to user_followers_path do
-                - count = @user.followers.count
-                = n_('1 follower', '%{count} followers', count) % { count: count }
-            = render 'middle_dot_divider' do
-              = link_to user_following_path, data: { qa_selector: 'following_link' } do
-                = @user.followees.count
-                = _('following')
-        - if @user.bio.present?
-          .gl-text-gray-900
-            .profile-user-bio
-              = @user.bio
+            - if @user.location.present? || user_local_time.present? || work_information(@user).present?
+              .gl-text-gray-900
+                - if @user.location.present?
+                  = render 'middle_dot_divider', stacking: true, itemprop: 'address', itemscope: true, itemtype: 'https://schema.org/PostalAddress' do
+                    = sprite_icon('location', css_class: 'fgray')
+                    %span{ itemprop: 'addressLocality' }
+                      = @user.location
+                - if user_local_time.present?
+                  = render 'middle_dot_divider', stacking: true, data: { testid: 'user-local-time' } do
+                    = sprite_icon('clock', css_class: 'fgray')
+                    %span
+                      = user_local_time
+                - if work_information(@user).present?
+                  = render 'middle_dot_divider', stacking: true do
+                    = sprite_icon('work', css_class: 'fgray')
+                    %span
+                      = work_information(@user, with_schema_markup: true)
+            .gl-text-gray-900
+              - if @user.skype.present?
+                = render 'middle_dot_divider' do
+                  = link_to "skype:#{@user.skype}", class: 'gl-hover-text-decoration-none', title: "Skype" do
+                    = sprite_icon('skype', css_class: 'skype-icon')
+              - if @user.linkedin.present?
+                = render 'middle_dot_divider' do
+                  = link_to linkedin_url(@user), class: 'gl-hover-text-decoration-none', title: "LinkedIn", target: '_blank', rel: 'noopener noreferrer nofollow' do
+                    = sprite_icon('linkedin', css_class: 'linkedin-icon')
+              - if @user.twitter.present?
+                = render 'middle_dot_divider', breakpoint: 'sm' do
+                  = link_to twitter_url(@user), class: 'gl-hover-text-decoration-none', title: "Twitter", target: '_blank', rel: 'noopener noreferrer nofollow' do
+                    = sprite_icon('twitter', css_class: 'twitter-icon')
+              - if @user.discord.present?
+                = render 'middle_dot_divider', breakpoint: 'sm' do
+                  = link_to discord_url(@user), class: 'gl-hover-text-decoration-none', title: "Discord", target: '_blank', rel: 'noopener noreferrer nofollow' do
+                    = sprite_icon('discord', css_class: 'discord-icon')
+              - if @user.website_url.present?
+                = render 'middle_dot_divider', stacking: true do
+                  - if Feature.enabled?(:security_auto_fix) && @user.bot?
+                    = sprite_icon('question', css_class: 'gl-text-blue-600')
+                  = link_to @user.short_website_url, @user.full_website_url, target: '_blank', rel: 'me noopener noreferrer nofollow', itemprop: 'url'
+              - if display_public_email?(@user)
+                = render 'middle_dot_divider', stacking: true do
+                  = link_to @user.public_email, "mailto:#{@user.public_email}", itemprop: 'email'
+              - if @user.bio.present? && @user.confirmed? && !@user.blocked?
+                %p.profile-user-bio.gl-mb-3
+                  = @user.bio
 
-    - unless profile_tabs.empty?
-      - if Feature.enabled?(:profile_tabs_vue, current_user)
-        #js-profile-tabs
-      - else
-        .scrolling-tabs-container
-          .fade-left= sprite_icon('chevron-lg-left', size: 12)
-          .fade-right= sprite_icon('chevron-lg-right', size: 12)
-          %ul.nav-links.user-profile-nav.scrolling-tabs.nav.nav-tabs
-            - if profile_tab?(:overview)
-              %li.js-overview-tab
-                = link_to user_path, data: { target: 'div#js-overview', action: 'overview', toggle: 'tab' } do
-                  = s_('UserProfile|Overview')
-            - if profile_tab?(:activity)
-              %li.js-activity-tab
-                = link_to user_activity_path, data: { target: 'div#activity', action: 'activity', toggle: 'tab' } do
-                  = s_('UserProfile|Activity')
-            - unless Feature.enabled?(:security_auto_fix) && @user.bot?
-              - if profile_tab?(:groups)
-                %li.js-groups-tab
-                  = link_to user_groups_path, data: { target: 'div#groups', action: 'groups', toggle: 'tab', endpoint: user_groups_path(format: :json) } do
-                    = s_('UserProfile|Groups')
-              - if profile_tab?(:contributed)
-                %li.js-contributed-tab
-                  = link_to user_contributed_projects_path, data: { target: 'div#contributed', action: 'contributed', toggle: 'tab', endpoint: user_contributed_projects_path(format: :json) } do
-                    = s_('UserProfile|Contributed projects')
-              - if profile_tab?(:projects)
-                %li.js-projects-tab
-                  = link_to user_projects_path, data: { target: 'div#projects', action: 'projects', toggle: 'tab', endpoint: user_projects_path(format: :json) } do
-                    = s_('UserProfile|Personal projects')
-              - if profile_tab?(:starred)
-                %li.js-starred-tab
-                  = link_to user_starred_projects_path, data: { target: 'div#starred', action: 'starred', toggle: 'tab', endpoint: user_starred_projects_path(format: :json) } do
-                    = s_('UserProfile|Starred projects')
-              - if profile_tab?(:snippets)
-                %li.js-snippets-tab
-                  = link_to user_snippets_path, data: { target: 'div#snippets', action: 'snippets', toggle: 'tab', endpoint: user_snippets_path(format: :json) } do
-                    = s_('UserProfile|Snippets')
-              - if profile_tab?(:followers)
-                %li.js-followers-tab
-                  = link_to user_followers_path, data: { target: 'div#followers', action: 'followers', toggle: 'tab', endpoint: user_followers_path(format: :json) } do
-                    = s_('UserProfile|Followers')
-              - if profile_tab?(:following)
-                %li.js-following-tab
-                  = link_to user_following_path, data: { target: 'div#following', action: 'following', toggle: 'tab', endpoint: user_following_path(format: :json) } do
-                    = s_('UserProfile|Following')
-
+    - if !profile_tabs.empty? && !Feature.enabled?(:profile_tabs_vue, current_user)
+      .scrolling-tabs-container{ class: [('gl-display-none' if show_super_sidebar?)] }
+        .fade-left= sprite_icon('chevron-lg-left', size: 12)
+        .fade-right= sprite_icon('chevron-lg-right', size: 12)
+        %ul.nav-links.user-profile-nav.scrolling-tabs.nav.nav-tabs
+          - if profile_tab?(:overview)
+            %li.js-overview-tab
+              = link_to user_path, data: { target: 'div#js-overview', action: 'overview', toggle: 'tab' } do
+                = s_('UserProfile|Overview')
+          - if profile_tab?(:activity)
+            %li.js-activity-tab
+              = link_to user_activity_path, data: { target: 'div#activity', action: 'activity', toggle: 'tab' } do
+                = s_('UserProfile|Activity')
+          - unless Feature.enabled?(:security_auto_fix) && @user.bot?
+            - if profile_tab?(:groups)
+              %li.js-groups-tab
+                = link_to user_groups_path, data: { target: 'div#groups', action: 'groups', toggle: 'tab', endpoint: user_groups_path(format: :json) } do
+                  = s_('UserProfile|Groups')
+            - if profile_tab?(:contributed)
+              %li.js-contributed-tab
+                = link_to user_contributed_projects_path, data: { target: 'div#contributed', action: 'contributed', toggle: 'tab', endpoint: user_contributed_projects_path(format: :json) } do
+                  = s_('UserProfile|Contributed projects')
+            - if profile_tab?(:projects)
+              %li.js-projects-tab
+                = link_to user_projects_path, data: { target: 'div#projects', action: 'projects', toggle: 'tab', endpoint: user_projects_path(format: :json) } do
+                  = s_('UserProfile|Personal projects')
+            - if profile_tab?(:starred)
+              %li.js-starred-tab
+                = link_to user_starred_projects_path, data: { target: 'div#starred', action: 'starred', toggle: 'tab', endpoint: user_starred_projects_path(format: :json) } do
+                  = s_('UserProfile|Starred projects')
+            - if profile_tab?(:snippets)
+              %li.js-snippets-tab
+                = link_to user_snippets_path, data: { target: 'div#snippets', action: 'snippets', toggle: 'tab', endpoint: user_snippets_path(format: :json) } do
+                  = s_('UserProfile|Snippets')
+            - if profile_tab?(:followers)
+              %li.js-followers-tab
+                = link_to user_followers_path, data: { target: 'div#followers', action: 'followers', toggle: 'tab', endpoint: user_followers_path(format: :json) } do
+                  = s_('UserProfile|Followers')
+                  = gl_badge_tag @user.followers.count, size: :sm
+            - if profile_tab?(:following)
+              %li.js-following-tab
+                = link_to user_following_path, data: { target: 'div#following', action: 'following', toggle: 'tab', endpoint: user_following_path(format: :json), qa_selector: 'following_tab' } do
+                  = s_('UserProfile|Following')
+                  = gl_badge_tag @user.followees.count, size: :sm
+  - if !profile_tabs.empty? && Feature.enabled?(:profile_tabs_vue, current_user)
+    #js-profile-tabs{ data: user_profile_tabs_app_data(@user) }
   %div{ class: container_class }
     - unless Feature.enabled?(:profile_tabs_vue, current_user)
       .tab-content

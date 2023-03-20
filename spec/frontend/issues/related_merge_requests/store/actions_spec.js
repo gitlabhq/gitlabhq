@@ -1,12 +1,12 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import * as actions from '~/issues/related_merge_requests/store/actions';
 import * as types from '~/issues/related_merge_requests/store/mutation_types';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('RelatedMergeRequest store actions', () => {
   let state;

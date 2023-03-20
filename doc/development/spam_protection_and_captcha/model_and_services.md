@@ -35,9 +35,9 @@ To do this:
    designate which fields to consider the "`title`" or "`description`". For example,
    this line designates the `content` field as the `description`:
 
-    ```ruby
-    attr_spammable :content, spam_description: true
-    ```
+   ```ruby
+   attr_spammable :content, spam_description: true
+   ```
 
 1. Add a `#check_for_spam?` method implementation:
 

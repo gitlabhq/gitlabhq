@@ -1,0 +1,11 @@
+- title: "Live Preview no longer available in the Web IDE"  # (required) Clearly explain the change. For example, "The `confidential` field for a `Note` is removed" or "CI/CD job names are limited to 250 characters."
+  announcement_milestone: "15.8"  # (required) The milestone when this feature was deprecated.
+  announcement_date: "2023-01-22"  # (required) The date of the milestone release when this feature was deprecated. This should almost always be the 22nd of a month (YYYY-MM-DD), unless you did an out of band blog post.
+  removal_milestone: "15.9"  # (required) The milestone when this feature is being removed.
+  removal_date: "2023-02-22"  # (required) This should almost always be the 22nd of a month (YYYY-MM-DD), the date of the milestone release when this feature will be removed.
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: ericschurter  # (required) GitLab username of the person reporting the removal
+  stage: create  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/383889  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    The Live Preview feature of the Web IDE was intended to provide a client-side preview of static web applications. However, complex configuration steps and a narrow set of supported project types have limited its utility. With the introduction of the Web IDE Beta in GitLab 15.7, you can now connect to a full server-side runtime environment. With upcoming support for installing extensions in the Web IDE, we’ll also support more advanced workflows than those available with Live Preview. As of GitLab 15.9, Live Preview is no longer available in the Web IDE.

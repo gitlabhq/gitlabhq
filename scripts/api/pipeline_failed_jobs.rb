@@ -1,25 +1,12 @@
 # frozen_string_literal: true
 
-require 'gitlab'
+require_relative 'base'
 
-require_relative 'default_options'
-
-class PipelineFailedJobs
+class PipelineFailedJobs < Base
   def initialize(options)
-    @project = options.delete(:project)
+    super
     @pipeline_id = options.delete(:pipeline_id)
     @exclude_allowed_to_fail_jobs = options.delete(:exclude_allowed_to_fail_jobs)
-
-    # Force the token to be a string so that if api_token is nil, it's set to '',
-    # allowing unauthenticated requests (for forks).
-    api_token = options.delete(:api_token).to_s
-
-    warn "No API token given." if api_token.empty?
-
-    @client = Gitlab.client(
-      endpoint: options.delete(:endpoint) || API::DEFAULT_OPTIONS[:endpoint],
-      private_token: api_token
-    )
   end
 
   def execute
@@ -43,5 +30,5 @@ class PipelineFailedJobs
 
   private
 
-  attr_reader :project, :pipeline_id, :exclude_allowed_to_fail_jobs, :client
+  attr_reader :pipeline_id, :exclude_allowed_to_fail_jobs
 end

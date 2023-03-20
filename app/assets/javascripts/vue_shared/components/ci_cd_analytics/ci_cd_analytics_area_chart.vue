@@ -1,13 +1,11 @@
 <script>
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
-import ResizableChartContainer from '~/vue_shared/components/resizable_chart/resizable_chart_container.vue';
 import { CHART_CONTAINER_HEIGHT } from './constants';
 
 export default {
   name: 'CiCdAnalyticsAreaChart',
   components: {
     GlAreaChart,
-    ResizableChartContainer,
   },
   props: {
     chartData: {
@@ -27,24 +25,21 @@ export default {
     <p>
       <slot></slot>
     </p>
-    <resizable-chart-container>
-      <template #default="{ width }">
-        <gl-area-chart
-          v-bind="$attrs"
-          :width="width"
-          :height="$options.chartContainerHeight"
-          :data="chartData"
-          :include-legend-avg-max="false"
-          :option="areaChartOptions"
-        >
-          <template #tooltip-title>
-            <slot name="tooltip-title"></slot>
-          </template>
-          <template #tooltip-content>
-            <slot name="tooltip-content"></slot>
-          </template>
-        </gl-area-chart>
+    <gl-area-chart
+      v-bind="$attrs"
+      responsive
+      width="auto"
+      :height="$options.chartContainerHeight"
+      :data="chartData"
+      :include-legend-avg-max="false"
+      :option="areaChartOptions"
+    >
+      <template #tooltip-title>
+        <slot name="tooltip-title"></slot>
       </template>
-    </resizable-chart-container>
+      <template #tooltip-content>
+        <slot name="tooltip-content"></slot>
+      </template>
+    </gl-area-chart>
   </div>
 </template>

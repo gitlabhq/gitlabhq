@@ -24,10 +24,6 @@ describe('Ci Group Variable wrapper', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Props', () => {
     beforeEach(() => {
       createComponent();

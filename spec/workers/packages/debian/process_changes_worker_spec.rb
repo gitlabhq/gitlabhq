@@ -88,7 +88,7 @@ RSpec.describe Packages::Debian::ProcessChangesWorker, type: :worker, feature_ca
         expect { subject }
           .to not_change { Packages::Package.count }
           .and change { Packages::PackageFile.count }.by(-1)
-          .and change { incoming.package_files.count }.from(7).to(6)
+          .and change { incoming.package_files.count }.from(8).to(7)
       end
     end
 
@@ -104,7 +104,7 @@ RSpec.describe Packages::Debian::ProcessChangesWorker, type: :worker, feature_ca
         expect { subject }
           .to not_change { Packages::Package.count }
           .and change { Packages::PackageFile.count }.by(-1)
-          .and change { incoming.package_files.count }.from(7).to(6)
+          .and change { incoming.package_files.count }.from(8).to(7)
 
         expect { package_file.reload }.to raise_error(ActiveRecord::RecordNotFound)
       end
@@ -120,7 +120,7 @@ RSpec.describe Packages::Debian::ProcessChangesWorker, type: :worker, feature_ca
         expect { subject }
           .to change { Packages::Package.count }.from(1).to(2)
           .and not_change { Packages::PackageFile.count }
-          .and change { incoming.package_files.count }.from(7).to(0)
+          .and change { incoming.package_files.count }.from(8).to(0)
           .and change { package_file&.debian_file_metadatum&.reload&.file_type }.from('unknown').to('changes')
 
         created_package = Packages::Package.last

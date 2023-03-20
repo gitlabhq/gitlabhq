@@ -1,3 +1,4 @@
+import { GlTabs, GlTab } from '@gitlab/ui';
 import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import FormattingToolbar from '~/content_editor/components/formatting_toolbar.vue';
@@ -6,20 +7,21 @@ import {
   CONTENT_EDITOR_TRACKING_LABEL,
 } from '~/content_editor/constants';
 
-describe('content_editor/components/top_toolbar', () => {
+describe('content_editor/components/formatting_toolbar', () => {
   let wrapper;
   let trackingSpy;
 
   const buildWrapper = () => {
-    wrapper = shallowMountExtended(FormattingToolbar);
+    wrapper = shallowMountExtended(FormattingToolbar, {
+      stubs: {
+        GlTabs,
+        GlTab,
+      },
+    });
   };
 
   beforeEach(() => {
     trackingSpy = mockTracking(undefined, null, jest.spyOn);
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   describe.each`

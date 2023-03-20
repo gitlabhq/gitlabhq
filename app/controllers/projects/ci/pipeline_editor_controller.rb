@@ -6,7 +6,7 @@ class Projects::Ci::PipelineEditorController < Projects::ApplicationController
     push_frontend_feature_flag(:ci_job_assistant_drawer, @project)
   end
 
-  feature_category :pipeline_authoring
+  feature_category :pipeline_composition
 
   urgency :low, [:show]
 

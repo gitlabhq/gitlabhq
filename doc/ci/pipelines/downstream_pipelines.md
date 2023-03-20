@@ -231,37 +231,43 @@ configuration for jobs that use the Windows runner, like scripts, use <code>&#92
 
 ### Run child pipelines with merge request pipelines
 
-To trigger a child pipeline as a [merge request pipeline](merge_request_pipelines.md):
+Pipelines, including child pipelines, run as branch pipelines by default when not using
+[`rules`](../yaml/index.md#rules) or [`workflow:rules`](../yaml/index.md#workflowrules).
+To configure child pipelines to run when triggered from a [merge request (parent) pipeline](merge_request_pipelines.md), use `rules` or `workflow:rules`.
+For example, using `rules`:
 
-1. Set the trigger job to run on merge requests in the parent pipeline's configuration file:
+1. Set the parent pipeline's trigger job to run on merge requests:
 
    ```yaml
-   microservice_a:
+   trigger-child-pipeline-job:
      trigger:
-       include: path/to/microservice_a.yml
+       include: path/to/child-pipeline-configuration.yml
      rules:
        - if: $CI_PIPELINE_SOURCE == "merge_request_event"
    ```
 
-1. Configure the child pipeline jobs to run in merge request pipelines with [`rules`](../yaml/index.md#rules)
-   or [`workflow:rules`](../yaml/index.md#workflowrules).
-   For example, with `rules` in a child pipeline's configuration file:
+1. Use `rules` to configure the child pipeline jobs to run when triggered by the parent pipeline:
 
    ```yaml
    job1:
-     script: echo "Child pipeline job 1"
+     script: echo "This child pipeline job runs any time the parent pipeline triggers it."
      rules:
-       - if: $CI_MERGE_REQUEST_ID
+       - if: $CI_PIPELINE_SOURCE == "parent_pipeline"
 
    job2:
-     script: echo "Child pipeline job 2"
+     script: echo "This child pipeline job runs only when the parent pipeline is a merge request pipeline"
      rules:
        - if: $CI_MERGE_REQUEST_ID
    ```
 
-   In child pipelines, `$CI_PIPELINE_SOURCE` always has a value of `parent_pipeline`
-   and cannot be used to identify merge request pipelines. Use `$CI_MERGE_REQUEST_ID`
-   instead, which is always present in merge request pipelines.
+In child pipelines, `$CI_PIPELINE_SOURCE` always has a value of `parent_pipeline`, so:
+
+- You can use `if: $CI_PIPELINE_SOURCE == "parent_pipeline"` to ensure child pipeline jobs always run.
+- You _can't_ use `if: $CI_PIPELINE_SOURCE == "merge_request_event"` to configure child pipeline
+  jobs to run for merge request pipelines. Instead, use `if: $CI_MERGE_REQUEST_ID`
+  to set child pipeline jobs to run only when the parent pipeline is a merge request pipeline. The parent pipeline's
+  [`CI_MERGE_REQUEST_*` predefined variables](../variables/predefined_variables.md#predefined-variables-for-merge-request-pipelines)
+  are passed to the child pipeline jobs.
 
 ### Specify a branch for multi-project pipelines
 
@@ -281,7 +287,7 @@ Use:
 - The `project` keyword to specify the full path to the downstream project.
   In [GitLab 15.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367660),
   you can use [variable expansion](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
-- The `branch` keyword to specify the name of a branch or [tag](../../topics/git/tags.md)
+- The `branch` keyword to specify the name of a branch or [tag](../../user/project/repository/tags/index.md)
   in the project specified by `project`. You can use variable expansion.
 
 ## Trigger a multi-project pipeline by using the API
@@ -309,18 +315,32 @@ trigger_pipeline:
 > Hover behavior for pipeline cards [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/) in GitLab 13.2.
 
 In the [pipeline graph view](index.md#view-full-pipeline-graph), downstream pipelines display
-as a list of cards on the right of the graph. Hover over the pipeline's card to view
-which job triggered the downstream pipeline.
+as a list of cards on the right of the graph. From this view, you can:
 
-### Retry a downstream pipeline
+- Select a trigger job to see the triggered downstream pipeline's jobs.
+- Select **Expand jobs** **{chevron-lg-right}** on a pipeline card to expand the view
+  with the downstream pipeline's jobs. You can view one downstream pipeline at a time.
+- Hover over a pipeline card to have the job that triggered the downstream pipeline highlighted.
+
+### Retry failed and canceled jobs in a downstream pipeline
 
 > - Retry from graph view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354974) in GitLab 15.0 [with a flag](../../administration/feature_flags.md) named `downstream_retry_action`. Disabled by default.
 > - Retry from graph view [generally available and feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357406) in GitLab 15.1.
 
-To retry a completed downstream pipeline, select **Retry** (**{retry}**):
+To retry failed and canceled jobs, select **Retry** (**{retry}**):
 
 - From the downstream pipeline's details page.
-- On the pipeline's card in the [pipeline graph view](index.md#view-full-pipeline-graph).
+- On the pipeline's card in the pipeline graph view.
+
+### Recreate a downstream pipeline
+
+> Retry trigger job from graph view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367547) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `ci_recreate_downstream_pipeline`. Disabled by default.
+
+You can recreate a downstream pipeline by retrying its corresponding trigger job. The newly created downstream pipeline replaces the current downstream pipeline in the pipeline graph.
+
+To recreate a downstream pipeline:
+
+- Select **Run again** (**{retry}**) on the trigger job's card in the pipeline graph view.
 
 ### Cancel a downstream pipeline
 
@@ -330,7 +350,7 @@ To retry a completed downstream pipeline, select **Retry** (**{retry}**):
 To cancel a downstream pipeline that is still running, select **Cancel** (**{cancel}**):
 
 - From the downstream pipeline's details page.
-- On the pipeline's card in the [pipeline graph view](index.md#view-full-pipeline-graph).
+- On the pipeline's card in the pipeline graph view.
 
 ### Mirror the status of a downstream pipeline in the trigger job
 
@@ -365,12 +385,8 @@ trigger_job:
 After you trigger a multi-project pipeline, the downstream pipeline displays
 to the right of the [pipeline graph](index.md#visualize-pipelines).
 
-![Multi-project pipeline graph](img/multi_project_pipeline_graph_v14_3.png)
-
 In [pipeline mini graphs](index.md#pipeline-mini-graphs), the downstream pipeline
 displays to the right of the mini graph.
-
-![Multi-project pipeline mini graph](img/pipeline_mini_graph_v15_0.png)
 
 ## Fetch artifacts from an upstream pipeline
 
@@ -604,8 +620,9 @@ the ones defined in the upstream project take precedence.
 
 ### Pass dotenv variables created in a job **(PREMIUM)**
 
-You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](../variables/index.md#pass-an-environment-variable-to-another-job)
-and [`needs:project`](../yaml/index.md#needsproject).
+You can pass variables to a downstream job with [`dotenv` variable inheritance](../variables/index.md#pass-an-environment-variable-to-another-job)
+and [`needs:project`](../yaml/index.md#needsproject). These variables are only available in
+the script of the job and can't be used to configure it, for example with `rules` or `artifact:paths`.
 
 For example, in a [multi-project pipeline](#multi-project-pipelines):
 
@@ -655,6 +672,16 @@ With multi-project pipelines, the trigger job fails and does not create the down
 - The downstream pipeline targets a protected branch and the user does not have permission
   to run pipelines against the protected branch. See [pipeline security for protected branches](index.md#pipeline-security-on-protected-branches)
   for more information.
+
+### Job in child pipeline is not created when the pipeline runs
+
+If the parent pipeline is a [merge request pipeline](merge_request_pipelines.md),
+the child pipeline must [use `workflow:rules` or `rules` to ensure the jobs run](#run-child-pipelines-with-merge-request-pipelines).
+
+If no jobs in the child pipeline can run due to missing or incorrect `rules` configuration:
+
+- The child pipeline fails to start.
+- The parent pipeline's trigger job fails with: `downstream pipeline can not be created, Pipeline will not run for the selected trigger. The rules configuration prevented any jobs from being added to the pipeline.`
 
 ### `Ref is ambiguous`
 

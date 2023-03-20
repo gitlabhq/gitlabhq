@@ -10,7 +10,6 @@ class IdeController < ApplicationController
   before_action do
     push_frontend_feature_flag(:build_service_proxy)
     push_frontend_feature_flag(:reject_unsigned_commits_by_gitlab)
-    define_index_vars
   end
 
   feature_category :web_ide
@@ -20,9 +19,9 @@ class IdeController < ApplicationController
   def index
     Gitlab::UsageDataCounters::WebIdeCounter.increment_views_count
 
-    if project && Feature.enabled?(:route_hll_to_snowplow_phase2, project&.namespace)
-      Gitlab::Tracking.event(self.class.to_s, 'web_ide_views',
-        namespace: project&.namespace, user: current_user)
+    if project
+      Gitlab::Tracking.event(self.class.to_s, 'web_ide_views', namespace: project.namespace, user: current_user)
+      @fork_info = fork_info(project, params[:branch])
     end
 
     render layout: 'fullscreen', locals: { minimal: helpers.use_new_web_ide? }
@@ -32,15 +31,6 @@ class IdeController < ApplicationController
 
   def authorize_read_project!
     render_404 unless can?(current_user, :read_project, project)
-  end
-
-  def define_index_vars
-    return unless project
-
-    @branch = params[:branch]
-    @path = params[:path]
-    @merge_request = params[:merge_request_id]
-    @fork_info = fork_info(project, @branch)
   end
 
   def fork_info(project, branch)

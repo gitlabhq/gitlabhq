@@ -1,7 +1,12 @@
 <script>
 import { GlDropdownForm, GlIcon, GlLoadingIcon, GlToggle, GlTooltipDirective } from '@gitlab/ui';
-import { createAlert } from '~/flash';
-import { IssuableType, TYPE_EPIC } from '~/issues/constants';
+import { createAlert } from '~/alert';
+import {
+  TYPE_EPIC,
+  TYPE_MERGE_REQUEST,
+  WORKSPACE_GROUP,
+  WORKSPACE_PROJECT,
+} from '~/issues/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -87,7 +92,7 @@ export default {
   },
   computed: {
     isMergeRequest() {
-      return this.issuableType === IssuableType.MergeRequest && this.glFeatures.movedMrSidebar;
+      return this.issuableType === TYPE_MERGE_REQUEST && this.glFeatures.movedMrSidebar;
     },
     isLoading() {
       return this.$apollo.queries?.subscribed?.loading || this.loading;
@@ -109,7 +114,7 @@ export default {
     },
     subscribeDisabledDescription() {
       return sprintf(__('Disabled by %{parent} owner'), {
-        parent: this.parentIsGroup ? 'group' : 'project',
+        parent: this.parentIsGroup ? WORKSPACE_GROUP : WORKSPACE_PROJECT,
       });
     },
     isLoggedIn() {

@@ -6,7 +6,6 @@ export const FETCH_PACKAGES_LIST_ERROR_MESSAGE = __(
 export const DELETE_PACKAGE_SUCCESS_MESSAGE = __('Package deleted successfully');
 
 export const DEFAULT_PAGE = 1;
-export const DEFAULT_PAGE_SIZE = 20;
 
 export const GROUP_PAGE_TYPE = 'groups';
 

@@ -1,5 +1,4 @@
 import * as Sentry from 'sentrybrowser7';
-import { IGNORE_ERRORS, DENY_URLS, SAMPLE_RATE } from '~/sentry/constants';
 
 import SentryConfig from '~/sentry/sentry_config';
 
@@ -62,11 +61,8 @@ describe('SentryConfig', () => {
       expect(Sentry.init).toHaveBeenCalledWith({
         dsn: options.dsn,
         release: options.release,
-        sampleRate: SAMPLE_RATE,
         allowUrls: options.allowUrls,
         environment: options.environment,
-        ignoreErrors: IGNORE_ERRORS,
-        denyUrls: DENY_URLS,
       });
     });
 
@@ -82,11 +78,8 @@ describe('SentryConfig', () => {
       expect(Sentry.init).toHaveBeenCalledWith({
         dsn: options.dsn,
         release: options.release,
-        sampleRate: SAMPLE_RATE,
         allowUrls: options.allowUrls,
         environment: 'development',
-        ignoreErrors: IGNORE_ERRORS,
-        denyUrls: DENY_URLS,
       });
     });
   });

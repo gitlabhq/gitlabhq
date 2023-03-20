@@ -3,7 +3,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerHeader from '~/ci/runner/components/runner_header.vue';
@@ -15,7 +15,7 @@ import { I18N_STATUS_NEVER_CONTACTED, I18N_INSTANCE_TYPE } from '~/ci/runner/con
 
 import { runnerFormData } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
 
 const mockRunner = runnerFormData.data.runner;
@@ -51,7 +51,6 @@ describe('RunnerEditApp', () => {
 
   afterEach(() => {
     mockRunnerQuery.mockReset();
-    wrapper.destroy();
   });
 
   it('expect GraphQL ID to be requested', async () => {

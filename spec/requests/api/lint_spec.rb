@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Lint, feature_category: :pipeline_authoring do
+RSpec.describe API::Lint, feature_category: :pipeline_composition do
   describe 'POST /ci/lint' do
     context 'when signup settings are disabled' do
       before do
@@ -245,8 +245,8 @@ RSpec.describe API::Lint, feature_category: :pipeline_authoring do
       it 'passes validation' do
         ci_lint
 
-        included_config = YAML.safe_load(included_content, [Symbol])
-        root_config = YAML.safe_load(yaml_content, [Symbol])
+        included_config = YAML.safe_load(included_content, permitted_classes: [Symbol])
+        root_config = YAML.safe_load(yaml_content, permitted_classes: [Symbol])
         expected_yaml = included_config.merge(root_config).except(:include).deep_stringify_keys.to_yaml
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -535,8 +535,8 @@ RSpec.describe API::Lint, feature_category: :pipeline_authoring do
       it 'passes validation' do
         ci_lint
 
-        included_config = YAML.safe_load(included_content, [Symbol])
-        root_config = YAML.safe_load(yaml_content, [Symbol])
+        included_config = YAML.safe_load(included_content, permitted_classes: [Symbol])
+        root_config = YAML.safe_load(yaml_content, permitted_classes: [Symbol])
         expected_yaml = included_config.merge(root_config).except(:include).deep_stringify_keys.to_yaml
 
         expect(response).to have_gitlab_http_status(:ok)

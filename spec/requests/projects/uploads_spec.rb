@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'File uploads', feature_category: :not_owned do
+RSpec.describe 'File uploads', feature_category: :shared do
   include WorkhorseHelpers
 
   let(:project) { create(:project, :public, :repository) }

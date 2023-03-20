@@ -51,22 +51,6 @@ gitlab_git_test:
   script:
     - spec/support/prepare-gitlab-git-test-for-commit --check-for-changes
 
-no-ee-check:
-  extends:
-    - .predictive-job
-    - .setup:rules:no-ee-check
-  stage: test
-  script:
-    - scripts/no-dir-check ee
-
-no-jh-check:
-  extends:
-    - .predictive-job
-    - .setup:rules:no-jh-check
-  stage: test
-  script:
-    - scripts/no-dir-check jh
-
 verify-ruby-3.0:
   extends:
     - .absolutely-predictive-job

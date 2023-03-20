@@ -97,6 +97,26 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
     expect(page).to have_content('Website url is not a valid URL')
   end
 
+  it 'validates that the dicord id has a valid length', :js do
+    valid_dicord_id = '123456789123456789'
+    too_short_discord_id = '123456'
+    too_long_discord_id = '123456789abcdefghijkl'
+
+    fill_in 'user_discord', with: too_short_discord_id
+    expect(page).to have_content('Discord ID is too short')
+
+    fill_in 'user_discord', with: too_long_discord_id
+    expect(page).to have_content('Discord ID is too long')
+
+    fill_in 'user_discord', with: valid_dicord_id
+
+    submit_settings
+
+    expect(user.reload).to have_attributes(
+      discord: valid_dicord_id
+    )
+  end
+
   describe 'when I change my email', :js do
     before do
       user.send_reset_password_instructions

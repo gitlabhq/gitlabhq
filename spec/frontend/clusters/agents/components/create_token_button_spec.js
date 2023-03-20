@@ -21,17 +21,13 @@ describe('CreateTokenButton', () => {
         ...provideData,
       },
       directives: {
-        GlModalDirective: createMockDirective(),
+        GlModalDirective: createMockDirective('gl-modal-directive'),
       },
       stubs: {
         GlTooltip,
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('when user can create token', () => {
     beforeEach(() => {

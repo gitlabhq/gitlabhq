@@ -4,7 +4,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import SidebarDateWidget from '~/sidebar/components/date/sidebar_date_widget.vue';
 import SidebarFormattedDate from '~/sidebar/components/date/sidebar_formatted_date.vue';
 import SidebarInheritDate from '~/sidebar/components/date/sidebar_inherit_date.vue';
@@ -13,7 +13,7 @@ import epicStartDateQuery from '~/sidebar/queries/epic_start_date.query.graphql'
 import issueDueDateQuery from '~/sidebar/queries/issue_due_date.query.graphql';
 import { issuableDueDateResponse, issuableStartDateResponse } from '../../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
@@ -21,10 +21,6 @@ describe('Sidebar date Widget', () => {
   let wrapper;
   let fakeApollo;
   const date = '2021-04-15';
-
-  window.gon = {
-    first_day_of_week: 1,
-  };
 
   const findEditableItem = () => wrapper.findComponent(SidebarEditableItem);
   const findPopoverIcon = () => wrapper.find('[data-testid="inherit-date-popover"]');
@@ -61,8 +57,11 @@ describe('Sidebar date Widget', () => {
     });
   };
 
+  beforeEach(() => {
+    window.gon.first_day_of_week = 1;
+  });
+
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 
@@ -159,7 +158,7 @@ describe('Sidebar date Widget', () => {
     expect(wrapper.findComponent(SidebarInheritDate).exists()).toBe(false);
   });
 
-  it('displays a flash message when query is rejected', async () => {
+  it('displays an alert message when query is rejected', async () => {
     createComponent({
       dueDateQueryHandler: jest.fn().mockRejectedValue('Houston, we have a problem'),
     });

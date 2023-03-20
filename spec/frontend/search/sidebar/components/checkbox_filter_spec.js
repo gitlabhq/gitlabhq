@@ -17,8 +17,12 @@ describe('CheckboxFilter', () => {
     setQuery: jest.fn(),
   };
 
+  const getterSpies = {
+    queryLanguageFilters: jest.fn(() => []),
+  };
+
   const defaultProps = {
-    filterData: convertFiltersData(MOCK_LANGUAGE_AGGREGATIONS_BUCKETS),
+    filtersData: convertFiltersData(MOCK_LANGUAGE_AGGREGATIONS_BUCKETS),
   };
 
   const createComponent = () => {
@@ -27,6 +31,7 @@ describe('CheckboxFilter', () => {
         query: MOCK_QUERY,
       },
       actions: actionSpies,
+      getters: getterSpies,
     });
 
     wrapper = shallowMountExtended(CheckboxFilter, {
@@ -73,7 +78,7 @@ describe('CheckboxFilter', () => {
   describe('actions', () => {
     it('triggers setQuery', () => {
       const filter =
-        defaultProps.filterData.filters[Object.keys(defaultProps.filterData.filters)[0]].value;
+        defaultProps.filtersData.filters[Object.keys(defaultProps.filtersData.filters)[0]].value;
       findFormCheckboxGroup().vm.$emit('input', filter);
 
       expect(actionSpies.setQuery).toHaveBeenCalledWith(expect.any(Object), {

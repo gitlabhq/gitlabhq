@@ -1,0 +1,21 @@
+query getUserAchievements($id: UserID!) {
+  user(id: $id) {
+    id
+    userAchievements {
+      nodes {
+        id
+        createdAt
+        achievement {
+          id
+          name
+          description
+          avatarUrl
+          namespace {
+            id
+            fullPath
+          }
+        }
+      }
+    }
+  }
+}

@@ -9,6 +9,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
+import SignatureBadge from '~/commit/components/signature_badge.vue';
 import getRefMixin from '../mixins/get_ref';
 import projectPathQuery from '../queries/project_path.query.graphql';
 
@@ -23,6 +24,7 @@ export default {
     GlLink,
     GlLoadingIcon,
     UserAvatarImage,
+    SignatureBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -170,10 +172,7 @@ export default {
         <div
           class="commit-actions gl-display-flex gl-flex-align gl-align-items-center gl-flex-direction-row"
         >
-          <div
-            v-if="commit.signatureHtml"
-            v-html="commit.signatureHtml /* eslint-disable-line vue/no-v-html */"
-          ></div>
+          <signature-badge v-if="commit.signature" :signature="commit.signature" />
           <div v-if="commit.pipeline" class="ci-status-link">
             <gl-link
               v-gl-tooltip.left

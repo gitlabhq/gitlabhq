@@ -26,7 +26,7 @@ module Metrics
         attr_reader :user, :params
 
         def authorize_environment_access(options)
-          if environment.nil? || Ability.allowed?(user, :create_metrics_dashboard_annotation, project)
+          if environment.nil? || Ability.allowed?(user, :admin_metrics_dashboard_annotation, project)
             options[:environment] = environment
             success(options)
           else
@@ -35,7 +35,7 @@ module Metrics
         end
 
         def authorize_cluster_access(options)
-          if cluster.nil? || Ability.allowed?(user, :create_metrics_dashboard_annotation, cluster)
+          if cluster.nil? || Ability.allowed?(user, :admin_metrics_dashboard_annotation, cluster)
             options[:cluster] = cluster
             success(options)
           else

@@ -13,6 +13,7 @@ import {
   TRACKING_LABEL_CODE_INSTRUCTION,
   TRACKING_LABEL_MAVEN_INSTALLATION,
   MAVEN_HELP_PATH,
+  MAVEN_INSTALLATION_COMMAND,
 } from '~/packages_and_registries/package_registry/constants';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 
@@ -55,11 +56,6 @@ export default {
   <version>${this.appVersion}</version>
 </dependency>`;
     },
-
-    mavenInstallationCommand() {
-      return `mvn dependency:get -Dartifact=${this.appGroup}:${this.appName}:${this.appVersion}`;
-    },
-
     mavenSetupXml() {
       return `<repositories>
   <repository>
@@ -135,6 +131,7 @@ export default {
     { value: 'groovy', label: s__('PackageRegistry|Gradle Groovy DSL') },
     { value: 'kotlin', label: s__('PackageRegistry|Gradle Kotlin DSL') },
   ],
+  MAVEN_INSTALLATION_COMMAND,
 };
 </script>
 
@@ -164,8 +161,9 @@ export default {
       />
 
       <code-instruction
+        class="gl-w-20 gl-mt-5"
         :label="s__('PackageRegistry|Maven Command')"
-        :instruction="mavenInstallationCommand"
+        :instruction="$options.MAVEN_INSTALLATION_COMMAND"
         :copy-text="s__('PackageRegistry|Copy Maven command')"
         :tracking-action="$options.tracking.TRACKING_ACTION_COPY_MAVEN_COMMAND"
         :tracking-label="$options.tracking.TRACKING_LABEL_CODE_INSTRUCTION"

@@ -45,6 +45,30 @@ To configure authentication settings for all media files:
 1. Scroll to **Project visibility** and select **Require authentication to view media files**.
    You cannot select this option for projects with **Public** visibility.
 
+## Delete uploaded files
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92791) in GitLab 15.3.
+
+You should delete an uploaded file when that file contains sensitive or confidential information. When you have deleted that file, users cannot access the file and the direct URL returns a 404 error.
+
+Project Owners and Maintainers can use the [interactive GraphiQL explorer](../api/graphql/index.md#graphiql) to access a [GraphQL endpoint](../api/graphql/reference/index.md#mutationuploaddelete) and delete an uploaded file.
+
+For example:
+
+```graphql
+mutation{
+  uploadDelete(input: { projectPath: "<path/to/project>", secret: "<32-character-id>" , filename: "<filename>" }) {
+    upload {
+      id
+      size
+      path
+    }
+    errors
+  }
+}
+```
+
+Project members that do not have the Owner or Maintainer role cannot access this GraphQL endpoint.
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

@@ -36,8 +36,6 @@ describe('MarkdownDrawer', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     Object.keys(cache).forEach((key) => delete cache[key]);
   });
 

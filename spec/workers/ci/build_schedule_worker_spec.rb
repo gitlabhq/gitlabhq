@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildScheduleWorker do
+RSpec.describe Ci::BuildScheduleWorker, feature_category: :continuous_integration do
   subject { described_class.new.perform(build.id) }
 
   context 'when build is found' do

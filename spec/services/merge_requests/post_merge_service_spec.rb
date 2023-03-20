@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::PostMergeService do
+RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_workflow do
   include ProjectForksHelper
 
   let_it_be(:user) { create(:user) }
@@ -23,7 +23,11 @@ RSpec.describe MergeRequests::PostMergeService do
       # Cache the counter before the MR changed state.
       project.open_merge_requests_count
 
-      expect { subject }.to change { project.open_merge_requests_count }.from(1).to(0)
+      expect do
+        subject
+
+        BatchLoader::Executor.clear_current
+      end.to change { project.open_merge_requests_count }.from(1).to(0)
     end
 
     it 'updates metrics' do

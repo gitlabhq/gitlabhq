@@ -22,7 +22,6 @@ RSpec.describe Ci::BuildMetadata do
 
   it { is_expected.to belong_to(:build) }
   it { is_expected.to belong_to(:project) }
-  it { is_expected.to belong_to(:runner_machine) }
 
   describe '#update_timeout_state' do
     subject { metadata }

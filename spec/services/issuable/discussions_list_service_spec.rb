@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issuable::DiscussionsListService do
+RSpec.describe Issuable::DiscussionsListService, feature_category: :team_planning do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:group) { create(:group, :private) }
   let_it_be(:project) { create(:project, :repository, :private, group: group) }

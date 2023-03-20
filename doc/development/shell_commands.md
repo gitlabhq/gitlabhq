@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Guidelines for shell commands in the GitLab codebase
+# Shell command development guidelines
 
 This document contains guidelines for working with processes and files in the GitLab codebase.
 These guidelines are meant to make your code more reliable _and_ secure.

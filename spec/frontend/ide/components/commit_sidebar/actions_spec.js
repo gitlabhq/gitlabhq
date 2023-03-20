@@ -46,10 +46,6 @@ describe('IDE commit sidebar actions', () => {
     jest.spyOn(store, 'dispatch').mockImplementation(() => {});
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findText = () => wrapper.text();
   const findRadios = () => wrapper.findAll('input[type="radio"]');
 

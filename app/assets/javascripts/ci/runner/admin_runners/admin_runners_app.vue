@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlLink } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { fetchPolicies } from '~/lib/graphql';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -128,8 +128,8 @@ export default {
       return isSearchFiltered(this.search);
     },
     shouldShowCreateRunnerWorkflow() {
-      // create_runner_workflow feature flag
-      return this.glFeatures.createRunnerWorkflow;
+      // create_runner_workflow_for_admin feature flag
+      return this.glFeatures.createRunnerWorkflowForAdmin;
     },
   },
   watch: {

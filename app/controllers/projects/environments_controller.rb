@@ -20,6 +20,10 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     push_frontend_feature_flag(:environment_details_vue, @project)
   end
 
+  before_action only: [:index] do
+    push_frontend_feature_flag(:kas_user_access_project, @project)
+  end
+
   before_action :authorize_read_environment!, except: [:metrics, :additional_metrics, :metrics_dashboard, :metrics_redirect]
   before_action :authorize_create_environment!, only: [:new, :create]
   before_action :authorize_stop_environment!, only: [:stop]
@@ -30,17 +34,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :expire_etag_cache, only: [:index], unless: -> { request.format.json? }
   after_action :expire_etag_cache, only: [:cancel_auto_stop]
 
-  track_event :index,
-              :folder,
-              :show,
-              :new,
-              :edit,
-              :create,
-              :update,
-              :stop,
-              :cancel_auto_stop,
-              :terminal,
-              name: 'users_visiting_environments_pages'
+  track_event :index, :folder, :show, :new, :edit, :create, :update, :stop, :cancel_auto_stop, :terminal,
+    name: 'users_visiting_environments_pages'
 
   feature_category :continuous_delivery
   urgency :low
@@ -255,11 +250,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   def search_environments(type: nil)
     search = params[:search] if params[:search] && params[:search].length >= MIN_SEARCH_LENGTH
 
-    @search_environments ||=
-      Environments::EnvironmentsFinder.new(project,
-                                           current_user,
-                                           type: type,
-                                           search: search).execute
+    @search_environments ||= Environments::EnvironmentsFinder.new(project, current_user, type: type, search: search).execute
   end
 
   def metrics_params
@@ -300,16 +291,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def authorize_update_environment!
     access_denied! unless can?(current_user, :update_environment, environment)
-  end
-
-  def append_info_to_payload(payload)
-    super
-
-    return unless Feature.enabled?(:environments_search_logging) && params[:search].present?
-
-    # Merging to :metadata will ensure these are logged as top level keys
-    payload[:metadata] ||= {}
-    payload[:metadata]['meta.environment.search'] = params[:search]
   end
 end
 

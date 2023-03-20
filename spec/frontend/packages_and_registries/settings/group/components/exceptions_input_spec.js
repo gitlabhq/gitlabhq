@@ -23,10 +23,6 @@ describe('Exceptions Input', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findInputGroup = () => wrapper.findComponent(GlFormGroup);
   const findInput = () => wrapper.findComponent(GlFormInput);
 

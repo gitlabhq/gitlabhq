@@ -7,8 +7,6 @@ module Projects
       class RawImagesController < Projects::DesignManagement::DesignsController
         include SendsBlob
 
-        skip_before_action :default_cache_headers, only: :show
-
         def show
           blob = design_repository.blob_at(ref, design.full_path)
 

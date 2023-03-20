@@ -68,6 +68,9 @@ When a suitable [domain expert](#domain-experts) isn't available, you can choose
 
 To find a domain expert:
 
+- In the Merge Request approvals widget, select [View eligible approvers](../user/project/merge_requests/approvals/rules.md#eligible-approvers).
+  This widget shows recommended and required approvals per area of the codebase.
+  These rules are defined in [Code Owners](../user/project/merge_requests/approvals/rules.md#code-owners-as-eligible-approvers).
 - View the list of team members who work in the [stage or group](https://about.gitlab.com/handbook/product/categories/#devops-stages) related to the merge request.
 - View team members' domain expertise on the [engineering projects](https://about.gitlab.com/handbook/engineering/projects/) page or on the [GitLab team page](https://about.gitlab.com/company/team/). Domains are self-identified, so use your judgment to map the changes on your merge request to a domain.
 - Look for team members who have contributed to the files in the merge request. View the logs by running `git log <file>`.
@@ -237,7 +240,7 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 
 ##### Compliance
 
-1. You have confirmed that the correct [MR type label](contributing/issue_workflow.md#type-labels) has been applied.
+1. You have confirmed that the correct [MR type label](labels/index.md) has been applied.
 
 ### The responsibility of the merge request author
 
@@ -532,7 +535,7 @@ WARNING:
 Before taking the decision to merge:
 
 - Set the milestone.
-- Confirm that the correct [MR type label](contributing/issue_workflow.md#type-labels) is applied.
+- Confirm that the correct [MR type label](labels/index.md#type-labels) is applied.
 - Consider warnings and errors from danger bot, code quality, and other reports.
   Unless a strong case can be made for the violation, these should be resolved
   before merging. A comment must be posted if the MR is merged with any failed job.
@@ -718,12 +721,7 @@ Enterprise Edition instance. This has some implications:
    cached value returns (say, from a string or nil to an array), change the
    cache key at the same time.
 1. **Settings** should be added as a
-   [last resort](https://about.gitlab.com/handbook/product/product-principles/#convention-over-configuration).
-   If you're adding a new setting in `gitlab.yml`:
-   1. Try to avoid that, and add to `ApplicationSetting` instead.
-   1. Ensure that it is also
-      [added to Omnibus](https://docs.gitlab.com/omnibus/settings/gitlab.yml#adding-a-new-setting-to-gitlabyml).
-   1. Ensure that it is also [added to Charts](https://docs.gitlab.com/charts/development/style_guide.html), if needed.
+   [last resort](https://about.gitlab.com/handbook/product/product-principles/#convention-over-configuration). See [Adding a new setting to GitLab Rails](architecture.md#adding-a-new-setting-in-gitlab-rails).
 1. **File system access** is not possible in a [cloud-native architecture](architecture.md#adapting-existing-and-introducing-new-components).
    Ensure that we support object storage for any file storage we need to perform. For more
    information, see the [uploads documentation](uploads/index.md).

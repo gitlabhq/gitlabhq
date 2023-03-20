@@ -1,6 +1,7 @@
 import { flatten } from 'lodash';
 import dateFormat from '~/lib/dateformat';
 import { slugify } from '~/lib/utils/text_utility';
+import { joinPaths } from '~/lib/utils/url_utility';
 import { urlQueryToFilter } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
 import { dateFormats, METRICS_POPOVER_CONTENT } from './constants';
 
@@ -118,4 +119,22 @@ export const fetchMetricsData = (requests = [], requestPath, params) => {
   return Promise.all(promises).then((responses) =>
     prepareTimeMetricsData(flatten(responses), METRICS_POPOVER_CONTENT),
   );
+};
+
+/**
+ * Generates a URL link to the VSD dashboard based on the group
+ * and project paths passed into the method.
+ *
+ * @param {String} groupPath - Path of the specified group
+ * @param {Array} projectPaths - Array of project paths to include in the `query` parameter
+ * @returns a URL or blank string if there is no groupPath set
+ */
+export const generateValueStreamsDashboardLink = (groupPath, projectPaths = []) => {
+  if (groupPath.length) {
+    const query = projectPaths.length ? `?query=${projectPaths.join(',')}` : '';
+    const dashboardsSlug = '/-/analytics/dashboards/value_streams_dashboard';
+    const segments = [gon.relative_url_root || '', '/', groupPath, dashboardsSlug];
+    return joinPaths(...segments).concat(query);
+  }
+  return '';
 };

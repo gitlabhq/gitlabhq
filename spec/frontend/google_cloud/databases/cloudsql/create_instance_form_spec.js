@@ -25,10 +25,6 @@ describe('google_cloud/databases/cloudsql/create_instance_form', () => {
     wrapper = shallowMountExtended(InstanceForm, { propsData, stubs: { GlFormCheckbox } });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('contains header', () => {
     expect(findHeader().exists()).toBe(true);
   });

@@ -250,11 +250,104 @@ RSpec.describe AtomicInternalId do
     end
   end
 
-  describe '.track_project_iid!' do
+  describe '.track_namespace_iid!' do
     it 'tracks the present value' do
       expect do
-        ::Issue.track_project_iid!(milestone.project, external_iid)
-      end.to change { InternalId.find_by(project: milestone.project, usage: :issues)&.last_value.to_i }.to(external_iid)
+        ::Issue.track_namespace_iid!(milestone.project.project_namespace, external_iid)
+      end.to change {
+        InternalId.find_by(namespace: milestone.project.project_namespace, usage: :issues)&.last_value.to_i
+      }.to(external_iid)
+    end
+  end
+
+  context 'when transitioning a model from one scope to another' do
+    let!(:issue) { build(:issue, project: project) }
+    let(:old_issue_model) do
+      Class.new(ApplicationRecord) do
+        include AtomicInternalId
+
+        self.table_name = :issues
+
+        belongs_to :project
+        belongs_to :namespace
+
+        has_internal_id :iid, scope: :project
+
+        def self.name
+          'TestClassA'
+        end
+      end
+    end
+
+    let(:old_issue_instance) { old_issue_model.new(issue.attributes) }
+    let(:new_issue_instance) { Issue.new(issue.attributes) }
+
+    it 'generates the iid on the new scope' do
+      # set a random iid, just so that it does not start at 1
+      old_issue_instance.iid = 123
+      old_issue_instance.save!
+
+      # creating a new old_issue_instance increments the iid.
+      expect { old_issue_model.new(issue.attributes).save! }.to change {
+        InternalId.find_by(project: project, usage: :issues)&.last_value.to_i
+      }.from(123).to(124).and(not_change { InternalId.count })
+
+      # creating a new Issue creates a new record in internal_ids, scoped to the namespace.
+      # Given the Issue#has_internal_id -> init definition the internal_ids#last_value would be the
+      # maximum between the old iid value in internal_ids, scoped to the project and max(iid) value from issues
+      # table by namespace_id.
+      # see Issue#has_internal_id
+      expect { new_issue_instance.save! }.to change {
+        InternalId.find_by(namespace: project.project_namespace, usage: :issues)&.last_value.to_i
+      }.to(125).and(change { InternalId.count }.by(1))
+
+      # transition back to project scope would generate overlapping IIDs and raise a duplicate key value error, unless
+      # we cleanup the issues usage scoped to the project first
+      expect { old_issue_model.new(issue.attributes).save! }.to raise_error(ActiveRecord::RecordNotUnique)
+
+      # delete issues usage scoped to te project
+      InternalId.where(project: project, usage: :issues).delete_all
+
+      expect { old_issue_model.new(issue.attributes).save! }.to change {
+        InternalId.find_by(project: project, usage: :issues)&.last_value.to_i
+      }.to(126).and(change { InternalId.count }.by(1))
+    end
+  end
+
+  context 'when models is scoped to namespace and does not have an init proc' do
+    let!(:issue) { build(:issue, namespace: create(:group)) }
+
+    let(:issue_model) do
+      Class.new(ApplicationRecord) do
+        include AtomicInternalId
+
+        self.table_name = :issues
+
+        belongs_to :project
+        belongs_to :namespace
+
+        has_internal_id :iid, scope: :namespace
+
+        def self.name
+          'TestClass'
+        end
+      end
+    end
+
+    let(:model_instance) { issue_model.new(issue.attributes) }
+
+    it 'generates the iid on the new scope' do
+      expect { model_instance.save! }.to change {
+        InternalId.find_by(namespace: model_instance.namespace, usage: :issues)&.last_value.to_i
+      }.to(1).and(change { InternalId.count }.by(1))
+    end
+
+    it 'supplies a stream of iid values' do
+      expect do
+        issue_model.with_namespace_iid_supply(model_instance.namespace) do |supply|
+          4.times { supply.next_value }
+        end
+      end.to change { InternalId.find_by(namespace: model_instance.namespace, usage: :issues)&.last_value.to_i }.by(4)
     end
   end
 end

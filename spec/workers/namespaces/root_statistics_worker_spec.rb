@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespaces::RootStatisticsWorker, '#perform' do
+RSpec.describe Namespaces::RootStatisticsWorker, '#perform', feature_category: :source_code_management do
   let(:group) { create(:group, :with_aggregation_schedule) }
 
   subject(:worker) { described_class.new }

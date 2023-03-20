@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Lfs::UnlockFileService do
+RSpec.describe Lfs::UnlockFileService, feature_category: :source_code_management do
   let(:project)      { create(:project) }
   let(:current_user) { create(:user) }
   let(:lock_author)  { create(:user) }

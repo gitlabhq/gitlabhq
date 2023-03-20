@@ -6,6 +6,11 @@ RSpec.describe Ci::Sources::Pipeline, feature_category: :continuous_integration 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:pipeline) }
 
+  it do
+    is_expected.to belong_to(:build).class_name('Ci::Build')
+      .with_foreign_key(:source_job_id).inverse_of(:sourced_pipelines)
+  end
+
   it { is_expected.to belong_to(:source_project).class_name('::Project') }
   it { is_expected.to belong_to(:source_job) }
   it { is_expected.to belong_to(:source_bridge) }

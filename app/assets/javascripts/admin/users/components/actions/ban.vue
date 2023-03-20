@@ -56,7 +56,7 @@ export default {
           },
           actionPrimary: {
             text: I18N_USER_ACTIONS.ban,
-            attributes: [{ variant: 'confirm' }],
+            attributes: { variant: 'confirm' },
           },
           messageHtml,
         },

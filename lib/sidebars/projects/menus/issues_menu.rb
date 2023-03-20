@@ -68,6 +68,17 @@ module Sidebars
           }
         end
 
+        override :serialize_as_menu_item_args
+        def serialize_as_menu_item_args
+          super.merge({
+            sprite_icon: sprite_icon,
+            pill_count: pill_count,
+            has_pill: has_pill?,
+            super_sidebar_parent: ::Sidebars::StaticMenu,
+            item_id: :project_issue_list
+          })
+        end
+
         private
 
         def show_issues_menu_items?
@@ -78,6 +89,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('List'),
             link: project_issues_path(context.project),
+            super_sidebar_parent: ::Sidebars::NilMenuItem,
             active_routes: { path: 'projects/issues#index' },
             container_html_options: { aria: { label: _('Issues') } },
             item_id: :issue_list
@@ -90,6 +102,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: title,
             link: project_boards_path(context.project),
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu,
             active_routes: { controller: :boards },
             item_id: :boards
           )
@@ -99,6 +112,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Service Desk'),
             link: service_desk_project_issues_path(context.project),
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu,
             active_routes: { path: 'issues#service_desk' },
             item_id: :service_desk
           )
@@ -108,6 +122,8 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Milestones'),
             link: project_milestones_path(context.project),
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu,
+            super_sidebar_before: :service_desk,
             active_routes: { controller: :milestones },
             item_id: :milestones
           )

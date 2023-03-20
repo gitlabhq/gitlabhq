@@ -4,22 +4,28 @@ import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue
 import MediaBubbleMenu from '~/content_editor/components/bubble_menus/media_bubble_menu.vue';
 import { stubComponent } from 'helpers/stub_component';
 import eventHubFactory from '~/helpers/event_hub_factory';
-import Image from '~/content_editor/extensions/image';
 import Audio from '~/content_editor/extensions/audio';
+import DrawioDiagram from '~/content_editor/extensions/drawio_diagram';
+import Image from '~/content_editor/extensions/image';
 import Video from '~/content_editor/extensions/video';
 import { createTestEditor, emitEditorEvent, mockChainedCommands } from '../../test_utils';
 import {
   PROJECT_WIKI_ATTACHMENT_IMAGE_HTML,
   PROJECT_WIKI_ATTACHMENT_AUDIO_HTML,
   PROJECT_WIKI_ATTACHMENT_VIDEO_HTML,
+  PROJECT_WIKI_ATTACHMENT_DRAWIO_DIAGRAM_HTML,
 } from '../../test_constants';
-
-const TIPTAP_IMAGE_HTML = `<p>
-  <img src="https://gitlab.com/favicon.png" alt="gitlab favicon" title="gitlab favicon">
-</p>`;
 
 const TIPTAP_AUDIO_HTML = `<p>
   <span class="media-container audio-container"><audio src="https://gitlab.com/favicon.png" controls="true" data-setup="{}" data-title="gitlab favicon"></audio><a href="https://gitlab.com/favicon.png">gitlab favicon</a></span>
+</p>`;
+
+const TIPTAP_DIAGRAM_HTML = `<p>
+  <img src="https://gitlab.com/favicon.png" alt="gitlab favicon" title="gitlab favicon">
+</p>`;
+
+const TIPTAP_IMAGE_HTML = `<p>
+  <img src="https://gitlab.com/favicon.png" alt="gitlab favicon" title="gitlab favicon">
 </p>`;
 
 const TIPTAP_VIDEO_HTML = `<p>
@@ -29,10 +35,11 @@ const TIPTAP_VIDEO_HTML = `<p>
 const createFakeEvent = () => ({ preventDefault: jest.fn(), stopPropagation: jest.fn() });
 
 describe.each`
-  mediaType  | mediaHTML                             | filePath           | mediaOutputHTML
-  ${'image'} | ${PROJECT_WIKI_ATTACHMENT_IMAGE_HTML} | ${'test-file.png'} | ${TIPTAP_IMAGE_HTML}
-  ${'audio'} | ${PROJECT_WIKI_ATTACHMENT_AUDIO_HTML} | ${'test-file.mp3'} | ${TIPTAP_AUDIO_HTML}
-  ${'video'} | ${PROJECT_WIKI_ATTACHMENT_VIDEO_HTML} | ${'test-file.mp4'} | ${TIPTAP_VIDEO_HTML}
+  mediaType           | mediaHTML                                      | filePath                  | mediaOutputHTML
+  ${'image'}          | ${PROJECT_WIKI_ATTACHMENT_IMAGE_HTML}          | ${'test-file.png'}        | ${TIPTAP_IMAGE_HTML}
+  ${'drawio_diagram'} | ${PROJECT_WIKI_ATTACHMENT_DRAWIO_DIAGRAM_HTML} | ${'test-file.drawio.svg'} | ${TIPTAP_DIAGRAM_HTML}
+  ${'audio'}          | ${PROJECT_WIKI_ATTACHMENT_AUDIO_HTML}          | ${'test-file.mp3'}        | ${TIPTAP_AUDIO_HTML}
+  ${'video'}          | ${PROJECT_WIKI_ATTACHMENT_VIDEO_HTML}          | ${'test-file.mp4'}        | ${TIPTAP_VIDEO_HTML}
 `(
   'content_editor/components/bubble_menus/media_bubble_menu ($mediaType)',
   ({ mediaType, mediaHTML, filePath, mediaOutputHTML }) => {
@@ -43,7 +50,7 @@ describe.each`
     let eventHub;
 
     const buildEditor = () => {
-      tiptapEditor = createTestEditor({ extensions: [Image, Audio, Video] });
+      tiptapEditor = createTestEditor({ extensions: [Image, Audio, Video, DrawioDiagram] });
       contentEditor = { resolveUrl: jest.fn() };
       eventHub = eventHubFactory();
     };
@@ -93,10 +100,6 @@ describe.each`
       bubbleMenu = wrapper.findComponent(BubbleMenu);
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('renders bubble menu component', async () => {
       expect(bubbleMenu.classes()).toEqual(['gl-shadow', 'gl-rounded-base', 'gl-bg-white']);
     });
@@ -112,6 +115,24 @@ describe.each`
         }),
       );
       expect(link.text()).toBe(filePath);
+    });
+
+    describe('when BubbleMenu emits hidden event', () => {
+      it('resets media bubble menu state', async () => {
+        // Switch to edit mode to access component state in form fields
+        await wrapper.findByTestId('edit-media').vm.$emit('click');
+
+        const mediaSrcInput = wrapper.findByTestId('media-src').vm.$el;
+        const mediaAltInput = wrapper.findByTestId('media-alt').vm.$el;
+
+        expect(mediaSrcInput.value).not.toBe('');
+        expect(mediaAltInput.value).not.toBe('');
+
+        await wrapper.findComponent(BubbleMenu).vm.$emit('hidden');
+
+        expect(mediaSrcInput.value).toBe('');
+        expect(mediaAltInput.value).toBe('');
+      });
     });
 
     describe('copy button', () => {
@@ -133,23 +154,39 @@ describe.each`
     });
 
     describe(`replace ${mediaType} button`, () => {
-      it('uploads and replaces the selected image when file input changes', async () => {
-        const commands = mockChainedCommands(tiptapEditor, [
-          'focus',
-          'deleteSelection',
-          'uploadAttachment',
-          'run',
-        ]);
-        const file = new File(['foo'], 'foo.png', { type: 'image/png' });
+      if (mediaType !== 'drawio_diagram') {
+        it('uploads and replaces the selected image when file input changes', async () => {
+          const commands = mockChainedCommands(tiptapEditor, [
+            'focus',
+            'deleteSelection',
+            'uploadAttachment',
+            'run',
+          ]);
+          const file = new File(['foo'], 'foo.png', { type: 'image/png' });
 
-        await wrapper.findByTestId('replace-media').vm.$emit('click');
-        await selectFile(file);
+          await wrapper.findByTestId('replace-media').vm.$emit('click');
+          await selectFile(file);
 
-        expect(commands.focus).toHaveBeenCalled();
-        expect(commands.deleteSelection).toHaveBeenCalled();
-        expect(commands.uploadAttachment).toHaveBeenCalledWith({ file });
-        expect(commands.run).toHaveBeenCalled();
-      });
+          expect(commands.focus).toHaveBeenCalled();
+          expect(commands.deleteSelection).toHaveBeenCalled();
+          expect(commands.uploadAttachment).toHaveBeenCalledWith({ file });
+          expect(commands.run).toHaveBeenCalled();
+        });
+      } else {
+        // draw.io diagrams are replaced using the edit diagram button
+        it('invokes editDiagram command', async () => {
+          const commands = mockChainedCommands(tiptapEditor, [
+            'focus',
+            'createOrEditDiagram',
+            'run',
+          ]);
+          await wrapper.findByTestId('edit-diagram').vm.$emit('click');
+
+          expect(commands.focus).toHaveBeenCalled();
+          expect(commands.createOrEditDiagram).toHaveBeenCalled();
+          expect(commands.run).toHaveBeenCalled();
+        });
+      }
     });
 
     describe('edit button', () => {

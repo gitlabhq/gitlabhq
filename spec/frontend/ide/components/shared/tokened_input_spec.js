@@ -28,10 +28,6 @@ describe('IDE shared/TokenedInput', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders tokens', () => {
     createComponent();
     const renderedTokens = getTokenElements(wrapper).wrappers.map((w) => w.text());

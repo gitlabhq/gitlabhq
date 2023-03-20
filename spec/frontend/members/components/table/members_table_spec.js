@@ -96,10 +96,6 @@ describe('MembersTable', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('fields', () => {
     const memberCanUpdate = {
       ...directMember,

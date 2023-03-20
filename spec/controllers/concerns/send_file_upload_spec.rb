@@ -7,7 +7,7 @@ RSpec.describe SendFileUpload do
     Class.new(GitlabUploader) do
       include ObjectStorage::Concern
 
-      storage_options Gitlab.config.uploads
+      storage_location :uploads
 
       private
 

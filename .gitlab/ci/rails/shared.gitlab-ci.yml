@@ -36,8 +36,16 @@ include:
   variables:
     DECOMPOSED_DB: "false"
 
+.single-db-ci-connection:
+  extends: .single-db
+  variables:
+    CI_CONNECTION_DB: "true"
+
 .single-db-rspec:
   extends: .single-db
+
+.single-db-ci-connection-rspec:
+  extends: .single-db-ci-connection
 
 .praefect-with-db:
   variables:
@@ -92,11 +100,6 @@ include:
     - !reference [.base-script, script]
     - rspec_paralellized_job "--tag ~quarantine --tag ~zoekt"
 
-.rspec-base-pg11:
-  extends:
-    - .rspec-base
-    - .use-pg11
-
 .rspec-base-pg12:
   extends:
     - .rspec-base
@@ -118,11 +121,6 @@ include:
   extends:
     - .rspec-base
     - .use-pg13
-
-.rspec-ee-base-pg11:
-  extends:
-    - .rspec-base
-    - .use-pg11-es7-ee
 
 .rspec-ee-base-pg12:
   extends:

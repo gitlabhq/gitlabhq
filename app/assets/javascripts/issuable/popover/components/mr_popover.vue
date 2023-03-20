@@ -1,14 +1,12 @@
 <script>
-/* eslint-disable @gitlab/vue-require-i18n-strings */
 import { GlBadge, GlPopover, GlSkeletonLoader } from '@gitlab/ui';
+import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
+import { __ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import { mrStates, humanMRStates } from '../constants';
 import query from '../queries/merge_request.query.graphql';
 
 export default {
-  // name: 'MRPopover' is a false positive: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
-  name: 'MRPopover', // eslint-disable-line @gitlab/require-i18n-strings
   components: {
     GlBadge,
     GlPopover,
@@ -48,9 +46,9 @@ export default {
     },
     badgeVariant() {
       switch (this.mergeRequest.state) {
-        case mrStates.merged:
+        case STATUS_MERGED:
           return 'info';
-        case mrStates.closed:
+        case STATUS_CLOSED:
           return 'danger';
         default:
           return 'success';
@@ -58,12 +56,12 @@ export default {
     },
     stateHumanName() {
       switch (this.mergeRequest.state) {
-        case mrStates.merged:
-          return humanMRStates.merged;
-        case mrStates.closed:
-          return humanMRStates.closed;
+        case STATUS_MERGED:
+          return __('Merged');
+        case STATUS_CLOSED:
+          return __('Closed');
         default:
-          return humanMRStates.open;
+          return __('Open');
       }
     },
     title() {
@@ -101,7 +99,9 @@ export default {
           <gl-badge class="gl-mr-3" :variant="badgeVariant">
             {{ stateHumanName }}
           </gl-badge>
-          <span class="gl-text-secondary">Opened <time v-text="formattedTime"></time></span>
+          <span class="gl-text-secondary">
+            {{ __('Opened') }} <time v-text="formattedTime"></time
+          ></span>
         </div>
         <ci-icon v-if="detailedStatus" :status="detailedStatus" />
       </div>

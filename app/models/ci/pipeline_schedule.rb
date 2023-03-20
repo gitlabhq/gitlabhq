@@ -8,14 +8,15 @@ module Ci
     include CronSchedulable
     include Limitable
     include EachBatch
+    include BatchNullifyDependentAssociations
 
     self.limit_name = 'ci_pipeline_schedules'
     self.limit_scope = :project
 
     belongs_to :project
     belongs_to :owner, class_name: 'User'
-    has_one :last_pipeline, -> { order(id: :desc) }, class_name: 'Ci::Pipeline'
-    has_many :pipelines
+    has_one :last_pipeline, -> { order(id: :desc) }, class_name: 'Ci::Pipeline', inverse_of: :pipeline_schedule
+    has_many :pipelines, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, class_name: 'Ci::PipelineScheduleVariable'
 
     validates :cron, unless: :importing?, cron: true, presence: { unless: :importing? }
@@ -80,6 +81,12 @@ module Ci
 
     def worker_cron_expression
       Settings.cron_jobs['pipeline_schedule_worker']['cron']
+    end
+
+    def destroy
+      nullify_dependent_associations_in_batches
+
+      super
     end
   end
 end

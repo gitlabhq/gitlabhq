@@ -4,7 +4,7 @@ group: Product Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Service Ping Guide
+# Service Ping development guidelines
 
 > - Introduced in GitLab Ultimate 11.2, more statistics.
 > - In GitLab 14.1, [renamed from Usage Ping to Service Ping](https://gitlab.com/groups/gitlab-org/-/epics/5990). In 14.0 and earlier, use the Usage Ping documentation for the Rails commands appropriate to your version.
@@ -91,23 +91,23 @@ sequenceDiagram
    the required URL is <https://version.gitlab.com/>.
 1. In case of an error, it will be reported to the Version application along with following pieces of information:
 
-    - `uuid` - GitLab instance unique identifier
-    - `hostname` - GitLab instance hostname
-    - `version` - GitLab instance current versions
-    - `elapsed` - Amount of time which passed since Service Ping report process started and moment of error occurrence
-    - `message` - Error message
+   - `uuid` - GitLab instance unique identifier
+   - `hostname` - GitLab instance hostname
+   - `version` - GitLab instance current versions
+   - `elapsed` - Amount of time which passed since Service Ping report process started and moment of error occurrence
+   - `message` - Error message
 
-    <pre>
-    <code>
-    {
-      "uuid"=>"02333324-1cd7-4c3b-a45b-a4993f05fb1d",
-      "hostname"=>"127.0.0.1",
-      "version"=>"14.7.0-pre",
-      "elapsed"=>0.006946,
-      "message"=>'PG::UndefinedColumn: ERROR:  column \"non_existent_attribute\" does not exist\nLINE 1: SELECT COUNT(non_existent_attribute) FROM \"issues\" /*applica...'
-    }
-    </code>
-    </pre>
+   <pre>
+   <code>
+   {
+     "uuid"=>"02333324-1cd7-4c3b-a45b-a4993f05fb1d",
+     "hostname"=>"127.0.0.1",
+     "version"=>"14.7.0-pre",
+     "elapsed"=>0.006946,
+     "message"=>'PG::UndefinedColumn: ERROR:  column \"non_existent_attribute\" does not exist\nLINE 1: SELECT COUNT(non_existent_attribute) FROM \"issues\" /*applica...'
+   }
+   </code>
+   </pre>
 
 1. Finally, the timing metadata information that is used for diagnostic purposes is submitted to the Versions application. It consists of a list of metric identifiers and the time it took to calculate the metrics:
 
@@ -135,7 +135,7 @@ sequenceDiagram
         ]
       }
     }
-    ```
+```
 
 ### On a Geo secondary site
 
@@ -177,7 +177,7 @@ The following is example content of the Service Ping payload.
   "recorded_at": "2020-04-17T07:43:54.162+00:00",
   "edition": "EEU",
   "license_md5": "00000000000000000000000000000000",
-  "license_sha256: "0000000000000000000000000000000000000000000000000000000000000000",
+  "license_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
   "license_id": null,
   "historical_max_users": 999,
   "licensee": {

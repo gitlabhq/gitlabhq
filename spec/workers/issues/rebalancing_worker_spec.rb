@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::RebalancingWorker do
+RSpec.describe Issues::RebalancingWorker, feature_category: :team_planning do
   describe '#perform' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Snippets::UpdateService do
+RSpec.describe Snippets::UpdateService, feature_category: :source_code_management do
   describe '#execute', :aggregate_failures do
     let_it_be(:user) { create(:user) }
     let_it_be(:admin) { create :user, admin: true }

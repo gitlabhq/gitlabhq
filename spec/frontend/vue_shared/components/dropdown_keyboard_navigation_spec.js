@@ -39,10 +39,6 @@ describe('DropdownKeyboardNavigation', () => {
     },
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('onInit', () => {
     beforeEach(() => {
       createComponent();

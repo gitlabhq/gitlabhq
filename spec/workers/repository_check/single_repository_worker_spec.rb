@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'fileutils'
 
-RSpec.describe RepositoryCheck::SingleRepositoryWorker do
+RSpec.describe RepositoryCheck::SingleRepositoryWorker, feature_category: :source_code_management do
   subject(:worker) { described_class.new }
 
   before do

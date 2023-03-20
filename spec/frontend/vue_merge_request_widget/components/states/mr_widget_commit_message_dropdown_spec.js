@@ -36,10 +36,6 @@ describe('Commits message dropdown component', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findDropdownElements = () => wrapper.findAllComponents(GlDropdownItem);
   const findFirstDropdownElement = () => findDropdownElements().at(0);
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::Mapper::Normalizer, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Config::External::Mapper::Normalizer, feature_category: :pipeline_composition do
   let_it_be(:variables) do
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
       variables.append(key: 'VARIABLE1', value: 'config')

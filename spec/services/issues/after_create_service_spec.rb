@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::AfterCreateService do
+RSpec.describe Issues::AfterCreateService, feature_category: :team_planning do
   include AfterNextHelpers
 
   let_it_be(:project) { create(:project) }

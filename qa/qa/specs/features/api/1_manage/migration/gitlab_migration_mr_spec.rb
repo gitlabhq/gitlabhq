@@ -37,7 +37,7 @@ module QA
       let!(:source_mr_approvers) { [source_admin_user.email] }
       let(:source_mr_comments) do
         source_mr.comments.map do |note|
-          { **note.except(:id, :noteable_id), author: note[:author].except(:web_url) }
+          { **note.except(:id, :noteable_id, :project_id), author: note[:author].except(:web_url) }
         end
       end
 
@@ -52,11 +52,11 @@ module QA
 
       let(:imported_mr_comments) do
         imported_mr.comments.map do |note|
-          { **note.except(:id, :noteable_id), author: note[:author].except(:web_url) }
+          { **note.except(:id, :noteable_id, :project_id), author: note[:author].except(:web_url) }
         end
       end
 
-      let(:imported_mr_reviewers) { imported_mr.reviewers.map { |reviewer| reviewer[:username] } }
+      let(:imported_mr_reviewers) { imported_mr.reviewers.pluck(:username) }
       let(:imported_mr_approvers) do
         imported_mr.approval_configuration[:approved_by].map { |usr| usr.dig(:user, :username) }
       end

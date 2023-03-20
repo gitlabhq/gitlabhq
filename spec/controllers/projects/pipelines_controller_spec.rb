@@ -199,22 +199,36 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
           check_pipeline_response(returned: 6, all: 6)
         end
       end
+
+      context "with lazy_load_pipeline_dropdown_actions feature flag disabled" do
+        before do
+          stub_feature_flags(lazy_load_pipeline_dropdown_actions: false)
+        end
+
+        it 'returns manual and scheduled actions' do
+          get_pipelines_index_json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('pipeline')
+
+          expect(json_response.dig('pipelines', 0, 'details')).to include('manual_actions')
+          expect(json_response.dig('pipelines', 0, 'details')).to include('scheduled_actions')
+        end
+      end
     end
 
     def get_pipelines_index_html(params = {})
       get :index, params: {
-                    namespace_id: project.namespace,
-                    project_id: project
-                  }.merge(params),
-                  format: :html
+        namespace_id: project.namespace,
+        project_id: project
+      }.merge(params), format: :html
     end
 
     def get_pipelines_index_json(params = {})
       get :index, params: {
-                    namespace_id: project.namespace,
-                    project_id: project
-                  }.merge(params),
-                  format: :json
+        namespace_id: project.namespace,
+        project_id: project
+      }.merge(params), format: :json
     end
 
     def create_all_pipeline_types
@@ -236,12 +250,15 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
     def create_pipeline(status, sha, merge_request: nil)
       user = create(:user)
-      pipeline = create(:ci_empty_pipeline, status: status,
-                                            project: project,
-                                            sha: sha.id,
-                                            ref: sha.id.first(8),
-                                            user: user,
-                                            merge_request: merge_request)
+      pipeline = create(
+        :ci_empty_pipeline,
+        status: status,
+        project: project,
+        sha: sha.id,
+        ref: sha.id.first(8),
+        user: user,
+        merge_request: merge_request
+      )
 
       build_stage = create(:ci_stage, name: 'build', pipeline: pipeline)
       test_stage = create(:ci_stage, name: 'test', pipeline: pipeline)
@@ -378,9 +395,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
       let(:project) { create(:project, :repository) }
 
       let(:pipeline) do
-        create(:ci_empty_pipeline, project: project,
-                                   user: user,
-                                   sha: project.commit.id)
+        create(:ci_empty_pipeline, project: project, user: user, sha: project.commit.id)
       end
 
       let(:build_stage) { create(:ci_stage, name: 'build', pipeline: pipeline) }
@@ -598,9 +613,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
       def create_pipeline(project)
         create(:ci_empty_pipeline, project: project).tap do |pipeline|
-          create(:ci_build, pipeline: pipeline,
-                            ci_stage: create(:ci_stage, name: 'test', pipeline: pipeline),
-                            name: 'rspec')
+          create(:ci_build, pipeline: pipeline, ci_stage: create(:ci_stage, name: 'test', pipeline: pipeline), name: 'rspec')
         end
       end
 
@@ -771,11 +784,8 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
     before do
       get :status, params: {
-                     namespace_id: project.namespace,
-                     project_id: project,
-                     id: pipeline.id
-                   },
-                   format: :json
+        namespace_id: project.namespace, project_id: project, id: pipeline.id
+      }, format: :json
     end
 
     it 'return a detailed pipeline status in json' do
@@ -825,7 +835,6 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
         subject { get :charts, params: request_params, format: :html }
 
         let(:request_params) { { namespace_id: project.namespace, project_id: project, id: pipeline.id, chart: tab[:chart_param] } }
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:category) { described_class.name }
         let(:action) { 'perform_analytics_usage_action' }
         let(:namespace) { project.namespace }
@@ -868,9 +877,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
       context 'when latest commit contains [ci skip]' do
         before do
-          project.repository.create_file(user, 'new-file.txt', 'A new file',
-                                         message: '[skip ci] This is a test',
-                                         branch_name: 'master')
+          project.repository.create_file(user, 'new-file.txt', 'A new file', message: '[skip ci] This is a test', branch_name: 'master')
         end
 
         it_behaves_like 'creates a pipeline'
@@ -906,11 +913,8 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
     subject do
       post :create, params: {
-                      namespace_id: project.namespace,
-                      project_id: project,
-                      pipeline: { ref: 'master' }
-                    },
-                    format: :json
+        namespace_id: project.namespace, project_id: project, pipeline: { ref: 'master' }
+      }, format: :json
     end
 
     before do
@@ -969,11 +973,8 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
   describe 'POST retry.json' do
     subject(:post_retry) do
       post :retry, params: {
-                     namespace_id: project.namespace,
-                     project_id: project,
-                     id: pipeline.id
-                   },
-                   format: :json
+        namespace_id: project.namespace, project_id: project, id: pipeline.id
+      }, format: :json
     end
 
     let!(:pipeline) { create(:ci_pipeline, :failed, project: project) }
@@ -1036,11 +1037,8 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
     before do
       post :cancel, params: {
-                      namespace_id: project.namespace,
-                      project_id: project,
-                      id: pipeline.id
-                    },
-                    format: :json
+        namespace_id: project.namespace, project_id: project, id: pipeline.id
+      }, format: :json
     end
 
     it 'cancels a pipeline without returning any content', :sidekiq_might_not_need_inline do
@@ -1192,17 +1190,11 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
     let(:branch_secondary) { project.repository.branches[1] }
 
     let!(:pipeline_master) do
-      create(:ci_pipeline,
-             ref: branch_main.name,
-             sha: branch_main.target,
-             project: project)
+      create(:ci_pipeline, ref: branch_main.name, sha: branch_main.target, project: project)
     end
 
     let!(:pipeline_secondary) do
-      create(:ci_pipeline,
-             ref: branch_secondary.name,
-             sha: branch_secondary.target,
-             project: project)
+      create(:ci_pipeline, ref: branch_secondary.name, sha: branch_secondary.target, project: project)
     end
 
     before do
@@ -1455,10 +1447,9 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
     private
 
     def get_config_variables
-      get :config_variables, params: { namespace_id: project.namespace,
-                                       project_id: project,
-                                       sha: ref },
-                             format: :json
+      get :config_variables, params: {
+        namespace_id: project.namespace, project_id: project, sha: ref
+      }, format: :json
     end
   end
 

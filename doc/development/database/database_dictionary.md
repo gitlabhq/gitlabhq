@@ -26,6 +26,7 @@ feature_categories:
 description: Represents a Terraform state backend
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26619
 milestone: '13.0'
+gitlab_schema: gitlab_main
 ```
 
 ## Adding tables

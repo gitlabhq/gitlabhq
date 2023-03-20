@@ -21,6 +21,8 @@ GET /groups/:id/milestones?state=active
 GET /groups/:id/milestones?state=closed
 GET /groups/:id/milestones?title=1.0
 GET /groups/:id/milestones?search=version
+GET /groups/:id/milestones?updated_before=2013-10-02T09%3A24%3A18Z
+GET /groups/:id/milestones?updated_after=2013-10-02T09%3A24%3A18Z
 ```
 
 Parameters:
@@ -32,7 +34,9 @@ Parameters:
 | `state`                     | string | no | Return only `active` or `closed` milestones |
 | `title`                     | string | no | Return only the milestones having the given `title` |
 | `search`                    | string | no | Return only milestones with a title or description matching the provided string |
-| `include_parent_milestones` | boolean | optional | Include milestones from parent group and its ancestors. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196066) in GitLab 13.4 |
+| `include_parent_milestones` | boolean | no | Include milestones from parent group and its ancestors. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196066) in GitLab 13.4 |
+| `updated_before`            | datetime | no | Return only milestones updated before the given datetime. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Introduced in GitLab 15.10 |
+| `updated_after`             | datetime | no | Return only milestones updated after the given datetime. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Introduced in GitLab 15.10 |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/milestones"

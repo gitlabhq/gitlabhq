@@ -6,8 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Redmine **(FREE)**
 
-Use [Redmine](https://www.redmine.org/) as the issue tracker.
-
+You can use [Redmine](https://www.redmine.org/) as an external issue tracker.
 To enable the Redmine integration in a project:
 
 1. On the top bar, select **Main menu > Projects** and find your project.

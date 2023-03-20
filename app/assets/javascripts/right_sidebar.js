@@ -70,7 +70,7 @@ Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
   const $expandIcon = $('.js-sidebar-expand');
   const $toggleContainer = $('.js-sidebar-toggle-container');
   const isExpanded = $toggleContainer.data('is-expanded');
-  const tooltipLabel = isExpanded ? __('Expand sidebar') : __('Collapse sidebar');
+  const tooltipLabel = isExpanded ? __('Collapse sidebar') : __('Expand sidebar');
   e.preventDefault();
 
   if (isExpanded) {

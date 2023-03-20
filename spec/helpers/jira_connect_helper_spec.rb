@@ -9,8 +9,7 @@ RSpec.describe JiraConnectHelper, feature_category: :integrations do
 
     let(:user) { create(:user) }
     let(:client_id) { '123' }
-    let(:enable_public_keys_storage_config) { false }
-    let(:enable_public_keys_storage_setting) { false }
+    let(:enable_public_keys_storage) { false }
 
     before do
       stub_application_setting(jira_connect_application_key: client_id)
@@ -22,9 +21,7 @@ RSpec.describe JiraConnectHelper, feature_category: :integrations do
       before do
         allow(view).to receive(:current_user).and_return(nil)
         allow(Gitlab.config.gitlab).to receive(:url).and_return('http://test.host')
-        allow(Gitlab.config.jira_connect).to receive(:enable_public_keys_storage)
-          .and_return(enable_public_keys_storage_config)
-        stub_application_setting(jira_connect_public_key_storage_enabled: enable_public_keys_storage_setting)
+        stub_application_setting(jira_connect_public_key_storage_enabled: enable_public_keys_storage)
       end
 
       it 'includes Jira Connect app attributes' do
@@ -108,16 +105,8 @@ RSpec.describe JiraConnectHelper, feature_category: :integrations do
         expect(subject[:public_key_storage_enabled]).to eq(false)
       end
 
-      context 'when public_key_storage is enabled via config' do
-        let(:enable_public_keys_storage_config) { true }
-
-        it 'assignes public_key_storage_enabled to true' do
-          expect(subject[:public_key_storage_enabled]).to eq(true)
-        end
-      end
-
-      context 'when public_key_storage is enabled via setting' do
-        let(:enable_public_keys_storage_setting) { true }
+      context 'when public_key_storage is enabled' do
+        let(:enable_public_keys_storage) { true }
 
         it 'assignes public_key_storage_enabled to true' do
           expect(subject[:public_key_storage_enabled]).to eq(true)

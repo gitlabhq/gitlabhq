@@ -12,6 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3834) in GitLab 13.11, the GitLab agent became available on GitLab.com.
 > - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) from GitLab Premium to GitLab Free in 14.5.
 > - [Renamed](https://gitlab.com/groups/gitlab-org/-/epics/7167) from "GitLab Kubernetes Agent" to "GitLab agent for Kubernetes" in GitLab 14.6.
+> - Flux [recommended](https://gitlab.com/gitlab-org/gitlab/-/issues/357947#note_1253489000) as GitOps solution in GitLab 15.10.
 
 You can connect your Kubernetes cluster with GitLab to deploy, manage,
 and monitor your cloud-native solutions.
@@ -33,20 +34,7 @@ You can choose from two primary workflows. The GitOps workflow is recommended.
 
 ### GitOps workflow
 
-In a [**GitOps** workflow](gitops.md):
-
-- You keep your Kubernetes manifests in GitLab.
-- You install a GitLab agent in your cluster.
-- Any time you update your manifests, the agent updates the cluster.
-- The cluster automatically cleans up unexpected changes. It uses
-  [server-side applies](https://kubernetes.io/docs/reference/using-api/server-side-apply/)
-  to fix any configuration inconsistencies that third parties introduce.
-
-This workflow is fully driven with Git and is considered **pull-based**,
-because the cluster is pulling updates from your GitLab repository.
-
-GitLab recommends this workflow. We are actively investing in this workflow
-so we can provide a first-class experience.
+You should use Flux for GitOps. To get started, see the GitLab [Flux documentation](../../../user/clusters/agent/gitops/flux.md).
 
 ### GitLab CI/CD workflow
 

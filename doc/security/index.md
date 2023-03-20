@@ -13,7 +13,7 @@ type: index
 - [Generated passwords for users created through integrated authentication](passwords_for_integrated_authentication_methods.md)
 - [Restrict SSH key technologies and minimum length](ssh_keys_restrictions.md)
 - [Rate limits](rate_limits.md)
-- [Webhooks and insecure internal web services](webhooks.md)
+- [Filtering outbound requests](webhooks.md)
 - [Information exclusivity](information_exclusivity.md)
 - [Reset user password](reset_user_password.md)
 - [Unlock a locked user](unlock_user.md)

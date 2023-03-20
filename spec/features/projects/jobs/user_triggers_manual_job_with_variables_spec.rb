@@ -24,7 +24,7 @@ RSpec.describe 'User triggers manual job with variables', :js, feature_category:
       find("[data-testid='ci-variable-value']").set('key_value')
     end
 
-    find("[data-testid='trigger-manual-job-btn']").click
+    find("[data-testid='run-manual-job-btn']").click
 
     wait_for_requests
 

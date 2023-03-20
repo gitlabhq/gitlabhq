@@ -126,6 +126,7 @@ module GroupsHelper
 
   def subgroup_creation_data(group)
     {
+      parent_group_url: group.parent && group_url(group.parent),
       parent_group_name: group.parent&.name,
       import_existing_group_path: new_group_path(parent_id: group.parent_id, anchor: 'import-group-pane')
     }

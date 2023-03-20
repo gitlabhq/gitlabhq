@@ -37,9 +37,7 @@ module Repositories
     private
 
     def render_json(data, process = true)
-      render json: build_payload(data, process),
-             content_type: LfsRequest::CONTENT_TYPE,
-             status: @result[:http_status]
+      render json: build_payload(data, process), content_type: LfsRequest::CONTENT_TYPE, status: @result[:http_status]
     end
 
     def build_payload(data, process)

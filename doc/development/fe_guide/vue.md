@@ -76,7 +76,13 @@ component, is that you avoid creating a fixture or an HTML element in the unit t
 
 `initSimpleApp` is a helper function that streamlines the process of mounting a component in Vue.js. It accepts two arguments: a selector string representing the mount point in the HTML, and a Vue component.
 
-To use `initSimpleApp`, include the HTML element in the page with the appropriate selector and add a data-view-model attribute containing a JSON object. Then, import the desired Vue component and pass it along with the selector to `initSimpleApp`. This mounts the component at the specified location.
+To use `initSimpleApp`:
+
+1. Include an HTML element in the page with an ID or unique class.
+1. Add a data-view-model attribute containing a JSON object.
+1. Import the desired Vue component, and pass it along with a valid CSS selector string
+   that selects the HTML element to `initSimpleApp`. This string mounts the component
+   at the specified location.
 
 `initSimpleApp` automatically retrieves the content of the data-view-model attribute as a JSON object and passes it as props to the mounted Vue component. This can be used to pre-populate the component with data.
 
@@ -138,6 +144,7 @@ const { endpoint } = el.dataset;
 
 return new Vue({
   el,
+  name: 'MyComponentRoot',
   render(createElement) {
     return createElement('my-component', {
       provide: {
@@ -198,6 +205,7 @@ const { endpoint } = el.dataset;
 
 return new Vue({
   el,
+  name: 'MyComponentRoot',
   render(createElement) {
     return createElement('my-component', {
       props: {
@@ -252,6 +260,7 @@ export const initUserForm = () => {
 
   return new Vue({
     el,
+    name: 'UserFormRoot',
     render(h) {
       return h(UserForm, {
         props: {
@@ -305,6 +314,7 @@ initializing our Vue instance, and the data should be provided as `props` to the
 ```javascript
 return new Vue({
   el: '.js-vue-app',
+  name: 'MyComponentRoot',
   render(createElement) {
     return createElement('my-component', {
       props: {
@@ -442,6 +452,22 @@ Composition API allows you to place the logic in the `<script>` section of the c
   }
 </script>
 ```
+
+### `v-bind` limitations
+
+Avoid using `v-bind="$attrs"` unless absolutely necessary. You might need this when
+developing a native control wrapper. (This is a good candidate for a `gitlab-ui` component.)
+In any other cases, always prefer using `props` and explicit data flow.
+
+Using `v-bind="$attrs"` leads to:
+
+1. A loss in component's contract. The `props` were designed specifically
+   to address this problem.
+1. High maintenance cost for each component in the tree. `v-bind="$attrs"` is specifically
+   hard to debug because you must scan the whole hierarchy of components to understand
+   the data flow.
+1. Problems during migration to Vue 3. `$attrs` in Vue 3 include event listeners which
+   could cause unexpected side-effects after Vue 3 migration is completed.
 
 ### Aim to have one API style per component
 
@@ -608,8 +634,7 @@ describe('~/todos/app.vue', () => {
   });
 
   afterEach(() => {
-    // IMPORTANT: Clean up the component instance and axios mock adapter
-    wrapper.destroy();
+    // IMPORTANT: Clean up the axios mock adapter
     mock.restore();
   });
 

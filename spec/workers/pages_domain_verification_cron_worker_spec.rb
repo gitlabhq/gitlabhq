@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PagesDomainVerificationCronWorker do
+RSpec.describe PagesDomainVerificationCronWorker, feature_category: :pages do
   subject(:worker) { described_class.new }
 
   describe '#perform', :sidekiq do

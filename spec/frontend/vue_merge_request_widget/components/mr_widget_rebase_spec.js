@@ -1,3 +1,4 @@
+import { GlModal } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import WidgetRebase from '~/vue_merge_request_widget/components/states/mr_widget_rebase.vue';
@@ -8,8 +9,11 @@ jest.mock('~/vue_shared/plugins/global_toast');
 
 let wrapper;
 
-function createWrapper(propsData) {
+function createWrapper(propsData, provideData) {
   wrapper = mount(WidgetRebase, {
+    provide: {
+      ...provideData,
+    },
     propsData,
     data() {
       return {
@@ -19,6 +23,7 @@ function createWrapper(propsData) {
           userPermissions: {
             pushToSourceBranch: propsData.mr.canPushToSourceBranch,
           },
+          pipelines: propsData.mr.pipelines,
         },
       };
     },
@@ -37,11 +42,8 @@ describe('Merge request widget rebase component', () => {
   const findRebaseMessageText = () => findRebaseMessage().text();
   const findStandardRebaseButton = () => wrapper.find('[data-testid="standard-rebase-button"]');
   const findRebaseWithoutCiButton = () => wrapper.find('[data-testid="rebase-without-ci-button"]');
+  const findModal = () => wrapper.findComponent(GlModal);
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
   describe('while rebasing', () => {
     it('should show progress message', () => {
       createWrapper({
@@ -197,6 +199,72 @@ describe('Merge request widget rebase component', () => {
         await nextTick();
 
         expect(rebaseMock).toHaveBeenCalledWith({ skipCi: true });
+      });
+    });
+
+    describe('security modal', () => {
+      it('displays modal and rebases after confirming', () => {
+        createWrapper(
+          {
+            mr: {
+              rebaseInProgress: false,
+              canPushToSourceBranch: true,
+              sourceProjectFullPath: 'user/forked',
+              targetProjectFullPath: 'root/original',
+              pipelines: {
+                nodes: [
+                  {
+                    id: '1',
+                    project: {
+                      id: '2',
+                      fullPath: 'user/forked',
+                    },
+                  },
+                ],
+              },
+            },
+            service: {
+              rebase: rebaseMock,
+              poll: pollMock,
+            },
+          },
+          { canCreatePipelineInTargetProject: true },
+        );
+
+        findModal().vm.show = jest.fn();
+
+        findStandardRebaseButton().vm.$emit('click');
+
+        expect(findModal().vm.show).toHaveBeenCalled();
+
+        findModal().vm.$emit('primary');
+
+        expect(rebaseMock).toHaveBeenCalled();
+      });
+
+      it('does not display modal', () => {
+        createWrapper(
+          {
+            mr: {
+              rebaseInProgress: false,
+              canPushToSourceBranch: true,
+              sourceProjectFullPath: 'user/forked',
+              targetProjectFullPath: 'root/original',
+            },
+            service: {
+              rebase: rebaseMock,
+              poll: pollMock,
+            },
+          },
+          { canCreatePipelineInTargetProject: false },
+        );
+
+        findModal().vm.show = jest.fn();
+
+        findStandardRebaseButton().vm.$emit('click');
+
+        expect(findModal().vm.show).not.toHaveBeenCalled();
+        expect(rebaseMock).toHaveBeenCalled();
       });
     });
   });

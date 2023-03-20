@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineBridgeStatusService do
+RSpec.describe Ci::PipelineBridgeStatusService, feature_category: :continuous_integration do
   let(:user) { build(:user) }
   let_it_be(:project) { create(:project) }
 

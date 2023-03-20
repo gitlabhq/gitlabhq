@@ -3,6 +3,7 @@ import { nextTick } from 'vue';
 import { GlTabs } from '@gitlab/ui';
 import HeaderComponent from '~/vue_shared/components/markdown/header.vue';
 import ToolbarButton from '~/vue_shared/components/markdown/toolbar_button.vue';
+import DrawioToolbarButton from '~/vue_shared/components/markdown/drawio_toolbar_button.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 describe('Markdown field header component', () => {
@@ -26,6 +27,7 @@ describe('Markdown field header component', () => {
     findToolbarButtons()
       .filter((button) => button.props(prop) === value)
       .at(0);
+  const findDrawioToolbarButton = () => wrapper.findComponent(DrawioToolbarButton);
 
   beforeEach(() => {
     window.gl = {
@@ -35,10 +37,6 @@ describe('Markdown field header component', () => {
     };
 
     createWrapper();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   describe('markdown header buttons', () => {
@@ -195,6 +193,26 @@ describe('Markdown field header component', () => {
       createWrapper();
 
       expect(findToolbarButtons().length).toBe(defaultCount);
+    });
+  });
+
+  describe('when drawIOEnabled is true', () => {
+    const uploadsPath = '/uploads';
+    const markdownPreviewPath = '/preview';
+
+    beforeEach(() => {
+      createWrapper({
+        drawioEnabled: true,
+        uploadsPath,
+        markdownPreviewPath,
+      });
+    });
+
+    it('renders drawio toolbar button', () => {
+      expect(findDrawioToolbarButton().props()).toEqual({
+        uploadsPath,
+        markdownPreviewPath,
+      });
     });
   });
 });

@@ -10,6 +10,7 @@ module Gitlab
         @ee_hash = @hash.delete(:ee) || {}
 
         @hash[:tree] = normalize_tree(@hash[:tree])
+        @hash[:import_only_tree] = normalize_tree(@hash[:import_only_tree] || {})
         @ee_hash[:tree] = normalize_tree(@ee_hash[:tree] || {})
       end
 

@@ -22,7 +22,7 @@ describe('Pipeline editor file nav', () => {
           includes,
         },
         directives: {
-          GlTooltip: createMockDirective(),
+          GlTooltip: createMockDirective('gl-tooltip'),
         },
         stubs,
       }),
@@ -35,7 +35,6 @@ describe('Pipeline editor file nav', () => {
 
   afterEach(() => {
     localStorage.clear();
-    wrapper.destroy();
   });
 
   describe('template', () => {

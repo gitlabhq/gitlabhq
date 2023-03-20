@@ -4,6 +4,7 @@ import { mapActions, mapState } from 'vuex';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { visitUrl, updateHistory, getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
+import eventHub from '~/boards/eventhub';
 import { formType } from '../constants';
 
 import createBoardMutation from '../graphql/board_create.mutation.graphql';
@@ -55,6 +56,9 @@ export default {
       default: false,
     },
     isProjectBoard: {
+      default: false,
+    },
+    isApolloBoard: {
       default: false,
     },
   },
@@ -124,14 +128,12 @@ export default {
     primaryProps() {
       return {
         text: this.buttonText,
-        attributes: [
-          {
-            variant: this.buttonKind,
-            disabled: this.submitDisabled,
-            loading: this.isLoading,
-            'data-qa-selector': 'save_changes_button',
-          },
-        ],
+        attributes: {
+          variant: this.buttonKind,
+          disabled: this.submitDisabled,
+          loading: this.isLoading,
+          'data-qa-selector': 'save_changes_button',
+        },
       };
     },
     cancelProps() {
@@ -213,13 +215,23 @@ export default {
       } else {
         try {
           const board = await this.createOrUpdateBoard();
-          this.setBoard(board);
+          if (this.isApolloBoard) {
+            if (this.board.id) {
+              eventHub.$emit('updateBoard', board);
+            } else {
+              this.$emit('addBoard', board);
+            }
+          } else {
+            this.setBoard(board);
+          }
           this.cancel();
 
-          const param = getParameterByName('group_by')
-            ? `?group_by=${getParameterByName('group_by')}`
-            : '';
-          updateHistory({ url: `${this.boardBaseUrl}/${getIdFromGraphQLId(board.id)}${param}` });
+          if (!this.isApolloBoard) {
+            const param = getParameterByName('group_by')
+              ? `?group_by=${getParameterByName('group_by')}`
+              : '';
+            updateHistory({ url: `${this.boardBaseUrl}/${getIdFromGraphQLId(board.id)}${param}` });
+          }
         } catch {
           this.setError({ message: this.$options.i18n.saveErrorMessage });
         } finally {
@@ -278,7 +290,7 @@ export default {
     @hide.prevent
   >
     <gl-alert
-      v-if="error"
+      v-if="!isApolloBoard && error"
       class="gl-mb-3"
       variant="danger"
       :dismissible="true"

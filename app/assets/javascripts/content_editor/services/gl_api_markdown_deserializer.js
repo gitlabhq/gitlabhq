@@ -1,4 +1,4 @@
-import { DOMParser as ProseMirrorDOMParser } from 'prosemirror-model';
+import { DOMParser as ProseMirrorDOMParser } from '@tiptap/pm/model';
 import { replaceCommentsWith } from '~/lib/utils/dom_utils';
 
 export default ({ render }) => {
@@ -18,10 +18,7 @@ export default ({ render }) => {
    */
   return {
     deserialize: async ({ schema, markdown }) => {
-      const html = await render(markdown);
-
-      if (!html) return {};
-
+      const html = markdown ? await render(markdown) : '<p></p>';
       const parser = new DOMParser();
       const { body } = parser.parseFromString(`<body>${html}</body>`, 'text/html');
 

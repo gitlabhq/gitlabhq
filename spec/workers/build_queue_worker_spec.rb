@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BuildQueueWorker do
+RSpec.describe BuildQueueWorker, feature_category: :continuous_integration do
   describe '#perform' do
     context 'when build exists' do
       let!(:build) { create(:ci_build) }

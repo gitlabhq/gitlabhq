@@ -18,10 +18,6 @@ describe('UserNameWithStatus', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('will render the users name', () => {
     expect(wrapper.html()).toContain(name);
   });

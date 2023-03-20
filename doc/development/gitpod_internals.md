@@ -25,6 +25,6 @@ You can find this webhook in [Webhook Settings in `gitlab-org/gitlab`](https://g
 
 If a webhook failed to connect for a long time, then it may have been disabled in the project.
 
-To re-enable a failing or failed webhook, send a test request in [Webhook Settings](https://gitlab.com/gitlab-org/gitlab/-/hooks). See [Re-enable disabled webhooks page](https://docs.gitlab.com/15.4/ee/user/project/integrations/webhooks.html#re-enable-disabled-webhooks) for more details.
+To re-enable a failing or failed webhook, send a test request in [Webhook Settings](https://gitlab.com/gitlab-org/gitlab/-/hooks). See [Re-enable disabled webhooks page](../user/project/integrations/webhooks.md#re-enable-disabled-webhooks) for more details.
 
 After re-enabling, check the prebuilds' health in a [project's prebuilds](https://gitpod.io/t/gitlab-org/gitlab/prebuilds) and confirm that prebuilds start without any errors.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Groups::Menus::MergeRequestsMenu do
+RSpec.describe Sidebars::Groups::Menus::MergeRequestsMenu, feature_category: :navigation do
   let_it_be(:owner) { create(:user) }
   let_it_be(:group) do
     build(:group, :private).tap do |g|
@@ -32,5 +32,17 @@ RSpec.describe Sidebars::Groups::Menus::MergeRequestsMenu do
 
   it_behaves_like 'pill_count formatted results' do
     let(:count_service) { ::Groups::MergeRequestsCountService }
+  end
+
+  it_behaves_like 'serializable as super_sidebar_menu_args' do
+    let(:extra_attrs) do
+      {
+        item_id: :group_merge_request_list,
+        sprite_icon: 'git-merge',
+        pill_count: menu.pill_count,
+        has_pill: menu.has_pill?,
+        super_sidebar_parent: ::Sidebars::StaticMenu
+      }
+    end
   end
 end

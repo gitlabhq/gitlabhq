@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::UpdateTagsService do
+RSpec.describe Packages::UpdateTagsService, feature_category: :package_registry do
   let_it_be(:package, reload: true) { create(:nuget_package) }
 
   let(:tags) { %w(test-tag tag1 tag2 tag3) }

@@ -24,10 +24,6 @@ describe('UncollapsedAssigneeList component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findMoreButton = () => wrapper.find('.user-list-more button');
 
   describe('One assignee/user', () => {

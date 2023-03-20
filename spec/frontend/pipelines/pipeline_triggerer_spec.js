@@ -22,14 +22,10 @@ describe('Pipelines Triggerer', () => {
         ...props,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   const findAvatarLink = () => wrapper.findComponent(GlAvatarLink);
   const findAvatar = () => wrapper.findComponent(GlAvatar);

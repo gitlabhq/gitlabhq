@@ -133,6 +133,7 @@ module ProjectsHelper
     {
       source_name: source_project.full_name,
       source_path: project_path(source_project),
+      source_default_branch: source_default_branch,
       ahead_compare_path: project_compare_path(
         project, from: source_default_branch, to: ref, from_project_id: source_project.id
       ),
@@ -474,7 +475,7 @@ module ProjectsHelper
 
   def clusters_deprecation_alert_message
     if has_active_license?
-      s_('ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd} or reach out to GitLab support.')
+      s_('ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}. Contact GitLab Support if you have any additional questions.')
     else
       s_('ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}.')
     end
@@ -496,6 +497,18 @@ module ProjectsHelper
 
   def badge_count(number)
     format_cached_count(1000, number)
+  end
+
+  def remote_mirror_setting_enabled?
+    false
+  end
+
+  def http_clone_url_to_repo(project)
+    project.http_url_to_repo
+  end
+
+  def ssh_clone_url_to_repo(project)
+    project.ssh_url_to_repo
   end
 
   private
@@ -753,7 +766,7 @@ module ProjectsHelper
   end
 
   def show_visibility_confirm_modal?(project)
-    project.unlink_forks_upon_visibility_decrease_enabled? && project.visibility_level > Gitlab::VisibilityLevel::PRIVATE && project.forks_count > 0
+    project.visibility_level > Gitlab::VisibilityLevel::PRIVATE && project.forks_count > 0
   end
 
   def confirm_reduce_visibility_message(project)

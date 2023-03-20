@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::UpdatePackageFileService do
+RSpec.describe Packages::UpdatePackageFileService, feature_category: :package_registry do
   let_it_be(:another_package) { create(:package) }
   let_it_be(:old_file_name) { 'old_file_name.txt' }
   let_it_be(:new_file_name) { 'new_file_name.txt' }

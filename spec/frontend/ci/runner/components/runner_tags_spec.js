@@ -21,10 +21,6 @@ describe('RunnerTags', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('Displays tags text', () => {
     expect(wrapper.text()).toMatchInterpolatedText('tag1 tag2');
 

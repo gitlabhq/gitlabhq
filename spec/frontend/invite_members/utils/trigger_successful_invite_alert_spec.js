@@ -6,10 +6,10 @@ import {
   TOAST_MESSAGE_LOCALSTORAGE_KEY,
   TOAST_MESSAGE_SUCCESSFUL,
 } from '~/invite_members/constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 useLocalStorageSpy();
 
 describe('Display Successful Invitation Alert', () => {

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::CreateEventService do
+RSpec.describe Packages::CreateEventService, feature_category: :package_registry do
   let(:scope) { 'generic' }
   let(:event_name) { 'push_package' }
 

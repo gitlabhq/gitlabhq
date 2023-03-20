@@ -10,10 +10,6 @@ describe(`TimelineEntryItem`, () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders correctly', () => {
     factory();
 

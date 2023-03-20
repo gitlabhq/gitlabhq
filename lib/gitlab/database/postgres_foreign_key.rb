@@ -38,6 +38,14 @@ module Gitlab
 
       scope :by_constrained_table_name, ->(name) { where(constrained_table_name: name) }
 
+      scope :by_constrained_table_name_or_identifier, ->(name) do
+        if name =~ Database::FULLY_QUALIFIED_IDENTIFIER
+          by_constrained_table_identifier(name)
+        else
+          by_constrained_table_name(name)
+        end
+      end
+
       scope :not_inherited, -> { where(is_inherited: false) }
 
       scope :by_name, ->(name) { where(name: name) }

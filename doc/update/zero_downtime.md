@@ -465,6 +465,8 @@ Log in to your **primary** node, executing the following:
    sudo SKIP_POST_DEPLOYMENT_MIGRATIONS=true gitlab-rake db:migrate
    ```
 
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the primary site to the secondary site if they're different. The file must be the same on all of a site’s nodes.
+
 ### Update the Geo secondary site
 
 On each **secondary** node, executing the following:
@@ -664,6 +666,8 @@ Hot reload `puma` and `sidekiq` services:
 sudo gitlab-ctl hup puma
 sudo gitlab-ctl restart sidekiq
 ```
+
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the primary site to the secondary site if they're different. The file must be the same on all of a site’s nodes.
 
 ### Step 3: Update each Geo secondary multi-node deployment
 

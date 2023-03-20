@@ -59,23 +59,14 @@ describe('ImportHistoryApp', () => {
     });
   }
 
-  const originalApiVersion = gon.api_version;
-  beforeAll(() => {
+  beforeEach(() => {
     gon.api_version = 'v4';
     gon.features = { fullPathProjectSearch: true };
-  });
-
-  afterAll(() => {
-    gon.api_version = originalApiVersion;
-  });
-
-  beforeEach(() => {
     mock = new MockAdapter(axios);
   });
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
   });
 
   describe('general behavior', () => {

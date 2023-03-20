@@ -15,11 +15,6 @@ describe('SecurityReportDownloadDropdown component', () => {
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('given report artifacts', () => {
     beforeEach(() => {
       artifacts = [

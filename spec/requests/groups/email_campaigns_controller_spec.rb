@@ -38,11 +38,7 @@ RSpec.describe Groups::EmailCampaignsController, feature_category: :navigation d
         expect(subject).to have_gitlab_http_status(:redirect)
       end
 
-      context 'on .com' do
-        before do
-          allow(Gitlab).to receive(:com?).and_return(true)
-        end
-
+      context 'on SaaS', :saas do
         it 'emits a snowplow event', :snowplow do
           subject
 

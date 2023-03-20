@@ -2,7 +2,7 @@
 import { GlIcon } from '@gitlab/ui';
 import $ from 'jquery';
 import { debounce, unescape } from 'lodash';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import GLForm from '~/gl_form';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import axios from '~/lib/utils/axios_utils';
@@ -128,6 +128,11 @@ export default {
       default: () => [],
     },
     showContentEditorSwitcher: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    drawioEnabled: {
       type: Boolean,
       required: false,
       default: false,
@@ -355,6 +360,10 @@ export default {
       :enable-preview="enablePreview"
       :show-suggest-popover="showSuggestPopover"
       :suggestion-start-index="suggestionsStartIndex"
+      :uploads-path="uploadsPath"
+      :markdown-preview-path="markdownPreviewPath"
+      :drawio-enabled="drawioEnabled"
+      data-testid="markdownHeader"
       :restricted-tool-bar-items="restrictedToolBarItems"
       @preview-markdown="showPreviewTab"
       @write-markdown="showWriteTab"

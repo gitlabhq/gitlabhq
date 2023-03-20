@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Cluster Environments (DEPRECATED) **(PREMIUM)**
+# Cluster Environments (deprecated) **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13392) in GitLab 12.3 for group-level clusters.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14809) in GitLab 12.4 for instance-level clusters.

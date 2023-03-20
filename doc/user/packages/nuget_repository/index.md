@@ -472,4 +472,4 @@ nuget locals all -clear
 
 ### `Error publishing` or `Invalid Package: Failed metadata extraction error` messages when trying to publish NuGet packages in a Docker-based GitLab installation
 
-Webhook requests to local network addresses are blocked to prevent the exploitation of internal web services. If you get `Error publishing` or `Invalid Package` messages when you try to publish NuGet packages, change your network settings to [allow webhook and service requests to the local network](../../../security/webhooks.md#allow-webhook-and-service-requests-to-local-network).
+Webhook requests to local network addresses are blocked to prevent exploitation of internal web services. If you get `Error publishing` or `Invalid Package` messages when you try to publish NuGet packages, change your network settings to [allow webhook and integration requests to the local network](../../../security/webhooks.md#allow-requests-to-the-local-network-from-webhooks-and-integrations).

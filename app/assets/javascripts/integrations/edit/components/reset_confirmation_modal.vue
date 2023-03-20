@@ -9,7 +9,7 @@ export default {
   },
   primaryProps: {
     text: __('Reset'),
-    attributes: [{ variant: 'danger' }, { category: 'primary' }],
+    attributes: { variant: 'danger', category: 'primary' },
   },
   cancelProps: {
     text: __('Cancel'),

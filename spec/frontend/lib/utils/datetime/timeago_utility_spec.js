@@ -3,16 +3,6 @@ import { s__ } from '~/locale';
 import '~/commons/bootstrap';
 
 describe('TimeAgo utils', () => {
-  let oldGon;
-
-  afterEach(() => {
-    window.gon = oldGon;
-  });
-
-  beforeEach(() => {
-    oldGon = window.gon;
-  });
-
   describe('getTimeago', () => {
     describe('with User Setting timeDisplayRelative: true', () => {
       beforeEach(() => {

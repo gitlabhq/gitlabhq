@@ -29,10 +29,6 @@ describe('Job Log Header Line', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('line', () => {
     beforeEach(() => {
       createComponent(data);

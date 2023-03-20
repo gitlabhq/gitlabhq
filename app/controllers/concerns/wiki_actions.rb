@@ -11,6 +11,15 @@ module WikiActions
   RESCUE_GIT_TIMEOUTS_IN = %w[show edit history diff pages].freeze
 
   included do
+    content_security_policy do |p|
+      next if p.directives.blank?
+
+      default_frame_src = p.directives['frame-src'] || p.directives['default-src']
+      frame_src_values = Array.wrap(default_frame_src) | ['https://embed.diagrams.net'].compact
+
+      p.frame_src(*frame_src_values)
+    end
+
     before_action { respond_to :html }
 
     before_action :authorize_read_wiki!
@@ -37,9 +46,7 @@ module WikiActions
       end
     end
 
-    # NOTE: We want to include wiki page views in the same counter as the other
-    # Event-based wiki actions tracked through TrackUniqueEvents, so we use the same event name.
-    track_redis_hll_event :show, name: Gitlab::UsageDataCounters::TrackUniqueEvents::WIKI_ACTION.to_s
+    track_redis_hll_event :show, name: 'wiki_action'
 
     helper_method :view_file_button, :diff_file_html_data
 
@@ -142,8 +149,7 @@ module WikiActions
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def history
     if page
-      @commits = Kaminari.paginate_array(page.versions(page: params[:page].to_i),
-                                         total_count: page.count_versions)
+      @commits = Kaminari.paginate_array(page.versions(page: params[:page].to_i), total_count: page.count_versions)
         .page(params[:page])
 
       render 'shared/wikis/history'
@@ -178,8 +184,7 @@ module WikiActions
     if response.success?
       flash[:toast] = _("Wiki page was successfully deleted.")
 
-      redirect_to wiki_path(wiki),
-      status: :found
+      redirect_to wiki_path(wiki), status: :found
     else
       @error = response.message
       render 'shared/wikis/edit'

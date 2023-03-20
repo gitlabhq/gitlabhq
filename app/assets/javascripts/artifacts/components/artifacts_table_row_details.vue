@@ -1,5 +1,5 @@
 <script>
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import getJobArtifactsQuery from '../graphql/queries/get_job_artifacts.query.graphql';
 import destroyArtifactMutation from '../graphql/mutations/destroy_artifact.mutation.graphql';
@@ -23,6 +23,10 @@ export default {
   props: {
     artifacts: {
       type: Object,
+      required: true,
+    },
+    selectedArtifacts: {
+      type: Array,
       required: true,
     },
     queryVariables: {
@@ -51,6 +55,9 @@ export default {
   methods: {
     isLastRow(index) {
       return index === this.artifacts.nodes.length - 1;
+    },
+    isSelected(item) {
+      return this.selectedArtifacts.includes(item.id);
     },
     showModal(item) {
       this.deletingArtifactId = item.id;
@@ -98,7 +105,9 @@ export default {
         <dynamic-scroller-item :item="item" :active="active" :class="{ active }">
           <artifact-row
             :artifact="item"
+            :is-selected="isSelected(item)"
             :is-last-row="isLastRow(index)"
+            v-on="$listeners"
             @delete="showModal(item)"
           />
         </dynamic-scroller-item>

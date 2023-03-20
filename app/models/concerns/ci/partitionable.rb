@@ -36,6 +36,7 @@ module Ci
         Ci::Pipeline
         Ci::PendingBuild
         Ci::RunningBuild
+        Ci::RunnerMachineBuild
         Ci::PipelineVariable
         Ci::Sources::Pipeline
         Ci::Stage
@@ -70,8 +71,8 @@ module Ci
     class_methods do
       def partitionable(scope:, through: nil, partitioned: false)
         handle_partitionable_through(through)
-        handle_partitionable_dml(partitioned)
         handle_partitionable_scope(scope)
+        handle_partitionable_ddl(partitioned)
       end
 
       private
@@ -85,13 +86,6 @@ module Ci
         include Partitionable::Switch
       end
 
-      def handle_partitionable_dml(partitioned)
-        define_singleton_method(:partitioned?) { partitioned }
-        return unless partitioned
-
-        include Partitionable::PartitionedFilter
-      end
-
       def handle_partitionable_scope(scope)
         define_method(:partition_scope_value) do
           strong_memoize(:partition_scope_value) do
@@ -101,6 +95,17 @@ module Ci
             record.respond_to?(:partition_id) ? record.partition_id : record
           end
         end
+      end
+
+      def handle_partitionable_ddl(partitioned)
+        return unless partitioned
+
+        include ::PartitionedTable
+
+        partitioned_by :partition_id,
+          strategy: :ci_sliding_list,
+          next_partition_if: proc { false },
+          detach_partition_if: proc { false }
       end
     end
   end

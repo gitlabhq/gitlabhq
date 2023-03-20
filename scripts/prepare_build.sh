@@ -14,7 +14,13 @@ if [ "$DECOMPOSED_DB" == "true" ]; then
   echo "Using decomposed database config (config/database.yml.decomposed-postgresql)"
   cp config/database.yml.decomposed-postgresql config/database.yml
 else
+  echo "Using decomposed database config (config/database.yml.postgresql)"
   cp config/database.yml.postgresql config/database.yml
+
+  if [ "$CI_CONNECTION_DB" == "true" ]; then
+    echo "Enabling ci connection (database_tasks: false) in config/database.yml"
+    sed -i '/ci:/,/geo:/''s/^  # /  /g' config/database.yml
+  fi
 fi
 
 # Set up Geo database if the job name matches `rspec-ee` or `geo`.

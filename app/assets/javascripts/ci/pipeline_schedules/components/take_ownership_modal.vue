@@ -27,12 +27,10 @@ export default {
     actionPrimary() {
       return {
         text: this.$options.i18n.takeOwnership,
-        attributes: [
-          {
-            variant: 'confirm',
-            category: 'primary',
-          },
-        ],
+        attributes: {
+          variant: 'confirm',
+          category: 'primary',
+        },
       };
     },
   },

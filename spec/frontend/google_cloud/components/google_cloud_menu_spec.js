@@ -15,10 +15,6 @@ describe('google_cloud/components/google_cloud_menu', () => {
     wrapper = mountExtended(GoogleCloudMenu, { propsData: props });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('contains active configuration link', () => {
     const link = wrapper.findByTestId('configurationLink');
     expect(link.text()).toBe(GoogleCloudMenu.i18n.configuration.title);

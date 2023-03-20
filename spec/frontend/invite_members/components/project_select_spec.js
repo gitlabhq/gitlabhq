@@ -23,10 +23,6 @@ describe('ProjectSelect', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findGlCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findAvatarLabeled = (index) => wrapper.findAllComponents(GlAvatarLabeled).at(index);
 

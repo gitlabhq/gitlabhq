@@ -6,8 +6,13 @@ import Skeleton from '~/observability/components/skeleton/index.vue';
 import DashboardsSkeleton from '~/observability/components/skeleton/dashboards.vue';
 import ExploreSkeleton from '~/observability/components/skeleton/explore.vue';
 import ManageSkeleton from '~/observability/components/skeleton/manage.vue';
+import EmbedSkeleton from '~/observability/components/skeleton/embed.vue';
 
-import { SKELETON_VARIANTS_BY_ROUTE, DEFAULT_TIMERS } from '~/observability/constants';
+import {
+  SKELETON_VARIANTS_BY_ROUTE,
+  DEFAULT_TIMERS,
+  SKELETON_VARIANT_EMBED,
+} from '~/observability/constants';
 
 describe('Skeleton component', () => {
   let wrapper;
@@ -21,6 +26,8 @@ describe('Skeleton component', () => {
   const findDashboardsSkeleton = () => wrapper.findComponent(DashboardsSkeleton);
 
   const findManageSkeleton = () => wrapper.findComponent(ManageSkeleton);
+
+  const findEmbedSkeleton = () => wrapper.findComponent(EmbedSkeleton);
 
   const findAlert = () => wrapper.findComponent(GlAlert);
 
@@ -97,16 +104,20 @@ describe('Skeleton component', () => {
       ${'dashboards'} | ${'variant is dashboards'}                        | ${SKELETON_VARIANTS[0]}
       ${'explore'}    | ${'variant is explore'}                           | ${SKELETON_VARIANTS[1]}
       ${'manage'}     | ${'variant is manage'}                            | ${SKELETON_VARIANTS[2]}
+      ${'embed'}      | ${'variant is embed'}                             | ${SKELETON_VARIANT_EMBED}
       ${'default'}    | ${'variant is not manage, dashboards or explore'} | ${'unknown'}
     `('should render $skeletonType skeleton if $condition', async ({ skeletonType, variant }) => {
       mountComponent({ variant });
       jest.advanceTimersByTime(DEFAULT_TIMERS.CONTENT_WAIT_MS);
       await nextTick();
-      const showsDefaultSkeleton = !SKELETON_VARIANTS.includes(variant);
+      const showsDefaultSkeleton = ![...SKELETON_VARIANTS, SKELETON_VARIANT_EMBED].includes(
+        variant,
+      );
 
       expect(findDashboardsSkeleton().exists()).toBe(skeletonType === SKELETON_VARIANTS[0]);
       expect(findExploreSkeleton().exists()).toBe(skeletonType === SKELETON_VARIANTS[1]);
       expect(findManageSkeleton().exists()).toBe(skeletonType === SKELETON_VARIANTS[2]);
+      expect(findEmbedSkeleton().exists()).toBe(skeletonType === SKELETON_VARIANT_EMBED);
 
       expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(showsDefaultSkeleton);
     });

@@ -7,10 +7,14 @@ import {
 import confidentialMergeRequestState from '~/confidential_merge_request/state';
 import DropLab from '~/filtered_search/droplab/drop_lab_deprecated';
 import ISetter from '~/filtered_search/droplab/plugins/input_setter';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
+import {
+  findInvalidBranchNameCharacters,
+  humanizeBranchValidationErrors,
+} from '~/lib/utils/text_utility';
 import api from '~/api';
 
 // Todo: Remove this when fixing issue in input_setter plugin
@@ -18,6 +22,12 @@ const InputSetter = { ...ISetter };
 
 const CREATE_MERGE_REQUEST = 'create-mr';
 const CREATE_BRANCH = 'create-branch';
+
+const VALIDATION_TYPE_BRANCH_UNAVAILABLE = 'branch_unavailable';
+const VALIDATION_TYPE_INVALID_CHARS = 'invalid_chars';
+
+const INPUT_TARGET_BRANCH = 'branch';
+const INPUT_TARGET_REF = 'ref';
 
 function createEndpoint(projectPath, endpoint) {
   if (canCreateConfidentialMergeRequest()) {
@@ -30,6 +40,23 @@ function createEndpoint(projectPath, endpoint) {
   return endpoint;
 }
 
+function getValidationError(target, inputValue, validationType) {
+  const invalidChars = findInvalidBranchNameCharacters(inputValue.value);
+  let text;
+
+  if (invalidChars && validationType === VALIDATION_TYPE_INVALID_CHARS) {
+    text = humanizeBranchValidationErrors(invalidChars);
+  }
+
+  if (validationType === VALIDATION_TYPE_BRANCH_UNAVAILABLE) {
+    text =
+      target === INPUT_TARGET_BRANCH
+        ? __('Branch is already taken')
+        : __('Source is not available');
+  }
+
+  return text;
+}
 export default class CreateMergeRequestDropdown {
   constructor(wrapperEl) {
     this.wrapperEl = wrapperEl;
@@ -124,18 +151,19 @@ export default class CreateMergeRequestDropdown {
       .then(({ data }) => {
         this.setUnavailableButtonState(false);
 
-        if (data.can_create_branch) {
-          this.available();
-          this.enable();
-          this.updateBranchName(data.suggested_branch_name);
-
-          if (!this.droplabInitialized) {
-            this.droplabInitialized = true;
-            this.initDroplab();
-            this.bindEvents();
-          }
-        } else {
+        if (!data.can_create_branch) {
           this.hide();
+          return;
+        }
+
+        this.available();
+        this.enable();
+        this.updateBranchName(data.suggested_branch_name);
+
+        if (!this.droplabInitialized) {
+          this.droplabInitialized = true;
+          this.initDroplab();
+          this.bindEvents();
         }
       })
       .catch(() => {
@@ -274,7 +302,7 @@ export default class CreateMergeRequestDropdown {
         const tags = data[Object.keys(data)[1]];
         let result;
 
-        if (target === 'branch') {
+        if (target === INPUT_TARGET_BRANCH) {
           result = CreateMergeRequestDropdown.findByValue(branches, ref);
         } else {
           result =
@@ -354,10 +382,10 @@ export default class CreateMergeRequestDropdown {
     }
 
     if (event.target === this.branchInput) {
-      target = 'branch';
+      target = INPUT_TARGET_BRANCH;
       ({ value } = this.branchInput);
     } else if (event.target === this.refInput) {
-      target = 'ref';
+      target = INPUT_TARGET_REF;
       if (event.target === document.activeElement) {
         value =
           event.target.value.slice(0, event.target.selectionStart) +
@@ -382,7 +410,7 @@ export default class CreateMergeRequestDropdown {
       this.createBranchPath = this.wrapperEl.dataset.createBranchPath;
       this.createMrPath = this.wrapperEl.dataset.createMrPath;
 
-      if (target === 'branch') {
+      if (target === INPUT_TARGET_BRANCH) {
         this.branchIsValid = true;
       } else {
         this.refIsValid = true;
@@ -473,7 +501,7 @@ export default class CreateMergeRequestDropdown {
 
   showAvailableMessage(target) {
     const { input, message } = this.getTargetData(target);
-    const text = target === 'branch' ? __('Branch name') : __('Source');
+    const text = target === INPUT_TARGET_BRANCH ? __('Branch name') : __('Source');
 
     this.removeMessage(target);
     input.classList.add('gl-field-success-outline');
@@ -484,7 +512,7 @@ export default class CreateMergeRequestDropdown {
 
   showCheckingMessage(target) {
     const { message } = this.getTargetData(target);
-    const text = target === 'branch' ? __('branch name') : __('source');
+    const text = target === INPUT_TARGET_BRANCH ? __('branch name') : __('source');
 
     this.removeMessage(target);
     message.classList.add('gl-text-gray-600');
@@ -492,10 +520,9 @@ export default class CreateMergeRequestDropdown {
     message.style.display = 'inline-block';
   }
 
-  showNotAvailableMessage(target) {
+  showNotAvailableMessage(target, validationType = VALIDATION_TYPE_BRANCH_UNAVAILABLE) {
     const { input, message } = this.getTargetData(target);
-    const text =
-      target === 'branch' ? __('Branch is already taken') : __('Source is not available');
+    const text = getValidationError(target, input, validationType);
 
     this.removeMessage(target);
     input.classList.add('gl-field-error-outline');
@@ -511,35 +538,35 @@ export default class CreateMergeRequestDropdown {
 
   updateBranchName(suggestedBranchName) {
     this.branchInput.value = suggestedBranchName;
-    this.updateCreatePaths('branch', suggestedBranchName);
+    this.updateInputState(INPUT_TARGET_BRANCH, suggestedBranchName, '');
+    this.updateCreatePaths(INPUT_TARGET_BRANCH, suggestedBranchName);
   }
 
   updateInputState(target, ref, result) {
     // target - 'branch' or 'ref' - which the input field we are searching a ref for.
     // ref - string - what a user typed.
     // result - string - what has been found on backend.
+    if (target === INPUT_TARGET_BRANCH) this.updateTargetBranchInput(ref, result);
+    if (target === INPUT_TARGET_REF) this.updateRefInput(ref, result);
 
-    // If a found branch equals exact the same text a user typed,
-    // that means a new branch cannot be created as it already exists.
+    if (this.inputsAreValid()) {
+      this.enable();
+    } else {
+      this.disableCreateAction();
+    }
+  }
+
+  updateRefInput(ref, result) {
+    this.refInput.dataset.value = ref;
     if (ref === result) {
-      if (target === 'branch') {
-        this.branchIsValid = false;
-        this.showNotAvailableMessage('branch');
-      } else {
-        this.refIsValid = true;
-        this.refInput.dataset.value = ref;
-        this.showAvailableMessage('ref');
-        this.updateCreatePaths(target, ref);
-      }
-    } else if (target === 'branch') {
-      this.branchIsValid = true;
-      this.showAvailableMessage('branch');
-      this.updateCreatePaths(target, ref);
+      this.refIsValid = true;
+      this.showAvailableMessage(INPUT_TARGET_REF);
+      this.updateCreatePaths(INPUT_TARGET_REF, ref);
     } else {
       this.refIsValid = false;
       this.refInput.dataset.value = ref;
       this.disableCreateAction();
-      this.showNotAvailableMessage('ref');
+      this.showNotAvailableMessage(INPUT_TARGET_REF);
 
       // Show ref hint.
       if (result) {
@@ -547,11 +574,24 @@ export default class CreateMergeRequestDropdown {
         this.refInput.setSelectionRange(ref.length, result.length);
       }
     }
+  }
 
-    if (this.inputsAreValid()) {
-      this.enable();
+  updateTargetBranchInput(ref, result) {
+    const branchNameErrors = findInvalidBranchNameCharacters(ref);
+    const isInvalidString = branchNameErrors.length;
+    if (ref !== result && !isInvalidString) {
+      this.branchIsValid = true;
+      // If a found branch equals exact the same text a user typed,
+      // Or user typed input contains invalid chars,
+      // that means a new branch cannot be created as it already exists.
+      this.showAvailableMessage(INPUT_TARGET_BRANCH, VALIDATION_TYPE_BRANCH_UNAVAILABLE);
+      this.updateCreatePaths(INPUT_TARGET_BRANCH, ref);
+    } else if (isInvalidString) {
+      this.branchIsValid = false;
+      this.showNotAvailableMessage(INPUT_TARGET_BRANCH, VALIDATION_TYPE_INVALID_CHARS);
     } else {
-      this.disableCreateAction();
+      this.branchIsValid = false;
+      this.showNotAvailableMessage(INPUT_TARGET_BRANCH);
     }
   }
 
@@ -569,6 +609,7 @@ export default class CreateMergeRequestDropdown {
       pathReplacement,
     );
 
+    this.wrapperEl.dataset.createBranchPath = this.createBranchPath;
     this.wrapperEl.dataset.createMrPath = this.createMrPath;
   }
 }

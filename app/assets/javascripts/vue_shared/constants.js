@@ -1,5 +1,5 @@
 import { __, n__, sprintf } from '~/locale';
-import { TYPE_ISSUE, WorkspaceType } from '~/issues/constants';
+import { TYPE_ISSUE, WORKSPACE_PROJECT } from '~/issues/constants';
 
 const INTERVALS = {
   minute: 'minute',
@@ -75,8 +75,6 @@ export const timeRanges = [
 /* eslint-enable @gitlab/require-i18n-strings */
 
 export const defaultTimeRange = timeRanges.find((tr) => tr.default);
-export const getTimeWindow = (timeWindowName) =>
-  timeRanges.find((tr) => tr.name === timeWindowName);
 
 export const AVATAR_SHAPE_OPTION_CIRCLE = 'circle';
 export const AVATAR_SHAPE_OPTION_RECT = 'rect';
@@ -87,7 +85,7 @@ export const confidentialityInfoText = (workspaceType, issuableType) =>
       'Only %{workspaceType} members with %{permissions} can view or be notified about this %{issuableType}.',
     ),
     {
-      workspaceType: workspaceType === WorkspaceType.project ? __('project') : __('group'),
+      workspaceType: workspaceType === WORKSPACE_PROJECT ? __('project') : __('group'),
       issuableType: issuableType === TYPE_ISSUE ? __('issue') : __('epic'),
       permissions:
         issuableType === TYPE_ISSUE

@@ -33,7 +33,7 @@ describe('DeleteAgentButton', () => {
   const findDeleteBtn = () => wrapper.findComponent(GlButton);
   const findInput = () => wrapper.findComponent(GlFormInput);
   const findPrimaryAction = () => findModal().props('actionPrimary');
-  const findPrimaryActionAttributes = (attr) => findPrimaryAction().attributes[0][attr];
+  const findPrimaryActionAttributes = (attr) => findPrimaryAction().attributes[attr];
   const findDeleteAgentButtonTooltip = () => wrapper.findByTestId('delete-agent-button-tooltip');
   const getTooltipText = (el) => {
     const binding = getBinding(el, 'gl-tooltip');
@@ -84,7 +84,7 @@ describe('DeleteAgentButton', () => {
         ...provideData,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       propsData,
       mocks: { $toast: { show: toast } },
@@ -108,7 +108,6 @@ describe('DeleteAgentButton', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     apolloProvider = null;
     deleteResponse = null;
     toast = null;

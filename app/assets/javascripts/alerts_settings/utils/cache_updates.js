@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 
 import { DELETE_INTEGRATION_ERROR, ADD_INTEGRATION_ERROR } from './error_messages';
 

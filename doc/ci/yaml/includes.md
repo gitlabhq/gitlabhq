@@ -20,13 +20,6 @@ To include a single configuration file, use either of these syntax options:
   include: '/templates/.after-script-template.yml'
   ```
 
-- `include` with a single file, and you specify the `include` type:
-
-  ```yaml
-  include:
-    remote: 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
-  ```
-
 ## Include an array of configuration files
 
 You can include an array of configuration files:
@@ -159,12 +152,18 @@ do not change. This method is called *merging*.
 
 ### Merge method for `include`
 
-For a file containing `include` directives, the included files are read in order (possibly
-recursively), and the configuration in these files is likewise merged in order. If the parameters overlap, the last included file takes precedence. Finally, the directives in the
-file itself are merged with the configuration from the included files.
+The `include` configuration merges with the main configuration file with this process:
+
+- Included files are read in the order defined in the configuration file, and
+  the included configuration is merged together in the same order.
+- If an included file also uses `include`, that nested `include` configuration is merged first (recursively).
+- If parameters overlap, the last included file takes precedence when merging the configuration
+  from the included files.
+- After all configuration added with `include` is merged together, the main configuration
+  is merged with the included configuration.
 
 This merge method is a _deep merge_, where hash maps are merged at any depth in the
-configuration. To merge hash map A (containing the configuration merged so far) and B (the next piece
+configuration. To merge hash map "A" (that contains the configuration merged so far) and "B" (the next piece
 of configuration), the keys and values are processed as follows:
 
 - When the key only exists in A, use the key and value from A.
@@ -172,9 +171,7 @@ of configuration), the keys and values are processed as follows:
 - When the key exists in both A and B, and one of the values is not a hash map, use the value from B.
 - Otherwise, use the key and value from B.
 
-For example:
-
-We have a configuration consisting of two files.
+For example, with a configuration that consists of two files:
 
 - The `.gitlab-ci.yml` file:
 
@@ -211,7 +208,7 @@ We have a configuration consisting of two files.
         dotenv: deploy.env
   ```
 
-The merged result:
+The merged result is:
 
 ```yaml
 variables:
@@ -374,7 +371,7 @@ In `include` sections in your `.gitlab-ci.yml` file, you can use:
 - [Project variables](../variables/index.md#for-a-project).
 - [Group variables](../variables/index.md#for-a-group).
 - [Instance variables](../variables/index.md#for-an-instance).
-- Project [predefined variables](../variables/predefined_variables.md).
+- Project [predefined variables](../variables/predefined_variables.md) (`CI_PROJECT_*`).
 - In GitLab 14.2 and later, the `$CI_COMMIT_REF_NAME` [predefined variable](../variables/predefined_variables.md).
 
   When used in `include`, the `CI_COMMIT_REF_NAME` variable returns the full
@@ -386,15 +383,7 @@ In GitLab 14.5 and later, you can also use:
 - [Trigger variables](../triggers/index.md#pass-cicd-variables-in-the-api-call).
 - [Scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule).
 - [Manual pipeline run variables](../pipelines/index.md#run-a-pipeline-manually).
-- Pipeline [predefined variables](../variables/predefined_variables.md).
-
-  YAML files are parsed before the pipeline is created, so the following pipeline predefined variables
-  are **not** available:
-
-  - `CI_PIPELINE_ID`
-  - `CI_PIPELINE_URL`
-  - `CI_PIPELINE_IID`
-  - `CI_PIPELINE_CREATED_AT`
+- The `CI_PIPELINE_SOURCE` and `CI_PIPELINE_TRIGGERED` [predefined variables](../variables/predefined_variables.md).
 
 For example:
 
@@ -517,3 +506,20 @@ When the pipeline runs, GitLab:
   # This matches all `.yml` files only in subfolders of `configs`.
   include: 'configs/**/*.yml'
   ```
+
+## Troubleshooting
+
+### `Maximum of 150 nested includes are allowed!` error
+
+The maximum number of [nested included files](#use-nested-includes) for a pipeline is 150.
+If you receive the `Maximum 150 includes are allowed` error message in your pipeline,
+it's likely that either:
+
+- Some of the nested configuration includes an overly large number of additional nested `include` configuration.
+- There is an accidental loop in the nested includes. For example, `include1.yml` includes
+  `include2.yml` which includes `include1.yml`, creating a recursive loop.
+
+To help reduce the risk of this happening, edit the pipeline configuration file
+with the [pipeline editor](../pipeline_editor/index.md), which validates if the
+limit is reached. You can remove one included file at a time to try to narrow down
+which configuration file is the source of the loop or excessive included files.

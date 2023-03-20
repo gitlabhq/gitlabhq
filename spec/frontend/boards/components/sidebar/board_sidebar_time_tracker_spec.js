@@ -37,11 +37,6 @@ describe('BoardSidebarTimeTracker', () => {
     store.state.activeId = '1';
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it.each`
     timeTrackingLimitToHours | canUpdate
     ${true}                  | ${false}

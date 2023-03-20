@@ -5,7 +5,7 @@ import {
   historyPushState,
   scrollToElement,
 } from '~/lib/utils/common_utils';
-import { createAlert, VARIANT_WARNING } from '~/flash';
+import { createAlert, VARIANT_WARNING } from '~/alert';
 import { diffViewerModes } from '~/ide/constants';
 import axios from '~/lib/utils/axios_utils';
 
@@ -14,6 +14,8 @@ import Poll from '~/lib/utils/poll';
 import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import notesEventHub from '~/notes/event_hub';
+import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
+import { sortTree } from '~/ide/stores/utils';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
   INLINE_DIFF_VIEW_TYPE,
@@ -52,7 +54,6 @@ import { isCollapsed } from '../utils/diff_file';
 import { markFileReview, setReviewsForMergeRequest } from '../utils/file_reviews';
 import { getDerivedMergeRequestInformation } from '../utils/merge_request';
 import { queueRedisHllEvents } from '../utils/queue_events';
-import TreeWorker from '../workers/tree_worker?worker';
 import * as types from './mutation_types';
 import {
   getDiffPositionByLineCode,
@@ -68,6 +69,7 @@ export const setBaseConfig = ({ commit }, options) => {
     endpoint,
     endpointMetadata,
     endpointBatch,
+    endpointDiffForPath,
     endpointCoverage,
     endpointUpdateUser,
     projectPath,
@@ -81,6 +83,7 @@ export const setBaseConfig = ({ commit }, options) => {
     endpoint,
     endpointMetadata,
     endpointBatch,
+    endpointDiffForPath,
     endpointCoverage,
     endpointUpdateUser,
     projectPath,
@@ -199,21 +202,12 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
 };
 
 export const fetchDiffFilesMeta = ({ commit, state }) => {
-  const worker = new TreeWorker();
   const urlParams = {
     view: 'inline',
     w: state.showWhitespace ? '0' : '1',
   };
 
   commit(types.SET_LOADING, true);
-  eventHub.$emit(EVT_PERF_MARK_FILE_TREE_START);
-
-  worker.addEventListener('message', ({ data }) => {
-    commit(types.SET_TREE_DATA, data);
-    eventHub.$emit(EVT_PERF_MARK_FILE_TREE_END);
-
-    worker.terminate();
-  });
 
   return axios
     .get(mergeUrlParams(urlParams, state.endpointMetadata))
@@ -225,18 +219,24 @@ export const fetchDiffFilesMeta = ({ commit, state }) => {
       commit(types.SET_MERGE_REQUEST_DIFFS, data.merge_request_diffs || []);
       commit(types.SET_DIFF_METADATA, strippedData);
 
-      worker.postMessage(data.diff_files);
+      eventHub.$emit(EVT_PERF_MARK_FILE_TREE_START);
+      const { treeEntries, tree } = generateTreeList(data.diff_files);
+      eventHub.$emit(EVT_PERF_MARK_FILE_TREE_END);
+      commit(types.SET_TREE_DATA, {
+        treeEntries,
+        tree: sortTree(tree),
+      });
 
       return data;
     })
     .catch((error) => {
-      worker.terminate();
-
       if (error.response.status === HTTP_STATUS_NOT_FOUND) {
         createAlert({
           message: __('Building your merge request. Wait a few moments, then refresh this page.'),
           variant: VARIANT_WARNING,
         });
+      } else {
+        throw error;
       }
     });
 };
@@ -821,20 +821,20 @@ export function moveToNeighboringCommit({ dispatch, state }, { direction }) {
   }
 }
 
-export const setCurrentDiffFileIdFromNote = ({ commit, state, rootGetters }, noteId) => {
+export const setCurrentDiffFileIdFromNote = ({ commit, getters, rootGetters }, noteId) => {
   const note = rootGetters.notesById[noteId];
 
   if (!note) return;
 
   const fileHash = rootGetters.getDiscussion(note.discussion_id).diff_file?.file_hash;
 
-  if (fileHash && state.diffFiles.some((f) => f.file_hash === fileHash)) {
+  if (fileHash && getters.flatBlobsList.some((f) => f.fileHash === fileHash)) {
     commit(types.SET_CURRENT_DIFF_FILE, fileHash);
   }
 };
 
-export const navigateToDiffFileIndex = ({ commit, state }, index) => {
-  const fileHash = state.diffFiles[index].file_hash;
+export const navigateToDiffFileIndex = ({ commit, getters }, index) => {
+  const { fileHash } = getters.flatBlobsList[index];
   document.location.hash = fileHash;
 
   commit(types.SET_CURRENT_DIFF_FILE, fileHash);

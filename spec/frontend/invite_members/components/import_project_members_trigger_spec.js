@@ -17,10 +17,6 @@ const createComponent = (props = {}) => {
 describe('ImportProjectMembersTrigger', () => {
   let wrapper;
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findButton = () => wrapper.findComponent(GlButton);
 
   describe('displayText', () => {

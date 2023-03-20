@@ -124,8 +124,13 @@ to see the color chips next to the color code:
 
 ### Diagrams and flowcharts
 
-You can generate diagrams and flowcharts from text by using [Mermaid](https://mermaidjs.github.io/) or [PlantUML](https://plantuml.com).
-You can also use [Kroki](https://kroki.io) to create a wide variety of diagrams.
+You can generate diagrams from text by using:
+
+- [Mermaid](https://mermaidjs.github.io/)
+- [PlantUML](https://plantuml.com)
+- [Kroki](https://kroki.io) to create a wide variety of diagrams.
+
+In wikis, you can also add and edit diagrams created with the [diagrams.net editor](#diagramsnet-editor).
 
 #### Mermaid
 
@@ -543,6 +548,58 @@ This example links to `<wiki_root>/miscellaneous.md`:
 [Link to Related Page](/miscellaneous.md)
 ```
 
+#### diagrams.net editor
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322174) in GitLab 15.10.
+
+NOTE:
+Use of the diagrams.net editor is not available on offline environments.
+
+In wikis, you can use the [diagrams.net](https://www.diagrams.net/) editor to create diagrams. You
+can also edit diagrams created with the diagrams.net editor. The diagram editor is available in both
+the Markdown editor and the content editor.
+
+##### Markdown editor
+
+To create a diagram in the Markdown editor:
+
+1. In the editor's toolbar, select **Insert or edit diagram** (**{diagram}**).
+1. Use the diagrams.net editor to create the diagram.
+1. Select **Save & exit**.
+
+A Markdown image reference to the diagram is inserted in the wiki content.
+
+To edit a diagram in the Markdown editor:
+
+1. Place the Markdown editor's text field cursor in a Markdown image reference
+that contains the diagram.
+1. Select **Insert or edit diagram** (**{diagram}**) in the Markdown editor.
+1. Use the diagrams.net editor to edit the diagram.
+1. Select **Save & exit**.
+
+A Markdown image reference to the diagram is inserted in the wiki content,
+replacing the previous diagram.
+
+##### Content editor
+
+To create a diagram in the content editor:
+
+1. In the editor's toolbar, select **More options** (**{plus}**).
+1. In the dropdown list, select **Create or edit diagram**.
+1. Use the diagrams.net editor to create the diagram.
+1. Select **Save & exit**.
+
+The diagram as visualized in the diagrams.net editor is inserted in the wiki content.
+
+To edit a diagram in the content editor:
+
+1. Select the diagram that you want to edit.
+1. In the floating toolbar, select **Edit diagram** (**{diagram}**).
+1. Use the diagrams.net editor to edit the diagram.
+1. Select **Save & exit**.
+
+The selected diagram is replaced with an updated version.
+
 ## GitLab-specific references
 
 GitLab Flavored Markdown renders GitLab-specific references. For example, you can reference
@@ -605,10 +662,33 @@ at the end of the reference. For example, a reference like `#123+` is rendered a
 
 URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+` are also expanded.
 
-### Embedding metrics in GitLab Flavored Markdown
+### Show the issue or merge request summary in the reference
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386937) in GitLab 15.10.
+
+To include an extended summary in the rendered link of an issue or merge request, add a `+s`
+at the end of the reference. Summary includes information about **assignees**, **milestone**
+and **health status** of referenced item.
+
+For example, a reference like `#123+s` is rendered as
+`The issue title (#123) • First Assignee, Second Assignee+ • v15.10 • Needs attention`.
+
+URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+s` are also expanded.
+
+### Embedding metrics
 
 Metric charts can be embedded in GitLab Flavored Markdown. Read
 [Embedding Metrics in GitLab flavored Markdown](../operations/metrics/embed.md) for more details.
+
+### Embedding Observability dashboards
+
+You can embed GitLab Observability UI dashboards descriptions and comments, for example in epics, issues, and MRs.
+
+To embed an Observability dashboard URL:
+
+1. In GitLab Observability UI, copy the URL in the address bar.
+
+1. Paste your link wherever you want to embed your dashboard. GitLab Flavored Markdown recognizes the URL and displays the source.
 
 ## Features extended from standard Markdown
 

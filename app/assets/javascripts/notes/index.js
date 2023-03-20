@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import NotesApp from './components/notes_app.vue';
@@ -10,6 +12,8 @@ export default () => {
   if (!el) {
     return;
   }
+
+  Vue.use(VueApollo);
 
   const notesFilterProps = getNotesFilterData(el);
   const showTimelineViewToggle = parseBoolean(el.dataset.showTimelineViewToggle);
@@ -50,9 +54,11 @@ export default () => {
       NotesApp,
     },
     store,
+    apolloProvider,
     provide: {
       showTimelineViewToggle,
       reportAbusePath: notesDataset.reportAbusePath,
+      newSavedRepliesPath: notesDataset.savedRepliesNewPath,
     },
     data() {
       return {

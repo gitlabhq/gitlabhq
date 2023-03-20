@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CreateCommitSignatureWorker do
+RSpec.describe CreateCommitSignatureWorker, feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
   let(:commits) { project.repository.commits('HEAD', limit: 3).commits }
   let(:commit_shas) { commits.map(&:id) }

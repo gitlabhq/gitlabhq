@@ -12,8 +12,9 @@ import { s__ } from '~/locale';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import getJobsQuery from '~/jobs/components/table/graphql/queries/get_jobs.query.graphql';
+import getJobsCountQuery from '~/jobs/components/table/graphql/queries/get_jobs_count.query.graphql';
 import JobsTable from '~/jobs/components/table/jobs_table.vue';
 import JobsTableApp from '~/jobs/components/table/jobs_table_app.vue';
 import JobsTableTabs from '~/jobs/components/table/jobs_table_tabs.vue';
@@ -23,12 +24,13 @@ import {
   mockJobsResponsePaginated,
   mockJobsResponseEmpty,
   mockFailedSearchToken,
+  mockJobsCountResponse,
 } from '../../mock_data';
 
 const projectPath = 'gitlab-org/gitlab';
 Vue.use(VueApollo);
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Job table app', () => {
   let wrapper;
@@ -36,6 +38,8 @@ describe('Job table app', () => {
   const successHandler = jest.fn().mockResolvedValue(mockJobsResponsePaginated);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
   const emptyHandler = jest.fn().mockResolvedValue(mockJobsResponseEmpty);
+
+  const countSuccessHandler = jest.fn().mockResolvedValue(mockJobsCountResponse);
 
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findLoadingSpinner = () => wrapper.findComponent(GlLoadingIcon);
@@ -48,14 +52,18 @@ describe('Job table app', () => {
   const triggerInfiniteScroll = () =>
     wrapper.findComponent(GlIntersectionObserver).vm.$emit('appear');
 
-  const createMockApolloProvider = (handler) => {
-    const requestHandlers = [[getJobsQuery, handler]];
+  const createMockApolloProvider = (handler, countHandler) => {
+    const requestHandlers = [
+      [getJobsQuery, handler],
+      [getJobsCountQuery, countHandler],
+    ];
 
     return createMockApollo(requestHandlers);
   };
 
   const createComponent = ({
     handler = successHandler,
+    countHandler = countSuccessHandler,
     mountFn = shallowMount,
     data = {},
   } = {}) => {
@@ -68,13 +76,9 @@ describe('Job table app', () => {
       provide: {
         fullPath: projectPath,
       },
-      apolloProvider: createMockApolloProvider(handler),
+      apolloProvider: createMockApolloProvider(handler, countHandler),
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('loading state', () => {
     it('should display skeleton loader when loading', () => {
@@ -148,12 +152,39 @@ describe('Job table app', () => {
   });
 
   describe('error state', () => {
-    it('should show an alert if there is an error fetching the data', async () => {
+    it('should show an alert if there is an error fetching the jobs data', async () => {
       createComponent({ handler: failedHandler });
 
       await waitForPromises();
 
-      expect(findAlert().exists()).toBe(true);
+      expect(findAlert().text()).toBe('There was an error fetching the jobs for your project.');
+      expect(findTable().exists()).toBe(false);
+    });
+
+    it('should show an alert if there is an error fetching the jobs count data', async () => {
+      createComponent({ handler: successHandler, countHandler: failedHandler });
+
+      await waitForPromises();
+
+      expect(findAlert().text()).toBe(
+        'There was an error fetching the number of jobs for your project.',
+      );
+    });
+
+    it('jobs table should still load if count query fails', async () => {
+      createComponent({ handler: successHandler, countHandler: failedHandler });
+
+      await waitForPromises();
+
+      expect(findTable().exists()).toBe(true);
+    });
+
+    it('jobs count should be zero if count query fails', async () => {
+      createComponent({ handler: successHandler, countHandler: failedHandler });
+
+      await waitForPromises();
+
+      expect(findTabs().props('allJobsCount')).toBe(0);
     });
   });
 

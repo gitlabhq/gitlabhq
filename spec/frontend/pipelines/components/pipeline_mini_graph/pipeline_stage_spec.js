@@ -45,11 +45,10 @@ describe('Pipelines stage component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-
     eventHub.$emit.mockRestore();
     mock.restore();
+    // eslint-disable-next-line @gitlab/vtu-no-explicit-wrapper-destroy
+    wrapper.destroy();
   });
 
   const findCiActionBtn = () => wrapper.find('.js-ci-action');

@@ -37,7 +37,6 @@ describe('Secure File Metadata Modal', () => {
 
   afterEach(() => {
     unmockTracking();
-    wrapper.destroy();
   });
 
   describe('when a .cer file is supplied', () => {

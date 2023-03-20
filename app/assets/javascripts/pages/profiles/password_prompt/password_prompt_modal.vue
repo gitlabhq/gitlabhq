@@ -33,7 +33,7 @@ export default {
     primaryProps() {
       return {
         text: I18N_PASSWORD_PROMPT_CONFIRM_BUTTON,
-        attributes: [{ variant: 'danger' }, { category: 'primary' }, { disabled: !this.isValid }],
+        attributes: { variant: 'danger', category: 'primary', disabled: !this.isValid },
       };
     },
   },

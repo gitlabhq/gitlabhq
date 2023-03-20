@@ -19,7 +19,7 @@ module Gitlab
         [429, { 'Content-Type' => 'text/plain' }.merge(throttled_headers), [Gitlab::Throttle.rate_limiting_response_text]]
       end
 
-      rack_attack.cache.store = Gitlab::RackAttack::InstrumentedCacheStore.new
+      rack_attack.cache.store = Gitlab::RackAttack::Store.new
 
       # Configure the throttles
       configure_throttles(rack_attack)

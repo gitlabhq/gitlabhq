@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IssueDueSchedulerWorker do
+RSpec.describe IssueDueSchedulerWorker, feature_category: :team_planning do
   describe '#perform' do
     it 'schedules one MailScheduler::IssueDueWorker per project with open issues due tomorrow' do
       project1 = create(:project)

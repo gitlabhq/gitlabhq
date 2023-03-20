@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::DestroySecureFileService do
+RSpec.describe ::Ci::DestroySecureFileService, feature_category: :continuous_integration do
   let_it_be(:maintainer_user) { create(:user) }
   let_it_be(:developer_user) { create(:user) }
   let_it_be(:project) { create(:project) }

@@ -2,19 +2,20 @@
   = render partial: "search/results/timeout"
 - elsif @search_results.respond_to?(:failed?) && @search_results.failed?
   = render partial: "search/results/error"
-- elsif @search_objects.to_a.empty?
+- elsif @search_objects.blank?
   = render partial: "search/results/empty"
 - else
-  - if @scope == 'commits'
-    %ul.content-list.commit-list
-      = render partial: "search/results/commit", collection: @search_objects
-  - else
-    .search-results.js-search-results
-      - if @scope == 'projects'
-        .term
-          = render 'shared/projects/list', projects: @search_objects, pipeline_status: false
-      - else
-        = render_if_exists partial: "search/results/#{@scope.singularize}", collection: @search_objects
+  .gl-md-pl-5
+    - if @scope == 'commits'
+      %ul.content-list.commit-list
+        = render partial: "search/results/commit", collection: @search_objects
+    - else
+      .search-results.js-search-results
+        - if @scope == 'projects'
+          .term
+            = render 'shared/projects/list', projects: @search_objects, pipeline_status: false
+        - else
+          = render_if_exists partial: "search/results/#{@scope.singularize}", collection: @search_objects
 
-  - if @scope != 'projects'
-    = paginate_collection(@search_objects)
+    - if @scope != 'projects'
+      = paginate_collection(@search_objects)

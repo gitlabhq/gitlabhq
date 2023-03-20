@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 import { s__ } from '~/locale';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
+import { TYPENAME_ISSUE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import { isMetaKey, parseBoolean } from '~/lib/utils/common_utils';
@@ -42,7 +42,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['projectPath', 'iid'],
+  inject: ['projectPath'],
   props: {
     workItemId: {
       type: String,
@@ -62,6 +62,9 @@ export default {
         return {
           id: this.issuableGid,
         };
+      },
+      context: {
+        isSingleRequest: true,
       },
       skip() {
         return !this.issuableId;
@@ -86,13 +89,10 @@ export default {
       query: getIssueDetailsQuery,
       variables() {
         return {
-          fullPath: this.projectPath,
-          iid: String(this.iid),
+          id: convertToGraphQLId(TYPENAME_ISSUE, this.issuableId),
         };
       },
-      update(data) {
-        return data.workspace?.issuable;
-      },
+      update: (data) => data.issue,
     },
   },
   data() {
@@ -143,7 +143,7 @@ export default {
       return this.isLoading && this.children.length === 0 ? '...' : this.children.length;
     },
     fetchByIid() {
-      return this.glFeatures.useIidInWorkItemsPath && parseBoolean(getParameterByName('iid_path'));
+      return parseBoolean(getParameterByName('iid_path'));
     },
     childUrlParams() {
       const params = {};
@@ -304,10 +304,10 @@ export default {
     <template #header>{{ $options.i18n.title }}</template>
     <template #header-suffix>
       <span
-        class="gl-display-inline-flex gl-align-items-center gl-line-height-24 gl-ml-3"
+        class="gl-display-inline-flex gl-align-items-center gl-line-height-24 gl-ml-3 gl-font-weight-bold gl-text-gray-500"
         data-testid="children-count"
       >
-        <gl-icon :name="$options.WIDGET_TYPE_TASK_ICON" class="gl-mr-2 gl-text-secondary" />
+        <gl-icon :name="$options.WIDGET_TYPE_TASK_ICON" class="gl-mr-2" />
         {{ childrenCountLabel }}
       </span>
     </template>
@@ -334,11 +334,11 @@ export default {
       </gl-dropdown>
     </template>
     <template #body>
-      <gl-loading-icon v-if="isLoading" color="dark" class="gl-my-3" />
+      <gl-loading-icon v-if="isLoading" color="dark" class="gl-my-2" />
 
       <template v-else>
         <div v-if="isChildrenEmpty && !isShownAddForm && !error" data-testid="links-empty">
-          <p class="gl-mb-3">
+          <p class="gl-px-3 gl-py-2 gl-mb-0 gl-text-gray-500">
             {{ $options.i18n.emptyStateMessage }}
           </p>
         </div>

@@ -79,19 +79,24 @@ module QA
           'is allowed to commit to sub-group project via the API',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363349'
         ) do
-          expect do
-            Resource::Repository::Commit.fabricate_via_api! do |commit|
-              commit.api_client = parent_group_user_api_client
-              commit.project = sub_group_project
-              commit.branch = "new_branch_#{SecureRandom.hex(8)}"
-              commit.start_branch = sub_group_project.default_branch
-              commit.commit_message = 'Add new file'
-              commit.add_files([{ file_path: 'test.txt', content: 'new file' }])
-            end
-          rescue StandardError => e
-            QA::Runtime::Logger.error("Full failure message: #{e.message}")
-            raise
-          end.not_to raise_error
+          # Retry is needed due to delays with project authorization updates
+          # Long term solution to accessing the status of a project authorization update
+          # has been proposed in https://gitlab.com/gitlab-org/gitlab/-/issues/393369
+          QA::Support::Retrier.retry_on_exception(max_attempts: 5, sleep_interval: 2) do
+            expect do
+              Resource::Repository::Commit.fabricate_via_api! do |commit|
+                commit.api_client = parent_group_user_api_client
+                commit.project = sub_group_project
+                commit.branch = "new_branch_#{SecureRandom.hex(8)}"
+                commit.start_branch = sub_group_project.default_branch
+                commit.commit_message = 'Add new file'
+                commit.add_files([{ file_path: 'test.txt', content: 'new file' }])
+              end
+            rescue StandardError => e
+              QA::Runtime::Logger.error("Full failure message: #{e.message}")
+              raise
+            end.not_to raise_error
+          end
         end
 
         after do

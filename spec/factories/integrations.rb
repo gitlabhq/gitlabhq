@@ -261,7 +261,26 @@ FactoryBot.define do
 
     app_store_issuer_id { 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }
     app_store_key_id { 'ABC1' }
-    app_store_private_key { File.read('spec/fixtures/ssl_key.pem') }
+    app_store_private_key_file_name { 'auth_key.p8' }
+    app_store_private_key { File.read('spec/fixtures/auth_key.p8') }
+  end
+
+  factory :google_play_integration, class: 'Integrations::GooglePlay' do
+    project
+    active { true }
+    type { 'Integrations::GooglePlay' }
+
+    service_account_key_file_name { 'service_account.json' }
+    service_account_key { File.read('spec/fixtures/service_account.json') }
+  end
+
+  factory :squash_tm_integration, class: 'Integrations::SquashTm' do
+    project
+    active { true }
+    type { 'Integrations::SquashTm' }
+
+    url { 'https://url-to-squash.com' }
+    token { 'squash_tm_token' }
   end
 
   # this is for testing storing values inside properties, which is deprecated and will be removed in

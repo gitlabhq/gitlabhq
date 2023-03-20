@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImport, type: :model do
+RSpec.describe BulkImport, type: :model, feature_category: :importers do
   let_it_be(:created_bulk_import) { create(:bulk_import, :created) }
   let_it_be(:started_bulk_import) { create(:bulk_import, :started) }
   let_it_be(:finished_bulk_import) { create(:bulk_import, :finished) }
@@ -46,6 +46,33 @@ RSpec.describe BulkImport, type: :model do
 
       expect(bulk_import.source_version_info).to be_a(Gitlab::VersionInfo)
       expect(bulk_import.source_version_info.to_s).to eq(bulk_import.source_version)
+    end
+  end
+
+  describe '#update_has_failures' do
+    let(:import) { create(:bulk_import, :started) }
+    let(:entity) { create(:bulk_import_entity, bulk_import: import) }
+
+    context 'when entity has failures' do
+      it 'sets has_failures flag to true' do
+        expect(import.has_failures).to eq(false)
+
+        entity.update!(has_failures: true)
+        import.fail_op!
+
+        expect(import.has_failures).to eq(true)
+      end
+    end
+
+    context 'when entity does not have failures' do
+      it 'sets has_failures flag to false' do
+        expect(import.has_failures).to eq(false)
+
+        entity.update!(has_failures: false)
+        import.fail_op!
+
+        expect(import.has_failures).to eq(false)
+      end
     end
   end
 end

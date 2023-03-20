@@ -18,10 +18,6 @@ describe('ClustersAncestorNotice', () => {
     return createWrapper();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when cluster does not have ancestors', () => {
     beforeEach(async () => {
       store.state.hasAncestorClusters = false;

@@ -12,10 +12,6 @@ function factory(propsData = {}) {
 }
 
 describe('Merge request widget merge checks failed state component', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     mrState                                                                  | displayText
     ${{ approvals: true, isApproved: false }}                                | ${'approvalNeeded'}

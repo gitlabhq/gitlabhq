@@ -58,10 +58,6 @@ describe('Linked pipeline', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('rendered output', () => {
     const props = {
       pipeline: mockPipeline,

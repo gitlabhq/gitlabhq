@@ -63,10 +63,6 @@ describe('Container expiration policy project settings', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the setting form', async () => {
     mountComponentWithApollo({
       resolver: jest.fn().mockResolvedValue(expirationPolicyPayload()),

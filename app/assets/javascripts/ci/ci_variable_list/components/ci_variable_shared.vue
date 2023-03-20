@@ -1,10 +1,12 @@
 <script>
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { mapEnvironmentNames, reportMessageToSentry } from '../utils';
 import {
   ADD_MUTATION_ACTION,
   DELETE_MUTATION_ACTION,
+  SORT_DIRECTIONS,
   UPDATE_MUTATION_ACTION,
   environmentFetchErrorText,
   genericMutationErrorText,
@@ -16,6 +18,7 @@ export default {
   components: {
     CiVariableSettings,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['endpoint'],
   props: {
     areScopedVariablesAvailable: {
@@ -97,6 +100,7 @@ export default {
       loadingCounter: 0,
       maxVariableLimit: 0,
       pageInfo: {},
+      sortDirection: SORT_DIRECTIONS.ASC,
     };
   },
   apollo: {
@@ -107,6 +111,8 @@ export default {
       variables() {
         return {
           fullPath: this.fullPath || undefined,
+          first: this.pageSize,
+          sort: this.sortDirection,
         };
       },
       update(data) {
@@ -116,21 +122,23 @@ export default {
         this.maxVariableLimit = this.queryData.ciVariables.lookup(data)?.limit || 0;
 
         this.pageInfo = this.queryData.ciVariables.lookup(data)?.pageInfo || this.pageInfo;
-        this.hasNextPage = this.pageInfo?.hasNextPage || false;
 
-        // Because graphQL has a limit of 100 items,
-        // we batch load all the variables by making successive queries
-        // to keep the same UX. As a safeguard, we make sure that we cannot go over
-        // 20 consecutive API calls, which means 2000 variables loaded maximum.
-        if (!this.hasNextPage) {
-          this.isLoadingMoreItems = false;
-        } else if (this.loadingCounter < 20) {
-          this.hasNextPage = false;
-          this.fetchMoreVariables();
-          this.loadingCounter += 1;
-        } else {
-          createAlert({ message: this.$options.tooManyCallsError });
-          reportMessageToSentry(this.componentName, this.$options.tooManyCallsError, {});
+        if (!this.glFeatures?.ciVariablesPages) {
+          this.hasNextPage = this.pageInfo?.hasNextPage || false;
+          // Because graphQL has a limit of 100 items,
+          // we batch load all the variables by making successive queries
+          // to keep the same UX. As a safeguard, we make sure that we cannot go over
+          // 20 consecutive API calls, which means 2000 variables loaded maximum.
+          if (!this.hasNextPage) {
+            this.isLoadingMoreItems = false;
+          } else if (this.loadingCounter < 20) {
+            this.hasNextPage = false;
+            this.fetchMoreVariables();
+            this.loadingCounter += 1;
+          } else {
+            createAlert({ message: this.$options.tooManyCallsError });
+            reportMessageToSentry(this.componentName, this.$options.tooManyCallsError, {});
+          }
         }
       },
       error() {
@@ -172,6 +180,9 @@ export default {
         this.isLoadingMoreItems
       );
     },
+    pageSize() {
+      return this.glFeatures?.ciVariablesPages ? 20 : 100;
+    },
   },
   methods: {
     addVariable(variable) {
@@ -188,6 +199,31 @@ export default {
           after: this.pageInfo.endCursor,
         },
       });
+    },
+    handlePrevPage() {
+      this.$apollo.queries.ciVariables.fetchMore({
+        variables: {
+          before: this.pageInfo.startCursor,
+          first: null,
+          last: this.pageSize,
+        },
+      });
+    },
+    handleNextPage() {
+      this.$apollo.queries.ciVariables.fetchMore({
+        variables: {
+          after: this.pageInfo.endCursor,
+          first: this.pageSize,
+          last: null,
+        },
+      });
+    },
+    async handleSortChanged({ sortDesc }) {
+      this.sortDirection = sortDesc ? SORT_DIRECTIONS.DESC : SORT_DIRECTIONS.ASC;
+
+      // Wait for the new sort direction to be updated and then refetch
+      await this.$nextTick();
+      this.$apollo.queries.ciVariables.refetch();
     },
     updateVariable(variable) {
       this.variableMutation(UPDATE_MUTATION_ACTION, variable);
@@ -230,13 +266,17 @@ export default {
   <ci-variable-settings
     :are-scoped-variables-available="areScopedVariablesAvailable"
     :entity="entity"
+    :environments="environments"
     :hide-environment-scope="hideEnvironmentScope"
     :is-loading="isLoading"
-    :variables="ciVariables"
     :max-variable-limit="maxVariableLimit"
-    :environments="environments"
+    :page-info="pageInfo"
+    :variables="ciVariables"
     @add-variable="addVariable"
     @delete-variable="deleteVariable"
+    @handle-prev-page="handlePrevPage"
+    @handle-next-page="handleNextPage"
+    @sort-changed="handleSortChanged"
     @update-variable="updateVariable"
   />
 </template>

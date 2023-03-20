@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::ValidateRemoteGitEndpointService do
+RSpec.describe Import::ValidateRemoteGitEndpointService, feature_category: :importers do
   include StubRequests
 
   let_it_be(:base_url) { 'http://demo.host/path' }
@@ -32,6 +32,28 @@ RSpec.describe Import::ValidateRemoteGitEndpointService do
 
         expect(result).to be_a(ServiceResponse)
         expect(result.success?).to be(true)
+      end
+    end
+
+    context 'when uri is using an invalid protocol' do
+      subject { described_class.new(url: 'ssh://demo.host/repo') }
+
+      it 'reports error when invalid URL is provided' do
+        result = subject.execute
+
+        expect(result).to be_a(ServiceResponse)
+        expect(result.error?).to be(true)
+      end
+    end
+
+    context 'when uri is invalid' do
+      subject { described_class.new(url: 'http:example.com') }
+
+      it 'reports error when invalid URL is provided' do
+        result = subject.execute
+
+        expect(result).to be_a(ServiceResponse)
+        expect(result.error?).to be(true)
       end
     end
 

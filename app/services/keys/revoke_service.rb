@@ -13,8 +13,6 @@ module Keys
     private
 
     def unverify_associated_signatures(key)
-      return unless Feature.enabled?(:revoke_ssh_signatures)
-
       key.ssh_signatures.each_batch do |batch|
         batch.update_all(
           verification_status: CommitSignatures::SshSignature.verification_statuses[:revoked_key],

@@ -32,10 +32,6 @@ describe('CsvImportModal', () => {
     formSubmitSpy = jest.spyOn(HTMLFormElement.prototype, 'submit').mockImplementation();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findModal = () => wrapper.findComponent(GlModal);
   const findForm = () => wrapper.find('form');
   const findFileInput = () => wrapper.findByLabelText('Upload CSV file');

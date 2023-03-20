@@ -9,7 +9,6 @@ import {
 
 describe('~/api/alert_management_alerts_api.js', () => {
   let mock;
-  let originalGon;
 
   const projectId = 1;
   const alertIid = 2;
@@ -19,13 +18,11 @@ describe('~/api/alert_management_alerts_api.js', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
-    originalGon = window.gon;
     window.gon = { api_version: 'v4' };
   });
 
   afterEach(() => {
     mock.restore();
-    window.gon = originalGon;
   });
 
   describe('fetchAlertMetricImages', () => {

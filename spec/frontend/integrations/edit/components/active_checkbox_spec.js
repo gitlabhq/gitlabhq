@@ -17,10 +17,6 @@ describe('ActiveCheckbox', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findGlFormCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findInputInCheckbox = () => findGlFormCheckbox().find('input');
 

@@ -20,10 +20,6 @@ describe('Job Log Duration Badge', () => {
     createComponent(data);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders provided duration', () => {
     expect(wrapper.text()).toBe(data.duration);
   });

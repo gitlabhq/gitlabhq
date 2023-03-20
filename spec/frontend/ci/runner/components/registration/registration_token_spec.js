@@ -27,10 +27,6 @@ describe('RegistrationToken', () => {
     showToast = wrapper.vm.$toast ? jest.spyOn(wrapper.vm.$toast, 'show') : null;
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('Displays value and copy button', () => {
     createComponent();
 

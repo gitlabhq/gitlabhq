@@ -3,9 +3,8 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import BoardApp from '~/boards/components/board_app.vue';
 import '~/boards/filters/due_date_filters';
-import { BoardType } from '~/boards/constants';
 import store from '~/boards/stores';
-import { TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_ISSUE, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import {
   NavigationType,
   isLoggedIn,
@@ -68,8 +67,8 @@ function mountBoardApp(el) {
       initialFilterParams,
       boardBaseUrl: el.dataset.boardBaseUrl,
       boardType,
-      isGroupBoard: boardType === BoardType.group,
-      isProjectBoard: boardType === BoardType.project,
+      isGroupBoard: boardType === WORKSPACE_GROUP,
+      isProjectBoard: boardType === WORKSPACE_PROJECT,
       currentUserId: gon.current_user_id || null,
       boardWeight: el.dataset.boardWeight ? parseInt(el.dataset.boardWeight, 10) : null,
       labelsManagePath: el.dataset.labelsManagePath,

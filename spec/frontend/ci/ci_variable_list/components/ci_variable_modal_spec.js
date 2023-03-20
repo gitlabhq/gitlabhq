@@ -85,10 +85,6 @@ describe('Ci variable modal', () => {
   const findVariableTypeDropdown = () => wrapper.find('#ci-variable-type');
   const findEnvironmentScopeText = () => wrapper.findByText('Environment scope');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Adding a variable', () => {
     describe('when no key/value pair are present', () => {
       beforeEach(() => {

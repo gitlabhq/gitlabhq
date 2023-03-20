@@ -96,7 +96,7 @@
   color: $gl-text-color;
   font-size: 14px;
   text-align: left;
-  border: 1px solid $border-color;
+  border: 1px solid $gray-200;
   border-radius: $border-radius-base;
   white-space: nowrap;
 
@@ -143,10 +143,23 @@
 .dropdown-menu-toggle.dropdown-menu-toggle {
   justify-content: flex-start;
   overflow: hidden;
+  padding-top: #{$gl-padding-8 - 1};
+  padding-bottom: #{$gl-padding-8 - 1};
   padding-right: 25px;
   position: relative;
   text-overflow: ellipsis;
+  line-height: $gl-line-height;
   width: 160px;
+
+  &:hover {
+    @include gl-inset-border-1-gray-400;
+  }
+
+  &:hover,
+  &:focus {
+    background-color: $gray-50;
+    border-color: $gray-400;
+  }
 
   .gl-spinner {
     position: absolute;
@@ -157,7 +170,7 @@
   .dropdown-menu-toggle-icon {
     position: absolute;
     right: $gl-padding-8;
-    color: $gray-darkest;
+    color: $gray-500;
   }
 }
 
@@ -983,17 +996,6 @@
 
   .label-item {
     padding: 8px 20px;
-  }
-
-  .color-input-container {
-    .dropdown-label-color-preview {
-      border: 1px solid $gray-100;
-      border-right: 0;
-
-      &[style] {
-        border-color: transparent;
-      }
-    }
   }
 }
 

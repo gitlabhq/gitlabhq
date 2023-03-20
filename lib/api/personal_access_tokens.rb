@@ -4,7 +4,7 @@ module API
   class PersonalAccessTokens < ::API::Base
     include ::API::PaginationParams
 
-    feature_category :authentication_and_authorization
+    feature_category :system_access
 
     before do
       authenticate!

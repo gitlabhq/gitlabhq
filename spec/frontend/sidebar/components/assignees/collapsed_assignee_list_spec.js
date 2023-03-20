@@ -26,10 +26,6 @@ describe('CollapsedAssigneeList component', () => {
   const findAssignees = () => wrapper.findAllComponents(CollapsedAssignee);
   const getTooltipTitle = () => wrapper.attributes('title');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('No assignees/users', () => {
     beforeEach(() => {
       createComponent({

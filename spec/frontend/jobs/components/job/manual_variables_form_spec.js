@@ -2,24 +2,28 @@ import { GlSprintf, GlLink } from '@gitlab/ui';
 import { createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import { nextTick } from 'vue';
+import { createAlert } from '~/alert';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { TYPENAME_CI_BUILD } from '~/graphql_shared/constants';
+import { JOB_GRAPHQL_ERRORS } from '~/jobs/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import { redirectTo } from '~/lib/utils/url_utility';
 import ManualVariablesForm from '~/jobs/components/job/manual_variables_form.vue';
 import getJobQuery from '~/jobs/components/job/graphql/queries/get_job.query.graphql';
-import retryJobMutation from '~/jobs/components/job/graphql/mutations/job_retry_with_variables.mutation.graphql';
+import playJobMutation from '~/jobs/components/job/graphql/mutations/job_play_with_variables.mutation.graphql';
 import {
   mockFullPath,
   mockId,
   mockJobResponse,
   mockJobWithVariablesResponse,
-  mockJobMutationData,
+  mockJobPlayMutationData,
+  mockJobRetryMutationData,
 } from './mock_data';
 
 const localVue = createLocalVue();
+jest.mock('~/alert');
 localVue.use(VueApollo);
 
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -39,9 +43,9 @@ describe('Manual Variables Form', () => {
   const createComponent = ({ options = {}, props = {} } = {}) => {
     wrapper = mountExtended(ManualVariablesForm, {
       propsData: {
-        ...props,
         jobId: mockId,
-        isRetryable: true,
+        isRetryable: false,
+        ...props,
       },
       provide: {
         ...defaultProvide,
@@ -71,7 +75,7 @@ describe('Manual Variables Form', () => {
   const findHelpText = () => wrapper.findComponent(GlSprintf);
   const findHelpLink = () => wrapper.findComponent(GlLink);
   const findCancelBtn = () => wrapper.findByTestId('cancel-btn');
-  const findRerunBtn = () => wrapper.findByTestId('run-manual-job-btn');
+  const findRunBtn = () => wrapper.findByTestId('run-manual-job-btn');
   const findDeleteVarBtn = () => wrapper.findByTestId('delete-variable-btn');
   const findAllDeleteVarBtns = () => wrapper.findAllByTestId('delete-variable-btn');
   const findDeleteVarBtnPlaceholder = () => wrapper.findByTestId('delete-variable-btn-placeholder');
@@ -97,7 +101,7 @@ describe('Manual Variables Form', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
+    createAlert.mockClear();
   });
 
   describe('when page renders', () => {
@@ -112,10 +116,30 @@ describe('Manual Variables Form', () => {
         '/help/ci/variables/index#add-a-cicd-variable-to-a-project',
       );
     });
+  });
 
-    it('renders buttons', () => {
-      expect(findCancelBtn().exists()).toBe(true);
-      expect(findRerunBtn().exists()).toBe(true);
+  describe('when query is unsuccessful', () => {
+    beforeEach(async () => {
+      getJobQueryResponse.mockRejectedValue({});
+      await createComponentWithApollo();
+    });
+
+    it('shows an alert with error', () => {
+      expect(createAlert).toHaveBeenCalledWith({
+        message: JOB_GRAPHQL_ERRORS.jobQueryErrorText,
+      });
+    });
+  });
+
+  describe('when job has not been retried', () => {
+    beforeEach(async () => {
+      getJobQueryResponse.mockResolvedValue(mockJobWithVariablesResponse);
+      await createComponentWithApollo();
+    });
+
+    it('does not render the cancel button', () => {
+      expect(findCancelBtn().exists()).toBe(false);
+      expect(findRunBtn().exists()).toBe(true);
     });
   });
 
@@ -135,10 +159,10 @@ describe('Manual Variables Form', () => {
     });
   });
 
-  describe('when mutation fires', () => {
+  describe('when play mutation fires', () => {
     beforeEach(async () => {
       await createComponentWithApollo();
-      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockJobMutationData);
+      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockJobPlayMutationData);
     });
 
     it('passes variables in correct format', async () => {
@@ -146,11 +170,11 @@ describe('Manual Variables Form', () => {
 
       await findCiVariableValue().setValue('new value');
 
-      await findRerunBtn().vm.$emit('click');
+      await findRunBtn().vm.$emit('click');
 
       expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(1);
       expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-        mutation: retryJobMutation,
+        mutation: playJobMutation,
         variables: {
           id: convertToGraphQLId(TYPENAME_CI_BUILD, mockId),
           variables: [
@@ -163,13 +187,63 @@ describe('Manual Variables Form', () => {
       });
     });
 
-    // redirect to job after initial trigger assertion will be added in https://gitlab.com/gitlab-org/gitlab/-/issues/377268
-    it('redirects to job properly after rerun', async () => {
-      findRerunBtn().vm.$emit('click');
+    it('redirects to job properly after job is run', async () => {
+      findRunBtn().vm.$emit('click');
       await waitForPromises();
 
       expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(1);
-      expect(redirectTo).toHaveBeenCalledWith(mockJobMutationData.data.jobRetry.job.webPath);
+      expect(redirectTo).toHaveBeenCalledWith(mockJobPlayMutationData.data.jobPlay.job.webPath);
+    });
+  });
+
+  describe('when play mutation is unsuccessful', () => {
+    beforeEach(async () => {
+      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValue({});
+      await createComponentWithApollo();
+    });
+
+    it('shows an alert with error', async () => {
+      findRunBtn().vm.$emit('click');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: JOB_GRAPHQL_ERRORS.jobMutationErrorText,
+      });
+    });
+  });
+
+  describe('when job is retryable', () => {
+    beforeEach(async () => {
+      await createComponentWithApollo({ props: { isRetryable: true } });
+      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockJobRetryMutationData);
+    });
+
+    it('renders cancel button', () => {
+      expect(findCancelBtn().exists()).toBe(true);
+    });
+
+    it('redirects to job properly after rerun', async () => {
+      findRunBtn().vm.$emit('click');
+      await waitForPromises();
+
+      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(1);
+      expect(redirectTo).toHaveBeenCalledWith(mockJobRetryMutationData.data.jobRetry.job.webPath);
+    });
+  });
+
+  describe('when retry mutation is unsuccessful', () => {
+    beforeEach(async () => {
+      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValue({});
+      await createComponentWithApollo({ props: { isRetryable: true } });
+    });
+
+    it('shows an alert with error', async () => {
+      findRunBtn().vm.$emit('click');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: JOB_GRAPHQL_ERRORS.jobMutationErrorText,
+      });
     });
   });
 

@@ -2,7 +2,7 @@
 
 module DependencyProxy
   class HeadManifestService < DependencyProxy::BaseService
-    ACCEPT_HEADERS = ::ContainerRegistry::Client::ACCEPTED_TYPES.join(',')
+    ACCEPT_HEADERS = DependencyProxy::Manifest::ACCEPTED_TYPES.join(',')
 
     def initialize(image, tag, token)
       @image = image

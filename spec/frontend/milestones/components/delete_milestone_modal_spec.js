@@ -6,10 +6,10 @@ import DeleteMilestoneModal from '~/milestones/components/delete_milestone_modal
 import eventHub from '~/milestones/event_hub';
 import { HTTP_STATUS_IM_A_TEAPOT, HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import { redirectTo } from '~/lib/utils/url_utility';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 
 jest.mock('~/lib/utils/url_utility');
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Delete milestone modal', () => {
   let wrapper;
@@ -37,10 +37,6 @@ describe('Delete milestone modal', () => {
 
   beforeEach(() => {
     createComponent();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   describe('onSubmit', () => {

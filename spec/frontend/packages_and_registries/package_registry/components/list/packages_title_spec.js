@@ -20,11 +20,6 @@ describe('PackageTitle', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('title area', () => {
     it('exists', () => {
       mountComponent();

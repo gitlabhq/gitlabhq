@@ -3,4 +3,4 @@
 
 %h3.gl-mb-5= s_('BranchRules|Branch rules details')
 
-#js-branch-rules{ data: { project_path: @project.full_path, protected_branches_path: project_settings_repository_path(@project, anchor: 'js-protected-branches-settings'), approval_rules_path: project_settings_merge_requests_path(@project, anchor: 'js-merge-request-approval-settings'), status_checks_path: project_settings_merge_requests_path(@project, anchor: 'js-merge-request-settings'), branches_path: project_branches_path(@project) } }
+#js-branch-rules{ data: branch_rules_data(@project) }

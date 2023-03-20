@@ -578,4 +578,53 @@ RSpec.describe 'New project', :js, feature_category: :projects do
       it_behaves_like 'has instructions to enable OAuth'
     end
   end
+
+  describe 'sidebar' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:parent_group) { create(:group) }
+
+    before do
+      parent_group.add_owner(user)
+      sign_in(user)
+    end
+
+    context 'in the current navigation' do
+      before do
+        user.update!(use_new_navigation: false)
+      end
+
+      context 'for a new top-level project' do
+        it_behaves_like 'a dashboard page with sidebar', :new_project_path, :projects
+      end
+
+      context 'for a new group project' do
+        it 'shows the group sidebar of the parent group' do
+          visit new_project_path(namespace_id: parent_group.id)
+          expect(page).to have_selector(".nav-sidebar[aria-label=\"Group navigation\"] .context-header[title=\"#{parent_group.name}\"]")
+        end
+      end
+    end
+
+    context 'in the new navigation' do
+      before do
+        parent_group.add_owner(user)
+        user.update!(use_new_navigation: true)
+        sign_in(user)
+      end
+
+      context 'for a new top-level project' do
+        it 'shows the "Your work" navigation' do
+          visit new_project_path
+          expect(page).to have_selector(".super-sidebar .context-switcher-toggle", text: "Your work")
+        end
+      end
+
+      context 'for a new group project' do
+        it 'shows the group sidebar of the parent group' do
+          visit new_project_path(namespace_id: parent_group.id)
+          expect(page).to have_selector(".super-sidebar .context-switcher-toggle", text: parent_group.name)
+        end
+      end
+    end
+  end
 end

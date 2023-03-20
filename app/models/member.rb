@@ -320,6 +320,12 @@ class Member < ApplicationRecord
       end
     end
 
+    def filter_by_user_type(value)
+      return unless ::User.user_types.key?(value)
+
+      left_join_users.merge(::User.where(user_type: value))
+    end
+
     def sort_by_attribute(method)
       case method.to_s
       when 'access_level_asc' then reorder(access_level: :asc)

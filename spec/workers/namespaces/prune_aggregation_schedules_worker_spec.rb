@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespaces::PruneAggregationSchedulesWorker, '#perform', :clean_gitlab_redis_shared_state do
+RSpec.describe Namespaces::PruneAggregationSchedulesWorker, '#perform', :clean_gitlab_redis_shared_state, feature_category: :source_code_management do
   include ExclusiveLeaseHelpers
 
   let(:namespaces) { create_list(:namespace, 5, :with_aggregation_schedule) }

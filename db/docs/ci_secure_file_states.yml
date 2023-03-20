@@ -3,7 +3,7 @@ table_name: ci_secure_file_states
 classes:
 - Geo::CiSecureFileState
 feature_categories:
-- pipeline_authoring
+- pipeline_composition
 description: Stores verification state for Geo replicated Project-level Secure Files.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90510
 milestone: '15.2'

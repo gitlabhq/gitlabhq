@@ -10,7 +10,8 @@ module Gitlab::Ci
           @project = project
           @customization = {
             key_width: opts[:key_width] ? opts[:key_width].to_i : nil,
-            key_text: opts[:key_text]
+            key_text: opts[:key_text],
+            value_width: opts[:value_width] ? opts[:value_width].to_i : nil
           }
 
           # In the future, we should support `order_by=semver` for showing the

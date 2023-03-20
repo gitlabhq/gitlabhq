@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 require "spec_helper"
 
-RSpec.describe DesignManagement::DesignPolicy do
+RSpec.describe DesignManagement::DesignPolicy, feature_category: :portfolio_management do
   include DesignManagementTestHelpers
 
   let(:guest_design_abilities) { %i[read_design] }
-  let(:developer_design_abilities) { %i[create_design destroy_design move_design] }
+  let(:developer_design_abilities) { %i[create_design destroy_design move_design update_design] }
   let(:design_abilities) { guest_design_abilities + developer_design_abilities }
 
   let_it_be(:guest) { create(:user) }

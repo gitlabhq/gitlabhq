@@ -1,0 +1,7 @@
+mutation bulkDestroyJobArtifacts($projectId: ProjectID!, $ids: [CiJobArtifactID!]!) {
+  bulkDestroyJobArtifacts(input: { projectId: $projectId, ids: $ids }) {
+    destroyedCount
+    destroyedIds
+    errors
+  }
+}

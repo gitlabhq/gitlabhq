@@ -2,11 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Projects::Menus::ProjectInformationMenu do
+RSpec.describe Sidebars::Projects::Menus::ProjectInformationMenu, feature_category: :navigation do
   let_it_be_with_reload(:project) { create(:project, :repository) }
 
   let(:user) { project.first_owner }
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project) }
+
+  it_behaves_like 'not serializable as super_sidebar_menu_args' do
+    let(:menu) { described_class.new(context) }
+  end
 
   describe '#container_html_options' do
     subject { described_class.new(context).container_html_options }

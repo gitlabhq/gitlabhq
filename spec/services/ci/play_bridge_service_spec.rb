@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PlayBridgeService, '#execute' do
+RSpec.describe Ci::PlayBridgeService, '#execute', feature_category: :continuous_integration do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:pipeline) { create(:ci_pipeline, project: project) }

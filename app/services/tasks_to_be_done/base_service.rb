@@ -11,7 +11,7 @@ module TasksToBeDone
         description: description,
         add_labels: label_name
       }
-      super(project: container, current_user: current_user, params: params)
+      super(container: container, current_user: current_user, params: params)
     end
 
     def execute

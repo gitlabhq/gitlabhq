@@ -1,6 +1,19 @@
 // eslint-disable-next-line import/order
 const crypto = require('./helpers/patched_crypto');
 
+const { VUE_VERSION: EXPLICIT_VUE_VERSION } = process.env;
+if (![undefined, '2', '3'].includes(EXPLICIT_VUE_VERSION)) {
+  throw new Error(
+    `Invalid VUE_VERSION value: ${EXPLICIT_VUE_VERSION}. Only '2' and '3' are supported`,
+  );
+}
+const USE_VUE3 = EXPLICIT_VUE_VERSION === '3';
+
+if (USE_VUE3) {
+  console.log('[V] Using Vue.js 3');
+}
+const VUE_LOADER_MODULE = USE_VUE3 ? 'vue-loader-vue3' : 'vue-loader';
+
 const fs = require('fs');
 const path = require('path');
 
@@ -12,11 +25,13 @@ const BABEL_LOADER_VERSION = require('babel-loader/package.json').version;
 const CompressionPlugin = require('compression-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const glob = require('glob');
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
-const VUE_LOADER_VERSION = require('vue-loader/package.json').version;
+// eslint-disable-next-line import/no-dynamic-require
+const { VueLoaderPlugin } = require(VUE_LOADER_MODULE);
+// eslint-disable-next-line import/no-dynamic-require
+const VUE_LOADER_VERSION = require(`${VUE_LOADER_MODULE}/package.json`).version;
 const VUE_VERSION = require('vue/package.json').version;
 
-const { ESBuildMinifyPlugin } = require('esbuild-loader');
+const { EsbuildPlugin } = require('esbuild-loader');
 
 const webpack = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
@@ -167,6 +182,7 @@ function generateEntries() {
     sandboxed_mermaid: './lib/mermaid.js',
     redirect_listbox: './entrypoints/behaviors/redirect_listbox.js',
     sandboxed_swagger: './lib/swagger.js',
+    super_sidebar: './entrypoints/super_sidebar.js',
   };
 
   return Object.assign(manualEntries, incrementalCompiler.filterEntryPoints(autoEntries));
@@ -282,6 +298,47 @@ if (WEBPACK_USE_ESBUILD_LOADER) {
   console.log('esbuild-loader is active');
 }
 
+const vueLoaderOptions = {
+  ident: 'vue-loader-options',
+
+  cacheDirectory: path.join(CACHE_PATH, 'vue-loader'),
+  cacheIdentifier: [
+    process.env.NODE_ENV || 'development',
+    webpack.version,
+    VUE_VERSION,
+    VUE_LOADER_VERSION,
+    EXPLICIT_VUE_VERSION,
+  ].join('|'),
+};
+
+let shouldExcludeFromCompliling = (modulePath) =>
+  /node_modules|vendor[\\/]assets/.test(modulePath) && !/\.vue\.js/.test(modulePath);
+// We explicitly set VUE_VERSION
+// Use @gitlab-ui from source to allow us to dig differences
+// between Vue.js 2 and Vue.js 3 while using built gitlab-ui by default
+if (EXPLICIT_VUE_VERSION) {
+  Object.assign(alias, {
+    '@gitlab/ui/scss_to_js': path.join(ROOT_PATH, 'node_modules/@gitlab/ui/scss_to_js'),
+    '@gitlab/ui/dist': '@gitlab/ui/src',
+    '@gitlab/ui': '@gitlab/ui/src',
+  });
+
+  const originalShouldExcludeFromCompliling = shouldExcludeFromCompliling;
+
+  shouldExcludeFromCompliling = (modulePath) =>
+    originalShouldExcludeFromCompliling(modulePath) &&
+    !/node_modules[\\/]@gitlab[\\/]ui/.test(modulePath) &&
+    !/node_modules[\\/]bootstrap-vue[\\/]src[\\/]vue\.js/.test(modulePath);
+}
+
+if (USE_VUE3) {
+  Object.assign(alias, {
+    vue: '@vue/compat',
+  });
+
+  vueLoaderOptions.compiler = require.resolve('./vue3migration/compiler');
+}
+
 module.exports = {
   mode: IS_PRODUCTION ? 'production' : 'development',
 
@@ -319,17 +376,28 @@ module.exports = {
       },
       WEBPACK_USE_ESBUILD_LOADER && {
         test: /\.(js|cjs)$/,
-        exclude: (modulePath) =>
-          /node_modules|vendor[\\/]assets/.test(modulePath) && !/\.vue\.js/.test(modulePath),
+        exclude: shouldExcludeFromCompliling,
         loader: 'esbuild-loader',
         options: esbuildConfiguration,
       },
       !WEBPACK_USE_ESBUILD_LOADER && {
         test: /\.(js|cjs)$/,
-        exclude: (modulePath) =>
-          /node_modules|vendor[\\/]assets/.test(modulePath) && !/\.vue\.js/.test(modulePath),
-        loader: 'babel-loader',
-        options: defaultJsOptions,
+        exclude: shouldExcludeFromCompliling,
+        use: [
+          {
+            loader: 'thread-loader',
+            options: {
+              workerParallelJobs: 20,
+              poolRespawn: false,
+              poolParallelJobs: 200,
+              poolTimeout: DEV_SERVER_LIVERELOAD ? Infinity : 5000,
+            },
+          },
+          {
+            loader: 'babel-loader',
+            options: defaultJsOptions,
+          },
+        ],
       },
       WEBPACK_USE_ESBUILD_LOADER && {
         test: /\.(js|cjs)$/,
@@ -354,16 +422,8 @@ module.exports = {
       },
       {
         test: /\.vue$/,
-        loader: 'vue-loader',
-        options: {
-          cacheDirectory: path.join(CACHE_PATH, 'vue-loader'),
-          cacheIdentifier: [
-            process.env.NODE_ENV || 'development',
-            webpack.version,
-            VUE_VERSION,
-            VUE_LOADER_VERSION,
-          ].join('|'),
-        },
+        loader: VUE_LOADER_MODULE,
+        options: vueLoaderOptions,
       },
       {
         test: /\.(graphql|gql)$/,
@@ -424,7 +484,7 @@ module.exports = {
       {
         test: /.css$/,
         use: [
-          'vue-style-loader',
+          'style-loader',
           {
             loader: 'css-loader',
             options: {
@@ -452,7 +512,6 @@ module.exports = {
         },
       },
       {
-        test: /\.(yml|yaml)$/,
         resourceQuery: /raw/,
         loader: 'raw-loader',
       },
@@ -527,9 +586,7 @@ module.exports = {
         },
       },
     },
-    ...(WEBPACK_USE_ESBUILD_LOADER
-      ? { minimizer: [new ESBuildMinifyPlugin(esbuildConfiguration)] }
-      : {}),
+    ...(WEBPACK_USE_ESBUILD_LOADER ? { minimizer: [new EsbuildPlugin(esbuildConfiguration)] } : {}),
   },
 
   plugins: [

@@ -4,7 +4,7 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Monitoring NGINX Ingress Controller (DEPRECATED) **(FREE)**
+# Monitoring NGINX Ingress Controller (deprecated) **(FREE)**
 
 > [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541) in GitLab 14.7.
 

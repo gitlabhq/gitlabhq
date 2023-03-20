@@ -22,11 +22,6 @@ describe('IntegrationHelpText component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('should use the gl components', () => {
     wrapper = createComponent();
 

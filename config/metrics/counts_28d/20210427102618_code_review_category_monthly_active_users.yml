@@ -16,7 +16,9 @@ tier:
   - free
   - premium
   - ultimate
-performance_indicator_type: []
+performance_indicator_type:
+- gmau
+- paid_gmau
 time_frame: 28d
 instrumentation_class: AggregatedMetric
 data_source: redis_hll

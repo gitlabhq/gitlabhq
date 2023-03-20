@@ -21,11 +21,6 @@ describe('Image List', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('list', () => {
     it('contains one list element for each image', () => {
       mountComponent();

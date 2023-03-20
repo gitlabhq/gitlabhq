@@ -2,19 +2,5 @@
 Rake/Require:
   Details: grace period
   Exclude:
-    - 'lib/tasks/gitlab/assets.rake'
-    - 'lib/tasks/gitlab/docs/redirect.rake'
-    - 'lib/tasks/gitlab/graphql.rake'
-    - 'lib/tasks/gitlab/lfs/migrate.rake'
-    - 'lib/tasks/gitlab/metrics_exporter.rake'
-    - 'lib/tasks/gitlab/openapi.rake'
-    - 'lib/tasks/gitlab/packages/events.rake'
-    - 'lib/tasks/gitlab/packages/migrate.rake'
-    - 'lib/tasks/gitlab/pages.rake'
-    - 'lib/tasks/gitlab/refresh_project_statistics_build_artifacts_size.rake'
-    - 'lib/tasks/gitlab/terraform/migrate.rake'
-    - 'lib/tasks/gitlab/tw/codeowners.rake'
-    - 'lib/tasks/gitlab/x509/update.rake'
-    - 'lib/tasks/import.rake'
     - 'lib/tasks/tokens.rake'
     - 'qa/tasks/webdrivers.rake'

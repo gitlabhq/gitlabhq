@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::DeactivateDormantUsersWorker do
+RSpec.describe Users::DeactivateDormantUsersWorker, feature_category: :subscription_cost_management do
   using RSpec::Parameterized::TableSyntax
 
   describe '#perform' do
@@ -12,8 +12,7 @@ RSpec.describe Users::DeactivateDormantUsersWorker do
 
     subject(:worker) { described_class.new }
 
-    it 'does not run for GitLab.com' do
-      expect(Gitlab).to receive(:com?).and_return(true)
+    it 'does not run for SaaS', :saas do
       # Now makes a call to current settings to determine period of dormancy
 
       worker.perform

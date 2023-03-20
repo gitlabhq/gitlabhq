@@ -1,6 +1,6 @@
 - @hide_top_links = true
+- breadcrumb_title _('Search')
 - page_title @search_term
-- @hide_breadcrumbs = true
 - if params[:group_id].present?
   = hidden_field_tag :group_id, params[:group_id]
 - if params[:project_id].present?
@@ -19,7 +19,6 @@
   %h1.page-title.gl-font-size-h-display.gl-mr-5= _('Search')
   = render_if_exists 'search/form_elasticsearch', attrs: { class: 'mb-2 mb-sm-0 align-self-center' }
 
-.gl-mt-3
-  #js-search-topbar{ data: { "group-initial-json": group_attributes.to_json, "project-initial-json": project_attributes.to_json, "elasticsearch-enabled": @search_service_presenter.advanced_search_enabled?.to_s, "default-branch-name": @project&.default_branch } }
+#js-search-topbar{ data: { "group-initial-json": group_attributes.to_json, "project-initial-json": project_attributes.to_json, "elasticsearch-enabled": @search_service_presenter.advanced_search_enabled?.to_s, "default-branch-name": @project&.default_branch } }
 - if @search_term
   = render 'search/results'

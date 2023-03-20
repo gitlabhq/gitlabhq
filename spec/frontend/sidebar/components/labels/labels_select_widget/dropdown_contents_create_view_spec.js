@@ -4,7 +4,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { workspaceLabelsQueries } from '~/sidebar/constants';
 import DropdownContentsCreateView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_create_view.vue';
 import createLabelMutation from '~/sidebar/components/labels/labels_select_widget/graphql/create_label.mutation.graphql';
@@ -15,7 +15,7 @@ import {
   workspaceLabelsQueryResponse,
 } from './mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const colors = Object.keys(mockSuggestedColors);
 
@@ -87,10 +87,6 @@ describe('DropdownContentsCreateView', () => {
     gon.suggested_label_colors = mockSuggestedColors;
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders a palette of 21 colors', () => {
     createComponent();
     expect(findAllColors()).toHaveLength(21);
@@ -103,7 +99,7 @@ describe('DropdownContentsCreateView', () => {
     findAllColors().at(0).vm.$emit('click', new Event('mouseclick'));
     await nextTick();
 
-    expect(findSelectedColor().attributes('style')).toBe('background-color: rgb(0, 153, 102);');
+    expect(findSelectedColor().attributes('value')).toBe('#009966');
   });
 
   it('shows correct color hex code after selecting a color', async () => {

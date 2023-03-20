@@ -19,7 +19,7 @@ RSpec.describe 'Query current user todos', feature_category: :source_code_manage
   let(:fields) do
     <<~QUERY
     nodes {
-      #{all_graphql_fields_for('todos'.classify, max_depth: 2)}
+      #{all_graphql_fields_for('todos'.classify, max_depth: 2, excluded: ['productAnalyticsState'])}
     }
     QUERY
   end

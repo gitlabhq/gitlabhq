@@ -4,14 +4,13 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import ListPage from '~/packages_and_registries/package_registry/pages/list.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/list/package_title.vue';
 import PackageSearch from '~/packages_and_registries/package_registry/components/list/package_search.vue';
 import OriginalPackageList from '~/packages_and_registries/package_registry/components/list/packages_list.vue';
 import DeletePackages from '~/packages_and_registries/package_registry/components/functional/delete_packages.vue';
 import {
-  PROJECT_RESOURCE_TYPE,
-  GROUP_RESOURCE_TYPE,
   GRAPHQL_PAGE_SIZE,
   EMPTY_LIST_HELP_URL,
   PACKAGE_HELP_URL,
@@ -21,7 +20,7 @@ import getPackagesQuery from '~/packages_and_registries/package_registry/graphql
 import destroyPackagesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_packages.mutation.graphql';
 import { packagesListQuery, packageData, pagination } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('PackagesListApp', () => {
   let wrapper;
@@ -77,10 +76,6 @@ describe('PackagesListApp', () => {
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   const waitForFirstRequest = async () => {
     // emit a search update so the query is executed
@@ -171,14 +166,14 @@ describe('PackagesListApp', () => {
   });
 
   describe.each`
-    type                     | sortType
-    ${PROJECT_RESOURCE_TYPE} | ${'sort'}
-    ${GROUP_RESOURCE_TYPE}   | ${'groupSort'}
+    type                 | sortType
+    ${WORKSPACE_PROJECT} | ${'sort'}
+    ${WORKSPACE_GROUP}   | ${'groupSort'}
   `('$type query', ({ type, sortType }) => {
     let provide;
     let resolver;
 
-    const isGroupPage = type === GROUP_RESOURCE_TYPE;
+    const isGroupPage = type === WORKSPACE_GROUP;
 
     beforeEach(() => {
       provide = { ...defaultProvide, isGroupPage };
@@ -198,9 +193,13 @@ describe('PackagesListApp', () => {
     });
   });
 
-  describe('empty state', () => {
+  describe.each`
+    description         | resolverResponse
+    ${'empty response'} | ${packagesListQuery({ extend: { nodes: [] } })}
+    ${'error response'} | ${{ data: { group: null } }}
+  `(`$description renders empty state`, ({ resolverResponse }) => {
     beforeEach(() => {
-      const resolver = jest.fn().mockResolvedValue(packagesListQuery({ extend: { nodes: [] } }));
+      const resolver = jest.fn().mockResolvedValue(resolverResponse);
       mountComponent({ resolver });
 
       return waitForFirstRequest();

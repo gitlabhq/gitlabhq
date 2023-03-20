@@ -28,11 +28,6 @@ describe('The DAG annotations', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('when there is one annotation', () => {
     const currentNote = singleNote['dag-link103'];
 

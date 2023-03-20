@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlLink } from '@gitlab/ui';
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import { confidentialFilterData } from '../constants/confidential_filter_data';
 import { stateFilterData } from '../constants/state_filter_data';
 import ConfidentialityFilter from './confidentiality_filter.vue';
@@ -16,14 +16,15 @@ export default {
   },
   computed: {
     ...mapState(['urlQuery', 'sidebarDirty']),
+    ...mapGetters(['currentScope']),
     showReset() {
       return this.urlQuery.state || this.urlQuery.confidential;
     },
     showConfidentialityFilter() {
-      return Object.values(confidentialFilterData.scopes).includes(this.urlQuery.scope);
+      return Object.values(confidentialFilterData.scopes).includes(this.currentScope);
     },
     showStatusFilter() {
-      return Object.values(stateFilterData.scopes).includes(this.urlQuery.scope);
+      return Object.values(stateFilterData.scopes).includes(this.currentScope);
     },
   },
   methods: {

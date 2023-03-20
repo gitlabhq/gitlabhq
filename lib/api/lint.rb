@@ -2,7 +2,7 @@
 
 module API
   class Lint < ::API::Base
-    feature_category :pipeline_authoring
+    feature_category :pipeline_composition
 
     helpers do
       def can_lint_ci?

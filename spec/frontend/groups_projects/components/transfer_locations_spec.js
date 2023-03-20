@@ -109,10 +109,6 @@ describe('TransferLocations', () => {
   const intersectionObserverEmitAppear = () => findIntersectionObserver().vm.$emit('appear');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when `GlDropdown` is opened', () => {
     it('shows loading icon', async () => {
       getTransferLocations.mockReturnValueOnce(new Promise(() => {}));

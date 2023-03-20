@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsReviewsWorker do
+RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsReviewsWorker, feature_category: :importers do
   let(:project) { create(:project) }
   let(:import_state) { create(:import_state, project: project) }
   let(:worker) { described_class.new }

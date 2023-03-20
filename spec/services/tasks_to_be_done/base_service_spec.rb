@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TasksToBeDone::BaseService do
+RSpec.describe TasksToBeDone::BaseService, feature_category: :team_planning do
   let_it_be(:project) { create(:project) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:assignee_one) { create(:user) }

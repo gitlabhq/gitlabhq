@@ -26,10 +26,6 @@ function factory(path, loadingPath) {
 }
 
 describe('Repository parent row component', () => {
-  afterEach(() => {
-    vm.destroy();
-  });
-
   it.each`
     path                        | to
     ${'app'}                    | ${'/-/tree/main/'}

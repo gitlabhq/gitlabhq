@@ -1,0 +1,8 @@
+---
+name: ci_batch_project_includes_context
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112570
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/392746
+milestone: '15.10'
+type: development
+group: group::pipeline authoring
+default_enabled: false

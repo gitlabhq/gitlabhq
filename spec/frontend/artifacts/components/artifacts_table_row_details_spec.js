@@ -10,9 +10,9 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import destroyArtifactMutation from '~/artifacts/graphql/mutations/destroy_artifact.mutation.graphql';
 import { I18N_DESTROY_ERROR, I18N_MODAL_TITLE } from '~/artifacts/constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const { artifacts } = getJobArtifactsResponse.data.project.jobs.nodes[0];
 const refetchArtifacts = jest.fn();
@@ -25,11 +25,12 @@ describe('ArtifactsTableRowDetails component', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
 
-  const createComponent = (
+  const createComponent = ({
     handlers = {
       destroyArtifactMutation: jest.fn(),
     },
-  ) => {
+    selectedArtifacts = [],
+  } = {}) => {
     requestHandlers = handlers;
     wrapper = mountExtended(ArtifactsTableRowDetails, {
       apolloProvider: createMockApollo([
@@ -37,6 +38,7 @@ describe('ArtifactsTableRowDetails component', () => {
       ]),
       propsData: {
         artifacts,
+        selectedArtifacts,
         refetchArtifacts,
         queryVariables: {},
       },
@@ -46,10 +48,6 @@ describe('ArtifactsTableRowDetails component', () => {
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('passes correct props', () => {
     beforeEach(() => {
@@ -92,7 +90,7 @@ describe('ArtifactsTableRowDetails component', () => {
       });
     });
 
-    it('displays a flash message and refetches artifacts when the mutation fails', async () => {
+    it('displays an alert message and refetches artifacts when the mutation fails', async () => {
       createComponent({
         destroyArtifactMutation: jest.fn().mockRejectedValue(new Error('Error!')),
       });
@@ -118,6 +116,22 @@ describe('ArtifactsTableRowDetails component', () => {
       wrapper.findComponent(ArtifactDeleteModal).vm.$emit('cancel');
 
       expect(requestHandlers.destroyArtifactMutation).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('bulk delete selection', () => {
+    it('is not selected for unselected artifact', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(wrapper.findAllComponents(ArtifactRow).at(0).props('isSelected')).toBe(false);
+    });
+
+    it('is selected for selected artifacts', async () => {
+      createComponent({ selectedArtifacts: [artifacts.nodes[0].id] });
+      await waitForPromises();
+
+      expect(wrapper.findAllComponents(ArtifactRow).at(0).props('isSelected')).toBe(true);
     });
   });
 });

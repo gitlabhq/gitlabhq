@@ -2,13 +2,11 @@
 
 require "spec_helper"
 
-RSpec.describe "renders a `whats new` dropdown item", feature_category: :not_owned do
+RSpec.describe "renders a `whats new` dropdown item", feature_category: :onboarding do
   let_it_be(:user) { create(:user) }
 
   context 'when not logged in' do
-    it 'and on .com it renders' do
-      allow(Gitlab).to receive(:com?).and_return(true)
-
+    it 'and on SaaS it renders', :saas do
       visit user_path(user)
 
       page.within '.header-help' do

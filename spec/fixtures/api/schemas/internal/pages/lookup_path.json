@@ -23,7 +23,8 @@
       },
       "additionalProperties": false
     },
-    "prefix": { "type": "string" }
+    "prefix": { "type": "string" },
+    "unique_domain": { "type": ["string", "null"] }
   },
   "additionalProperties": false
 }

@@ -375,7 +375,7 @@ hierarchy. Choosing a proper solution will require a thoughtful research.
      - Implementing a separate Go library which uses the same backend (for example, Redis) for rate limiting.
 
 1. **SDK for Satellite Services (Owning Team)**
-   - Build Golang SDK.
+   - Build Go SDK.
    - Create examples showcasing usage of the new rate limits SDK.
 
 1. **Team fan out for Satellite Services (Stage Groups)**

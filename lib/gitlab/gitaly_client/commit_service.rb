@@ -146,7 +146,6 @@ module Gitlab
           message.entries.map do |gitaly_tree_entry|
             Gitlab::Git::Tree.new(
               id: gitaly_tree_entry.oid,
-              root_id: gitaly_tree_entry.root_oid,
               type: gitaly_tree_entry.type.downcase,
               mode: gitaly_tree_entry.mode.to_s(8),
               name: File.basename(gitaly_tree_entry.path),
@@ -423,7 +422,8 @@ module Gitlab
           first_parent: !!options[:first_parent],
           global_options: parse_global_options!(options),
           disable_walk: true, # This option is deprecated. The 'walk' implementation is being removed.
-          trailers: options[:trailers]
+          trailers: options[:trailers],
+          include_referenced_by: options[:include_referenced_by]
         )
         request.after    = GitalyClient.timestamp(options[:after]) if options[:after]
         request.before   = GitalyClient.timestamp(options[:before]) if options[:before]

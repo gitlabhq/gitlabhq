@@ -73,11 +73,6 @@ describe('Delete user modal', () => {
     formSubmitSpy = jest.spyOn(HTMLFormElement.prototype, 'submit').mockImplementation();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders modal with form included', () => {
     createComponent();
     expect(findForm().element).toMatchSnapshot();

@@ -1,0 +1,26 @@
+---
+description: Mirrored `a_compliance_audit_events_api` Redis HLL metric as a Snowplow event. Emitted when Instance Audit Events REST API endpoint is called.
+category: API::AuditEvents
+action: admin_audit_event_request
+label_description: Mirrored Service Ping metric key path
+property_description: Mirrored Service Ping Redis HLL event name
+value_description:
+extra_properties:
+identifiers:
+#- project
+- user
+#- namespace
+product_section: dev
+product_stage: manage
+product_group: compliance
+product_category: compliance_management
+milestone: "15.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107120
+distributions:
+#- ce
+- ee
+tiers: 
+#- free
+- premium
+- ultimate
+

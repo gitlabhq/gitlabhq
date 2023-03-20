@@ -59,7 +59,7 @@ RSpec.describe OauthAccessToken do
       it 'uses the expires_in value' do
         token = OauthAccessToken.new(expires_in: 1.minute)
 
-        expect(token.expires_in).to eq 1.minute
+        expect(token).to be_valid
       end
     end
 
@@ -67,7 +67,7 @@ RSpec.describe OauthAccessToken do
       it 'uses default value' do
         token = OauthAccessToken.new(expires_in: nil)
 
-        expect(token.expires_in).to eq 2.hours
+        expect(token).to be_invalid
       end
     end
   end

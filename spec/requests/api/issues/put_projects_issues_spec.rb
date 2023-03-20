@@ -80,7 +80,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'PUT /projects/:id/issues/:issue_iid to update only title' do
-    it 'updates a project issue' do
+    it 'updates a project issue', :aggregate_failures do
       put api_for_user, params: { title: updated_title }
 
       expect(response).to have_gitlab_http_status(:ok)
@@ -109,7 +109,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       expect(response).to have_gitlab_http_status(:ok)
     end
 
-    it 'allows special label names with labels param as array' do
+    it 'allows special label names with labels param as array', :aggregate_failures do
       put api_for_user,
         params: {
           title: updated_title,
@@ -135,42 +135,42 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         expect(response).to have_gitlab_http_status(:forbidden)
       end
 
-      it 'updates a confidential issue for project members' do
+      it 'updates a confidential issue for project members', :aggregate_failures do
         put api(confidential_issue_path, user), params: { title: updated_title }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['title']).to eq(updated_title)
       end
 
-      it 'updates a confidential issue for author' do
+      it 'updates a confidential issue for author', :aggregate_failures do
         put api(confidential_issue_path, author), params: { title: updated_title }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['title']).to eq(updated_title)
       end
 
-      it 'updates a confidential issue for admin' do
-        put api(confidential_issue_path, admin), params: { title: updated_title }
+      it 'updates a confidential issue for admin', :aggregate_failures do
+        put api(confidential_issue_path, admin, admin_mode: true), params: { title: updated_title }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['title']).to eq(updated_title)
       end
 
-      it 'sets an issue to confidential' do
+      it 'sets an issue to confidential', :aggregate_failures do
         put api_for_user, params: { confidential: true }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['confidential']).to be_truthy
       end
 
-      it 'makes a confidential issue public' do
+      it 'makes a confidential issue public', :aggregate_failures do
         put api(confidential_issue_path, user), params: { confidential: false }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['confidential']).to be_falsy
       end
 
-      it 'does not update a confidential issue with wrong confidential flag' do
+      it 'does not update a confidential issue with wrong confidential flag', :aggregate_failures do
         put api(confidential_issue_path, user), params: { confidential: 'foo' }
 
         expect(response).to have_gitlab_http_status(:bad_request)
@@ -209,7 +209,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         expect { update_issue }.not_to change { issue.reload.title }
       end
 
-      it 'returns correct status and message' do
+      it 'returns correct status and message', :aggregate_failures do
         update_issue
 
         expect(response).to have_gitlab_http_status(:bad_request)
@@ -246,14 +246,14 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
   describe 'PUT /projects/:id/issues/:issue_iid to update assignee' do
     context 'support for deprecated assignee_id' do
-      it 'removes assignee' do
+      it 'removes assignee', :aggregate_failures do
         put api_for_user, params: { assignee_id: 0 }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['assignee']).to be_nil
       end
 
-      it 'updates an issue with new assignee' do
+      it 'updates an issue with new assignee', :aggregate_failures do
         put api_for_user, params: { assignee_id: user2.id }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -261,21 +261,21 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
     end
 
-    it 'removes assignee' do
+    it 'removes assignee', :aggregate_failures do
       put api_for_user, params: { assignee_ids: [0] }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['assignees']).to be_empty
     end
 
-    it 'updates an issue with new assignee' do
+    it 'updates an issue with new assignee', :aggregate_failures do
       put api_for_user, params: { assignee_ids: [user2.id] }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['assignees'].first['name']).to eq(user2.name)
     end
 
-    context 'single assignee restrictions' do
+    context 'single assignee restrictions', :aggregate_failures do
       it 'updates an issue with several assignees but only one has been applied' do
         put api_for_user, params: { assignee_ids: [user2.id, guest.id] }
 
@@ -289,7 +289,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     let!(:label) { create(:label, title: 'dummy', project: project) }
     let!(:label_link) { create(:label_link, label: label, target: issue) }
 
-    it 'adds relevant labels' do
+    it 'adds relevant labels', :aggregate_failures do
       put api_for_user, params: { add_labels: '1, 2' }
 
       expect(response).to have_gitlab_http_status(:ok)
@@ -300,14 +300,14 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       let!(:label2) { create(:label, title: 'a-label', project: project) }
       let!(:label_link2) { create(:label_link, label: label2, target: issue) }
 
-      it 'removes relevant labels' do
+      it 'removes relevant labels', :aggregate_failures do
         put api_for_user, params: { remove_labels: label2.title }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['labels']).to eq([label.title])
       end
 
-      it 'removes all labels' do
+      it 'removes all labels', :aggregate_failures do
         put api_for_user, params: { remove_labels: "#{label.title}, #{label2.title}" }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -315,14 +315,14 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
     end
 
-    it 'does not update labels if not present' do
+    it 'does not update labels if not present', :aggregate_failures do
       put api_for_user, params: { title: updated_title }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['labels']).to eq([label.title])
     end
 
-    it 'removes all labels and touches the record' do
+    it 'removes all labels and touches the record', :aggregate_failures do
       travel_to(2.minutes.from_now) do
         put api_for_user, params: { labels: '' }
       end
@@ -332,7 +332,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       expect(json_response['updated_at']).to be > Time.current
     end
 
-    it 'removes all labels and touches the record with labels param as array' do
+    it 'removes all labels and touches the record with labels param as array', :aggregate_failures do
       travel_to(2.minutes.from_now) do
         put api_for_user, params: { labels: [''] }
       end
@@ -342,7 +342,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       expect(json_response['updated_at']).to be > Time.current
     end
 
-    it 'updates labels and touches the record' do
+    it 'updates labels and touches the record', :aggregate_failures do
       travel_to(2.minutes.from_now) do
         put api_for_user, params: { labels: 'foo,bar' }
       end
@@ -352,7 +352,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       expect(json_response['updated_at']).to be > Time.current
     end
 
-    it 'updates labels and touches the record with labels param as array' do
+    it 'updates labels and touches the record with labels param as array', :aggregate_failures do
       travel_to(2.minutes.from_now) do
         put api_for_user, params: { labels: %w(foo bar) }
       end
@@ -363,21 +363,21 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       expect(json_response['updated_at']).to be > Time.current
     end
 
-    it 'allows special label names' do
+    it 'allows special label names', :aggregate_failures do
       put api_for_user, params: { labels: 'label:foo, label-bar,label_bar,label/bar,label?bar,label&bar,?,&' }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['labels']).to contain_exactly('label:foo', 'label-bar', 'label_bar', 'label/bar', 'label?bar', 'label&bar', '?', '&')
     end
 
-    it 'allows special label names with labels param as array' do
+    it 'allows special label names with labels param as array', :aggregate_failures do
       put api_for_user, params: { labels: ['label:foo', 'label-bar', 'label_bar', 'label/bar,label?bar,label&bar,?,&'] }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['labels']).to contain_exactly('label:foo', 'label-bar', 'label_bar', 'label/bar', 'label?bar', 'label&bar', '?', '&')
     end
 
-    it 'returns 400 if title is too long' do
+    it 'returns 400 if title is too long', :aggregate_failures do
       put api_for_user, params: { title: 'g' * 256 }
 
       expect(response).to have_gitlab_http_status(:bad_request)
@@ -386,7 +386,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'PUT /projects/:id/issues/:issue_iid to update state and label' do
-    it 'updates a project issue' do
+    it 'updates a project issue', :aggregate_failures do
       put api_for_user, params: { labels: 'label2', state_event: 'close' }
 
       expect(response).to have_gitlab_http_status(:ok)
@@ -394,7 +394,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       expect(json_response['state']).to eq 'closed'
     end
 
-    it 'reopens a project isssue' do
+    it 'reopens a project isssue', :aggregate_failures do
       put api(issue_path, user), params: { state_event: 'reopen' }
 
       expect(response).to have_gitlab_http_status(:ok)
@@ -404,7 +404,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
   describe 'PUT /projects/:id/issues/:issue_iid to update updated_at param' do
     context 'when reporter makes request' do
-      it 'accepts the update date to be set' do
+      it 'accepts the update date to be set', :aggregate_failures do
         update_time = 2.weeks.ago
 
         put api_for_user, params: { title: 'some new title', updated_at: update_time }
@@ -436,7 +436,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
-      it 'accepts the update date to be set' do
+      it 'accepts the update date to be set', :aggregate_failures do
         update_time = 2.weeks.ago
         put api_for_owner, params: { title: 'some new title', updated_at: update_time }
 
@@ -448,7 +448,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'PUT /projects/:id/issues/:issue_iid to update due date' do
-    it 'creates a new project issue' do
+    it 'creates a new project issue', :aggregate_failures do
       due_date = 2.weeks.from_now.strftime('%Y-%m-%d')
 
       put api_for_user, params: { due_date: due_date }

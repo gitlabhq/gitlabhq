@@ -51,10 +51,6 @@ describe('Snippet Visibility Edit component', () => {
       };
     });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('rendering', () => {
     it('matches the snapshot', () => {
       createComponent();

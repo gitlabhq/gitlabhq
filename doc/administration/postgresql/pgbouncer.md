@@ -174,10 +174,12 @@ ote_pid | tls
 
 ## Procedure for bypassing PgBouncer
 
+### Omnibus installations
+
 Some database changes have to be done directly, and not through PgBouncer.
 
-Read more about the affected tasks: [database restores](../../raketasks/backup_restore.md#back-up-and-restore-for-installations-using-pgbouncer)
-and [GitLab upgrades](../../update/zero_downtime.md#postgresql).
+The main affected tasks are [database restores](../../raketasks/backup_restore.md#back-up-and-restore-for-installations-using-pgbouncer)
+and [GitLab upgrades with database migrations](../../update/zero_downtime.md#postgresql).
 
 1. To find the primary node, run the following on a database node:
 
@@ -195,7 +197,7 @@ and [GitLab upgrades](../../update/zero_downtime.md#postgresql).
    sudo gitlab-ctl reconfigure
    ```
 
-Once you've performed the tasks or procedure, switch back to using PgBouncer:
+After you've performed the tasks or procedure, switch back to using PgBouncer:
 
 1. Change back `/etc/gitlab/gitlab.rb` to point to PgBouncer.
 1. Run reconfigure:
@@ -203,6 +205,19 @@ Once you've performed the tasks or procedure, switch back to using PgBouncer:
    ```shell
    sudo gitlab-ctl reconfigure
    ```
+
+### Helm chart installations
+
+High-availability deployments also need to bypass PgBouncer for the same reasons as Omnibus-based ones.
+For this type of installation:
+
+- Database backup and restore tasks are performed by the toolbox container.
+- Migration tasks are performed by the migrations container.
+
+You should override the PostgreSQL port on each subchart, so these tasks can execute and connect to PostgreSQL directly:
+
+- [Toolbox](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/charts/gitlab/charts/toolbox/values.yaml#L40)
+- [Migrations](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/charts/gitlab/charts/migrations/values.yaml#L46)
 
 ## Fine tuning
 

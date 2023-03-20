@@ -69,8 +69,8 @@ The following table lists project permissions available for each role:
 | [Application security](application_security/index.md):<br>View [dependency list](application_security/dependency_list/index.md)                                                      |          |          | ✓         | ✓          | ✓        |
 | [Application security](application_security/index.md):<br>Create a [CVE ID Request](application_security/cve_id_request.md)                                                          |          |          |           | ✓          | ✓        |
 | [Application security](application_security/index.md):<br>Create or assign [security policy project](application_security/policies/index.md)                                         |          |          |           |            | ✓        |
-| [Clusters](infrastructure/clusters/index.md):<br>View clusters                                                                                                                       |          |          | ✓         | ✓          | ✓        |
-| [Clusters](infrastructure/clusters/index.md):<br>Manage clusters                                                                                                                     |          |          |           | ✓          | ✓        |
+| [GitLab Agent for Kubernetes](clusters/agent/index.md):<br>View agents                                                                                                               |          |          | ✓         | ✓          | ✓        |
+| [GitLab Agent for Kubernetes](clusters/agent/index.md):<br>Manage agents                                                                                                             |          |          |           | ✓          | ✓        |
 | [Container Registry](packages/container_registry/index.md):<br>Create, edit, delete [cleanup policies](packages/container_registry/delete_container_registry_images.md#use-a-cleanup-policy) |          |          |          | ✓          | ✓        |
 | [Container Registry](packages/container_registry/index.md):<br>Push an image to the Container Registry                                                                               |          |          | ✓         | ✓          | ✓        |
 | [Container Registry](packages/container_registry/index.md):<br>Pull an image from the Container Registry                                                                             | ✓ (19) | ✓ (19) | ✓         | ✓          | ✓        |
@@ -220,7 +220,7 @@ The following table lists project permissions available for each role:
 
 <!-- markdownlint-disable MD029 -->
 
-1. On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](admin_area/external_users.md) must be given explicit access even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. In GitLab 15.9 and later, this restriction only applies to users with the non-custom Guest role on self-managed GitLab instances and GitLab.com.
+1. On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](admin_area/external_users.md) must be given explicit access even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available.
 2. Guest users can only view the [confidential issues](project/issues/confidential_issues.md) they created themselves or are assigned to.
 3. Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/protected_branches.md).
 4. If the [branch is protected](project/protected_branches.md), this depends on the access given to Developers and Maintainers.
@@ -271,8 +271,7 @@ More details about the permissions for some project-level features follow.
 | View and download artifacts                                                                                               | ✓ (1)    | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
 | View [environments](../ci/environments/index.md)                                                                          | ✓ (3)    | ✓ (3) | ✓        | ✓         | ✓          | ✓     |
 | View job logs and job details page                                                                                        | ✓ (1)    | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
-| View pipeline details page                                                                                                | ✓ (1)    | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
-| View pipelines page                                                                                                       | ✓ (1)    | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
+| View pipelines and pipeline details pages                                                                                 | ✓ (1)    | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
 | View pipelines tab in MR                                                                                                  | ✓ (3)    | ✓ (3) | ✓        | ✓         | ✓          | ✓     |
 | [View vulnerabilities in a pipeline](application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline) |       | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
 | View and download project-level [Secure Files](../api/secure_files.md)                                                    |            |         |          | ✓         | ✓          | ✓     |
@@ -467,9 +466,10 @@ subscriptions.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106256) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `customizable_roles`.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110810) in GitLab 15.9.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114524) in GitLab 15.10.
 
 Custom roles allow group members who are assigned the Owner role to create roles
-specific to the needs of their organization. 
+specific to the needs of their organization.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo of the custom roles feature, see [[Demo] Ultimate Guest can view code on private repositories via custom role](https://www.youtube.com/watch?v=46cp_-Rtxps).
@@ -481,29 +481,36 @@ To enable custom roles for your group, a group member with the Owner role:
 1. Makes sure that there is at least one private project in this group or one of
    its subgroups, so that you can see the effect of giving a Guest a custom role.
 1. Creates a personal access token with the API scope.
-1. Uses [the API](../api/member_roles.md#add-a-member-role-to-a-group) to create the Guest+1 role for the group.
+1. Uses [the API](../api/member_roles.md#add-a-member-role-to-a-group) to create the Guest+1 role for the root group.
 
 ### Associate a custom role with an existing group member
 
 To associate a custom role with an existing group member, a group member with
 the Owner role:
 
-1. Invites a test user account to the root group as a Guest.
-   At this point, this Guest user cannot see any code on the projects in the group.
+1. Invites a user to the root group or any subgroup or project in the root
+   group's hierarchy as a Guest. At this point, this Guest user cannot see any
+   code on the projects in the group or subgroup.
 1. Optional. If the Owner does not know the `ID` of the Guest user receiving a custom
    role, finds that `ID` by making an [API request](../api/member_roles.md#list-all-member-roles-of-a-group).
 
-1. Associates the group member with the Guest+1 role using the [Group and Project Members API endpoint](../api/members.md#edit-a-member-of-a-group-or-project)
+1. Associates the member with the Guest+1 role using the [Group and Project Members API endpoint](../api/members.md#edit-a-member-of-a-group-or-project)
 
-    ```shell
-    curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer $YOUR_ACCESS_TOKEN" --data '{"member_role_id": '$MEMBER_ROLE_ID', "access_level": 10}' "https://example.gitlab.com/api/v4/groups/$GROUP_PATH/members/$GUEST_USER_ID"
-    ```
+   ```shell
+   # to update a project membership
+   curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer $YOUR_ACCESS_TOKEN" --data '{"member_role_id": '$MEMBER_ROLE_ID', "access_level": 10}' "https://example.gitlab.com/api/v4/projects/$ID/members/$GUEST_USER_ID"
+
+   # to update a group membership
+   curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer $YOUR_ACCESS_TOKEN" --data '{"member_role_id": '$MEMBER_ROLE_ID', "access_level": 10}' "https://example.gitlab.com/api/v4/groups/$ID/members/$GUEST_USER_ID"
+   ```
 
    Where:
+
+   - `$ID`: The `ID` or [URL-encoded path of the project or group](../api/rest/index.md#namespaced-path-encoding) associated with the membership receiving the custom role.
    - `$MEMBER_ROLE_ID`: The `ID` of the member role created in the previous section.
    - `$GUEST_USER_ID`: The `ID` of the Guest user receiving a custom role.
 
-   Now the Guest+1 user can view code on all projects in the root group.
+   Now the Guest+1 user can view code on all projects associated with this membership.
 
 ### Remove a custom role from a group member
 

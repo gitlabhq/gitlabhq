@@ -1,0 +1,11 @@
+#import "~/jobs/components/job/graphql/fragments/ci_variable.fragment.graphql"
+
+fragment BaseCiJob on CiJob {
+  id
+  manualVariables {
+    nodes {
+      ...ManualCiVariable
+    }
+  }
+  __typename
+}

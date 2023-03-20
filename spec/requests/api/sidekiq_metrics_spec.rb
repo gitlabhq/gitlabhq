@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::SidekiqMetrics, feature_category: :not_owned do
+RSpec.describe API::SidekiqMetrics, feature_category: :shared do
   let(:admin) { create(:user, :admin) }
 
   describe 'GET sidekiq/*' do

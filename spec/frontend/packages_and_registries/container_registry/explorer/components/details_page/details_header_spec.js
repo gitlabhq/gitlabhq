@@ -73,7 +73,7 @@ describe('Details Header', () => {
       apolloProvider,
       propsData,
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       stubs: {
         TitleArea,
@@ -85,9 +85,7 @@ describe('Details Header', () => {
 
   afterEach(() => {
     // if we want to mix createMockApollo and manual mocks we need to reset everything
-    wrapper.destroy();
     apolloProvider = undefined;
-    wrapper = null;
   });
 
   describe('image name', () => {

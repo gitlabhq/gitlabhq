@@ -1,0 +1,9 @@
+- if resource.errors.any?
+  = render Pajamas::AlertComponent.new(title: I18n.t("errors.messages.not_saved", count: resource.errors.count, resource: resource.class.model_name.human.downcase),
+    variant: :danger,
+    dismissible: false,
+    alert_options: { id: 'error_explanation', class: 'gl-mb-3'}) do |c|
+    = c.body do
+      %ul.gl-pl-4
+        - resource.errors.full_messages.each do |message|
+          %li= message

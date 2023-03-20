@@ -25,10 +25,6 @@ describe('DiffDiscussions', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     it('should have notes list', () => {
       createComponent();

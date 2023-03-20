@@ -9,7 +9,7 @@ describe('PackagePath', () => {
     wrapper = shallowMount(PackagePath, {
       propsData,
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
@@ -23,11 +23,6 @@ describe('PackagePath', () => {
 
   const findItem = (name) => wrapper.find(`[data-testid="${name}"]`);
   const findTooltip = (w) => getBinding(w.element, 'gl-tooltip');
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   describe.each`
     path                       | rootUrl       | shouldExist                                                   | shouldNotExist

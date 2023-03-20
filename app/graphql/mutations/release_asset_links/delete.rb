@@ -21,11 +21,15 @@ module Mutations
       def resolve(id:)
         link = authorized_find!(id)
 
-        unless link.destroy
-          return { link: nil, errors: link.errors.full_messages }
-        end
+        result = ::Releases::Links::DestroyService
+          .new(link.release, current_user)
+          .execute(link)
 
-        { link: link, errors: [] }
+        if result.success?
+          { link: result.payload[:link], errors: [] }
+        else
+          { link: nil, errors: result.message }
+        end
       end
 
       def find_object(id)

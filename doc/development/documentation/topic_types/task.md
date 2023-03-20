@@ -60,6 +60,22 @@ For example, `Create an issue`.
 If several tasks on a page share prerequisites, you can create a separate
 topic with the title `Prerequisites`.
 
+## When a task has only one step
+
+If you need to write a task that has only one step, make that step an unordered list item.
+This format helps the step stand out, while keeping it consistent with the rules
+for lists.
+
+For example:
+
+```markdown
+# Create a merge request
+
+To create a merge request:
+
+- In the upper-right corner, select **New merge request**.
+```
+
 ### When more than one way exists to perform a task
 
 If more than one way exists to perform a task in the UI, you should

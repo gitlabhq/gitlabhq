@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Metadata, feature_category: :not_owned do
+RSpec.describe API::Metadata, feature_category: :shared do
   shared_examples_for 'GET /metadata' do
     context 'when unauthenticated' do
       it 'returns authentication error' do

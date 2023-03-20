@@ -230,6 +230,12 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
         context 'when authenticated' do
           it 'creates a new project under the existing namespace' do
+            # current scenario does not matter with the user activity case,
+            # so stub/double it to escape more sql running times limit
+            activity_service = instance_double(::Users::ActivityService)
+            allow(::Users::ActivityService).to receive(:new).and_return(activity_service)
+            allow(activity_service).to receive(:execute)
+
             expect do
               upload(path, user: user.username, password: user.password) do |response|
                 expect(response).to have_gitlab_http_status(:ok)
@@ -472,10 +478,11 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
         end
 
         context 'when the request is not from gitlab-workhorse' do
-          it 'raises an exception' do
-            expect do
-              get("/#{project.full_path}.git/info/refs?service=git-upload-pack")
-            end.to raise_error(JWT::DecodeError)
+          it 'responds with 403 Forbidden' do
+            get("/#{project.full_path}.git/info/refs?service=git-upload-pack")
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(response.body).to eq('Nil JSON web token')
           end
         end
 
@@ -1112,10 +1119,11 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
         end
 
         context 'when the request is not from gitlab-workhorse' do
-          it 'raises an exception' do
-            expect do
-              get("/#{project.full_path}.git/info/refs?service=git-upload-pack")
-            end.to raise_error(JWT::DecodeError)
+          it 'responds with 403 Forbidden' do
+            get("/#{project.full_path}.git/info/refs?service=git-upload-pack")
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(response.body).to eq('Nil JSON web token')
           end
         end
 

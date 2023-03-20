@@ -1,12 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import FilePreview from '~/repository/components/preview/index.vue';
 import FileTable from '~/repository/components/table/index.vue';
 import TreeContent from 'jh_else_ce/repository/components/tree_content.vue';
 import { loadCommits, isRequested, resetRequestedCommits } from '~/repository/commits_service';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { i18n } from '~/repository/constants';
 import { graphQLErrors } from '../mock_data';
 
@@ -15,15 +14,15 @@ jest.mock('~/repository/commits_service', () => ({
   isRequested: jest.fn(),
   resetRequestedCommits: jest.fn(),
 }));
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 let vm;
 let $apollo;
 const mockResponse = jest.fn().mockReturnValue(Promise.resolve({ data: {} }));
 
-function factory(path, appoloMockResponse = mockResponse) {
+function factory(path, apolloMockResponse = mockResponse) {
   $apollo = {
-    query: appoloMockResponse,
+    query: apolloMockResponse,
   };
 
   vm = shallowMount(TreeContent, {
@@ -33,21 +32,11 @@ function factory(path, appoloMockResponse = mockResponse) {
     mocks: {
       $apollo,
     },
-    provide: {
-      glFeatures: {
-        increasePageSizeExponentially: true,
-        paginatedTreeGraphqlQuery: true,
-      },
-    },
   });
 }
 
 describe('Repository table component', () => {
   const findFileTable = () => vm.findComponent(FileTable);
-
-  afterEach(() => {
-    vm.destroy();
-  });
 
   it('renders file preview', async () => {
     factory('/');
@@ -170,37 +159,6 @@ describe('Repository table component', () => {
       await nextTick();
 
       expect(findFileTable().props('hasMore')).toBe(limitReached);
-    });
-
-    it.each`
-      fetchCounter | pageSize
-      ${0}         | ${10}
-      ${2}         | ${30}
-      ${4}         | ${50}
-      ${6}         | ${70}
-      ${8}         | ${90}
-      ${10}        | ${100}
-      ${20}        | ${100}
-      ${100}       | ${100}
-      ${200}       | ${100}
-    `('exponentially increases page size, to a maximum of 100', ({ fetchCounter, pageSize }) => {
-      factory('/');
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      vm.setData({ fetchCounter });
-
-      vm.vm.fetchFiles();
-
-      expect($apollo.query).toHaveBeenCalledWith({
-        query: paginatedTreeQuery,
-        variables: {
-          pageSize,
-          nextPageCursor: '',
-          path: '/',
-          projectPath: '',
-          ref: '',
-        },
-      });
     });
   });
 

@@ -15,25 +15,6 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
   end
 
   describe 'report abuse to administrator' do
-    shared_examples 'reports the user with an abuse category' do
-      it do
-        fill_and_submit_abuse_category_form
-        fill_and_submit_report_abuse_form
-
-        expect(page).to have_content 'Thank you for your report'
-      end
-    end
-
-    shared_examples 'reports the user without an abuse category' do
-      it do
-        click_link 'Report abuse to administrator'
-
-        fill_and_submit_report_abuse_form
-
-        expect(page).to have_content 'Thank you for your report'
-      end
-    end
-
     context 'when reporting an issue for abuse' do
       before do
         visit project_issue_path(project, issue)

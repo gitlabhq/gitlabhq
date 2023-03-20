@@ -14,6 +14,10 @@ module Clusters
         DeleteExpiredEventsWorker.perform_at(schedule_cleanup_at, agent.id)
 
         ServiceResponse.success
+      rescue StandardError => e
+        Gitlab::ErrorTracking.track_exception(e, agent_id: agent.id)
+
+        ServiceResponse.error(message: e.message)
       end
 
       private

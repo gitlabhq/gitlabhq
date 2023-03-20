@@ -1,0 +1,11 @@
+---
+table_name: bulk_import_export_batches
+classes:
+- BulkImports::ExportBatch
+feature_categories:
+- importers
+description: Used to track the generation status of export batch files for groups
+  or projects
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111708
+milestone: '15.10'
+gitlab_schema: gitlab_main

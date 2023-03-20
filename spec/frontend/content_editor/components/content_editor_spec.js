@@ -1,7 +1,8 @@
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 import { EditorContent, Editor } from '@tiptap/vue-2';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import EditorModeDropdown from '~/vue_shared/components/markdown/editor_mode_dropdown.vue';
 import ContentEditor from '~/content_editor/components/content_editor.vue';
 import ContentEditorAlert from '~/content_editor/components/content_editor_alert.vue';
 import ContentEditorProvider from '~/content_editor/components/content_editor_provider.vue';
@@ -27,29 +28,29 @@ describe('ContentEditor', () => {
   const findEditorStateObserver = () => wrapper.findComponent(EditorStateObserver);
   const findLoadingIndicator = () => wrapper.findComponent(LoadingIndicator);
   const findContentEditorAlert = () => wrapper.findComponent(ContentEditorAlert);
-  const createWrapper = ({ markdown, autofocus, useBottomToolbar } = {}) => {
+  const createWrapper = ({ markdown, autofocus, ...props } = {}) => {
     wrapper = shallowMountExtended(ContentEditor, {
       propsData: {
         renderMarkdown,
         uploadsPath,
         markdown,
         autofocus,
-        useBottomToolbar,
+        placeholder: 'Enter some text here...',
+        ...props,
       },
       stubs: {
         EditorStateObserver,
         ContentEditorProvider,
         ContentEditorAlert,
+        GlLink,
+        GlSprintf,
+        EditorModeDropdown,
       },
     });
   };
 
   beforeEach(() => {
     renderMarkdown = jest.fn();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('triggers initialized event', () => {
@@ -87,22 +88,29 @@ describe('ContentEditor', () => {
     expect(wrapper.findComponent(ContentEditorProvider).exists()).toBe(true);
   });
 
-  it('renders top toolbar component', () => {
+  it('renders toolbar component', () => {
     createWrapper();
 
     expect(wrapper.findComponent(FormattingToolbar).exists()).toBe(true);
-    expect(wrapper.findComponent(FormattingToolbar).classes('gl-border-t')).toBe(false);
-    expect(wrapper.findComponent(FormattingToolbar).classes('gl-border-b')).toBe(true);
   });
 
-  it('renders bottom toolbar component', () => {
-    createWrapper({
-      useBottomToolbar: true,
-    });
+  it('renders footer containing quick actions help text if quick actions docs path is defined', () => {
+    createWrapper({ quickActionsDocsPath: '/foo/bar' });
 
-    expect(wrapper.findComponent(FormattingToolbar).exists()).toBe(true);
-    expect(wrapper.findComponent(FormattingToolbar).classes('gl-border-t')).toBe(true);
-    expect(wrapper.findComponent(FormattingToolbar).classes('gl-border-b')).toBe(false);
+    expect(findEditorElement().text()).toContain('For quick actions, type /');
+    expect(wrapper.findComponent(GlLink).attributes('href')).toBe('/foo/bar');
+  });
+
+  it('does not render footer containing quick actions help text if quick actions docs path is not defined', () => {
+    createWrapper();
+
+    expect(findEditorElement().text()).not.toContain('For quick actions, type /');
+  });
+
+  it('renders an editor mode dropdown', () => {
+    createWrapper();
+
+    expect(wrapper.findComponent(EditorModeDropdown).exists()).toBe(true);
   });
 
   describe('when setting initial content', () => {
@@ -124,9 +132,9 @@ describe('ContentEditor', () => {
 
     describe('succeeds', () => {
       beforeEach(async () => {
-        renderMarkdown.mockResolvedValueOnce('hello world');
+        renderMarkdown.mockResolvedValueOnce('');
 
-        createWrapper({ markddown: 'hello world' });
+        createWrapper({ markddown: '' });
         await nextTick();
       });
 
@@ -138,13 +146,17 @@ describe('ContentEditor', () => {
       it('emits loadingSuccess event', () => {
         expect(wrapper.emitted('loadingSuccess')).toHaveLength(1);
       });
+
+      it('shows placeholder text', () => {
+        expect(wrapper.text()).toContain('Enter some text here...');
+      });
     });
 
     describe('fails', () => {
       beforeEach(async () => {
         renderMarkdown.mockRejectedValueOnce(new Error());
 
-        createWrapper({ markddown: 'hello world' });
+        createWrapper({ markdown: 'hello world' });
         await nextTick();
       });
 
@@ -209,11 +221,17 @@ describe('ContentEditor', () => {
 
       expect(findEditorElement().classes()).not.toContain('is-focused');
     });
+
+    it('hides placeholder text', () => {
+      expect(wrapper.text()).not.toContain('Enter some text here...');
+    });
   });
 
   describe('when editorStateObserver emits docUpdate event', () => {
-    it('emits change event with the latest markdown', async () => {
-      const markdown = 'Loaded content';
+    let markdown;
+
+    beforeEach(async () => {
+      markdown = 'Loaded content';
 
       renderMarkdown.mockResolvedValueOnce(markdown);
 
@@ -223,7 +241,9 @@ describe('ContentEditor', () => {
       await waitForPromises();
 
       findEditorStateObserver().vm.$emit('docUpdate');
+    });
 
+    it('emits change event with the latest markdown', () => {
       expect(wrapper.emitted('change')).toEqual([
         [
           {
@@ -233,6 +253,10 @@ describe('ContentEditor', () => {
           },
         ],
       ]);
+    });
+
+    it('hides the placeholder text', () => {
+      expect(wrapper.text()).not.toContain('Enter some text here...');
     });
   });
 

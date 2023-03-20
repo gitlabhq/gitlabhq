@@ -1,6 +1,6 @@
 ---
-stage: Release
-group: Release
+stage: Configure
+group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 disqus_identifier: 'https://docs.gitlab.com/ee/ci/environments.html'
@@ -159,6 +159,19 @@ deploy_review_app:
     - main
 ```
 
+### Rename an environment
+
+> - Renaming an environment by using the UI was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68550) in GitLab 14.3.
+> - Renaming an environment by using the API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 15.9 and is planned for removal in GitLab 16.0.
+
+You cannot rename an environment by using the UI, and the API method was deprecated in GitLab 15.9.
+
+To achieve the same result as renaming an environment:
+
+1. [Stop the existing environment](#stop-an-environment-through-the-ui).
+1. [Delete the existing environment](#delete-an-environment).
+1. [Create a new environment](#create-a-static-environment) with the desired name.
+
 ## Deployment tier of environments
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300741) in GitLab 13.10.
@@ -207,7 +220,7 @@ The `when: manual` action:
 
 You can find the play button in the pipelines, environments, deployments, and jobs views.
 
-## Configure Kubernetes deployments (DEPRECATED)
+## Configure Kubernetes deployments (deprecated)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
 > - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
@@ -708,7 +721,7 @@ You can view a deployment's expiration date in the GitLab UI.
 1. On the left sidebar, select **Deployments > Environments**.
 1. Select the name of the deployment.
 
-In the upper left, next to the environment name, the expiration date is displayed.
+In the upper-left corner, next to the environment name, the expiration date is displayed.
 
 #### Override a deployment's scheduled stop time
 
@@ -717,7 +730,7 @@ You can manually override a deployment's expiration date.
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
 1. Select the deployment name.
-1. in the upper right, select the thumbtack (**{thumbtack}**).
+1. in the upper-right corner, select the thumbtack (**{thumbtack}**).
 
 ![Environment auto stop](img/environment_auto_stop_v13_10.png)
 
@@ -866,7 +879,7 @@ It may take a minute or two for data to appear after initial deployment.
 
 Metric charts can be embedded in GitLab Flavored Markdown. See [Embedding Metrics in GitLab Flavored Markdown](../../operations/metrics/embed.md) for more details.
 
-### Web terminals (DEPRECATED)
+### Web terminals (deprecated)
 
 > [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
@@ -990,19 +1003,6 @@ like [Review Apps](../review_apps/index.md) (`review/*`).
 
 The most specific spec takes precedence over the other wildcard matching. In this case,
 the `review/feature-1` spec takes precedence over `review/*` and `*` specs.
-
-### Rename an environment
-
-> Renaming environments through the UI was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68550) in GitLab 14.3. Renaming environments through the API was deprecated and [is planned to be removed](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 15.0.
-
-Renaming an environment through the UI is not possible.
-Instead, you need to delete the old environment and create a new one:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Environments**.
-1. Find the environment and stop it.
-1. Delete the environment.
-1. Create a new environment with your preferred name.
 
 ## Related topics
 

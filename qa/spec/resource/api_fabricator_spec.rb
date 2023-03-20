@@ -116,7 +116,7 @@ RSpec.describe QA::Resource::ApiFabricator do
 
             expect { subject.fabricate_via_api! }.to raise_error do |error|
               expect(error.class).to eql(described_class::ResourceFabricationFailedError)
-              expect(error.to_s).to eql(<<~ERROR.chomp)
+              expect(error.to_s).to eql(<<~ERROR.strip)
                 Fabrication of FooBarResource using the API failed (400) with `#{raw_post}`.\n
               ERROR
             end

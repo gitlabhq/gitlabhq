@@ -149,7 +149,7 @@ RSpec.describe 'User page', feature_category: :user_profile do
       end
     end
 
-    context 'follow/unfollow and followers/following' do
+    context 'follow/unfollow and followers/following', :js do
       let_it_be(:followee) { create(:user) }
       let_it_be(:follower) { create(:user) }
 
@@ -159,21 +159,33 @@ RSpec.describe 'User page', feature_category: :user_profile do
         expect(page).not_to have_button(text: 'Follow', class: 'gl-button')
       end
 
-      it 'shows 0 followers and 0 following' do
-        subject
+      shared_examples 'follower tabs with count badges' do
+        it 'shows 0 followers and 0 following' do
+          subject
 
-        expect(page).to have_content('0 followers')
-        expect(page).to have_content('0 following')
+          expect(page).to have_content('Followers 0')
+          expect(page).to have_content('Following 0')
+        end
+
+        it 'shows 1 followers and 1 following' do
+          follower.follow(user)
+          user.follow(followee)
+
+          subject
+
+          expect(page).to have_content('Followers 1')
+          expect(page).to have_content('Following 1')
+        end
       end
 
-      it 'shows 1 followers and 1 following' do
-        follower.follow(user)
-        user.follow(followee)
+      it_behaves_like 'follower tabs with count badges'
 
-        subject
+      context 'with profile_tabs_vue feature flag disabled' do
+        before_all do
+          stub_feature_flags(profile_tabs_vue: false)
+        end
 
-        expect(page).to have_content('1 follower')
-        expect(page).to have_content('1 following')
+        it_behaves_like 'follower tabs with count badges'
       end
 
       it 'does show button to follow' do

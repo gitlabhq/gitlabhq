@@ -26,7 +26,7 @@ describe('IDE commit form', () => {
     wrapper = shallowMount(CommitForm, {
       store,
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       stubs: {
         GlModal: stubComponent(GlModal),
@@ -71,10 +71,6 @@ describe('IDE commit form', () => {
       ...projectData,
       userPermissions: { pushCode: true },
     });
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   // Notes:

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Autosize from 'autosize';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -9,10 +10,15 @@ import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { stubComponent } from 'helpers/stub_component';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 
 jest.mock('~/emoji');
+jest.mock('autosize');
 
 describe('vue_shared/component/markdown/markdown_editor', () => {
+  useLocalStorageSpy();
+
   let wrapper;
   const value = 'test markdown';
   const renderMarkdownPath = '/api/markdown';
@@ -57,14 +63,27 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
   const findContentEditor = () => wrapper.findComponent(ContentEditor);
 
+  const enableContentEditor = async () => {
+    findMarkdownField().vm.$emit('enableContentEditor');
+    await nextTick();
+    await waitForPromises();
+  };
+
+  const enableMarkdownEditor = async () => {
+    findContentEditor().vm.$emit('enableMarkdownEditor');
+    await nextTick();
+    await waitForPromises();
+  };
+
   beforeEach(() => {
     window.uploads_path = 'uploads';
     mock = new MockAdapter(axios);
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mock.restore();
+
+    localStorage.clear();
   });
 
   it('displays markdown field by default', () => {
@@ -83,8 +102,133 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     });
   });
 
+  it('enables content editor switcher when contentEditorEnabled prop is true', () => {
+    buildWrapper({ propsData: { enableContentEditor: true } });
+
+    expect(findMarkdownField().text()).toContain('Rich text');
+  });
+
+  it('hides content editor switcher when contentEditorEnabled prop is false', () => {
+    buildWrapper({ propsData: { enableContentEditor: false } });
+
+    expect(findMarkdownField().text()).not.toContain('Rich text');
+  });
+
+  it('passes down any additional props to markdown field component', () => {
+    const propsData = {
+      line: { text: 'hello world', richText: 'hello world' },
+      lines: [{ text: 'hello world', richText: 'hello world' }],
+      canSuggest: true,
+    };
+
+    buildWrapper({
+      propsData: { ...propsData, myCustomProp: 'myCustomValue', 'data-testid': 'custom id' },
+    });
+
+    expect(findMarkdownField().props()).toMatchObject(propsData);
+    expect(findMarkdownField().vm.$attrs).toMatchObject({
+      myCustomProp: 'myCustomValue',
+
+      // data-testid isn't copied over
+      'data-testid': 'markdown-field',
+    });
+  });
+
+  describe('disabled', () => {
+    it('disables markdown field when disabled prop is true', () => {
+      buildWrapper({ propsData: { disabled: true } });
+
+      expect(findMarkdownField().find('textarea').attributes('disabled')).toBe('disabled');
+    });
+
+    it('enables markdown field when disabled prop is false', () => {
+      buildWrapper({ propsData: { disabled: false } });
+
+      expect(findMarkdownField().find('textarea').attributes('disabled')).toBe(undefined);
+    });
+
+    it('disables content editor when disabled prop is true', async () => {
+      buildWrapper({ propsData: { disabled: true } });
+
+      await enableContentEditor();
+
+      expect(findContentEditor().props('editable')).toBe(false);
+    });
+
+    it('enables content editor when disabled prop is false', async () => {
+      buildWrapper({ propsData: { disabled: false } });
+
+      await enableContentEditor();
+
+      expect(findContentEditor().props('editable')).toBe(true);
+    });
+  });
+
+  describe('autosize', () => {
+    it('autosizes the textarea when the value changes', async () => {
+      buildWrapper();
+      await findTextarea().setValue('Lots of newlines\n\n\n\n\n\n\nMore content\n\n\nand newlines');
+
+      expect(Autosize.update).toHaveBeenCalled();
+    });
+
+    it('autosizes the textarea when the value changes from outside the component', async () => {
+      buildWrapper();
+      wrapper.setProps({ value: 'Lots of newlines\n\n\n\n\n\n\nMore content\n\n\nand newlines' });
+
+      await nextTick();
+      await waitForPromises();
+      expect(Autosize.update).toHaveBeenCalled();
+    });
+
+    it('does not autosize the textarea if markdown editor is disabled', async () => {
+      buildWrapper();
+      await enableContentEditor();
+
+      wrapper.setProps({ value: 'Lots of newlines\n\n\n\n\n\n\nMore content\n\n\nand newlines' });
+
+      expect(Autosize.update).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('autosave', () => {
+    it('automatically saves the textarea value to local storage if autosaveKey is defined', () => {
+      buildWrapper({ propsData: { autosaveKey: 'issue/1234', value: 'This is **markdown**' } });
+
+      expect(localStorage.getItem('autosave/issue/1234')).toBe('This is **markdown**');
+    });
+
+    it("loads value from local storage if autosaveKey is defined, and value isn't", () => {
+      localStorage.setItem('autosave/issue/1234', 'This is **markdown**');
+
+      buildWrapper({ propsData: { autosaveKey: 'issue/1234', value: '' } });
+
+      expect(findTextarea().element.value).toBe('This is **markdown**');
+    });
+
+    it("doesn't load value from local storage if autosaveKey is defined, and value is", () => {
+      localStorage.setItem('autosave/issue/1234', 'This is **markdown**');
+
+      buildWrapper({ propsData: { autosaveKey: 'issue/1234' } });
+
+      expect(findTextarea().element.value).toBe('test markdown');
+    });
+
+    it('does not save the textarea value to local storage if autosaveKey is not defined', () => {
+      buildWrapper({ propsData: { value: 'This is **markdown**' } });
+
+      expect(localStorage.setItem).not.toHaveBeenCalled();
+    });
+
+    it('does not save the textarea value to local storage if value is empty', () => {
+      buildWrapper({ propsData: { autosaveKey: 'issue/1234', value: '' } });
+
+      expect(localStorage.setItem).not.toHaveBeenCalled();
+    });
+  });
+
   it('renders markdown field textarea', () => {
-    buildWrapper();
+    buildWrapper({ propsData: { supportsQuickActions: true } });
 
     expect(findTextarea().attributes()).toEqual(
       expect.objectContaining({
@@ -92,6 +236,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
         name: formFieldName,
         placeholder: formFieldPlaceholder,
         'aria-label': formFieldAriaLabel,
+        'data-supports-quick-actions': 'true',
       }),
     );
 
@@ -107,9 +252,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   it(`emits ${EDITING_MODE_CONTENT_EDITOR} event when enableContentEditor emitted from markdown editor`, async () => {
     buildWrapper();
 
-    findMarkdownField().vm.$emit('enableContentEditor');
-
-    await nextTick();
+    await enableContentEditor();
 
     expect(wrapper.emitted(EDITING_MODE_CONTENT_EDITOR)).toHaveLength(1);
   });
@@ -119,11 +262,8 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       stubs: { ContentEditor: stubComponent(ContentEditor) },
     });
 
-    findMarkdownField().vm.$emit('enableContentEditor');
-
-    await nextTick();
-
-    findContentEditor().vm.$emit('enableMarkdownEditor');
+    await enableContentEditor();
+    await enableMarkdownEditor();
 
     expect(wrapper.emitted(EDITING_MODE_MARKDOWN_FIELD)).toHaveLength(1);
   });
@@ -136,6 +276,16 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       await findTextarea().setValue(newValue);
 
       expect(wrapper.emitted('input')).toEqual([[newValue]]);
+    });
+
+    it('autosaves the markdown value to local storage', async () => {
+      buildWrapper({ propsData: { autosaveKey: 'issue/1234' } });
+
+      const newValue = 'new value';
+
+      await findTextarea().setValue(newValue);
+
+      expect(localStorage.getItem('autosave/issue/1234')).toBe(newValue);
     });
 
     describe('when autofocus is true', () => {
@@ -159,9 +309,9 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     });
 
     describe(`when markdown field triggers enableContentEditor event`, () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         buildWrapper();
-        findMarkdownField().vm.$emit('enableContentEditor');
+        await enableContentEditor();
       });
 
       it('displays the content editor', () => {
@@ -169,7 +319,6 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
           expect.objectContaining({
             renderMarkdown: expect.any(Function),
             uploadsPath: window.uploads_path,
-            useBottomToolbar: false,
             markdown: value,
           }),
         );
@@ -198,9 +347,9 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   });
 
   describe(`when editingMode is ${EDITING_MODE_CONTENT_EDITOR}`, () => {
-    beforeEach(() => {
-      buildWrapper();
-      findMarkdownField().vm.$emit('enableContentEditor');
+    beforeEach(async () => {
+      buildWrapper({ propsData: { autosaveKey: 'issue/1234' } });
+      await enableContentEditor();
     });
 
     describe('when autofocus is true', () => {
@@ -224,6 +373,14 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       expect(wrapper.emitted('input')).toEqual([[newValue]]);
     });
 
+    it('autosaves the content editor value to local storage', async () => {
+      const newValue = 'new value';
+
+      await findContentEditor().vm.$emit('change', { markdown: newValue });
+
+      expect(localStorage.getItem('autosave/issue/1234')).toBe(newValue);
+    });
+
     it('bubbles up keydown event', () => {
       const event = new Event('keydown');
 
@@ -233,9 +390,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     });
 
     describe(`when richText editor triggers enableMarkdownEditor event`, () => {
-      beforeEach(() => {
-        findContentEditor().vm.$emit('enableMarkdownEditor');
-      });
+      beforeEach(enableMarkdownEditor);
 
       it('hides the content editor', () => {
         expect(findContentEditor().exists()).toBe(false);

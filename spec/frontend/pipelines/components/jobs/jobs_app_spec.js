@@ -4,7 +4,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import JobsApp from '~/pipelines/components/jobs/jobs_app.vue';
 import JobsTable from '~/jobs/components/table/jobs_table.vue';
 import getPipelineJobsQuery from '~/pipelines/graphql/queries/get_pipeline_jobs.query.graphql';
@@ -12,7 +12,7 @@ import { mockPipelineJobsQueryResponse } from '../../mock_data';
 
 Vue.use(VueApollo);
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Jobs app', () => {
   let wrapper;
@@ -43,10 +43,6 @@ describe('Jobs app', () => {
 
   beforeEach(() => {
     resolverSpy = jest.fn().mockResolvedValue(mockPipelineJobsQueryResponse);
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   describe('loading spinner', () => {

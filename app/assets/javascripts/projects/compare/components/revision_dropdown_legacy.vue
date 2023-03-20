@@ -1,6 +1,6 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlDropdownSectionHeader } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
 
@@ -132,6 +132,7 @@ export default {
           :key="`branch${index}`"
           is-check-item
           :is-checked="selectedRevision === branch"
+          data-testid="branches-dropdown-item"
           @click="onClick(branch)"
         >
           {{ branch }}
@@ -144,6 +145,7 @@ export default {
           :key="`tag${index}`"
           is-check-item
           :is-checked="selectedRevision === tag"
+          data-testid="tags-dropdown-item"
           @click="onClick(tag)"
         >
           {{ tag }}

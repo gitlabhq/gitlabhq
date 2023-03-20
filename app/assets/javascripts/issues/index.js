@@ -6,7 +6,7 @@ import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import GLForm from '~/gl_form';
 import { initIssuableHeaderWarnings, initIssuableSidebar } from '~/issuable';
 import IssuableTemplateSelectors from '~/issuable/issuable_template_selectors';
-import { IssueType } from '~/issues/constants';
+import { TYPE_INCIDENT } from '~/issues/constants';
 import Issue from '~/issues/issue';
 import { initTitleSuggestions, initTypePopover } from '~/issues/new';
 import { initRelatedMergeRequests } from '~/issues/related_merge_requests';
@@ -59,11 +59,11 @@ export function initShow() {
 
   const { issueType, ...issuableData } = parseIssuableData(el);
 
-  if (issueType === IssueType.Incident) {
+  if (issueType === TYPE_INCIDENT) {
     initIncidentApp({ ...issuableData, issuableId: el.dataset.issuableId }, store);
-    initHeaderActions(store, IssueType.Incident);
+    initHeaderActions(store, TYPE_INCIDENT);
     initLinkedResources();
-    initRelatedIssues(IssueType.Incident);
+    initRelatedIssues(TYPE_INCIDENT);
   } else {
     initIssueApp(issuableData, store);
     initHeaderActions(store);

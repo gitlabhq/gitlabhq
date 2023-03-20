@@ -177,7 +177,7 @@ module Gitlab
 
       def recipients_from_received_headers
         strong_memoize :emails_from_received_headers do
-          received.map { |header| header.value[RECEIVED_HEADER_REGEX, 1] }.compact
+          received.filter_map { |header| header.value[RECEIVED_HEADER_REGEX, 1] }
         end
       end
 

@@ -174,6 +174,11 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:revoked_user_achievements).class_name('Achievements::UserAchievement').with_foreign_key('revoked_by_user_id').inverse_of(:revoked_by_user) }
     it { is_expected.to have_many(:achievements).through(:user_achievements).class_name('Achievements::Achievement').inverse_of(:users) }
     it { is_expected.to have_many(:namespace_commit_emails).class_name('Users::NamespaceCommitEmail') }
+    it { is_expected.to have_many(:audit_events).with_foreign_key(:author_id).inverse_of(:user) }
+
+    it do
+      is_expected.to have_many(:alert_assignees).class_name('::AlertManagement::AlertAssignee').inverse_of(:assignee)
+    end
 
     describe 'default values' do
       let(:user) { described_class.new }
@@ -188,6 +193,7 @@ RSpec.describe User, feature_category: :user_profile do
       it { expect(user.notified_of_own_activity).to be_falsey }
       it { expect(user.preferred_language).to eq(Gitlab::CurrentSettings.default_preferred_language) }
       it { expect(user.theme_id).to eq(described_class.gitlab_config.default_theme) }
+      it { expect(user.color_scheme_id).to eq(Gitlab::CurrentSettings.default_syntax_highlighting_theme) }
     end
 
     describe '#user_detail' do
@@ -472,6 +478,37 @@ RSpec.describe User, feature_category: :user_profile do
           # Change an unrelated value
           user.name = "Example McExampleFace"
           expect(user).to be_valid
+        end
+      end
+
+      context 'namespace_move_dir_allowed' do
+        context 'when the user is not a new record' do
+          before do
+            expect(user.new_record?).to eq(false)
+          end
+
+          it 'checks when username changes' do
+            expect(user).to receive(:namespace_move_dir_allowed)
+
+            user.username = 'newuser'
+            user.validate
+          end
+
+          it 'does not check if the username did not change' do
+            expect(user).not_to receive(:namespace_move_dir_allowed)
+            expect(user.username_changed?).to eq(false)
+
+            user.validate
+          end
+        end
+
+        it 'does not check if the user is a new record' do
+          user = User.new(username: 'newuser')
+
+          expect(user.new_record?).to eq(true)
+          expect(user).not_to receive(:namespace_move_dir_allowed)
+
+          user.validate
         end
       end
     end
@@ -978,10 +1015,6 @@ RSpec.describe User, feature_category: :user_profile do
         end
       end
 
-      describe 'and U2F' do
-        it_behaves_like "returns the right users", :two_factor_via_u2f
-      end
-
       describe 'and WebAuthn' do
         it_behaves_like "returns the right users", :two_factor_via_webauthn
       end
@@ -995,26 +1028,6 @@ RSpec.describe User, feature_category: :user_profile do
 
         expect(users_without_two_factor).to include(user_without_2fa.id)
         expect(users_without_two_factor).not_to include(user_with_2fa.id)
-      end
-
-      describe 'and u2f' do
-        it 'excludes users with 2fa enabled via U2F' do
-          user_with_2fa = create(:user, :two_factor_via_u2f)
-          user_without_2fa = create(:user)
-          users_without_two_factor = described_class.without_two_factor.pluck(:id)
-
-          expect(users_without_two_factor).to include(user_without_2fa.id)
-          expect(users_without_two_factor).not_to include(user_with_2fa.id)
-        end
-
-        it 'excludes users with 2fa enabled via OTP and U2F' do
-          user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_u2f)
-          user_without_2fa = create(:user)
-          users_without_two_factor = described_class.without_two_factor.pluck(:id)
-
-          expect(users_without_two_factor).to include(user_without_2fa.id)
-          expect(users_without_two_factor).not_to include(user_with_2fa.id)
-        end
       end
 
       describe 'and webauthn' do
@@ -2174,6 +2187,24 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
+    context 'Duo Auth' do
+      context 'when enabled via GitLab settings' do
+        before do
+          allow(::Gitlab.config.duo_auth).to receive(:enabled).and_return(true)
+        end
+
+        it { expect(user.two_factor_otp_enabled?).to eq(true) }
+      end
+
+      context 'when disabled via GitLab settings' do
+        before do
+          allow(::Gitlab.config.duo_auth).to receive(:enabled).and_return(false)
+        end
+
+        it { expect(user.two_factor_otp_enabled?).to eq(false) }
+      end
+    end
+
     context 'FortiTokenCloud' do
       context 'when enabled via GitLab settings' do
         before do
@@ -2203,54 +2234,6 @@ RSpec.describe User, feature_category: :user_profile do
         end
 
         it { expect(user.two_factor_otp_enabled?).to eq(false) }
-      end
-    end
-  end
-
-  context 'two_factor_u2f_enabled?' do
-    let_it_be(:user) { create(:user, :two_factor) }
-
-    context 'when webauthn feature flag is enabled' do
-      context 'user has no U2F registration' do
-        it { expect(user.two_factor_u2f_enabled?).to eq(false) }
-      end
-
-      context 'user has existing U2F registration' do
-        it 'returns false' do
-          device = U2F::FakeU2F.new(FFaker::BaconIpsum.characters(5))
-          create(:u2f_registration,
-            name: 'my u2f device',
-            user: user,
-            certificate: Base64.strict_encode64(device.cert_raw),
-            key_handle: U2F.urlsafe_encode64(device.key_handle_raw),
-            public_key: Base64.strict_encode64(device.origin_public_key_raw))
-
-          expect(user.two_factor_u2f_enabled?).to eq(false)
-        end
-      end
-    end
-
-    context 'when webauthn feature flag is disabled' do
-      before do
-        stub_feature_flags(webauthn: false)
-      end
-
-      context 'user has no U2F registration' do
-        it { expect(user.two_factor_u2f_enabled?).to eq(false) }
-      end
-
-      context 'user has existing U2F registration' do
-        it 'returns true' do
-          device = U2F::FakeU2F.new(FFaker::BaconIpsum.characters(5))
-          create(:u2f_registration,
-            name: 'my u2f device',
-            user: user,
-            certificate: Base64.strict_encode64(device.cert_raw),
-            key_handle: U2F.urlsafe_encode64(device.key_handle_raw),
-            public_key: Base64.strict_encode64(device.origin_public_key_raw))
-
-          expect(user.two_factor_u2f_enabled?).to eq(true)
-        end
       end
     end
   end
@@ -2396,14 +2379,6 @@ RSpec.describe User, feature_category: :user_profile do
         end
 
         it_behaves_like 'manageable groups examples'
-
-        context 'when feature flag :linear_user_manageable_groups is disabled' do
-          before do
-            stub_feature_flags(linear_user_manageable_groups: false)
-          end
-
-          it_behaves_like 'manageable groups examples'
-        end
       end
     end
   end
@@ -7104,42 +7079,104 @@ RSpec.describe User, feature_category: :user_profile do
     context 'when user is confirmed' do
       let(:user) { create(:user) }
 
-      it 'is falsey' do
-        expect(user.confirmed?).to be_truthy
-        expect(subject).to be_falsey
+      it 'is false' do
+        expect(user.confirmed?).to be(true)
+        expect(subject).to be(false)
       end
     end
 
     context 'when user is not confirmed' do
       let_it_be(:user) { build_stubbed(:user, :unconfirmed, confirmation_sent_at: Time.current) }
 
-      it 'is truthy when soft_email_confirmation feature is disabled' do
-        stub_feature_flags(soft_email_confirmation: false)
-        expect(subject).to be_truthy
+      context 'when email confirmation setting is set to `off`' do
+        before do
+          stub_application_setting_enum('email_confirmation_setting', 'off')
+        end
+
+        it { is_expected.to be(false) }
       end
 
-      context 'when soft_email_confirmation feature is enabled' do
+      context 'when email confirmation setting is set to `soft`' do
         before do
-          stub_feature_flags(soft_email_confirmation: true)
+          stub_application_setting_enum('email_confirmation_setting', 'soft')
         end
 
-        it 'is falsey when confirmation period is valid' do
-          expect(subject).to be_falsey
+        context 'when confirmation period is valid' do
+          it { is_expected.to be(false) }
         end
 
-        it 'is truthy when confirmation period is expired' do
-          travel_to(User.allow_unconfirmed_access_for.from_now + 1.day) do
-            expect(subject).to be_truthy
+        context 'when confirmation period is expired' do
+          before do
+            travel_to(User.allow_unconfirmed_access_for.from_now + 1.day)
           end
+
+          it { is_expected.to be(true) }
         end
 
         context 'when user has no confirmation email sent' do
           let(:user) { build(:user, :unconfirmed, confirmation_sent_at: nil) }
 
-          it 'is truthy' do
-            expect(subject).to be_truthy
-          end
+          it { is_expected.to be(true) }
         end
+      end
+
+      context 'when email confirmation setting is set to `hard`' do
+        before do
+          stub_application_setting_enum('email_confirmation_setting', 'hard')
+        end
+
+        it { is_expected.to be(true) }
+      end
+    end
+  end
+
+  describe '#confirmation_period_valid?' do
+    subject { user.send(:confirmation_period_valid?) }
+
+    let_it_be(:user) { create(:user) }
+
+    context 'when email confirmation setting is set to `off`' do
+      before do
+        stub_feature_flags(soft_email_confirmation: false)
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when email confirmation setting is set to `soft`' do
+      before do
+        stub_application_setting_enum('email_confirmation_setting', 'soft')
+      end
+
+      context 'when within confirmation window' do
+        before do
+          user.update!(confirmation_sent_at: Date.today)
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when outside confirmation window' do
+        before do
+          user.update!(confirmation_sent_at: Date.today - described_class.confirm_within - 7.days)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'when email confirmation setting is set to `hard`' do
+      before do
+        stub_feature_flags(soft_email_confirmation: false)
+        stub_application_setting_enum('email_confirmation_setting', 'hard')
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    describe '#in_confirmation_period?' do
+      it 'is expected to be an alias' do
+        expect(user.method(:in_confirmation_period?).original_name).to eq(:confirmation_period_valid?)
       end
     end
   end

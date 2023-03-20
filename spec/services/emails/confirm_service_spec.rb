@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Emails::ConfirmService do
+RSpec.describe Emails::ConfirmService, feature_category: :user_management do
   let_it_be(:user) { create(:user) }
 
   subject(:service) { described_class.new(user) }

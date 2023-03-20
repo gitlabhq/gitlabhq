@@ -96,7 +96,7 @@ Parameters:
 
 ### Disable Apple App Store integration
 
-Disable the Apple App Store integration for a project. Integration settings are preserved.
+Disable the Apple App Store integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/apple_app_store
@@ -133,7 +133,7 @@ Parameters:
 
 ### Disable Asana integration
 
-Disable the Asana integration for a project. Integration settings are preserved.
+Disable the Asana integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/asana
@@ -168,7 +168,7 @@ Parameters:
 
 ### Disable Assembla integration
 
-Disable the Assembla integration for a project. Integration settings are preserved.
+Disable the Assembla integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/assembla
@@ -208,7 +208,7 @@ Parameters:
 
 ### Disable Atlassian Bamboo CI integration
 
-Disable the Atlassian Bamboo CI integration for a project. Integration settings are preserved.
+Disable the Atlassian Bamboo CI integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/bamboo
@@ -244,7 +244,7 @@ Parameters:
 
 ### Disable Bugzilla integration
 
-Disable the Bugzilla integration for a project. Integration settings are preserved.
+Disable the Bugzilla integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/bugzilla
@@ -283,7 +283,7 @@ Parameters:
 
 ### Disable Buildkite integration
 
-Disable the Buildkite integration for a project. Integration settings are preserved.
+Disable the Buildkite integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/buildkite
@@ -320,7 +320,7 @@ Parameters:
 
 ### Disable Campfire integration
 
-Disable the Campfire integration for a project. Integration settings are preserved.
+Disable the Campfire integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/campfire
@@ -360,7 +360,7 @@ Parameters:
 
 ### Disable Datadog integration
 
-Disable the Datadog integration for a project. Integration settings are preserved.
+Disable the Datadog integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/datadog
@@ -405,7 +405,7 @@ Parameters:
 
 ### Disable Unify Circuit integration
 
-Disable the Unify Circuit integration for a project. Integration settings are preserved.
+Disable the Unify Circuit integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/unify-circuit
@@ -450,7 +450,7 @@ Parameters:
 
 ### Disable Pumble integration
 
-Disable the Pumble integration for a project. Integration settings are preserved.
+Disable the Pumble integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/pumble
@@ -495,7 +495,7 @@ Parameters:
 
 ### Disable Webex Teams integration
 
-Disable the Webex Teams integration for a project. Integration settings are preserved.
+Disable the Webex Teams integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/webex-teams
@@ -531,7 +531,7 @@ Parameters:
 
 ### Disable Custom Issue Tracker integration
 
-Disable the Custom Issue Tracker integration for a project. Integration settings are preserved.
+Disable the Custom Issue Tracker integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/custom-issue-tracker
@@ -565,7 +565,7 @@ Parameters:
 
 ### Disable Discord integration
 
-Disable the Discord integration for a project. Integration settings are preserved.
+Disable the Discord integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/discord
@@ -604,7 +604,7 @@ Parameters:
 
 ### Disable Drone CI integration
 
-Disable the Drone CI integration for a project. Integration settings are preserved.
+Disable the Drone CI integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/drone-ci
@@ -643,7 +643,7 @@ Parameters:
 
 ### Disable Emails on Push integration
 
-Disable the Emails on Push integration for a project. Integration settings are preserved.
+Disable the Emails on Push integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/emails-on-push
@@ -679,7 +679,7 @@ Parameters:
 
 ### Disable EWM integration
 
-Disable the EWM integration for a project. Integration settings are preserved.
+Disable the EWM integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/ewm
@@ -715,7 +715,7 @@ Parameters:
 
 ### Disable Confluence integration
 
-Disable the Confluence integration for a project. Integration settings are preserved.
+Disable the Confluence integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/confluence
@@ -753,7 +753,7 @@ Parameters:
 
 ### Disable Shimo integration
 
-Disable the Shimo integration for a project. Integration settings are preserved.
+Disable the Shimo integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/shimo
@@ -779,7 +779,7 @@ Parameters:
 
 ### Disable External wiki integration
 
-Disable the External wiki integration for a project. Integration settings are preserved.
+Disable the External wiki integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/external-wiki
@@ -815,7 +815,7 @@ Parameters:
 
 ### Disable GitHub integration
 
-Disable the GitHub integration for a project. Integration settings are preserved.
+Disable the GitHub integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/github
@@ -861,7 +861,7 @@ Parameters:
 
 ### Disable Hangouts Chat integration
 
-Disable the Hangouts Chat integration for a project. Integration settings are preserved.
+Disable the Hangouts Chat integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/hangouts-chat
@@ -901,7 +901,7 @@ Parameters:
 
 ### Disable Irker (IRC gateway) integration
 
-Disable the Irker (IRC gateway) integration for a project. Integration settings are preserved.
+Disable the Irker (IRC gateway) integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/irker
@@ -952,7 +952,7 @@ Parameters:
 
 ### Disable Jira integration
 
-Disable the Jira integration for a project. Integration settings are preserved.
+Disable the Jira integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/jira
@@ -1011,7 +1011,7 @@ Parameters:
 
 ### Disable Slack Slash Command integration
 
-Disable the Slack Slash Command integration for a project. Integration settings are preserved.
+Disable the Slack Slash Command integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/slack-slash-commands
@@ -1045,7 +1045,7 @@ Parameters:
 
 ### Disable Mattermost Slash Command integration
 
-Disable the Mattermost Slash Command integration for a project. Integration settings are preserved.
+Disable the Mattermost Slash Command integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/mattermost-slash-commands
@@ -1076,7 +1076,7 @@ Parameters:
 
 ### Disable Packagist integration
 
-Disable the Packagist integration for a project. Integration settings are preserved.
+Disable the Packagist integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/packagist
@@ -1114,7 +1114,7 @@ Parameters:
 
 ### Disable Pipeline-Emails integration
 
-Disable the Pipeline-Emails integration for a project. Integration settings are preserved.
+Disable the Pipeline-Emails integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/pipelines-email
@@ -1151,7 +1151,7 @@ Parameters:
 
 ### Disable Pivotal Tracker integration
 
-Disable the Pivotal Tracker integration for a project. Integration settings are preserved.
+Disable the Pivotal Tracker integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/pivotaltracker
@@ -1187,7 +1187,7 @@ Parameters:
 
 ### Disable Prometheus integration
 
-Disable the Prometheus integration for a project. Integration settings are preserved.
+Disable the Prometheus integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/prometheus
@@ -1225,7 +1225,7 @@ Parameters:
 
 ### Disable Pushover integration
 
-Disable the Pushover integration for a project. Integration settings are preserved.
+Disable the Pushover integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/pushover
@@ -1261,7 +1261,7 @@ Parameters:
 
 ### Disable Redmine integration
 
-Disable the Redmine integration for a project. Integration settings are preserved.
+Disable the Redmine integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/redmine
@@ -1322,7 +1322,7 @@ Parameters:
 
 ### Disable Slack integration
 
-Disable the Slack integration for a project. Integration settings are preserved.
+Disable the Slack integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/slack
@@ -1368,7 +1368,7 @@ Parameters:
 
 ### Disable Microsoft Teams integration
 
-Disable the Microsoft Teams integration for a project. Integration settings are preserved.
+Disable the Microsoft Teams integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/microsoft-teams
@@ -1425,7 +1425,7 @@ Parameters:
 
 ### Disable Mattermost notifications integration
 
-Disable the Mattermost notifications integration for a project. Integration settings are preserved.
+Disable the Mattermost notifications integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/mattermost
@@ -1467,7 +1467,7 @@ Parameters:
 
 ### Disable JetBrains TeamCity CI integration
 
-Disable the JetBrains TeamCity CI integration for a project. Integration settings are preserved.
+Disable the JetBrains TeamCity CI integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/teamcity
@@ -1508,7 +1508,7 @@ Parameters:
 
 ### Disable Jenkins CI integration
 
-Disable the Jenkins CI integration for a project. Integration settings are preserved.
+Disable the Jenkins CI integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/jenkins
@@ -1545,7 +1545,7 @@ Parameters:
 
 ### Disable Jenkins CI (Deprecated) integration
 
-Disable the Jenkins CI (Deprecated) integration for a project. Integration settings are preserved.
+Disable the Jenkins CI (Deprecated) integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/jenkins-deprecated
@@ -1582,7 +1582,7 @@ Parameters:
 
 ### Disable MockCI integration
 
-Disable the MockCI integration for a project. Integration settings are preserved.
+Disable the MockCI integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/mock-ci
@@ -1594,6 +1594,43 @@ Get MockCI integration settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/mock-ci
+```
+
+## Squash TM
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337855) in GitLab 15.10.
+
+Update [Squash TM](https://www.squashtest.com/product-squash-tm?lang=en) requirements when GitLab issues are modified.
+
+### Create/Edit Squash TM integration
+
+Set Squash TM integration settings for a project.
+
+```plaintext
+PUT /projects/:id/integrations/squash-tm
+```
+
+Parameters:
+
+| Parameter               | Type   | Required | Description                   |
+|-------------------------|--------|----------|-------------------------------|
+| `url`                   | string | yes      | URL of the Squash TM webhook. |
+| `token`                 | string | no       | Optional token                |
+
+### Disable Squash TM integration
+
+Disable the Squash TM integration for a project. Integration settings are preserved.
+
+```plaintext
+DELETE /projects/:id/integrations/squash-tm
+```
+
+### Get Squash TM integration settings
+
+Get Squash TM integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/squash-tm
 ```
 
 ## YouTrack
@@ -1617,7 +1654,7 @@ Parameters:
 
 ### Disable YouTrack integration
 
-Disable the YouTrack integration for a project. Integration settings are preserved.
+Disable the YouTrack integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/youtrack

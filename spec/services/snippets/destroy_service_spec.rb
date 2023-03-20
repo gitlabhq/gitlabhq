@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Snippets::DestroyService do
+RSpec.describe Snippets::DestroyService, feature_category: :source_code_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:other_user) { create(:user) }

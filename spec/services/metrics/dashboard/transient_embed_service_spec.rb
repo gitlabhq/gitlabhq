@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Metrics::Dashboard::TransientEmbedService, :use_clean_rails_memory_store_caching do
+RSpec.describe Metrics::Dashboard::TransientEmbedService, :use_clean_rails_memory_store_caching,
+  feature_category: :metrics do
   let_it_be(:project) { build(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:environment) { create(:environment, project: project) }

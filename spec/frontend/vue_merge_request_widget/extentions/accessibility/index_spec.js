@@ -39,7 +39,6 @@ describe('Accessibility extension', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mock.restore();
   });
 

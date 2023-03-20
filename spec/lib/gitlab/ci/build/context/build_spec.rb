@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_composition do
   let(:pipeline)        { create(:ci_pipeline) }
   let(:seed_attributes) { { 'name' => 'some-job' } }
 

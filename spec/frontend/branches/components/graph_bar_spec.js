@@ -8,10 +8,6 @@ function factory(propsData = {}) {
 }
 
 describe('Branch divergence graph bar component', () => {
-  afterEach(() => {
-    vm.destroy();
-  });
-
   it.each`
     position   | positionClass
     ${'left'}  | ${'position-right-0'}

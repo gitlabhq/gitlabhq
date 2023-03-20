@@ -34,8 +34,6 @@ describe('/environments/components/canary_update_modal.vue', () => {
     if (wrapper) {
       wrapper.destroy();
     }
-
-    wrapper = null;
   });
 
   beforeEach(() => {
@@ -47,7 +45,7 @@ describe('/environments/components/canary_update_modal.vue', () => {
       modalId: 'confirm-canary-change',
       actionPrimary: {
         text: 'Change ratio',
-        attributes: [{ variant: 'confirm' }],
+        attributes: { variant: 'confirm' },
       },
       actionCancel: { text: 'Cancel' },
     });

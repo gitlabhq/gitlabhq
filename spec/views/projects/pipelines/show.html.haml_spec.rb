@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_authoring do
+RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_composition do
   include Devise::Test::ControllerHelpers
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
@@ -13,6 +13,7 @@ RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_authoring 
   before do
     assign(:project, project)
     assign(:pipeline, presented_pipeline)
+    allow(view).to receive(:current_user) { user }
   end
 
   context 'when pipeline has errors' do
@@ -31,6 +32,22 @@ RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_authoring 
       render
 
       expect(rendered).not_to have_selector('#js-pipeline-tabs')
+    end
+
+    it 'renders the pipeline editor button with correct link for users who can view' do
+      project.add_developer(user)
+
+      render
+
+      expect(rendered).to have_link s_('Go to the pipeline editor'),
+        href: project_ci_pipeline_editor_path(project)
+    end
+
+    it 'renders the pipeline editor button with correct link for users who can not view' do
+      render
+
+      expect(rendered).not_to have_link s_('Go to the pipeline editor'),
+        href: project_ci_pipeline_editor_path(project)
     end
   end
 

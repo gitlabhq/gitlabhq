@@ -1,4 +1,4 @@
-= form_for @application_setting, url: preferences_admin_application_settings_path(anchor: 'js-realtime-settings'), html: { class: 'fieldset-form' } do |f|
+= gitlab_ui_form_for @application_setting, url: preferences_admin_application_settings_path(anchor: 'js-realtime-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
@@ -8,4 +8,4 @@
       .form-text.text-muted
         = _('Multiplier to apply to polling intervals. Decimal values are supported. Defaults to 1.')
 
-  = f.submit _('Save changes'), class: "gl-button btn btn-confirm"
+  = f.submit _('Save changes'), pajamas_button: true

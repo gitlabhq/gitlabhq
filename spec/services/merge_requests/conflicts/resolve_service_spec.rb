@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::Conflicts::ResolveService do
+RSpec.describe MergeRequests::Conflicts::ResolveService, feature_category: :code_review_workflow do
   include ProjectForksHelper
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }

@@ -19,6 +19,10 @@ class Projects::ArtifactsController < Projects::ApplicationController
   before_action :validate_artifacts!, except: [:index, :download, :raw, :destroy]
   before_action :entry, only: [:external_file, :file]
 
+  before_action only: :index do
+    push_frontend_feature_flag(:ci_job_artifact_bulk_destroy, @project)
+  end
+
   MAX_PER_PAGE = 20
 
   feature_category :build_artifacts

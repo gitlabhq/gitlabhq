@@ -276,7 +276,7 @@ find a way to limit it to only us.**
 ## Other resources
 
 - [Review apps integration for CE/EE (presentation)](https://docs.google.com/presentation/d/1QPLr6FO4LduROU8pQIPkX1yfGvD13GEJIBOenqoKxR8/edit?usp=sharing)
-- [Stability issues](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/212)
+- [Stability issues](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/212)
 
 ### Helpful command line tools
 

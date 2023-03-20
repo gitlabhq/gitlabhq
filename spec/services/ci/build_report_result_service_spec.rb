@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildReportResultService do
+RSpec.describe Ci::BuildReportResultService, feature_category: :continuous_integration do
   describe '#execute', :clean_gitlab_redis_shared_state do
     subject(:build_report_result) { described_class.new.execute(build) }
 

@@ -280,7 +280,7 @@ If you are an administrator, you can export your license usage into a CSV:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Subscription**.
-1. In the upper right, select **Export license usage file**.
+1. In the upper-right corner, select **Export license usage file**.
 
 This file contains the information GitLab uses to manually process quarterly reconciliations or renewals. If your instance is firewalled or an offline environment, you must provide GitLab with this information.
 

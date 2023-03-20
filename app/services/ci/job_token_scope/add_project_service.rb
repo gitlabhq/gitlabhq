@@ -6,8 +6,6 @@ module Ci
       include EditScopeValidations
 
       def execute(target_project, direction: :outbound)
-        direction = :outbound if Feature.disabled?(:ci_inbound_job_token_scope)
-
         validate_edit!(project, target_project, current_user)
 
         link = allowlist(direction)

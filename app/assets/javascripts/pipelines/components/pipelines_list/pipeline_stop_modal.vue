@@ -42,7 +42,7 @@ export default {
     primaryProps() {
       return {
         text: s__('Pipeline|Stop pipeline'),
-        attributes: [{ variant: 'danger' }],
+        attributes: { variant: 'danger' },
       };
     },
     cancelProps() {

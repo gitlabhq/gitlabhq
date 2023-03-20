@@ -10,7 +10,7 @@ import {
   GlTabs,
   GlSprintf,
 } from '@gitlab/ui';
-import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/flash';
+import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/alert';
 import { TYPENAME_PACKAGES_PACKAGE } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
@@ -314,19 +314,19 @@ export default {
   modal: {
     packageDeletePrimaryAction: {
       text: s__('PackageRegistry|Permanently delete'),
-      attributes: [
-        { variant: 'danger' },
-        { category: 'primary' },
-        { 'data-qa-selector': 'delete_modal_button' },
-      ],
+      attributes: {
+        variant: 'danger',
+        category: 'primary',
+        'data-qa-selector': 'delete_modal_button',
+      },
     },
     fileDeletePrimaryAction: {
       text: __('Delete'),
-      attributes: [{ variant: 'danger' }, { category: 'primary' }],
+      attributes: { variant: 'danger', category: 'primary' },
     },
     filesDeletePrimaryAction: {
       text: s__('PackageRegistry|Permanently delete assets'),
-      attributes: [{ variant: 'danger' }, { category: 'primary' }],
+      attributes: { variant: 'danger', category: 'primary' },
     },
     cancelAction: {
       text: __('Cancel'),

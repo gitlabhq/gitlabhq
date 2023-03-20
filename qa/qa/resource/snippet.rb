@@ -22,9 +22,7 @@ module QA
       end
 
       def fabricate!
-        Page::Main::Menu.perform do |menu|
-          menu.go_to_menu_dropdown_option(:snippets_link)
-        end
+        Page::Main::Menu.perform(&:go_to_snippets)
 
         Page::Dashboard::Snippet::Index.perform(&:go_to_new_snippet_page)
 

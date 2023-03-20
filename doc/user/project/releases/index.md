@@ -1,6 +1,6 @@
 ---
-stage: Release
-group: Release
+stage: Configure
+group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -88,7 +88,7 @@ To create a release in the Releases page:
    - [Title](release_fields.md#title).
    - [Milestones](#associate-milestones-with-a-release).
    - [Release notes](release_fields.md#release-notes-description).
-   - Whether or not to include the [Tag message](../../../topics/git/tags.md).
+   - Whether or not to include the [Tag message](../repository/tags/index.md).
    - [Asset links](release_fields.md#links).
 1. Select **Create release**.
 

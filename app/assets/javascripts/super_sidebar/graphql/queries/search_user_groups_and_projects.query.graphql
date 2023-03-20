@@ -1,0 +1,24 @@
+query searchUserProjectsAndGroups($username: String!, $search: String) {
+  projects(search: $search, sort: "latest_activity_desc", membership: true, first: 20) {
+    nodes {
+      id
+      name
+      namespace: nameWithNamespace
+      webUrl
+      avatarUrl
+    }
+  }
+
+  user(username: $username) {
+    id
+    groups(search: $search, first: 20) {
+      nodes {
+        id
+        name
+        namespace: fullPath
+        webUrl
+        avatarUrl
+      }
+    }
+  }
+}

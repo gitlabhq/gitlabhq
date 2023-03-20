@@ -20,7 +20,6 @@ describe('IDE: User opens IDE', () => {
 
   afterEach(() => {
     vm.$destroy();
-    vm = null;
     resetHTMLFixture();
   });
 

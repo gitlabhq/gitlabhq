@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::PlacementWorker do
+RSpec.describe Issues::PlacementWorker, feature_category: :team_planning do
   describe '#perform' do
     let_it_be(:time) { Time.now.utc }
     let_it_be(:group) { create(:group) }

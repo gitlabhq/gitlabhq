@@ -14,10 +14,6 @@ function factory(propsData) {
 }
 
 describe('Widget added commit message', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays changes where not merged when state is closed', () => {
     factory({ state: 'closed' });
 

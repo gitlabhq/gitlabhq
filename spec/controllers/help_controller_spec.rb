@@ -261,11 +261,7 @@ RSpec.describe HelpController do
     context 'for image formats' do
       context 'when requested file exists' do
         it 'renders the raw file' do
-          get :show,
-              params: {
-                path: 'user/img/markdown_logo'
-              },
-              format: :png
+          get :show, params: { path: 'user/img/markdown_logo' }, format: :png
 
           aggregate_failures do
             expect(response).to be_successful
@@ -277,11 +273,7 @@ RSpec.describe HelpController do
 
       context 'when requested file is missing' do
         it 'renders not found' do
-          get :show,
-              params: {
-                path: 'foo/bar'
-              },
-              format: :png
+          get :show, params: { path: 'foo/bar' }, format: :png
           expect(response).to be_not_found
         end
       end
@@ -289,11 +281,7 @@ RSpec.describe HelpController do
 
     context 'for other formats' do
       it 'always renders not found' do
-        get :show,
-            params: {
-              path: 'user/ssh'
-            },
-            format: :foo
+        get :show, params: { path: 'user/ssh' }, format: :foo
         expect(response).to be_not_found
       end
     end

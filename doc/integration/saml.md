@@ -734,6 +734,10 @@ For a full list of supported assertions, see the [OmniAuth SAML gem](https://git
 
 ## Configure users based on SAML group membership
 
+NOTE:
+SAML Group Sync is only supported for the [SAML provider named `saml`](#configure-gitlab-to-use-multiple-saml-idps).
+As a result, SAML Group Sync only supports a single SAML provider. For more information, see [issue 366450](https://gitlab.com/gitlab-org/gitlab/-/issues/366450).
+
 You can:
 
 - Require users to be members of a certain group.
@@ -749,7 +753,7 @@ Support for these groups depends on:
 - Whether you've installed [GitLab Enterprise Edition (EE)](https://about.gitlab.com/install/).
 - The [name of the SAML provider](#configure-saml-support-in-gitlab). Group
   memberships are only supported by a single SAML provider named
-  `saml`. For more information, see [issue 386605](https://gitlab.com/gitlab-org/gitlab/-/issues/386605).
+  `saml`.
 
 | Group                        | Tier               | GitLab Enterprise Edition (EE) Only? |
 |------------------------------|--------------------|--------------------------------------|

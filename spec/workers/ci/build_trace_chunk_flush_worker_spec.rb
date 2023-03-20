@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildTraceChunkFlushWorker do
+RSpec.describe Ci::BuildTraceChunkFlushWorker, feature_category: :continuous_integration do
   let(:data) { 'x' * Ci::BuildTraceChunk::CHUNK_SIZE }
 
   let(:chunk) do

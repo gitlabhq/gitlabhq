@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Gitlab
   module Ci
-    RSpec.describe YamlProcessor, feature_category: :pipeline_authoring do
+    RSpec.describe YamlProcessor, feature_category: :pipeline_composition do
       include StubRequests
       include RepoHelpers
 

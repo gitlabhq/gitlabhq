@@ -3,7 +3,7 @@
 class Profiles::AccountsController < Profiles::ApplicationController
   include AuthHelper
 
-  feature_category :authentication_and_authorization
+  feature_category :system_access
   urgency :low, [:show]
 
   def show

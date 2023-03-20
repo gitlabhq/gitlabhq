@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Pipeline Authoring
+group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: tutorial
 ---
@@ -45,7 +45,7 @@ The following fields are included in each ID token:
 | [`iss`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.1) | Always | Issuer of the token, which is the domain of the GitLab instance ("issuer" claim). |
 | [`jti`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.7) | Always | Unique identifier for the token ("JWT ID" claim). |
 | [`nbf`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.5) | Always | The time after which the token becomes valid ("not before" claim). |
-| [`sub`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.2) | Always | The job ID ("subject" claim). |
+| [`sub`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.2) | Always | `project_path:{group}/{project}:ref_type:{type}:ref:{branch_name}` ("subject" claim). |
 | `deployment_tier`       | Job specifies an environment | [Deployment tier](../environments/index.md#deployment-tier-of-environments) of the environment the job specifies. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363590) in GitLab 15.2. |
 | `environment_protected` | Job specifies an environment | `true` if specified environment is protected, `false` otherwise. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9. |
 | `environment`           | Job specifies an environment | Environment the job specifies. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9. |

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Snippets::ScheduleBulkRepositoryShardMovesService do
+RSpec.describe Snippets::ScheduleBulkRepositoryShardMovesService, feature_category: :source_code_management do
   it_behaves_like 'moves repository shard in bulk' do
     let_it_be_with_reload(:container) { create(:snippet, :repository) }
 

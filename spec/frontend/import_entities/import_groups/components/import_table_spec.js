@@ -6,7 +6,7 @@ import MockAdapter from 'axios-mock-adapter';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { HTTP_STATUS_OK, HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
 import { STATUSES } from '~/import_entities/constants';
@@ -23,7 +23,7 @@ import {
   generateFakeEntry,
 } from '../graphql/fixtures';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/import_entities/import_groups/services/status_poller');
 
 Vue.use(VueApollo);
@@ -49,12 +49,12 @@ describe('import table', () => {
     },
   };
 
-  const findImportSelectedButton = () =>
-    wrapper.findAll('button').wrappers.find((w) => w.text() === 'Import selected');
   const findImportSelectedDropdown = () =>
-    wrapper.findAll('.gl-dropdown').wrappers.find((w) => w.text().includes('Import with projects'));
-  const findImportButtons = () =>
-    wrapper.findAll('button').wrappers.filter((w) => w.text() === 'Import');
+    wrapper.find('[data-testid="import-selected-groups-dropdown"]');
+  const findRowImportDropdownAtIndex = (idx) =>
+    wrapper.findAll('tbody td button').wrappers.filter((w) => w.text() === 'Import with projects')[
+      idx
+    ];
   const findPaginationDropdown = () => wrapper.find('[data-testid="page-size"]');
   const findTargetNamespaceDropdown = (rowWrapper) =>
     rowWrapper.find('[data-testid="target-namespace-selector"]');
@@ -70,12 +70,7 @@ describe('import table', () => {
   const findRowCheckbox = (idx) => wrapper.findAll('tbody td input[type=checkbox]').at(idx);
   const selectRow = (idx) => findRowCheckbox(idx).setChecked(true);
 
-  const createComponent = ({
-    bulkImportSourceGroups,
-    importGroups,
-    defaultTargetNamespace,
-    glFeatures = {},
-  }) => {
+  const createComponent = ({ bulkImportSourceGroups, importGroups, defaultTargetNamespace }) => {
     apolloProvider = createMockApollo(
       [
         [
@@ -102,10 +97,7 @@ describe('import table', () => {
         defaultTargetNamespace,
       },
       directives: {
-        GlTooltip: createMockDirective(),
-      },
-      provide: {
-        glFeatures,
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       apolloProvider,
     });
@@ -120,10 +112,6 @@ describe('import table', () => {
     axiosMock.onGet(/.*\/exists$/, () => []).reply(HTTP_STATUS_OK, { exists: false });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('loading state', () => {
     it('renders loading icon while performing request', async () => {
       createComponent({
@@ -134,7 +122,7 @@ describe('import table', () => {
       expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
 
-    it('does not renders loading icon when request is completed', async () => {
+    it('does not render loading icon when request is completed', async () => {
       createComponent({
         bulkImportSourceGroups: () => [],
       });
@@ -245,12 +233,13 @@ describe('import table', () => {
 
     await waitForPromises();
 
-    await findImportButtons()[0].trigger('click');
+    await findRowImportDropdownAtIndex(0).trigger('click');
     expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
       mutation: importGroupsMutation,
       variables: {
         importRequests: [
           {
+            migrateProjects: true,
             newName: FAKE_GROUP.lastImportTarget.newName,
             sourceGroupId: FAKE_GROUP.id,
             targetNamespace: AVAILABLE_NAMESPACES[0].fullPath,
@@ -273,7 +262,7 @@ describe('import table', () => {
     });
 
     await waitForPromises();
-    await findImportButtons()[0].trigger('click');
+    await findRowImportDropdownAtIndex(0).trigger('click');
     await waitForPromises();
 
     expect(createAlert).toHaveBeenCalledWith(
@@ -298,7 +287,7 @@ describe('import table', () => {
     });
 
     await waitForPromises();
-    await findImportButtons()[0].trigger('click');
+    await findRowImportDropdownAtIndex(0).trigger('click');
     await waitForPromises();
 
     expect(createAlert).not.toHaveBeenCalled();
@@ -476,7 +465,7 @@ describe('import table', () => {
       });
       await waitForPromises();
 
-      expect(findImportSelectedButton().props().disabled).toBe(true);
+      expect(findImportSelectedDropdown().props().disabled).toBe(true);
     });
 
     it('import selected button is enabled when groups were selected for import', async () => {
@@ -491,7 +480,7 @@ describe('import table', () => {
 
       await selectRow(0);
 
-      expect(findImportSelectedButton().props().disabled).toBe(false);
+      expect(findImportSelectedDropdown().props().disabled).toBe(false);
     });
 
     it('does not allow selecting already started groups', async () => {
@@ -509,7 +498,7 @@ describe('import table', () => {
       await selectRow(0);
       await nextTick();
 
-      expect(findImportSelectedButton().props().disabled).toBe(true);
+      expect(findImportSelectedDropdown().props().disabled).toBe(true);
     });
 
     it('does not allow selecting groups with validation errors', async () => {
@@ -534,10 +523,10 @@ describe('import table', () => {
       await selectRow(0);
       await nextTick();
 
-      expect(findImportSelectedButton().props().disabled).toBe(true);
+      expect(findImportSelectedDropdown().props().disabled).toBe(true);
     });
 
-    it('invokes importGroups mutation when import selected button is clicked', async () => {
+    it('invokes importGroups mutation when import selected dropdown is clicked', async () => {
       const NEW_GROUPS = [
         generateFakeEntry({ id: 1, status: STATUSES.NONE }),
         generateFakeEntry({ id: 2, status: STATUSES.NONE }),
@@ -558,7 +547,7 @@ describe('import table', () => {
       await selectRow(1);
       await nextTick();
 
-      await findImportSelectedButton().trigger('click');
+      await findImportSelectedDropdown().find('button').trigger('click');
 
       expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
         mutation: importGroupsMutation,
@@ -679,7 +668,7 @@ describe('import table', () => {
     });
   });
 
-  describe('when import projects is enabled', () => {
+  describe('importing projects', () => {
     const NEW_GROUPS = [
       generateFakeEntry({ id: 1, status: STATUSES.NONE }),
       generateFakeEntry({ id: 2, status: STATUSES.NONE }),
@@ -693,9 +682,6 @@ describe('import table', () => {
           pageInfo: FAKE_PAGE_INFO,
           versionValidation: FAKE_VERSION_VALIDATION,
         }),
-        glFeatures: {
-          bulkImportProjects: true,
-        },
       });
       jest.spyOn(apolloProvider.defaultClient, 'mutate');
       return waitForPromises();

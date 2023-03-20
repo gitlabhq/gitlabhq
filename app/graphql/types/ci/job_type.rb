@@ -25,6 +25,9 @@ module Types
                                                    description: 'References to builds that must complete before the jobs run.'
       field :pipeline, Types::Ci::PipelineType, null: true,
                                                 description: 'Pipeline the job belongs to.'
+      field :runner_machine, ::Types::Ci::RunnerMachineType, null: true,
+            description: 'Runner machine assigned to the job.',
+            alpha: { milestone: '15.11' }
       field :stage, Types::Ci::StageType, null: true,
                                           description: 'Stage of the job.'
       field :status,
@@ -76,6 +79,8 @@ module Types
                                                   description: 'Whether the job has a manual action.'
       field :manual_variables, ManualVariableType.connection_type, null: true,
                                                                    description: 'Variables added to a manual job when the job is triggered.'
+      field :play_path, GraphQL::Types::String, null: true,
+                                                description: 'Play path of the job.'
       field :playable, GraphQL::Types::Boolean, null: false, method: :playable?,
                                                 description: 'Indicates the job can be played.'
       field :previous_stage_jobs_or_needs, Types::Ci::JobNeedUnion.connection_type, null: true,
@@ -88,6 +93,8 @@ module Types
                                                description: 'Indicates that the job has been retried.'
       field :retryable, GraphQL::Types::Boolean, null: false, method: :retryable?,
                                                  description: 'Indicates the job can be retried.'
+      field :scheduled, GraphQL::Types::Boolean, null: false, method: :scheduled?,
+                                              description: 'Indicates the job is scheduled.'
       field :scheduling_type, GraphQL::Types::String, null: true,
                                                       description: 'Type of job scheduling. Value is `dag` if the job uses the `needs` keyword, and `stage` otherwise.'
       field :short_sha, type: GraphQL::Types::String, null: false,
@@ -100,6 +107,14 @@ module Types
                                                description: 'Web path of the job.'
 
       field :project, Types::ProjectType, null: true, description: 'Project that the job belongs to.'
+
+      field :can_play_job, GraphQL::Types::Boolean,
+            null: false, resolver_method: :can_play_job?,
+            description: 'Indicates whether the current user can play the job.'
+
+      def can_play_job?
+        object.playable? && Ability.allowed?(current_user, :play_job, object)
+      end
 
       def kind
         return ::Ci::Build unless [::Ci::Build, ::Ci::Bridge].include?(object.class)
@@ -157,6 +172,21 @@ module Types
         ::Gitlab::Graphql::Loaders::BatchModelLoader.new(::Ci::Stage, object.stage_id).find
       end
 
+      def runner_machine
+        BatchLoader::GraphQL.for(object.id).batch(key: :runner_machines) do |build_ids, loader|
+          plucked_build_to_machine_ids = ::Ci::RunnerMachineBuild.for_build(build_ids).pluck_build_id_and_runner_machine_id
+          runner_machines = ::Ci::RunnerMachine.id_in(plucked_build_to_machine_ids.values.uniq)
+          Preloaders::RunnerMachinePolicyPreloader.new(runner_machines, current_user).execute
+          runner_machines_by_id = runner_machines.index_by(&:id)
+
+          build_ids.each do |build_id|
+            runner_machine_id = plucked_build_to_machine_ids[build_id]
+
+            loader.call(build_id, runner_machines_by_id[runner_machine_id])
+          end
+        end
+      end
+
       # This class is a secret union!
       # TODO: turn this into an actual union, so that fields can be referenced safely!
       def id
@@ -181,6 +211,10 @@ module Types
 
       def web_path
         ::Gitlab::Routing.url_helpers.project_job_path(object.project, object)
+      end
+
+      def play_path
+        ::Gitlab::Routing.url_helpers.play_project_job_path(object.project, object)
       end
 
       def browse_artifacts_path

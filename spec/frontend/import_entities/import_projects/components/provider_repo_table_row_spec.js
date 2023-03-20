@@ -60,11 +60,6 @@ describe('ProviderRepoTableRow', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('when rendering importable project', () => {
     const repo = {
       importSource: {

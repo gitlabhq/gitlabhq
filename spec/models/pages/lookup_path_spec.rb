@@ -61,15 +61,13 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
 
       it 'uses deployment from object storage' do
         freeze_time do
-          expect(source).to(
-            eq({
-                 type: 'zip',
-                 path: deployment.file.url(expire_at: 1.day.from_now),
-                 global_id: "gid://gitlab/PagesDeployment/#{deployment.id}",
-                 sha256: deployment.file_sha256,
-                 file_size: deployment.size,
-                 file_count: deployment.file_count
-               })
+          expect(source).to eq(
+            type: 'zip',
+            path: deployment.file.url(expire_at: 1.day.from_now),
+            global_id: "gid://gitlab/PagesDeployment/#{deployment.id}",
+            sha256: deployment.file_sha256,
+            file_size: deployment.size,
+            file_count: deployment.file_count
           )
         end
       end
@@ -87,15 +85,13 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
 
         it 'uses file protocol' do
           freeze_time do
-            expect(source).to(
-              eq({
-                   type: 'zip',
-                   path: 'file://' + deployment.file.path,
-                   global_id: "gid://gitlab/PagesDeployment/#{deployment.id}",
-                   sha256: deployment.file_sha256,
-                   file_size: deployment.size,
-                   file_count: deployment.file_count
-                 })
+            expect(source).to eq(
+              type: 'zip',
+              path: "file://#{deployment.file.path}",
+              global_id: "gid://gitlab/PagesDeployment/#{deployment.id}",
+              sha256: deployment.file_sha256,
+              file_size: deployment.size,
+              file_count: deployment.file_count
             )
           end
         end
@@ -108,15 +104,13 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
 
         it 'uses deployment from object storage' do
           freeze_time do
-            expect(source).to(
-              eq({
-                   type: 'zip',
-                   path: deployment.file.url(expire_at: 1.day.from_now),
-                   global_id: "gid://gitlab/PagesDeployment/#{deployment.id}",
-                   sha256: deployment.file_sha256,
-                   file_size: deployment.size,
-                   file_count: deployment.file_count
-                 })
+            expect(source).to eq(
+              type: 'zip',
+              path: deployment.file.url(expire_at: 1.day.from_now),
+              global_id: "gid://gitlab/PagesDeployment/#{deployment.id}",
+              sha256: deployment.file_sha256,
+              file_size: deployment.size,
+              file_count: deployment.file_count
             )
           end
         end
@@ -141,6 +135,27 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
       lookup_path = described_class.new(project, trim_prefix: 'mygroup')
 
       expect(lookup_path.prefix).to eq('/myproject/')
+    end
+  end
+
+  describe '#unique_domain' do
+    let(:project) { build(:project) }
+
+    context 'when unique domain is disabled' do
+      it 'returns nil' do
+        project.project_setting.pages_unique_domain_enabled = false
+
+        expect(lookup_path.unique_domain).to be_nil
+      end
+    end
+
+    context 'when unique domain is enabled' do
+      it 'returns the project unique domain' do
+        project.project_setting.pages_unique_domain_enabled = true
+        project.project_setting.pages_unique_domain = 'unique-domain'
+
+        expect(lookup_path.unique_domain).to eq('unique-domain')
+      end
     end
   end
 end

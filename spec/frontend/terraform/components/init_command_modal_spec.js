@@ -49,10 +49,6 @@ describe('InitCommandModal', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('on rendering', () => {
     it('renders the explanatory text', () => {
       expect(findExplanatoryText().text()).toContain('personal access token');

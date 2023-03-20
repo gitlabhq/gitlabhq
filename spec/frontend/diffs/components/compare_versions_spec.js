@@ -58,11 +58,6 @@ describe('CompareVersions', () => {
     store.state.diffs.mergeRequestDiffs = diffsMockData;
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('template', () => {
     beforeEach(() => {
       createWrapper({}, {}, false);

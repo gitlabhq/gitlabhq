@@ -82,10 +82,6 @@ describe('FilteredSearchBarRoot', () => {
     wrapper = createComponent({ sortOptions: mockSortOptions });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('data', () => {
     it('initializes `filterValue`, `selectedSortOption` and `selectedSortDirection` data props and displays the sort dropdown', () => {
       expect(wrapper.vm.filterValue).toEqual([]);

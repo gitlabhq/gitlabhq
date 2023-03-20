@@ -21,11 +21,6 @@ describe('boards sidebar remove issue', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('template', () => {
     it('renders title', () => {
       const title = 'Sidebar item title';

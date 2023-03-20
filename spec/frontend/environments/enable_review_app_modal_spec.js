@@ -18,10 +18,6 @@ describe('Enable Review App Modal', () => {
   const findInstructionAt = (i) => wrapper.findAll('ol li').at(i);
   const findCopyString = () => wrapper.find(`#${EXPECTED_COPY_PRE_ID}`);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('renders the modal', () => {
     beforeEach(() => {
       wrapper = extendedWrapper(

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ProcessSyncEventsService do
+RSpec.describe Ci::ProcessSyncEventsService, feature_category: :continuous_integration do
   let!(:group) { create(:group) }
   let!(:project1) { create(:project, group: group) }
   let!(:project2) { create(:project, group: group) }

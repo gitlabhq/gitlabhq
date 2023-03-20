@@ -12,17 +12,13 @@ describe('RunnerInstructions component', () => {
   const createComponent = () => {
     wrapper = shallowMountExtended(RunnerInstructions, {
       directives: {
-        GlModal: createMockDirective(),
+        GlModal: createMockDirective('gl-tooltip'),
       },
     });
   };
 
   beforeEach(() => {
     createComponent();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('should show the "Show runner installation instructions" button', () => {

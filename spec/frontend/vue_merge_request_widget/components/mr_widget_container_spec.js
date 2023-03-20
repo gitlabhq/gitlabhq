@@ -13,10 +13,6 @@ describe('MrWidgetContainer', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('has layout', () => {
     factory();
 

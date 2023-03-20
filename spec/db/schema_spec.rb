@@ -11,9 +11,7 @@ RSpec.describe 'Database schema', feature_category: :database do
 
   IGNORED_INDEXES_ON_FKS = {
     slack_integrations_scopes: %w[slack_api_scope_id],
-    # Will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/391312
-    approval_project_rules: %w[scan_result_policy_id],
-    approval_merge_request_rules: %w[scan_result_policy_id]
+    p_ci_builds_metadata: %w[partition_id] # composable FK, the columns are reversed in the index definition
   }.with_indifferent_access.freeze
 
   TABLE_PARTITIONS = %w[ci_builds_metadata].freeze
@@ -35,24 +33,24 @@ RSpec.describe 'Database schema', feature_category: :database do
     boards: %w[milestone_id iteration_id],
     chat_names: %w[chat_id team_id user_id integration_id],
     chat_teams: %w[team_id],
-    ci_build_needs: %w[partition_id],
+    ci_build_needs: %w[partition_id build_id],
     ci_build_pending_states: %w[partition_id build_id],
-    ci_build_report_results: %w[partition_id],
+    ci_build_report_results: %w[partition_id build_id],
     ci_build_trace_chunks: %w[partition_id build_id],
-    ci_build_trace_metadata: %w[partition_id],
+    ci_build_trace_metadata: %w[partition_id build_id],
     ci_builds: %w[erased_by_id trigger_request_id partition_id],
     ci_builds_runner_session: %w[partition_id build_id],
-    p_ci_builds_metadata: %w[partition_id],
-    ci_job_artifacts: %w[partition_id],
-    ci_job_variables: %w[partition_id],
+    p_ci_builds_metadata: %w[partition_id build_id runner_machine_id],
+    ci_job_artifacts: %w[partition_id job_id],
+    ci_job_variables: %w[partition_id job_id],
     ci_namespace_monthly_usages: %w[namespace_id],
-    ci_pending_builds: %w[partition_id],
+    ci_pending_builds: %w[partition_id build_id],
     ci_pipeline_variables: %w[partition_id],
     ci_pipelines: %w[partition_id],
     ci_resources: %w[partition_id build_id],
     ci_runner_projects: %w[runner_id],
-    ci_running_builds: %w[partition_id],
-    ci_sources_pipelines: %w[partition_id source_partition_id],
+    ci_running_builds: %w[partition_id build_id],
+    ci_sources_pipelines: %w[partition_id source_partition_id source_job_id],
     ci_stages: %w[partition_id],
     ci_trigger_requests: %w[commit_id],
     ci_unit_test_failures: %w[partition_id build_id],
@@ -91,13 +89,14 @@ RSpec.describe 'Database schema', feature_category: :database do
     oauth_access_grants: %w[resource_owner_id application_id],
     oauth_access_tokens: %w[resource_owner_id application_id],
     oauth_applications: %w[owner_id],
+    p_ci_runner_machine_builds: %w[partition_id build_id],
     product_analytics_events_experimental: %w[event_id txn_id user_id],
     project_build_artifacts_size_refreshes: %w[last_job_artifact_id],
     project_data_transfers: %w[project_id namespace_id],
     project_error_tracking_settings: %w[sentry_project_id],
     project_group_links: %w[group_id],
     project_statistics: %w[namespace_id],
-    projects: %w[creator_id ci_id mirror_user_id],
+    projects: %w[ci_id mirror_user_id],
     redirect_routes: %w[source_id],
     repository_languages: %w[programming_language_id],
     routes: %w[source_id],
@@ -171,8 +170,13 @@ RSpec.describe 'Database schema', feature_category: :database do
           context 'columns ending with _id' do
             let(:column_names) { columns.map(&:name) }
             let(:column_names_with_id) { column_names.select { |column_name| column_name.ends_with?('_id') } }
-            let(:foreign_keys_columns) { all_foreign_keys.reject { |fk| fk.name&.end_with?("_p") }.map(&:column).uniq } # we can have FK and loose FK present at the same time
             let(:ignored_columns) { ignored_fk_columns(table) }
+            let(:foreign_keys_columns) do
+              all_foreign_keys
+                .reject { |fk| fk.name&.end_with?("_p") || fk.name&.end_with?("_id_convert_to_bigint") }
+                .map(&:column)
+                .uniq # we can have FK and loose FK present at the same time
+            end
 
             it 'do have the foreign keys' do
               expect(column_names_with_id - ignored_columns).to match_array(foreign_keys_columns)

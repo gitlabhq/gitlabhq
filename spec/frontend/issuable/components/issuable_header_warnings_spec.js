@@ -25,15 +25,10 @@ describe('IssuableHeaderWarnings', () => {
       store,
       provide,
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   describe.each`
     issuableType

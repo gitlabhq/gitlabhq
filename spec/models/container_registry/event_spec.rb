@@ -225,6 +225,28 @@ RSpec.describe ContainerRegistry::Event do
       end
     end
 
+    context 'when it is a manifest delete event' do
+      let(:raw_event) { { 'action' => 'delete', 'target' => { 'digest' => 'x' }, 'actor' => {} } }
+
+      it 'calls the ContainerRegistryEventCounter' do
+        expect(::Gitlab::UsageDataCounters::ContainerRegistryEventCounter)
+          .to receive(:count).with('i_container_registry_delete_manifest')
+
+        subject
+      end
+    end
+
+    context 'when it is not a manifest delete event' do
+      let(:raw_event) { { 'action' => 'push', 'target' => { 'digest' => 'x' }, 'actor' => {} } }
+
+      it 'does not call the ContainerRegistryEventCounter' do
+        expect(::Gitlab::UsageDataCounters::ContainerRegistryEventCounter)
+          .not_to receive(:count).with('i_container_registry_delete_manifest')
+
+        subject
+      end
+    end
+
     context 'without an actor name' do
       let(:raw_event) { { 'action' => 'push', 'target' => {}, 'actor' => { 'user_type' => 'personal_access_token' } } }
 

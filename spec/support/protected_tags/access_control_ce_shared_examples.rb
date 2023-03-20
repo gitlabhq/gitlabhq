@@ -6,18 +6,8 @@ RSpec.shared_examples "protected tags > access control > CE" do
       visit project_protected_tags_path(project)
 
       set_protected_tag_name('master')
-
-      within('.js-new-protected-tag') do
-        allowed_to_create_button = find(".js-allowed-to-create")
-
-        unless allowed_to_create_button.text == access_type_name
-          allowed_to_create_button.click
-          find('.create_access_levels-container .dropdown-menu li', match: :first)
-          within('.create_access_levels-container .dropdown-menu') { click_on access_type_name }
-        end
-      end
-
-      click_on "Protect"
+      set_allowed_to('create', access_type_name)
+      click_on_protect
 
       expect(ProtectedTag.count).to eq(1)
       expect(ProtectedTag.last.create_access_levels.map(&:access_level)).to eq([access_type_id])
@@ -27,19 +17,12 @@ RSpec.shared_examples "protected tags > access control > CE" do
       visit project_protected_tags_path(project)
 
       set_protected_tag_name('master')
-
-      click_on "Protect"
+      set_allowed_to('create', 'No one')
+      click_on_protect
 
       expect(ProtectedTag.count).to eq(1)
 
-      within(".protected-tags-list") do
-        find(".js-allowed-to-create").click
-
-        within('.js-allowed-to-create-container') do
-          expect(first("li")).to have_content("Roles")
-          click_on access_type_name
-        end
-      end
+      set_allowed_to('create', access_type_name, form: '.protected-tags-list')
 
       wait_for_requests
 

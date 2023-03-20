@@ -31,13 +31,15 @@ module Packages
     def execute(batch_size: BATCH_SIZE)
       no_access = false
       min_batch_size = [batch_size, BATCH_SIZE].min
+      package_ids = []
 
       @packages.each_batch(of: min_batch_size) do |batched_packages|
         loaded_packages = batched_packages.including_project_route.to_a
+        package_ids = loaded_packages.map(&:id)
 
         break no_access = true unless can_destroy_packages?(loaded_packages)
 
-        ::Packages::Package.id_in(loaded_packages.map(&:id))
+        ::Packages::Package.id_in(package_ids)
                            .update_all(status: :pending_destruction)
 
         sync_maven_metadata(loaded_packages)
@@ -47,7 +49,8 @@ module Packages
       return UNAUTHORIZED_RESPONSE if no_access
 
       SUCCESS_RESPONSE
-    rescue StandardError
+    rescue StandardError => e
+      track_exception(e, package_ids)
       ERROR_RESPONSE
     end
 
@@ -74,6 +77,10 @@ module Packages
       packages.all? do |package|
         can?(@current_user, :destroy_package, package)
       end
+    end
+
+    def track_exception(error, package_ids)
+      Gitlab::ErrorTracking.track_exception(error, package_ids: package_ids)
     end
   end
 end

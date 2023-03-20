@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
+# TODO: remove this test when 'vscode_web_ide' feature flag is default enabled
 module QA
-  RSpec.describe 'Create', feature_flag: { name: 'vscode_web_ide', scope: :global }, product_group: :editor, quarantine: {
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/387029',
-    type: :stale
-  } do
+  RSpec.describe 'Create', :skip_live_env, product_group: :editor do
     describe 'Add a directory in Web IDE' do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
@@ -14,13 +12,8 @@ module QA
       end
 
       before do
-        Runtime::Feature.disable(:vscode_web_ide)
         Flow::Login.sign_in
         project.visit!
-      end
-
-      after do
-        Runtime::Feature.enable(:vscode_web_ide)
       end
 
       context 'when a directory with the same name already exists' do

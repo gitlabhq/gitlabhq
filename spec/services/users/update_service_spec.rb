@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::UpdateService do
+RSpec.describe Users::UpdateService, feature_category: :user_profile do
   let(:password) { User.random_password }
   let(:user) { create(:user, password: password, password_confirmation: password) }
 

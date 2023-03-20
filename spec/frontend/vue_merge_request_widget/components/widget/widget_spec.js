@@ -50,10 +50,6 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('on mount', () => {
     it('fetches collapsed', async () => {
       const fetchCollapsedData = jest

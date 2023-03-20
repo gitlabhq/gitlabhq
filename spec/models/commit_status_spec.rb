@@ -17,7 +17,11 @@ RSpec.describe CommitStatus do
 
   it_behaves_like 'having unique enum values'
 
-  it { is_expected.to belong_to(:pipeline) }
+  it do
+    is_expected.to belong_to(:pipeline).class_name('Ci::Pipeline')
+      .with_foreign_key(:commit_id).inverse_of(:statuses)
+  end
+
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:auto_canceled_by) }
@@ -33,6 +37,7 @@ RSpec.describe CommitStatus do
   it { is_expected.to respond_to :running? }
   it { is_expected.to respond_to :pending? }
   it { is_expected.not_to be_retried }
+  it { expect(described_class.primary_key).to eq('id') }
 
   describe '#author' do
     subject { commit_status.author }
@@ -419,29 +424,6 @@ RSpec.describe CommitStatus do
 
     it 'returns statuses from second and third stage' do
       is_expected.to eq(statuses.values_at(1, 2))
-    end
-  end
-
-  describe '.exclude_ignored' do
-    subject { described_class.exclude_ignored.order(:id) }
-
-    let(:statuses) do
-      [create_status(when: 'manual', status: 'skipped'),
-       create_status(when: 'manual', status: 'success'),
-       create_status(when: 'manual', status: 'failed'),
-       create_status(when: 'on_failure', status: 'skipped'),
-       create_status(when: 'on_failure', status: 'success'),
-       create_status(when: 'on_failure', status: 'failed'),
-       create_status(allow_failure: true, status: 'success'),
-       create_status(allow_failure: true, status: 'failed'),
-       create_status(allow_failure: false, status: 'success'),
-       create_status(allow_failure: false, status: 'failed'),
-       create_status(allow_failure: true, status: 'manual'),
-       create_status(allow_failure: false, status: 'manual')]
-    end
-
-    it 'returns statuses without what we want to ignore' do
-      is_expected.to eq(statuses.values_at(0, 1, 2, 3, 4, 5, 6, 8, 9, 11))
     end
   end
 
@@ -1061,5 +1043,14 @@ RSpec.describe CommitStatus do
         expect { status.valid? }.not_to change(status, :partition_id)
       end
     end
+  end
+
+  describe '#failure_reason' do
+    subject(:status) { commit_status }
+
+    let(:attr) { :failure_reason }
+    let(:attr_value) { :unknown_failure }
+
+    it_behaves_like 'having enum with nil value'
   end
 end

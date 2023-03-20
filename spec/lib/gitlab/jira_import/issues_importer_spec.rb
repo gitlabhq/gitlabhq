@@ -44,7 +44,7 @@ RSpec.describe Gitlab::JiraImport::IssuesImporter do
 
       def mock_issue_serializer(count, raise_exception_on_even_mocks: false)
         serializer = instance_double(Gitlab::JiraImport::IssueSerializer, execute: { key: 'data' })
-        allow(Issue).to receive(:with_project_iid_supply).and_return('issue_iid')
+        allow(Issue).to receive(:with_namespace_iid_supply).and_return('issue_iid')
 
         count.times do |i|
           if raise_exception_on_even_mocks && i.even?

@@ -25,6 +25,10 @@ class CommitPresenter < Gitlab::View::Presenter::Delegated
     commit.pipelines.any?
   end
 
+  def tags_for_display
+    commit.referenced_by&.map { |tag| tag.delete_prefix(Gitlab::Git::TAG_REF_PREFIX) }
+  end
+
   def signature_html
     return unless commit.has_signature?
 

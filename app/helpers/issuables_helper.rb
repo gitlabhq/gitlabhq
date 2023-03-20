@@ -156,7 +156,7 @@ module IssuablesHelper
     end
 
     output << content_tag(:strong) do
-      author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-inline")
+      author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-inline-block")
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "d-inline d-sm-none")
 
       author_output << issuable_meta_author_slot(issuable.author, css_class: 'ml-1')
@@ -281,7 +281,9 @@ module IssuablesHelper
 
     {
       hasLinkedAlerts: issue.alert_management_alerts.any?,
-      canUpdateTimelineEvent: can?(current_user, :admin_incident_management_timeline_event, issue)
+      canUpdateTimelineEvent: can?(current_user, :admin_incident_management_timeline_event, issue),
+      currentPath: url_for(safe_params),
+      currentTab: safe_params[:incident_tab]
     }
   end
 
@@ -378,8 +380,10 @@ module IssuablesHelper
   end
 
   def hidden_issuable_icon(issuable)
-    title = format(_('This %{issuable} is hidden because its author has been banned'),
-                   issuable: issuable.is_a?(Issue) ? _('issue') : _('merge request'))
+    title = format(
+      _('This %{issuable} is hidden because its author has been banned'),
+      issuable: issuable.is_a?(Issue) ? _('issue') : _('merge request')
+    )
     content_tag(:span, class: 'has-tooltip', title: title) do
       sprite_icon('spam', css_class: 'gl-vertical-align-text-bottom')
     end

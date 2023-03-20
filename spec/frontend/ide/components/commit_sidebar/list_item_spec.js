@@ -36,10 +36,6 @@ describe('Multi-file editor commit sidebar list item', () => {
     findPathEl = wrapper.find('.multi-file-commit-list-path');
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findPathText = () => trimText(findPathEl.text());
 
   it('renders file path', () => {

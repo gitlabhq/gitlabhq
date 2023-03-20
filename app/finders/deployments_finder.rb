@@ -14,6 +14,8 @@
 #     order_by: String (see ALLOWED_SORT_VALUES constant)
 #     sort: String (asc | desc)
 class DeploymentsFinder
+  include UpdatedAtFilter
+
   attr_reader :params
 
   # Warning:
@@ -107,13 +109,6 @@ class DeploymentsFinder
     sort_params = build_sort_params
     optimize_sort_params!(sort_params)
     items.order(sort_params) # rubocop: disable CodeReuse/ActiveRecord
-  end
-
-  def by_updated_at(items)
-    items = items.updated_before(params[:updated_before]) if params[:updated_before].present?
-    items = items.updated_after(params[:updated_after]) if params[:updated_after].present?
-
-    items
   end
 
   def by_finished_at(items)

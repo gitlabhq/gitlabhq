@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::RepairLdapBlockedService do
+RSpec.describe Users::RepairLdapBlockedService, feature_category: :system_access do
   let(:user) { create(:omniauth_user, provider: 'ldapmain', state: 'ldap_blocked') }
   let(:identity) { user.ldap_identity }
 

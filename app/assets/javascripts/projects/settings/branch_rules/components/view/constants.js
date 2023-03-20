@@ -14,11 +14,6 @@ export const I18N = {
   wildcardsHelpText: s__(
     'BranchRules|%{linkStart}Wildcards%{linkEnd} such as *-stable or production/ are supported',
   ),
-  forcePushTitle: s__('BranchRules|Force push'),
-  allowForcePushDescription: s__(
-    'BranchRules|All users with push access are allowed to force push.',
-  ),
-  disallowForcePushDescription: s__('BranchRules|Force push is not allowed.'),
   approvalsTitle: s__('BranchRules|Approvals'),
   manageApprovalsLinkTitle: s__('BranchRules|Manage in merge request approvals'),
   approvalsDescription: s__(
@@ -33,6 +28,19 @@ export const I18N = {
   allowedToPushHeader: s__('BranchRules|Allowed to push and merge (%{total})'),
   allowedToMergeHeader: s__('BranchRules|Allowed to merge (%{total})'),
   approvalsHeader: s__('BranchRules|Required approvals (%{total})'),
+  allowForcePushTitle: s__('BranchRules|Allows force push'),
+  doesNotAllowForcePushTitle: s__('BranchRules|Does not allow force push'),
+  forcePushDescription: s__('BranchRules|From users with push access.'),
+  requiresCodeOwnerApprovalTitle: s__('BranchRules|Requires approval from code owners'),
+  doesNotRequireCodeOwnerApprovalTitle: s__(
+    'BranchRules|Does not require approval from code owners',
+  ),
+  requiresCodeOwnerApprovalDescription: s__(
+    'BranchRules|Also rejects code pushes that change files listed in CODEOWNERS file.',
+  ),
+  doesNotRequireCodeOwnerApprovalDescription: s__(
+    'BranchRules|Also accepts code pushes that change files listed in CODEOWNERS file.',
+  ),
   noData: s__('BranchRules|No data to display'),
 };
 
@@ -48,3 +56,9 @@ export const PROTECTED_BRANCHES_HELP_PATH = 'user/project/protected_branches';
 export const APPROVALS_HELP_PATH = 'user/project/merge_requests/approvals/index.md';
 
 export const STATUS_CHECKS_HELP_PATH = 'user/project/merge_requests/status_checks.md';
+
+export const REQUIRED_ICON = 'check-circle-filled';
+export const NOT_REQUIRED_ICON = 'status-failed';
+
+export const REQUIRED_ICON_CLASS = 'gl-fill-green-500';
+export const NOT_REQUIRED_ICON_CLASS = 'gl-text-red-500';

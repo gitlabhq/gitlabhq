@@ -40,10 +40,6 @@ describe('WorkItemsHierarchy Hierarchy', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('available structure', () => {
     let items = [];
 

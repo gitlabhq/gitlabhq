@@ -745,7 +745,35 @@ mutation($id: NoteableID!, $body: String!) {
 }
 ```
 
+### `Mutation.achievementsAward`
+
+WARNING:
+**Introduced** in 15.10.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Input type: `AchievementsAwardInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationachievementsawardachievementid"></a>`achievementId` | [`AchievementsAchievementID!`](#achievementsachievementid) | Global ID of the achievement being awarded. |
+| <a id="mutationachievementsawardclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationachievementsawarduserid"></a>`userId` | [`UserID!`](#userid) | Global ID of the user being awarded the achievement. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationachievementsawardclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationachievementsawarderrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationachievementsawarduserachievement"></a>`userAchievement` | [`UserAchievement`](#userachievement) | Achievement award. |
+
 ### `Mutation.achievementsCreate`
+
+WARNING:
+**Introduced** in 15.8.
+This feature is in Alpha. It can be changed or removed at any time.
 
 Input type: `AchievementsCreateInput`
 
@@ -766,6 +794,29 @@ Input type: `AchievementsCreateInput`
 | <a id="mutationachievementscreateachievement"></a>`achievement` | [`Achievement`](#achievement) | Achievement created. |
 | <a id="mutationachievementscreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationachievementscreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.achievementsRevoke`
+
+WARNING:
+**Introduced** in 15.10.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Input type: `AchievementsRevokeInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationachievementsrevokeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationachievementsrevokeuserachievementid"></a>`userAchievementId` | [`AchievementsUserAchievementID!`](#achievementsuserachievementid) | Global ID of the user achievement being revoked. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationachievementsrevokeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationachievementsrevokeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationachievementsrevokeuserachievement"></a>`userAchievement` | [`UserAchievement`](#userachievement) | Achievement award. |
 
 ### `Mutation.addProjectToSecurityDashboard`
 
@@ -1167,6 +1218,31 @@ Input type: `BoardListUpdateLimitMetricsInput`
 | <a id="mutationboardlistupdatelimitmetricsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationboardlistupdatelimitmetricserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationboardlistupdatelimitmetricslist"></a>`list` | [`BoardList`](#boardlist) | Updated list. |
+
+### `Mutation.bulkDestroyJobArtifacts`
+
+WARNING:
+**Introduced** in 15.10.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Input type: `BulkDestroyJobArtifactsInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbulkdestroyjobartifactsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbulkdestroyjobartifactsids"></a>`ids` | [`[CiJobArtifactID!]!`](#cijobartifactid) | Global IDs of the job artifacts to destroy. |
+| <a id="mutationbulkdestroyjobartifactsprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | Global Project ID of the job artifacts to destroy. Incompatible with projectPath. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbulkdestroyjobartifactsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbulkdestroyjobartifactsdestroyedcount"></a>`destroyedCount` | [`Int`](#int) | Number of job artifacts deleted. |
+| <a id="mutationbulkdestroyjobartifactsdestroyedids"></a>`destroyedIds` | [`[CiJobArtifactID!]`](#cijobartifactid) | IDs of job artifacts that were deleted. |
+| <a id="mutationbulkdestroyjobartifactserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.bulkEnableDevopsAdoptionNamespaces`
 
@@ -2401,6 +2477,26 @@ Input type: `DesignManagementMoveInput`
 | <a id="mutationdesignmanagementmovedesigncollection"></a>`designCollection` | [`DesignCollection`](#designcollection) | Current state of the collection. |
 | <a id="mutationdesignmanagementmoveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.designManagementUpdate`
+
+Input type: `DesignManagementUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdesignmanagementupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdesignmanagementupdatedescription"></a>`description` | [`String`](#string) | Description of the design. |
+| <a id="mutationdesignmanagementupdateid"></a>`id` | [`DesignManagementDesignID!`](#designmanagementdesignid) | ID of the design to update. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdesignmanagementupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdesignmanagementupdatedesign"></a>`design` | [`Design!`](#design) | Updated design. |
+| <a id="mutationdesignmanagementupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.designManagementUpload`
 
 Input type: `DesignManagementUploadInput`
@@ -3136,7 +3232,7 @@ Input type: `GroupMemberBulkUpdateInput`
 | <a id="mutationgroupmemberbulkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationgroupmemberbulkupdateexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
 | <a id="mutationgroupmemberbulkupdategroupid"></a>`groupId` | [`GroupID!`](#groupid) | Global ID of the group. |
-| <a id="mutationgroupmemberbulkupdateuserids"></a>`userIds` | [`[UserID!]!`](#userid) | Global IDs of the group members. |
+| <a id="mutationgroupmemberbulkupdateuserids"></a>`userIds` | [`[UserID!]!`](#userid) | Global IDs of the members. |
 
 #### Fields
 
@@ -3649,12 +3745,18 @@ Input type: `IssuesBulkUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationissuesbulkupdateaddlabelids"></a>`addLabelIds` | [`[LabelID!]`](#labelid) | Global ID array of the labels that will be added to the issues. |
 | <a id="mutationissuesbulkupdateassigneeids"></a>`assigneeIds` | [`[UserID!]`](#userid) | Global ID array of the users that will be assigned to the given issues. Existing assignees will be replaced with the ones on this list. |
 | <a id="mutationissuesbulkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationissuesbulkupdateepicid"></a>`epicId` | [`EpicID`](#epicid) | Global ID of the epic that will be assigned to the issues. |
+| <a id="mutationissuesbulkupdatehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | Health status that will be assigned to the issues. |
 | <a id="mutationissuesbulkupdateids"></a>`ids` | [`[IssueID!]!`](#issueid) | Global ID array of the issues that will be updated. IDs that the user can't update will be ignored. A max of 100 can be provided. |
 | <a id="mutationissuesbulkupdateiterationid"></a>`iterationId` | [`IterationID`](#iterationid) | Global ID of the iteration that will be assigned to the issues. |
 | <a id="mutationissuesbulkupdatemilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | Global ID of the milestone that will be assigned to the issues. |
-| <a id="mutationissuesbulkupdateparentid"></a>`parentId` | [`IssueParentID!`](#issueparentid) | Global ID of the parent that the bulk update will be scoped to . Example `IssueParentID` are `"gid://gitlab/Project/1"` and `"gid://gitlab/Group/1"`. |
+| <a id="mutationissuesbulkupdateparentid"></a>`parentId` | [`IssueParentID!`](#issueparentid) | Global ID of the parent to which the bulk update will be scoped. The parent can be a project **(FREE)** or a group **(PREMIUM)**. Example `IssueParentID` are `"gid://gitlab/Project/1"` and `"gid://gitlab/Group/1"`. |
+| <a id="mutationissuesbulkupdateremovelabelids"></a>`removeLabelIds` | [`[LabelID!]`](#labelid) | Global ID array of the labels that will be removed from the issues. |
+| <a id="mutationissuesbulkupdatestateevent"></a>`stateEvent` | [`IssueStateEvent`](#issuestateevent) | Close or reopen an issue. |
+| <a id="mutationissuesbulkupdatesubscriptionevent"></a>`subscriptionEvent` | [`IssuableSubscriptionEvent`](#issuablesubscriptionevent) | Subscribe to or unsubscribe from issue notifications. |
 
 #### Fields
 
@@ -4215,6 +4317,32 @@ Input type: `MergeRequestUpdateInput`
 | <a id="mutationmergerequestupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationmergerequestupdatemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
+### `Mutation.mergeRequestUpdateApprovalRule`
+
+Input type: `MergeRequestUpdateApprovalRuleInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmergerequestupdateapprovalruleapprovalruleid"></a>`approvalRuleId` | [`Int!`](#int) | ID of an approval rule. |
+| <a id="mutationmergerequestupdateapprovalruleapprovalsrequired"></a>`approvalsRequired` | [`Int!`](#int) | Number of required approvals for a given rule. |
+| <a id="mutationmergerequestupdateapprovalruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmergerequestupdateapprovalrulegroupids"></a>`groupIds` | [`[String!]`](#string) | IDs of groups as approvers. |
+| <a id="mutationmergerequestupdateapprovalruleiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestupdateapprovalrulename"></a>`name` | [`String!`](#string) | Name of the approval rule. |
+| <a id="mutationmergerequestupdateapprovalruleprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
+| <a id="mutationmergerequestupdateapprovalruleremovehiddengroups"></a>`removeHiddenGroups` | [`[Boolean!]`](#boolean) | Whether hidden groups should be removed. |
+| <a id="mutationmergerequestupdateapprovalruleuserids"></a>`userIds` | [`[String!]`](#string) | IDs of users as approvers. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmergerequestupdateapprovalruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmergerequestupdateapprovalruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationmergerequestupdateapprovalrulemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
+
 ### `Mutation.namespaceBanDestroy`
 
 Input type: `NamespaceBanDestroyInput`
@@ -4634,6 +4762,28 @@ Input type: `ProjectInitializeProductAnalyticsInput`
 | <a id="mutationprojectinitializeproductanalyticserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationprojectinitializeproductanalyticsproject"></a>`project` | [`Project`](#project) | Project on which the initialization took place. |
 
+### `Mutation.projectMemberBulkUpdate`
+
+Input type: `ProjectMemberBulkUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectmemberbulkupdateaccesslevel"></a>`accessLevel` | [`MemberAccessLevel!`](#memberaccesslevel) | Access level to update the members to. |
+| <a id="mutationprojectmemberbulkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectmemberbulkupdateexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
+| <a id="mutationprojectmemberbulkupdateprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | Global ID of the project. |
+| <a id="mutationprojectmemberbulkupdateuserids"></a>`userIds` | [`[UserID!]!`](#userid) | Global IDs of the members. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectmemberbulkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectmemberbulkupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprojectmemberbulkupdateprojectmembers"></a>`projectMembers` | [`[ProjectMember!]`](#projectmember) | Project members after mutation. |
+
 ### `Mutation.projectSetComplianceFramework`
 
 Assign (or unset) a compliance framework to a project.
@@ -4676,6 +4826,30 @@ Input type: `ProjectSetLockedInput`
 | <a id="mutationprojectsetlockedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprojectsetlockederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationprojectsetlockedproject"></a>`project` | [`Project`](#project) | Project after mutation. |
+
+### `Mutation.projectSyncFork`
+
+WARNING:
+**Introduced** in 15.9.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Input type: `ProjectSyncForkInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsyncforkclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsyncforkprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project to initialize. |
+| <a id="mutationprojectsyncforktargetbranch"></a>`targetBranch` | [`String!`](#string) | Ref of the fork to fetch into. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsyncforkclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsyncforkdetails"></a>`details` | [`ForkDetails`](#forkdetails) | Updated fork details. |
+| <a id="mutationprojectsyncforkerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.prometheusIntegrationCreate`
 
@@ -4937,6 +5111,37 @@ Input type: `RepositionImageDiffNoteInput`
 | <a id="mutationrepositionimagediffnoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationrepositionimagediffnotenote"></a>`note` | [`Note`](#note) | Note after mutation. |
 
+### `Mutation.runnerCreate`
+
+WARNING:
+**Introduced** in 15.10.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Input type: `RunnerCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrunnercreateaccesslevel"></a>`accessLevel` | [`CiRunnerAccessLevel`](#cirunneraccesslevel) | Access level of the runner. |
+| <a id="mutationrunnercreateassociatedprojects"></a>`associatedProjects` | [`[ProjectID!]`](#projectid) | Projects associated with the runner. Available only for project runners. |
+| <a id="mutationrunnercreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrunnercreatedescription"></a>`description` | [`String`](#string) | Description of the runner. |
+| <a id="mutationrunnercreatelocked"></a>`locked` | [`Boolean`](#boolean) | Indicates the runner is locked. |
+| <a id="mutationrunnercreatemaintenancenote"></a>`maintenanceNote` | [`String`](#string) | Runner's maintenance notes. |
+| <a id="mutationrunnercreatemaximumtimeout"></a>`maximumTimeout` | [`Int`](#int) | Maximum timeout (in seconds) for jobs processed by the runner. |
+| <a id="mutationrunnercreatepaused"></a>`paused` | [`Boolean`](#boolean) | Indicates the runner is not allowed to receive jobs. |
+| <a id="mutationrunnercreaterununtagged"></a>`runUntagged` | [`Boolean`](#boolean) | Indicates the runner is able to run untagged jobs. |
+| <a id="mutationrunnercreatetaglist"></a>`tagList` | [`[String!]`](#string) | Tags associated with the runner. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrunnercreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrunnercreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationrunnercreaterunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner after mutation. |
+
 ### `Mutation.runnerDelete`
 
 Input type: `RunnerDeleteInput`
@@ -5130,6 +5335,7 @@ Input type: `SecurityFindingDismissInput`
 | ---- | ---- | ----------- |
 | <a id="mutationsecurityfindingdismissclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsecurityfindingdismisserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationsecurityfindingdismisssecurityfinding"></a>`securityFinding` | [`PipelineSecurityReportFinding`](#pipelinesecurityreportfinding) | Dismissed finding. |
 | <a id="mutationsecurityfindingdismissuuid"></a>`uuid` | [`String`](#string) | UUID of dismissed finding. |
 
 ### `Mutation.securityFindingRevertToDetected`
@@ -6049,6 +6255,7 @@ Input type: `VulnerabilityConfirmInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilityconfirmclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilityconfirmcomment"></a>`comment` | [`String`](#string) | Comment why vulnerability was marked as confirmed (max. 50 000 characters). |
 | <a id="mutationvulnerabilityconfirmid"></a>`id` | [`VulnerabilityID!`](#vulnerabilityid) | ID of the vulnerability to be confirmed. |
 
 #### Fields
@@ -6186,6 +6393,7 @@ Input type: `VulnerabilityResolveInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilityresolveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilityresolvecomment"></a>`comment` | [`String`](#string) | Comment why vulnerability was reverted to detected (max. 50 000 characters). |
 | <a id="mutationvulnerabilityresolveid"></a>`id` | [`VulnerabilityID!`](#vulnerabilityid) | ID of the vulnerability to be resolved. |
 
 #### Fields
@@ -6205,6 +6413,7 @@ Input type: `VulnerabilityRevertToDetectedInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilityreverttodetectedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilityreverttodetectedcomment"></a>`comment` | [`String`](#string) | Comment why vulnerability was reverted to detected (max. 50 000 characters). |
 | <a id="mutationvulnerabilityreverttodetectedid"></a>`id` | [`VulnerabilityID!`](#vulnerabilityid) | ID of the vulnerability to be reverted. |
 
 #### Fields
@@ -6326,6 +6535,35 @@ Input type: `WorkItemDeleteTaskInput`
 | <a id="mutationworkitemdeletetaskerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationworkitemdeletetaskworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
 
+### `Mutation.workItemExport`
+
+WARNING:
+**Introduced** in 15.10.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Input type: `WorkItemExportInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemexportauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Deprecated:** This feature is in Alpha. It can be changed or removed at any time. Introduced in 15.9. |
+| <a id="mutationworkitemexportclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemexportiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
+| <a id="mutationworkitemexportin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
+| <a id="mutationworkitemexportprojectpath"></a>`projectPath` | [`ID!`](#id) | Full project path. |
+| <a id="mutationworkitemexportsearch"></a>`search` | [`String`](#string) | Search query for title or description. |
+| <a id="mutationworkitemexportselectedfields"></a>`selectedFields` | [`[AvailableExportFields!]`](#availableexportfields) | List of selected fields to be exported. Omit to export all available fields. |
+| <a id="mutationworkitemexportstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
+| <a id="mutationworkitemexporttypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemexportclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemexporterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.workItemUpdate`
 
 Updates a work item by Global ID.
@@ -6350,6 +6588,7 @@ Input type: `WorkItemUpdateInput`
 | <a id="mutationworkitemupdateiterationwidget"></a>`iterationWidget` | [`WorkItemWidgetIterationInput`](#workitemwidgetiterationinput) | Input for iteration widget. |
 | <a id="mutationworkitemupdatelabelswidget"></a>`labelsWidget` | [`WorkItemWidgetLabelsUpdateInput`](#workitemwidgetlabelsupdateinput) | Input for labels widget. |
 | <a id="mutationworkitemupdatemilestonewidget"></a>`milestoneWidget` | [`WorkItemWidgetMilestoneInput`](#workitemwidgetmilestoneinput) | Input for milestone widget. |
+| <a id="mutationworkitemupdatenotificationswidget"></a>`notificationsWidget` | [`WorkItemWidgetNotificationsUpdateInput`](#workitemwidgetnotificationsupdateinput) | Input for notifications widget. |
 | <a id="mutationworkitemupdateprogresswidget"></a>`progressWidget` | [`WorkItemWidgetProgressInput`](#workitemwidgetprogressinput) | Input for progress widget. |
 | <a id="mutationworkitemupdatestartandduedatewidget"></a>`startAndDueDateWidget` | [`WorkItemWidgetStartAndDueDateUpdateInput`](#workitemwidgetstartandduedateupdateinput) | Input for start and due date widget. |
 | <a id="mutationworkitemupdatestateevent"></a>`stateEvent` | [`WorkItemStateEvent`](#workitemstateevent) | Close or reopen a work item. |
@@ -7096,6 +7335,30 @@ The edge type for [`CiRunner`](#cirunner).
 | <a id="cirunneredgenode"></a>`node` | [`CiRunner`](#cirunner) | The item at the end of the edge. |
 | <a id="cirunneredgeweburl"></a>`webUrl` | [`String`](#string) | Web URL of the runner. The value depends on where you put this field in the query. You can use it for projects or groups. |
 
+#### `CiRunnerMachineConnection`
+
+The connection type for [`CiRunnerMachine`](#cirunnermachine).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cirunnermachineconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="cirunnermachineconnectionedges"></a>`edges` | [`[CiRunnerMachineEdge]`](#cirunnermachineedge) | A list of edges. |
+| <a id="cirunnermachineconnectionnodes"></a>`nodes` | [`[CiRunnerMachine]`](#cirunnermachine) | A list of nodes. |
+| <a id="cirunnermachineconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiRunnerMachineEdge`
+
+The edge type for [`CiRunnerMachine`](#cirunnermachine).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cirunnermachineedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cirunnermachineedgenode"></a>`node` | [`CiRunnerMachine`](#cirunnermachine) | The item at the end of the edge. |
+
 #### `CiSecureFileRegistryConnection`
 
 The connection type for [`CiSecureFileRegistry`](#cisecurefileregistry).
@@ -7629,6 +7892,29 @@ The edge type for [`DastSiteValidation`](#dastsitevalidation).
 | ---- | ---- | ----------- |
 | <a id="dastsitevalidationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="dastsitevalidationedgenode"></a>`node` | [`DastSiteValidation`](#dastsitevalidation) | The item at the end of the edge. |
+
+#### `DependencyConnection`
+
+The connection type for [`Dependency`](#dependency).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyconnectionedges"></a>`edges` | [`[DependencyEdge]`](#dependencyedge) | A list of edges. |
+| <a id="dependencyconnectionnodes"></a>`nodes` | [`[Dependency]`](#dependency) | A list of nodes. |
+| <a id="dependencyconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `DependencyEdge`
+
+The edge type for [`Dependency`](#dependency).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="dependencyedgenode"></a>`node` | [`Dependency`](#dependency) | The item at the end of the edge. |
 
 #### `DependencyProxyBlobConnection`
 
@@ -10273,6 +10559,29 @@ The edge type for [`UsageTrendsMeasurement`](#usagetrendsmeasurement).
 | <a id="usagetrendsmeasurementedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="usagetrendsmeasurementedgenode"></a>`node` | [`UsageTrendsMeasurement`](#usagetrendsmeasurement) | The item at the end of the edge. |
 
+#### `UserAchievementConnection`
+
+The connection type for [`UserAchievement`](#userachievement).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="userachievementconnectionedges"></a>`edges` | [`[UserAchievementEdge]`](#userachievementedge) | A list of edges. |
+| <a id="userachievementconnectionnodes"></a>`nodes` | [`[UserAchievement]`](#userachievement) | A list of nodes. |
+| <a id="userachievementconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `UserAchievementEdge`
+
+The edge type for [`UserAchievement`](#userachievement).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="userachievementedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="userachievementedgenode"></a>`node` | [`UserAchievement`](#userachievement) | The item at the end of the edge. |
+
 #### `UserCalloutConnection`
 
 The connection type for [`UserCallout`](#usercallout).
@@ -10457,6 +10766,29 @@ The edge type for [`VulnerabilityScanner`](#vulnerabilityscanner).
 | <a id="vulnerabilityscanneredgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="vulnerabilityscanneredgenode"></a>`node` | [`VulnerabilityScanner`](#vulnerabilityscanner) | The item at the end of the edge. |
 
+#### `VulnerabilityStateTransitionTypeConnection`
+
+The connection type for [`VulnerabilityStateTransitionType`](#vulnerabilitystatetransitiontype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitystatetransitiontypeconnectionedges"></a>`edges` | [`[VulnerabilityStateTransitionTypeEdge]`](#vulnerabilitystatetransitiontypeedge) | A list of edges. |
+| <a id="vulnerabilitystatetransitiontypeconnectionnodes"></a>`nodes` | [`[VulnerabilityStateTransitionType]`](#vulnerabilitystatetransitiontype) | A list of nodes. |
+| <a id="vulnerabilitystatetransitiontypeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `VulnerabilityStateTransitionTypeEdge`
+
+The edge type for [`VulnerabilityStateTransitionType`](#vulnerabilitystatetransitiontype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitystatetransitiontypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="vulnerabilitystatetransitiontypeedgenode"></a>`node` | [`VulnerabilityStateTransitionType`](#vulnerabilitystatetransitiontype) | The item at the end of the edge. |
+
 #### `WorkItemConnection`
 
 The connection type for [`WorkItem`](#workitem).
@@ -10570,6 +10902,7 @@ Representation of a GitLab user.
 | <a id="achievementname"></a>`name` | [`String!`](#string) | Name of the achievement. |
 | <a id="achievementnamespace"></a>`namespace` | [`Namespace!`](#namespace) | Namespace of the achievement. |
 | <a id="achievementupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the achievement was last updated. |
+| <a id="achievementuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Recipients for the achievement. |
 
 ### `AgentConfiguration`
 
@@ -11390,6 +11723,7 @@ CI/CD variables for a GitLab instance.
 | <a id="cijoballowfailure"></a>`allowFailure` | [`Boolean!`](#boolean) | Whether the job is allowed to fail. |
 | <a id="cijobartifacts"></a>`artifacts` | [`CiJobArtifactConnection`](#cijobartifactconnection) | Artifacts generated by the job. (see [Connections](#connections)) |
 | <a id="cijobbrowseartifactspath"></a>`browseArtifactsPath` | [`String`](#string) | URL for browsing the artifact's archive. |
+| <a id="cijobcanplayjob"></a>`canPlayJob` | [`Boolean!`](#boolean) | Indicates whether the current user can play the job. |
 | <a id="cijobcancelable"></a>`cancelable` | [`Boolean!`](#boolean) | Indicates the job can be canceled. |
 | <a id="cijobcommitpath"></a>`commitPath` | [`String`](#string) | Path to the commit that triggered the job. |
 | <a id="cijobcoverage"></a>`coverage` | [`Float`](#float) | Coverage level of the job. |
@@ -11407,6 +11741,7 @@ CI/CD variables for a GitLab instance.
 | <a id="cijobname"></a>`name` | [`String`](#string) | Name of the job. |
 | <a id="cijobneeds"></a>`needs` | [`CiBuildNeedConnection`](#cibuildneedconnection) | References to builds that must complete before the jobs run. (see [Connections](#connections)) |
 | <a id="cijobpipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Pipeline the job belongs to. |
+| <a id="cijobplaypath"></a>`playPath` | [`String`](#string) | Play path of the job. |
 | <a id="cijobplayable"></a>`playable` | [`Boolean!`](#boolean) | Indicates the job can be played. |
 | <a id="cijobpreviousstagejobsorneeds"></a>`previousStageJobsOrNeeds` | [`JobNeedUnionConnection`](#jobneedunionconnection) | Jobs that must complete before the job runs. Returns `BuildNeed`, which is the needed jobs if the job uses the `needs` keyword, or the previous stage jobs otherwise. (see [Connections](#connections)) |
 | <a id="cijobproject"></a>`project` | [`Project`](#project) | Project that the job belongs to. |
@@ -11416,6 +11751,8 @@ CI/CD variables for a GitLab instance.
 | <a id="cijobrefpath"></a>`refPath` | [`String`](#string) | Path to the ref. |
 | <a id="cijobretried"></a>`retried` | [`Boolean`](#boolean) | Indicates that the job has been retried. |
 | <a id="cijobretryable"></a>`retryable` | [`Boolean!`](#boolean) | Indicates the job can be retried. |
+| <a id="cijobrunnermachine"></a>`runnerMachine` **{warning-solid}** | [`CiRunnerMachine`](#cirunnermachine) | **Introduced** in 15.11. This feature is in Alpha. It can be changed or removed at any time. Runner machine assigned to the job. |
+| <a id="cijobscheduled"></a>`scheduled` | [`Boolean!`](#boolean) | Indicates the job is scheduled. |
 | <a id="cijobscheduledat"></a>`scheduledAt` | [`Time`](#time) | Schedule for the build. |
 | <a id="cijobschedulingtype"></a>`schedulingType` | [`String`](#string) | Type of job scheduling. Value is `dag` if the job uses the `needs` keyword, and `stage` otherwise. |
 | <a id="cijobshortsha"></a>`shortSha` | [`String!`](#string) | Short SHA1 ID of the commit. |
@@ -11542,9 +11879,10 @@ CI/CD variables for a project.
 | <a id="cirunnerarchitecturename"></a>`architectureName` | [`String`](#string) | Architecture provided by the the runner. |
 | <a id="cirunnercontactedat"></a>`contactedAt` | [`Time`](#time) | Timestamp of last contact from this runner. |
 | <a id="cirunnercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of creation of this runner. |
+| <a id="cirunnercreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that created this runner. |
 | <a id="cirunnerdescription"></a>`description` | [`String`](#string) | Description of the runner. |
 | <a id="cirunnereditadminurl"></a>`editAdminUrl` | [`String`](#string) | Admin form URL of the runner. Only available for administrators. |
-| <a id="cirunnerephemeralauthenticationtoken"></a>`ephemeralAuthenticationToken` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. Ephemeral authentication token used for runner machine registration. |
+| <a id="cirunnerephemeralauthenticationtoken"></a>`ephemeralAuthenticationToken` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. Ephemeral authentication token used for runner machine registration. Only available for the creator of the runner for a limited time during registration. |
 | <a id="cirunnerexecutorname"></a>`executorName` | [`String`](#string) | Executor last advertised by the runner. |
 | <a id="cirunnergroups"></a>`groups` | [`GroupConnection`](#groupconnection) | Groups the runner is associated with. For group runners only. (see [Connections](#connections)) |
 | <a id="cirunnerid"></a>`id` | [`CiRunnerID!`](#cirunnerid) | ID of the runner. |
@@ -11552,6 +11890,7 @@ CI/CD variables for a project.
 | <a id="cirunnerjobcount"></a>`jobCount` | [`Int`](#int) | Number of jobs processed by the runner (limited to 1000, plus one to indicate that more items exist). |
 | <a id="cirunnerjobexecutionstatus"></a>`jobExecutionStatus` **{warning-solid}** | [`CiRunnerJobExecutionStatus`](#cirunnerjobexecutionstatus) | **Introduced** in 15.7. This feature is in Alpha. It can be changed or removed at any time. Job execution status of the runner. |
 | <a id="cirunnerlocked"></a>`locked` | [`Boolean`](#boolean) | Indicates the runner is locked. |
+| <a id="cirunnermachines"></a>`machines` **{warning-solid}** | [`CiRunnerMachineConnection`](#cirunnermachineconnection) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Machines associated with the runner configuration. |
 | <a id="cirunnermaintenancenote"></a>`maintenanceNote` | [`String`](#string) | Runner's maintenance notes. |
 | <a id="cirunnermaintenancenotehtml"></a>`maintenanceNoteHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `maintenance_note`. |
 | <a id="cirunnermaximumtimeout"></a>`maximumTimeout` | [`Int`](#int) | Maximum timeout (in seconds) for jobs processed by the runner. |
@@ -11561,6 +11900,7 @@ CI/CD variables for a project.
 | <a id="cirunnerprivateprojectsminutescostfactor"></a>`privateProjectsMinutesCostFactor` | [`Float`](#float) | Private projects' "minutes cost factor" associated with the runner (GitLab.com only). |
 | <a id="cirunnerprojectcount"></a>`projectCount` | [`Int`](#int) | Number of projects that the runner is associated with. |
 | <a id="cirunnerpublicprojectsminutescostfactor"></a>`publicProjectsMinutesCostFactor` | [`Float`](#float) | Public projects' "minutes cost factor" associated with the runner (GitLab.com only). |
+| <a id="cirunnerregisteradminurl"></a>`registerAdminUrl` | [`String`](#string) | URL of the temporary registration page of the runner. Only available before the runner is registered. Only available for administrators. |
 | <a id="cirunnerrevision"></a>`revision` | [`String`](#string) | Revision of the runner. |
 | <a id="cirunnerrununtagged"></a>`runUntagged` | [`Boolean!`](#boolean) | Indicates the runner is able to run untagged jobs. |
 | <a id="cirunnerrunnertype"></a>`runnerType` | [`CiRunnerType!`](#cirunnertype) | Type of the runner. |
@@ -11620,6 +11960,25 @@ Returns [`CiRunnerStatus!`](#cirunnerstatus).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cirunnerstatuslegacymode"></a>`legacyMode` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.0. Will be removed in 17.0. In GitLab 16.0 and later, the field will act as if `legacyMode` is null. |
+
+### `CiRunnerMachine`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cirunnermachinearchitecturename"></a>`architectureName` | [`String`](#string) | Architecture provided by the runner machine. |
+| <a id="cirunnermachinecontactedat"></a>`contactedAt` | [`Time`](#time) | Timestamp of last contact from the runner machine. |
+| <a id="cirunnermachinecreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of creation of the runner machine. |
+| <a id="cirunnermachineexecutorname"></a>`executorName` | [`String`](#string) | Executor last advertised by the runner. |
+| <a id="cirunnermachineid"></a>`id` | [`CiRunnerMachineID!`](#cirunnermachineid) | ID of the runner machine. |
+| <a id="cirunnermachineipaddress"></a>`ipAddress` | [`String`](#string) | IP address of the runner machine. |
+| <a id="cirunnermachineplatformname"></a>`platformName` | [`String`](#string) | Platform provided by the runner machine. |
+| <a id="cirunnermachinerevision"></a>`revision` | [`String`](#string) | Revision of the runner. |
+| <a id="cirunnermachinerunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner configuration for the runner machine. |
+| <a id="cirunnermachinestatus"></a>`status` | [`CiRunnerStatus!`](#cirunnerstatus) | Status of the runner machine. |
+| <a id="cirunnermachinesystemid"></a>`systemId` | [`String!`](#string) | System ID associated with the runner machine. |
+| <a id="cirunnermachineversion"></a>`version` | [`String`](#string) | Version of the runner. |
 
 ### `CiSecureFileRegistry`
 
@@ -12169,8 +12528,9 @@ Represents a DAST Pre Scan Verification Step.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="dastprescanverificationstepchecktype"></a>`checkType` | [`DastPreScanVerificationCheckType`](#dastprescanverificationchecktype) | Type of the pre scan verification check. |
 | <a id="dastprescanverificationsteperrors"></a>`errors` | [`[String!]`](#string) | Errors that occurred in the pre scan verification step. |
-| <a id="dastprescanverificationstepname"></a>`name` | [`String`](#string) | Name of the pre scan verification step. |
+| <a id="dastprescanverificationstepname"></a>`name` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.10. This was renamed. Use: [`DastPreScanVerificationStep.checkType`](#dastprescanverificationstepchecktype). |
 | <a id="dastprescanverificationstepsuccess"></a>`success` | [`Boolean!`](#boolean) | Whether or not the pre scan verification step has errors. |
 
 ### `DastProfile`
@@ -12333,6 +12693,20 @@ The response from the AdminSidekiqQueuesDeleteJobs mutation.
 | <a id="deletednotediscussionid"></a>`discussionId` | [`DiscussionID`](#discussionid) | ID of the discussion for the deleted note. |
 | <a id="deletednoteid"></a>`id` | [`NoteID!`](#noteid) | ID of the deleted note. |
 | <a id="deletednotelastdiscussionnote"></a>`lastDiscussionNote` | [`Boolean`](#boolean) | Whether deleted note is the last note in the discussion. |
+
+### `Dependency`
+
+A software dependency used by a project.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyid"></a>`id` | [`GlobalID!`](#globalid) | ID of the dependency. |
+| <a id="dependencylocation"></a>`location` | [`Location`](#location) | Information about where the dependency is located. |
+| <a id="dependencyname"></a>`name` | [`String!`](#string) | Name of the dependency. |
+| <a id="dependencypackager"></a>`packager` | [`String`](#string) | Description of the tool used to manage the dependency. |
+| <a id="dependencyversion"></a>`version` | [`String`](#string) | Version of the dependency. |
 
 ### `DependencyProxyBlob`
 
@@ -12533,6 +12907,8 @@ A single design.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="designcommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
+| <a id="designdescription"></a>`description` | [`String`](#string) | Description of the design. |
+| <a id="designdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="designdiffrefs"></a>`diffRefs` | [`DiffRefs!`](#diffrefs) | Diff refs for this design. |
 | <a id="designdiscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="designevent"></a>`event` | [`DesignVersionEvent!`](#designversionevent) | How this design was changed in the current version. |
@@ -12925,10 +13301,10 @@ Returns [`[DoraMetric!]`](#dorametric).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="dorametricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the current date. |
-| <a id="dorametricsenvironmenttier"></a>`environmentTier` | [`DeploymentTier`](#deploymenttier) | Deployment tier of the environments to return. Deprecated, please update to `environment_tiers` param. |
+| <a id="dorametricsenvironmenttier"></a>`environmentTier` **{warning-solid}** | [`DeploymentTier`](#deploymenttier) | **Deprecated** in 15.2. Superseded by `environment_tiers` param. |
 | <a id="dorametricsenvironmenttiers"></a>`environmentTiers` | [`[DeploymentTier!]`](#deploymenttier) | Deployment tiers of the environments to return. Defaults to `[PRODUCTION]`. |
-| <a id="dorametricsinterval"></a>`interval` | [`DoraMetricBucketingInterval`](#dorametricbucketinginterval) | How the metric should be aggregrated. Defaults to `DAILY`. In the case of `ALL`, the `date` field in the response will be `null`. |
-| <a id="dorametricsmetric"></a>`metric` | [`DoraMetricType!`](#dorametrictype) | Type of metric to return. |
+| <a id="dorametricsinterval"></a>`interval` | [`DoraMetricBucketingInterval`](#dorametricbucketinginterval) | How the metric should be aggregated. Defaults to `DAILY`. In the case of `ALL`, the `date` field in the response will be `null`. |
+| <a id="dorametricsmetric"></a>`metric` **{warning-solid}** | [`DoraMetricType`](#dorametrictype) | **Deprecated** in 15.10. Superseded by metrics fields. See `DoraMetric` type. |
 | <a id="dorametricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is 3 months ago. |
 
 ### `DoraMetric`
@@ -12937,8 +13313,12 @@ Returns [`[DoraMetric!]`](#dorametric).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="dorametricchangefailurerate"></a>`changeFailureRate` | [`Float`](#float) | Percentage of deployments that caused incidents in production. |
 | <a id="dorametricdate"></a>`date` | [`String`](#string) | Date of the data point. |
-| <a id="dorametricvalue"></a>`value` | [`Float`](#float) | Value of the data point. |
+| <a id="dorametricdeploymentfrequency"></a>`deploymentFrequency` | [`Float`](#float) | Number of deployments per day. |
+| <a id="dorametricleadtimeforchanges"></a>`leadTimeForChanges` | [`Float`](#float) | Median time to deploy a merged merge request. |
+| <a id="dorametrictimetorestoreservice"></a>`timeToRestoreService` | [`Float`](#float) | Median time to close an incident. |
+| <a id="dorametricvalue"></a>`value` **{warning-solid}** | [`Float`](#float) | **Deprecated** in 15.10. Moved to corresponding metric field. |
 
 ### `EgressNode`
 
@@ -13597,6 +13977,8 @@ Details of the fork project compared to its upstream project.
 | ---- | ---- | ----------- |
 | <a id="forkdetailsahead"></a>`ahead` | [`Int`](#int) | Number of commits ahead of upstream. |
 | <a id="forkdetailsbehind"></a>`behind` | [`Int`](#int) | Number of commits behind upstream. |
+| <a id="forkdetailshasconflicts"></a>`hasConflicts` | [`Boolean`](#boolean) | Indicates if the fork conflicts with its upstream project. |
+| <a id="forkdetailsissyncing"></a>`isSyncing` | [`Boolean`](#boolean) | Indicates if there is a synchronization in progress. |
 
 ### `GeoNode`
 
@@ -13952,6 +14334,7 @@ GPG signature for a signed commit.
 | <a id="groupepicboards"></a>`epicBoards` | [`EpicBoardConnection`](#epicboardconnection) | Find epic boards. (see [Connections](#connections)) |
 | <a id="groupepicsenabled"></a>`epicsEnabled` | [`Boolean`](#boolean) | Indicates if Epics are enabled for namespace. |
 | <a id="groupexternalauditeventdestinations"></a>`externalAuditEventDestinations` | [`ExternalAuditEventDestinationConnection`](#externalauditeventdestinationconnection) | External locations that receive audit events belonging to the group. (see [Connections](#connections)) |
+| <a id="groupflowmetrics"></a>`flowMetrics` **{warning-solid}** | [`GroupValueStreamAnalyticsFlowMetrics`](#groupvaluestreamanalyticsflowmetrics) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Flow metrics for value stream analytics. |
 | <a id="groupfullname"></a>`fullName` | [`String!`](#string) | Full name of the namespace. |
 | <a id="groupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
 | <a id="groupid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
@@ -14153,7 +14536,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupcontributionsfrom"></a>`from` | [`ISO8601Date!`](#iso8601date) | Start date of the reporting time range. |
-| <a id="groupcontributionsto"></a>`to` | [`ISO8601Date!`](#iso8601date) | End date of the reporting time range. The end date must be within 31 days after the start date. |
+| <a id="groupcontributionsto"></a>`to` | [`ISO8601Date!`](#iso8601date) | End date of the reporting time range. The end date must be within 93 days after the start date. |
 
 ##### `Group.dataTransfer`
 
@@ -14578,6 +14961,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupprojectscomplianceframeworkfilters"></a>`complianceFrameworkFilters` | [`ComplianceFrameworkFilters`](#complianceframeworkfilters) | Filters applied when selecting a compliance framework. |
 | <a id="groupprojectshascodecoverage"></a>`hasCodeCoverage` | [`Boolean`](#boolean) | Returns only the projects which have code coverage. |
 | <a id="groupprojectshasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only the projects which have vulnerabilities. |
 | <a id="groupprojectsids"></a>`ids` | [`[ID!]`](#id) | Filter projects by IDs. |
@@ -14641,7 +15025,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupscanexecutionpoliciesactionscantypes"></a>`actionScanTypes` | [`[SecurityReportTypeEnum!]`](#securityreporttypeenum) | Filters policies by the action scan type. Only these scan types are supported: `dast`, `secret_detection`, `cluster_image_scanning`, `container_scanning`, `sast`, `dependency_scanning`. |
+| <a id="groupscanexecutionpoliciesactionscantypes"></a>`actionScanTypes` | [`[SecurityReportTypeEnum!]`](#securityreporttypeenum) | Filters policies by the action scan type. Only these scan types are supported: `dast`, `secret_detection`, `cluster_image_scanning`, `container_scanning`, `sast`, `sast_iac`, `dependency_scanning`. |
 | <a id="groupscanexecutionpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
 
 ##### `Group.scanResultPolicies`
@@ -14858,6 +15242,80 @@ Contains statistics about a group.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupstatsreleasestats"></a>`releaseStats` | [`GroupReleaseStats`](#groupreleasestats) | Statistics related to releases within the group. |
+
+### `GroupValueStreamAnalyticsFlowMetrics`
+
+Exposes aggregated value stream flow metrics.
+
+#### Fields with arguments
+
+##### `GroupValueStreamAnalyticsFlowMetrics.cycleTime`
+
+Median time from first commit to issue closed.
+
+Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimeassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimeauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimefrom"></a>`from` | [`Time!`](#time) | Issues created after the date. |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimeprojectids"></a>`projectIds` | [`[ID!]`](#id) | Project IDs within the group hierarchy. |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimeto"></a>`to` | [`Time!`](#time) | Issues created before the date. |
+
+##### `GroupValueStreamAnalyticsFlowMetrics.deploymentCount`
+
+Number of production deployments in the given period.
+
+Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupvaluestreamanalyticsflowmetricsdeploymentcountfrom"></a>`from` | [`Time!`](#time) | Deployments finished after the date. |
+| <a id="groupvaluestreamanalyticsflowmetricsdeploymentcountprojectids"></a>`projectIds` | [`[ID!]`](#id) | Project IDs within the group hierarchy. |
+| <a id="groupvaluestreamanalyticsflowmetricsdeploymentcountto"></a>`to` | [`Time!`](#time) | Deployments finished before the date. |
+
+##### `GroupValueStreamAnalyticsFlowMetrics.issueCount`
+
+Number of issues opened in the given period.
+
+Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupvaluestreamanalyticsflowmetricsissuecountassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuecountauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuecountfrom"></a>`from` | [`Time!`](#time) | Issues created after the date. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuecountlabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuecountmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuecountprojectids"></a>`projectIds` | [`[ID!]`](#id) | Project IDs within the group hierarchy. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuecountto"></a>`to` | [`Time!`](#time) | Issues created before the date. |
+
+##### `GroupValueStreamAnalyticsFlowMetrics.leadTime`
+
+Median time from when the issue was created to when it was closed.
+
+Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimeassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimeauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimefrom"></a>`from` | [`Time!`](#time) | Issues created after the date. |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimeprojectids"></a>`projectIds` | [`[ID!]`](#id) | Project IDs within the group hierarchy. |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimeto"></a>`to` | [`Time!`](#time) | Issues created before the date. |
 
 ### `GroupWikiRepositoryRegistry`
 
@@ -15456,6 +15914,15 @@ Represents an entry from the Cloud License history.
 | <a id="licensehistoryentrytype"></a>`type` | [`String!`](#string) | Type of the license. |
 | <a id="licensehistoryentryusersinlicensecount"></a>`usersInLicenseCount` | [`Int`](#int) | Number of paid users in the license. |
 
+### `Location`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="locationblobpath"></a>`blobPath` | [`String`](#string) | HTTP URI path to view the input file in GitLab. |
+| <a id="locationpath"></a>`path` | [`String`](#string) | Path, relative to the root of the repository, of the filewhich was analyzed to detect the dependency. |
+
 ### `MavenMetadata`
 
 Maven metadata.
@@ -15690,6 +16157,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneesavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="mergerequestassigneestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestassigneestatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
+| <a id="mergerequestassigneeuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestassigneeuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestassigneeusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="mergerequestassigneewebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
@@ -15936,6 +16404,7 @@ The author of the merge request.
 | <a id="mergerequestauthorsavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="mergerequestauthorstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestauthorstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
+| <a id="mergerequestauthoruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestauthoruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestauthorusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="mergerequestauthorwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
@@ -16201,6 +16670,7 @@ A user participating in a merge request.
 | <a id="mergerequestparticipantsavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="mergerequestparticipantstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestparticipantstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
+| <a id="mergerequestparticipantuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestparticipantuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestparticipantusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="mergerequestparticipantwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
@@ -16466,6 +16936,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="mergerequestreviewerstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestreviewerstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
+| <a id="mergerequestrevieweruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestrevieweruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestreviewerusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="mergerequestreviewerwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
@@ -16861,6 +17332,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="namespaceprojectscomplianceframeworkfilters"></a>`complianceFrameworkFilters` | [`ComplianceFrameworkFilters`](#complianceframeworkfilters) | Filters applied when selecting a compliance framework. |
 | <a id="namespaceprojectshascodecoverage"></a>`hasCodeCoverage` | [`Boolean`](#boolean) | Returns only the projects which have code coverage. |
 | <a id="namespaceprojectshasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only the projects which have vulnerabilities. |
 | <a id="namespaceprojectsids"></a>`ids` | [`[ID!]`](#id) | Filter projects by IDs. |
@@ -16884,7 +17356,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="namespacescanexecutionpoliciesactionscantypes"></a>`actionScanTypes` | [`[SecurityReportTypeEnum!]`](#securityreporttypeenum) | Filters policies by the action scan type. Only these scan types are supported: `dast`, `secret_detection`, `cluster_image_scanning`, `container_scanning`, `sast`, `dependency_scanning`. |
+| <a id="namespacescanexecutionpoliciesactionscantypes"></a>`actionScanTypes` | [`[SecurityReportTypeEnum!]`](#securityreporttypeenum) | Filters policies by the action scan type. Only these scan types are supported: `dast`, `secret_detection`, `cluster_image_scanning`, `container_scanning`, `sast`, `sast_iac`, `dependency_scanning`. |
 | <a id="namespacescanexecutionpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
 
 ##### `Namespace.scanResultPolicies`
@@ -17615,7 +18087,7 @@ Represents a pipeline schedule.
 | ---- | ---- | ----------- |
 | <a id="pipelineschedulepermissionsadminpipelineschedule"></a>`adminPipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_pipeline_schedule` on this resource. |
 | <a id="pipelineschedulepermissionsplaypipelineschedule"></a>`playPipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `play_pipeline_schedule` on this resource. |
-| <a id="pipelineschedulepermissionstakeownershippipelineschedule"></a>`takeOwnershipPipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `take_ownership_pipeline_schedule` on this resource. |
+| <a id="pipelineschedulepermissionstakeownershippipelineschedule"></a>`takeOwnershipPipelineSchedule` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 15.9. Use admin_pipeline_schedule permission to determine if the user can take ownership of a pipeline schedule. |
 | <a id="pipelineschedulepermissionsupdatepipelineschedule"></a>`updatePipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `update_pipeline_schedule` on this resource. |
 
 ### `PipelineScheduleVariable`
@@ -17739,9 +18211,11 @@ Represents a product analytics dashboard visualization.
 | <a id="projectcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of the project creation. |
 | <a id="projectdastscannerprofiles"></a>`dastScannerProfiles` | [`DastScannerProfileConnection`](#dastscannerprofileconnection) | DAST scanner profiles associated with the project. (see [Connections](#connections)) |
 | <a id="projectdastsiteprofiles"></a>`dastSiteProfiles` | [`DastSiteProfileConnection`](#dastsiteprofileconnection) | DAST Site Profiles associated with the project. (see [Connections](#connections)) |
+| <a id="projectdependencies"></a>`dependencies` **{warning-solid}** | [`DependencyConnection`](#dependencyconnection) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. Software dependencies used by the project. |
 | <a id="projectdescription"></a>`description` | [`String`](#string) | Short description of the project. |
 | <a id="projectdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="projectdora"></a>`dora` | [`Dora`](#dora) | Project's DORA metrics. |
+| <a id="projectflowmetrics"></a>`flowMetrics` **{warning-solid}** | [`ProjectValueStreamAnalyticsFlowMetrics`](#projectvaluestreamanalyticsflowmetrics) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Flow metrics for value stream analytics. |
 | <a id="projectforkscount"></a>`forksCount` | [`Int!`](#int) | Number of times the project has been forked. |
 | <a id="projectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. |
 | <a id="projectgrafanaintegration"></a>`grafanaIntegration` | [`GrafanaIntegration`](#grafanaintegration) | Grafana integration details for the project. |
@@ -17759,6 +18233,7 @@ Represents a product analytics dashboard visualization.
 | <a id="projectlastactivityat"></a>`lastActivityAt` | [`Time`](#time) | Timestamp of the project last activity. |
 | <a id="projectlfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if the project has Large File Storage (LFS) enabled. |
 | <a id="projectmergecommittemplate"></a>`mergeCommitTemplate` | [`String`](#string) | Template used to create merge commit message in merge requests. |
+| <a id="projectmergerequestsdisablecommittersapproval"></a>`mergeRequestsDisableCommittersApproval` | [`Boolean!`](#boolean) | Indicates that committers of the given merge request cannot approve. |
 | <a id="projectmergerequestsenabled"></a>`mergeRequestsEnabled` | [`Boolean`](#boolean) | Indicates if Merge Requests are enabled for the current user. |
 | <a id="projectmergerequestsffonlyenabled"></a>`mergeRequestsFfOnlyEnabled` | [`Boolean`](#boolean) | Indicates if no merge commits should be created and all merges should instead be fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded. |
 | <a id="projectname"></a>`name` | [`String!`](#string) | Name of the project (without namespace). |
@@ -17773,6 +18248,7 @@ Represents a product analytics dashboard visualization.
 | <a id="projectpathlocks"></a>`pathLocks` | [`PathLockConnection`](#pathlockconnection) | The project's path locks. (see [Connections](#connections)) |
 | <a id="projectpipelineanalytics"></a>`pipelineAnalytics` | [`PipelineAnalytics`](#pipelineanalytics) | Pipeline analytics. |
 | <a id="projectprintingmergerequestlinkenabled"></a>`printingMergeRequestLinkEnabled` | [`Boolean`](#boolean) | Indicates if a link to create or view a merge request should display after a push to Git repositories of the project from the command line. |
+| <a id="projectproductanalyticsstate"></a>`productAnalyticsState` **{warning-solid}** | [`ProductAnalyticsState`](#productanalyticsstate) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Current state of the product analytics stack for this project.Can only be called for one project in a single request. |
 | <a id="projectpublicjobs"></a>`publicJobs` | [`Boolean`](#boolean) | Indicates if there is public access to pipelines and job details of the project, including output logs and artifacts. |
 | <a id="projectpushrules"></a>`pushRules` | [`PushRules`](#pushrules) | Project's push rules settings. |
 | <a id="projectrecentissueboards"></a>`recentIssueBoards` | [`BoardConnection`](#boardconnection) | List of recently visited boards of the project. Maximum size is 4. (see [Connections](#connections)) |
@@ -18847,7 +19323,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectscanexecutionpoliciesactionscantypes"></a>`actionScanTypes` | [`[SecurityReportTypeEnum!]`](#securityreporttypeenum) | Filters policies by the action scan type. Only these scan types are supported: `dast`, `secret_detection`, `cluster_image_scanning`, `container_scanning`, `sast`, `dependency_scanning`. |
+| <a id="projectscanexecutionpoliciesactionscantypes"></a>`actionScanTypes` | [`[SecurityReportTypeEnum!]`](#securityreporttypeenum) | Filters policies by the action scan type. Only these scan types are supported: `dast`, `secret_detection`, `cluster_image_scanning`, `container_scanning`, `sast`, `sast_iac`, `dependency_scanning`. |
 | <a id="projectscanexecutionpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
 
 ##### `Project.scanResultPolicies`
@@ -19096,13 +19572,13 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectworkitemsauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. Filter work items by author username. |
-| <a id="projectworkitemsiid"></a>`iid` | [`String`](#string) | IID of the issue. For example, "1". |
+| <a id="projectworkitemsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="projectworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="projectworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
 | <a id="projectworkitemsrequirementlegacywidget"></a>`requirementLegacyWidget` **{warning-solid}** | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in 15.9. Use work item IID filter instead. |
 | <a id="projectworkitemssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
-| <a id="projectworkitemssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by this criteria. |
-| <a id="projectworkitemsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of this work item. |
+| <a id="projectworkitemssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by criteria. |
+| <a id="projectworkitemsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
 | <a id="projectworkitemsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_mvc_2` is disabled. |
 | <a id="projectworkitemstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
 
@@ -19254,6 +19730,76 @@ Represents the source of a security policy belonging to a project.
 | <a id="projectstatisticsuploadssize"></a>`uploadsSize` | [`Float`](#float) | Uploads size of the project in bytes. |
 | <a id="projectstatisticswikisize"></a>`wikiSize` | [`Float`](#float) | Wiki size of the project in bytes. |
 
+### `ProjectValueStreamAnalyticsFlowMetrics`
+
+Exposes aggregated value stream flow metrics.
+
+#### Fields with arguments
+
+##### `ProjectValueStreamAnalyticsFlowMetrics.cycleTime`
+
+Median time from first commit to issue closed.
+
+Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectvaluestreamanalyticsflowmetricscycletimeassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricscycletimeauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricscycletimefrom"></a>`from` | [`Time!`](#time) | Issues created after the date. |
+| <a id="projectvaluestreamanalyticsflowmetricscycletimelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricscycletimemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricscycletimeto"></a>`to` | [`Time!`](#time) | Issues created before the date. |
+
+##### `ProjectValueStreamAnalyticsFlowMetrics.deploymentCount`
+
+Number of production deployments in the given period.
+
+Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectvaluestreamanalyticsflowmetricsdeploymentcountfrom"></a>`from` | [`Time!`](#time) | Deployments finished after the date. |
+| <a id="projectvaluestreamanalyticsflowmetricsdeploymentcountto"></a>`to` | [`Time!`](#time) | Deployments finished before the date. |
+
+##### `ProjectValueStreamAnalyticsFlowMetrics.issueCount`
+
+Number of issues opened in the given period.
+
+Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectvaluestreamanalyticsflowmetricsissuecountassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuecountauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuecountfrom"></a>`from` | [`Time!`](#time) | Issues created after the date. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuecountlabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuecountmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuecountto"></a>`to` | [`Time!`](#time) | Issues created before the date. |
+
+##### `ProjectValueStreamAnalyticsFlowMetrics.leadTime`
+
+Median time from when the issue was created to when it was closed.
+
+Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectvaluestreamanalyticsflowmetricsleadtimeassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsleadtimeauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsleadtimefrom"></a>`from` | [`Time!`](#time) | Issues created after the date. |
+| <a id="projectvaluestreamanalyticsflowmetricsleadtimelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsleadtimemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsleadtimeto"></a>`to` | [`Time!`](#time) | Issues created before the date. |
+
 ### `PrometheusAlert`
 
 The alert condition for Prometheus.
@@ -19278,6 +19824,7 @@ Protected Environments of the environment.
 | <a id="protectedenvironmentgroup"></a>`group` | [`Group`](#group) | Group details. Present if it's group-level protected environment. |
 | <a id="protectedenvironmentname"></a>`name` | [`String`](#string) | Name of the environment if it's a project-level protected environment. Tier of the environment if it's a group-level protected environment. |
 | <a id="protectedenvironmentproject"></a>`project` | [`Project`](#project) | Project details. Present if it's project-level protected environment. |
+| <a id="protectedenvironmentrequiredapprovalcount"></a>`requiredApprovalCount` | [`Int`](#int) | Required approval count for Unified Approval Setting. |
 
 ### `ProtectedEnvironmentApprovalRule`
 
@@ -19678,6 +20225,7 @@ Counts of requirements by their state.
 | <a id="rootstoragestatisticslfsobjectssize"></a>`lfsObjectsSize` | [`Float!`](#float) | LFS objects size in bytes. |
 | <a id="rootstoragestatisticspackagessize"></a>`packagesSize` | [`Float!`](#float) | Packages size in bytes. |
 | <a id="rootstoragestatisticspipelineartifactssize"></a>`pipelineArtifactsSize` | [`Float!`](#float) | CI pipeline artifacts size in bytes. |
+| <a id="rootstoragestatisticsregistrysizeestimated"></a>`registrySizeEstimated` | [`Boolean!`](#boolean) | Indicates whether the deduplicated Container Registry size for the namespace is an estimated value or not. |
 | <a id="rootstoragestatisticsrepositorysize"></a>`repositorySize` | [`Float!`](#float) | Git repository size in bytes. |
 | <a id="rootstoragestatisticssnippetssize"></a>`snippetsSize` | [`Float!`](#float) | Snippets size in bytes. |
 | <a id="rootstoragestatisticsstoragesize"></a>`storageSize` | [`Float!`](#float) | Total storage in bytes. |
@@ -20199,6 +20747,7 @@ SSH signature for a signed commit.
 | ---- | ---- | ----------- |
 | <a id="sshsignaturecommitsha"></a>`commitSha` | [`String`](#string) | SHA of the associated commit. |
 | <a id="sshsignaturekey"></a>`key` | [`Key`](#key) | SSH key used for the signature. |
+| <a id="sshsignaturekeyfingerprintsha256"></a>`keyFingerprintSha256` | [`String`](#string) | Fingerprint of the key. |
 | <a id="sshsignatureproject"></a>`project` | [`Project`](#project) | Project of the associated commit. |
 | <a id="sshsignatureuser"></a>`user` | [`UserCore`](#usercore) | User associated with the key. |
 | <a id="sshsignatureverificationstatus"></a>`verificationStatus` | [`VerificationStatus`](#verificationstatus) | Indicates verification status of the associated key or certificate. |
@@ -20648,6 +21197,21 @@ Represents a recorded measurement (object count) for the Admins.
 | <a id="usagetrendsmeasurementidentifier"></a>`identifier` | [`MeasurementIdentifier!`](#measurementidentifier) | Type of objects being measured. |
 | <a id="usagetrendsmeasurementrecordedat"></a>`recordedAt` | [`Time`](#time) | Time the measurement was recorded. |
 
+### `UserAchievement`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="userachievementachievement"></a>`achievement` | [`Achievement!`](#achievement) | Achievement awarded. |
+| <a id="userachievementawardedbyuser"></a>`awardedByUser` | [`UserCore!`](#usercore) | Awarded by. |
+| <a id="userachievementcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp the achievement was created. |
+| <a id="userachievementid"></a>`id` | [`AchievementsUserAchievementID!`](#achievementsuserachievementid) | ID of the user achievement. |
+| <a id="userachievementrevokedat"></a>`revokedAt` | [`Time`](#time) | Timestamp the achievement was revoked. |
+| <a id="userachievementrevokedbyuser"></a>`revokedByUser` | [`UserCore`](#usercore) | Revoked by. |
+| <a id="userachievementupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the achievement was last updated. |
+| <a id="userachievementuser"></a>`user` | [`UserCore!`](#usercore) | Achievement recipient. |
+
 ### `UserCallout`
 
 #### Fields
@@ -20686,6 +21250,7 @@ Core represention of a GitLab user.
 | <a id="usercoresavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="usercorestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="usercorestatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
+| <a id="usercoreuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="usercoreuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="usercoreusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="usercorewebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
@@ -20947,6 +21512,29 @@ fields relate to interactions between the two entities.
 | <a id="userstatusmessage"></a>`message` | [`String`](#string) | User status message. |
 | <a id="userstatusmessagehtml"></a>`messageHtml` | [`String`](#string) | HTML of the user status message. |
 
+### `ValueStreamAnalyticsMetric`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamanalyticsmetricidentifier"></a>`identifier` | [`String!`](#string) | Identifier for the metric. |
+| <a id="valuestreamanalyticsmetriclinks"></a>`links` | [`[ValueStreamMetricLinkType!]!`](#valuestreammetriclinktype) | Optional links for drilling down. |
+| <a id="valuestreamanalyticsmetrictitle"></a>`title` | [`String!`](#string) | Title for the metric. |
+| <a id="valuestreamanalyticsmetricunit"></a>`unit` | [`String`](#string) | Unit of measurement. |
+| <a id="valuestreamanalyticsmetricvalue"></a>`value` | [`Float`](#float) | Value for the metric. |
+
+### `ValueStreamMetricLinkType`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreammetriclinktypedocslink"></a>`docsLink` | [`Boolean`](#boolean) | Link to the metric documentation. |
+| <a id="valuestreammetriclinktypelabel"></a>`label` | [`String!`](#string) | Label for the link. |
+| <a id="valuestreammetriclinktypename"></a>`name` | [`String!`](#string) | Name of the link group. |
+| <a id="valuestreammetriclinktypeurl"></a>`url` | [`String!`](#string) | Drill-down URL. |
+
 ### `VulnerabilitiesCountByDay`
 
 Represents the count of vulnerabilities by severity on a particular day. This data is retained for 365 days.
@@ -21002,6 +21590,7 @@ Represents a vulnerability.
 | <a id="vulnerabilityseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability (INFO, UNKNOWN, LOW, MEDIUM, HIGH, CRITICAL). |
 | <a id="vulnerabilitystate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | State of the vulnerability (DETECTED, CONFIRMED, RESOLVED, DISMISSED). |
 | <a id="vulnerabilitystatecomment"></a>`stateComment` | [`String`](#string) | Comment given for the vulnerability state change. |
+| <a id="vulnerabilitystatetransitions"></a>`stateTransitions` | [`VulnerabilityStateTransitionTypeConnection`](#vulnerabilitystatetransitiontypeconnection) | List of state transitions related to the vulnerability. (see [Connections](#connections)) |
 | <a id="vulnerabilitytitle"></a>`title` | [`String`](#string) | Title of the vulnerability. |
 | <a id="vulnerabilityupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the vulnerability was last updated. |
 | <a id="vulnerabilityusernotescount"></a>`userNotesCount` | [`Int!`](#int) | Number of user notes attached to the vulnerability. |
@@ -21171,6 +21760,19 @@ Represents the vulnerability details location within a file in the project.
 | <a id="vulnerabilitydetailmodulelocationname"></a>`name` | [`String`](#string) | Name of the field. |
 | <a id="vulnerabilitydetailmodulelocationoffset"></a>`offset` | [`Int!`](#int) | Offset of the module location. |
 
+### `VulnerabilityDetailRow`
+
+Represents an individual row in a table.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitydetailrowdescription"></a>`description` | [`String`](#string) | Description of the field. |
+| <a id="vulnerabilitydetailrowfieldname"></a>`fieldName` | [`String`](#string) | Name of the field. |
+| <a id="vulnerabilitydetailrowname"></a>`name` | [`String`](#string) | Name of the field. |
+| <a id="vulnerabilitydetailrowrow"></a>`row` | [`[VulnerabilityDetail!]!`](#vulnerabilitydetail) | Value of the field. |
+
 ### `VulnerabilityDetailTable`
 
 Represents the vulnerability details table value.
@@ -21183,7 +21785,7 @@ Represents the vulnerability details table value.
 | <a id="vulnerabilitydetailtablefieldname"></a>`fieldName` | [`String`](#string) | Name of the field. |
 | <a id="vulnerabilitydetailtableheaders"></a>`headers` | [`[VulnerabilityDetail!]!`](#vulnerabilitydetail) | Table headers. |
 | <a id="vulnerabilitydetailtablename"></a>`name` | [`String`](#string) | Name of the field. |
-| <a id="vulnerabilitydetailtablerows"></a>`rows` | [`[VulnerabilityDetail!]!`](#vulnerabilitydetail) | Table rows. |
+| <a id="vulnerabilitydetailtablerows"></a>`rows` | [`[VulnerabilityDetailRow!]!`](#vulnerabilitydetailrow) | Table rows. |
 
 ### `VulnerabilityDetailText`
 
@@ -21502,6 +22104,21 @@ Represents vulnerability counts by severity.
 | <a id="vulnerabilityseveritiescountmedium"></a>`medium` | [`Int`](#int) | Number of vulnerabilities of MEDIUM severity of the project. |
 | <a id="vulnerabilityseveritiescountunknown"></a>`unknown` | [`Int`](#int) | Number of vulnerabilities of UNKNOWN severity of the project. |
 
+### `VulnerabilityStateTransitionType`
+
+Represents a state transition of a vulnerability.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitystatetransitiontypeauthor"></a>`author` | [`UserCore!`](#usercore) | User who changed the state of the vulnerability. |
+| <a id="vulnerabilitystatetransitiontypecomment"></a>`comment` | [`String`](#string) | Comment for the state change. |
+| <a id="vulnerabilitystatetransitiontypecreatedat"></a>`createdAt` | [`Time!`](#time) | Time of the state change of the vulnerability. |
+| <a id="vulnerabilitystatetransitiontypedismissalreason"></a>`dismissalReason` | [`VulnerabilityDismissalReason`](#vulnerabilitydismissalreason) | Reason for the dismissal. |
+| <a id="vulnerabilitystatetransitiontypefromstate"></a>`fromState` | [`VulnerabilityState!`](#vulnerabilitystate) | State of the vulnerability before transition. |
+| <a id="vulnerabilitystatetransitiontypetostate"></a>`toState` | [`VulnerabilityState!`](#vulnerabilitystate) | State of the vulnerability after transition. |
+
 ### `VulnerableDependency`
 
 Represents a vulnerable dependency. Used in vulnerability location data.
@@ -21711,6 +22328,17 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetnotesdiscussionsfilter"></a>`filter` | [`NotesFilterType`](#notesfiltertype) | Type of notes collection: ALL_NOTES, ONLY_COMMENTS, ONLY_ACTIVITY. |
+
+### `WorkItemWidgetNotifications`
+
+Represents the notifications widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetnotificationssubscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Whether the current user is subscribed to notifications on the work item. |
+| <a id="workitemwidgetnotificationstype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetProgress`
 
@@ -21996,6 +22624,19 @@ User availability status.
 | <a id="availabilityenumbusy"></a>`BUSY` | Busy. |
 | <a id="availabilityenumnot_set"></a>`NOT_SET` | Not Set. |
 
+### `AvailableExportFields`
+
+Available fields to be exported as CSV.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="availableexportfieldsauthor"></a>`AUTHOR` | Author name. |
+| <a id="availableexportfieldsauthor_username"></a>`AUTHOR_USERNAME` | Author username. |
+| <a id="availableexportfieldscreated_at"></a>`CREATED_AT` | Date of creation. |
+| <a id="availableexportfieldsid"></a>`ID` | Unique identifier. |
+| <a id="availableexportfieldstitle"></a>`TITLE` | Title. |
+| <a id="availableexportfieldstype"></a>`TYPE` | Type of the work item. |
+
 ### `BlobViewersType`
 
 Types of blob viewers.
@@ -22178,6 +22819,15 @@ Mode of a commit action.
 | <a id="commitencodingbase64"></a>`BASE64` | Base64 encoding. |
 | <a id="commitencodingtext"></a>`TEXT` | Text encoding. |
 
+### `ComplianceFrameworkPresenceFilter`
+
+ComplianceFramework of a project for filtering.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="complianceframeworkpresencefilterany"></a>`ANY` | Any compliance framework is assigned. |
+| <a id="complianceframeworkpresencefilternone"></a>`NONE` | No compliance framework is assigned. |
+
 ### `ComplianceViolationReason`
 
 Reason for the compliance violation.
@@ -22344,6 +22994,16 @@ Values for sorting tags.
 | <a id="customerrelationsorganizationstateactive"></a>`active` | Active organizations. |
 | <a id="customerrelationsorganizationstateall"></a>`all` | All available organizations. |
 | <a id="customerrelationsorganizationstateinactive"></a>`inactive` | Inactive organizations. |
+
+### `DastPreScanVerificationCheckType`
+
+Check type of the pre scan verification step.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="dastprescanverificationchecktypeauthentication"></a>`AUTHENTICATION` | Authentication check. |
+| <a id="dastprescanverificationchecktypeconnection"></a>`CONNECTION` | Connection check. |
+| <a id="dastprescanverificationchecktypecrawling"></a>`CRAWLING` | Crawling check. |
 
 ### `DastPreScanVerificationStatus`
 
@@ -22767,6 +23427,15 @@ State of a GitLab issue or merge request.
 | <a id="issuablestatelocked"></a>`locked` | Discussion has been locked. |
 | <a id="issuablestateopened"></a>`opened` | In open state. |
 
+### `IssuableSubscriptionEvent`
+
+Values for subscribing and unsubscribing from issuables.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="issuablesubscriptioneventsubscribe"></a>`SUBSCRIBE` | Subscribe to an issuable. |
+| <a id="issuablesubscriptioneventunsubscribe"></a>`UNSUBSCRIBE` | Unsubscribe from an issuable. |
+
 ### `IssueCreationIterationWildcardId`
 
 Iteration ID wildcard values for issue creation.
@@ -23139,9 +23808,11 @@ Values for sorting projects.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="namespaceprojectsortactivity_desc"></a>`ACTIVITY_DESC` | Sort by latest activity, in descending order. |
+| <a id="namespaceprojectsortactivity_desc"></a>`ACTIVITY_DESC` | Sort by latest activity, descending order. |
 | <a id="namespaceprojectsortsimilarity"></a>`SIMILARITY` | Most similar to the search query. |
-| <a id="namespaceprojectsortstorage"></a>`STORAGE` | Sort by storage size. |
+| <a id="namespaceprojectsortstorage"></a>`STORAGE` | Sort by excess repository storage size, descending order. |
+| <a id="namespaceprojectsortstorage_size_asc"></a>`STORAGE_SIZE_ASC` | Sort by total storage size, ascending order. |
+| <a id="namespaceprojectsortstorage_size_desc"></a>`STORAGE_SIZE_DESC` | Sort by total storage size, descending order. |
 
 ### `NegatedIterationWildcardId`
 
@@ -23348,6 +24019,17 @@ Event type of the pipeline associated with a merge request.
 | <a id="pipelinestatusenumsuccess"></a>`SUCCESS` | Pipeline completed successfully. |
 | <a id="pipelinestatusenumwaiting_for_resource"></a>`WAITING_FOR_RESOURCE` | A resource (for example, a runner) that the pipeline requires to run is unavailable. |
 
+### `ProductAnalyticsState`
+
+Current state of the product analytics stack.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="productanalyticsstatecomplete"></a>`COMPLETE` | Stack has been initialized and has data. |
+| <a id="productanalyticsstatecreate_instance"></a>`CREATE_INSTANCE` | Stack has not been created yet. |
+| <a id="productanalyticsstateloading_instance"></a>`LOADING_INSTANCE` | Stack is currently initializing. |
+| <a id="productanalyticsstatewaiting_for_events"></a>`WAITING_FOR_EVENTS` | Stack is waiting for events from users. |
+
 ### `ProjectMemberRelation`
 
 Project member relation.
@@ -23523,6 +24205,7 @@ State of a Sentry error.
 | <a id="servicetypeexternal_wiki_service"></a>`EXTERNAL_WIKI_SERVICE` | ExternalWikiService type. |
 | <a id="servicetypegithub_service"></a>`GITHUB_SERVICE` | GithubService type. |
 | <a id="servicetypegitlab_slack_application_service"></a>`GITLAB_SLACK_APPLICATION_SERVICE` | GitlabSlackApplicationService type (Gitlab.com only). |
+| <a id="servicetypegoogle_play_service"></a>`GOOGLE_PLAY_SERVICE` | GooglePlayService type. |
 | <a id="servicetypehangouts_chat_service"></a>`HANGOUTS_CHAT_SERVICE` | HangoutsChatService type. |
 | <a id="servicetypeharbor_service"></a>`HARBOR_SERVICE` | HarborService type. |
 | <a id="servicetypeirker_service"></a>`IRKER_SERVICE` | IrkerService type. |
@@ -23541,6 +24224,7 @@ State of a Sentry error.
 | <a id="servicetypeshimo_service"></a>`SHIMO_SERVICE` | ShimoService type. |
 | <a id="servicetypeslack_service"></a>`SLACK_SERVICE` | SlackService type. |
 | <a id="servicetypeslack_slash_commands_service"></a>`SLACK_SLASH_COMMANDS_SERVICE` | SlackSlashCommandsService type. |
+| <a id="servicetypesquash_tm_service"></a>`SQUASH_TM_SERVICE` | SquashTmService type. |
 | <a id="servicetypeteamcity_service"></a>`TEAMCITY_SERVICE` | TeamcityService type. |
 | <a id="servicetypeunify_circuit_service"></a>`UNIFY_CIRCUIT_SERVICE` | UnifyCircuitService type. |
 | <a id="servicetypewebex_teams_service"></a>`WEBEX_TEAMS_SERVICE` | WebexTeamsService type. |
@@ -23719,6 +24403,7 @@ Name of the feature that the callout is for.
 | ----- | ----------- |
 | <a id="usercalloutfeaturenameenumactive_user_count_threshold"></a>`ACTIVE_USER_COUNT_THRESHOLD` | Callout feature name for active_user_count_threshold. |
 | <a id="usercalloutfeaturenameenumartifacts_management_page_feedback_banner"></a>`ARTIFACTS_MANAGEMENT_PAGE_FEEDBACK_BANNER` | Callout feature name for artifacts_management_page_feedback_banner. |
+| <a id="usercalloutfeaturenameenumbranch_rules_info_callout"></a>`BRANCH_RULES_INFO_CALLOUT` | Callout feature name for branch_rules_info_callout. |
 | <a id="usercalloutfeaturenameenumbuy_pipeline_minutes_notification_dot"></a>`BUY_PIPELINE_MINUTES_NOTIFICATION_DOT` | Callout feature name for buy_pipeline_minutes_notification_dot. |
 | <a id="usercalloutfeaturenameenumcanary_deployment"></a>`CANARY_DEPLOYMENT` | Callout feature name for canary_deployment. |
 | <a id="usercalloutfeaturenameenumci_deprecation_warning_for_types_keyword"></a>`CI_DEPRECATION_WARNING_FOR_TYPES_KEYWORD` | Callout feature name for ci_deprecation_warning_for_types_keyword. |
@@ -23996,6 +24681,7 @@ Type of a work item widget.
 | <a id="workitemwidgettypelabels"></a>`LABELS` | Labels widget. |
 | <a id="workitemwidgettypemilestone"></a>`MILESTONE` | Milestone widget. |
 | <a id="workitemwidgettypenotes"></a>`NOTES` | Notes widget. |
+| <a id="workitemwidgettypenotifications"></a>`NOTIFICATIONS` | Notifications widget. |
 | <a id="workitemwidgettypeprogress"></a>`PROGRESS` | Progress widget. |
 | <a id="workitemwidgettyperequirement_legacy"></a>`REQUIREMENT_LEGACY` | Requirement Legacy widget. |
 | <a id="workitemwidgettypestart_and_due_date"></a>`START_AND_DUE_DATE` | Start And Due Date widget. |
@@ -24019,6 +24705,12 @@ For more information, read about [Scalar Types](https://graphql.org/learn/schema
 A `AchievementsAchievementID` is a global ID. It is encoded as a string.
 
 An example `AchievementsAchievementID` is: `"gid://gitlab/Achievements::Achievement/1"`.
+
+### `AchievementsUserAchievementID`
+
+A `AchievementsUserAchievementID` is a global ID. It is encoded as a string.
+
+An example `AchievementsUserAchievementID` is: `"gid://gitlab/Achievements::UserAchievement/1"`.
 
 ### `AlertManagementAlertID`
 
@@ -24117,6 +24809,12 @@ An example `CiPipelineScheduleID` is: `"gid://gitlab/Ci::PipelineSchedule/1"`.
 A `CiRunnerID` is a global ID. It is encoded as a string.
 
 An example `CiRunnerID` is: `"gid://gitlab/Ci::Runner/1"`.
+
+### `CiRunnerMachineID`
+
+A `CiRunnerMachineID` is a global ID. It is encoded as a string.
+
+An example `CiRunnerMachineID` is: `"gid://gitlab/Ci::RunnerMachine/1"`.
 
 ### `ClustersAgentID`
 
@@ -25122,6 +25820,7 @@ Implementations:
 | <a id="usersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="userstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="userstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
+| <a id="useruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="useruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="userusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="userwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
@@ -25350,6 +26049,7 @@ Implementations:
 - [`WorkItemWidgetLabels`](#workitemwidgetlabels)
 - [`WorkItemWidgetMilestone`](#workitemwidgetmilestone)
 - [`WorkItemWidgetNotes`](#workitemwidgetnotes)
+- [`WorkItemWidgetNotifications`](#workitemwidgetnotifications)
 - [`WorkItemWidgetProgress`](#workitemwidgetprogress)
 - [`WorkItemWidgetRequirementLegacy`](#workitemwidgetrequirementlegacy)
 - [`WorkItemWidgetStartAndDueDate`](#workitemwidgetstartandduedate)
@@ -25438,6 +26138,16 @@ Attributes for defining a CI/CD variable.
 | <a id="commitactionfilepath"></a>`filePath` | [`String!`](#string) | Full path to the file. |
 | <a id="commitactionlastcommitid"></a>`lastCommitId` | [`String`](#string) | Last known file commit ID. |
 | <a id="commitactionpreviouspath"></a>`previousPath` | [`String`](#string) | Original full path to the file being moved. |
+
+### `ComplianceFrameworkFilters`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="complianceframeworkfiltersid"></a>`id` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | ID of the compliance framework. |
+| <a id="complianceframeworkfiltersnot"></a>`not` | [`NegatedComplianceFrameworkFilters`](#negatedcomplianceframeworkfilters) | Negated compliance framework filter input. |
+| <a id="complianceframeworkfilterspresencefilter"></a>`presenceFilter` | [`ComplianceFrameworkPresenceFilter`](#complianceframeworkpresencefilter) | Checks presence of compliance framework of the project, "none" and "any" values are supported. |
 
 ### `ComplianceFrameworkInput`
 
@@ -25628,6 +26338,14 @@ Represents an escalation rule.
 | <a id="negatedboardissueinputreleasetag"></a>`releaseTag` | [`String`](#string) | Filter by release tag. |
 | <a id="negatedboardissueinputtypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter by the given issue types. |
 | <a id="negatedboardissueinputweight"></a>`weight` | [`String`](#string) | Filter by weight. |
+
+### `NegatedComplianceFrameworkFilters`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="negatedcomplianceframeworkfiltersid"></a>`id` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | ID of the compliance framework. |
 
 ### `NegatedEpicBoardIssueInput`
 
@@ -25931,6 +26649,7 @@ A time-frame defined as a closed inclusive range of two dates.
 | <a id="workitemupdatedtaskinputid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
 | <a id="workitemupdatedtaskinputlabelswidget"></a>`labelsWidget` | [`WorkItemWidgetLabelsUpdateInput`](#workitemwidgetlabelsupdateinput) | Input for labels widget. |
 | <a id="workitemupdatedtaskinputmilestonewidget"></a>`milestoneWidget` | [`WorkItemWidgetMilestoneInput`](#workitemwidgetmilestoneinput) | Input for milestone widget. |
+| <a id="workitemupdatedtaskinputnotificationswidget"></a>`notificationsWidget` | [`WorkItemWidgetNotificationsUpdateInput`](#workitemwidgetnotificationsupdateinput) | Input for notifications widget. |
 | <a id="workitemupdatedtaskinputstartandduedatewidget"></a>`startAndDueDateWidget` | [`WorkItemWidgetStartAndDueDateUpdateInput`](#workitemwidgetstartandduedateupdateinput) | Input for start and due date widget. |
 | <a id="workitemupdatedtaskinputstateevent"></a>`stateEvent` | [`WorkItemStateEvent`](#workitemstateevent) | Close or reopen a work item. |
 | <a id="workitemupdatedtaskinputtitle"></a>`title` | [`String`](#string) | Title of the work item. |
@@ -26000,6 +26719,14 @@ A time-frame defined as a closed inclusive range of two dates.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetmilestoneinputmilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | Milestone to assign to the work item. |
+
+### `WorkItemWidgetNotificationsUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetnotificationsupdateinputsubscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Desired state of the subscription. |
 
 ### `WorkItemWidgetProgressInput`
 

@@ -74,10 +74,6 @@ describe('RunnerInstructionsModal component', () => {
     runnerPlatformsHandler = jest.fn().mockResolvedValue(mockRunnerPlatforms);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when the modal is shown', () => {
     beforeEach(async () => {
       createComponent();

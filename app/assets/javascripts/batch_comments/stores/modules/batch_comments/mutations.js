@@ -62,4 +62,7 @@ export default {
       return draft;
     });
   },
+  [types.CLEAR_DRAFTS](state) {
+    state.drafts = [];
+  },
 };

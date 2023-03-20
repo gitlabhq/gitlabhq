@@ -7,13 +7,13 @@ RSpec.describe 'layouts/header/_new_dropdown', feature_category: :navigation do
 
   shared_examples_for 'invite member selector' do
     context 'with ability to invite members' do
-      it { is_expected.to have_link('Invite members', href: href) }
+      it { is_expected.to have_selector('.js-invite-members-trigger') }
     end
 
     context 'without ability to invite members' do
       let(:invite_member) { false }
 
-      it { is_expected.not_to have_link('Invite members') }
+      it { is_expected.not_to have_selector('.js-invite-members-trigger') }
     end
   end
 
@@ -157,6 +157,29 @@ RSpec.describe 'layouts/header/_new_dropdown', feature_category: :navigation do
       render
 
       expect(rendered).to have_link('New snippet', href: new_snippet_path)
+    end
+
+    context 'when partial exists in a menu item' do
+      it 'renders the menu item partial without rendering invite modal partial' do
+        view_model = {
+          title: '_title_',
+          menu_sections: [
+            {
+              title: '_section_title_',
+              menu_items: [
+                ::Gitlab::Nav::TopNavMenuItem
+                  .build(id: '_id_', title: '_title_', partial: 'groups/invite_members_top_nav_link')
+              ]
+            }
+          ]
+        }
+
+        allow(view).to receive(:new_dropdown_view_model).and_return(view_model)
+
+        render
+
+        expect(response).to render_template(partial: 'groups/_invite_members_top_nav_link')
+      end
     end
 
     context 'when the user is not allowed to do anything' do

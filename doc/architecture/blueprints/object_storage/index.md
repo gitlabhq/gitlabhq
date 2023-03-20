@@ -53,7 +53,7 @@ This has led to increased complexity across the board, from development
   [we no longer recommend](../../../administration/nfs.md) to our
   users and is no longer in use on GitLab.com.
 - Understanding all the moving parts and the flow is extremely
-  complicated: we have CarrierWave, Fog, Golang S3/Azure SDKs, all
+  complicated: we have CarrierWave, Fog, Go S3/Azure SDKs, all
   being used, and that complicates testing as well.
 - Fog and CarrierWave are not maintained to the level of the native
   SDKs (for example, AWS S3 SDK), so we have to maintain or monkey

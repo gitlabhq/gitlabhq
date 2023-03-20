@@ -22,7 +22,7 @@ def extract_front_matter(path)
 end
 
 class BlueprintFrontMatter
-  STATUSES = %w[proposed accepted ongoing implemented rejected]
+  STATUSES = %w[proposed accepted ongoing implemented postponed rejected]
 
   attr_reader :errors
 
@@ -32,6 +32,8 @@ class BlueprintFrontMatter
   end
 
   def validate
+    return if @metadata['redirect_to']
+
     validate_status
     validate_authors
     validate_creation_date

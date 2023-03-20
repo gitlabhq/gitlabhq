@@ -7,7 +7,7 @@ type: howto
 
 # Container Registry for a secondary site **(PREMIUM SELF)**
 
-You can set up a Container Registry on your **secondary** Geo site that mirrors the one on the **primary** Geo site. 
+You can set up a Container Registry on your **secondary** Geo site that mirrors the one on the **primary** Geo site.
 
 NOTE:
 The Container Registry replication is used only for disaster recovery purposes. We do not recommend
@@ -76,7 +76,9 @@ the **primary** site before following the next steps.
 We need to make Container Registry send notification events to the
 **primary** site.
 
-1. SSH into your GitLab **primary** server and login as root:
+For each application and Sidekiq node on the **primary** site:
+
+1. SSH into the node and login as the `root` user:
 
    ```shell
    sudo -i
@@ -105,17 +107,15 @@ We need to make Container Registry send notification events to the
    that starts with a letter. You can generate one with `< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32 | sed "s/^[0-9]*//"; echo`
 
    NOTE:
-   If you use an external Registry (not the one integrated with GitLab), you must add
-   these settings to its configuration yourself. In this case, you also have to specify
-   notification secret in `registry.notification_secret` section of
+   If you use an external Registry (not the one integrated with GitLab), you also have to specify
+   the notification secret (`registry['notification_secret']`) in the
    `/etc/gitlab/gitlab.rb` file.
 
    NOTE:
-   If you use GitLab HA, you also have to specify
-   the notification secret in `registry.notification_secret` section of
+   If you use GitLab HA, you also have to specify the notification secret (`registry['notification_secret']`) in
    `/etc/gitlab/gitlab.rb` file for every web node.
 
-1. Reconfigure the **primary** node for the change to take effect:
+1. Reconfigure each node:
 
    ```shell
    gitlab-ctl reconfigure

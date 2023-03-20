@@ -10,8 +10,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You can use scan result policies to take action based on scan results. For example, one type of scan
 result policy is a security approval policy that allows approval to be required based on the
-findings of one or more security scan jobs. Scan result policies are evaluated after a CI scanning
-job is fully executed. The following video gives you an overview of GitLab scan result policies:
+findings of one or more security scan jobs. Scan result policies are evaluated after a CI scanning job is fully executed.
+
+NOTE:
+Scan result policies are applicable only to [protected](../../project/protected_branches.md) target branches.
+
+The following video gives you an overview of GitLab scan result policies:
 
 <div class="video-fallback">
   See the video: <a href="https://youtu.be/w5I9gcUgr9U">Overview of GitLab Scan Result Policies</a>.
@@ -29,7 +33,7 @@ NOTE:
 Only project Owners have the [permissions](../../permissions.md#project-members-permissions)
 to select Security Policy Project.
 
-Once your policy is complete, save it by selecting **Create merge request** at the bottom of the
+Once your policy is complete, save it by selecting **Configure with a merge request** at the bottom of the
 editor. This redirects you to the merge request on the project's configured security policy project.
 If a security policy project doesn't link to your project, GitLab creates such a project for you.
 Existing policies can also be removed from the editor interface by selecting **Delete policy** at
@@ -76,14 +80,14 @@ This rule enforces the defined actions based on security scan findings.
 |------------|------|-----------------|-------------|
 | `type`     | `string` | `scan_finding` | The rule's type. |
 | `branches` | `array` of `string` | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. |
-| `scanners`  | `array` of `string` | `sast`, `secret_detection`, `dependency_scanning`, `container_scanning`, `dast`, `coverage_fuzzing`, `api_fuzzing` | The security scanners for this rule to consider. |
+| `scanners`  | `array` of `string` | `sast`, `secret_detection`, `dependency_scanning`, `container_scanning`, `dast`, `coverage_fuzzing`, `api_fuzzing` | The security scanners for this rule to consider. Note that `sast` includes results from both SAST and SAST IaC scanners. |
 | `vulnerabilities_allowed`  | `integer` | Greater than or equal to zero | Number of vulnerabilities allowed before this rule is considered. |
 | `severity_levels`  | `array` of `string` | `info`, `unknown`, `low`, `medium`, `high`, `critical`| The severity levels for this rule to consider. |
 | `vulnerability_states`  | `array` of `string` | `newly_detected`, `detected`, `confirmed`, `resolved`, `dismissed` | All vulnerabilities fall into two categories:<br><br>**Newly Detected Vulnerabilities** - the `newly_detected` policy option covers vulnerabilities identified in the merge request branch itself but that do not currently exist on the default branch. This policy option requires a pipeline to complete before the rule is evaluated so that it knows whether vulnerabilities are newly detected or not. Merge requests are blocked until the pipeline and necessary security scans are complete. The `newly_detected` option considers both of the following statuses:<br><br> • Detected<br> • Dismissed<br><br>**Pre-Existing Vulnerabilities** - these policy options are evaluated immediately and do not require a pipeline complete as they consider only vulnerabilities previously detected in the default branch.<br><br> • `Detected` - the policy looks for vulnerabilities in the detected state.<br> • `Confirmed` - the policy looks for vulnerabilities in the confirmed state.<br> • `Dismissed` - the policy looks for vulnerabilities in the dismissed state.<br> • `Resolved` - the policy looks for vulnerabilities in the resolved state. |
 
 ## `license_finding` rule type
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8092) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `license_scanning_policies`. Disabled by default.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8092) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `license_scanning_policies`. Enabled by default in GitLab 15.10.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `license_scanning_policies`.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Prometheus::Alerts::NotifyService do
+RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :metrics do
   include PrometheusHelpers
   using RSpec::Parameterized::TableSyntax
 

@@ -154,16 +154,16 @@ end
 
 You can use Redis metrics to track events not kept in the database, for example, a count of how many times the search bar has been used.
 
-[Example of a merge request that adds a `Redis` metric](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97009).
+[Example of a merge request that adds `Redis` metrics](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103455).
 
 The `RedisMetric` class can only be used as the `instrumentation_class` for Redis metrics with simple counters classes (classes that only inherit `BaseCounter` and set `PREFIX` and `KNOWN_EVENTS` constants). In case the counter class has additional logic included in it, a new `instrumentation_class`, inheriting from `RedisMetric`, needs to be created. This new class needs to include the additional logic from the counter class.
-
-Count unique values for `source_code_pushes` event.
 
 Required options:
 
 - `event`: the event name.
 - `prefix`: the value of the `PREFIX` constant used in the counter classes from the `Gitlab::UsageDataCounters` namespace.
+
+Count unique values for `source_code_pushes` event.
 
 ```yaml
 time_frame: all

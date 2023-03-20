@@ -9,8 +9,8 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 Existing projects on any self-managed GitLab instance or GitLab.com can be exported to a file and
 then imported into a new GitLab instance. You can also:
 
-- [Migrate groups](../../group/import/index.md) using the preferred method.
-- [Migrate groups using file exports](../../group/settings/import_export.md).
+- Migrate projects when you [migrate groups by direct transfer](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended).
+- [Migrate groups by using file exports](../../group/import/index.md#migrate-groups-by-uploading-an-export-file-deprecated).
 
 GitLab maps user contributions correctly when an admin access token is used to perform the import.
 
@@ -155,7 +155,8 @@ Items that are **not** exported include:
 - Repository size limits
 - Deploy keys allowed to push to protected branches
 - Secure Files
-- [Activity logs for Git-related events](https://gitlab.com/gitlab-org/gitlab/-/issues/214700). For example, pushing and creating tags
+- [Activity logs for Git-related events](https://gitlab.com/gitlab-org/gitlab/-/issues/214700) (for example, pushing and creating tags)
+- Security policies associated with your project
 
 ## Import a project and its data
 
@@ -200,7 +201,7 @@ Deploy keys aren't imported. To use deploy keys, you must enable them in your im
 
 ### Import large projects **(FREE SELF)**
 
-If you have a larger project, consider using a Rake task as described in the [developer documentation](../../../development/import_project.md#importing-via-a-rake-task).
+If you have a larger project, consider [using a Rake task](../../../administration/raketasks/project_import_export.md#import-large-projects).
 
 ## Automate group and project import **(PREMIUM)**
 

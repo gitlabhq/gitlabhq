@@ -2,12 +2,13 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import Attachment from '~/content_editor/extensions/attachment';
+import DrawioDiagram from '~/content_editor/extensions/drawio_diagram';
 import Image from '~/content_editor/extensions/image';
 import Audio from '~/content_editor/extensions/audio';
 import Video from '~/content_editor/extensions/video';
 import Link from '~/content_editor/extensions/link';
 import Loading from '~/content_editor/extensions/loading';
-import { VARIANT_DANGER } from '~/flash';
+import { VARIANT_DANGER } from '~/alert';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import { createTestEditor, createDocBuilder } from '../test_utils';
@@ -16,6 +17,7 @@ import {
   PROJECT_WIKI_ATTACHMENT_AUDIO_HTML,
   PROJECT_WIKI_ATTACHMENT_VIDEO_HTML,
   PROJECT_WIKI_ATTACHMENT_LINK_HTML,
+  PROJECT_WIKI_ATTACHMENT_DRAWIO_DIAGRAM_HTML,
 } from '../test_constants';
 
 describe('content_editor/extensions/attachment', () => {
@@ -24,6 +26,7 @@ describe('content_editor/extensions/attachment', () => {
   let p;
   let image;
   let audio;
+  let drawioDiagram;
   let video;
   let loading;
   let link;
@@ -35,6 +38,7 @@ describe('content_editor/extensions/attachment', () => {
   const imageFile = new File(['foo'], 'test-file.png', { type: 'image/png' });
   const audioFile = new File(['foo'], 'test-file.mp3', { type: 'audio/mpeg' });
   const videoFile = new File(['foo'], 'test-file.mp4', { type: 'video/mp4' });
+  const drawioDiagramFile = new File(['foo'], 'test-file.drawio.svg', { type: 'image/svg+xml' });
   const attachmentFile = new File(['foo'], 'test-file.zip', { type: 'application/zip' });
 
   const expectDocumentAfterTransaction = ({ number, expectedDoc, action }) => {
@@ -67,12 +71,13 @@ describe('content_editor/extensions/attachment', () => {
         Image,
         Audio,
         Video,
+        DrawioDiagram,
         Attachment.configure({ renderMarkdown, uploadsPath, eventHub }),
       ],
     });
 
     ({
-      builders: { doc, p, image, audio, video, loading, link },
+      builders: { doc, p, image, audio, video, loading, link, drawioDiagram },
     } = createDocBuilder({
       tiptapEditor,
       names: {
@@ -81,6 +86,7 @@ describe('content_editor/extensions/attachment', () => {
         link: { nodeType: Link.name },
         audio: { nodeType: Audio.name },
         video: { nodeType: Video.name },
+        drawioDiagram: { nodeType: DrawioDiagram.name },
       },
     }));
 
@@ -113,10 +119,11 @@ describe('content_editor/extensions/attachment', () => {
     });
 
     describe.each`
-      nodeType   | mimeType        | html                                  | file         | mediaType
-      ${'image'} | ${'image/png'}  | ${PROJECT_WIKI_ATTACHMENT_IMAGE_HTML} | ${imageFile} | ${(attrs) => image(attrs)}
-      ${'audio'} | ${'audio/mpeg'} | ${PROJECT_WIKI_ATTACHMENT_AUDIO_HTML} | ${audioFile} | ${(attrs) => audio(attrs)}
-      ${'video'} | ${'video/mp4'}  | ${PROJECT_WIKI_ATTACHMENT_VIDEO_HTML} | ${videoFile} | ${(attrs) => video(attrs)}
+      nodeType           | mimeType           | html                                           | file                 | mediaType
+      ${'image'}         | ${'image/png'}     | ${PROJECT_WIKI_ATTACHMENT_IMAGE_HTML}          | ${imageFile}         | ${(attrs) => image(attrs)}
+      ${'audio'}         | ${'audio/mpeg'}    | ${PROJECT_WIKI_ATTACHMENT_AUDIO_HTML}          | ${audioFile}         | ${(attrs) => audio(attrs)}
+      ${'video'}         | ${'video/mp4'}     | ${PROJECT_WIKI_ATTACHMENT_VIDEO_HTML}          | ${videoFile}         | ${(attrs) => video(attrs)}
+      ${'drawioDiagram'} | ${'image/svg+xml'} | ${PROJECT_WIKI_ATTACHMENT_DRAWIO_DIAGRAM_HTML} | ${drawioDiagramFile} | ${(attrs) => drawioDiagram(attrs)}
     `('when the file has $nodeType mime type', ({ mimeType, html, file, mediaType }) => {
       const base64EncodedFile = `data:${mimeType};base64,Zm9v`;
 
@@ -151,7 +158,7 @@ describe('content_editor/extensions/attachment', () => {
               mediaType({
                 canonicalSrc: file.name,
                 src: base64EncodedFile,
-                alt: 'test-file',
+                alt: expect.stringContaining('test-file'),
                 uploading: false,
               }),
             ),

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe FeatureFlags::UpdateService, :with_license do
+RSpec.describe FeatureFlags::UpdateService, :with_license, feature_category: :feature_flags do
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:reporter) { create(:user) }
@@ -19,9 +19,8 @@ RSpec.describe FeatureFlags::UpdateService, :with_license do
     subject { described_class.new(project, user, params).execute(feature_flag) }
 
     let(:params) { { name: 'new_name' } }
-    let(:audit_event_message) do
-      AuditEvent.last.details[:custom_message]
-    end
+    let(:audit_event_details) { AuditEvent.last.details }
+    let(:audit_event_message) { audit_event_details[:custom_message] }
 
     it 'returns success status' do
       expect(subject[:status]).to eq(:success)

@@ -1,9 +1,9 @@
 <script>
 import { GlButton, GlIcon, GlLink, GlPopover, GlTooltipDirective } from '@gitlab/ui';
 import { kebabCase, snakeCase } from 'lodash';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { IssuableType, TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_EPIC, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { timeFor } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -71,7 +71,7 @@ export default {
       type: String,
       required: true,
       validator(value) {
-        return [TYPE_ISSUE, IssuableType.MergeRequest].includes(value);
+        return [TYPE_ISSUE, TYPE_MERGE_REQUEST].includes(value);
       },
     },
     icon: {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespaces::UpdateRootStatisticsWorker do
+RSpec.describe Namespaces::UpdateRootStatisticsWorker, feature_category: :source_code_management do
   let(:namespace_id) { 123 }
 
   let(:event) do

@@ -1,16 +1,17 @@
 import setWindowLocation from 'helpers/set_window_location_helper';
 import WebAuthnError from '~/authentication/webauthn/error';
+import { WEBAUTHN_AUTHENTICATE, WEBAUTHN_REGISTER } from '~/authentication/webauthn/constants';
 
 describe('WebAuthnError', () => {
   it.each([
     [
       'NotSupportedError',
       'Your device is not compatible with GitLab. Please try another device',
-      'authenticate',
+      WEBAUTHN_AUTHENTICATE,
     ],
-    ['InvalidStateError', 'This device has not been registered with us.', 'authenticate'],
-    ['InvalidStateError', 'This device has already been registered with us.', 'register'],
-    ['UnknownError', 'There was a problem communicating with your device.', 'register'],
+    ['InvalidStateError', 'This device has not been registered with us.', WEBAUTHN_AUTHENTICATE],
+    ['InvalidStateError', 'This device has already been registered with us.', WEBAUTHN_REGISTER],
+    ['UnknownError', 'There was a problem communicating with your device.', WEBAUTHN_REGISTER],
   ])('exception %s will have message %s, flow type: %s', (exception, expectedMessage, flowType) => {
     expect(new WebAuthnError(new DOMException('', exception), flowType).message()).toEqual(
       expectedMessage,
@@ -24,7 +25,7 @@ describe('WebAuthnError', () => {
       const expectedMessage =
         'WebAuthn only works with HTTPS-enabled websites. Contact your administrator for more details.';
       expect(
-        new WebAuthnError(new DOMException('', 'SecurityError'), 'authenticate').message(),
+        new WebAuthnError(new DOMException('', 'SecurityError'), WEBAUTHN_AUTHENTICATE).message(),
       ).toEqual(expectedMessage);
     });
 
@@ -33,7 +34,7 @@ describe('WebAuthnError', () => {
 
       const expectedMessage = 'There was a problem communicating with your device.';
       expect(
-        new WebAuthnError(new DOMException('', 'SecurityError'), 'authenticate').message(),
+        new WebAuthnError(new DOMException('', 'SecurityError'), WEBAUTHN_AUTHENTICATE).message(),
       ).toEqual(expectedMessage);
     });
   });

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::UpdateRepositoryStorageWorker do
+RSpec.describe Projects::UpdateRepositoryStorageWorker, feature_category: :source_code_management do
   subject { described_class.new }
 
   it_behaves_like 'an update storage move worker' do

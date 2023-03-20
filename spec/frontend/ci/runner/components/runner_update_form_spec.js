@@ -5,7 +5,7 @@ import { __ } from '~/locale';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert, VARIANT_SUCCESS } from '~/flash';
+import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { redirectTo } from '~/lib/utils/url_utility';
 import RunnerUpdateForm from '~/ci/runner/components/runner_update_form.vue';
 import {
@@ -21,7 +21,7 @@ import { saveAlertToLocalStorage } from '~/ci/runner/local_storage_alert/save_al
 import { runnerFormData } from '../mock_data';
 
 jest.mock('~/ci/runner/local_storage_alert/save_alert_to_local_storage');
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
 jest.mock('~/lib/utils/url_utility');
 
@@ -105,10 +105,6 @@ describe('RunnerUpdateForm', () => {
     });
 
     createComponent();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('Form has a submit button', () => {

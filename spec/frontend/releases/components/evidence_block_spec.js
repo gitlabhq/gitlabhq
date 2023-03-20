@@ -27,10 +27,6 @@ describe('Evidence Block', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the evidence icon', () => {
     expect(wrapper.findComponent(GlIcon).props('name')).toBe('review-list');
   });

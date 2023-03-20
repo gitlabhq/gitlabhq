@@ -53,7 +53,8 @@ class Import::GithubController < Import::BaseController
         render json: { imported_projects: serialized_imported_projects,
                        provider_repos: serialized_provider_repos,
                        incompatible_repos: serialized_incompatible_repos,
-                       page_info: client_repos_response[:page_info] }
+                       page_info: client_repos_response[:page_info],
+                       provider_repo_count: client_repos_response[:count] }
       end
 
       format.html do
@@ -110,6 +111,14 @@ class Import::GithubController < Import::BaseController
     render json: canceled
   end
 
+  def counts
+    render json: {
+      owned: client_proxy.count_repos_by('owned', current_user.id),
+      collaborated: client_proxy.count_repos_by('collaborated', current_user.id),
+      organization: client_proxy.count_repos_by('organization', current_user.id)
+    }
+  end
+
   protected
 
   override :importable_repos
@@ -145,7 +154,10 @@ class Import::GithubController < Import::BaseController
   end
 
   def serialized_imported_projects(projects = already_added_projects)
-    ProjectSerializer.new.represent(projects, serializer: :import, provider_url: provider_url)
+    ProjectSerializer.new.represent(
+      projects,
+      serializer: :import, provider_url: provider_url, client: client_proxy
+    )
   end
 
   def expire_etag_cache
@@ -245,11 +257,7 @@ class Import::GithubController < Import::BaseController
     {
       before: params[:before].presence,
       after: params[:after].presence,
-      first: PAGE_LENGTH,
-      # TODO: remove after rollout FF github_client_fetch_repos_via_graphql
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/385649
-      page: [1, params[:page].to_i].max,
-      per_page: PAGE_LENGTH
+      first: PAGE_LENGTH
     }
   end
 

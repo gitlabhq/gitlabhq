@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import 'deckar01-task_list';
 import { __ } from '~/locale';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from './lib/utils/axios_utils';
 
 export default class TaskList {

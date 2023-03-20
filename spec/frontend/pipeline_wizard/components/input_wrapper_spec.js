@@ -33,10 +33,6 @@ describe('Pipeline Wizard -- Input Wrapper', () => {
       inputChild = wrapper.findComponent(TextWidget);
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('will replace its value in compiled', async () => {
       await inputChild.vm.$emit('input', inputValue);
       const expected = new Document({
@@ -54,10 +50,6 @@ describe('Pipeline Wizard -- Input Wrapper', () => {
   });
 
   describe('Target Path Discovery', () => {
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it.each`
       scenario                  | template                             | target     | expected
       ${'simple nested object'} | ${{ foo: { bar: { baz: '$BOO' } } }} | ${'$BOO'}  | ${['foo', 'bar', 'baz']}

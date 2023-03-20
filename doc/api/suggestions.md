@@ -11,7 +11,19 @@ This page describes the API for [suggesting changes](../user/project/merge_reque
 
 Every API call to suggestions must be authenticated.
 
-## Applying a suggestion
+## Create a suggestion
+
+To create a suggestion through the API, use the Discussions API to
+[create a new thread in the merge request diff](discussions.md#create-new-merge-request-thread).
+The format for suggestions is:
+
+````markdown
+```suggestion:-3+0
+example text
+```
+````
+
+## Apply a suggestion
 
 Applies a suggested patch in a merge request. Users must have
 at least the Developer role to perform such action.
@@ -43,7 +55,7 @@ Example response:
 }
 ```
 
-## Applying multiple suggestions
+## Apply multiple suggestions
 
 ```plaintext
 PUT /suggestions/batch_apply

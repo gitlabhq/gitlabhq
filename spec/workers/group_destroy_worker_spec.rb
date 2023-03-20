@@ -2,20 +2,29 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupDestroyWorker do
-  let(:group) { create(:group) }
-  let!(:project) { create(:project, namespace: group) }
-  let(:user) { create(:user) }
+RSpec.describe GroupDestroyWorker, feature_category: :subgroups do
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, namespace: group) }
+  let_it_be(:user) { create(:user) }
 
   before do
     group.add_owner(user)
   end
 
-  subject { described_class.new }
+  subject(:worker) { described_class.new }
+
+  include_examples 'an idempotent worker' do
+    let(:job_args) { [group.id, user.id] }
+
+    it 'does not change groups when run twice' do
+      expect { worker.perform(group.id, user.id) }.to change { Group.count }.by(-1)
+      expect { worker.perform(group.id, user.id) }.not_to change { Group.count }
+    end
+  end
 
   describe "#perform" do
-    it "deletes the project" do
-      subject.perform(group.id, user.id)
+    it "deletes the group and associated projects" do
+      worker.perform(group.id, user.id)
 
       expect(Group.all).not_to include(group)
       expect(Project.all).not_to include(project)

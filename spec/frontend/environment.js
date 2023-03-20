@@ -8,6 +8,7 @@ const {
   setGlobalDateToRealDate,
 } = require('./__helpers__/fake_date/fake_date');
 const { TEST_HOST } = require('./__helpers__/test_constants');
+const { createGon } = require('./__helpers__/gon_helper');
 
 const ROOT_PATH = path.resolve(__dirname, '../..');
 
@@ -40,10 +41,11 @@ class CustomEnvironment extends TestEnvironment {
     });
 
     const { IS_EE } = projectConfig.testEnvironmentOptions;
-    this.global.gon = {
-      ee: IS_EE,
-    };
+
     this.global.IS_EE = IS_EE;
+
+    // Set up global `gon` object
+    this.global.gon = createGon(IS_EE);
 
     // Set up global `gl` object
     this.global.gl = {};

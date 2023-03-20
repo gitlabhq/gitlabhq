@@ -3,7 +3,7 @@ table_name: atlassian_identities
 classes:
 - Atlassian::Identity
 feature_categories:
-- authentication_and_authorization
+- system_access
 description: Stores Atlassian credentials that are used to integrate with Atlassian API
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40176
 milestone: '13.4'

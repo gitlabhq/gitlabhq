@@ -100,7 +100,7 @@ To create an issue from a project issue board:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. Select **Issues > Boards**.
-1. At the top of a board list, select **New issue** (**{plus-square}**).
+1. At the top of a board list, select **List actions** (**{ellipsis_v}**) **> Create new issue**.
 1. Enter the issue's title.
 1. Select **Create issue**.
 
@@ -108,7 +108,7 @@ To create an issue from a group issue board:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. Select **Issues > Boards**.
-1. At the top of a board list, select **New issue** (**{plus-square}**).
+1. At the top of a board list, select **List actions** (**{ellipsis_v}**) **> Create new issue**.
 1. Enter the issue's title.
 1. Under **Projects**, select the project in the group that the issue should belong to.
 1. Select **Create issue**.
@@ -117,9 +117,6 @@ The issue is created and shows up in the board list. It shares the list's charac
 example, if the list is scoped to a label `Frontend`, the new issue also has this label.
 
 ## By sending an email
-
-> - Generated email address format changed in GitLab 11.7.
-> - The older format is still supported, so existing aliases and contacts still work.
 
 You can send an email to create an issue in a project on the project's
 **Issues List** page.

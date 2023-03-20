@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ArchiveTraceWorker do
+RSpec.describe Ci::ArchiveTraceWorker, feature_category: :continuous_integration do
   describe '#perform' do
     subject { described_class.new.perform(job&.id) }
 

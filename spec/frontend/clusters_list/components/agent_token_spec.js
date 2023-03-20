@@ -53,10 +53,6 @@ describe('InstallAgentModal', () => {
     createWrapper();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('initial state', () => {
     it('shows basic agent installation instructions', () => {
       expect(wrapper.text()).toContain(I18N_AGENT_TOKEN.basicInstallTitle);

@@ -19,7 +19,7 @@ RSpec.describe Packages::Debian::ExtractChangesMetadataService, feature_category
         expect(subject[:file_type]).to eq(:changes)
         expect(subject[:architecture]).to be_nil
         expect(subject[:fields]).to include(expected_fields)
-        expect(subject[:files].count).to eq(6)
+        expect(subject[:files].count).to eq(7)
       end
     end
 

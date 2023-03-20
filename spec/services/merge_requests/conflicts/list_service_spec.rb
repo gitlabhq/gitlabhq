@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::Conflicts::ListService do
+RSpec.describe MergeRequests::Conflicts::ListService, feature_category: :code_review_workflow do
   describe '#can_be_resolved_in_ui?' do
     def create_merge_request(source_branch, target_branch = 'conflict-start')
       create(:merge_request, source_branch: source_branch, target_branch: target_branch, merge_status: :unchecked) do |mr|

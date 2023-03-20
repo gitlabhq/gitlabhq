@@ -23,8 +23,6 @@ module API
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       before do
         authorize! :admin_operations, user_project
-
-        not_found!('Error Tracking Setting') unless project_setting
       end
 
       desc 'Get Error Tracking settings' do
@@ -34,6 +32,7 @@ module API
       end
 
       get ':id/error_tracking/settings' do
+        not_found!('Error Tracking Setting') unless project_setting
         present project_setting, with: Entities::ErrorTracking::ProjectSetting
       end
 
@@ -59,6 +58,7 @@ module API
       end
 
       patch ':id/error_tracking/settings/' do
+        not_found!('Error Tracking Setting') unless project_setting
         update_params = {
           error_tracking_setting_attributes: { enabled: params[:active] }
         }
@@ -69,6 +69,42 @@ module API
 
         result = ::Projects::Operations::UpdateService.new(user_project, current_user, update_params).execute
 
+        if result[:status] == :success
+          present project_setting, with: Entities::ErrorTracking::ProjectSetting
+        else
+          result
+        end
+      end
+
+      desc 'Update Error Tracking project settings. Available in GitLab 15.10 and later.' do
+        detail 'Update Error Tracking settings for a project. ' \
+               'Only for users with Maintainer role for the project.'
+        success Entities::ErrorTracking::ProjectSetting
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags ERROR_TRACKING_PROJECT_SETTINGS_TAGS
+      end
+      params do
+        requires :active, type: Boolean,
+          desc: 'Pass true to enable the configured Error Tracking settings or false to disable it.',
+          allow_blank: false
+        requires :integrated,
+          type: Boolean,
+          desc: 'Pass true to enable the integrated Error Tracking backend.'
+      end
+
+      put ':id/error_tracking/settings' do
+        not_found! unless Feature.enabled?(:integrated_error_tracking, user_project)
+        update_params = {
+          error_tracking_setting_attributes: { enabled: params[:active] }
+        }
+
+        update_params[:error_tracking_setting_attributes][:integrated] = params[:integrated]
+
+        result = ::Projects::Operations::UpdateService.new(user_project, current_user, update_params).execute
         if result[:status] == :success
           present project_setting, with: Entities::ErrorTracking::ProjectSetting
         else

@@ -11,7 +11,7 @@ RSpec.describe GitlabSchema.types['SshSignature'], feature_category: :source_cod
 
   it 'contains attributes related to SSH signatures' do
     expect(described_class).to have_graphql_fields(
-      :user, :verification_status, :commit_sha, :project, :key
+      :user, :verification_status, :commit_sha, :project, :key, :key_fingerprint_sha256
     )
   end
 end

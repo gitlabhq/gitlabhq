@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Registrations::WelcomeController, feature_category: :authentication_and_authorization do
+RSpec.describe Registrations::WelcomeController, feature_category: :system_access do
   let(:user) { create(:user) }
 
   describe '#welcome' do
@@ -55,6 +55,32 @@ RSpec.describe Registrations::WelcomeController, feature_category: :authenticati
 
       it 'does not perform a redirect' do
         expect(subject).not_to redirect_to(profile_two_factor_auth_path)
+      end
+    end
+
+    context 'when welcome step is completed' do
+      before do
+        user.update!(setup_for_company: true)
+      end
+
+      context 'when user is confirmed' do
+        before do
+          sign_in(user)
+        end
+
+        it { is_expected.to redirect_to dashboard_projects_path }
+      end
+
+      context 'when user is not confirmed' do
+        before do
+          stub_application_setting_enum('email_confirmation_setting', 'hard')
+
+          sign_in(user)
+
+          user.update!(confirmed_at: nil)
+        end
+
+        it { is_expected.to redirect_to user_session_path }
       end
     end
   end

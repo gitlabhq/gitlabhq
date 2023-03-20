@@ -25,10 +25,6 @@ describe('Import Advanced Settings', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders GLFormCheckbox for each optional stage', () => {
     expect(wrapper.findAllComponents(GlFormCheckbox)).toHaveLength(OPTIONAL_STAGES.length);
   });

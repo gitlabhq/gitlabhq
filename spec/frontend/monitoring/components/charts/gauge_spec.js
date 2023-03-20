@@ -21,11 +21,6 @@ describe('Gauge Chart component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('chart component', () => {
     it('is rendered when props are passed', () => {
       createWrapper();

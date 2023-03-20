@@ -1,8 +1,0 @@
----
-name: deduplicate_archive_traces_cron_worker
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110305
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/389632
-milestone: '15.9'
-type: development
-group: group::pipeline execution
-default_enabled: false

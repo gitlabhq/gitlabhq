@@ -51,10 +51,6 @@ describe('content_editor/components/bubble_menus/bubble_menu', () => {
     setupMocks();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('initializes BubbleMenuPlugin', async () => {
     createWrapper({});
 

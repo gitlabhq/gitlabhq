@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Environments::AutoStopCronWorker do
+RSpec.describe Environments::AutoStopCronWorker, feature_category: :continuous_delivery do
   subject { worker.perform }
 
   let(:worker) { described_class.new }

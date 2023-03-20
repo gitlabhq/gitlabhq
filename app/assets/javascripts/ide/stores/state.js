@@ -32,4 +32,5 @@ export default () => ({
   environmentsGuidanceAlertDetected: false,
   previewMarkdownPath: '',
   userPreferencesPath: '',
+  learnGitlabSource: false,
 });

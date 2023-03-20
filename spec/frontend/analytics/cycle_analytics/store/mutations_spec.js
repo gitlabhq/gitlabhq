@@ -17,12 +17,14 @@ import {
   rawStageCounts,
   stageCounts,
   initialPaginationState as pagination,
+  projectNamespace as mockNamespace,
 } from '../mock_data';
 
 let state;
 const rawEvents = rawIssueEvents.events;
 const convertedEvents = issueEvents.events;
-const mockRequestPath = 'fake/request/path';
+const mockGroupPath = 'groups/path';
+const mockFeatures = { some: 'feature' };
 const mockCreatedAfter = '2020-06-18';
 const mockCreatedBefore = '2020-07-18';
 
@@ -64,19 +66,22 @@ describe('Project Value Stream Analytics mutations', () => {
 
   const mockSetDatePayload = { createdAfter: mockCreatedAfter, createdBefore: mockCreatedBefore };
   const mockInitialPayload = {
-    endpoints: { requestPath: mockRequestPath },
     currentGroup: { title: 'cool-group' },
     id: 1337,
+    groupPath: mockGroupPath,
+    namespace: mockNamespace,
+    features: mockFeatures,
     ...mockSetDatePayload,
   };
   const mockInitializedObj = {
-    endpoints: { requestPath: mockRequestPath },
     ...mockSetDatePayload,
   };
 
   it.each`
     mutation                | stateKey           | value
-    ${types.INITIALIZE_VSA} | ${'endpoints'}     | ${{ requestPath: mockRequestPath }}
+    ${types.INITIALIZE_VSA} | ${'features'}      | ${mockFeatures}
+    ${types.INITIALIZE_VSA} | ${'namespace'}     | ${mockNamespace}
+    ${types.INITIALIZE_VSA} | ${'groupPath'}     | ${mockGroupPath}
     ${types.INITIALIZE_VSA} | ${'createdAfter'}  | ${mockCreatedAfter}
     ${types.INITIALIZE_VSA} | ${'createdBefore'} | ${mockCreatedBefore}
   `('$mutation will set $stateKey', ({ mutation, stateKey, value }) => {

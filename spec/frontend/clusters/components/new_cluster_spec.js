@@ -20,10 +20,6 @@ describe('NewCluster', () => {
     return createWrapper();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the cluster component correctly', () => {
     expect(wrapper.html()).toMatchSnapshot();
   });

@@ -1,0 +1,11 @@
+mutation syncFork($projectPath: ID!, $targetBranch: String!) {
+  projectSyncFork(input: { projectPath: $projectPath, targetBranch: $targetBranch }) {
+    details {
+      ahead
+      behind
+      isSyncing
+      hasConflicts
+    }
+    errors
+  }
+}

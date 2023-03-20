@@ -1,7 +1,7 @@
 <script>
 import { GlToken, GlFilteredSearchSuggestion } from '@gitlab/ui';
 
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 

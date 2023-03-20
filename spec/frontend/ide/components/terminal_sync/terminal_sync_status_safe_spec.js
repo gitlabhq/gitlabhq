@@ -22,10 +22,6 @@ describe('ide/components/terminal_sync/terminal_sync_status_safe', () => {
 
   beforeEach(createComponent);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('with terminal sync module in store', () => {
     beforeEach(() => {
       store.registerModule('terminalSync', {

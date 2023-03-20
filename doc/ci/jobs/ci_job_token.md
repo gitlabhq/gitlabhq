@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Pipeline Execution
+group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -65,7 +65,9 @@ tries to steal tokens from other jobs.
 
 You can control what projects a CI/CD job token can access to increase the
 job token's security. A job token might give extra permissions that aren't necessary
-to access specific private resources.
+to access specific private resources. The job token scope only controls access
+to private projects. If an accessed project is public or internal, token scoping does
+not apply.
 
 If a job token is leaked, it could potentially be used to access private data
 to the job token's user. By limiting the job token access scope, private data cannot
@@ -78,14 +80,15 @@ see [epic 3559](https://gitlab.com/groups/gitlab-org/-/epics/3559).
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346298/) in GitLab 15.9. [Deployed behind the `:inbound_ci_scoped_job_token` feature flag](../../user/feature_flags.md), enabled by default.
 
-Control your project's job token scope by creating an **inbound** allowlist of projects which can
-access your project through its `CI_JOB_TOKEN`.
+Create an **inbound** allowlist of projects which can access your project through
+their `CI_JOB_TOKEN`.
 
-For example, you can add project `B` to the inbound allowlist for project `A`. Jobs
-in the pipeline for "allowed project" `B` can now use the CI/CD job token to authenticate
-API calls to access project `A`.
+For example, project `A` can add project `B` to the inbound allowlist. CI/CD jobs
+in project `B` (the "allowed project") can now use their CI/CD job token to
+authenticate API calls to access project `A`. If project `A` is public or internal,
+the project can be accessed by project `B` without adding it to the inbound allowlist.
 
-By default the allowlist includes your current project.
+By default the inbound allowlist of any project only includes itself.
 
 It is a security risk to disable this feature, so project maintainers or owners should
 keep this setting enabled at all times. Add projects to the allowlist only when cross-project
@@ -113,6 +116,8 @@ To disable the inbound job token scope allowlist:
 1. Toggle **Allow access to this project with a CI_JOB_TOKEN** to disabled.
    Enabled by default in new projects.
 
+You can also disable the allowlist [with the API](../../api/graphql/reference/index.md#mutationprojectcicdsettingsupdate).
+
 ### Add a project to the inbound job token scope allowlist
 
 You can add projects to the inbound allowlist for a project. Projects added to the allowlist
@@ -132,6 +137,8 @@ To add a project:
 1. Verify **Allow access to this project with a CI_JOB_TOKEN** is enabled.
 1. Under **Allow CI job tokens from the following projects to access this project**,
    add projects to the allowlist.
+
+You can also add a target project to the allowlist [with the API](../../api/graphql/reference/index.md#mutationcijobtokenscopeaddproject).
 
 ### Limit your project's job token access
 
@@ -155,8 +162,8 @@ limited only by the user's access permissions.
 For example, when the setting is enabled, jobs in a pipeline in project `A` have
 a `CI_JOB_TOKEN` scope limited to project `A`. If the job needs to use the token
 to make an API request to a private project `B`, then `B` must be added to the allowlist for `A`.
-If project `B` is public or internal, it's not required to be added to the allowlist.
-The job token scope is only for controlling access to private projects.
+If project `B` is public or internal, you do not need to add
+`B` to the allowlist to grant access.
 
 ### Configure the outbound job token scope
 

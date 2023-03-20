@@ -23,36 +23,98 @@ module SidebarsHelper
     end
   end
 
-  def project_sidebar_context(project, user, current_ref, ref_type: nil)
+  def project_sidebar_context(project, user, current_ref, ref_type: nil, **args)
     context_data = project_sidebar_context_data(project, user, current_ref, ref_type: ref_type)
-    Sidebars::Projects::Context.new(**context_data)
+    Sidebars::Projects::Context.new(**context_data, **args)
   end
 
-  def group_sidebar_context(group, user)
+  def group_sidebar_context(group, user, **args)
     context_data = group_sidebar_context_data(group, user)
 
-    Sidebars::Groups::Context.new(**context_data)
+    Sidebars::Groups::Context.new(**context_data, **args)
   end
 
-  def super_sidebar_context(user, group:, project:)
+  def your_work_sidebar_context(user, **args)
+    context_data = your_work_context_data(user)
+
+    Sidebars::Context.new(**context_data, **args)
+  end
+
+  def super_sidebar_context(user, group:, project:, panel:)
     {
+      current_menu_items: panel.super_sidebar_menu_items,
+      current_context_header: panel.super_sidebar_context_header,
       name: user.name,
       username: user.username,
       avatar_url: user.avatar_url,
+      has_link_to_profile: current_user_menu?(:profile),
+      link_to_profile: user_url(user),
+      logo_url: current_appearance&.header_logo_path,
+      status: {
+        can_update: can?(current_user, :update_user_status, current_user),
+        busy: user.status&.busy?,
+        customized: user.status&.customized?,
+        availability: user.status&.availability.to_s,
+        emoji: user.status&.emoji,
+        message: user.status&.message_html&.html_safe,
+        clear_after: user_clear_status_at(user)
+      },
+      trial: {
+        has_start_trial: current_user_menu?(:start_trial),
+        url: trials_link_url
+      },
+      settings: {
+        has_settings: current_user_menu?(:settings),
+        profile_path: profile_path,
+        profile_preferences_path: profile_preferences_path
+      },
+      can_sign_out: current_user_menu?(:sign_out),
+      sign_out_link: destroy_user_session_path,
       assigned_open_issues_count: user.assigned_open_issues_count,
       todos_pending_count: user.todos_pending_count,
       issues_dashboard_path: issues_dashboard_path(assignee_username: user.username),
       total_merge_requests_count: user_merge_requests_counts[:total],
       create_new_menu_groups: create_new_menu_groups(group: group, project: project),
       merge_request_menu: create_merge_request_menu(user),
+      projects_path: projects_path,
+      groups_path: groups_path,
       support_path: support_url,
       display_whats_new: display_whats_new?,
       whats_new_most_recent_release_items_count: whats_new_most_recent_release_items_count,
       whats_new_version_digest: whats_new_version_digest,
       show_version_check: show_version_check?,
       gitlab_version: Gitlab.version_info,
-      gitlab_version_check: gitlab_version_check
+      gitlab_version_check: gitlab_version_check,
+      gitlab_com_but_not_canary: Gitlab.com_but_not_canary?,
+      gitlab_com_and_canary: Gitlab.com_and_canary?,
+      canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url,
+      current_context: super_sidebar_current_context(project: project, group: group)
     }
+  end
+
+  def super_sidebar_nav_panel(
+    nav: nil, project: nil, user: nil, group: nil, current_ref: nil, ref_type: nil,
+    viewed_user: nil)
+    context_adds = { route_is_active: method(:active_nav_link?), is_super_sidebar: true }
+    case nav
+    when 'project'
+      context = project_sidebar_context(project, user, current_ref, ref_type: ref_type, **context_adds)
+      Sidebars::Projects::SuperSidebarPanel.new(context)
+    when 'group'
+      context = group_sidebar_context(group, user, **context_adds)
+      Sidebars::Groups::SuperSidebarPanel.new(context)
+    when 'profile'
+      context = Sidebars::Context.new(current_user: user, container: user, **context_adds)
+      Sidebars::UserSettings::Panel.new(context)
+    when 'user_profile'
+      context = Sidebars::Context.new(current_user: user, container: viewed_user, **context_adds)
+      Sidebars::UserProfile::Panel.new(context)
+    when 'explore'
+      Sidebars::Explore::Panel.new(Sidebars::Context.new(current_user: user, container: nil, **context_adds))
+    else
+      context = your_work_sidebar_context(user, **context_adds)
+      Sidebars::YourWork::Panel.new(context)
+    end
   end
 
   private
@@ -159,6 +221,44 @@ module SidebarsHelper
       current_user: user,
       container: group
     }
+  end
+
+  def your_work_context_data(user)
+    {
+      current_user: user,
+      container: user,
+      show_security_dashboard: false
+    }
+  end
+
+  def super_sidebar_current_context(project: nil, group: nil)
+    if project&.persisted?
+      return {
+        namespace: 'projects',
+        item: {
+          id: project.id,
+          name: project.name,
+          namespace: project.full_name,
+          webUrl: project_path(project),
+          avatarUrl: project.avatar_url
+        }
+      }
+    end
+
+    if group&.persisted?
+      return {
+        namespace: 'groups',
+        item: {
+          id: group.id,
+          name: group.name,
+          namespace: group.full_name,
+          webUrl: group_path(group),
+          avatarUrl: group.avatar_url
+        }
+      }
+    end
+
+    {}
   end
 end
 

@@ -30,10 +30,6 @@ describe('AssigneeAvatarLink component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findTooltipText = () => wrapper.attributes('title');
   const findUserLink = () => wrapper.findComponent(GlLink);
 

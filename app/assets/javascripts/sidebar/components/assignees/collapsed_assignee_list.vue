@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 import { isUserBusy } from '~/set_status_modal/utils';
 import CollapsedAssignee from './collapsed_assignee.vue';
@@ -47,7 +47,7 @@ export default {
   },
   computed: {
     isMergeRequest() {
-      return this.issuableType === 'merge_request';
+      return this.issuableType === TYPE_MERGE_REQUEST;
     },
     hasNoUsers() {
       return !this.users.length;

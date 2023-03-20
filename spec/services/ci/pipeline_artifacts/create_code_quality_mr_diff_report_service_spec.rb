@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::PipelineArtifacts::CreateCodeQualityMrDiffReportService do
+RSpec.describe ::Ci::PipelineArtifacts::CreateCodeQualityMrDiffReportService, feature_category: :build_artifacts do
   describe '#execute' do
     let(:merge_request) { create(:merge_request) }
     let(:project) { merge_request.project }

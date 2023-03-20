@@ -36,6 +36,8 @@ You can create comments in places like:
 - Issues
 - Merge requests
 - Snippets
+- Tasks
+- OKRs
 
 Each object can have as many as 5,000 comments.
 
@@ -46,12 +48,12 @@ instance with `@username` or `@groupname`. All mentioned users are notified with
 Users can change this setting for themselves in the [notification settings](../profile/notifications.md).
 
 You can quickly see which comments involve you, because
-mentions for yourself (the user currently signed in) are highlighted
+mentions for yourself (the user who is signed in) are highlighted
 in a different color.
 
 Avoid mentioning `@all` in issues and merge requests. It sends an email notification
-to all members of that project's parent group, not only the participants of the project,
-and may be interpreted as spam.
+to all members of that project's parent group, not only the participants of the project.
+It might be interpreted as spam.
 Notifications and mentions can be disabled in
 [a group's settings](../group/manage.md#disable-email-notifications).
 
@@ -89,8 +91,8 @@ The comment is not displayed on your project's **Repository > Commits** page.
 
 NOTE:
 When your comment contains a reference to a commit included in the merge request,
-it's automatically converted to a link in the context of the current merge request.
-For example, `28719b171a056960dfdc0012b625d0b47b123196` becomes
+it's converted to a link in the context of the merge request.
+For example, `28719b171a056960dfdc0012b625d0b47b123196` becomes `28719b17` that links to
 `https://gitlab.example.com/example-group/example-project/-/merge_requests/12345/diffs?commit_id=28719b171a056960dfdc0012b625d0b47b123196`.
 
 ## Add a comment to a commit
@@ -203,40 +205,34 @@ You can also mark an [issue as confidential](../project/issues/confidential_issu
 
 ## Show only comments
 
-For issues and merge requests with many comments, you can filter the page to show comments only.
+In discussions with many comments, filter the discussion to show only comments or history of
+changes (system notes). System notes include changes to the description, mentions in other GitLab
+objects, or changes to labels, assignees, and the milestone.
+GitLab saves your preference, and applies it to every issue, merge request, or epic you view.
 
 1. Open the **Overview** tab in a merge request, issue, or epic.
-1. On the right side of the page, select from the filter:
+1. On the right side of the page, from the **Sort or filter** dropdown list, select a filter:
    - **Show all activity**: Display all user comments and system notes.
-     (issue updates, mentions from other issues, changes to the description, and so on).
    - **Show comments only**: Display only user comments.
    - **Show history only**: Display only activity notes.
 
-![Notes filters dropdown list options](img/index_notes_filters.png)
-
-GitLab saves your preference, so it persists when you visit the same page again
-from any device you're logged into.
-
-## View description change history **(PREMIUM)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10103) in GitLab 12.6.
-
-You can see changes to the description listed in the history.
-
-To compare the changes, select **Compare with previous version**.
-
 ## Change activity sort order
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14588) in GitLab 12.10.
-
-You can reverse the default order and interact with the activity feed sorted by most recent items
-at the top. Your preference is saved in local storage and automatically applies to every issue,
+Reverse the default order and interact with the activity feed sorted by most recent items
+at the top. GitLab saves your preference in local storage and applies it to every issue,
 merge request, or epic you view.
 
 To change the activity sort order:
 
-1. Select the **Oldest first** (or **Newest first**) dropdown list.
-1. Select either oldest or newest items to be shown first.
+1. Open the **Overview** tab in a merge request, issue, or epic.
+1. On the right side of the page, from the **Sort or filter** dropdown list, select the sort order
+   **Newest first** or **Oldest first** (default).
+
+## View description change history **(PREMIUM)**
+
+You can see changes to the description listed in the history.
+
+To compare the changes, select **Compare with previous version**.
 
 ## Assign an issue to the commenting user
 
@@ -260,7 +256,7 @@ Prerequisites:
 
 To create a thread by replying to a comment:
 
-1. In the upper right of the comment, select **Reply to comment** (**{comment}**).
+1. In the upper-right corner of the comment, select **Reply to comment** (**{comment}**).
 
    ![Reply to comment button](img/reply_to_comment_button.png)
 
@@ -283,7 +279,7 @@ Prerequisites:
 To create a thread:
 
 1. Enter a comment.
-1. Below the comment, to the right of the **Comment** button, select the down arrow (**{chevron-down}**).
+1. Below the comment, to the right of **Comment**, select the down arrow (**{chevron-down}**).
 1. From the list, select **Start thread**.
 1. Select **Start thread** again.
 
@@ -308,7 +304,7 @@ To resolve a thread:
 
 1. Go to the thread.
 1. Do one of the following:
-   - In the upper right of the original comment, select **Resolve thread** (**{check-circle}**).
+   - In the upper-right corner of the original comment, select **Resolve thread** (**{check-circle}**).
    - Below the last reply, in the **Reply** field, select **Resolve thread**.
    - Below the last reply, in the **Reply** field, enter text, select the **Resolve thread** checkbox, and select **Add comment now**.
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::EmailVerification::GenerateTokenService do
+RSpec.describe Users::EmailVerification::GenerateTokenService, feature_category: :system_access do
   using RSpec::Parameterized::TableSyntax
 
   let(:service) { described_class.new(attr: attr) }

@@ -117,6 +117,10 @@ rules:
       message: 'Migrate to GlSkeletonLoader, or import GlDeprecatedSkeletonLoading.'
     - selector: ImportSpecifier[imported.name='GlSafeHtmlDirective']
       message: 'Use directive at ~/vue_shared/directives/safe_html.js instead.'
+    # TODO: Remove this rule once GitLab UI no longer exports the deprecated alias.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/382424.
+    - selector: ImportSpecifier[imported.name='GlListbox']
+      message: 'Import GlCollapsibleListbox instead. The GlListbox name is deprecated.'
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/360551
   vue/multi-word-component-names: off
   unicorn/prefer-dom-node-dataset:
@@ -174,8 +178,7 @@ overrides:
       - '@graphql-eslint'
     parserOptions:
       parser: '@graphql-eslint/eslint-plugin'
-      operations:
-        - '{,ee/,jh/}app/**/*.graphql'
+      operations: '{,ee/,jh/}app/**/*.graphql'
       schema: './tmp/tests/graphql/gitlab_schema_apollo.graphql'
     rules:
       filenames/match-regex: off

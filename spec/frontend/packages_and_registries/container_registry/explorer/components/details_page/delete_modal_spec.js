@@ -30,14 +30,9 @@ describe('Delete Modal', () => {
   const expectPrimaryActionStatus = (disabled = true) =>
     expect(findModal().props('actionPrimary')).toMatchObject(
       expect.objectContaining({
-        attributes: [{ variant: 'danger' }, { disabled }],
+        attributes: { variant: 'danger', disabled },
       }),
     );
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   it('contains a GlModal', () => {
     mountComponent();

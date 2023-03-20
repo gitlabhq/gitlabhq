@@ -43,6 +43,9 @@ describe('IssuableEditForm', () => {
   });
 
   afterEach(() => {
+    // note: the order of wrapper.destroy() and jest.resetAllMocks() matters.
+    // maybe it'll help with investigation on how to remove this wrapper.destroy() call
+    // eslint-disable-next-line @gitlab/vtu-no-explicit-wrapper-destroy
     wrapper.destroy();
     jest.resetAllMocks();
   });

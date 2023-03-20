@@ -29,10 +29,6 @@ describe('app/assets/javascripts/blob/csv/csv_viewer.vue', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAlert = () => wrapper.findComponent(PapaParseAlert);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should render loading spinner', () => {
     createComponent();
 

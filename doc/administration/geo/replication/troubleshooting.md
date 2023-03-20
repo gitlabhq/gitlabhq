@@ -42,7 +42,7 @@ to help identify if something is wrong:
 
 ![Geo health check](img/geo_site_health_v14_0.png)
 
-A site shows as "Unhealthy" if the site's status is more than 10 minutes old. In that case, try running the following in the [Rails console](../../operations/rails_console.md) on the affected site:
+A site shows as "Unhealthy" if the site's status is more than 10 minutes old. In that case, try running the following in the [Rails console](../../operations/rails_console.md) on the affected secondary site:
 
 ```ruby
 Geo::MetricsUpdateWorker.new.perform
@@ -52,7 +52,7 @@ If it raises an error, then the error is probably also preventing the jobs from 
 
 If it successfully updates the status, then something may be wrong with Sidekiq. Is it running? Do the logs show errors? This job is supposed to be enqueued every minute. It takes an exclusive lease in Redis to ensure that only one of these jobs can run at a time. The primary site updates its status directly in the PostgreSQL database. Secondary sites send an HTTP Post request to the primary site with their status data.
 
-A site also shows as "Unhealthy" if certain health checks fail. You can reveal the failure by running the following in the [Rails console](../../operations/rails_console.md) on the affected site:
+A site also shows as "Unhealthy" if certain health checks fail. You can reveal the failure by running the following in the [Rails console](../../operations/rails_console.md) on the affected secondary site:
 
 ```ruby
 Gitlab::Geo::HealthCheck.new.perform_checks
@@ -1372,6 +1372,23 @@ The bug causes all wildcard domains (`.example.com`) to be ignored except for th
    ```
 
 You can have only one wildcard domain in the `no_proxy` list.
+
+### Secondary site shows "Unhealthy" in UI after changing the value of `external_url` for the primary site
+
+If you have updated the value of `external_url` in `/etc/gitlab/gitlab.rb` for the primary site or changed the protocol from `http` to `https`, you may see that secondary sites are shown as `Unhealthy`. You may also find the following error in `geo.log`:
+
+```plaintext
+"class": "Geo::NodeStatusRequestService",
+...
+"message": "Failed to Net::HTTP::Post to primary url: http://primary-site.gitlab.tld/api/v4/geo/status",
+  "error": "Failed to open TCP connection to <PRIMARY_IP_ADDRESS>:80 (Connection refused - connect(2) for \"<PRIMARY_ID_ADDRESS>\" port 80)"
+```
+
+In this case, make sure to update the changed URL on all your sites:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Admin > Geo > Sites**.
+1. Change the URL and save the change.
 
 ## Fixing non-PostgreSQL replication failures
 

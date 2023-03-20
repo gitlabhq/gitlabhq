@@ -42,8 +42,6 @@ describe('iPython notebook renderer', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     mock.restore();
   });
 

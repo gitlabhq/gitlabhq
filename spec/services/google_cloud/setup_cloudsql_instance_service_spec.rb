@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GoogleCloud::SetupCloudsqlInstanceService do
+RSpec.describe GoogleCloud::SetupCloudsqlInstanceService, feature_category: :deployment_management do
   let(:random_user) { create(:user) }
   let(:project) { create(:project) }
   let(:list_databases_empty) { Google::Apis::SqladminV1beta4::ListDatabasesResponse.new(items: []) }

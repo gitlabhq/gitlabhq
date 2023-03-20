@@ -5,7 +5,11 @@ require 'spec_helper'
 RSpec.describe AlertManagement::AlertAssignee do
   describe 'associations' do
     it { is_expected.to belong_to(:alert) }
-    it { is_expected.to belong_to(:assignee) }
+
+    it do
+      is_expected.to belong_to(:assignee).class_name('User')
+        .with_foreign_key(:user_id).inverse_of(:alert_assignees)
+    end
   end
 
   describe 'validations' do

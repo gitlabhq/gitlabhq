@@ -44,8 +44,10 @@ export default {
 <template>
   <div class="gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-gray-10 gl-mt-4">
     <div
-      class="gl-px-5 gl-py-3 gl-display-flex gl-justify-content-space-between"
-      :class="{ 'gl-border-b-1 gl-border-b-solid gl-border-b-gray-100': isOpen }"
+      class="gl-pl-5 gl-pr-4 gl-py-4 gl-display-flex gl-justify-content-space-between gl-bg-white gl-rounded-base"
+      :class="{
+        'gl-border-b-1 gl-border-b-solid gl-border-b-gray-100 gl-rounded-bottom-left-none! gl-rounded-bottom-right-none!': isOpen,
+      }"
     >
       <div class="gl-display-flex gl-flex-grow-1">
         <h5 class="gl-m-0 gl-line-height-24">
@@ -71,7 +73,7 @@ export default {
     <div
       v-if="isOpen"
       class="gl-bg-gray-10 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
-      :class="{ 'gl-p-5 gl-pb-3': !error }"
+      :class="{ 'gl-p-3': !error }"
       data-testid="widget-body"
     >
       <slot name="body"></slot>

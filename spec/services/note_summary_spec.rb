@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NoteSummary do
+RSpec.describe NoteSummary, feature_category: :code_review_workflow do
   let(:project)  { build(:project) }
   let(:noteable) { build(:issue) }
   let(:user)     { build(:user) }

@@ -38,11 +38,6 @@ describe('cli_commands', () => {
     mountComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('shows the correct text on the button', () => {
     expect(findDropdownButton().text()).toContain(QUICK_START);
   });

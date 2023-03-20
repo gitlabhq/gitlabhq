@@ -429,11 +429,16 @@ RSpec.describe Emails::Profile do
       is_expected.to have_subject "#{Gitlab.config.gitlab.host} sign-in from new location"
     end
 
+    it 'mentions the username' do
+      is_expected.to have_body_text user.name
+      is_expected.to have_body_text user.username
+    end
+
     it 'mentions the new sign-in IP' do
       is_expected.to have_body_text ip
     end
 
-    it 'mentioned the time' do
+    it 'mentions the time' do
       is_expected.to have_body_text current_time.strftime('%Y-%m-%d %H:%M:%S %Z')
     end
 
@@ -476,7 +481,7 @@ RSpec.describe Emails::Profile do
     end
 
     it 'has the correct subject' do
-      is_expected.to have_subject "Attempted sign in to #{Gitlab.config.gitlab.host} using a wrong two-factor authentication code"
+      is_expected.to have_subject "Attempted sign in to #{Gitlab.config.gitlab.host} using an incorrect verification code"
     end
 
     it 'mentions the IP address' do

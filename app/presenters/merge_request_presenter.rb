@@ -57,9 +57,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
         notice_now: edit_in_new_fork_notice_now
       }
 
-      project_forks_path(merge_request.project,
-                                   namespace_key: current_user.namespace.id,
-                                   continue: continue_params)
+      project_forks_path(merge_request.project, namespace_key: current_user.namespace.id, continue: continue_params)
     end
   end
 
@@ -71,9 +69,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
         notice_now: edit_in_new_fork_notice_now
       }
 
-      project_forks_path(project,
-                                   namespace_key: current_user.namespace.id,
-                                   continue: continue_params)
+      project_forks_path(project, namespace_key: current_user.namespace.id, continue: continue_params)
     end
   end
 
@@ -155,12 +151,12 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
 
   def assign_to_closing_issues_count
     # rubocop: disable CodeReuse/ServiceClass
-    issues = MergeRequests::AssignIssuesService.new(project: project,
-                                                    current_user: current_user,
-                                                    params: {
-                                                      merge_request: merge_request,
-                                                      closes_issues: closing_issues
-                                                    }).assignable_issues
+    issues = MergeRequests::AssignIssuesService.new(
+      project: project,
+      current_user: current_user,
+      params: { merge_request: merge_request, closes_issues: closing_issues }
+    ).assignable_issues
+
     issues.count
     # rubocop: enable CodeReuse/ServiceClass
   end

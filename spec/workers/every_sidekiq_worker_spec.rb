@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Every Sidekiq worker' do
+RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
   let(:workers_without_defaults) do
     Gitlab::SidekiqConfig.workers - Gitlab::SidekiqConfig::DEFAULT_WORKERS.values
   end
@@ -272,6 +272,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'Gitlab::GithubImport::ImportLfsObjectWorker' => 5,
         'Gitlab::GithubImport::ImportNoteWorker' => 5,
         'Gitlab::GithubImport::ImportProtectedBranchWorker' => 5,
+        'Gitlab::GithubImport::ImportCollaboratorWorker' => 5,
         'Gitlab::GithubImport::ImportPullRequestMergedByWorker' => 5,
         'Gitlab::GithubImport::ImportPullRequestReviewWorker' => 5,
         'Gitlab::GithubImport::PullRequests::ImportReviewRequestWorker' => 5,
@@ -285,6 +286,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'Gitlab::GithubImport::Stage::ImportAttachmentsWorker' => 5,
         'Gitlab::GithubImport::Stage::ImportProtectedBranchesWorker' => 5,
         'Gitlab::GithubImport::Stage::ImportNotesWorker' => 5,
+        'Gitlab::GithubImport::Stage::ImportCollaboratorsWorker' => 5,
         'Gitlab::GithubImport::Stage::ImportPullRequestsMergedByWorker' => 5,
         'Gitlab::GithubImport::Stage::ImportPullRequestsReviewRequestsWorker' => 5,
         'Gitlab::GithubImport::Stage::ImportPullRequestsReviewsWorker' => 5,

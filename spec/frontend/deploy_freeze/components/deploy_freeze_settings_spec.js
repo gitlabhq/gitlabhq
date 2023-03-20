@@ -24,11 +24,6 @@ describe('Deploy freeze settings', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('Deploy freeze table contains components', () => {
     it('contains deploy freeze table', () => {
       expect(wrapper.findComponent(DeployFreezeTable).exists()).toBe(true);

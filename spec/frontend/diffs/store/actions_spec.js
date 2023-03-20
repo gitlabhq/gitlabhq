@@ -13,7 +13,7 @@ import * as diffActions from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
 import * as utils from '~/diffs/store/utils';
 import * as treeWorkerUtils from '~/diffs/utils/tree_worker_utils';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import {
@@ -26,7 +26,7 @@ import { mergeUrlParams } from '~/lib/utils/url_utility';
 import eventHub from '~/notes/event_hub';
 import { diffMetadata } from '../mock_data/diff_metadata';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('DiffsStoreActions', () => {
   let mock;
@@ -69,6 +69,7 @@ describe('DiffsStoreActions', () => {
       const endpoint = '/diffs/set/endpoint';
       const endpointMetadata = '/diffs/set/endpoint/metadata';
       const endpointBatch = '/diffs/set/endpoint/batch';
+      const endpointDiffForPath = '/diffs/set/endpoint/path';
       const endpointCoverage = '/diffs/set/coverage_reports';
       const projectPath = '/root/project';
       const dismissEndpoint = '/-/user_callouts';
@@ -83,6 +84,7 @@ describe('DiffsStoreActions', () => {
         {
           endpoint,
           endpointBatch,
+          endpointDiffForPath,
           endpointMetadata,
           endpointCoverage,
           projectPath,
@@ -93,6 +95,7 @@ describe('DiffsStoreActions', () => {
         {
           endpoint: '',
           endpointBatch: '',
+          endpointDiffForPath: '',
           endpointMetadata: '',
           endpointCoverage: '',
           projectPath: '',
@@ -106,6 +109,7 @@ describe('DiffsStoreActions', () => {
               endpoint,
               endpointMetadata,
               endpointBatch,
+              endpointDiffForPath,
               endpointCoverage,
               projectPath,
               dismissEndpoint,
@@ -236,13 +240,17 @@ describe('DiffsStoreActions', () => {
     it('should show no warning on any other status code', async () => {
       mock.onGet(endpointMetadata).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
-      await testAction(
-        diffActions.fetchDiffFilesMeta,
-        {},
-        { endpointMetadata, diffViewType: 'inline', showWhitespace: true },
-        [{ type: types.SET_LOADING, payload: true }],
-        [],
-      );
+      try {
+        await testAction(
+          diffActions.fetchDiffFilesMeta,
+          {},
+          { endpointMetadata, diffViewType: 'inline', showWhitespace: true },
+          [{ type: types.SET_LOADING, payload: true }],
+          [],
+        );
+      } catch (error) {
+        expect(error.response.status).toBe(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+      }
 
       expect(createAlert).not.toHaveBeenCalled();
     });
@@ -265,7 +273,7 @@ describe('DiffsStoreActions', () => {
       );
     });
 
-    it('should show flash on API error', async () => {
+    it('should show alert on API error', async () => {
       mock.onGet(endpointCoverage).reply(HTTP_STATUS_BAD_REQUEST);
 
       await testAction(diffActions.fetchCoverageFiles, {}, { endpointCoverage }, [], []);
@@ -389,7 +397,7 @@ describe('DiffsStoreActions', () => {
       return testAction(
         diffActions.assignDiscussionsToDiff,
         [],
-        { diffFiles: [] },
+        { diffFiles: [], flatBlobsList: [] },
         [],
         [{ type: 'setCurrentDiffFileIdFromNote', payload: '123' }],
       );
@@ -1007,18 +1015,12 @@ describe('DiffsStoreActions', () => {
   describe('setShowWhitespace', () => {
     const endpointUpdateUser = 'user/prefs';
     let putSpy;
-    let gon;
 
     beforeEach(() => {
       putSpy = jest.spyOn(axios, 'put');
-      gon = window.gon;
 
       mock.onPut(endpointUpdateUser).reply(HTTP_STATUS_OK, {});
       jest.spyOn(eventHub, '$emit').mockImplementation();
-    });
-
-    afterEach(() => {
-      window.gon = gon;
     });
 
     it('commits SET_SHOW_WHITESPACE', () => {
@@ -1393,39 +1395,38 @@ describe('DiffsStoreActions', () => {
   describe('setCurrentDiffFileIdFromNote', () => {
     it('commits SET_CURRENT_DIFF_FILE', () => {
       const commit = jest.fn();
-      const state = { diffFiles: [{ file_hash: '123' }] };
+      const getters = { flatBlobsList: [{ fileHash: '123' }] };
       const rootGetters = {
         getDiscussion: () => ({ diff_file: { file_hash: '123' } }),
         notesById: { 1: { discussion_id: '2' } },
       };
 
-      diffActions.setCurrentDiffFileIdFromNote({ commit, state, rootGetters }, '1');
+      diffActions.setCurrentDiffFileIdFromNote({ commit, getters, rootGetters }, '1');
 
       expect(commit).toHaveBeenCalledWith(types.SET_CURRENT_DIFF_FILE, '123');
     });
 
     it('does not commit SET_CURRENT_DIFF_FILE when discussion has no diff_file', () => {
       const commit = jest.fn();
-      const state = { diffFiles: [{ file_hash: '123' }] };
       const rootGetters = {
         getDiscussion: () => ({ id: '1' }),
         notesById: { 1: { discussion_id: '2' } },
       };
 
-      diffActions.setCurrentDiffFileIdFromNote({ commit, state, rootGetters }, '1');
+      diffActions.setCurrentDiffFileIdFromNote({ commit, rootGetters }, '1');
 
       expect(commit).not.toHaveBeenCalled();
     });
 
     it('does not commit SET_CURRENT_DIFF_FILE when diff file does not exist', () => {
       const commit = jest.fn();
-      const state = { diffFiles: [{ file_hash: '123' }] };
+      const getters = { flatBlobsList: [{ fileHash: '123' }] };
       const rootGetters = {
         getDiscussion: () => ({ diff_file: { file_hash: '124' } }),
         notesById: { 1: { discussion_id: '2' } },
       };
 
-      diffActions.setCurrentDiffFileIdFromNote({ commit, state, rootGetters }, '1');
+      diffActions.setCurrentDiffFileIdFromNote({ commit, getters, rootGetters }, '1');
 
       expect(commit).not.toHaveBeenCalled();
     });
@@ -1436,7 +1437,7 @@ describe('DiffsStoreActions', () => {
       return testAction(
         diffActions.navigateToDiffFileIndex,
         0,
-        { diffFiles: [{ file_hash: '123' }] },
+        { flatBlobsList: [{ fileHash: '123' }] },
         [{ type: types.SET_CURRENT_DIFF_FILE, payload: '123' }],
         [],
       );

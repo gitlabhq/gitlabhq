@@ -6,21 +6,35 @@ module QA
       class Menu < Page::Base
         prepend Mobile::Page::Main::Menu if Runtime::Env.mobile_layout?
 
-        view 'app/views/layouts/header/_current_user_dropdown.html.haml' do
-          element :sign_out_link
-          element :edit_profile_link
-          element :user_profile_link
-        end
+        if QA::Runtime::Env.super_sidebar_enabled?
+          # Define alternative navbar (super sidebar) which does not yet implement all the same elements
+          view 'app/assets/javascripts/super_sidebar/components/super_sidebar.vue' do
+            element :navbar, required: true # TODO: rename to sidebar once it's default implementation
+            element :user_menu, required: !QA::Runtime::Env.mobile_layout?
+            element :user_avatar_content, required: !QA::Runtime::Env.mobile_layout?
+          end
 
-        view 'app/views/layouts/header/_default.html.haml' do
-          element :navbar, required: true
-          element :canary_badge_link
-          element :user_avatar_content, required: !QA::Runtime::Env.mobile_layout?
-          element :user_menu, required: !QA::Runtime::Env.mobile_layout?
-          element :stop_impersonation_link
-          element :issues_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
-          element :merge_requests_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
-          element :todos_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
+          view 'app/assets/javascripts/super_sidebar/components/user_menu.vue' do
+            element :sign_out_link
+            element :edit_profile_link
+          end
+        else
+          view 'app/views/layouts/header/_default.html.haml' do
+            element :navbar, required: true
+            element :canary_badge_link
+            element :user_avatar_content, required: !QA::Runtime::Env.mobile_layout?
+            element :user_menu, required: !QA::Runtime::Env.mobile_layout?
+            element :stop_impersonation_link
+            element :issues_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
+            element :merge_requests_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
+            element :todos_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
+          end
+
+          view 'app/views/layouts/header/_current_user_dropdown.html.haml' do
+            element :sign_out_link
+            element :edit_profile_link
+            element :user_profile_link
+          end
         end
 
         view 'app/assets/javascripts/nav/components/top_nav_app.vue' do
@@ -39,7 +53,6 @@ module QA
           element :admin_area_link
           element :projects_dropdown
           element :groups_dropdown
-          element :snippets_link
           element :menu_item_link
         end
 
@@ -64,6 +77,10 @@ module QA
           element :global_new_project_link
         end
 
+        view 'app/assets/javascripts/nav/components/new_nav_toggle.vue' do
+          element :new_navigation_toggle
+        end
+
         def go_to_groups
           within_groups_menu do
             click_element(:menu_item_link, title: 'View all groups')
@@ -81,12 +98,18 @@ module QA
           end
         end
 
+        def go_to_snippets
+          click_element(:sidebar_menu_link, menu_item: 'Snippets')
+        end
+
         def go_to_create_project
           click_element(:new_menu_toggle)
           click_element(:global_new_project_link)
         end
 
         def go_to_menu_dropdown_option(option_name)
+          return click_element(option_name) if QA::Runtime::Env.super_sidebar_enabled?
+
           within_top_menu do
             click_element(:navbar_dropdown, title: 'Menu')
             click_element(option_name)
@@ -209,6 +232,13 @@ module QA
         #   end
         def canary?
           has_element?(:canary_badge_link)
+        end
+
+        def enable_new_navigation
+          Runtime::Logger.info("Enabling super sidebar!")
+          return Runtime::Logger.info("Super sidebar is already enabled") if has_css?('[data-testid="super-sidebar"]')
+
+          within_user_menu { click_element(:new_navigation_toggle) }
         end
 
         private

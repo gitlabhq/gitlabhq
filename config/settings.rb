@@ -172,6 +172,13 @@ class Settings < Settingslogic
       cron_jobs['gitlab_service_ping_worker']['cron'] ||= cron_for_service_ping
     end
 
+    # Route jobs to queue based on worker name.
+    def build_sidekiq_routing_rules(rules)
+      return rules unless rules.nil? || rules&.empty?
+
+      [[Gitlab::SidekiqConfig::WorkerMatcher::WILDCARD_MATCH, nil]]
+    end
+
     private
 
     def base_url(config)

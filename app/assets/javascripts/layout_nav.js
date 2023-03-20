@@ -70,10 +70,11 @@ function initDeferred() {
 }
 
 export default function initLayoutNav() {
-  const contextualSidebar = new ContextualSidebar();
-  contextualSidebar.bindEvents();
-
-  initFlyOutNav();
+  if (!gon.use_new_navigation) {
+    const contextualSidebar = new ContextualSidebar();
+    contextualSidebar.bindEvents();
+    initFlyOutNav();
+  }
 
   requestIdleCallback(initDeferred);
 }

@@ -36,7 +36,7 @@ for audiences of all ages.
 If you would like to contribute to GitLab:
 
 - Issues with the
-  [`~Seeking community contributions` label](issue_workflow.md#label-for-community-contributors)
+  [`~Seeking community contributions` label](../labels/index.md#label-for-community-contributors)
   are a great place to start.
 - Optimizing our tests is another great opportunity to contribute. You can use
   [RSpec profiling statistics](https://gitlab-org.gitlab.io/rspec_profiling_stats/) to identify
@@ -49,11 +49,11 @@ If you would like to contribute to GitLab:
 
 The general flow of contributing to GitLab is:
 
-1. [Create a fork](../../user/project/repository/forking_workflow.md#creating-a-fork)
-   of GitLab. In some cases, you will want to set up the
+1. [Read about](https://gitlab.com/gitlab-community/meta) and [request access](https://gitlab.com/gitlab-community/meta#request-access-to-community-forks)
+   to the GitLab Community forks. In some cases, you will want to set up the
    [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit) to
-   [develop against your fork](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#develop-in-your-own-gitlab-fork).
-1. Make your changes in your fork.
+   [develop against the GitLab community fork](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#develop-in-your-own-gitlab-fork).
+1. Create a feature branch and make changes in the [GitLab community fork](https://gitlab.com/gitlab-community/gitlab).
 1. When you're ready, [create a new merge request](../../user/project/merge_requests/creating_merge_requests.md).
 1. In the merge request's description:
    - Ensure you provide complete and accurate information.
@@ -107,30 +107,16 @@ your code has multiple disciplines, you may mention multiple merge request coach
 GitLab receives a lot of community contributions. If your code has not been reviewed within two
 working days of its initial submission, you can ask for help with `@gitlab-bot help`.
 
-#### Addition of external libraries
-
-When submitting code to GitLab, you may feel that your contribution requires the aid of an external
-library. If your code includes an external library, please provide a link to the library, as well as
-reasons for including it.
-
-Mention a maintainer in merge requests that contain:
-
-- More than 500 changes.
-- Any major [breaking changes](../deprecation_guidelines/index.md).
-- External libraries.
-
-If you are not sure who to mention, the reviewer will do this for you early in the merge request process.
-
 #### Issues workflow
 
 This [documentation](issue_workflow.md) outlines the current issue workflow:
 
 - [Issue triaging](issue_workflow.md#issue-triaging)
-- [Labels](issue_workflow.md#labels)
+- [Labels](../labels/index.md)
 - [Feature proposals](issue_workflow.md#feature-proposals)
 - [Issue weight](issue_workflow.md#issue-weight)
 - [Regression issues](issue_workflow.md#regression-issues)
-- [Technical and UX debt](issue_workflow.md#technical-and-ux-debt)
+- [Technical and UX debt](../labels/index.md#technical-and-ux-debt)
 - [Technical debt in follow-up issues](issue_workflow.md#technical-debt-in-follow-up-issues)
 
 #### Merge requests workflow

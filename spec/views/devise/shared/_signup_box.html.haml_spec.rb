@@ -20,6 +20,7 @@ RSpec.describe 'devise/shared/_signup_box' do
 
   before do
     stub_devise
+    allow(view).to receive(:arkose_labs_enabled?).and_return(false)
     allow(view).to receive(:show_omniauth_providers).and_return(false)
     allow(view).to receive(:url).and_return('_url_')
     allow(view).to receive(:terms_path).and_return(terms_path)

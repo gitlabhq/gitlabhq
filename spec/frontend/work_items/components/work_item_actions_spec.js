@@ -52,10 +52,6 @@ describe('WorkItemActions component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders modal', () => {
     createComponent();
 

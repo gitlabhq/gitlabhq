@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Notes::UpdateService do
+RSpec.describe Notes::UpdateService, feature_category: :team_planning do
   let(:group) { create(:group, :public) }
   let(:project) { create(:project, :public, group: group) }
   let(:private_group) { create(:group, :private) }

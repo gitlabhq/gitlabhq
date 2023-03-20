@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AwardEmojis::BaseService do
+RSpec.describe AwardEmojis::BaseService, feature_category: :team_planning do
   let(:awardable) { build(:note) }
   let(:current_user) { build(:user) }
 

@@ -109,6 +109,13 @@ RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline do
                   'name' => 'first status',
                   'status' => 'created'
                 }
+              ],
+              'builds' => [
+                {
+                  'name' => 'second status',
+                  'status' => 'created',
+                  'ref' => 'abcd'
+                }
               ]
             }
           ]
@@ -119,6 +126,7 @@ RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline do
         stage = project.all_pipelines.first.stages.first
         expect(stage.name).to eq('test stage')
         expect(stage.statuses.first.name).to eq('first status')
+        expect(stage.builds.first.name).to eq('second status')
       end
     end
 

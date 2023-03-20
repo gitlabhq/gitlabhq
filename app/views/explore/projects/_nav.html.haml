@@ -1,10 +1,8 @@
 .top-area
   = gl_tabs_nav({ class: 'gl-display-flex gl-flex-grow-1 gl-border-none'}) do
     = gl_tab_link_to _('All'), explore_projects_path, { item_active: current_page?(explore_projects_path) || current_page?(explore_root_path) }
-    = gl_tab_link_to _('Most stars'), starred_explore_projects_path
+    = gl_tab_link_to _('Most starred'), starred_explore_projects_path
     = gl_tab_link_to _('Trending'), trending_explore_projects_path
 
   .nav-controls
-    - unless current_user
-      = render 'shared/projects/search_form'
-    = render 'filter'
+    = render 'shared/projects/search_form'

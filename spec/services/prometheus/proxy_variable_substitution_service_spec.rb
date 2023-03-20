@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Prometheus::ProxyVariableSubstitutionService do
+RSpec.describe Prometheus::ProxyVariableSubstitutionService, feature_category: :metrics do
   describe '#execute' do
     let_it_be(:environment) { create(:environment) }
 

@@ -12,7 +12,7 @@ processes.
 
 You can perform GitLab Rake tasks by using:
 
-- `gitlab-rake <raketask>` for [Omnibus GitLab](https://docs.gitlab.com/omnibus/index.html) installations.
+- `gitlab-rake <raketask>` for [Omnibus GitLab](https://docs.gitlab.com/omnibus/index.html) and [GitLab Helm chart](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information) installations.
 - `bundle exec rake <raketask>` for [source](../install/installation.md) installations.
 
 ## Available Rake tasks
@@ -28,7 +28,7 @@ The following Rake tasks are available for use with GitLab:
 | [General maintenance](../administration/raketasks/maintenance.md) | General maintenance and self-check tasks. |
 | [Geo maintenance](../administration/raketasks/geo.md) | [Geo](../administration/geo/index.md)-related maintenance. |
 | [GitHub import](../administration/raketasks/github_import.md) | Retrieve and import repositories from GitHub. |
-| [Import large project exports](../development/import_project.md#importing-via-a-rake-task) | Import large GitLab [project exports](../user/project/settings/import_export.md). |
+| [Import large project exports](../administration/raketasks/project_import_export.md#import-large-projects) | Import large GitLab [project exports](../user/project/settings/import_export.md). |
 | [Incoming email](../administration/raketasks/incoming_email.md) | Incoming email-related tasks. |
 | [Integrity checks](../administration/raketasks/check.md) | Check the integrity of repositories, files, LDAP, and more. |
 | [LDAP maintenance](../administration/raketasks/ldap.md) | [LDAP](../administration/auth/ldap/index.md)-related tasks. |
@@ -55,6 +55,9 @@ To list all available Rake tasks:
 ```shell
 # Omnibus GitLab
 sudo gitlab-rake -vT
+
+# GitLab Helm chart
+gitlab-rake -vT
 
 # Installations from source
 cd /home/git/gitlab

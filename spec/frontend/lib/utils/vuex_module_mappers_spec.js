@@ -96,10 +96,6 @@ describe('~/lib/utils/vuex_module_mappers', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('from module defined by prop', () => {
     it('maps state', () => {
       expect(getMappedState()).toEqual({

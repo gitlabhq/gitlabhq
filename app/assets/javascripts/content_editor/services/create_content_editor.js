@@ -16,6 +16,7 @@ import DescriptionList from '../extensions/description_list';
 import Details from '../extensions/details';
 import DetailsContent from '../extensions/details_content';
 import Diagram from '../extensions/diagram';
+import DrawioDiagram from '../extensions/drawio_diagram';
 import Document from '../extensions/document';
 import Dropcursor from '../extensions/dropcursor';
 import Emoji from '../extensions/emoji';
@@ -74,7 +75,7 @@ const createTiptapEditor = ({ extensions = [], ...options } = {}) =>
     extensions: [...extensions],
     editorProps: {
       attributes: {
-        class: 'gl-outline-0!',
+        class: 'gl-shadow-none!',
       },
     },
     ...options,
@@ -86,6 +87,7 @@ export const createContentEditor = ({
   extensions = [],
   serializerConfig = { marks: {}, nodes: {} },
   tiptapOptions,
+  drawioEnabled = false,
 } = {}) => {
   if (!isFunction(renderMarkdown)) {
     throw new Error(PROVIDE_SERIALIZER_OR_RENDERER_ERROR);
@@ -157,6 +159,9 @@ export const createContentEditor = ({
   ];
 
   const allExtensions = [...builtInContentEditorExtensions, ...extensions];
+
+  if (drawioEnabled) allExtensions.push(DrawioDiagram.configure({ uploadsPath, renderMarkdown }));
+
   const trackedExtensions = allExtensions.map(trackInputRulesAndShortcuts);
   const tiptapEditor = createTiptapEditor({ extensions: trackedExtensions, ...tiptapOptions });
   const serializer = createMarkdownSerializer({ serializerConfig });
@@ -173,5 +178,6 @@ export const createContentEditor = ({
     eventHub,
     deserializer,
     assetResolver,
+    drawioEnabled,
   });
 };

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::AddSpentTimeService do
+RSpec.describe MergeRequests::AddSpentTimeService, feature_category: :code_review_workflow do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be_with_reload(:merge_request) { create(:merge_request, :simple, :unique_branches, source_project: project) }

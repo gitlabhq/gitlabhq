@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::ResolveDiscussions do
+RSpec.describe Issues::ResolveDiscussions, feature_category: :team_planning do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
@@ -11,7 +11,7 @@ RSpec.describe Issues::ResolveDiscussions do
     DummyService.class_eval do
       include ::Issues::ResolveDiscussions
 
-      def initialize(project:, current_user: nil, params: {})
+      def initialize(container:, current_user: nil, params: {})
         super
         filter_resolve_discussion_params
       end
@@ -26,7 +26,7 @@ RSpec.describe Issues::ResolveDiscussions do
     let(:other_merge_request) { create(:merge_request, source_project: project, source_branch: "fix") }
 
     describe "#merge_request_for_resolving_discussion" do
-      let(:service) { DummyService.new(project: project, current_user: user, params: { merge_request_to_resolve_discussions_of: merge_request.iid }) }
+      let(:service) { DummyService.new(container: project, current_user: user, params: { merge_request_to_resolve_discussions_of: merge_request.iid }) }
 
       it "finds the merge request" do
         expect(service.merge_request_to_resolve_discussions_of).to eq(merge_request)
@@ -45,7 +45,7 @@ RSpec.describe Issues::ResolveDiscussions do
     describe "#discussions_to_resolve" do
       it "contains a single discussion when matching merge request and discussion are passed" do
         service = DummyService.new(
-          project: project,
+          container: project,
           current_user: user,
           params: {
             discussion_to_resolve: discussion.id,
@@ -65,7 +65,7 @@ RSpec.describe Issues::ResolveDiscussions do
                                                   project: merge_request.target_project,
                                                   line_number: 15)])
         service = DummyService.new(
-          project: project,
+          container: project,
           current_user: user,
           params: { merge_request_to_resolve_discussions_of: merge_request.iid }
         )
@@ -83,7 +83,7 @@ RSpec.describe Issues::ResolveDiscussions do
                                                    line_number: 15
         )])
         service = DummyService.new(
-          project: project,
+          container: project,
           current_user: user,
           params: { merge_request_to_resolve_discussions_of: merge_request.iid }
         )
@@ -96,7 +96,7 @@ RSpec.describe Issues::ResolveDiscussions do
 
       it "is empty when a discussion and another merge request are passed" do
         service = DummyService.new(
-          project: project,
+          container: project,
           current_user: user,
           params: {
             discussion_to_resolve: discussion.id,

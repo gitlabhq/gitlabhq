@@ -33,7 +33,6 @@ describe('IssuableHeader', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     resetHTMLFixture();
   });
 

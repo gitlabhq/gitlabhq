@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Kroki do
 
   describe '.formats' do
     def default_formats
-      %w[bytefield c4plantuml ditaa erd graphviz nomnoml pikchr plantuml
+      %w[bytefield c4plantuml d2 dbml diagramsnet ditaa erd graphviz nomnoml pikchr plantuml
          structurizr svgbob umlet vega vegalite wavedrom].freeze
     end
 

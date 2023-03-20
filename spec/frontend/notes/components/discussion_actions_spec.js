@@ -38,15 +38,12 @@ describe('DiscussionActions', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('rendering', () => {
     const createComponent = createComponentFactory();
 
     it('renders reply placeholder, resolve discussion button, resolve with issue button and jump to next discussion button', () => {
       createComponent();
+
       expect(wrapper.findComponent(ReplyPlaceholder).exists()).toBe(true);
       expect(wrapper.findComponent(ResolveDiscussionButton).exists()).toBe(true);
       expect(wrapper.findComponent(ResolveWithIssueButton).exists()).toBe(true);
@@ -94,17 +91,15 @@ describe('DiscussionActions', () => {
     it('emits showReplyForm event when clicking on reply placeholder', () => {
       createComponent({}, { attachTo: document.body });
 
-      jest.spyOn(wrapper.vm, '$emit');
       wrapper.findComponent(ReplyPlaceholder).find('textarea').trigger('focus');
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('showReplyForm');
+      expect(wrapper.emitted().showReplyForm).toHaveLength(1);
     });
 
     it('emits resolve event when clicking on resolve button', () => {
       createComponent();
 
-      jest.spyOn(wrapper.vm, '$emit');
       wrapper.findComponent(ResolveDiscussionButton).find('button').trigger('click');
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('resolve');
+      expect(wrapper.emitted().resolve).toHaveLength(1);
     });
   });
 });

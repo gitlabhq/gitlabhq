@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PrepareBuildService do
+RSpec.describe Ci::PrepareBuildService, feature_category: :continuous_integration do
   describe '#execute' do
     let(:build) { create(:ci_build, :preparing) }
 

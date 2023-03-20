@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { joinPaths } from '~/lib/utils/url_utility';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import axios from '~/lib/utils/axios_utils';
 import { addDelimiter } from '~/lib/utils/text_utility';

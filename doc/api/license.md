@@ -233,3 +233,35 @@ Returns:
 - `204 No Content` if the license is successfully deleted.
 - `403 Forbidden` if the current user in not permitted to delete the license.
 - `404 Not Found` if the license to delete could not be found.
+
+## Trigger recalculation of billable users
+
+```plaintext
+PUT /license/:id/refresh_billable_users
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | ID of the GitLab license. |
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/license/:id/refresh_billable_users"
+```
+
+Example response:
+
+```json
+{
+  "success": true
+}
+```
+
+Returns:
+
+- `202 Accepted` if the request to refresh billable users is successfully initiated.
+- `403 Forbidden` if the current user in not permitted to refresh billable users for the license.
+- `404 Not Found` if the license could not be found.
+
+| Attribute                    | Type          | Description                               |
+|:-----------------------------|:--------------|:------------------------------------------|
+| `success`                    | boolean       | Whether the request succeeded or not.     |

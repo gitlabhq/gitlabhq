@@ -20,6 +20,8 @@ module API
           optional :search, type: String, desc: 'The search criteria for the title or description of the milestone'
           optional :include_parent_milestones, type: Grape::API::Boolean, default: false,
                                                desc: 'Include group milestones from parent and its ancestors'
+          optional :updated_before, type: DateTime, desc: 'Return milestones updated before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+          optional :updated_after, type: DateTime, desc: 'Return milestones updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
           use :pagination
         end
 
@@ -33,14 +35,9 @@ module API
         end
 
         def list_milestones_for(parent)
-          milestones = init_milestones_collection(parent)
-          milestones = Milestone.filter_by_state(milestones, params[:state])
-          if params[:iids].present? && !params[:include_parent_milestones]
-            milestones = filter_by_iid(milestones, params[:iids])
-          end
-
-          milestones = filter_by_title(milestones, params[:title]) if params[:title]
-          milestones = filter_by_search(milestones, params[:search]) if params[:search]
+          milestones = MilestonesFinder.new(
+            params.merge(parent_finder_params(parent))
+          ).execute
 
           present paginate(milestones), with: Entities::Milestone
         end
@@ -84,6 +81,16 @@ module API
           present paginate(issuables), with: entity, current_user: current_user
         end
 
+        def parent_finder_params(parent)
+          include_parent = params[:include_parent_milestones].present?
+
+          if parent.is_a?(Project)
+            { project_ids: parent.id, group_ids: (include_parent ? project_group_ids(parent) : nil) }
+          else
+            { group_ids: (include_parent ? group_and_ancestor_ids(parent) : parent.id) }
+          end
+        end
+
         def build_finder_params(milestone, parent)
           finder_params = { milestone_title: milestone.title, sort: 'label_priority' }
 
@@ -102,26 +109,6 @@ module API
           end
         end
 
-        def init_milestones_collection(parent)
-          milestones = if params[:include_parent_milestones].present?
-                         parent_and_ancestors_milestones(parent)
-                       else
-                         parent.milestones
-                       end
-
-          milestones.order_id_desc
-        end
-
-        def parent_and_ancestors_milestones(parent)
-          project_id, group_ids = if parent.is_a?(Project)
-                                    [parent.id, project_group_ids(parent)]
-                                  else
-                                    [nil, parent_group_ids(parent)]
-                                  end
-
-          Milestone.for_projects_and_groups(project_id, group_ids)
-        end
-
         def project_group_ids(parent)
           group = parent.group
           return unless group.present?
@@ -129,7 +116,7 @@ module API
           group.self_and_ancestors.select(:id)
         end
 
-        def parent_group_ids(group)
+        def group_and_ancestor_ids(group)
           return unless group.present?
 
           group.self_and_ancestors

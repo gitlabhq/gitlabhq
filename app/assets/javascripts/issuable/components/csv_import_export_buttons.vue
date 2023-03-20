@@ -7,8 +7,8 @@ import {
   GlTooltipDirective,
   GlModalDirective,
 } from '@gitlab/ui';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { __ } from '~/locale';
-import { ISSUABLE_TYPE } from '../constants';
 import CsvExportModal from './csv_export_modal.vue';
 import CsvImportModal from './csv_import_modal.vue';
 
@@ -34,7 +34,7 @@ export default {
   },
   inject: {
     issuableType: {
-      default: ISSUABLE_TYPE.issues,
+      default: TYPE_ISSUE,
     },
     showExportButton: {
       default: false,

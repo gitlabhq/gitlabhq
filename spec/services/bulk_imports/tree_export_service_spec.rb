@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::TreeExportService do
+RSpec.describe BulkImports::TreeExportService, feature_category: :importers do
   let_it_be(:project) { create(:project) }
   let_it_be(:export_path) { Dir.mktmpdir }
 

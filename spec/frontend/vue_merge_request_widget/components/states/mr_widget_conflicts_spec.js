@@ -50,10 +50,6 @@ describe('MRWidgetConflicts', () => {
     await nextTick();
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   // There are two permissions we need to consider:
   //
   // 1. Is the user allowed to merge to the target branch?

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PersonalAccessTokens::CreateService do
+RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_access do
   shared_examples_for 'a successfully created token' do
     it 'creates personal access token record' do
       expect(subject.success?).to be true
@@ -40,7 +40,7 @@ RSpec.describe PersonalAccessTokens::CreateService do
     let(:current_user) { create(:user) }
     let(:user) { create(:user) }
     let(:params) { { name: 'Test token', impersonation: false, scopes: [:api], expires_at: Date.today + 1.month } }
-    let(:service) { described_class.new(current_user: current_user, target_user: user, params: params) }
+    let(:service) { described_class.new(current_user: current_user, target_user: user, params: params, concatenate_errors: false) }
     let(:token) { subject.payload[:personal_access_token] }
 
     context 'when current_user is an administrator' do
@@ -64,6 +64,22 @@ RSpec.describe PersonalAccessTokens::CreateService do
         let(:current_user) { user }
 
         it_behaves_like 'a successfully created token'
+      end
+    end
+
+    context 'when invalid scope' do
+      let(:params) { { name: 'Test token', impersonation: false, scopes: [:no_valid], expires_at: Date.today + 1.month } }
+
+      context 'when concatenate_errors: true' do
+        let(:service) { described_class.new(current_user: user, target_user: user, params: params) }
+
+        it { expect(subject.message).to be_an_instance_of(String) }
+      end
+
+      context 'when concatenate_errors: false' do
+        let(:service) { described_class.new(current_user: user, target_user: user, params: params, concatenate_errors: false) }
+
+        it { expect(subject.message).to be_an_instance_of(Array) }
       end
     end
   end

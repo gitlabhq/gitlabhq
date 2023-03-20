@@ -26,29 +26,4 @@ RSpec.shared_examples 'search results filtered by language' do
     expect(blob_results.size).to eq(5)
     expect(paths).to match_array(expected_paths)
   end
-
-  context 'when the search_blobs_language_aggregation feature flag is disabled' do
-    before do
-      stub_feature_flags(search_blobs_language_aggregation: false)
-    end
-
-    it 'does not filter by language', :sidekiq_inline, :aggregate_failures do
-      expected_paths = %w[
-        CHANGELOG
-        CONTRIBUTING.md
-        bar/branch-test.txt
-        custom-highlighting/test.gitlab-custom
-        files/ruby/popen.rb
-        files/ruby/regex.rb
-        files/ruby/version_info.rb
-        files/whitespace
-        encoding/test.txt
-        files/markdown/ruby-style-guide.md
-      ]
-
-      paths = blob_results.map { |blob| blob.binary_path }
-      expect(blob_results.size).to eq(10)
-      expect(paths).to match_array(expected_paths)
-    end
-  end
 end

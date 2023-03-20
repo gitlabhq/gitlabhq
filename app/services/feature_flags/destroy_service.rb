@@ -22,6 +22,16 @@ module FeatureFlags
       end
     end
 
+    def audit_context(feature_flag)
+      {
+        name: 'feature_flag_deleted',
+        message: audit_message(feature_flag),
+        author: current_user,
+        scope: feature_flag.project,
+        target: feature_flag
+      }
+    end
+
     def audit_message(feature_flag)
       "Deleted feature flag #{feature_flag.name}."
     end

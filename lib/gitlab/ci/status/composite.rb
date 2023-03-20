@@ -7,6 +7,7 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
 
         # This class accepts an array of arrays/hashes/or objects
+        # `with_allow_failure` will be removed when deleting ci_remove_ensure_stage_service
         def initialize(all_statuses, with_allow_failure: true, dag: false)
           unless all_statuses.respond_to?(:pluck)
             raise ArgumentError, "all_statuses needs to respond to `.pluck`"
@@ -26,6 +27,12 @@ module Gitlab
         # 2. In other cases we assume that status is of that type
         #    based on what statuses are no longer valid based on the
         #    data set that we have
+        #
+        # This method is used for two cases:
+        # 1. When it is called for a stage or a pipeline (with `all_statuses` from all jobs in a stage or a pipeline),
+        #    then, the returned status is assigned to the stage or pipeline.
+        # 2. When it is called for a job (with `all_statuses` from all previous jobs or all needed jobs),
+        #    then, the returned status is used to determine if the job is processed or not.
         # rubocop: disable Metrics/CyclomaticComplexity
         # rubocop: disable Metrics/PerceivedComplexity
         def status
@@ -101,23 +108,22 @@ module Gitlab
 
           all_statuses
             .pluck(*columns) # rubocop: disable CodeReuse/ActiveRecord
-            .each(&method(:consume_status))
+            .each do |status_attrs|
+              consume_status(Array.wrap(status_attrs))
+            end
         end
 
-        def consume_status(description)
-          # convert `"status"` into `["status"]`
-          description = Array(description)
-
-          status =
-            if success_with_warnings?(description)
+        def consume_status(status_attrs)
+          status_result =
+            if success_with_warnings?(status_attrs)
               :success_with_warnings
-            elsif ignored_status?(description)
+            elsif ignored_status?(status_attrs)
               :ignored
             else
-              description[@status_key].to_sym
+              status_attrs[@status_key].to_sym
             end
 
-          @status_set.add(status)
+          @status_set.add(status_result)
         end
 
         def success_with_warnings?(status)
@@ -129,7 +135,7 @@ module Gitlab
         def ignored_status?(status)
           @allow_failure_key &&
             status[@allow_failure_key] &&
-            ::Ci::HasStatus::EXCLUDE_IGNORED_STATUSES.include?(status[@status_key])
+            ::Ci::HasStatus::IGNORED_STATUSES.include?(status[@status_key])
         end
       end
     end

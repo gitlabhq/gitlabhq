@@ -449,8 +449,6 @@ Settings.mattermost['host'] = nil unless Settings.mattermost.enabled
 Settings['jira_connect'] ||= Settingslogic.new({})
 
 Settings.jira_connect['atlassian_js_url'] ||= 'https://connect-cdn.atl-paas.net/all.js'
-Settings.jira_connect['enable_public_keys_storage'] ||= false
-Settings.jira_connect['enable_public_keys_storage'] = true if Gitlab.com?
 Settings.jira_connect['enforce_jira_base_url_https'] = true if Settings.jira_connect['enforce_jira_base_url_https'].nil?
 Settings.jira_connect['additional_iframe_ancestors'] ||= []
 
@@ -779,7 +777,7 @@ Gitlab.ee do
   Settings.cron_jobs['elastic_remove_expired_namespace_subscriptions_from_index_cron_worker']['cron'] ||= '10 3 * * *'
   Settings.cron_jobs['elastic_remove_expired_namespace_subscriptions_from_index_cron_worker']['job_class'] ||= 'ElasticRemoveExpiredNamespaceSubscriptionsFromIndexCronWorker'
   Settings.cron_jobs['elastic_migration_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['elastic_migration_worker']['cron'] ||= '*/30 * * * *'
+  Settings.cron_jobs['elastic_migration_worker']['cron'] ||= '*/5 * * * *'
   Settings.cron_jobs['elastic_migration_worker']['job_class'] ||= 'Elastic::MigrationWorker'
   Settings.cron_jobs['search_index_curation_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['search_index_curation_worker']['cron'] ||= '*/1 * * * *'
@@ -833,8 +831,11 @@ Gitlab.ee do
   Settings.cron_jobs['abandoned_trial_emails']['cron'] ||= "0 1 * * *"
   Settings.cron_jobs['abandoned_trial_emails']['job_class'] = 'Emails::AbandonedTrialEmailsCronWorker'
   Settings.cron_jobs['package_metadata_sync_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['package_metadata_sync_worker']['cron'] ||= "0 1 * * *"
+  Settings.cron_jobs['package_metadata_sync_worker']['cron'] ||= "*/5 * * * *"
   Settings.cron_jobs['package_metadata_sync_worker']['job_class'] = 'PackageMetadata::SyncWorker'
+  Settings.cron_jobs['compliance_violations_consistency_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['compliance_violations_consistency_worker']['cron'] ||= '0 1 * * *'
+  Settings.cron_jobs['compliance_violations_consistency_worker']['job_class'] = 'ComplianceManagement::MergeRequests::ComplianceViolationsConsistencyWorker'
   Gitlab.com do
     Settings.cron_jobs['free_user_cap_backfill_notification_jobs_worker'] ||= Settingslogic.new({})
     Settings.cron_jobs['free_user_cap_backfill_notification_jobs_worker']['cron'] ||= '*/5 * * * *'
@@ -856,7 +857,7 @@ end
 #
 Settings['sidekiq'] ||= Settingslogic.new({})
 Settings['sidekiq']['log_format'] ||= 'default'
-Settings['sidekiq']['routing_rules'] ||= []
+Settings['sidekiq']['routing_rules'] = Settings.build_sidekiq_routing_rules(Settings['sidekiq']['routing_rules'])
 
 #
 # GitLab Shell
@@ -1013,6 +1014,12 @@ Settings.forti_authenticator['port'] = 443 if Settings.forti_authenticator['port
 #
 Settings['forti_token_cloud'] ||= Settingslogic.new({})
 Settings.forti_token_cloud['enabled'] = false if Settings.forti_token_cloud['enabled'].nil?
+
+#
+# DuoAuth
+#
+Settings['duo_auth'] ||= Settingslogic.new({})
+Settings.duo_auth['enabled'] = false if Settings.duo_auth['enabled'].nil?
 
 #
 # Extra customization

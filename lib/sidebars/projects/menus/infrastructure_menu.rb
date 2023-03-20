@@ -11,6 +11,7 @@ module Sidebars
           add_item(kubernetes_menu_item)
           add_item(terraform_menu_item)
           add_item(google_cloud_menu_item)
+          add_item(aws_menu_item)
 
           true
         end
@@ -32,6 +33,11 @@ module Sidebars
           'cloud-gear'
         end
 
+        override :serialize_as_menu_item_args
+        def serialize_as_menu_item_args
+          nil
+        end
+
         private
 
         def feature_enabled?
@@ -46,6 +52,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Kubernetes clusters'),
             link: project_clusters_path(context.project),
+            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
             active_routes: { controller: [:cluster_agents, :clusters] },
             container_html_options: { class: 'shortcuts-kubernetes' },
             hint_html_options: kubernetes_hint_html_options,
@@ -74,8 +81,27 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Terraform'),
             link: project_terraform_index_path(context.project),
+            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
             active_routes: { controller: :terraform },
             item_id: :terraform
+          )
+        end
+
+        def aws_menu_item
+          enabled_for_user = Feature.enabled?(:cloudseed_aws, context.current_user)
+          enabled_for_group = Feature.enabled?(:cloudseed_aws, context.project.group)
+          enabled_for_project = Feature.enabled?(:cloudseed_aws, context.project)
+          feature_is_enabled = enabled_for_user || enabled_for_group || enabled_for_project
+          user_has_permissions = can?(context.current_user, :admin_project_aws, context.project)
+
+          return ::Sidebars::NilMenuItem.new(item_id: :cloudseed_aws) unless feature_is_enabled && user_has_permissions
+
+          ::Sidebars::MenuItem.new(
+            title: _('AWS'),
+            link: '#',
+            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
+            item_id: :aws,
+            active_routes: { controller: '' }
           )
         end
 
@@ -86,13 +112,16 @@ module Sidebars
           feature_is_enabled = enabled_for_user || enabled_for_group || enabled_for_project
           user_has_permissions = can?(context.current_user, :admin_project_google_cloud, context.project)
 
-          unless feature_is_enabled && user_has_permissions
+          google_oauth2_configured = google_oauth2_configured?
+
+          unless feature_is_enabled && user_has_permissions && google_oauth2_configured
             return ::Sidebars::NilMenuItem.new(item_id: :incubation_5mp_google_cloud)
           end
 
           ::Sidebars::MenuItem.new(
             title: _('Google Cloud'),
             link: project_google_cloud_configuration_path(context.project),
+            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
             active_routes: { controller: %w[
               projects/google_cloud/configuration
               projects/google_cloud/service_accounts
@@ -102,6 +131,11 @@ module Sidebars
             ] },
             item_id: :google_cloud
           )
+        end
+
+        def google_oauth2_configured?
+          config = Gitlab::Auth::OAuth::Provider.config_for('google_oauth2')
+          config&.present? && config.app_id.present? && config.app_secret.present?
         end
       end
     end

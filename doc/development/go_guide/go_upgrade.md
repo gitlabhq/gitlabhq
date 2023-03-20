@@ -26,7 +26,7 @@ by Distribution:
 
 ## Supporting multiple Go versions
 
-Individual Golang projects need to support multiple Go versions because:
+Individual Go projects need to support multiple Go versions because:
 
 - When a new version of Go is released, we should start integrating it into the CI pipelines to verify compatibility with the new compiler.
 - We must support the [official Omnibus GitLab Go version](#updating-go-version), which may be behind the latest minor release.

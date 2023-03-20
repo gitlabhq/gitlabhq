@@ -158,7 +158,6 @@ Style/FormatString:
     - 'danger/roulette/Dangerfile'
     - 'ee/app/components/billing/plan_component.rb'
     - 'ee/app/components/namespaces/free_user_cap/enforcement_alert_component.rb'
-    - 'ee/app/components/namespaces/free_user_cap/notification_alert_component.rb'
     - 'ee/app/components/namespaces/free_user_cap/usage_quota_alert_component.rb'
     - 'ee/app/components/namespaces/free_user_cap/usage_quota_trial_alert_component.rb'
     - 'ee/app/controllers/admin/elasticsearch_controller.rb'

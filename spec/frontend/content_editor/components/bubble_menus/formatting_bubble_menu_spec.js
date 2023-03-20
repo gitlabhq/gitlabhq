@@ -37,10 +37,6 @@ describe('content_editor/components/bubble_menus/formatting_bubble_menu', () => 
     buildEditor();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders bubble menu component', () => {
     buildWrapper();
     const bubbleMenu = wrapper.findComponent(BubbleMenu);

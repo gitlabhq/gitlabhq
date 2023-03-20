@@ -85,7 +85,7 @@ export default {
     size="sm"
     :action-primary="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
       text: __('Delete'),
-      attributes: [{ variant: 'danger' }, { disabled: disablePrimaryButton }],
+      attributes: { variant: 'danger', disabled: disablePrimaryButton },
     } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
     :action-cancel="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
       text: __('Cancel'),

@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, '#execute', :yaml_processor_feature_flag_corectness do
+RSpec.describe Ci::CreatePipelineService, '#execute', :yaml_processor_feature_flag_corectness,
+  feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 

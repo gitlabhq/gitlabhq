@@ -42,10 +42,6 @@ describe('SignInGitlabCom', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     describe.each`
       scenario                   | hasSubscriptions | signInButtonText

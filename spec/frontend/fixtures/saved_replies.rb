@@ -43,4 +43,32 @@ RSpec.describe GraphQL::Query, type: :request, feature_category: :user_profile d
       expect_graphql_errors_to_be_empty
     end
   end
+
+  context 'when user creates saved reply' do
+    base_input_path = 'saved_replies/queries/'
+    base_output_path = 'graphql/saved_replies/'
+    query_name = 'create_saved_reply.mutation.graphql'
+
+    it "#{base_output_path}#{query_name}.json" do
+      query = get_graphql_query_as_string("#{base_input_path}#{query_name}")
+
+      post_graphql(query, current_user: current_user, variables: { name: "Test", content: "Test content" })
+
+      expect_graphql_errors_to_be_empty
+    end
+  end
+
+  context 'when user creates saved reply and it errors' do
+    base_input_path = 'saved_replies/queries/'
+    base_output_path = 'graphql/saved_replies/'
+    query_name = 'create_saved_reply.mutation.graphql'
+
+    it "#{base_output_path}create_saved_reply_with_errors.mutation.graphql.json" do
+      query = get_graphql_query_as_string("#{base_input_path}#{query_name}")
+
+      post_graphql(query, current_user: current_user, variables: { name: nil, content: nil })
+
+      expect(flattened_errors).not_to be_empty
+    end
+  end
 end

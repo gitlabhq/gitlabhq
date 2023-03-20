@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TodosDestroyer::DestroyedDesignsWorker do
+RSpec.describe TodosDestroyer::DestroyedDesignsWorker, feature_category: :team_planning do
   let(:service) { double }
 
   it 'calls the Todos::Destroy::DesignService with design_ids parameter' do

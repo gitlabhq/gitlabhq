@@ -369,7 +369,7 @@ module Gitlab
             <div>
             <div>
             <div class="gl-relative markdown-code-block js-markdown-code">
-            <pre lang="javascript" class="code highlight js-syntax-highlight language-javascript" data-canonical-lang="js" v-pre="true"><code><span id="LC1" class="line" lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">hello world</span><span class="dl">'</span><span class="p">)</span></span></code></pre>
+            <pre lang="javascript" class="code highlight js-syntax-highlight language-javascript" data-canonical-lang="js" v-pre="true"><code><span id="LC1" class="line" lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">hello world</span><span class="dl">'</span><span class="p">)</span></span></code></pre>
             <copy-code></copy-code>
             </div>
             </div>

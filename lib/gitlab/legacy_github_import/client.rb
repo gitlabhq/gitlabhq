@@ -34,6 +34,7 @@ module Gitlab
           }
         )
       end
+      alias_method :octokit, :api
 
       def client
         unless config

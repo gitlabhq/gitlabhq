@@ -34,13 +34,13 @@ RSpec.describe ClusterSerializer do
       end
 
       it 'serializes attrs correctly' do
-        is_expected.to contain_exactly(:status, :status_reason, :applications)
+        is_expected.to contain_exactly(:status, :status_reason)
       end
     end
 
     context 'when provider type is user' do
       it 'serializes attrs correctly' do
-        is_expected.to contain_exactly(:status, :status_reason, :applications)
+        is_expected.to contain_exactly(:status, :status_reason)
       end
     end
   end

@@ -25,10 +25,6 @@ describe('Issue title suggestions item component', () => {
   const findTooltip = () => wrapper.findComponent(GlTooltip);
   const findUserAvatar = () => wrapper.findComponent(UserAvatarImage);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders title', () => {
     createComponent();
 

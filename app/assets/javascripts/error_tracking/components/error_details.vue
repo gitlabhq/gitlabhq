@@ -13,7 +13,7 @@ import {
   GlIcon,
 } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { createAlert, VARIANT_WARNING } from '~/flash';
+import { createAlert, VARIANT_WARNING } from '~/alert';
 import { __, sprintf, n__ } from '~/locale';
 import Tracking from '~/tracking';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';

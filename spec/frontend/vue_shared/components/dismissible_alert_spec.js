@@ -16,10 +16,6 @@ describe('vue_shared/components/dismissible_alert', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findAlert = () => wrapper.findComponent(GlAlert);
 
   describe('default', () => {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Milestones::DestroyService do
+RSpec.describe Milestones::DestroyService, feature_category: :team_planning do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:milestone) { create(:milestone, title: 'Milestone v1.0', project: project) }

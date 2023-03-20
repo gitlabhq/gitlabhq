@@ -1,5 +1,5 @@
 import { s__, sprintf } from '~/locale';
-import { createAlert, VARIANT_SUCCESS } from '~/flash';
+import { createAlert, VARIANT_SUCCESS } from '~/alert';
 
 const createReleaseSessionKey = (projectPath) => `createRelease:${projectPath}`;
 

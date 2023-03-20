@@ -37,10 +37,6 @@ describe('Stages Dropdown', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('without a merge request pipeline', () => {
     beforeEach(() => {
       createComponent({

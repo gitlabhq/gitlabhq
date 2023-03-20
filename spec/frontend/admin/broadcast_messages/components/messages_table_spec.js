@@ -21,10 +21,6 @@ describe('MessagesTable', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders a table row for each message', () => {
     createComponent();
 

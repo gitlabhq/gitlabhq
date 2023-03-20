@@ -60,6 +60,9 @@ class Note < ApplicationRecord
   # Attribute used to store the attributes that have been changed by quick actions.
   attr_writer :commands_changes
 
+  # Attribute used to store the quick action command names.
+  attr_accessor :command_names
+
   # Attribute used to determine whether keep_around_commits will be skipped for diff notes.
   attr_accessor :skip_keep_around_commits
 
@@ -169,7 +172,6 @@ class Note < ApplicationRecord
              project: [:project_members, :namespace, { group: [:group_members] }])
   end
   scope :with_metadata, -> { includes(:system_note_metadata) }
-  scope :with_web_entity_associations, -> { preload(:project, :author, :noteable) }
 
   scope :for_note_or_capitalized_note, ->(text) { where(note: [text, text.capitalize]) }
   scope :like_note_or_capitalized_note, ->(text) { where('(note LIKE ? OR note LIKE ?)', text, text.capitalize) }
@@ -288,6 +290,10 @@ class Note < ApplicationRecord
     def cherry_picked_merge_requests(shas)
       where(noteable_type: 'MergeRequest', commit_id: shas).select(:noteable_id)
     end
+
+    def with_web_entity_associations
+      preload(:project, :author, :noteable)
+    end
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -328,6 +334,10 @@ class Note < ApplicationRecord
 
   def for_issue?
     noteable_type == "Issue"
+  end
+
+  def for_work_item?
+    noteable.is_a?(WorkItem)
   end
 
   def for_merge_request?

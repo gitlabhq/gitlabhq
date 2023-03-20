@@ -29,19 +29,19 @@ import {
   DESIGN_TRACKING_PAGE_NAME,
   DESIGN_SNOWPLOW_EVENT_TYPES,
 } from '~/design_management/utils/tracking';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import {
   designListQueryResponse,
   designUploadMutationCreatedResponse,
   designUploadMutationUpdatedResponse,
-  permissionsQueryResponse,
+  getPermissionsQueryResponse,
   moveDesignMutationResponse,
   reorderedDesigns,
   moveDesignMutationResponseWithErrors,
 } from '../mock_data/apollo_mock';
 
-jest.mock('~/flash.js');
+jest.mock('~/alert');
 const mockPageEl = {
   classList: {
     remove: jest.fn(),
@@ -181,7 +181,7 @@ describe('Design management index page', () => {
 
     const requestHandlers = [
       [getDesignListQuery, jest.fn().mockResolvedValue(designListQueryResponse)],
-      [permissionsQuery, jest.fn().mockResolvedValue(permissionsQueryResponse)],
+      [permissionsQuery, jest.fn().mockResolvedValue(getPermissionsQueryResponse())],
       [moveDesignMutation, moveDesignHandler],
     ];
 
@@ -196,11 +196,6 @@ describe('Design management index page', () => {
       },
     });
   }
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   describe('designs', () => {
     it('renders loading icon', () => {
@@ -800,7 +795,7 @@ describe('Design management index page', () => {
       expect(draggableAttributes().disabled).toBe(false);
     });
 
-    it('displays flash if mutation had a recoverable error', async () => {
+    it('displays alert if mutation had a recoverable error', async () => {
       createComponentWithApollo({
         moveHandler: jest.fn().mockResolvedValue(moveDesignMutationResponseWithErrors),
       });

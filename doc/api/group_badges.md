@@ -1,6 +1,6 @@
 ---
-stage: Manage
-group: Organization
+stage: Data Stores
+group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Placeholder tokens
 
-Badges support placeholders that are replaced in real time in both the link and image URL. The allowed placeholders are:
+[Badges](../user/project/badges.md) support placeholders that are replaced in real time in both the link and image URL. The allowed placeholders are:
 
 <!-- vale gitlab.Spelling = NO -->
 

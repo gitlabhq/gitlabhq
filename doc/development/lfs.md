@@ -4,14 +4,14 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Git LFS developer information
+# Git LFS development guidelines
 
 This page contains developer-centric information for GitLab team members. For the
 user documentation, see [Git Large File Storage](../topics/git/lfs/index.md).
 
 ## Deep Dive
 
-In April 2019, Francisco Javier López hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`)
+In April 2019, Francisco Javier López hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/-/issues/1`)
 on the GitLab [Git LFS](../topics/git/lfs/index.md) implementation to share domain-specific
 knowledge with anyone who may work in this part of the codebase in the future.
 You can find the <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [recording on YouTube](https://www.youtube.com/watch?v=Yyxwcksr0Qc),

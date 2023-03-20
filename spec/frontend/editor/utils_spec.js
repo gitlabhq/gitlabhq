@@ -54,19 +54,17 @@ describe('Source Editor utils', () => {
 
   describe('getBlobLanguage', () => {
     it.each`
-      path           | expectedLanguage
-      ${'foo.js'}    | ${'javascript'}
-      ${'foo.js.rb'} | ${'ruby'}
-      ${'foo.bar'}   | ${'plaintext'}
-      ${undefined}   | ${'plaintext'}
-    `(
-      'sets the $expectedThemeName theme when $themeName is set in the user preference',
-      ({ path, expectedLanguage }) => {
-        const language = utils.getBlobLanguage(path);
+      path                | expectedLanguage
+      ${'foo.js'}         | ${'javascript'}
+      ${'foo.js.rb'}      | ${'ruby'}
+      ${'foo.bar'}        | ${'plaintext'}
+      ${undefined}        | ${'plaintext'}
+      ${'foo/bar/foo.js'} | ${'javascript'}
+    `(`returns '$expectedLanguage' for '$path' path`, ({ path, expectedLanguage }) => {
+      const language = utils.getBlobLanguage(path);
 
-        expect(language).toEqual(expectedLanguage);
-      },
-    );
+      expect(language).toEqual(expectedLanguage);
+    });
   });
 
   describe('setupCodeSnipet', () => {

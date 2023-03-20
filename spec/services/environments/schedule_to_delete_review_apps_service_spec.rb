@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Environments::ScheduleToDeleteReviewAppsService do
+RSpec.describe Environments::ScheduleToDeleteReviewAppsService, feature_category: :continuous_delivery do
   include ExclusiveLeaseHelpers
 
   let_it_be(:maintainer) { create(:user) }

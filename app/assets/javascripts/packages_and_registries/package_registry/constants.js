@@ -27,15 +27,8 @@ export const PACKAGE_TYPE_DEBIAN = 'DEBIAN';
 export const PACKAGE_TYPE_HELM = 'HELM';
 
 export const TRACKING_LABEL_CODE_INSTRUCTION = 'code_instruction';
-export const TRACKING_LABEL_CONAN_INSTALLATION = 'conan_installation';
 export const TRACKING_LABEL_MAVEN_INSTALLATION = 'maven_installation';
-export const TRACKING_LABEL_NPM_INSTALLATION = 'npm_installation';
-export const TRACKING_LABEL_NUGET_INSTALLATION = 'nuget_installation';
-export const TRACKING_LABEL_PYPI_INSTALLATION = 'pypi_installation';
-export const TRACKING_LABEL_COMPOSER_INSTALLATION = 'composer_installation';
-
-export const TRACKING_ACTION_INSTALLATION = 'installation';
-export const TRACKING_ACTION_REGISTRY_SETUP = 'registry_setup';
+export const MAVEN_INSTALLATION_COMMAND = 'mvn install';
 
 export const TRACKING_ACTION_COPY_CONAN_COMMAND = 'copy_conan_command';
 export const TRACKING_ACTION_COPY_CONAN_SETUP_COMMAND = 'copy_conan_setup_command';
@@ -68,7 +61,6 @@ export const TRACKING_ACTION_COPY_COMPOSER_PACKAGE_INCLUDE_COMMAND =
 
 export const TRACKING_LABEL_PACKAGE_ASSET = 'package_assets';
 
-export const TRACKING_ACTION_DOWNLOAD_PACKAGE_ASSET = 'download_package_asset';
 export const TRACKING_ACTION_EXPAND_PACKAGE_ASSET = 'expand_package_asset';
 export const TRACKING_ACTION_COPY_PACKAGE_ASSET_SHA = 'copy_package_asset_sha';
 
@@ -119,6 +111,10 @@ export const DELETE_PACKAGE_VERSIONS_TRACKING_ACTION = 'delete_package_versions'
 export const REQUEST_DELETE_PACKAGE_VERSIONS_TRACKING_ACTION = 'request_delete_package_versions';
 export const CANCEL_DELETE_PACKAGE_VERSIONS_TRACKING_ACTION = 'cancel_delete_package_versions';
 
+export const DELETE_PACKAGE_VERSION_TRACKING_ACTION = 'delete_package_version';
+export const REQUEST_DELETE_PACKAGE_VERSION_TRACKING_ACTION = 'request_delete_package_version';
+export const CANCEL_DELETE_PACKAGE_VERSION_TRACKING_ACTION = 'cancel_delete_package_version';
+
 export const DELETE_PACKAGES_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while deleting packages.',
 );
@@ -127,6 +123,7 @@ export const DELETE_PACKAGES_SUCCESS_MESSAGE = s__('PackageRegistry|Packages del
 export const DELETE_PACKAGES_MODAL_TITLE = s__('PackageRegistry|Delete packages');
 export const DELETE_PACKAGE_MODAL_PRIMARY_ACTION = s__('PackageRegistry|Permanently delete');
 
+export const DELETE_PACKAGE_TEXT = s__('PackageRegistry|Delete package');
 export const DELETE_PACKAGE_SUCCESS_MESSAGE = s__('PackageRegistry|Package deleted successfully');
 export const DELETE_PACKAGE_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while deleting the package.',
@@ -142,8 +139,6 @@ export const PACKAGE_REGISTRY_TITLE = __('Package Registry');
 
 export const PACKAGE_ERROR_STATUS = 'ERROR';
 export const PACKAGE_DEFAULT_STATUS = 'DEFAULT';
-export const PACKAGE_HIDDEN_STATUS = 'HIDDEN';
-export const PACKAGE_PROCESSING_STATUS = 'PROCESSING';
 
 export const NPM_PACKAGE_MANAGER = 'npm';
 export const YARN_PACKAGE_MANAGER = 'yarn';
@@ -151,8 +146,6 @@ export const YARN_PACKAGE_MANAGER = 'yarn';
 export const PROJECT_PACKAGE_ENDPOINT_TYPE = 'project';
 export const INSTANCE_PACKAGE_ENDPOINT_TYPE = 'instance';
 
-export const PROJECT_RESOURCE_TYPE = 'project';
-export const GROUP_RESOURCE_TYPE = 'group';
 export const GRAPHQL_PAGE_SIZE = 20;
 
 export const LIST_KEY_NAME = 'name';

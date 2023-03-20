@@ -25,10 +25,6 @@ describe('RepoTabs', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders a list of tabs', async () => {
     store.state.openFiles[0].active = true;
 

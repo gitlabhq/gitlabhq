@@ -28,10 +28,6 @@ describe('UserLink', () => {
   const findSprintf = () => wrapper.findComponent(GlSprintf);
   const findOauthButton = () => wrapper.findComponent(SignInOauthButton);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe.each`
     userSignedIn | hasSubscriptions | expectGlSprintf | expectGlLink | expectOauthButton | jiraConnectOauthEnabled
     ${true}      | ${false}         | ${true}         | ${false}     | ${false}          | ${false}

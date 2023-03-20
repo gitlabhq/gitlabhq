@@ -16,7 +16,7 @@
     - if current_action?(:new) || current_action?(:create)
       %span.float-left.gl-mr-3
         \/
-      = text_field_tag 'file_name', params[:file_name], placeholder: "File name", data: { qa_selector: 'file_name_field' },
+      = text_field_tag 'file_name', params[:file_name], placeholder: "Filename", data: { qa_selector: 'file_name_field' },
         required: true, class: 'form-control gl-form-input new-file-name js-file-path-name-input', value: params[:file_name] || (should_suggest_gitlab_ci_yml? ? '.gitlab-ci.yml' : '')
       = render 'template_selectors'
       - if should_suggest_gitlab_ci_yml?
@@ -26,15 +26,15 @@
           dismiss_key: @project.id,
           human_access: human_access } }
 
-    .file-buttons.gl-display-flex.gl-align-items-center.gl-justify-content-end
-      - if is_markdown
-        - unless Feature.enabled?(:source_editor_toolbar, current_user)
+    - unless Feature.enabled?(:source_editor_toolbar, current_user)
+      .file-buttons.gl-display-flex.gl-align-items-center.gl-justify-content-end
+        - if is_markdown
           = render 'shared/blob/markdown_buttons', show_fullscreen_button: false, supports_file_upload: false
-      %span.soft-wrap-toggle
-        = render Pajamas::ButtonComponent.new(icon: 'soft-unwrap', button_options: { class: 'no-wrap' }) do
-          = _("No wrap")
-        = render Pajamas::ButtonComponent.new(icon: 'soft-wrap', button_options: { class: 'soft-wrap' }) do
-          = _("Soft wrap")
+        %span.soft-wrap-toggle
+          = render Pajamas::ButtonComponent.new(icon: 'soft-unwrap', button_options: { class: 'no-wrap' }) do
+            = _("No wrap")
+          = render Pajamas::ButtonComponent.new(icon: 'soft-wrap', button_options: { class: 'soft-wrap' }) do
+            = _("Soft wrap")
 
   .file-editor.code
     - if Feature.enabled?(:source_editor_toolbar, current_user)

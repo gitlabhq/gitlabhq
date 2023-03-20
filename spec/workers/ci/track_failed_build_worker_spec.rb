@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::TrackFailedBuildWorker do
+RSpec.describe ::Ci::TrackFailedBuildWorker, feature_category: :static_application_security_testing do
   let_it_be(:build) { create(:ci_build, :failed, :sast_report) }
   let_it_be(:exit_code) { 42 }
   let_it_be(:failure_reason) { "script_failure" }

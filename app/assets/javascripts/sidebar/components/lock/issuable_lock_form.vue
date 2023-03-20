@@ -1,10 +1,10 @@
 <script>
 import { GlIcon, GlTooltipDirective, GlOutsideDirective as Outside } from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
-import { TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import toast from '~/vue_shared/plugins/global_toast';
 import eventHub from '../../event_hub';
 import EditForm from './edit_form.vue';
@@ -46,7 +46,9 @@ export default {
   computed: {
     ...mapGetters(['getNoteableData']),
     isMergeRequest() {
-      return this.getNoteableData.targetType === 'merge_request' && this.glFeatures.movedMrSidebar;
+      return (
+        this.getNoteableData.targetType === TYPE_MERGE_REQUEST && this.glFeatures.movedMrSidebar
+      );
     },
     issuableDisplayName() {
       const isInIssuePage = this.getNoteableData.targetType === TYPE_ISSUE;
@@ -92,11 +94,11 @@ export default {
           }
         })
         .catch(() => {
-          const flashMessage = __(
+          const alertMessage = __(
             'Something went wrong trying to change the locked state of this %{issuableDisplayName}',
           );
           createAlert({
-            message: sprintf(flashMessage, { issuableDisplayName: this.issuableDisplayName }),
+            message: sprintf(alertMessage, { issuableDisplayName: this.issuableDisplayName }),
           });
         })
         .finally(() => {

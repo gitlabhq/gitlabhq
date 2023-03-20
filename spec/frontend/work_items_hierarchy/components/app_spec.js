@@ -24,10 +24,6 @@ describe('WorkItemsHierarchy App', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('survey banner', () => {
     it('shows when the banner is visible', () => {
       createComponent({}, { bannerVisible: true });

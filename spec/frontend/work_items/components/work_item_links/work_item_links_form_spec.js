@@ -75,10 +75,6 @@ describe('WorkItemLinksForm', () => {
   const findConfidentialCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findAddChildButton = () => wrapper.findByTestId('add-child-button');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('creating a new work item', () => {
     beforeEach(async () => {
       await createComponent();

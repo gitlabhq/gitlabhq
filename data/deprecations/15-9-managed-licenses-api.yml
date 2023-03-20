@@ -1,0 +1,9 @@
+- title: "Managed Licenses API"
+  announcement_milestone: "15.9"
+  removal_milestone: "16.0"
+  breaking_change: true
+  reporter: sam.white
+  stage: govern
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/390417
+  body: |
+    The [Managed Licenses API](https://docs.gitlab.com/ee/api/managed_licenses.html) is now deprecated and is scheduled for removal in GitLab 16.0.

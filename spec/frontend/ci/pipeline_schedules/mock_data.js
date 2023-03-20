@@ -5,6 +5,7 @@ import mockGetPipelineSchedulesTakeOwnershipGraphQLResponse from 'test_fixtures/
 
 const {
   data: {
+    currentUser,
     project: {
       pipelineSchedules: { nodes },
     },
@@ -28,6 +29,7 @@ const {
 } = mockGetPipelineSchedulesTakeOwnershipGraphQLResponse;
 
 export const mockPipelineScheduleNodes = nodes;
+export const mockPipelineScheduleCurrentUser = currentUser;
 
 export const mockPipelineScheduleAsGuestNodes = guestNodes;
 

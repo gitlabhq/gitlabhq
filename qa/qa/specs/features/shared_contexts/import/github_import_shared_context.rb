@@ -26,6 +26,7 @@ module QA
     let(:imported_project) do
       Resource::ProjectImportedFromGithub.fabricate_via_api! do |project|
         project.name = 'imported-project'
+        project.github_repo_id = '466994992'
         project.group = group
         project.github_personal_access_token = Runtime::Env.github_access_token
         project.github_repository_path = github_repo

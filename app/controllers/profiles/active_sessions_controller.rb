@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Profiles::ActiveSessionsController < Profiles::ApplicationController
-  feature_category :authentication_and_authorization
+  feature_category :system_access
 
   def index
     @sessions = ActiveSession.list(current_user).reject(&:is_impersonated)

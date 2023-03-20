@@ -8,7 +8,7 @@ include:
   - local: .gitlab/ci/package-and-test/rules.gitlab-ci.yml
   - local: .gitlab/ci/package-and-test/variables.gitlab-ci.yml
   - project: gitlab-org/quality/pipeline-common
-    ref: 2.0.0
+    ref: 2.2.0
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/allure-report.yml
@@ -41,7 +41,8 @@ stages:
 
 .update-script:
   script:
-    - export QA_COMMAND="bundle exec gitlab-qa Test::Omnibus::UpdateFromPrevious $RELEASE $GITLAB_VERSION $UPDATE_TYPE -- $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
+    - !reference [.bundle-prefix]
+    - export QA_COMMAND="$BUNDLE_PREFIX gitlab-qa Test::Omnibus::UpdateFromPrevious $RELEASE $GITLAB_SEMVER_VERSION $UPDATE_TYPE -- $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
     - echo "Running - '$QA_COMMAND'"
     - eval "$QA_COMMAND"
 
@@ -59,15 +60,16 @@ stages:
     - job: download-knapsack-report
       artifacts: true
       optional: true
+    - job: check-release-set
   variables:
     QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
     QA_INTERCEPT_REQUESTS: "true"
-    QA_RUN_TYPE: e2e-package-and-test
+    GITLAB_LICENSE_MODE: test
+    GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
+    # todo: remove in 16.1 milestone when not needed for backwards compatibility anymore
     EE_LICENSE: $QA_EE_LICENSE
     GITHUB_ACCESS_TOKEN: $QA_GITHUB_ACCESS_TOKEN
-    GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
-    GITLAB_LICENSE_MODE: test
 
 # ==========================================
 # Prepare stage
@@ -122,8 +124,10 @@ trigger-omnibus-env:
       echo "OMNIBUS_GITLAB_CACHE_UPDATE=${OMNIBUS_GITLAB_CACHE_UPDATE:-false}" >> $BUILD_ENV
       for version_file in *_VERSION; do echo "$version_file=$(cat $version_file)" >> $BUILD_ENV; done
       echo "OMNIBUS_GITLAB_RUBY3_BUILD=${OMNIBUS_GITLAB_RUBY3_BUILD:-false}" >> $BUILD_ENV
+      echo "OMNIBUS_GITLAB_RUBY2_BUILD=${OMNIBUS_GITLAB_RUBY2_BUILD:-false}" >> $BUILD_ENV
       echo "OMNIBUS_GITLAB_CACHE_EDITION=${OMNIBUS_GITLAB_CACHE_EDITION:-GITLAB}" >> $BUILD_ENV
       echo "GITLAB_ASSETS_TAG=$(assets_image_tag)" >> $BUILD_ENV
+      echo "EE=$([[ $FOSS_ONLY == 'true' ]] && echo 'false' || echo 'true')" >> $BUILD_ENV
       echo "Built environment file for omnibus build:"
       cat $BUILD_ENV
   artifacts:
@@ -152,10 +156,10 @@ trigger-omnibus:
     SECURITY_SOURCES: $SECURITY_SOURCES
     CACHE_UPDATE: $OMNIBUS_GITLAB_CACHE_UPDATE
     RUBY3_BUILD: $OMNIBUS_GITLAB_RUBY3_BUILD
+    RUBY2_BUILD: $OMNIBUS_GITLAB_RUBY2_BUILD
     CACHE_EDITION: $OMNIBUS_GITLAB_CACHE_EDITION
-    SKIP_QA_DOCKER: "true"
     SKIP_QA_TEST: "true"
-    ee: "true"
+    ee: $EE
   trigger:
     project: gitlab-org/build/omnibus-gitlab-mirror
     strategy: depend
@@ -202,7 +206,7 @@ cache-gems:
 # Run manual quarantine job
 #   this job requires passing QA_SCENARIO variable
 #   and optionally QA_TESTS to run specific quarantined tests
-_ee:quarantine:
+_quarantine:
   extends:
     - .qa
     - .rules:test:manual
@@ -213,12 +217,33 @@ _ee:quarantine:
   variables:
     QA_RSPEC_TAGS: --tag quarantine
 
+# Temporary test job to support the effort of migrating to Super Sidebar
+# https://gitlab.com/groups/gitlab-org/-/epics/9044
+_super-sidebar-nav:
+  extends:
+    - .qa
+    - .parallel
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    QA_KNAPSACK_REPORT_NAME: ee-instance
+    QA_TESTS: ""
+    QA_SUPER_SIDEBAR_ENABLED: "true"
+    QA_ALLURE_RESULTS_DIRECTORY: tmp/allure-results-super-sidebar
+    QA_EXPORT_TEST_METRICS: "false"
+    GITLAB_QA_OPTS: --set-feature-flags super_sidebar_nav=enabled
+    RSPEC_REPORT_OPTS: "--format documentation"
+    SKIP_REPORT_IN_ISSUES: "true"
+  allow_failure: true
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - !reference [.rules:test:manual, rules]
+
 # ------------------------------------------
 # FF changes
 # ------------------------------------------
 
 # Run specs with feature flags set to the opposite of the default state
-ee:instance-ff-inverse:
+instance-ff-inverse:
   extends:
     - .qa
     - .parallel
@@ -232,23 +257,23 @@ ee:instance-ff-inverse:
 # ------------------------------------------
 # Jobs with parallel variant
 # ------------------------------------------
-ee:instance-selective:
+instance-selective:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Instance::Image
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
-ee:instance:
+instance:
   extends:
     - .parallel
-    - ee:instance-selective
+    - instance-selective
   rules:
-    - !reference [.rules:test:feature-flags-set, rules]  # always run ee:instance to validate ff change
+    - !reference [.rules:test:feature-flags-set, rules]  # always run instance to validate ff change
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
 
-ee:praefect-selective:
+praefect-selective:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::Praefect
@@ -256,30 +281,30 @@ ee:praefect-selective:
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
-ee:praefect:
+praefect:
   extends:
     - .parallel
-    - ee:praefect-selective
+    - praefect-selective
   rules:
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
 
-ee:relative-url-selective:
+relative-url-selective:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Instance::RelativeUrl
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
-ee:relative-url:
+relative-url:
   extends:
     - .parallel
-    - ee:relative-url-selective
+    - relative-url-selective
   rules:
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
 
-ee:decomposition-single-db-selective:
+decomposition-single-db-selective:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Instance::Image
@@ -287,15 +312,15 @@ ee:decomposition-single-db-selective:
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
-ee:decomposition-single-db:
+decomposition-single-db:
   extends:
     - .parallel
-    - ee:decomposition-single-db-selective
+    - decomposition-single-db-selective
   rules:
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
 
-ee:decomposition-multiple-db-selective:
+decomposition-multiple-db-selective:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Instance::Image
@@ -304,15 +329,15 @@ ee:decomposition-multiple-db-selective:
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
-ee:decomposition-multiple-db:
+decomposition-multiple-db:
   extends:
     - .parallel
-    - ee:decomposition-multiple-db-selective
+    - decomposition-multiple-db-selective
   rules:
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
 
-ee:object-storage-selective:
+object-storage-selective:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Instance::Image
@@ -321,42 +346,42 @@ ee:object-storage-selective:
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::ObjectStorage/
-ee:object-storage:
-  extends: ee:object-storage-selective
+object-storage:
+  extends: object-storage-selective
   parallel: 2
   rules:
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::ObjectStorage/
 
-ee:object-storage-aws-selective:
-  extends: ee:object-storage-selective
+object-storage-aws-selective:
+  extends: object-storage-selective
   variables:
     AWS_S3_ACCESS_KEY: $QA_AWS_S3_ACCESS_KEY
     AWS_S3_BUCKET_NAME: $QA_AWS_S3_BUCKET_NAME
     AWS_S3_KEY_ID: $QA_AWS_S3_KEY_ID
     AWS_S3_REGION: $QA_AWS_S3_REGION
     GITLAB_QA_OPTS: --omnibus-config object_storage_aws
-ee:object-storage-aws:
-  extends: ee:object-storage-aws-selective
+object-storage-aws:
+  extends: object-storage-aws-selective
   parallel: 2
   rules:
-    - !reference [ee:object-storage, rules]
+    - !reference [object-storage, rules]
 
-ee:object-storage-gcs-selective:
-  extends: ee:object-storage-selective
+object-storage-gcs-selective:
+  extends: object-storage-selective
   variables:
     GCS_BUCKET_NAME: $QA_GCS_BUCKET_NAME
     GOOGLE_PROJECT: $QA_GOOGLE_PROJECT
     GOOGLE_JSON_KEY: $QA_GOOGLE_JSON_KEY
     GOOGLE_CLIENT_EMAIL: $QA_GOOGLE_CLIENT_EMAIL
     GITLAB_QA_OPTS: --omnibus-config object_storage_gcs
-ee:object-storage-gcs:
-  extends: ee:object-storage-gcs-selective
+object-storage-gcs:
+  extends: object-storage-gcs-selective
   parallel: 2
   rules:
-    - !reference [ee:object-storage, rules]
+    - !reference [object-storage, rules]
 
-ee:packages-selective:
+packages-selective:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Instance::Image
@@ -365,8 +390,8 @@ ee:packages-selective:
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::Packages/
-ee:packages:
-  extends: ee:packages-selective
+packages:
+  extends: packages-selective
   parallel: 2
   rules:
     - !reference [.rules:test:qa-parallel, rules]
@@ -375,7 +400,7 @@ ee:packages:
 # ------------------------------------------
 # Non parallel jobs
 # ------------------------------------------
-ee:update-minor:
+update-minor:
   extends:
     - .qa
     - .update-script
@@ -387,7 +412,7 @@ ee:update-minor:
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
     - !reference [.rules:test:manual, rules]
 
-ee:update-major:
+update-major:
   extends:
     - .qa
     - .update-script
@@ -399,7 +424,7 @@ ee:update-major:
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
     - !reference [.rules:test:manual, rules]
 
-ee:gitlab-pages:
+gitlab-pages:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::GitlabPages
@@ -408,7 +433,7 @@ ee:gitlab-pages:
     - if: $QA_SUITES =~ /Test::Instance::GitlabPages/
     - !reference [.rules:test:manual, rules]
 
-ee:gitaly-cluster:
+gitaly-cluster:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::GitalyCluster
@@ -417,16 +442,17 @@ ee:gitaly-cluster:
     - if: $QA_SUITES =~ /Test::Integration::GitalyCluster/
     - !reference [.rules:test:manual, rules]
 
-ee:group-saml:
+group-saml:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::GroupSAML
   rules:
+    - !reference [.rules:test:ee-only, rules]
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::GroupSAML/
     - !reference [.rules:test:manual, rules]
 
-ee:instance-saml:
+instance-saml:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::InstanceSAML
@@ -435,7 +461,7 @@ ee:instance-saml:
     - if: $QA_SUITES =~ /Test::Integration::InstanceSAML/
     - !reference [.rules:test:manual, rules]
 
-ee:jira:
+jira:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::Jira
@@ -446,7 +472,7 @@ ee:jira:
     - if: $QA_SUITES =~ /Test::Integration::Jira/
     - !reference [.rules:test:manual, rules]
 
-ee:integrations:
+integrations:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::Integrations
@@ -455,7 +481,7 @@ ee:integrations:
     - if: $QA_SUITES =~ /Test::Integration::Integrations/
     - !reference [.rules:test:manual, rules]
 
-ee:ldap-no-server:
+ldap-no-server:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::LDAPNoServer
@@ -464,7 +490,7 @@ ee:ldap-no-server:
     - if: $QA_SUITES =~ /Test::Integration::LDAPNoServer/
     - !reference [.rules:test:manual, rules]
 
-ee:ldap-tls:
+ldap-tls:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::LDAPTLS
@@ -473,7 +499,7 @@ ee:ldap-tls:
     - if: $QA_SUITES =~ /Test::Integration::LDAPTLS/
     - !reference [.rules:test:manual, rules]
 
-ee:ldap-no-tls:
+ldap-no-tls:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::LDAPNoTLS
@@ -482,7 +508,7 @@ ee:ldap-no-tls:
     - if: $QA_SUITES =~ /Test::Integration::LDAPNoTLS/
     - !reference [.rules:test:manual, rules]
 
-ee:mtls:
+mtls:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::MTLS
@@ -491,7 +517,7 @@ ee:mtls:
     - if: $QA_SUITES =~ /Test::Integration::Mtls/
     - !reference [.rules:test:manual, rules]
 
-ee:mattermost:
+mattermost:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::Mattermost
@@ -500,7 +526,7 @@ ee:mattermost:
     - if: $QA_SUITES =~ /Test::Integration::Mattermost/
     - !reference [.rules:test:manual, rules]
 
-ee:registry:
+registry:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::Registry
@@ -509,7 +535,7 @@ ee:registry:
     - if: $QA_SUITES =~ /Test::Integration::Registry/
     - !reference [.rules:test:manual, rules]
 
-ee:registry-with-cdn:
+registry-with-cdn:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::RegistryWithCDN
@@ -526,7 +552,7 @@ ee:registry-with-cdn:
     - if: $QA_SUITES =~ /Test::Integration::RegistryWithCDN/
     - !reference [.rules:test:manual, rules]
 
-ee:repository-storage:
+repository-storage:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Instance::RepositoryStorage
@@ -535,7 +561,7 @@ ee:repository-storage:
     - if: $QA_SUITES =~ /Test::Instance::RepositoryStorage/
     - !reference [.rules:test:manual, rules]
 
-ee:service-ping-disabled:
+service-ping-disabled:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::ServicePingDisabled
@@ -544,7 +570,7 @@ ee:service-ping-disabled:
     - if: $QA_SUITES =~ /Test::Integration::ServicePingDisabled/
     - !reference [.rules:test:manual, rules]
 
-ee:smtp:
+smtp:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::SMTP
@@ -553,7 +579,7 @@ ee:smtp:
     - if: $QA_SUITES =~ /Test::Integration::SMTP/
     - !reference [.rules:test:manual, rules]
 
-ee:cloud-activation:
+cloud-activation:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Instance::Image
@@ -563,7 +589,7 @@ ee:cloud-activation:
     - if: $QA_SUITES =~ /Test::Instance::CloudActivation/
     - !reference [.rules:test:manual, rules]
 
-ee:large-setup:
+large-setup:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Instance::Image
@@ -573,7 +599,7 @@ ee:large-setup:
     - if: $QA_SUITES =~ /Test::Instance::LargeSetup/
     - !reference [.rules:test:manual, rules]
 
-ee:metrics:
+metrics:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::Metrics
@@ -582,31 +608,31 @@ ee:metrics:
     - if: $QA_SUITES =~ /Test::Instance::Metrics/
     - !reference [.rules:test:manual, rules]
 
-ee:elasticsearch:
+elasticsearch:
   extends: .qa
   variables:
     QA_SCENARIO: "Test::Integration::Elasticsearch"
   before_script:
     - !reference [.qa, before_script]
   rules:
+    - !reference [.rules:test:ee-only, rules]
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Elasticsearch/
     - !reference [.rules:test:manual, rules]
 
-ee:registry-object-storage-tls:
-  extends: ee:object-storage-aws-selective
+registry-object-storage-tls:
+  extends: object-storage-aws-selective
   variables:
     QA_SCENARIO: Test::Integration::RegistryTLS
     QA_RSPEC_TAGS: ""
     GITLAB_TLS_CERTIFICATE: $QA_GITLAB_TLS_CERTIFICATE
     GITLAB_QA_OPTS: --omnibus-config registry_object_storage
 
-ee:importers:
+importers:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::Import
     QA_MOCK_GITHUB: "true"
-    GITLAB_QA_OPTS: --set-feature-flags bulk_import_projects=enabled
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Import/
@@ -621,11 +647,26 @@ e2e-test-report:
     - .rules:report:allure-report
   stage: report
   variables:
+    ALLURE_JOB_NAME: e2e-package-and-test
     GITLAB_AUTH_TOKEN: $PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE
     ALLURE_PROJECT_PATH: $CI_PROJECT_PATH
     ALLURE_MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
-    ALLURE_JOB_NAME: e2e-package-and-test
-    GIT_STRATEGY: none
+
+# Temporary separate test report for super-sidebar test job
+# TODO: remove once super-sidebar is on by default and enabled in tests
+# https://gitlab.com/groups/gitlab-org/-/epics/9044
+e2e-test-report-super-sidebar:
+  extends:
+    - .generate-allure-report-base
+  stage: report
+  needs:
+    - _super-sidebar-nav
+  variables:
+    ALLURE_JOB_NAME: e2e-super-sidebar
+    ALLURE_RESULTS_GLOB: gitlab-qa-run-*/**/allure-results-super-sidebar
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - !reference [.rules:test:manual, rules]
 
 upload-knapsack-report:
   extends:

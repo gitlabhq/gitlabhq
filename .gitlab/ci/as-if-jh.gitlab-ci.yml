@@ -37,11 +37,19 @@ prepare-as-if-jh-branch:
   stage: prepare
   needs:
     - add-jh-files
+  variables:
+    # We can't apply --filter=tree:0 for runner to set up the repository,
+    # so instead we tell runner to not clone anything, and we set up the
+    # repository by ourselves.
+    GIT_STRATEGY: "none"
   script:
-    # Fetch for the history of the branch so it does not cause the following error:
-    #   ! [remote rejected] ref -> ref (shallow update not allowed)
-    - git fetch --unshallow --filter=tree:0 origin "${CI_COMMIT_SHA}"
-    - git checkout -b "${AS_IF_JH_BRANCH}"
+    - git clone --filter=tree:0 "$CI_REPOSITORY_URL" gitlab
+    # We should checkout before moving/changing files
+    - cd gitlab
+    - git checkout -b "${AS_IF_JH_BRANCH}" "${CI_COMMIT_SHA}"
+    - cd ..
+    - mv $JH_FILES_TO_COMMIT gitlab/
+    - cd gitlab
     - git add ${JH_FILES_TO_COMMIT}
     - git commit -m 'Add JH files'  # TODO: Mark which SHA we add
     - git push -f "${SANDBOX_REPOSITORY}" "${AS_IF_JH_BRANCH}"

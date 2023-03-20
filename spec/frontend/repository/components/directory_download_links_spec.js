@@ -16,10 +16,6 @@ function factory(currentPath) {
 }
 
 describe('Repository directory download links component', () => {
-  afterEach(() => {
-    vm.destroy();
-  });
-
   it.each`
     path
     ${'app'}

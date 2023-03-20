@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WikiPages::CreateService do
+RSpec.describe WikiPages::CreateService, feature_category: :wiki do
   it_behaves_like 'WikiPages::CreateService#execute', :project
 
   describe '#execute' do

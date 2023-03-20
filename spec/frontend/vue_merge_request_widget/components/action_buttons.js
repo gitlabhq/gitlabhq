@@ -11,10 +11,6 @@ function factory(propsData = {}) {
 }
 
 describe('MR widget extension actions', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('tertiaryButtons', () => {
     it('renders buttons', () => {
       factory({

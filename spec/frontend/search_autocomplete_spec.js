@@ -119,7 +119,6 @@ describe('Search autocomplete dropdown', () => {
   afterEach(() => {
     // Undo what we did to the shared <body>
     removeBodyAttributes();
-    window.gon = {};
 
     resetHTMLFixture();
   });

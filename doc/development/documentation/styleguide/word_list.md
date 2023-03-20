@@ -82,6 +82,11 @@ If you can add the phrase "by zombies" to the phrase,
 the construction is passive. For example, `The button is selected by zombies`
 is passive. `Zombies select the button` is active.
 
+## Admin Area
+
+Use title case for **Admin Area** to refer to the area of the UI that you access when you select **Main menu > Admin**.
+This area of the UI says **Admin Area** at the top of the page and on the menu.
+
 ## administrator
 
 Use **administrator access** instead of **admin** when talking about a user's access level.
@@ -99,10 +104,9 @@ Instead of:
 
 - To do this thing, you must have the Admin role.
 
-## Admin Area
+## advanced search
 
-Use title case **Admin Area** to refer to the area of the UI that you access when you select **Main menu > Admin**.
-This area of the UI says **Admin Area** at the top of the page and on the menu.
+Use lowercase for **advanced search** to refer to the faster, more efficient search across the entire GitLab instance.
 
 ## agent
 
@@ -113,7 +117,7 @@ For example:
 - Install the agent in your cluster.
 - Select an agent from the list.
 
-Do not use title case **GitLab Agent** or **GitLab Agent for Kubernetes**.
+Do not use title case for **GitLab Agent** or **GitLab Agent for Kubernetes**.
 
 ## agent access token
 
@@ -530,9 +534,12 @@ Use title case for **Geo**.
 
 Do not make **GitLab** possessive (GitLab's). This guidance follows [GitLab Trademark Guidelines](https://about.gitlab.com/handbook/marketing/brand-and-product-marketing/brand/brand-activation/trademark-guidelines/).
 
-## GitLab.com
+## GitLab Flavored Markdown
 
-**GitLab.com** refers to the GitLab instance managed by GitLab itself.
+When possible, spell out [**GitLab Flavored Markdown**](../../../user/markdown.md).
+([Vale](../testing.md#vale) rule: [`GLFM.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
+
+If you must abbreviate, do not use **GFM**. Use **GLFM** instead.
 
 ## GitLab Helm chart, GitLab chart
 
@@ -545,25 +552,29 @@ Do not use **the `gitlab` chart**, **the GitLab Chart**, or **the cloud-native c
 
 You use the **GitLab Helm chart** to deploy **cloud-native GitLab** in a Kubernetes cluster.
 
-## GitLab Flavored Markdown
+## GitLab Pages
 
-When possible, spell out [**GitLab Flavored Markdown**](../../../user/markdown.md).
-([Vale](../testing.md#vale) rule: [`GLFM.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
+For consistency and branding, use **GitLab Pages** rather than **Pages**.
 
-If you must abbreviate, do not use **GFM**. Use **GLFM** instead.
+However, if you use **GitLab Pages** for the first mention on a page or in the UI,
+you can use **Pages** thereafter.
+
+## GitLab Runner
+
+Use title case for **GitLab Runner**. This is the product you install. See also [runners](#runner-runners) and [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233529).
 
 ## GitLab SaaS
 
 **GitLab SaaS** refers to the product license that provides access to GitLab.com. It does not refer to the
 GitLab instance managed by GitLab itself.
 
-## GitLab Runner
-
-Use title case for **GitLab Runner**. This is the product you install. See also [runners](#runner-runners) and [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233529).
-
 ## GitLab self-managed
 
 Use **GitLab self-managed** to refer to the product license for GitLab instances managed by customers themselves.
+
+## GitLab.com
+
+**GitLab.com** refers to the GitLab instance managed by GitLab itself.
 
 ## guide
 
@@ -730,7 +741,7 @@ Do not use **limitations**. Use **known issues** instead.
 
 ## log in, log on
 
-Do not use **log in** or **log on**. Use [sign in](#sign-in) instead. If the user interface has **Log in**, you can use it.
+Do not use **log in** or **log on**. Use [sign in](#sign-in-sign-in) instead. If the user interface has **Log in**, you can use it.
 
 ## logged-in user, logged in user
 
@@ -933,6 +944,17 @@ An Owner is the highest role a user can have.
 
 Use title case for the GitLab Package Registry.
 
+## page
+
+If you write a phrase like, "On the **Issues** page," ensure steps for how to get to the page are nearby. Otherwise, people might not know what the **Issues** page is.
+
+The page name should be visible in the UI at the top of the page.
+If it is not, you should be able to get the name from the breadcrumb.
+
+The docs should match the case in the UI, and the page name should be bold. For example:
+
+- On the **Test cases** page, ...
+
 ## permissions
 
 Do not use [**roles**](#roles) and **permissions** interchangeably. Each user is assigned a role. Each role includes a set of permissions.
@@ -946,6 +968,12 @@ Use lowercase for **personal access token**.
 ## please
 
 Do not use **please**. For details, see the [Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).
+
+## prerequisites
+
+Use **prerequisites** when documenting the steps before a task. Do not use **requirements**.
+
+For more information, see [the task topic type](../topic_types/task.md).
 
 ## press
 
@@ -1008,6 +1036,12 @@ Do not use **Reporter permissions**. A user who is assigned the Reporter role ha
 ## Repository Mirroring
 
 Use title case for **Repository Mirroring**.
+
+## requirements
+
+Use **prerequisites** when documenting the steps before a task. Do not use **requirements**.
+
+For more information, see [the task topic type](../topic_types/task.md).
 
 ## respectively
 
@@ -1120,13 +1154,16 @@ Use **setup** as a noun, and **set up** as a verb. For example:
 - Your remote office setup is amazing.
 - To set up your remote office correctly, consider the ergonomics of your work area.
 
-## sign in
+## sign in, sign-in
 
-Use **sign in** or **sign in to**.
+Use **sign in** or **sign in to** as a verb to describe the action of signing in.
 
 Do not use **sign on** or **sign into**, or **log on**, **log in**, or **log into**.
 
 If the user interface has different words, use those.
+
+You can use **sign-in** as a noun or adjective. For example, **sign-in page** or
+**sign-in restrictions**.
 
 You can use **single sign-on**.
 
@@ -1314,7 +1351,10 @@ See also [downgrade](#downgrade) and [roll back](#roll-back).
 
 ## upper left, upper right
 
-Use **upper left** and **upper right** instead of **top left** and **top right**. Hyphenate as adjectives (for example, **upper-left corner**).
+Use **upper-left corner** and **upper-right corner** to provide direction in the UI.
+If the UI element is not in a corner, use **upper left** and **upper right**.
+
+Do not use **top left** and **top right**.
 
 For details, see the [Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/u/upper-left-upper-right).
 

@@ -2,6 +2,7 @@
 
 require 'parallel'
 require_relative 'gitaly_setup'
+require_relative '../../../lib/gitlab/setup_helper'
 
 module TestEnv
   extend self

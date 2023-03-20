@@ -39,7 +39,6 @@ describe('Diff settings dropdown component', () => {
 
   afterEach(() => {
     store.dispatch.mockRestore();
-    wrapper.destroy();
   });
 
   describe('tree view buttons', () => {

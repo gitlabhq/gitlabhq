@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Maven::CreatePackageService do
+RSpec.describe Packages::Maven::CreatePackageService, feature_category: :package_registry do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:app_name) { 'my-app' }

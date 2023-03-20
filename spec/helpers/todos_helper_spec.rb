@@ -135,18 +135,6 @@ RSpec.describe TodosHelper do
     context 'when given a task' do
       let(:todo) { task_todo }
 
-      context 'when the use_iid_in_work_items_path feature flag is disabled' do
-        before do
-          stub_feature_flags(use_iid_in_work_items_path: false)
-        end
-
-        it 'responds with an appropriate path' do
-          path = helper.todo_target_path(todo)
-
-          expect(path).to eq("/#{todo.project.full_path}/-/work_items/#{todo.target.id}")
-        end
-      end
-
       it 'responds with an appropriate path using iid' do
         path = helper.todo_target_path(todo)
 

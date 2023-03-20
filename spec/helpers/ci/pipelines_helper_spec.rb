@@ -192,11 +192,7 @@ RSpec.describe Ci::PipelinesHelper do
         end
       end
 
-      describe 'the `ios_runners_available` attribute' do
-        before do
-          allow(Gitlab).to receive(:com?).and_return(true)
-        end
-
+      describe 'the `ios_runners_available` attribute', :saas do
         subject { data[:ios_runners_available] }
 
         context 'when the `ios_specific_templates` experiment variant is control' do

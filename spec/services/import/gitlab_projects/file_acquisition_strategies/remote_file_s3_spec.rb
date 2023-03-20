@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Import::GitlabProjects::FileAcquisitionStrategies::RemoteFileS3, :aggregate_failures do
+RSpec.describe ::Import::GitlabProjects::FileAcquisitionStrategies::RemoteFileS3, :aggregate_failures, feature_category: :importers do
   let(:region_name) { 'region_name' }
   let(:bucket_name) { 'bucket_name' }
   let(:file_key) { 'file_key' }

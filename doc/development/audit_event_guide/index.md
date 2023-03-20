@@ -4,7 +4,7 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Audit Event Guide
+# Audit event development guidelines
 
 This guide provides an overview of how Audit Events work, and how to instrument
 new audit events.

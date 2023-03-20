@@ -115,7 +115,6 @@ describe('Packages Cleanup Policy Settings Form', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 

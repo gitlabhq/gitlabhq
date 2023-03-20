@@ -13,7 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Policies in GitLab provide security teams a way to require scans of their choice to be run
 whenever a project pipeline runs according to the configuration specified. Security teams can
 therefore be confident that the scans they set up have not been changed, altered, or disabled. You
-can access these by navigating to your project's **Security & Compliance > Policies** page.
+can access these by navigating to your project's **Security and Compliance > Policies** page.
 
 GitLab supports the following security policies:
 
@@ -23,8 +23,8 @@ GitLab supports the following security policies:
 ## Security policy project
 
 All security policies are stored as YAML in a separate security policy project that gets linked to
-the development project. This association can be a one-to-many relationship, allowing one security
-policy project to apply to multiple development projects. Linked projects are not required to be in
+the development project, group, or sub-group. This association can be a one-to-many relationship, allowing one security
+policy project to apply to multiple development projects, groups, or sub-groups. Linked projects are not required to be in
 the same group as the development projects to which they are linked.
 
 ![Security Policy Project Linking Diagram](img/association_diagram.png)
@@ -59,7 +59,7 @@ As a project owner, take the following steps to create or edit an association be
 project and a project that you would like to designate as the security policy project:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Policies**.
+1. On the left sidebar, select **Security and Compliance > Policies**.
 1. Select **Edit Policy Project**, and search for and select the
    project you would like to link from the dropdown list.
 1. Select **Save**.
@@ -83,7 +83,7 @@ policy's information (for example, description or enforcement
 status), and create and edit deployed policies:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Policies**.
+1. On the left sidebar, select **Security and Compliance > Policies**.
 
 ![Policies List Page](img/policies_list_v15_1.png)
 
@@ -94,7 +94,7 @@ status), and create and edit deployed policies:
 You can use the policy editor to create, edit, and delete policies:
 
 1. On the top bar, select **Main menu > Projects** and find your group.
-1. On the left sidebar, select **Security & Compliance > Policies**.
+1. On the left sidebar, select **Security and Compliance > Policies**.
    - To create a new policy, select **New policy** which is located in the **Policies** page's header.
      You can then select which type of policy to create.
    - To edit an existing policy, select **Edit policy** in the selected policy drawer.
@@ -104,13 +104,13 @@ The policy editor has two modes:
 - The visual _Rule_ mode allows you to construct and preview policy
   rules using rule blocks and related controls.
 
-  ![Policy Editor Rule Mode](img/policy_rule_mode_v14_9.png)
+  ![Policy Editor Rule Mode](img/policy_rule_mode_v15_9.png)
 
 - YAML mode allows you to enter a policy definition in `.yaml` format
   and is aimed at expert users and cases that the Rule mode doesn't
   support.
 
-  ![Policy Editor YAML Mode](img/policy_yaml_mode_v14_9.png)
+  ![Policy Editor YAML Mode](img/policy_yaml_mode_v15_9.png)
 
 You can use both modes interchangeably and switch between them at any
 time. If a YAML resource is incorrect or contains data not supported
@@ -128,19 +128,6 @@ time that the first policy merge request is created.
 ## Managing projects in bulk via a script
 
 You can use the [Vulnerability-Check Migration](https://gitlab.com/gitlab-org/gitlab/-/snippets/2328089) script to bulk create policies or associate security policy projects with development projects. For instructions and a demonstration of how to use the Vulnerability-Check Migration script, see [this video](https://youtu.be/biU1N26DfBc).
-
-## Scan execution policies
-
-See [Scan execution policies](scan-execution-policies.md).
-
-## Scan result policy editor
-
-See [Scan result policies](scan-result-policies.md).
-
-## Roadmap
-
-See the [Category Direction page](https://about.gitlab.com/direction/govern/security_policies/security_policy_management/)
-for more information on the product direction of security policies within GitLab.
 
 ## Troubleshooting
 

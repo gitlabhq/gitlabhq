@@ -87,15 +87,12 @@ FactoryBot.define do
     end
 
     trait :with_installed_prometheus do
-      application_prometheus factory: %i(clusters_applications_prometheus installed)
       integration_prometheus factory: %i(clusters_integrations_prometheus)
     end
 
     trait :with_all_applications do
       application_helm factory: %i(clusters_applications_helm installed)
       application_ingress factory: %i(clusters_applications_ingress installed)
-      application_crossplane factory: %i(clusters_applications_crossplane installed)
-      application_prometheus factory: %i(clusters_applications_prometheus installed)
       application_runner factory: %i(clusters_applications_runner installed)
       application_jupyter factory: %i(clusters_applications_jupyter installed)
       application_knative factory: %i(clusters_applications_knative installed)

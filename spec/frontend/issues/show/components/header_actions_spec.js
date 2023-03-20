@@ -1,20 +1,22 @@
 import Vue, { nextTick } from 'vue';
-import { GlButton, GlDropdownItem, GlLink, GlModal } from '@gitlab/ui';
+import { GlDropdownItem, GlLink, GlModal, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { mockTracking } from 'helpers/tracking_helper';
-import { createAlert, VARIANT_SUCCESS } from '~/flash';
-import { IssueType, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
+import { createAlert, VARIANT_SUCCESS } from '~/alert';
+import { STATUS_CLOSED, STATUS_OPEN, TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import DeleteIssueModal from '~/issues/show/components/delete_issue_modal.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import HeaderActions from '~/issues/show/components/header_actions.vue';
 import { ISSUE_STATE_EVENT_CLOSE, ISSUE_STATE_EVENT_REOPEN } from '~/issues/show/constants';
+import issuesEventHub from '~/issues/show/event_hub';
 import promoteToEpicMutation from '~/issues/show/queries/promote_to_epic.mutation.graphql';
 import * as urlUtility from '~/lib/utils/url_utility';
 import eventHub from '~/notes/event_hub';
 import createStore from '~/notes/stores';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
+jest.mock('~/issues/show/event_hub', () => ({ $emit: jest.fn() }));
 
 describe('HeaderActions component', () => {
   let dispatchEventSpy;
@@ -36,7 +38,7 @@ describe('HeaderActions component', () => {
     iid: '32',
     isIssueAuthor: true,
     issuePath: 'gitlab-org/gitlab-test/-/issues/1',
-    issueType: IssueType.Issue,
+    issueType: TYPE_ISSUE,
     newIssuePath: 'gitlab-org/gitlab-test/-/issues/new',
     projectPath: 'gitlab-org/gitlab-test',
     reportAbusePath: '-/abuse_reports/add_category',
@@ -67,7 +69,8 @@ describe('HeaderActions component', () => {
     },
   };
 
-  const findToggleIssueStateButton = () => wrapper.findComponent(GlButton);
+  const findToggleIssueStateButton = () => wrapper.find(`[data-testid="toggle-button"]`);
+  const findEditButton = () => wrapper.find(`[data-testid="edit-button"]`);
 
   const findDropdownBy = (dataTestId) => wrapper.find(`[data-testid="${dataTestId}"]`);
   const findMobileDropdown = () => findDropdownBy('mobile-dropdown');
@@ -103,6 +106,9 @@ describe('HeaderActions component', () => {
           mutate: mutateMock,
         },
       },
+      stubs: {
+        GlButton,
+      },
     });
   };
 
@@ -113,13 +119,12 @@ describe('HeaderActions component', () => {
     if (visitUrlSpy) {
       visitUrlSpy.mockRestore();
     }
-    wrapper.destroy();
   });
 
   describe.each`
     issueType
-    ${IssueType.Issue}
-    ${IssueType.Incident}
+    ${TYPE_ISSUE}
+    ${TYPE_INCIDENT}
   `('when issue type is $issueType', ({ issueType }) => {
     describe('close/reopen button', () => {
       describe.each`
@@ -238,6 +243,30 @@ describe('HeaderActions component', () => {
         it(`${isCloseIssueItemVisible ? 'shows' : 'hides'} the dropdown button`, () => {
           expect(findDropdown().exists()).toBe(isCloseIssueItemVisible);
         });
+      });
+    });
+
+    describe(`show edit button ${issueType}`, () => {
+      beforeEach(() => {
+        wrapper = mountComponent({
+          props: {
+            canUpdateIssue: true,
+            canCreateIssue: false,
+            isIssueAuthor: true,
+            issueType,
+            canReportSpam: false,
+            canPromoteToEpic: false,
+          },
+        });
+      });
+      it(`shows the edit button`, () => {
+        expect(findEditButton().exists()).toBe(true);
+      });
+
+      it('should trigger "open.form" event when clicked', async () => {
+        expect(issuesEventHub.$emit).not.toHaveBeenCalled();
+        await findEditButton().trigger('click');
+        expect(issuesEventHub.$emit).toHaveBeenCalledWith('open.form');
       });
     });
   });

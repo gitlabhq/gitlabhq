@@ -92,7 +92,7 @@ class MergeRequest < ApplicationRecord
     fallback || super || MergeRequestDiff.new(merge_request_id: id)
   end
 
-  belongs_to :head_pipeline, foreign_key: "head_pipeline_id", class_name: "Ci::Pipeline"
+  belongs_to :head_pipeline, class_name: "Ci::Pipeline", inverse_of: :merge_requests_as_head_pipeline
 
   has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
@@ -141,7 +141,7 @@ class MergeRequest < ApplicationRecord
   after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
   after_save :keep_around_commit, unless: :importing?
-  after_commit :ensure_metrics, on: [:create, :update], unless: :importing?
+  after_commit :ensure_metrics!, on: [:create, :update], unless: :importing?
   after_commit :expire_etag_cache, unless: :importing?
 
   # When this attribute is true some MR validation is ignored
@@ -155,6 +155,9 @@ class MergeRequest < ApplicationRecord
   # Temporary fields to store compare vars
   # when creating new merge request
   attr_accessor :can_be_created, :compare_commits, :diff_options, :compare
+
+  # Flag to skip triggering mergeRequestMergeStatusUpdated GraphQL subscription.
+  attr_accessor :skip_merge_status_trigger
 
   participant :reviewers
 
@@ -252,6 +255,8 @@ class MergeRequest < ApplicationRecord
     end
 
     after_transition any => [:unchecked, :cannot_be_merged_recheck, :checking, :cannot_be_merged_rechecking, :can_be_merged, :cannot_be_merged] do |merge_request, transition|
+      next if merge_request.skip_merge_status_trigger
+
       merge_request.run_after_commit do
         GraphqlTriggers.merge_request_merge_status_updated(merge_request)
       end
@@ -451,7 +456,12 @@ class MergeRequest < ApplicationRecord
 
   def self.total_time_to_merge
     join_metrics
-      .merge(MergeRequest::Metrics.with_valid_time_to_merge)
+      .where(
+        # Replicating the scope MergeRequest::Metrics.with_valid_time_to_merge
+        MergeRequest::Metrics.arel_table[:merged_at].gt(
+          MergeRequest::Metrics.arel_table[:created_at]
+        )
+      )
       .pick(MergeRequest::Metrics.time_to_merge_expression)
   end
 
@@ -558,7 +568,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super("merge_requests", Gitlab::Regex.merge_request)
+    @link_reference_pattern ||= compose_link_reference_pattern('merge_requests', Gitlab::Regex.merge_request)
   end
 
   def self.reference_valid?(reference)
@@ -1943,8 +1953,7 @@ class MergeRequest < ApplicationRecord
     super.merge(label_url_method: :project_merge_requests_url)
   end
 
-  override :ensure_metrics
-  def ensure_metrics
+  def ensure_metrics!
     MergeRequest::Metrics.record!(self)
   end
 

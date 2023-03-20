@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { createAlert, VARIANT_DANGER, VARIANT_INFO } from '~/flash';
+import { createAlert, VARIANT_DANGER, VARIANT_INFO } from '~/alert';
 import { INTEGRATION_VIEW_CONFIGS, i18n } from '../constants';
 import IntegrationView from './integration_view.vue';
 

@@ -92,6 +92,7 @@ export default function createComponent({
       boardItems: [issue],
       canAdminList: true,
       boardId: 'gid://gitlab/Board/1',
+      filterParams: {},
       ...componentProps,
     },
     provide: {

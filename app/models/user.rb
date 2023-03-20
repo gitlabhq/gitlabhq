@@ -28,6 +28,7 @@ class User < ApplicationRecord
   include UpdateHighestRole
   include HasUserType
   include Gitlab::Auth::Otp::Fortinet
+  include Gitlab::Auth::Otp::DuoAuth
   include RestrictedSignup
   include StripAttribute
   include EachBatch
@@ -71,6 +72,7 @@ class User < ApplicationRecord
   attribute :notified_of_own_activity, default: false
   attribute :preferred_language, default: -> { Gitlab::CurrentSettings.default_preferred_language }
   attribute :theme_id, default: -> { gitlab_config.default_theme }
+  attribute :color_scheme_id, default: -> { Gitlab::CurrentSettings.default_syntax_highlighting_theme }
 
   attr_encrypted :otp_secret,
     key: Gitlab::Application.secrets.otp_key_base,
@@ -100,8 +102,6 @@ class User < ApplicationRecord
   include RequireEmailVerification
 
   MINIMUM_DAYS_CREATED = 7
-
-  ignore_columns %i[linkedin twitter skype website_url location organization], remove_with: '15.10', remove_after: '2023-02-22'
 
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
@@ -227,7 +227,9 @@ class User < ApplicationRecord
   has_many :notification_settings
   has_many :award_emoji,              dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :triggers,                 class_name: 'Ci::Trigger', foreign_key: :owner_id
+  has_many :audit_events, foreign_key: :author_id, inverse_of: :user
 
+  has_many :alert_assignees, class_name: '::AlertManagement::AlertAssignee', inverse_of: :assignee
   has_many :issue_assignees, inverse_of: :assignee
   has_many :merge_request_assignees, inverse_of: :assignee, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :merge_request_reviewers, inverse_of: :reviewer, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -289,7 +291,7 @@ class User < ApplicationRecord
   validate  :check_password_weakness, if: :encrypted_password_changed?
 
   validates :namespace, presence: true
-  validate :namespace_move_dir_allowed, if: :username_changed?
+  validate :namespace_move_dir_allowed, if: :username_changed?, unless: :new_record?
 
   validate :unique_email, if: :email_changed?
   validate :notification_email_verified, if: :notification_email_changed?
@@ -614,13 +616,12 @@ class User < ApplicationRecord
 
   def self.with_two_factor
     where(otp_required_for_login: true)
-      .or(where_exists(U2fRegistration.where(U2fRegistration.arel_table[:user_id].eq(arel_table[:id]))))
       .or(where_exists(WebauthnRegistration.where(WebauthnRegistration.arel_table[:user_id].eq(arel_table[:id]))))
   end
 
   def self.without_two_factor
     where
-      .missing(:u2f_registrations, :webauthn_registrations)
+      .missing(:webauthn_registrations)
       .where(otp_required_for_login: false)
   end
 
@@ -1062,27 +1063,14 @@ class User < ApplicationRecord
   end
 
   def two_factor_enabled?
-    two_factor_otp_enabled? || two_factor_webauthn_u2f_enabled?
+    two_factor_otp_enabled? || two_factor_webauthn_enabled?
   end
 
   def two_factor_otp_enabled?
     otp_required_for_login? ||
     forti_authenticator_enabled?(self) ||
-    forti_token_cloud_enabled?(self)
-  end
-
-  def two_factor_u2f_enabled?
-    return false if Feature.enabled?(:webauthn)
-
-    if u2f_registrations.loaded?
-      u2f_registrations.any?
-    else
-      u2f_registrations.exists?
-    end
-  end
-
-  def two_factor_webauthn_u2f_enabled?
-    two_factor_u2f_enabled? || two_factor_webauthn_enabled?
+    forti_token_cloud_enabled?(self) ||
+    duo_auth_enabled?(self)
   end
 
   def two_factor_webauthn_enabled?
@@ -1725,11 +1713,7 @@ class User < ApplicationRecord
   end
 
   def manageable_groups(include_groups_with_developer_maintainer_access: false)
-    owned_and_maintainer_group_hierarchy = if Feature.enabled?(:linear_user_manageable_groups, self)
-                                             owned_or_maintainers_groups.self_and_descendants
-                                           else
-                                             Gitlab::ObjectHierarchy.new(owned_or_maintainers_groups).base_and_descendants
-                                           end
+    owned_and_maintainer_group_hierarchy = owned_or_maintainers_groups.self_and_descendants
 
     if include_groups_with_developer_maintainer_access
       union_sql = ::Gitlab::SQL::Union.new(
@@ -2136,7 +2120,15 @@ class User < ApplicationRecord
   end
 
   def confirmation_required_on_sign_in?
-    !confirmed? && !confirmation_period_valid?
+    return false if confirmed?
+
+    if ::Gitlab::CurrentSettings.email_confirmation_setting_off?
+      false
+    elsif ::Gitlab::CurrentSettings.email_confirmation_setting_soft?
+      !in_confirmation_period?
+    elsif ::Gitlab::CurrentSettings.email_confirmation_setting_hard?
+      true
+    end
   end
 
   def impersonated?
@@ -2217,10 +2209,13 @@ class User < ApplicationRecord
 
   # override from Devise::Confirmable
   def confirmation_period_valid?
-    return false if Feature.disabled?(:soft_email_confirmation)
+    return super if ::Gitlab::CurrentSettings.email_confirmation_setting_soft?
 
-    super
+    # Following devise logic for method, we want to return `true`
+    # See: https://github.com/heartcombo/devise/blob/main/lib/devise/models/confirmable.rb#L191-L218
+    true
   end
+  alias_method :in_confirmation_period?, :confirmation_period_valid?
 
   # This is copied from Devise::Models::TwoFactorAuthenticatable#consume_otp!
   #

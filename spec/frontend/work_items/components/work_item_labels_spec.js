@@ -72,10 +72,6 @@ describe('WorkItemLabels component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('has a label', () => {
     createComponent();
 

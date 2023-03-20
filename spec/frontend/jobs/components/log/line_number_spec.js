@@ -21,10 +21,6 @@ describe('Job Log Line Number', () => {
     createComponent(data);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders incremented lineNunber by 1', () => {
     expect(wrapper.text()).toBe('1');
   });

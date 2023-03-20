@@ -60,6 +60,14 @@ class NotifyPreview < ActionMailer::Preview
     end
   end
 
+  def access_token_created_email
+    Notify.access_token_created_email(user, 'token_name').message
+  end
+
+  def access_token_revoked_email
+    Notify.access_token_revoked_email(user, 'token_name').message
+  end
+
   def new_mention_in_merge_request_email
     Notify.new_mention_in_merge_request_email(user.id, merge_request.id, user.id).message
   end
@@ -82,6 +90,10 @@ class NotifyPreview < ActionMailer::Preview
 
   def import_issues_csv_email
     Notify.import_issues_csv_email(user.id, project.id, { success: 3, errors: [5, 6, 7], valid_file: true })
+  end
+
+  def import_work_items_csv_email
+    Notify.import_work_items_csv_email(user.id, project.id, { success: 4, error_lines: [2, 3, 4], parse_error: false })
   end
 
   def issues_csv_email

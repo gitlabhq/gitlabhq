@@ -44,6 +44,17 @@ module QA
             element :jobs_dropdown_menu
           end
 
+          view 'app/views/layouts/nav/_breadcrumbs.html.haml' do
+            element :breadcrumb_links_content
+            element :breadcrumb_current_link
+          end
+
+          def pipeline_id
+            within_element(:breadcrumb_links_content) do
+              find_element(:breadcrumb_current_link).text.delete_prefix('#')
+            end
+          end
+
           def running?(wait: 0)
             within_element(:pipeline_header) do
               page.has_content?('running', wait: wait)

@@ -93,11 +93,6 @@ describe('DiffContent', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('with text based files', () => {
     afterEach(() => {
       [isParallelViewGetterMock, isInlineViewGetterMock].forEach((m) => m.mockRestore());

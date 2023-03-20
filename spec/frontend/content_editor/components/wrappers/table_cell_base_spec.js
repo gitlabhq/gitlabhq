@@ -1,12 +1,12 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { NodeViewWrapper } from '@tiptap/vue-2';
-import { selectedRect as getSelectedRect } from '@_ueberdosis/prosemirror-tables';
+import { selectedRect as getSelectedRect } from '@tiptap/pm/tables';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TableCellBaseWrapper from '~/content_editor/components/wrappers/table_cell_base.vue';
 import { createTestEditor, mockChainedCommands, emitEditorEvent } from '../../test_utils';
 
-jest.mock('@_ueberdosis/prosemirror-tables');
+jest.mock('@tiptap/pm/tables');
 
 describe('content/components/wrappers/table_cell_base', () => {
   let wrapper;
@@ -50,10 +50,6 @@ describe('content/components/wrappers/table_cell_base', () => {
   beforeEach(() => {
     node = {};
     editor = createTestEditor({});
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('renders a td node-view-wrapper with relative position', () => {

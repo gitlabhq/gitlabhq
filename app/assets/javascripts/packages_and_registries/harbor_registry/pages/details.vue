@@ -9,7 +9,7 @@ import {
   TAG_LABEL,
 } from '~/packages_and_registries/harbor_registry/constants/index';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import TagsLoader from '~/packages_and_registries/shared/components/tags_loader.vue';
 import ArtifactsList from '~/packages_and_registries/harbor_registry/components/details/artifacts_list.vue';

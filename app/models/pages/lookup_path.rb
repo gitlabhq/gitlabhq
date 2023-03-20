@@ -49,19 +49,25 @@ module Pages
       if project.pages_namespace_url == project.pages_url
         '/'
       else
-        project.full_path.delete_prefix(trim_prefix) + '/'
+        "#{project.full_path.delete_prefix(trim_prefix)}/"
       end
     end
     strong_memoize_attr :prefix
+
+    def unique_domain
+      return unless project.project_setting.pages_unique_domain_enabled?
+
+      project.project_setting.pages_unique_domain
+    end
+    strong_memoize_attr :unique_domain
 
     private
 
     attr_reader :project, :trim_prefix, :domain
 
     def deployment
-      strong_memoize(:deployment) do
-        project.pages_metadatum.pages_deployment
-      end
+      project.pages_metadatum.pages_deployment
     end
+    strong_memoize_attr :deployment
   end
 end

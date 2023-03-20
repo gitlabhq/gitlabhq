@@ -313,7 +313,7 @@ export default {
       :status="statusIconName"
       :is-loading="isLoadingSummary"
       :class="{ 'gl-cursor-pointer': isCollapsible }"
-      class="gl-p-5"
+      class="gl-pl-5 gl-pr-4 gl-py-4"
       @mousedown="onRowMouseDown"
       @mouseup="onRowMouseUp"
     >
@@ -381,7 +381,7 @@ export default {
         v-else-if="hasFullData"
         :items="fullData"
         :min-item-size="32"
-        class="report-block-container gl-px-5 gl-py-0"
+        class="report-block-container gl-p-0"
       >
         <template #default="{ item, index, active }">
           <dynamic-scroller-item :item="item" :active="active" :class="{ active }">
@@ -389,7 +389,7 @@ export default {
               :class="{
                 'gl-border-b-solid gl-border-b-1 gl-border-gray-100': index !== fullData.length - 1,
               }"
-              class="gl-py-3 gl-pl-7"
+              class="gl-py-3 gl-pl-9"
               data-testid="extension-list-item"
             >
               <gl-intersection-observer

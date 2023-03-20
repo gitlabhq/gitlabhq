@@ -193,7 +193,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :projects do
         save_pipeline_schedule
       end
 
-      it 'user sees the new variable in edit window' do
+      it 'user sees the new variable in edit window', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/397040' do
         find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
         page.within('.ci-variable-list') do
           expect(find(".ci-variable-row:nth-child(1) .js-ci-variable-input-key").value).to eq('AAA')

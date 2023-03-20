@@ -17,7 +17,7 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Delete, feature_categ
     graphql_mutation_response(:delete_annotation)
   end
 
-  specify { expect(described_class).to require_graphql_authorizations(:delete_metrics_dashboard_annotation) }
+  specify { expect(described_class).to require_graphql_authorizations(:admin_metrics_dashboard_annotation) }
 
   context 'when the user has permission to delete the annotation' do
     before do

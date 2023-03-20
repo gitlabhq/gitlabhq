@@ -48,7 +48,7 @@ RSpec.describe 'issuable list', :js, feature_category: :team_planning do
     end
   end
 
-  it 'displays a warning if counting the number of issues times out' do
+  it 'displays a warning if counting the number of issues times out', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/393344' do
     allow_any_instance_of(IssuesFinder).to receive(:count_by_state).and_raise(ActiveRecord::QueryCanceled)
 
     visit_issuable_list(:issue)

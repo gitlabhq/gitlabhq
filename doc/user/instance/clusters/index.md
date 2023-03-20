@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Instance-level Kubernetes clusters (certificate-based) (DEPRECATED) **(FREE SELF)**
+# Instance-level Kubernetes clusters (certificate-based) (deprecated) **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39840) in GitLab 11.11.
 > - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.

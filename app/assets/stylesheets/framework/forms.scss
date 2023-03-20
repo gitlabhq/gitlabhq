@@ -148,7 +148,10 @@ label {
       width: $input-short-md-width;
     }
   }
+}
 
+.form-control,
+[contenteditable=true] {
   &:focus {
     border-color: $gray-400;
     @include gl-focus;
@@ -156,6 +159,7 @@ label {
 }
 
 .select-control {
+  line-height: 1.3;
   padding-left: 10px;
   padding-right: 10px;
   appearance: none;
@@ -208,7 +212,7 @@ label {
 
 .gl-show-field-errors {
   .form-control:not(textarea) {
-    height: 34px;
+    height: $input-height;
   }
 
   .gl-field-success-outline {
@@ -246,7 +250,7 @@ label {
 
 .show-password-complexity-errors {
   .form-control:not(textarea) {
-    height: 34px;
+    height: $input-height;
   }
 
   .password-complexity-error-outline {
@@ -285,4 +289,23 @@ label {
 
 .input-group-text {
   max-height: $input-height;
+}
+
+.add-issuable-form-input-wrapper {
+  &.focus {
+    border-color: var(--gray-700, $gray-700);
+
+    input {
+      @include gl-shadow-none;
+    }
+  }
+
+  .gl-show-field-errors &.form-control:not(textarea) {
+    height: auto;
+  }
+}
+
+.add-issuable-form-input-wrapper.focus,
+.issue-token-remove-button:focus {
+  @include gl-focus;
 }

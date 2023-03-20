@@ -7,7 +7,6 @@ module Ci
     LOG_MAX_DURATION_THRESHOLD = 3.seconds
     LOG_MAX_PIPELINE_SIZE = 2_000
     LOG_MAX_CREATION_THRESHOLD = 20.seconds
-
     SEQUENCE = [Gitlab::Ci::Pipeline::Chain::Build,
                 Gitlab::Ci::Pipeline::Chain::Build::Associations,
                 Gitlab::Ci::Pipeline::Chain::Validate::Abilities,
@@ -161,7 +160,7 @@ module Ci
           pipeline_includes_count = observations['pipeline_includes_count']
           next false unless pipeline_includes_count
 
-          pipeline_includes_count.to_i > Gitlab::Ci::Config::External::Context::MAX_INCLUDES
+          pipeline_includes_count.to_i > Gitlab::Ci::Config::External::Context::TEMP_MAX_INCLUDES
         end
       end
     end

@@ -1,10 +1,11 @@
 <script>
-import { GlButton, GlSprintf, GlLink } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { GlButton, GlSprintf } from '@gitlab/ui';
+import { createAlert } from '~/alert';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, __ } from '~/locale';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import eventHub from '../../event_hub';
 import approvalsMixin from '../../mixins/approvals';
 import MrWidgetContainer from '../mr_widget_container.vue';
@@ -12,8 +13,7 @@ import MrWidgetIcon from '../mr_widget_icon.vue';
 import { INVALID_RULES_DOCS_PATH } from '../../constants';
 import ApprovalsSummary from './approvals_summary.vue';
 import ApprovalsSummaryOptional from './approvals_summary_optional.vue';
-import { FETCH_LOADING, FETCH_ERROR, APPROVE_ERROR, UNAPPROVE_ERROR } from './messages';
-import { humanizeInvalidApproversRules } from './humanized_text';
+import { FETCH_LOADING, APPROVE_ERROR, UNAPPROVE_ERROR } from './messages';
 
 export default {
   name: 'MRWidgetApprovals',
@@ -24,7 +24,6 @@ export default {
     ApprovalsSummaryOptional,
     GlButton,
     GlSprintf,
-    GlLink,
   },
   mixins: [approvalsMixin, glFeatureFlagsMixin()],
   props: {
@@ -59,10 +58,8 @@ export default {
   },
   data() {
     return {
-      fetchingApprovals: true,
       hasApprovalAuthError: false,
       isApproving: false,
-      updatedCount: 0,
     };
   },
   computed: {
@@ -70,7 +67,7 @@ export default {
       return this.mr.approvalsWidgetType === 'base';
     },
     isApproved() {
-      return Boolean(this.approvals.approved);
+      return Boolean(this.approvals.approved || this.approvedBy.length);
     },
     isOptional() {
       return this.isOptionalDefault !== null ? this.isOptionalDefault : !this.approvedBy.length;
@@ -78,26 +75,25 @@ export default {
     hasAction() {
       return Boolean(this.action);
     },
-    approvals() {
-      return this.mr.approvals || {};
-    },
     invalidRules() {
-      return this.approvals.invalid_approvers_rules || [];
+      return this.approvals.approvalState?.invalidApproversRules || [];
     },
     hasInvalidRules() {
-      return this.approvals.merge_request_approvers_available && this.invalidRules.length;
+      return this.mr.mergeRequestApproversAvailable && this.invalidRules.length;
     },
     invalidRulesText() {
-      return humanizeInvalidApproversRules(this.invalidRules);
+      return this.invalidRules.length;
     },
     approvedBy() {
-      return this.approvals.approved_by ? this.approvals.approved_by.map((x) => x.user) : [];
+      return this.approvals.approvedBy?.nodes || [];
     },
     userHasApproved() {
-      return Boolean(this.approvals.user_has_approved);
+      return this.approvedBy.some(
+        (approver) => getIdFromGraphQLId(approver.id) === gon.current_user_id,
+      );
     },
     userCanApprove() {
-      return Boolean(this.approvals.user_can_approve);
+      return Boolean(this.approvals.userPermissions.canApprove);
     },
     showApprove() {
       return !this.userHasApproved && this.userCanApprove && this.mr.isOpen;
@@ -134,19 +130,6 @@ export default {
         ? this.$options.i18n.invalidRulesPlural
         : this.$options.i18n.invalidRuleSingular;
     },
-  },
-  created() {
-    this.refreshApprovals()
-      .then(() => {
-        this.fetchingApprovals = false;
-      })
-      .catch(() =>
-        this.alerts.push(
-          createAlert({
-            message: FETCH_ERROR,
-          }),
-        ),
-      );
   },
   methods: {
     approve() {
@@ -196,16 +179,14 @@ export default {
       this.isApproving = true;
       this.clearError();
       return serviceFn()
-        .then((data) => {
-          this.mr.setApprovals(data);
-          this.updatedCount += 1;
-
+        .then(() => {
           if (!window.gon?.features?.realtimeMrStatusChange) {
             eventHub.$emit('MRWidgetUpdateRequested');
             eventHub.$emit('ApprovalUpdated');
           }
 
-          this.$emit('updated');
+          // TODO: Remove this line when we move to Apollo subscriptions
+          this.$apollo.queries.approvals.refetch();
         })
         .catch(errFn)
         .then(() => {
@@ -217,10 +198,10 @@ export default {
   linkToInvalidRules: INVALID_RULES_DOCS_PATH,
   i18n: {
     invalidRuleSingular: s__(
-      'mrWidget|Approval rule %{rules} is invalid. GitLab has approved this rule automatically to unblock the merge request. %{link}',
+      'mrWidget|%{rules} invalid rule has been approved automatically, as no one can approve it.',
     ),
     invalidRulesPlural: s__(
-      'mrWidget|Approval rules %{rules} are invalid. GitLab has approved these rules automatically to unblock the merge request. %{link}',
+      'mrWidget|%{rules} invalid rules have been approved automatically, as no one can approve them.',
     ),
     learnMore: __('Learn more.'),
   },
@@ -230,7 +211,7 @@ export default {
   <mr-widget-container>
     <div class="js-mr-approvals d-flex align-items-start align-items-md-center">
       <mr-widget-icon name="approval" />
-      <div v-if="fetchingApprovals">{{ $options.FETCH_LOADING }}</div>
+      <div v-if="$apollo.queries.approvals.loading">{{ $options.FETCH_LOADING }}</div>
       <template v-else>
         <div class="gl-display-flex gl-flex-direction-column">
           <div class="gl-display-flex gl-flex-direction-row gl-align-items-center">
@@ -252,22 +233,13 @@ export default {
             />
             <approvals-summary
               v-else
-              :project-path="mr.targetProjectFullPath"
-              :iid="`${mr.iid}`"
-              :updated-count="updatedCount"
+              :approval-state="approvals"
               :multiple-approval-rules-available="mr.multipleApprovalRulesAvailable"
             />
           </div>
           <div v-if="hasInvalidRules" class="gl-text-gray-400 gl-mt-2" data-testid="invalid-rules">
             <gl-sprintf :message="pluralizedRuleText">
-              <template #rules>
-                {{ invalidRulesText }}
-              </template>
-              <template #link>
-                <gl-link :href="$options.linkToInvalidRules" target="_blank">
-                  {{ $options.i18n.learnMore }}
-                </gl-link>
-              </template>
+              <template #rules>{{ invalidRulesText }}</template>
             </gl-sprintf>
           </div>
         </div>

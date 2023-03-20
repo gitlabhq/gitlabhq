@@ -30,10 +30,6 @@ describe('DropdownValue', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when there are no labels', () => {
     beforeEach(() => {
       createComponent(

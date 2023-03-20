@@ -82,3 +82,5 @@ module AuthorizedProjectUpdate
     end
   end
 end
+
+AuthorizedProjectUpdate::ProjectRecalculateService.prepend_mod

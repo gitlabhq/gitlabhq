@@ -2,11 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Export, type: :model do
+RSpec.describe BulkImports::Export, type: :model, feature_category: :importers do
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_one(:upload) }
+    it { is_expected.to have_many(:batches) }
   end
 
   describe 'validations' do

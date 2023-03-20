@@ -86,10 +86,17 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'data/removals/*.yml'
       run: echo "Changes to removals files detected. Checking removals..\n"; bundle exec rake gitlab:docs:check_removals
+    db-schema-changes:
+      tags: database
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: 'db/structure.sql'
+      run: scripts/validate_schema_changes
+
   scripts:
     "merge_conflicts":
       skip: true # This is disabled by default. You can enable this check by adding skip: false in lefhook-local.yml https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md#skip
       runner: bash
+
 pre-commit:
   parallel: true
   commands:
@@ -97,3 +104,27 @@ pre-commit:
       tags: secrets
       files: git diff --name-only --diff-filter=d --staged
       run: 'if command -v gitleaks > /dev/null 2>&1; then gitleaks protect --no-banner --staged --redact --verbose; else echo "WARNING: gitleaks is not installed. Please install it. See https://github.com/zricethezav/gitleaks#installing."; fi'
+
+auto-fix:
+  parallel: true
+  commands:
+    frontend:
+      tags: frontend style
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: '*.{js,vue}'
+      run: 'yarn run lint:eslint:fix {files} && yarn run prettier --write --list-different {files}'
+    jsonlint:
+      tags: style
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: '*.{json}'
+      run: scripts/lint-json --format --verbose {files}
+    prettier-graphql:
+      tags: frontend style
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: '*.{graphql}'
+      run: yarn run prettier --write --list-different {files}
+    rubocop:
+      tags: backend style
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: '*.{rb,rake}'
+      run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --autocorrect --force-exclusion {files}

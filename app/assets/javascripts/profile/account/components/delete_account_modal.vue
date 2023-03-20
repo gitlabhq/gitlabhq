@@ -38,11 +38,12 @@ export default {
     primaryProps() {
       return {
         text: __('Delete account'),
-        attributes: [
-          { variant: 'danger', 'data-qa-selector': 'confirm_delete_account_button' },
-          { category: 'primary' },
-          { disabled: !this.canSubmit },
-        ],
+        attributes: {
+          variant: 'danger',
+          'data-qa-selector': 'confirm_delete_account_button',
+          category: 'primary',
+          disabled: !this.canSubmit,
+        },
       };
     },
     cancelProps() {

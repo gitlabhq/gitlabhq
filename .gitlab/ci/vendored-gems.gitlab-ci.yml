@@ -93,3 +93,11 @@ vendor gitlab_active_record:
   trigger:
     include: vendor/gems/gitlab_active_record/.gitlab-ci.yml
     strategy: depend
+
+vendor cloud_profiler_agent:
+  extends:
+    - .vendor:rules:cloud_profiler_agent
+  needs: []
+  trigger:
+    include: vendor/gems/cloud_profiler_agent/.gitlab-ci.yml
+    strategy: depend

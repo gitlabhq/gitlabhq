@@ -9,7 +9,6 @@ const TEST_BRANCH = 'ref';
 describe('~/ide/services/terminals', () => {
   let axiosSpy;
   let mock;
-  const prevRelativeUrlRoot = gon.relative_url_root;
 
   beforeEach(() => {
     axiosSpy = jest.fn().mockReturnValue([HTTP_STATUS_OK, {}]);
@@ -19,7 +18,6 @@ describe('~/ide/services/terminals', () => {
   });
 
   afterEach(() => {
-    gon.relative_url_root = prevRelativeUrlRoot;
     mock.restore();
   });
 

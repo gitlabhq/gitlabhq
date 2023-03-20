@@ -93,9 +93,9 @@ Additionally, since we intend to ingest data via Prometheus `remote_write` API, 
 
 We also need to make sure to avoid writing a lot of small writes into Clickhouse, therefore it’d be prudent to batch data before writing it into Clickhouse.
 
-We must also make sure ingestion remains decoupled with `Storage` so as to reduce undue dependence on a given storage implementation. While we do intend to use Clickhouse as our backing storage for any foreseeable future, this ensures we do not tie ourselves in into Clickhouse too much should future business requirements warrant the usage of a different backend/technology. A good way to implement this in Golang would be our implementations adhering to a standard interface, the following for example:
+We must also make sure ingestion remains decoupled with `Storage` so as to reduce undue dependence on a given storage implementation. While we do intend to use Clickhouse as our backing storage for any foreseeable future, this ensures we do not tie ourselves in into Clickhouse too much should future business requirements warrant the usage of a different backend/technology. A good way to implement this in Go would be our implementations adhering to a standard interface, the following for example:
 
-```golang
+```go
 type Storage interface {
   Read(
     ctx context.Context,

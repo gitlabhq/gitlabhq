@@ -60,9 +60,4 @@ describe('Pipeline Stages', () => {
     expect(findPipelineStagesAt(0).props('isMergeTrain')).toBe(true);
     expect(findPipelineStagesAt(1).props('isMergeTrain')).toBe(true);
   });
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 });

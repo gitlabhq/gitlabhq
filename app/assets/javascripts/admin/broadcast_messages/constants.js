@@ -1,6 +1,7 @@
 import { s__ } from '~/locale';
 
 export const BROADCAST_MESSAGES_PATH = '/admin/broadcast_messages';
+export const MESSAGES_PREVIEW_PATH = '/admin/broadcast_messages/preview';
 
 export const TYPE_BANNER = 'banner';
 export const TYPE_NOTIFICATION = 'notification';

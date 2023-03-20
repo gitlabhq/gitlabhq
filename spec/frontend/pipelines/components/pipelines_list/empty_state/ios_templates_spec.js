@@ -37,11 +37,6 @@ describe('iOS Templates', () => {
   const findSetupRunnerLink = () => wrapper.findByText('Set up a runner');
   const configurePipelineLink = () => wrapper.findByTestId('configure-pipeline-link');
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('when ios runners are not available', () => {
     beforeEach(() => {
       wrapper = createWrapper({ iosRunnersAvailable: false });

@@ -8,7 +8,11 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
 
   let(:user) { create(:user) }
   let(:event_name) { 'an_event' }
+  let(:event_action) { 'an_action' }
+  let(:event_label) { 'a_label' }
+
   let!(:group) { create(:group) }
+  let_it_be(:project) { create(:project) }
 
   before do
     allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
@@ -19,8 +23,15 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
     include ProductAnalyticsTracking
 
     skip_before_action :authenticate_user!, only: :show
-    track_event(:index, :show, name: 'an_event', destinations: [:redis_hll, :snowplow],
-                               conditions: [:custom_condition_one?, :custom_condition_two?]) { |controller| controller.get_custom_id }
+    track_event(
+      :index,
+      :show,
+      name: 'an_event',
+      action: 'an_action',
+      label: 'a_label',
+      destinations: [:redis_hll, :snowplow],
+      conditions: [:custom_condition_one?, :custom_condition_two?]
+    ) { |controller| controller.get_custom_id }
 
     def index
       render html: 'index'
@@ -44,6 +55,10 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
       Group.first
     end
 
+    def tracking_project_source
+      Project.first
+    end
+
     def custom_condition_one?
       true
     end
@@ -64,7 +79,10 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
 
     expect_snowplow_event(
       category: anything,
-      action: event_name,
+      action: event_action,
+      property: event_name,
+      label: event_label,
+      project: project,
       namespace: group,
       user: user,
       context: [context]

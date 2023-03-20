@@ -187,17 +187,17 @@ table.supported-languages ul {
       <td>Y</td>
     </tr>
     <tr>
-      <td rowspan="2">Java</td>
+      <td rowspan="2">Java and Kotlin (not Android)<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-1">1</a></b></sup></td>
       <td rowspan="2">
         8 LTS,
         11 LTS,
-        13<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-1">1</a></b></sup>,
-        14<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-1">1</a></b></sup>,
-        15<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-1">1</a></b></sup>,
-        16<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-1">1</a></b></sup>,
+        13<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup>,
+        14<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup>,
+        15<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup>,
+        16<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup>,
         or 17 LTS
       </td>
-      <td><a href="https://gradle.org/">Gradle</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup></td>
+      <td><a href="https://gradle.org/">Gradle</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-3">3</a></b></sup></td>
       <td>
         <ul>
             <li><code>build.gradle</code></li>
@@ -295,15 +295,19 @@ table.supported-languages ul {
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-1"></a>
     <p>
-      Support for these versions of Java is deprecated and is planned to be removed in the GitLab 16.0 release. Additionally, these versions of Java are not supported by the FIPS-enabled image of <code>gemnasium-maven</code>. Official support is limited to LTS versions only. Although it may be possible to use Dependency Scanning with other versions by building a custom dependency scanning image, this approach is not officially supported by GitLab.
+      Support for Kotlin projects for Android is tracked in <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/336866">issue 336866</a>.
     </p>
   </li>
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-2"></a>
     <p>
-      Although Gradle with Java 8 is supported, there are other issues such that Android project builds are not supported at this time.
-      See the backlog issue <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/336866">Android support for Dependency
-      Scanning (gemnasium-maven)</a> for more details. Also, Gradle is not supported when <a href="https://docs.gitlab.com/ee/development/fips_compliance.html#enable-fips-mode">FIPS mode</a> is enabled.
+      Support for these versions of Java is deprecated and is planned to be removed in the GitLab 16.0 release. Additionally, these versions of Java are not supported by the FIPS-enabled image of <code>gemnasium-maven</code>. Official support is limited to LTS versions only. Although it may be possible to use Dependency Scanning with other versions by building a custom dependency scanning image, this approach is not officially supported by GitLab.
+    </p>
+  </li>
+  <li>
+    <a id="notes-regarding-supported-languages-and-package-managers-3"></a>
+    <p>
+      Gradle is not supported when <a href="https://docs.gitlab.com/ee/development/fips_compliance.html#enable-fips-mode">FIPS mode</a> is enabled.
     </p>
   </li>
   <li>
@@ -553,7 +557,7 @@ always take the latest dependency scanning artifact available.
 To enable Dependency Scanning in a project, you can create a merge request:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. On the left sidebar, select **Security and Compliance > Security configuration**.
 1. In the **Dependency Scanning** row, select **Configure with a merge request**.
 1. Review and merge the merge request to enable Dependency Scanning.
 
@@ -626,6 +630,7 @@ The following variables allow configuration of global dependency scanning settin
 | `DS_EXCLUDED_ANALYZERS`      | Specify the analyzers (by name) to exclude from Dependency Scanning. For more information, see [Dependency Scanning Analyzers](analyzers.md). |
 | `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. Default: `"spec, test, tests, tmp"`. |
 | `DS_IMAGE_SUFFIX`           | Suffix added to the image name. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354796) in GitLab 14.10.) Automatically set to `"-fips"` when FIPS mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357922) in GitLab 15.0.) |
+| `DS_MAX_DEPTH`              | Defines how many directory levels deep that the analyzer should search for supported files to scan. A value of `-1` scans all directories regardless of depth. Default: `2`. |
 | `SECURE_ANALYZERS_PREFIX`   | Override the name of the Docker registry providing the official default images (proxy). Read more about [customizing analyzers](analyzers.md). |
 | `SECURE_LOG_LEVEL`          | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1. Default: `info`. |
 
@@ -926,10 +931,30 @@ include:
 merge cyclonedx sboms:
   stage: merge-cyclonedx-sboms
   image:
-    name: cyclonedx/cyclonedx-cli:0.24.0
+    name: cyclonedx/cyclonedx-cli:0.24.2
     entrypoint: [""]
   script:
-    - find . -name "gl-sbom-*.cdx.json" -exec /cyclonedx merge --output-file gl-sbom-all.cdx.json --input-files "{}" +
+    - apt-get update && apt-get install -y jq
+    - find . -name "gl-sbom-*.cdx.json" -exec cyclonedx merge --output-file gl-sbom-all.cdx.json --input-files "{}" +
+    # remove duplicates from merged file. See https://github.com/CycloneDX/cyclonedx-cli/issues/188 for details.
+    - |
+      jq '. |
+      {
+        "bomFormat": .bomFormat,
+        "specVersion": .specVersion,
+        "serialNumber": .serialNumber,
+        "version": .version,
+        "metadata": {
+          "tools": [
+            (.metadata.tools | unique[])
+          ]
+        },
+        "components": [
+          (.components | unique[])
+        ]
+      }' "gl-sbom-all.cdx.json" > gl-sbom-all.cdx.json.tmp && mv gl-sbom-all.cdx.json.tmp gl-sbom-all.cdx.json
+    # optional: validate the merged sbom
+    - cyclonedx validate --input-version v1_4 --input-file gl-sbom-all.cdx.json
   artifacts:
     paths:
       - gl-sbom-all.cdx.json

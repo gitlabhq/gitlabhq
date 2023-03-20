@@ -12,6 +12,11 @@ class DependencyProxy::Manifest < ApplicationRecord
 
   MAX_FILE_SIZE = 10.megabytes.freeze
   DIGEST_HEADER = 'Docker-Content-Digest'
+  ACCEPTED_TYPES = [
+    ContainerRegistry::BaseClient::DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE,
+    ContainerRegistry::BaseClient::OCI_MANIFEST_V1_TYPE,
+    ContainerRegistry::BaseClient::OCI_DISTRIBUTION_INDEX_TYPE
+  ].freeze
 
   validates :group, presence: true
   validates :file, presence: true

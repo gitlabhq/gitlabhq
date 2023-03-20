@@ -9,7 +9,7 @@ import { stubPerformanceWebAPI } from 'helpers/performance';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import GetSnippetQuery from 'shared_queries/snippet/snippet.query.graphql';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import * as urlUtils from '~/lib/utils/url_utility';
 import SnippetEditApp from '~/snippets/components/edit.vue';
 import SnippetBlobActionsEdit from '~/snippets/components/snippet_blob_actions_edit.vue';
@@ -25,7 +25,7 @@ import UpdateSnippetMutation from '~/snippets/mutations/update_snippet.mutation.
 import FormFooterActions from '~/vue_shared/components/form/form_footer_actions.vue';
 import { testEntries, createGQLSnippetsQueryResponse, createGQLSnippet } from '../test_utils';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const TEST_UPLOADED_FILES = ['foo/bar.txt', 'alpha/beta.js'];
 const TEST_API_ERROR = new Error('TEST_API_ERROR');
@@ -94,7 +94,6 @@ describe('Snippet Edit app', () => {
   let mutateSpy;
 
   const relativeUrlRoot = '/foo/';
-  const originalRelativeUrlRoot = gon.relative_url_root;
 
   beforeEach(() => {
     stubPerformanceWebAPI();
@@ -106,12 +105,6 @@ describe('Snippet Edit app', () => {
 
     gon.relative_url_root = relativeUrlRoot;
     jest.spyOn(urlUtils, 'redirectTo').mockImplementation();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-    gon.relative_url_root = originalRelativeUrlRoot;
   });
 
   const findBlobActions = () => wrapper.findComponent(SnippetBlobActionsEdit);
@@ -132,10 +125,6 @@ describe('Snippet Edit app', () => {
     props = {},
     selectedLevel = VISIBILITY_LEVEL_PRIVATE_STRING,
   } = {}) => {
-    if (wrapper) {
-      throw new Error('wrapper already created');
-    }
-
     const requestHandlers = [
       [GetSnippetQuery, getSpy],
       // See `mutateSpy` declaration comment for why we send a key
@@ -347,7 +336,7 @@ describe('Snippet Edit app', () => {
           projectPath
           ${'project/path'}
           ${''}
-        `('should flash error (projectPath=$projectPath)', async ({ projectPath }) => {
+        `('should alert error (projectPath=$projectPath)', async ({ projectPath }) => {
           mutateSpy.mockResolvedValue(createMutationResponseWithErrors('createSnippet'));
 
           await createComponentAndLoad({
@@ -373,7 +362,7 @@ describe('Snippet Edit app', () => {
           ${'project/path'}
           ${''}
         `(
-          'should flash error with (snippet=$snippetGid, projectPath=$projectPath)',
+          'should alert error with (snippet=$snippetGid, projectPath=$projectPath)',
           async ({ projectPath }) => {
             mutateSpy.mockResolvedValue(createMutationResponseWithErrors('updateSnippet'));
 
@@ -405,7 +394,7 @@ describe('Snippet Edit app', () => {
           expect(urlUtils.redirectTo).not.toHaveBeenCalled();
         });
 
-        it('should flash', () => {
+        it('should alert', () => {
           // Apollo automatically wraps the resolver's error in a NetworkError
           expect(createAlert).toHaveBeenCalledWith({
             message: `Can't update snippet: ${TEST_API_ERROR.message}`,

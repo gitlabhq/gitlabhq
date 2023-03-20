@@ -36,12 +36,77 @@ When a branch is protected, the default behavior enforces these restrictions on 
 1. No one can delete a protected branch using Git commands, however, users with at least Maintainer
    role can [delete a protected branch from the UI or API](#delete-a-protected-branch).
 
+### When a branch matches multiple rules
+
+When a branch matches multiple rules, the **most permissive rule** determines the
+level of protection for the branch. For example, consider these rules, which include
+[wildcards](#configure-multiple-protected-branches-by-using-a-wildcard):
+
+| Branch name pattern | Allowed to merge       | Allowed to push |
+|---------------------|------------------------|-----------------|
+| `v1.x`              | Maintainer             | Maintainer      |
+| `v1.*`              | Maintainer + Developer | Maintainer      |
+| `v*`                | No one                 | No one          |
+
+A branch named `v1.x` matches all three branch name patterns: `v1.x`, `v1.*`, and `v*`.
+As the most permissive option determines the behavior, the resulting permissions for branch `v1.x` are:
+
+- **Allowed to merge:** Of the three settings, `Maintainer + Developer` is most permissive,
+  and controls branch behavior as a result. Even though the branch also matched `v1.x` and `v*`
+  (which each have stricter permissions), users with the Developer role can merge into the branch.
+- **Allowed to push:** Of the three settings, `Maintainer` is the most permissive, and controls
+  branch behavior as a result. Even though branches matching `v*` are set to `No one`, branches
+  that _also_ match `v1.x` or `v1.*` receive the more permissive `Maintainer` permission.
+
+To be certain that a rule controls the behavior of a branch,
+_all_ other patterns that match must apply less or equally permissive rules.
+
+If you want to ensure that `No one` is allowed to push to branch `v1.x`, every pattern
+that matches `v1.x` must set `Allowed to push` to `No one`, like this:
+
+| Branch name pattern | Allowed to merge       | Allowed to push |
+|---------------------|------------------------|-----------------|
+| `v1.x`              | Maintainer             | No one          |
+| `v1.*`              | Maintainer + Developer | No one          |
+| `v*`                | No one                 | No one          |
+
 ### Set the default branch protection level
 
 Administrators can set a default branch protection level in the
 [Admin Area](../project/repository/branches/default.md#instance-level-default-branch-protection).
 
 ## Configure a protected branch
+
+Configure protected branches for all projects in a group, or just for a project.
+
+### For all projects in a group
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 behind a feature flag, disabled by default.
+
+Group owners can create protected branches for a group. These settings are inherited by all projects in the group and can't be overridden by project settings.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md)
+named `group_protected_branches`. On GitLab.com, this feature is not available.
+
+Prerequisite:
+
+- You must have the Owner role in the group.
+
+To protect a branch for all the projects in a group:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Protected branches**.
+1. In the **Branch** text box, type the branch name or a wildcard.
+1. From the **Allowed to merge** list, select a role, group, or user that can merge into this branch.
+1. From the **Allowed to push** list, select a role, group, or user that can push to this branch.
+1. Select **Protect**.
+
+The protected branch is added to the list of protected branches.
+
+### For a project
 
 Prerequisite:
 
@@ -203,8 +268,7 @@ Members who can push to this branch can now also force push.
 
 ## Require Code Owner approval on a protected branch **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13251) in GitLab 12.4.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35097) in GitLab 13.5, users and groups who can push to protected branches do not have to use a merge request to merge their feature branches. This means they can skip merge request approval rules.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35097) in GitLab 13.5, users and groups who can push to protected branches do not have to use a merge request to merge their feature branches. This means they can skip merge request approval rules.
 
 For a protected branch, you can require at least one approval by a [Code Owner](code_owners.md).
 

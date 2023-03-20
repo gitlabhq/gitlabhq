@@ -51,10 +51,6 @@ describe('Column component', () => {
     createWrapper();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('xAxisLabel', () => {
     const mockDate = Date.UTC(2020, 4, 26, 20); // 8:00 PM in GMT
 

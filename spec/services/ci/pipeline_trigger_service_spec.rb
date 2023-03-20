@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineTriggerService do
+RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integration do
   include AfterNextHelpers
 
   let_it_be(:project) { create(:project, :repository) }

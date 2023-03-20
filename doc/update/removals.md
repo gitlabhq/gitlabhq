@@ -34,6 +34,16 @@ For removal reviewers (Technical Writers only):
   https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-removals-doc
 -->
 
+## Removed in 15.9
+
+### Live Preview no longer available in the Web IDE
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The Live Preview feature of the Web IDE was intended to provide a client-side preview of static web applications. However, complex configuration steps and a narrow set of supported project types have limited its utility. With the introduction of the Web IDE Beta in GitLab 15.7, you can now connect to a full server-side runtime environment. With upcoming support for installing extensions in the Web IDE, we’ll also support more advanced workflows than those available with Live Preview. As of GitLab 15.9, Live Preview is no longer available in the Web IDE.
+
 ## Removed in 15.8
 
 ### CiliumNetworkPolicy within the auto deploy Helm chart is removed
@@ -44,6 +54,18 @@ If you want to preserve this functionality, you can follow one of these two path
 
 1. Fork the [GitLab Auto Deploy Helm chart](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app) into the `chart/` path within your project
 1. Set `AUTO_DEPLOY_IMAGE_VERSION` and `DAST_AUTO_DEPLOY_IMAGE_VERSION` to the most recent version of the image that included the CiliumNetworkPolicy
+
+### `artifacts:public` CI/CD keyword refactored
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The [`artifacts:public` CI/CD keyword](https://docs.gitlab.com/ee/ci/yaml/#artifactspublic) was discovered to be not working properly since GitLab 15.8 and needed to be refactored. This feature is disabled on GitLab.com, and disabled by default on self-managed instances. If an administrator for an instance running GitLab 15.8 or 15.9 enabled this feature via the `non_public_artifacts` feature flag, it is likely that artifacts created with the `public:false` setting are being treated as `public:true`.
+
+If you have projects that use this setting, you should delete artifacts that must not be public, or [change the visibility](https://docs.gitlab.com/ee/user/public_access.html#change-project-visibility) of affected projects to private, before updating to GitLab 15.8 or later.
+
+In GitLab 15.10, this feature's code was refactored. On instances with this feature enabled, new artifacts created with `public:false` are now working as expected, though still disabled by default. Avoid testing this feature with production data until it is enabled by default and made generally available.
 
 ## Removed in 15.7
 

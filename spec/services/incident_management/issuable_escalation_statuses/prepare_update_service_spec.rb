@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe IncidentManagement::IssuableEscalationStatuses::PrepareUpdateService, factory_default: :keep do
+RSpec.describe IncidentManagement::IssuableEscalationStatuses::PrepareUpdateService, factory_default: :keep,
+  feature_category: :incident_management do
   let_it_be(:project) { create_default(:project) }
   let_it_be(:escalation_status) { create(:incident_management_issuable_escalation_status, :triggered) }
   let_it_be(:user_with_permissions) { create(:user) }

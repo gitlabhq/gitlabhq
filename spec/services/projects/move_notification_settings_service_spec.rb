@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::MoveNotificationSettingsService do
+RSpec.describe Projects::MoveNotificationSettingsService, feature_category: :projects do
   let(:user) { create(:user) }
   let(:project_with_notifications) { create(:project, namespace: user.namespace) }
   let(:target_project) { create(:project, namespace: user.namespace) }

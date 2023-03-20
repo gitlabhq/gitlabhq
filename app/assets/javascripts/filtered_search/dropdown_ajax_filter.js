@@ -1,4 +1,4 @@
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import AjaxFilter from './droplab/plugins/ajax_filter';
 import DropdownUtils from './dropdown_utils';

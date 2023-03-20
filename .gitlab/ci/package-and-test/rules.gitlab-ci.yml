@@ -115,12 +115,18 @@
     - *qa-run-all-tests
     - *feature-flags-set-manual
 
+.rules:test:ee-only:
+  rules:
+    - if: $FOSS_ONLY == "true"
+      when: never
+
 .rules:test:update:
   rules:
-    # skip upgrade jobs if gitlab version is not provided
+    # skip upgrade jobs if gitlab version is not in semver compatible format
     # these jobs need gitlab version because we can't reliably detect it from just the image
-    - if: $GITLAB_VERSION == null
+    - if: $GITLAB_SEMVER_VERSION !~ /^\d+\.\d+\.\d+/
       when: never
+    - !reference [.rules:test:ee-only, rules]
     - !reference [.rules:test:qa, rules]
 
 # ------------------------------------------

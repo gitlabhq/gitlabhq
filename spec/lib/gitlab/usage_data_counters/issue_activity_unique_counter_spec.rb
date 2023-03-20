@@ -306,7 +306,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
       described_class.track_issue_assignee_changed_action(author: user3, project: project)
     end
 
-    events = Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category(described_class::ISSUE_CATEGORY)
+    events = [described_class::ISSUE_TITLE_CHANGED, described_class::ISSUE_DESCRIPTION_CHANGED, described_class::ISSUE_ASSIGNEE_CHANGED]
     today_count = Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: events, start_date: time, end_date: time)
     week_count = Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: events, start_date: time - 5.days, end_date: 1.day.since(time))
 

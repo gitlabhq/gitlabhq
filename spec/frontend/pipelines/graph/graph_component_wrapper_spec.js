@@ -101,10 +101,6 @@ describe('Pipeline graph wrapper', () => {
     createComponent({ apolloProvider, data, provide, mountFn });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when data is loading', () => {
     it('displays the loading icon', () => {
       createComponentWithApollo();

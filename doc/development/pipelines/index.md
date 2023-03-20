@@ -100,7 +100,7 @@ The `rules` definitions for full Jest tests are defined at `.frontend:rules:jest
 We run only the predictive RSpec & Jest jobs for fork pipelines, unless the `pipeline:run-all-rspec`
 label is set on the MR. The goal is to reduce the CI/CD minutes consumed by fork pipelines.
 
-See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1170).
+See the [experiment issue](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1170).
 
 ## Fail-fast job in merge request pipelines
 
@@ -392,6 +392,8 @@ to detect, and fail if any changes introduced in the merge request has zero cove
 The `rspec:undercoverage` job obtains coverage data from the `rspec:coverage`
 job.
 
+If the `rspec:undercoverage` job detects missing coverage due to a CE method being overridden in EE, add the `pipeline:run-as-if-foss` label to the merge request and start a new pipeline.
+
 In the event of an emergency, or false positive from this job, add the
 `pipeline:skip-undercoverage` label to the merge request to allow this job to
 fail.
@@ -442,7 +444,7 @@ so that they're ultimately fixed by their respective group.
 
 The automatic skipping of flaky tests can still be enabled by setting the `$SKIP_FLAKY_TESTS_AUTOMATICALLY` variable to `true`.
 
-See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1069).
+See the [experiment issue](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1069).
 
 ### Automatic retry of failing tests in a separate process
 
@@ -451,7 +453,7 @@ RSpec process. The goal is to get rid of most side-effects from previous tests t
 
 We keep track of retried tests in the `$RETRIED_TESTS_REPORT_FILE` file saved as artifact by the `rspec:flaky-tests-report` job.
 
-See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1148).
+See the [experiment issue](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1148).
 
 ## Compatibility testing
 
@@ -484,19 +486,17 @@ This should let us:
 Our test suite runs against PG12 as GitLab.com runs on PG12 and
 [Omnibus defaults to PG12 for new installs and upgrades](../../administration/package_information/postgresql_versions.md).
 
-We do run our test suite against PG11 and PG13 on nightly scheduled pipelines.
-
-We also run our test suite against PG11 upon specific database library changes in MRs and `main` pipelines (with the `rspec db-library-code pg11` job).
+We do run our test suite against PG13 on nightly scheduled pipelines.
 
 #### Current versions testing
 
-| Where?                                                                                         | PostgreSQL version                              | Ruby version |
-|------------------------------------------------------------------------------------------------|-------------------------------------------------|--------------|
-| Merge requests                                                                                 | 12 (default version), 11 for DB library changes | 3.0 (default version) |
-| `master` branch commits                                                                        | 12 (default version), 11 for DB library changes | 3.0 (default version) |
-| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)           | 12 (default version), 11 for DB library changes | 3.0 (default version) |
-| `maintenance` scheduled pipelines for the `ruby2` branch (every odd-numbered hour), see below. | 12 (default version), 11 for DB library changes | 2.7 |
-| `nightly` scheduled pipelines for the `master` branch                                          | 12 (default version), 11, 13                    | 3.0 (default version) |
+| Where?                                                                                         | PostgreSQL version       | Ruby version          |
+|------------------------------------------------------------------------------------------------|--------------------------|-----------------------|
+| Merge requests                                                                                 | 12 (default version)     | 3.0 (default version) |
+| `master` branch commits                                                                        | 12 (default version)     | 3.0 (default version) |
+| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)           | 12 (default version)     | 3.0 (default version) |
+| `maintenance` scheduled pipelines for the `ruby2` branch (every odd-numbered hour), see below. | 12 (default version)     | 2.7                   |
+| `nightly` scheduled pipelines for the `master` branch                                          | 12 (default version), 13 | 3.0 (default version) |
 
 There are 2 pipeline schedules used for testing Ruby 2.7. One is triggering a
 pipeline in `ruby2-sync` branch, which updates the `ruby2` branch with latest
@@ -518,7 +518,6 @@ We follow the [PostgreSQL versions shipped with Omnibus GitLab](../../administra
 | PostgreSQL version | 14.1 (July 2021)       | 14.2 (August 2021)     | 14.3 (September 2021)  | 14.4 (October 2021)    | 14.5 (November 2021)   | 14.6 (December 2021)   |
 | -------------------| ---------------------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- |
 | PG12               | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` |
-| PG11               | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              |
 | PG13               | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              |
 
 ### Redis versions testing

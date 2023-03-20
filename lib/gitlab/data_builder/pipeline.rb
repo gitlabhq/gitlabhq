@@ -45,8 +45,9 @@ module Gitlab
 
       # rubocop: disable CodeReuse/ActiveRecord
       def preload_builds(pipeline, association)
-        ActiveRecord::Associations::Preloader.new.preload(pipeline,
-          {
+        ActiveRecord::Associations::Preloader.new(
+          records: [pipeline],
+          associations: {
             association => {
               **::Ci::Pipeline::PROJECT_ROUTE_AND_NAMESPACE_ROUTE,
               runner: :tags,
@@ -56,7 +57,7 @@ module Gitlab
               ci_stage: []
             }
           }
-        )
+        ).call
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

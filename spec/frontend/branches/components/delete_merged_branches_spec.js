@@ -27,7 +27,7 @@ const createComponent = (mountFn = shallowMountExtended, stubs = {}) => {
       ...propsDataMock,
     },
     directives: {
-      GlTooltip: createMockDirective(),
+      GlTooltip: createMockDirective('gl-tooltip'),
     },
     stubs,
   });
@@ -76,10 +76,6 @@ describe('Delete merged branches component', () => {
   describe('Delete merged branches confirmation modal', () => {
     beforeEach(() => {
       createComponent(shallowMountExtended, stubsData);
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
     });
 
     it('renders correct modal title and text', () => {

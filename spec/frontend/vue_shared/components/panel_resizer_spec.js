@@ -27,10 +27,6 @@ describe('Panel Resizer component', () => {
     el.dispatchEvent(event);
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should render a div element with the correct classes and styles', () => {
     wrapper = mount(PanelResizer, {
       propsData: {

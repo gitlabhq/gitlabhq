@@ -70,8 +70,9 @@ The following information is displayed:
 
 A GitLab SaaS subscription uses a concurrent (_seat_) model. You pay for a
 subscription according to the maximum number of users assigned to the top-level group or its children during the billing period. You can
-add and remove users during the subscription period, as long as the total users
-at any given time doesn't exceed the subscription count.
+add and remove users during the subscription period without incurring additional charges, as long as the total users
+at any given time doesn't exceed the subscription count. If the total users exceeds your subscription count, you will incur an overage
+which must be paid at your next [reconciliation](../quarterly_reconciliation.md).
 
 A top-level group can be [changed](../../user/group/manage.md#change-a-groups-path) like any other group.
 
@@ -170,13 +171,13 @@ The user must not be assigned any other role, anywhere in the instance.
 - If your project is public, all users, including those with the Guest role
   can access your project.
 
-### Add users to your subscription
+### Add seats to your subscription
 
 Your subscription cost is based on the maximum number of seats you use during the billing period.
 Even if you reach the number of seats in your subscription, you can continue to add users.
 GitLab [bills you for the overage](../quarterly_reconciliation.md).
 
-To add users to a subscription:
+To add seats to a subscription:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/).
 1. Navigate to the **Manage Purchases** page.
@@ -236,7 +237,7 @@ amounts at which the alert displays.
 To change the namespace linked to a subscription:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) with a
-   [linked](../index.md#change-the-linked-account) GitLab.com account.
+   [linked](../index.md#link-a-gitlabcom-account) GitLab.com account.
 1. Go to the **Manage Purchases** page.
 1. Select **Change linked namespace**.
 1. Select the desired group from the **This subscription is for** dropdown list. For a group to appear here, you must have the Owner role for that group.

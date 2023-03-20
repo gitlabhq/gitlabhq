@@ -49,11 +49,6 @@ describe('IDE file templates dropdown component', () => {
     ({ element } = wrapper);
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('calls clickItem on click', async () => {
     const itemData = { name: 'test.yml ' };
     createComponent({ props: { data: [itemData] } });

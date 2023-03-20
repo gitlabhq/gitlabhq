@@ -56,11 +56,6 @@ describe('snippets/components/snippet_blob_actions_edit', () => {
   const triggerBlobDelete = (idx) => findBlobEdits().at(idx).vm.$emit('delete');
   const triggerBlobUpdate = (idx, props) => findBlobEdits().at(idx).vm.$emit('blob-updated', props);
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('multi-file snippets rendering', () => {
     beforeEach(() => {
       createComponent();

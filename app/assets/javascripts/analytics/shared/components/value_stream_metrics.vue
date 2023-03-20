@@ -1,9 +1,10 @@
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { isEqual, keyBy } from 'lodash';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { sprintf, s__ } from '~/locale';
 import { fetchMetricsData, removeFlash } from '../utils';
+import ValueStreamsDashboardLink from './value_streams_dashboard_link.vue';
 import MetricTile from './metric_tile.vue';
 
 const extractMetricsGroupData = (keyList = [], data = []) => {
@@ -28,6 +29,7 @@ export default {
   components: {
     GlSkeletonLoader,
     MetricTile,
+    ValueStreamsDashboardLink,
   },
   props: {
     requestPath: {
@@ -51,6 +53,11 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    dashboardsPath: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -76,6 +83,10 @@ export default {
     this.fetchData();
   },
   methods: {
+    shouldDisplayDashboardLink(index) {
+      // When we have groups of metrics, we should only display the link for the first group
+      return index === 0 && this.dashboardsPath;
+    },
     fetchData() {
       removeFlash();
       this.isLoading = true;
@@ -110,7 +121,7 @@ export default {
     <template v-else>
       <div v-if="hasGroupedMetrics" class="gl-flex-direction-column">
         <div
-          v-for="group in groupedMetrics"
+          v-for="(group, groupIndex) in groupedMetrics"
           :key="group.key"
           class="gl-mb-7"
           data-testid="vsa-metrics-group"
@@ -122,6 +133,11 @@ export default {
               :key="metric.identifier"
               :metric="metric"
               class="gl-mt-5 gl-pr-10"
+            />
+            <value-streams-dashboard-link
+              v-if="shouldDisplayDashboardLink(groupIndex)"
+              class="gl-mt-5"
+              :request-path="dashboardsPath"
             />
           </div>
         </div>

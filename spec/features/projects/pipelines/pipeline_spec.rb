@@ -113,6 +113,50 @@ RSpec.describe 'Pipeline', :js, feature_category: :projects do
       end
     end
 
+    describe 'pipeline stats text' do
+      let(:finished_pipeline) do
+        create(:ci_pipeline, :success, project: project,
+               ref: 'master', sha: project.commit.id, user: user)
+      end
+
+      before do
+        finished_pipeline.update!(started_at: "2023-01-01 01:01:05", created_at: "2023-01-01 01:01:01",
+                                  finished_at: "2023-01-01 01:01:10", duration: 9)
+      end
+
+      context 'pipeline has finished' do
+        it 'shows pipeline stats with flag on' do
+          visit project_pipeline_path(project, finished_pipeline)
+
+          within '.pipeline-info' do
+            expect(page).to have_content("in #{finished_pipeline.duration} seconds")
+            expect(page).to have_content("and was queued for #{finished_pipeline.queued_duration} seconds")
+          end
+        end
+
+        it 'shows pipeline stats with flag off' do
+          stub_feature_flags(refactor_ci_minutes_consumption: false)
+
+          visit project_pipeline_path(project, finished_pipeline)
+
+          within '.pipeline-info' do
+            expect(page).to have_content("in #{finished_pipeline.duration} seconds " \
+                                          "and was queued for #{finished_pipeline.queued_duration} seconds")
+          end
+        end
+      end
+
+      context 'pipeline has not finished' do
+        it 'does not show pipeline stats' do
+          visit_pipeline
+
+          within '.pipeline-info' do
+            expect(page).not_to have_selector('[data-testid="pipeline-stats-text"]')
+          end
+        end
+      end
+    end
+
     describe 'related merge requests' do
       context 'when there are no related merge requests' do
         it 'shows a "no related merge requests" message' do

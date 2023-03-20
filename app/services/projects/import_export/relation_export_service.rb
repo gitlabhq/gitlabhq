@@ -85,6 +85,7 @@ module Projects
         logger.error(
           message: 'Project relation export failed',
           export_error: error_message,
+          relation: relation_export.relation,
           project_export_job_id: project_export_job.id,
           project_name: project.name,
           project_id: project.id

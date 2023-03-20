@@ -714,8 +714,7 @@ SQL optimization tool - [Joe Bot](https://gitlab.com/postgres-ai/joe).
 
 Database Lab Engine provides developers with their own clone of the production database, while Joe Bot helps with exploring execution plans.
 
-Joe Bot is available in the [`#database-lab`](https://gitlab.slack.com/archives/CLJMDRD8C) channel on Slack,
-and through its [web interface](https://console.postgres.ai/gitlab/joe-instances).
+Joe Bot is available through its [web interface](https://console.postgres.ai/gitlab/joe-instances).
 
 With Joe Bot you can execute DDL statements (like creating indexes, tables, and columns) and get query plans for `SELECT`, `UPDATE`, and `DELETE` statements.
 
@@ -790,34 +789,6 @@ Seq Scan on public.projects  (cost=0.00..2.17 rows=1 width=742) (actual time=0.0
   Buffers: shared hit=2
 Planning time: 0.411 ms
 Execution time: 0.113 ms
-```
-
-### ChatOps
-
-GitLab team members can also use our ChatOps solution, available in Slack
-using the [`/chatops` slash command](../chatops_on_gitlabcom.md).
-
-NOTE:
-While ChatOps is still available, the recommended way to generate execution plans is to use [Database Lab Engine](#database-lab-engine).
-
-You can use ChatOps to get a query plan by running the following:
-
-```sql
-/chatops run explain SELECT COUNT(*) FROM projects WHERE visibility_level IN (0, 20)
-```
-
-Visualising the plan using <https://explain.depesz.com/> is also supported:
-
-```sql
-/chatops run explain --visual SELECT COUNT(*) FROM projects WHERE visibility_level IN (0, 20)
-```
-
-Quoting the query is not necessary.
-
-For more information about the available options, run:
-
-```sql
-/chatops run explain --help
 ```
 
 ## Further reading

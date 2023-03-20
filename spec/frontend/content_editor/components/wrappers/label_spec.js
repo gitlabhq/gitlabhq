@@ -11,10 +11,6 @@ describe('content/components/wrappers/label', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it("renders a GlLabel with the node's text and color", () => {
     createWrapper({ attrs: { color: '#ff0000', text: 'foo bar', originalText: '~"foo bar"' } });
 

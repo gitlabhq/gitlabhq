@@ -7,7 +7,7 @@ require 're2'
 require_relative '../../app/services/service_response'
 require_relative '../../lib/gitlab/error_tracking'
 
-RSpec.describe ServiceResponse do
+RSpec.describe ServiceResponse, feature_category: :shared do
   describe '.success' do
     it 'creates a successful response without a message' do
       expect(described_class.success).to be_success

@@ -18,7 +18,8 @@ module Gitlab
           progress: 'Progress',
           status: 'Status',
           requirement_legacy: 'Requirement legacy',
-          test_reports: 'Test reports'
+          test_reports: 'Test reports',
+          notifications: 'Notifications'
         }.freeze
 
         WIDGETS_FOR_TYPE = {
@@ -32,23 +33,27 @@ module Gitlab
             :notes,
             :iteration,
             :weight,
-            :health_status
+            :health_status,
+            :notifications
           ],
           incident: [
             :description,
             :hierarchy,
-            :notes
+            :notes,
+            :notifications
           ],
           test_case: [
             :description,
-            :notes
+            :notes,
+            :notifications
           ],
           requirement: [
             :description,
             :notes,
             :status,
             :requirement_legacy,
-            :test_reports
+            :test_reports,
+            :notifications
           ],
           task: [
             :assignees,
@@ -59,7 +64,8 @@ module Gitlab
             :milestone,
             :notes,
             :iteration,
-            :weight
+            :weight,
+            :notifications
           ],
           objective: [
             :assignees,
@@ -69,7 +75,8 @@ module Gitlab
             :milestone,
             :notes,
             :health_status,
-            :progress
+            :progress,
+            :notifications
           ],
           key_result: [
             :assignees,
@@ -79,7 +86,8 @@ module Gitlab
             :start_and_due_date,
             :notes,
             :health_status,
-            :progress
+            :progress,
+            :notifications
           ]
         }.freeze
 

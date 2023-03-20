@@ -17,10 +17,6 @@ RSpec.describe Clusters::Applications::Knative do
   include_examples 'cluster application version specs', :clusters_applications_knative
   include_examples 'cluster application initial status specs'
 
-  describe 'associations' do
-    it { is_expected.to have_one(:serverless_domain_cluster).class_name('::Serverless::DomainCluster').with_foreign_key('clusters_applications_knative_id').inverse_of(:knative) }
-  end
-
   describe 'default values' do
     it { expect(subject.version).to eq(described_class::VERSION) }
   end
@@ -135,19 +131,6 @@ RSpec.describe Clusters::Applications::Knative do
     it 'does not install metrics for prometheus' do
       expect(subject.postinstall).to be_empty
     end
-
-    context 'with prometheus installed' do
-      let(:prometheus) { create(:clusters_applications_prometheus, :installed) }
-      let(:knative) { create(:clusters_applications_knative, cluster: prometheus.cluster) }
-
-      subject { knative.install_command }
-
-      it 'installs metrics' do
-        expect(subject.postinstall).not_to be_empty
-        expect(subject.postinstall.length).to be(1)
-        expect(subject.postinstall[0]).to eql("kubectl apply -f #{Clusters::Applications::Knative::METRICS_CONFIG}")
-      end
-    end
   end
 
   describe '#install_command' do
@@ -247,14 +230,6 @@ RSpec.describe Clusters::Applications::Knative do
     it 'returns the domain scoped to available domains' do
       expect(subject).to receive(:available_domains).and_call_original
       expect(subject.find_available_domain(domain.id)).to eq(domain)
-    end
-  end
-
-  describe '#pages_domain' do
-    let!(:sdc) { create(:serverless_domain_cluster, knative: knative) }
-
-    it 'returns the the associated pages domain' do
-      expect(knative.reload.pages_domain).to eq(sdc.pages_domain)
     end
   end
 end

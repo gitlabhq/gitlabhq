@@ -244,6 +244,10 @@ p_ci_builds_metadata:
   - table: projects
     column: project_id
     on_delete: async_delete
+p_ci_runner_machine_builds:
+  - table: ci_runner_machines
+    column: runner_machine_id
+    on_delete: async_delete
 packages_build_infos:
   - table: ci_pipelines
     column: pipeline_id
@@ -280,6 +284,10 @@ vulnerability_occurrence_pipelines:
   - table: ci_pipelines
     column: pipeline_id
     on_delete: async_delete
+vulnerability_state_transitions:
+  - table: ci_pipelines
+    column: state_changed_at_pipeline_id
+    on_delete: async_nullify
 vulnerability_statistics:
   - table: ci_pipelines
     column: latest_pipeline_id

@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
         sync_partitions
       end
 
-      context 'with eplicitly provided connection' do
+      context 'with explicitly provided connection' do
         let(:connection) { Ci::ApplicationRecord.connection }
 
         it 'uses the explicitly provided connection when any' do
@@ -56,6 +56,14 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
           expect(connection).to receive(:execute).with(partitions.second.to_sql)
 
           described_class.new(model, connection: connection).sync_partitions
+        end
+      end
+
+      context 'when an ArgumentError occurs during partition management' do
+        it 'raises error' do
+          expect(partitioning_strategy).to receive(:missing_partitions).and_raise(ArgumentError)
+
+          expect { sync_partitions }.to raise_error(ArgumentError)
         end
       end
 
@@ -230,23 +238,20 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
       expect(pending_drop.drop_after).to eq(Time.current + described_class::RETAIN_DETACHED_PARTITIONS_FOR)
     end
 
-    # Postgres 11 does not support foreign keys to partitioned tables
-    if ApplicationRecord.database.version.to_f >= 12
-      context 'when the model is the target of a foreign key' do
-        before do
-          connection.execute(<<~SQL)
+    context 'when the model is the target of a foreign key' do
+      before do
+        connection.execute(<<~SQL)
         create unique index idx_for_fk ON #{partitioned_table_name}(created_at);
 
         create table _test_gitlab_main_referencing_table (
           id bigserial primary key not null,
           referencing_created_at timestamptz references #{partitioned_table_name}(created_at)
         );
-          SQL
-        end
+        SQL
+      end
 
-        it 'does not detach partitions with a referenced foreign key' do
-          expect { subject }.not_to change { find_partitions(my_model.table_name).size }
-        end
+      it 'does not detach partitions with a referenced foreign key' do
+        expect { subject }.not_to change { find_partitions(my_model.table_name).size }
       end
     end
   end

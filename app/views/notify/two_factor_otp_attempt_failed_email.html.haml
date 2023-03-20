@@ -9,7 +9,7 @@
         %tr
           %td{ style: "#{default_font}vertical-align:middle;color:#ffffff;text-align:center;" }
             %span
-              = _("We detected an attempt to sign in to your %{host} account using a wrong two-factor authentication code") % { host: Gitlab.config.gitlab.host }
+              = _("GitLab detected an attempt to sign in to your %{host} account using an incorrect verification code") % { host: Gitlab.config.gitlab.host }
 %tr.spacer
   %td{ style: spacer_style }
     &nbsp;
@@ -43,7 +43,7 @@
         %tr{ style: 'width:100%;' }
           %td{ style: "#{default_style}text-align:center;" }
             - password_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_url('user/profile/user_passwords', anchor: 'change-your-password') }
-            = _('If you recently tried to sign in, but mistakenly entered a wrong two-factor authentication code, you may ignore this email.')
+            = _('If you recently tried to sign in, but mistakenly entered an incorrect verification code, you can ignore this email.')
 
             - if password_authentication_enabled_for_web?
               %p

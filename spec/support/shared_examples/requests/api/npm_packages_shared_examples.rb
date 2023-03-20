@@ -507,55 +507,118 @@ RSpec.shared_examples 'handling get dist tags requests' do |scope: :project|
     it_behaves_like 'returning response status', status
   end
 
-  shared_examples 'handling different package names, visibilities and user roles' do
-    where(:package_name_type, :visibility, :user_role, :expected_result, :expected_status) do
-      :scoped_naming_convention    | :public   | :anonymous | :accept | :ok
-      :scoped_naming_convention    | :public   | :guest     | :accept | :ok
-      :scoped_naming_convention    | :public   | :reporter  | :accept | :ok
-      :scoped_no_naming_convention | :public   | :anonymous | :accept | :ok
-      :scoped_no_naming_convention | :public   | :guest     | :accept | :ok
-      :scoped_no_naming_convention | :public   | :reporter  | :accept | :ok
-      :unscoped                    | :public   | :anonymous | :accept | :ok
-      :unscoped                    | :public   | :guest     | :accept | :ok
-      :unscoped                    | :public   | :reporter  | :accept | :ok
-      :non_existing                | :public   | :anonymous | :reject | :not_found
-      :non_existing                | :public   | :guest     | :reject | :not_found
-      :non_existing                | :public   | :reporter  | :reject | :not_found
+  shared_examples 'handling all conditions' do
+    where(:auth, :package_name_type, :visibility, :user_role, :expected_result, :expected_status) do
+      nil                    | :scoped_naming_convention    | :public   | nil       | :accept   | :ok
+      nil                    | :scoped_no_naming_convention | :public   | nil       | :accept   | :ok
+      nil                    | :unscoped                    | :public   | nil       | :accept   | :ok
+      nil                    | :non_existing                | :public   | nil       | :reject   | :not_found
+      nil                    | :scoped_naming_convention    | :private  | nil       | :reject   | :not_found
+      nil                    | :scoped_no_naming_convention | :private  | nil       | :reject   | :not_found
+      nil                    | :unscoped                    | :private  | nil       | :reject   | :not_found
+      nil                    | :non_existing                | :private  | nil       | :reject   | :not_found
+      nil                    | :scoped_naming_convention    | :internal | nil       | :reject   | :not_found
+      nil                    | :scoped_no_naming_convention | :internal | nil       | :reject   | :not_found
+      nil                    | :unscoped                    | :internal | nil       | :reject   | :not_found
+      nil                    | :non_existing                | :internal | nil       | :reject   | :not_found
 
-      :scoped_naming_convention    | :private  | :anonymous | :reject | :not_found
-      :scoped_naming_convention    | :private  | :guest     | :reject | :forbidden
-      :scoped_naming_convention    | :private  | :reporter  | :accept | :ok
-      :scoped_no_naming_convention | :private  | :anonymous | :reject | :not_found
-      :scoped_no_naming_convention | :private  | :guest     | :reject | :forbidden
-      :scoped_no_naming_convention | :private  | :reporter  | :accept | :ok
-      :unscoped                    | :private  | :anonymous | :reject | :not_found
-      :unscoped                    | :private  | :guest     | :reject | :forbidden
-      :unscoped                    | :private  | :reporter  | :accept | :ok
-      :non_existing                | :private  | :anonymous | :reject | :not_found
-      :non_existing                | :private  | :guest     | :reject | :forbidden
-      :non_existing                | :private  | :reporter  | :reject | :not_found
+      :oauth                 | :scoped_naming_convention    | :public   | :guest    | :accept   | :ok
+      :oauth                 | :scoped_naming_convention    | :public   | :reporter | :accept   | :ok
+      :oauth                 | :scoped_no_naming_convention | :public   | :guest    | :accept   | :ok
+      :oauth                 | :scoped_no_naming_convention | :public   | :reporter | :accept   | :ok
+      :oauth                 | :unscoped                    | :public   | :guest    | :accept   | :ok
+      :oauth                 | :unscoped                    | :public   | :reporter | :accept   | :ok
+      :oauth                 | :non_existing                | :public   | :guest    | :reject   | :not_found
+      :oauth                 | :non_existing                | :public   | :reporter | :reject   | :not_found
+      :oauth                 | :scoped_naming_convention    | :private  | :guest    | :reject   | :forbidden
+      :oauth                 | :scoped_naming_convention    | :private  | :reporter | :accept   | :ok
+      :oauth                 | :scoped_no_naming_convention | :private  | :guest    | :reject   | :forbidden
+      :oauth                 | :scoped_no_naming_convention | :private  | :reporter | :accept   | :ok
+      :oauth                 | :unscoped                    | :private  | :guest    | :reject   | :forbidden
+      :oauth                 | :unscoped                    | :private  | :reporter | :accept   | :ok
+      :oauth                 | :non_existing                | :private  | :guest    | :reject   | :forbidden
+      :oauth                 | :non_existing                | :private  | :reporter | :reject   | :not_found
+      :oauth                 | :scoped_naming_convention    | :internal | :guest    | :accept   | :ok
+      :oauth                 | :scoped_naming_convention    | :internal | :reporter | :accept   | :ok
+      :oauth                 | :scoped_no_naming_convention | :internal | :guest    | :accept   | :ok
+      :oauth                 | :scoped_no_naming_convention | :internal | :reporter | :accept   | :ok
+      :oauth                 | :unscoped                    | :internal | :guest    | :accept   | :ok
+      :oauth                 | :unscoped                    | :internal | :reporter | :accept   | :ok
+      :oauth                 | :non_existing                | :internal | :guest    | :reject   | :not_found
+      :oauth                 | :non_existing                | :internal | :reporter | :reject   | :not_found
 
-      :scoped_naming_convention    | :internal | :anonymous | :reject | :not_found
-      :scoped_naming_convention    | :internal | :guest     | :accept | :ok
-      :scoped_naming_convention    | :internal | :reporter  | :accept | :ok
-      :scoped_no_naming_convention | :internal | :anonymous | :reject | :not_found
-      :scoped_no_naming_convention | :internal | :guest     | :accept | :ok
-      :scoped_no_naming_convention | :internal | :reporter  | :accept | :ok
-      :unscoped                    | :internal | :anonymous | :reject | :not_found
-      :unscoped                    | :internal | :guest     | :accept | :ok
-      :unscoped                    | :internal | :reporter  | :accept | :ok
-      :non_existing                | :internal | :anonymous | :reject | :not_found
-      :non_existing                | :internal | :guest     | :reject | :not_found
-      :non_existing                | :internal | :reporter  | :reject | :not_found
+      :personal_access_token | :scoped_naming_convention    | :public   | :guest    | :accept   | :ok
+      :personal_access_token | :scoped_naming_convention    | :public   | :reporter | :accept   | :ok
+      :personal_access_token | :scoped_no_naming_convention | :public   | :guest    | :accept   | :ok
+      :personal_access_token | :scoped_no_naming_convention | :public   | :reporter | :accept   | :ok
+      :personal_access_token | :unscoped                    | :public   | :guest    | :accept   | :ok
+      :personal_access_token | :unscoped                    | :public   | :reporter | :accept   | :ok
+      :personal_access_token | :non_existing                | :public   | :guest    | :reject   | :not_found
+      :personal_access_token | :non_existing                | :public   | :reporter | :reject   | :not_found
+      :personal_access_token | :scoped_naming_convention    | :private  | :guest    | :reject   | :forbidden
+      :personal_access_token | :scoped_naming_convention    | :private  | :reporter | :accept   | :ok
+      :personal_access_token | :scoped_no_naming_convention | :private  | :guest    | :reject   | :forbidden
+      :personal_access_token | :scoped_no_naming_convention | :private  | :reporter | :accept   | :ok
+      :personal_access_token | :unscoped                    | :private  | :guest    | :reject   | :forbidden
+      :personal_access_token | :unscoped                    | :private  | :reporter | :accept   | :ok
+      :personal_access_token | :non_existing                | :private  | :guest    | :reject   | :forbidden
+      :personal_access_token | :non_existing                | :private  | :reporter | :reject   | :not_found
+      :personal_access_token | :scoped_naming_convention    | :internal | :guest    | :accept   | :ok
+      :personal_access_token | :scoped_naming_convention    | :internal | :reporter | :accept   | :ok
+      :personal_access_token | :scoped_no_naming_convention | :internal | :guest    | :accept   | :ok
+      :personal_access_token | :scoped_no_naming_convention | :internal | :reporter | :accept   | :ok
+      :personal_access_token | :unscoped                    | :internal | :guest    | :accept   | :ok
+      :personal_access_token | :unscoped                    | :internal | :reporter | :accept   | :ok
+      :personal_access_token | :non_existing                | :internal | :guest    | :reject   | :not_found
+      :personal_access_token | :non_existing                | :internal | :reporter | :reject   | :not_found
+
+      :job_token             | :scoped_naming_convention    | :public   | :developer | :accept   | :ok
+      :job_token             | :scoped_no_naming_convention | :public   | :developer | :accept   | :ok
+      :job_token             | :unscoped                    | :public   | :developer | :accept   | :ok
+      :job_token             | :non_existing                | :public   | :developer | :reject   | :not_found
+      :job_token             | :scoped_naming_convention    | :private  | :developer | :accept   | :ok
+      :job_token             | :scoped_no_naming_convention | :private  | :developer | :accept   | :ok
+      :job_token             | :unscoped                    | :private  | :developer | :accept   | :ok
+      :job_token             | :non_existing                | :private  | :developer | :reject   | :not_found
+      :job_token             | :scoped_naming_convention    | :internal | :developer | :accept   | :ok
+      :job_token             | :scoped_no_naming_convention | :internal | :developer | :accept   | :ok
+      :job_token             | :unscoped                    | :internal | :developer | :accept   | :ok
+      :job_token             | :non_existing                | :internal | :developer | :reject   | :not_found
+
+      :deploy_token          | :scoped_naming_convention    | :public   | nil        | :accept   | :ok
+      :deploy_token          | :scoped_no_naming_convention | :public   | nil        | :accept   | :ok
+      :deploy_token          | :unscoped                    | :public   | nil        | :accept   | :ok
+      :deploy_token          | :non_existing                | :public   | nil        | :reject   | :not_found
+      :deploy_token          | :scoped_naming_convention    | :private  | nil        | :accept   | :ok
+      :deploy_token          | :scoped_no_naming_convention | :private  | nil        | :accept   | :ok
+      :deploy_token          | :unscoped                    | :private  | nil        | :accept   | :ok
+      :deploy_token          | :non_existing                | :private  | nil        | :reject   | :not_found
+      :deploy_token          | :scoped_naming_convention    | :internal | nil        | :accept   | :ok
+      :deploy_token          | :scoped_no_naming_convention | :internal | nil        | :accept   | :ok
+      :deploy_token          | :unscoped                    | :internal | nil        | :accept   | :ok
+      :deploy_token          | :non_existing                | :internal | nil        | :reject   | :not_found
     end
 
     with_them do
-      let(:anonymous) { user_role == :anonymous }
+      let(:headers) do
+        case auth
+        when :oauth
+          build_token_auth_header(token.plaintext_token)
+        when :personal_access_token
+          build_token_auth_header(personal_access_token.token)
+        when :job_token
+          build_token_auth_header(job.token)
+        when :deploy_token
+          build_token_auth_header(deploy_token.token)
+        else
+          {}
+        end
+      end
 
-      subject { get(url, headers: anonymous ? {} : headers) }
+      subject { get(url, headers: headers) }
 
       before do
-        project.send("add_#{user_role}", user) unless anonymous
+        project.send("add_#{user_role}", user) if user_role
         project.update!(visibility: visibility.to_s)
       end
 
@@ -568,20 +631,6 @@ RSpec.shared_examples 'handling get dist tags requests' do |scope: :project|
       end
 
       it_behaves_like example_name, status: status
-    end
-  end
-
-  shared_examples 'handling all conditions' do
-    context 'with oauth token' do
-      let(:headers) { build_token_auth_header(token.plaintext_token) }
-
-      it_behaves_like 'handling different package names, visibilities and user roles'
-    end
-
-    context 'with personal access token' do
-      let(:headers) { build_token_auth_header(personal_access_token.token) }
-
-      it_behaves_like 'handling different package names, visibilities and user roles'
     end
   end
 
@@ -599,7 +648,6 @@ RSpec.shared_examples 'handling get dist tags requests' do |scope: :project|
 end
 
 RSpec.shared_examples 'handling create dist tag requests' do |scope: :project|
-  using RSpec::Parameterized::TableSyntax
   include_context 'set package name from package name type'
 
   let_it_be(:tag_name) { 'test' }
@@ -617,82 +665,10 @@ RSpec.shared_examples 'handling create dist tag requests' do |scope: :project|
     it_behaves_like 'returning response status', status
   end
 
-  shared_examples 'handling different package names, visibilities and user roles' do
-    where(:package_name_type, :visibility, :user_role, :expected_result, :expected_status) do
-      :scoped_naming_convention    | :public   | :anonymous | :reject | :forbidden
-      :scoped_naming_convention    | :public   | :guest     | :reject | :forbidden
-      :scoped_naming_convention    | :public   | :developer | :accept | :ok
-      :scoped_no_naming_convention | :public   | :anonymous | :reject | :forbidden
-      :scoped_no_naming_convention | :public   | :guest     | :reject | :forbidden
-      :scoped_no_naming_convention | :public   | :developer | :accept | :ok
-      :unscoped                    | :public   | :anonymous | :reject | :forbidden
-      :unscoped                    | :public   | :guest     | :reject | :forbidden
-      :unscoped                    | :public   | :developer | :accept | :ok
-      :non_existing                | :public   | :anonymous | :reject | :forbidden
-      :non_existing                | :public   | :guest     | :reject | :forbidden
-      :non_existing                | :public   | :developer | :reject | :not_found
-
-      :scoped_naming_convention    | :private  | :anonymous | :reject | :not_found
-      :scoped_naming_convention    | :private  | :guest     | :reject | :forbidden
-      :scoped_naming_convention    | :private  | :developer | :accept | :ok
-      :scoped_no_naming_convention | :private  | :anonymous | :reject | :not_found
-      :scoped_no_naming_convention | :private  | :guest     | :reject | :forbidden
-      :scoped_no_naming_convention | :private  | :developer | :accept | :ok
-      :unscoped                    | :private  | :anonymous | :reject | :not_found
-      :unscoped                    | :private  | :guest     | :reject | :forbidden
-      :unscoped                    | :private  | :developer | :accept | :ok
-      :non_existing                | :private  | :anonymous | :reject | :not_found
-      :non_existing                | :private  | :guest     | :reject | :forbidden
-      :non_existing                | :private  | :developer | :reject | :not_found
-
-      :scoped_naming_convention    | :internal | :anonymous | :reject | :forbidden
-      :scoped_naming_convention    | :internal | :guest     | :reject | :forbidden
-      :scoped_naming_convention    | :internal | :developer | :accept | :ok
-      :scoped_no_naming_convention | :internal | :anonymous | :reject | :forbidden
-      :scoped_no_naming_convention | :internal | :guest     | :reject | :forbidden
-      :scoped_no_naming_convention | :internal | :developer | :accept | :ok
-      :unscoped                    | :internal | :anonymous | :reject | :forbidden
-      :unscoped                    | :internal | :guest     | :reject | :forbidden
-      :unscoped                    | :internal | :developer | :accept | :ok
-      :non_existing                | :internal | :anonymous | :reject | :forbidden
-      :non_existing                | :internal | :guest     | :reject | :forbidden
-      :non_existing                | :internal | :developer | :reject | :not_found
-    end
-
-    with_them do
-      let(:anonymous) { user_role == :anonymous }
-
-      subject { put(url, env: env, headers: headers) }
-
-      before do
-        project.send("add_#{user_role}", user) unless anonymous
-        project.update!(visibility: visibility.to_s)
-      end
-
-      example_name = "#{params[:expected_result]} create package tag request"
-      status = params[:expected_status]
-
-      if scope == :instance && params[:package_name_type] != :scoped_naming_convention
-        example_name = 'reject create package tag request'
-        status = :not_found
-      end
-
-      it_behaves_like example_name, status: status
-    end
-  end
-
   shared_examples 'handling all conditions' do
-    context 'with oauth token' do
-      let(:headers) { build_token_auth_header(token.plaintext_token) }
+    subject { put(url, env: env, headers: headers) }
 
-      it_behaves_like 'handling different package names, visibilities and user roles'
-    end
-
-    context 'with personal access token' do
-      let(:headers) { build_token_auth_header(personal_access_token.token) }
-
-      it_behaves_like 'handling different package names, visibilities and user roles'
-    end
+    it_behaves_like 'handling different package names, visibilities and user roles for tags create or delete', action: :create, scope: scope
   end
 
   context 'with a group namespace' do
@@ -709,7 +685,6 @@ RSpec.shared_examples 'handling create dist tag requests' do |scope: :project|
 end
 
 RSpec.shared_examples 'handling delete dist tag requests' do |scope: :project|
-  using RSpec::Parameterized::TableSyntax
   include_context 'set package name from package name type'
 
   let_it_be(:package_tag) { create(:packages_tag, package: package) }
@@ -725,82 +700,10 @@ RSpec.shared_examples 'handling delete dist tag requests' do |scope: :project|
     it_behaves_like 'returning response status', status
   end
 
-  shared_examples 'handling different package names, visibilities and user roles' do
-    where(:package_name_type, :visibility, :user_role, :expected_result, :expected_status) do
-      :scoped_naming_convention    | :public   | :anonymous  | :reject | :forbidden
-      :scoped_naming_convention    | :public   | :guest      | :reject | :forbidden
-      :scoped_naming_convention    | :public   | :maintainer | :accept | :ok
-      :scoped_no_naming_convention | :public   | :anonymous  | :reject | :forbidden
-      :scoped_no_naming_convention | :public   | :guest      | :reject | :forbidden
-      :scoped_no_naming_convention | :public   | :maintainer | :accept | :ok
-      :unscoped                    | :public   | :anonymous  | :reject | :forbidden
-      :unscoped                    | :public   | :guest      | :reject | :forbidden
-      :unscoped                    | :public   | :maintainer | :accept | :ok
-      :non_existing                | :public   | :anonymous  | :reject | :forbidden
-      :non_existing                | :public   | :guest      | :reject | :forbidden
-      :non_existing                | :public   | :maintainer | :reject | :not_found
-
-      :scoped_naming_convention    | :private  | :anonymous  | :reject | :not_found
-      :scoped_naming_convention    | :private  | :guest      | :reject | :forbidden
-      :scoped_naming_convention    | :private  | :maintainer | :accept | :ok
-      :scoped_no_naming_convention | :private  | :anonymous  | :reject | :not_found
-      :scoped_no_naming_convention | :private  | :guest      | :reject | :forbidden
-      :scoped_no_naming_convention | :private  | :maintainer | :accept | :ok
-      :unscoped                    | :private  | :anonymous  | :reject | :not_found
-      :unscoped                    | :private  | :guest      | :reject | :forbidden
-      :unscoped                    | :private  | :maintainer | :accept | :ok
-      :non_existing                | :private  | :anonymous  | :reject | :not_found
-      :non_existing                | :private  | :guest      | :reject | :forbidden
-      :non_existing                | :private  | :maintainer | :reject | :not_found
-
-      :scoped_naming_convention    | :internal | :anonymous  | :reject | :forbidden
-      :scoped_naming_convention    | :internal | :guest      | :reject | :forbidden
-      :scoped_naming_convention    | :internal | :maintainer | :accept | :ok
-      :scoped_no_naming_convention | :internal | :anonymous  | :reject | :forbidden
-      :scoped_no_naming_convention | :internal | :guest      | :reject | :forbidden
-      :scoped_no_naming_convention | :internal | :maintainer | :accept | :ok
-      :unscoped                    | :internal | :anonymous  | :reject | :forbidden
-      :unscoped                    | :internal | :guest      | :reject | :forbidden
-      :unscoped                    | :internal | :maintainer | :accept | :ok
-      :non_existing                | :internal | :anonymous  | :reject | :forbidden
-      :non_existing                | :internal | :guest      | :reject | :forbidden
-      :non_existing                | :internal | :maintainer | :reject | :not_found
-    end
-
-    with_them do
-      let(:anonymous) { user_role == :anonymous }
-
-      subject { delete(url, headers: headers) }
-
-      before do
-        project.send("add_#{user_role}", user) unless anonymous
-        project.update!(visibility: visibility.to_s)
-      end
-
-      example_name = "#{params[:expected_result]} delete package tag request"
-      status = params[:expected_status]
-
-      if scope == :instance && params[:package_name_type] != :scoped_naming_convention
-        example_name = 'reject delete package tag request'
-        status = :not_found
-      end
-
-      it_behaves_like example_name, status: status
-    end
-  end
-
   shared_examples 'handling all conditions' do
-    context 'with oauth token' do
-      let(:headers) { build_token_auth_header(token.plaintext_token) }
+    subject { delete(url, headers: headers) }
 
-      it_behaves_like 'handling different package names, visibilities and user roles'
-    end
-
-    context 'with personal access token' do
-      let(:headers) { build_token_auth_header(personal_access_token.token) }
-
-      it_behaves_like 'handling different package names, visibilities and user roles'
-    end
+    it_behaves_like 'handling different package names, visibilities and user roles for tags create or delete', action: :delete, scope: scope
   end
 
   context 'with a group namespace' do
@@ -813,5 +716,143 @@ RSpec.shared_examples 'handling delete dist tag requests' do |scope: :project|
 
       it_behaves_like 'handling all conditions'
     end
+  end
+end
+
+RSpec.shared_examples 'handling different package names, visibilities and user roles for tags create or delete' do |action:, scope: :project|
+  using RSpec::Parameterized::TableSyntax
+
+  role = action == :create ? :developer : :maintainer
+
+  where(:auth, :package_name_type, :visibility, :user_role, :expected_result, :expected_status) do
+    :oauth                 | :scoped_naming_convention    | :public   | nil    | :reject   | :forbidden
+    :oauth                 | :scoped_naming_convention    | :public   | :guest | :reject   | :forbidden
+    :oauth                 | :scoped_naming_convention    | :public   | role   | :accept   | :ok
+    :oauth                 | :scoped_no_naming_convention | :public   | nil    | :reject   | :forbidden
+    :oauth                 | :scoped_no_naming_convention | :public   | :guest | :reject   | :forbidden
+    :oauth                 | :scoped_no_naming_convention | :public   | role   | :accept   | :ok
+    :oauth                 | :unscoped                    | :public   | nil    | :reject   | :forbidden
+    :oauth                 | :unscoped                    | :public   | :guest | :reject   | :forbidden
+    :oauth                 | :unscoped                    | :public   | role   | :accept   | :ok
+    :oauth                 | :non_existing                | :public   | nil    | :reject   | :forbidden
+    :oauth                 | :non_existing                | :public   | :guest | :reject   | :forbidden
+    :oauth                 | :non_existing                | :public   | role   | :reject   | :not_found
+    :oauth                 | :scoped_naming_convention    | :private  | nil    | :reject   | :not_found
+    :oauth                 | :scoped_naming_convention    | :private  | :guest | :reject   | :forbidden
+    :oauth                 | :scoped_naming_convention    | :private  | role   | :accept   | :ok
+    :oauth                 | :scoped_no_naming_convention | :private  | nil    | :reject   | :not_found
+    :oauth                 | :scoped_no_naming_convention | :private  | :guest | :reject   | :forbidden
+    :oauth                 | :scoped_no_naming_convention | :private  | role   | :accept   | :ok
+    :oauth                 | :unscoped                    | :private  | nil    | :reject   | :not_found
+    :oauth                 | :unscoped                    | :private  | :guest | :reject   | :forbidden
+    :oauth                 | :unscoped                    | :private  | role   | :accept   | :ok
+    :oauth                 | :non_existing                | :private  | nil    | :reject   | :not_found
+    :oauth                 | :non_existing                | :private  | :guest | :reject   | :forbidden
+    :oauth                 | :non_existing                | :private  | role   | :reject   | :not_found
+    :oauth                 | :scoped_naming_convention    | :internal | nil    | :reject   | :forbidden
+    :oauth                 | :scoped_naming_convention    | :internal | :guest | :reject   | :forbidden
+    :oauth                 | :scoped_naming_convention    | :internal | role   | :accept   | :ok
+    :oauth                 | :scoped_no_naming_convention | :internal | nil    | :reject   | :forbidden
+    :oauth                 | :scoped_no_naming_convention | :internal | :guest | :reject   | :forbidden
+    :oauth                 | :scoped_no_naming_convention | :internal | role   | :accept   | :ok
+    :oauth                 | :unscoped                    | :internal | nil    | :reject   | :forbidden
+    :oauth                 | :unscoped                    | :internal | :guest | :reject   | :forbidden
+    :oauth                 | :unscoped                    | :internal | role   | :accept   | :ok
+    :oauth                 | :non_existing                | :internal | nil    | :reject   | :forbidden
+    :oauth                 | :non_existing                | :internal | :guest | :reject   | :forbidden
+    :oauth                 | :non_existing                | :internal | role   | :reject   | :not_found
+
+    :personal_access_token | :scoped_naming_convention    | :public   | nil    | :reject   | :forbidden
+    :personal_access_token | :scoped_naming_convention    | :public   | :guest | :reject   | :forbidden
+    :personal_access_token | :scoped_naming_convention    | :public   | role   | :accept   | :ok
+    :personal_access_token | :scoped_no_naming_convention | :public   | nil    | :reject   | :forbidden
+    :personal_access_token | :scoped_no_naming_convention | :public   | :guest | :reject   | :forbidden
+    :personal_access_token | :scoped_no_naming_convention | :public   | role   | :accept   | :ok
+    :personal_access_token | :unscoped                    | :public   | nil    | :reject   | :forbidden
+    :personal_access_token | :unscoped                    | :public   | :guest | :reject   | :forbidden
+    :personal_access_token | :unscoped                    | :public   | role   | :accept   | :ok
+    :personal_access_token | :non_existing                | :public   | nil    | :reject   | :forbidden
+    :personal_access_token | :non_existing                | :public   | :guest | :reject   | :forbidden
+    :personal_access_token | :non_existing                | :public   | role   | :reject   | :not_found
+    :personal_access_token | :scoped_naming_convention    | :private  | nil    | :reject   | :not_found
+    :personal_access_token | :scoped_naming_convention    | :private  | :guest | :reject   | :forbidden
+    :personal_access_token | :scoped_naming_convention    | :private  | role   | :accept   | :ok
+    :personal_access_token | :scoped_no_naming_convention | :private  | nil    | :reject   | :not_found
+    :personal_access_token | :scoped_no_naming_convention | :private  | :guest | :reject   | :forbidden
+    :personal_access_token | :scoped_no_naming_convention | :private  | role   | :accept   | :ok
+    :personal_access_token | :unscoped                    | :private  | nil    | :reject   | :not_found
+    :personal_access_token | :unscoped                    | :private  | :guest | :reject   | :forbidden
+    :personal_access_token | :unscoped                    | :private  | role   | :accept   | :ok
+    :personal_access_token | :non_existing                | :private  | nil    | :reject   | :not_found
+    :personal_access_token | :non_existing                | :private  | :guest | :reject   | :forbidden
+    :personal_access_token | :non_existing                | :private  | role   | :reject   | :not_found
+    :personal_access_token | :scoped_naming_convention    | :internal | nil    | :reject   | :forbidden
+    :personal_access_token | :scoped_naming_convention    | :internal | :guest | :reject   | :forbidden
+    :personal_access_token | :scoped_naming_convention    | :internal | role   | :accept   | :ok
+    :personal_access_token | :scoped_no_naming_convention | :internal | nil    | :reject   | :forbidden
+    :personal_access_token | :scoped_no_naming_convention | :internal | :guest | :reject   | :forbidden
+    :personal_access_token | :scoped_no_naming_convention | :internal | role   | :accept   | :ok
+    :personal_access_token | :unscoped                    | :internal | nil    | :reject   | :forbidden
+    :personal_access_token | :unscoped                    | :internal | :guest | :reject   | :forbidden
+    :personal_access_token | :unscoped                    | :internal | role   | :accept   | :ok
+    :personal_access_token | :non_existing                | :internal | nil    | :reject   | :forbidden
+    :personal_access_token | :non_existing                | :internal | :guest | :reject   | :forbidden
+    :personal_access_token | :non_existing                | :internal | role   | :reject   | :not_found
+
+    :job_token             | :scoped_naming_convention    | :public   | role   | :accept   | :ok
+    :job_token             | :scoped_no_naming_convention | :public   | role   | :accept   | :ok
+    :job_token             | :unscoped                    | :public   | role   | :accept   | :ok
+    :job_token             | :non_existing                | :public   | role   | :reject   | :not_found
+    :job_token             | :scoped_naming_convention    | :private  | role   | :accept   | :ok
+    :job_token             | :scoped_no_naming_convention | :private  | role   | :accept   | :ok
+    :job_token             | :unscoped                    | :private  | role   | :accept   | :ok
+    :job_token             | :non_existing                | :private  | role   | :reject   | :not_found
+    :job_token             | :scoped_naming_convention    | :internal | role   | :accept   | :ok
+    :job_token             | :scoped_no_naming_convention | :internal | role   | :accept   | :ok
+    :job_token             | :unscoped                    | :internal | role   | :accept   | :ok
+    :job_token             | :non_existing                | :internal | role   | :reject   | :not_found
+
+    :deploy_token          | :scoped_naming_convention    | :public   | nil    | :accept   | :ok
+    :deploy_token          | :scoped_no_naming_convention | :public   | nil    | :accept   | :ok
+    :deploy_token          | :unscoped                    | :public   | nil    | :accept   | :ok
+    :deploy_token          | :non_existing                | :public   | nil    | :reject   | :not_found
+    :deploy_token          | :scoped_naming_convention    | :private  | nil    | :accept   | :ok
+    :deploy_token          | :scoped_no_naming_convention | :private  | nil    | :accept   | :ok
+    :deploy_token          | :unscoped                    | :private  | nil    | :accept   | :ok
+    :deploy_token          | :non_existing                | :private  | nil    | :reject   | :not_found
+    :deploy_token          | :scoped_naming_convention    | :internal | nil    | :accept   | :ok
+    :deploy_token          | :scoped_no_naming_convention | :internal | nil    | :accept   | :ok
+    :deploy_token          | :unscoped                    | :internal | nil    | :accept   | :ok
+    :deploy_token          | :non_existing                | :internal | nil    | :reject   | :not_found
+  end
+
+  with_them do
+    let(:headers) do
+      case auth
+      when :oauth
+        build_token_auth_header(token.plaintext_token)
+      when :personal_access_token
+        build_token_auth_header(personal_access_token.token)
+      when :job_token
+        build_token_auth_header(job.token)
+      when :deploy_token
+        build_token_auth_header(deploy_token.token)
+      end
+    end
+
+    before do
+      project.send("add_#{user_role}", user) if user_role
+      project.update!(visibility: visibility.to_s)
+    end
+
+    example_name = "#{params[:expected_result]} #{action} package tag request"
+    status = params[:expected_status]
+
+    if scope == :instance && params[:package_name_type] != :scoped_naming_convention
+      example_name = "reject #{action} package tag request"
+      status = :not_found
+    end
+
+    it_behaves_like example_name, status: status
   end
 end

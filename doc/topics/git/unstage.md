@@ -5,15 +5,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 comments: false
 ---
 
-# Unstage **(FREE)**
+# Unstage a file in Git **(FREE)**
 
-- To remove files from stage use reset HEAD where HEAD is the last commit of the current branch. This unstages the file but maintain the modifications.
+When you _stage_ a file in Git, you instruct Git to track changes to the file in
+preparation for a commit. To instruct Git to disregard changes to a file, and not
+include it in your next commit, _unstage_ the file.
+
+- To remove files from stage use `reset HEAD`, where HEAD is the last commit of
+  the current branch. This unstages the file but maintains the modifications.
 
   ```shell
   git reset HEAD <file>
   ```
 
-- To revert the file back to the state it was in before the changes we can use:
+- To revert the file back to the state it was in before the changes:
 
   ```shell
   git checkout -- <file>
@@ -26,7 +31,8 @@ comments: false
   git rm -r <dirname>
   ```
 
-- If we want to remove a file from the repository but keep it on disk, say we forgot to add it to our `.gitignore` file then use `--cache`:
+- To keep a file on disk but remove it from the repository (such as a file you want
+  to add to `.gitignore`), use the `rm` command with the `--cache` flag:
 
   ```shell
   git rm <filename> --cache

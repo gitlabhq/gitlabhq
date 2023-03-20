@@ -8,10 +8,10 @@ import BranchDropdown, {
 import createMockApollo from 'helpers/mock_apollo_helper';
 import branchesQuery from '~/projects/settings/branch_rules/queries/branches.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 
 Vue.use(VueApollo);
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Branch dropdown', () => {
   let wrapper;
@@ -45,10 +45,6 @@ describe('Branch dropdown', () => {
   const setSearchTerm = (searchTerm) => findGlSearchBoxByType().vm.$emit('input', searchTerm);
 
   beforeEach(() => createComponent());
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   it('renders a GlDropdown component with the correct props', () => {
     expect(findGlDropdown().props()).toMatchObject({ text: value });

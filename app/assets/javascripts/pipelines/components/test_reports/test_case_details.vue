@@ -66,7 +66,7 @@ export default {
   },
   modalCloseButton: {
     text: __('Close'),
-    attributes: [{ variant: 'confirm' }],
+    attributes: { variant: 'confirm' },
   },
 };
 </script>

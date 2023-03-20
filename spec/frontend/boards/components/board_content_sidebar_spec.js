@@ -89,10 +89,6 @@ describe('BoardContentSidebar', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('confirms we render GlDrawer', () => {
     expect(wrapper.findComponent(GlDrawer).exists()).toBe(true);
   });

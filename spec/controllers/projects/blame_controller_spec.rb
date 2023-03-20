@@ -17,12 +17,7 @@ RSpec.describe Projects::BlameController do
     render_views
 
     before do
-      get(:show,
-          params: {
-            namespace_id: project.namespace,
-            project_id: project,
-            id: id
-          })
+      get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
     end
 
     context "valid branch, valid file" do
@@ -35,8 +30,7 @@ RSpec.describe Projects::BlameController do
       let(:id) { 'master/files/ruby/invalid-path.rb' }
 
       it 'redirects' do
-        expect(subject)
-            .to redirect_to("/#{project.full_path}/-/tree/master")
+        expect(subject).to redirect_to("/#{project.full_path}/-/tree/master")
       end
     end
 

@@ -10,7 +10,7 @@ import {
   urlParams,
   urlParamsWithSpecialValues,
 } from 'jest/issues/list/mock_data';
-import { PAGE_SIZE, urlSortParams } from '~/issues/list/constants';
+import { urlSortParams } from '~/issues/list/constants';
 import {
   convertToApiParams,
   convertToSearchQuery,
@@ -22,10 +22,11 @@ import {
   isSortKey,
 } from '~/issues/list/utils';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
+import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 
 describe('getInitialPageParams', () => {
   it('returns page params with a default page size when no arguments are given', () => {
-    expect(getInitialPageParams()).toEqual({ firstPageSize: PAGE_SIZE });
+    expect(getInitialPageParams()).toEqual({ firstPageSize: DEFAULT_PAGE_SIZE });
   });
 
   it('returns page params with the given page size', () => {

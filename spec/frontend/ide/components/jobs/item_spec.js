@@ -12,10 +12,6 @@ describe('IDE jobs item', () => {
     wrapper = mount(JobItem, { propsData: { job } });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders job details', () => {
     expect(wrapper.text()).toContain(job.name);
     expect(wrapper.text()).toContain(`#${job.id}`);

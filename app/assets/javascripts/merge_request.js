@@ -1,7 +1,8 @@
 /* eslint-disable func-names, no-underscore-dangle, consistent-return */
 
 import $ from 'jquery';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
+import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
 import eventHub from '~/vue_merge_request_widget/event_hub';
@@ -27,7 +28,7 @@ function MergeRequest(opts) {
 
   if ($('.description.js-task-list-container').length) {
     this.taskList = new TaskList({
-      dataType: 'merge_request',
+      dataType: TYPE_MERGE_REQUEST,
       fieldName: 'description',
       selector: '.detail-page-description',
       lockVersion: this.$el.data('lockVersion'),

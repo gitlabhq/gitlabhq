@@ -44,15 +44,25 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
     "#{get_cell_level_selector(contributions)}[title='#{contribution_text}<br /><span class=\"gl-text-gray-300\">#{date}</span>']"
   end
 
+  def get_days_of_week
+    page.all('[data-testid="user-contrib-cell-group"]')[1]
+      .all('[data-testid="user-contrib-cell"]')
+      .map do |node|
+        node[:title].match(/(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/)[0]
+      end
+  end
+
   def push_code_contribution
     event = create(:push_event, project: contributed_project, author: user)
 
-    create(:push_event_payload,
-           event: event,
-           commit_from: '11f9ac0a48b62cef25eedede4c1819964f08d5ce',
-           commit_to: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
-           commit_count: 3,
-           ref: 'master')
+    create(
+      :push_event_payload,
+      event: event,
+      commit_from: '11f9ac0a48b62cef25eedede4c1819964f08d5ce',
+      commit_to: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
+      commit_count: 3,
+      ref: 'master'
+    )
   end
 
   def note_comment_contribution
@@ -70,162 +80,331 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
     find('#js-overview .user-calendar-activities', visible: visible).text
   end
 
-  before do
-    stub_feature_flags(profile_tabs_vue: false)
-    sign_in user
-  end
-
-  describe 'calendar day selection' do
+  shared_context 'when user page is visited' do
     before do
       visit user.username
-      page.find('.js-overview-tab a').click
+      page.click_link('Overview')
       wait_for_requests
     end
+  end
+
+  context 'with `profile_tabs_vue` feature flag disabled' do
+    before do
+      stub_feature_flags(profile_tabs_vue: false)
+      sign_in user
+    end
+
+    describe 'calendar day selection' do
+      include_context 'when user page is visited'
+
+      it 'displays calendar' do
+        expect(find('#js-overview')).to have_css('.js-contrib-calendar')
+      end
+
+      describe 'select calendar day' do
+        let(:cells) { page.all('#js-overview .user-contrib-cell') }
+
+        before do
+          cells[0].click
+          wait_for_requests
+        end
+
+        it 'displays calendar day activities' do
+          expect(selected_day_activities).not_to be_empty
+        end
+
+        describe 'select another calendar day' do
+          it 'displays different calendar day activities' do
+            first_day_activities = selected_day_activities
+
+            cells[1].click
+            wait_for_requests
+
+            expect(selected_day_activities).not_to eq(first_day_activities)
+          end
+        end
+
+        describe 'deselect calendar day' do
+          before do
+            cells[0].click
+            wait_for_requests
+            cells[0].click
+          end
+
+          it 'hides calendar day activities' do
+            expect(selected_day_activities(visible: false)).to be_empty
+          end
+        end
+      end
+    end
+
+    describe 'calendar daily activities' do
+      shared_examples 'a day with activity' do |contribution_count:|
+        include_context 'when user page is visited'
+
+        it 'displays calendar activity square for 1 contribution', :sidekiq_inline do
+          expect(find('#js-overview')).to have_selector(get_cell_level_selector(contribution_count), count: 1)
+
+          today = Date.today.strftime(date_format)
+          expect(find('#js-overview')).to have_selector(get_cell_date_selector(contribution_count, today), count: 1)
+        end
+      end
+
+      describe '1 issue and 1 work item creation calendar activity' do
+        before do
+          Issues::CreateService.new(
+            container: contributed_project,
+            current_user: user,
+            params: issue_params,
+            spam_params: nil
+          ).execute
+          WorkItems::CreateService.new(
+            container: contributed_project,
+            current_user: user,
+            params: { title: 'new task' },
+            spam_params: nil
+          ).execute
+        end
+
+        it_behaves_like 'a day with activity', contribution_count: 2
+
+        describe 'issue title is shown on activity page' do
+          include_context 'when user page is visited'
+
+          it 'displays calendar activity log', :sidekiq_inline do
+            expect(all('#js-overview .overview-content-list .event-target-title').map(&:text)).to contain_exactly(
+              match(/#{issue_title}/),
+              match(/new task/)
+            )
+          end
+        end
+      end
+
+      describe '1 comment calendar activity' do
+        before do
+          note_comment_contribution
+        end
+
+        it_behaves_like 'a day with activity', contribution_count: 1
+      end
+
+      describe '10 calendar activities' do
+        before do
+          10.times { push_code_contribution }
+        end
+
+        it_behaves_like 'a day with activity', contribution_count: 10
+      end
+
+      describe 'calendar activity on two days' do
+        before do
+          push_code_contribution
+
+          travel_to(Date.yesterday) do
+            Issues::CreateService.new(
+              container: contributed_project,
+              current_user: user,
+              params: issue_params,
+              spam_params: nil
+            ).execute
+          end
+        end
+
+        include_context 'when user page is visited'
+
+        it 'displays calendar activity squares for both days', :sidekiq_inline do
+          expect(find('#js-overview')).to have_selector(get_cell_level_selector(1), count: 2)
+        end
+
+        it 'displays calendar activity square for yesterday', :sidekiq_inline do
+          yesterday = Date.yesterday.strftime(date_format)
+          expect(find('#js-overview')).to have_selector(get_cell_date_selector(1, yesterday), count: 1)
+        end
+
+        it 'displays calendar activity square for today' do
+          today = Date.today.strftime(date_format)
+          expect(find('#js-overview')).to have_selector(get_cell_date_selector(1, today), count: 1)
+        end
+      end
+    end
+
+    describe 'on smaller screens' do
+      shared_examples 'hidden activity calendar' do
+        include_context 'when user page is visited'
+
+        it 'hides the activity calender' do
+          expect(find('#js-overview')).not_to have_css('.js-contrib-calendar')
+        end
+      end
+
+      context 'when screen size is xs' do
+        before do
+          resize_screen_xs
+        end
+
+        it_behaves_like 'hidden activity calendar'
+      end
+    end
+
+    describe 'first_day_of_week setting' do
+      context 'when first day of the week is set to Monday' do
+        before do
+          stub_application_setting(first_day_of_week: 1)
+        end
+
+        include_context 'when user page is visited'
+
+        it 'shows calendar with Monday as the first day of the week' do
+          expect(get_days_of_week).to eq(%w[Monday Tuesday Wednesday Thursday Friday Saturday Sunday])
+        end
+      end
+
+      context 'when first day of the week is set to Sunday' do
+        before do
+          stub_application_setting(first_day_of_week: 0)
+        end
+
+        include_context 'when user page is visited'
+
+        it 'shows calendar with Sunday as the first day of the week' do
+          expect(get_days_of_week).to eq(%w[Sunday Monday Tuesday Wednesday Thursday Friday Saturday])
+        end
+      end
+    end
+  end
+
+  context 'with `profile_tabs_vue` feature flag enabled' do
+    before do
+      sign_in user
+    end
+
+    include_context 'when user page is visited'
 
     it 'displays calendar' do
-      expect(find('#js-overview')).to have_css('.js-contrib-calendar')
+      expect(page).to have_css('[data-testid="contrib-calendar"]')
     end
 
-    describe 'select calendar day' do
-      let(:cells) { page.all('#js-overview .user-contrib-cell') }
+    describe 'calendar daily activities' do
+      shared_examples 'a day with activity' do |contribution_count:|
+        include_context 'when user page is visited'
 
-      before do
-        cells[0].click
-        wait_for_requests
-        @first_day_activities = selected_day_activities
+        it 'displays calendar activity square for 1 contribution', :sidekiq_inline do
+          expect(page).to have_selector(get_cell_level_selector(contribution_count), count: 1)
+
+          today = Date.today.strftime(date_format)
+          expect(page).to have_selector(get_cell_date_selector(contribution_count, today), count: 1)
+        end
       end
 
-      it 'displays calendar day activities' do
-        expect(selected_day_activities).not_to be_empty
-      end
-
-      describe 'select another calendar day' do
+      describe '1 issue and 1 work item creation calendar activity' do
         before do
-          cells[1].click
-          wait_for_requests
+          Issues::CreateService.new(
+            container: contributed_project,
+            current_user: user,
+            params: issue_params,
+            spam_params: nil
+          ).execute
+          WorkItems::CreateService.new(
+            container: contributed_project,
+            current_user: user,
+            params: { title: 'new task' },
+            spam_params: nil
+          ).execute
         end
 
-        it 'displays different calendar day activities' do
-          expect(selected_day_activities).not_to eq(@first_day_activities)
-        end
+        it_behaves_like 'a day with activity', contribution_count: 2
       end
 
-      describe 'deselect calendar day' do
+      describe '1 comment calendar activity' do
         before do
-          cells[0].click
-          wait_for_requests
-          cells[0].click
+          note_comment_contribution
         end
 
-        it 'hides calendar day activities' do
-          expect(selected_day_activities(visible: false)).to be_empty
+        it_behaves_like 'a day with activity', contribution_count: 1
+      end
+
+      describe '10 calendar activities' do
+        before do
+          10.times { push_code_contribution }
         end
-      end
-    end
-  end
 
-  shared_context 'visit user page' do
-    before do
-      visit user.username
-      page.find('.js-overview-tab a').click
-      wait_for_requests
-    end
-  end
-
-  describe 'calendar daily activities' do
-    shared_examples 'a day with activity' do |contribution_count:|
-      include_context 'visit user page'
-
-      it 'displays calendar activity square for 1 contribution', :sidekiq_might_not_need_inline do
-        expect(find('#js-overview')).to have_selector(get_cell_level_selector(contribution_count), count: 1)
-
-        today = Date.today.strftime(date_format)
-        expect(find('#js-overview')).to have_selector(get_cell_date_selector(contribution_count, today), count: 1)
-      end
-    end
-
-    describe '1 issue and 1 work item creation calendar activity' do
-      before do
-        Issues::CreateService.new(container: contributed_project, current_user: user, params: issue_params, spam_params: nil).execute
-        WorkItems::CreateService.new(
-          container: contributed_project,
-          current_user: user,
-          params: { title: 'new task' },
-          spam_params: nil
-        ).execute
+        it_behaves_like 'a day with activity', contribution_count: 10
       end
 
-      it_behaves_like 'a day with activity', contribution_count: 2
+      describe 'calendar activity on two days' do
+        before do
+          push_code_contribution
 
-      describe 'issue title is shown on activity page' do
-        include_context 'visit user page'
+          travel_to(Date.yesterday) do
+            Issues::CreateService.new(
+              container: contributed_project,
+              current_user: user,
+              params: issue_params,
+              spam_params: nil
+            ).execute
+          end
+        end
 
-        it 'displays calendar activity log', :sidekiq_inline do
-          expect(all('#js-overview .overview-content-list .event-target-title').map(&:text)).to contain_exactly(
-            match(/#{issue_title}/),
-            match(/new task/)
-          )
+        include_context 'when user page is visited'
+
+        it 'displays calendar activity squares for both days', :sidekiq_inline do
+          expect(page).to have_selector(get_cell_level_selector(1), count: 2)
+        end
+
+        it 'displays calendar activity square for yesterday', :sidekiq_inline do
+          yesterday = Date.yesterday.strftime(date_format)
+          expect(page).to have_selector(get_cell_date_selector(1, yesterday), count: 1)
+        end
+
+        it 'displays calendar activity square for today' do
+          today = Date.today.strftime(date_format)
+          expect(page).to have_selector(get_cell_date_selector(1, today), count: 1)
         end
       end
     end
 
-    describe '1 comment calendar activity' do
-      before do
-        note_comment_contribution
-      end
+    describe 'on smaller screens' do
+      shared_examples 'hidden activity calendar' do
+        include_context 'when user page is visited'
 
-      it_behaves_like 'a day with activity', contribution_count: 1
-    end
-
-    describe '10 calendar activities' do
-      before do
-        10.times { push_code_contribution }
-      end
-
-      it_behaves_like 'a day with activity', contribution_count: 10
-    end
-
-    describe 'calendar activity on two days' do
-      before do
-        push_code_contribution
-
-        travel_to(Date.yesterday) do
-          Issues::CreateService.new(container: contributed_project, current_user: user, params: issue_params, spam_params: nil).execute
+        it 'hides the activity calender' do
+          expect(page).not_to have_css('[data-testid="contrib-calendar"]')
         end
       end
-      include_context 'visit user page'
 
-      it 'displays calendar activity squares for both days', :sidekiq_might_not_need_inline do
-        expect(find('#js-overview')).to have_selector(get_cell_level_selector(1), count: 2)
-      end
+      context 'when screen size is xs' do
+        before do
+          resize_screen_xs
+        end
 
-      it 'displays calendar activity square for yesterday', :sidekiq_might_not_need_inline do
-        yesterday = Date.yesterday.strftime(date_format)
-        expect(find('#js-overview')).to have_selector(get_cell_date_selector(1, yesterday), count: 1)
-      end
-
-      it 'displays calendar activity square for today' do
-        today = Date.today.strftime(date_format)
-        expect(find('#js-overview')).to have_selector(get_cell_date_selector(1, today), count: 1)
-      end
-    end
-  end
-
-  describe 'on smaller screens' do
-    shared_examples 'hidden activity calendar' do
-      include_context 'visit user page'
-
-      it 'hides the activity calender' do
-        expect(find('#js-overview')).not_to have_css('.js-contrib-calendar')
+        it_behaves_like 'hidden activity calendar'
       end
     end
 
-    context 'size xs' do
-      before do
-        resize_screen_xs
+    describe 'first_day_of_week setting' do
+      context 'when first day of the week is set to Monday' do
+        before do
+          stub_application_setting(first_day_of_week: 1)
+        end
+
+        include_context 'when user page is visited'
+
+        it 'shows calendar with Monday as the first day of the week' do
+          expect(get_days_of_week).to eq(%w[Monday Tuesday Wednesday Thursday Friday Saturday Sunday])
+        end
       end
 
-      it_behaves_like 'hidden activity calendar'
+      context 'when first day of the week is set to Sunday' do
+        before do
+          stub_application_setting(first_day_of_week: 0)
+        end
+
+        include_context 'when user page is visited'
+
+        it 'shows calendar with Sunday as the first day of the week' do
+          expect(get_days_of_week).to eq(%w[Sunday Monday Tuesday Wednesday Thursday Friday Saturday])
+        end
+      end
     end
   end
 end

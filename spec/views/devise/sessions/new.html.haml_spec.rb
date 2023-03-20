@@ -3,14 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe 'devise/sessions/new' do
-  describe 'marketing text' do
+  describe 'marketing text', :saas do
     subject { render(template: 'devise/sessions/new', layout: 'layouts/devise') }
 
     before do
       stub_devise
       disable_captcha
       stub_feature_flags(restyle_login_page: false)
-      allow(Gitlab).to receive(:com?).and_return(true)
     end
 
     it 'when flash is anything it renders marketing text' do

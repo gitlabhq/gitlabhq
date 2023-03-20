@@ -1,7 +1,7 @@
 <script>
 import { pickBy, isEmpty, mapValues } from 'lodash';
 import { mapActions } from 'vuex';
-import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId, isGid, convertToGraphQLId } from '~/graphql_shared/utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { updateHistory, setUrlParams, queryToObject } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -23,6 +23,7 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { AssigneeFilterType } from '~/boards/constants';
+import { TYPENAME_ITERATION } from '~/graphql_shared/constants';
 import eventHub from '../eventhub';
 
 export default {
@@ -30,7 +31,7 @@ export default {
     search: __('Search'),
   },
   components: { FilteredSearch },
-  inject: ['initialFilterParams'],
+  inject: ['initialFilterParams', 'isApolloBoard'],
   props: {
     tokens: {
       type: Array,
@@ -334,11 +335,23 @@ export default {
         },
       );
     },
+    formattedFilterParams() {
+      const filtersCopy = { ...this.filterParams };
+      if (this.filterParams?.iterationId) {
+        filtersCopy.iterationId = convertToGraphQLId(
+          TYPENAME_ITERATION,
+          this.filterParams.iterationId,
+        );
+      }
+
+      return filtersCopy;
+    },
   },
   created() {
     eventHub.$on('updateTokens', this.updateTokens);
     if (!isEmpty(this.eeFilters)) {
       this.filterParams = this.eeFilters;
+      this.$emit('setFilters', this.formattedFilterParams);
     }
   },
   beforeDestroy() {
@@ -349,6 +362,7 @@ export default {
     updateTokens() {
       const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
       this.filterParams = convertObjectPropsToCamelCase(rawFilterParams, {});
+      this.$emit('setFilters', this.formattedFilterParams);
       this.filteredSearchKey += 1;
     },
     handleFilter(filters) {
@@ -360,7 +374,11 @@ export default {
         replace: true,
       });
 
-      this.performSearch();
+      if (this.isApolloBoard) {
+        this.$emit('setFilters', this.formattedFilterParams);
+      } else {
+        this.performSearch();
+      }
     },
     getFilterParams(filters = []) {
       const notFilters = filters.filter((item) => item.value.operator === '!=');

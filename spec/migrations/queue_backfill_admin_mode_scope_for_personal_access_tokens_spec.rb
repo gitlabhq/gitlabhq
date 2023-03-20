@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe QueueBackfillAdminModeScopeForPersonalAccessTokens,
-  feature_category: :authentication_and_authorization do
+  feature_category: :system_access do
   describe '#up' do
     it 'schedules background migration' do
       migrate!

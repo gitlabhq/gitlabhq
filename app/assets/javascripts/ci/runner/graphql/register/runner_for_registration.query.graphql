@@ -1,0 +1,8 @@
+query getRunnerForRegistration($id: CiRunnerID!) {
+  runner(id: $id) {
+    id
+    description
+    ephemeralAuthenticationToken
+    status
+  }
+}

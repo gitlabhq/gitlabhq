@@ -285,6 +285,18 @@ describe('Job log controllers', () => {
           expect(findScrollFailure().props('disabled')).toBe(false);
         });
       });
+
+      describe('on error', () => {
+        beforeEach(() => {
+          jest.spyOn(commonUtils, 'backOff').mockRejectedValueOnce();
+
+          createWrapper({}, { jobLogJumpToFailures: true });
+        });
+
+        it('stays disabled', () => {
+          expect(findScrollFailure().props('disabled')).toBe(true);
+        });
+      });
     });
   });
 

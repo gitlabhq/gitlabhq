@@ -66,7 +66,12 @@ export default {
 </script>
 
 <template>
-  <gl-tabs>
-    <component :is="component" v-for="{ key, component } in $options.tabs" :key="key" />
+  <gl-tabs nav-class="gl-bg-gray-10" align="center">
+    <component
+      :is="component"
+      v-for="{ key, component } in $options.tabs"
+      :key="key"
+      class="container-fluid container-limited"
+    />
   </gl-tabs>
 </template>

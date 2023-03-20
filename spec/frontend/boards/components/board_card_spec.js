@@ -82,8 +82,6 @@ describe('Board card', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     store = null;
   });
 

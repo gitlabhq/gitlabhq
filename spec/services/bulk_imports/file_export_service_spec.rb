@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::FileExportService do
+RSpec.describe BulkImports::FileExportService, feature_category: :importers do
   let_it_be(:project) { create(:project) }
 
   describe '#execute' do

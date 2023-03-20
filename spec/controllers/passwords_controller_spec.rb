@@ -99,8 +99,7 @@ RSpec.describe PasswordsController do
           m.call(*args)
 
           expect(Gitlab::ApplicationContext.current)
-            .to include('meta.user' => user.username,
-                        'meta.caller_id' => 'PasswordsController#update')
+            .to include('meta.user' => user.username, 'meta.caller_id' => 'PasswordsController#update')
         end
 
         subject

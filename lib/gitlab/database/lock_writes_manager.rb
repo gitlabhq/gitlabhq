@@ -10,6 +10,8 @@ module Gitlab
       # See https://www.postgresql.org/message-id/16934.1568989957%40sss.pgh.pa.us
       EXPECTED_TRIGGER_RECORD_COUNT = 3
 
+      # table_name can include schema name as a prefix. For example: 'gitlab_partitions_static.events_03',
+      # otherwise, it will default to current used schema, for example 'public'.
       def initialize(table_name:, connection:, database_name:, with_retries: true, logger: nil, dry_run: false)
         @table_name = table_name
         @connection = connection

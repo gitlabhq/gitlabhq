@@ -31,10 +31,6 @@ describe('Pin Component', () => {
       });
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('should render the component with descriptive text', () => {
       expect(wrapper.text()).toBe('Prevent auto-stopping');
     });
@@ -62,10 +58,6 @@ describe('Pin Component', () => {
         },
         apolloProvider: mockApollo,
       });
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
     });
 
     it('should render the component with descriptive text', () => {

@@ -11,7 +11,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   before_action :authorize_read_cycle_analytics!
   before_action :load_value_stream, only: :show
 
-  track_custom_event :show,
+  track_event :show,
     name: 'p_analytics_valuestream',
     action: 'perform_analytics_usage_action',
     label: 'redis_hll_counters.analytics.analytics_total_unique_counts_monthly',
@@ -22,6 +22,8 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
 
   before_action do
     push_licensed_feature(:cycle_analytics_for_groups) if project.licensed_feature_available?(:cycle_analytics_for_groups)
+    push_licensed_feature(:group_level_analytics_dashboard) if project.licensed_feature_available?(:group_level_analytics_dashboard)
+    push_frontend_feature_flag(:group_analytics_dashboards_page, @project.namespace)
   end
 
   def show
@@ -44,7 +46,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
 
   override :all_cycle_analytics_params
   def all_cycle_analytics_params
-    super.merge({ project: @project, value_stream: @value_stream })
+    super.merge({ namespace: @project.project_namespace, value_stream: @value_stream })
   end
 
   def load_value_stream

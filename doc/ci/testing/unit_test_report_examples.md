@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Pipeline Insights
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -273,4 +273,25 @@ phpunit:
     when: always
     reports:
       junit: report.xml
+```
+
+## Rust
+
+This example uses [cargo2junit](https://crates.io/crates/cargo2junit),
+which is installed in the current directory.
+To retrieve JSON output from `cargo test`, you must enable the nightly compiler.
+
+```yaml
+run unittests:
+  image: rust:latest
+  stage: test
+  before_script:
+    - cargo install --root . cargo2junit
+  script:
+    - cargo test -- -Z unstable-options --format json --report-time | bin/cargo2junit > report.xml
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - report.xml
 ```

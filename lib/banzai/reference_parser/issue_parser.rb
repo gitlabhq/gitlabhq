@@ -57,18 +57,22 @@ module Banzai
       end
 
       def records_for_nodes(nodes)
+        node_includes = [
+          :namespace,
+          :author,
+          :assignees,
+          {
+            # These associations are primarily used for checking permissions.
+            # Eager loading these ensures we don't end up running dozens of
+            # queries in this process.
+            project: [:namespace, :project_feature, :route]
+          }
+        ]
+        node_includes << :milestone if context.options[:extended_preload]
+
         @issues_for_nodes ||= grouped_objects_for_nodes(
           nodes,
-          Issue.all.includes(
-            :author,
-            :assignees,
-            {
-              # These associations are primarily used for checking permissions.
-              # Eager loading these ensures we don't end up running dozens of
-              # queries in this process.
-              project: [:namespace, :project_feature, :route]
-            }
-          ),
+          Issue.all.includes(node_includes),
           self.class.data_attribute
         )
       end

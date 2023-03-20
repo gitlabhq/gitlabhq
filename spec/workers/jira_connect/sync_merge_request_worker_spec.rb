@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::SyncMergeRequestWorker do
+RSpec.describe JiraConnect::SyncMergeRequestWorker, feature_category: :integrations do
   include AfterNextHelpers
 
   it_behaves_like 'worker with data consistency',

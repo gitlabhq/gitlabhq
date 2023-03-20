@@ -1,6 +1,6 @@
 ---
-stage: Release
-group: Release
+stage: Configure
+group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -151,7 +151,7 @@ Enables the feature for a list of target users. It is implemented
 using the Unleash UserIDs (`userWithId`) activation [strategy](https://docs.getunleash.io/reference/activation-strategies#userids).
 
 Enter user IDs as a comma-separated list of values (for example,
-`user@example.com, user2@example.com`, or `username1,username2,username3`, and so on). 
+`user@example.com, user2@example.com`, or `username1,username2,username3`, and so on).
 User IDs are identifiers for your application users. They do not need to be GitLab users.
 
 WARNING:
@@ -295,14 +295,13 @@ Unleash currently [offers many SDKs for various languages and frameworks](https:
 For API content, see:
 
 - [Feature flags API](../api/feature_flags.md)
-- [Feature flag specs API](../api/feature_flag_specs.md) (Deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/213369) in GitLab 14.0.)
 - [Feature flag user lists API](../api/feature_flag_user_lists.md)
 
-### Golang application example
+### Go application example
 
-Here's an example of how to integrate feature flags in a Golang application:
+Here's an example of how to integrate feature flags in a Go application:
 
-```golang
+```go
 package main
 
 import (

@@ -9,6 +9,10 @@ import Protection from '~/projects/settings/branch_rules/components/view/protect
 import {
   I18N,
   ALL_BRANCHES_WILDCARD,
+  REQUIRED_ICON,
+  NOT_REQUIRED_ICON,
+  REQUIRED_ICON_CLASS,
+  NOT_REQUIRED_ICON_CLASS,
 } from '~/projects/settings/branch_rules/components/view/constants';
 import branchRulesQuery from 'ee_else_ce/projects/settings/branch_rules/queries/branch_rules_details.query.graphql';
 import { sprintf } from '~/locale';
@@ -19,7 +23,7 @@ import {
 
 jest.mock('~/lib/utils/url_utility', () => ({
   getParameterByName: jest.fn().mockReturnValue('main'),
-  mergeUrlParams: jest.fn().mockReturnValue('/branches?state=all&search=main'),
+  mergeUrlParams: jest.fn().mockReturnValue('/branches?state=all&search=%5Emain%24'),
   joinPaths: jest.fn(),
 }));
 
@@ -39,12 +43,13 @@ describe('View branch rules', () => {
   let fakeApollo;
   const projectPath = 'test/testing';
   const protectedBranchesPath = 'protected/branches';
-  const branchProtectionsMockRequestHandler = jest
-    .fn()
-    .mockResolvedValue(branchProtectionsMockResponse);
+  const branchProtectionsMockRequestHandler = (response = branchProtectionsMockResponse) =>
+    jest.fn().mockResolvedValue(response);
 
-  const createComponent = async () => {
-    fakeApollo = createMockApollo([[branchRulesQuery, branchProtectionsMockRequestHandler]]);
+  const createComponent = async (mockResponse) => {
+    fakeApollo = createMockApollo([
+      [branchRulesQuery, branchProtectionsMockRequestHandler(mockResponse)],
+    ]);
 
     wrapper = shallowMountExtended(RuleView, {
       apolloProvider: fakeApollo,
@@ -57,13 +62,13 @@ describe('View branch rules', () => {
 
   beforeEach(() => createComponent());
 
-  afterEach(() => wrapper.destroy());
-
   const findBranchName = () => wrapper.findByTestId('branch');
   const findBranchTitle = () => wrapper.findByTestId('branch-title');
   const findBranchProtectionTitle = () => wrapper.findByText(I18N.protectBranchTitle);
   const findBranchProtections = () => wrapper.findAllComponents(Protection);
-  const findForcePushTitle = () => wrapper.findByText(I18N.allowForcePushDescription);
+  const findForcePushIcon = () => wrapper.findByTestId('force-push-icon');
+  const findForcePushTitle = (title) => wrapper.findByText(title);
+  const findForcePushDescription = () => wrapper.findByText(I18N.forcePushDescription);
   const findApprovalsTitle = () => wrapper.findByText(I18N.approvalsTitle);
   const findStatusChecksTitle = () => wrapper.findByText(I18N.statusChecksTitle);
   const findMatchingBranchesLink = () =>
@@ -94,9 +99,12 @@ describe('View branch rules', () => {
   });
 
   it('renders matching branches link', () => {
+    const mergeUrlParams = jest.spyOn(util, 'mergeUrlParams');
     const matchingBranchesLink = findMatchingBranchesLink();
+
+    expect(mergeUrlParams).toHaveBeenCalledWith({ state: 'all', search: `^main$` }, '');
     expect(matchingBranchesLink.exists()).toBe(true);
-    expect(matchingBranchesLink.attributes().href).toBe('/branches?state=all&search=main');
+    expect(matchingBranchesLink.attributes().href).toBe('/branches?state=all&search=%5Emain%24');
   });
 
   it('renders a branch protection title', () => {
@@ -123,9 +131,23 @@ describe('View branch rules', () => {
       });
   });
 
-  it('renders force push protection', () => {
-    expect(findForcePushTitle().exists()).toBe(true);
-  });
+  it.each`
+    allowForcePush | iconName             | iconClass                  | title
+    ${true}        | ${REQUIRED_ICON}     | ${REQUIRED_ICON_CLASS}     | ${I18N.allowForcePushTitle}
+    ${false}       | ${NOT_REQUIRED_ICON} | ${NOT_REQUIRED_ICON_CLASS} | ${I18N.doesNotAllowForcePushTitle}
+  `(
+    'renders force push section with the correct icon, title and description',
+    async ({ allowForcePush, iconName, iconClass, title }) => {
+      const mockResponse = branchProtectionsMockResponse;
+      mockResponse.data.project.branchRules.nodes[0].branchProtection.allowForcePush = allowForcePush;
+      await createComponent(mockResponse);
+
+      expect(findForcePushIcon().props('name')).toBe(iconName);
+      expect(findForcePushIcon().attributes('class')).toBe(iconClass);
+      expect(findForcePushTitle(title).exists()).toBe(true);
+      expect(findForcePushDescription().exists()).toBe(true);
+    },
+  );
 
   it('renders a branch protection component for merge rules', () => {
     expect(findBranchProtections().at(1).props()).toMatchObject({

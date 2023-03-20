@@ -1,0 +1,8 @@
+---
+name: runner_machine_heartbeat
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114859
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/390261
+milestone: '15.10'
+type: development
+group: group::runner
+default_enabled: false

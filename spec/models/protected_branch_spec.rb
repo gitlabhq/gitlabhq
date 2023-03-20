@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProtectedBranch do
+RSpec.describe ProtectedBranch, feature_category: :source_code_management do
   subject { build_stubbed(:protected_branch) }
 
   describe 'Associations' do
@@ -214,85 +214,52 @@ RSpec.describe ProtectedBranch do
         let_it_be(:project) { create(:project, :repository) }
         let_it_be(:protected_branch) { create(:protected_branch, project: project, name: "“jawn”") }
 
-        let(:rely_on_new_cache) { true }
-
-        shared_examples_for 'hash based cache implementation' do
-          it 'calls only hash based cache implementation' do
-            expect_next_instance_of(ProtectedBranches::CacheService) do |instance|
-              expect(instance).to receive(:fetch).with('missing-branch', anything).and_call_original
-            end
-
-            expect(Rails.cache).not_to receive(:fetch)
-
-            described_class.protected?(project, 'missing-branch')
-          end
-        end
-
         before do
-          stub_feature_flags(rely_on_protected_branches_cache: rely_on_new_cache)
           allow(described_class).to receive(:matching).and_call_original
 
           # the original call works and warms the cache
           described_class.protected?(project, protected_branch.name)
         end
 
-        context 'Dry-run: true (rely_on_protected_branches_cache is off, new hash-based is used)' do
-          let(:rely_on_new_cache) { false }
+        it 'correctly invalidates a cache' do
+          expect(described_class).to receive(:matching).with(protected_branch.name, protected_refs: anything).exactly(3).times.and_call_original
 
-          it 'recalculates a fresh value every time in order to check the cache is not returning stale data' do
-            expect(described_class).to receive(:matching).with(protected_branch.name, protected_refs: anything).twice
+          create_params = { name: 'bar', merge_access_levels_attributes: [{ access_level: Gitlab::Access::DEVELOPER }] }
+          branch = ProtectedBranches::CreateService.new(project, project.owner, create_params).execute
+          expect(described_class.protected?(project, protected_branch.name)).to eq(true)
 
-            2.times { described_class.protected?(project, protected_branch.name) }
-          end
+          ProtectedBranches::UpdateService.new(project, project.owner, name: 'ber').execute(branch)
+          expect(described_class.protected?(project, protected_branch.name)).to eq(true)
 
-          it_behaves_like 'hash based cache implementation'
+          ProtectedBranches::DestroyService.new(project, project.owner).execute(branch)
+          expect(described_class.protected?(project, protected_branch.name)).to eq(true)
         end
 
-        context 'Dry-run: false (rely_on_protected_branches_cache is enabled, new hash-based cache is used)' do
-          let(:rely_on_new_cache) { true }
+        context 'when project is updated' do
+          it 'does not invalidate a cache' do
+            expect(described_class).not_to receive(:matching).with(protected_branch.name, protected_refs: anything)
 
-          it 'correctly invalidates a cache' do
-            expect(described_class).to receive(:matching).with(protected_branch.name, protected_refs: anything).exactly(3).times.and_call_original
+            project.touch
 
-            create_params = { name: 'bar', merge_access_levels_attributes: [{ access_level: Gitlab::Access::DEVELOPER }] }
-            branch = ProtectedBranches::CreateService.new(project, project.owner, create_params).execute
-            expect(described_class.protected?(project, protected_branch.name)).to eq(true)
-
-            ProtectedBranches::UpdateService.new(project, project.owner, name: 'ber').execute(branch)
-            expect(described_class.protected?(project, protected_branch.name)).to eq(true)
-
-            ProtectedBranches::DestroyService.new(project, project.owner).execute(branch)
-            expect(described_class.protected?(project, protected_branch.name)).to eq(true)
+            described_class.protected?(project, protected_branch.name)
           end
+        end
 
-          it_behaves_like 'hash based cache implementation'
+        context 'when other project protected branch is updated' do
+          it 'does not invalidate the current project cache' do
+            expect(described_class).not_to receive(:matching).with(protected_branch.name, protected_refs: anything)
 
-          context 'when project is updated' do
-            it 'does not invalidate a cache' do
-              expect(described_class).not_to receive(:matching).with(protected_branch.name, protected_refs: anything)
+            another_project = create(:project)
+            ProtectedBranches::CreateService.new(another_project, another_project.owner, name: 'bar').execute
 
-              project.touch
-
-              described_class.protected?(project, protected_branch.name)
-            end
+            described_class.protected?(project, protected_branch.name)
           end
+        end
 
-          context 'when other project protected branch is updated' do
-            it 'does not invalidate the current project cache' do
-              expect(described_class).not_to receive(:matching).with(protected_branch.name, protected_refs: anything)
+        it 'correctly uses the cached version' do
+          expect(described_class).not_to receive(:matching)
 
-              another_project = create(:project)
-              ProtectedBranches::CreateService.new(another_project, another_project.owner, name: 'bar').execute
-
-              described_class.protected?(project, protected_branch.name)
-            end
-          end
-
-          it 'correctly uses the cached version' do
-            expect(described_class).not_to receive(:matching)
-
-            expect(described_class.protected?(project, protected_branch.name)).to eq(true)
-          end
+          expect(described_class.protected?(project, protected_branch.name)).to eq(true)
         end
       end
     end

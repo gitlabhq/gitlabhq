@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'carrierwave/storage/fog'
 
-RSpec.describe GitlabUploader do
+RSpec.describe GitlabUploader, feature_category: :shared do
   let(:uploader_class) { Class.new(described_class) }
 
   subject(:uploader) { uploader_class.new(double) }
@@ -178,5 +178,20 @@ RSpec.describe GitlabUploader do
     subject { uploader_class.version }
 
     it { expect { subject }.to raise_error(RuntimeError, /not supported/) }
+  end
+
+  describe '.storage_location' do
+    it 'sets the identifier for the storage location options' do
+      uploader_class.storage_location(:artifacts)
+
+      expect(uploader_class.options).to eq(Gitlab.config.artifacts)
+    end
+
+    context 'when given identifier is not known' do
+      it 'raises an error' do
+        expect { uploader_class.storage_location(:foo) }
+          .to raise_error(KeyError)
+      end
+    end
   end
 end

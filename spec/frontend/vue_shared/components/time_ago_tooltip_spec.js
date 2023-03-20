@@ -25,7 +25,6 @@ describe('Time ago with tooltip component', () => {
   };
 
   afterEach(() => {
-    vm.destroy();
     timezoneMock.unregister();
   });
 

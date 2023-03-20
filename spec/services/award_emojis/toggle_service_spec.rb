@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AwardEmojis::ToggleService do
+RSpec.describe AwardEmojis::ToggleService, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:awardable) { create(:note, project: project) }

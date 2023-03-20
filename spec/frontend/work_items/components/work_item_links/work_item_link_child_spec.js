@@ -7,7 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 
 import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/work_item_links/work_item_link_child_metadata.vue';
 
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip.vue';
 
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
@@ -31,7 +31,7 @@ import {
   workItemObjectiveMetadataWidgets,
 } from '../../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('WorkItemLinkChild', () => {
   const WORK_ITEM_ID = 'gid://gitlab/WorkItem/2';
@@ -65,10 +65,6 @@ describe('WorkItemLinkChild', () => {
 
   beforeEach(() => {
     createAlert.mockClear();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it.each`
@@ -109,8 +105,28 @@ describe('WorkItemLinkChild', () => {
     });
 
     it('renders item title', () => {
-      expect(titleEl.attributes('href')).toBe('/gitlab-org/gitlab-test/-/work_items/4');
+      expect(titleEl.attributes('href')).toBe(
+        '/gitlab-org/gitlab-test/-/work_items/4?iid_path=true',
+      );
       expect(titleEl.text()).toBe(workItemTask.title);
+    });
+
+    describe('renders item title correctly for relative instance', () => {
+      beforeEach(() => {
+        window.gon = { relative_url_root: '/test' };
+        createComponent();
+        titleEl = wrapper.findByTestId('item-title');
+      });
+
+      it('renders item title with correct href', () => {
+        expect(titleEl.attributes('href')).toBe(
+          '/test/gitlab-org/gitlab-test/-/work_items/4?iid_path=true',
+        );
+      });
+
+      it('renders item title with correct text', () => {
+        expect(titleEl.text()).toBe(workItemTask.title);
+      });
     });
 
     it.each`
@@ -149,6 +165,8 @@ describe('WorkItemLinkChild', () => {
       expect(metadataEl.props()).toMatchObject({
         metadataWidgets: workItemObjectiveMetadataWidgets,
       });
+
+      expect(wrapper.find('[data-testid="links-child"]').classes()).toContain('gl-py-3');
     });
 
     it('does not render item metadata component when item has no metadata present', () => {
@@ -158,6 +176,8 @@ describe('WorkItemLinkChild', () => {
       });
 
       expect(findMetadataComponent().exists()).toBe(false);
+
+      expect(wrapper.find('[data-testid="links-child"]').classes()).toContain('gl-py-0');
     });
   });
 

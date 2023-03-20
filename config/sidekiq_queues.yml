@@ -177,6 +177,8 @@
   - 1
 - - elastic_namespace_rollout
   - 1
+- - elastic_namespace_update
+  - 1
 - - elastic_project_transfer
   - 1
 - - email_receiver
@@ -419,11 +421,17 @@
   - 1
 - - projects_finalize_project_statistics_refresh
   - 1
+- - projects_forks_sync
+  - 1
 - - projects_git_garbage_collect
+  - 1
+- - projects_import_export_create_relation_exports
   - 1
 - - projects_import_export_parallel_project_export
   - 1
 - - projects_import_export_relation_export
+  - 1
+- - projects_import_export_wait_relation_exports
   - 1
 - - projects_inactive_projects_deletion_notification
   - 1
@@ -480,6 +488,10 @@
 - - requirements_management_process_requirements_reports
   - 1
 - - sbom_reports
+  - 1
+- - search_namespace_index_integrity
+  - 1
+- - search_project_index_integrity
   - 1
 - - security_auto_fix
   - 1

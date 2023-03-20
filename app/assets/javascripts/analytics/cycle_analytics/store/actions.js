@@ -6,9 +6,15 @@ import {
   getValueStreamStageCounts,
 } from '~/api/analytics_api';
 import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __ } from '~/locale';
-import { DEFAULT_VALUE_STREAM, I18N_VSA_ERROR_STAGE_MEDIAN } from '../constants';
+import {
+  DEFAULT_VALUE_STREAM,
+  I18N_VSA_ERROR_STAGE_MEDIAN,
+  LABELS_ENDPOINT,
+  MILESTONES_ENDPOINT,
+} from '../constants';
+import { constructPathWithNamespace } from '../utils';
 import * as types from './mutation_types';
 
 export const setSelectedValueStream = ({ commit, dispatch }, valueStream) => {
@@ -18,7 +24,7 @@ export const setSelectedValueStream = ({ commit, dispatch }, valueStream) => {
 
 export const fetchValueStreamStages = ({ commit, state }) => {
   const {
-    endpoints: { fullPath },
+    namespace: { fullPath },
     selectedValueStream: { id },
   } = state;
   commit(types.REQUEST_VALUE_STREAM_STAGES);
@@ -41,7 +47,7 @@ export const receiveValueStreamsSuccess = ({ commit, dispatch }, data = []) => {
 
 export const fetchValueStreams = ({ commit, dispatch, state }) => {
   const {
-    endpoints: { fullPath },
+    namespace: { fullPath },
   } = state;
   commit(types.REQUEST_VALUE_STREAMS);
 
@@ -180,7 +186,8 @@ export const initializeVsa = async ({ commit, dispatch }, initialData = {}) => {
   commit(types.INITIALIZE_VSA, initialData);
 
   const {
-    endpoints: { fullPath, groupPath, milestonesPath = '', labelsPath = '' },
+    groupPath,
+    namespace,
     selectedAuthor,
     selectedMilestone,
     selectedAssigneeList,
@@ -189,10 +196,10 @@ export const initializeVsa = async ({ commit, dispatch }, initialData = {}) => {
   } = initialData;
 
   dispatch('filters/setEndpoints', {
-    labelsEndpoint: labelsPath,
-    milestonesEndpoint: milestonesPath,
+    labelsEndpoint: constructPathWithNamespace(namespace, LABELS_ENDPOINT),
+    milestonesEndpoint: constructPathWithNamespace(namespace, MILESTONES_ENDPOINT),
     groupEndpoint: groupPath,
-    projectEndpoint: fullPath,
+    projectEndpoint: namespace.fullPath,
   });
 
   dispatch('filters/initialize', {

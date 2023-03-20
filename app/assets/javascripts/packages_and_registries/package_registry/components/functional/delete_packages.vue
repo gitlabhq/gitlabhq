@@ -1,6 +1,6 @@
 <script>
 import destroyPackagesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_packages.mutation.graphql';
-import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/flash';
+import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/alert';
 
 import {
   DELETE_PACKAGE_ERROR_MESSAGE,

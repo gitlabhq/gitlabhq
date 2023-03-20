@@ -52,16 +52,16 @@ RSpec.describe Ci::Partitionable do
     context 'when partitioned is true' do
       let(:partitioned) { true }
 
-      it { expect(ci_model.ancestors).to include(described_class::PartitionedFilter) }
-      it { expect(ci_model).to be_partitioned }
+      it { expect(ci_model.ancestors).to include(PartitionedTable) }
+      it { expect(ci_model.partitioning_strategy).to be_a(Gitlab::Database::Partitioning::CiSlidingListStrategy) }
+      it { expect(ci_model.partitioning_strategy.partitioning_key).to eq(:partition_id) }
     end
 
     context 'when partitioned is false' do
       let(:partitioned) { false }
 
-      it { expect(ci_model.ancestors).not_to include(described_class::PartitionedFilter) }
-
-      it { expect(ci_model).not_to be_partitioned }
+      it { expect(ci_model.ancestors).not_to include(PartitionedTable) }
+      it { expect(ci_model).not_to respond_to(:partitioning_strategy) }
     end
   end
 end

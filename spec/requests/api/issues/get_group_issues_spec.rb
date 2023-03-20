@@ -74,7 +74,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     let(:base_url) { "/groups/#{group.id}/issues" }
 
     shared_examples 'group issues statistics' do
-      it 'returns issues statistics' do
+      it 'returns issues statistics', :aggregate_failures do
         get api("/groups/#{group.id}/issues_statistics", user), params: params
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -346,7 +346,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         group_project.add_reporter(user)
       end
 
-      it 'exposes known attributes' do
+      it 'exposes known attributes', :aggregate_failures do
         get api(base_url, admin)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -355,7 +355,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       it 'returns all group issues (including opened and closed)' do
-        get api(base_url, admin)
+        get api(base_url, admin, admin_mode: true)
 
         expect_paginated_array_response([group_closed_issue.id, group_confidential_issue.id, group_issue.id])
       end
@@ -385,7 +385,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       it 'returns group confidential issues for admin' do
-        get api(base_url, admin), params: { state: :opened }
+        get api(base_url, admin, admin_mode: true), params: { state: :opened }
 
         expect_paginated_array_response([group_confidential_issue.id, group_issue.id])
       end
@@ -403,7 +403,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       context 'labels parameter' do
-        it 'returns an array of labeled group issues' do
+        it 'returns an array of labeled group issues', :aggregate_failures do
           get api(base_url, user), params: { labels: group_label.title }
 
           expect_paginated_array_response(group_issue.id)
@@ -486,7 +486,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         end
       end
 
-      it 'returns an array of issues found by iids' do
+      it 'returns an array of issues found by iids', :aggregate_failures do
         get api(base_url, user), params: { iids: [group_issue.iid] }
 
         expect_paginated_array_response(group_issue.id)
@@ -505,14 +505,14 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         expect_paginated_array_response([])
       end
 
-      it 'returns an array of group issues with any label' do
+      it 'returns an array of group issues with any label', :aggregate_failures do
         get api(base_url, user), params: { labels: IssuableFinder::Params::FILTER_ANY }
 
         expect_paginated_array_response(group_issue.id)
         expect(json_response.first['id']).to eq(group_issue.id)
       end
 
-      it 'returns an array of group issues with any label with labels param as array' do
+      it 'returns an array of group issues with any label with labels param as array', :aggregate_failures do
         get api(base_url, user), params: { labels: [IssuableFinder::Params::FILTER_ANY] }
 
         expect_paginated_array_response(group_issue.id)
@@ -555,7 +555,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         expect_paginated_array_response(group_closed_issue.id)
       end
 
-      it 'returns an array of issues with no milestone' do
+      it 'returns an array of issues with no milestone', :aggregate_failures do
         get api(base_url, user), params: { milestone: no_milestone_title }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -688,28 +688,28 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         let!(:issue2) { create(:issue, author: user2, project: group_project, created_at: 2.days.ago) }
         let!(:issue3) { create(:issue, author: user2, assignees: [assignee, another_assignee], project: group_project, created_at: 1.day.ago) }
 
-        it 'returns issues with by assignee_username' do
+        it 'returns issues with by assignee_username', :aggregate_failures do
           get api(base_url, user), params: { assignee_username: [assignee.username], scope: 'all' }
 
           expect(issue3.reload.assignees.pluck(:id)).to match_array([assignee.id, another_assignee.id])
           expect_paginated_array_response([issue3.id, group_confidential_issue.id])
         end
 
-        it 'returns issues by assignee_username as string' do
+        it 'returns issues by assignee_username as string', :aggregate_failures do
           get api(base_url, user), params: { assignee_username: assignee.username, scope: 'all' }
 
           expect(issue3.reload.assignees.pluck(:id)).to match_array([assignee.id, another_assignee.id])
           expect_paginated_array_response([issue3.id, group_confidential_issue.id])
         end
 
-        it 'returns error when multiple assignees are passed' do
+        it 'returns error when multiple assignees are passed', :aggregate_failures do
           get api(base_url, user), params: { assignee_username: [assignee.username, another_assignee.username], scope: 'all' }
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response["error"]).to include("allows one value, but found 2")
         end
 
-        it 'returns error when assignee_username and assignee_id are passed together' do
+        it 'returns error when assignee_username and assignee_id are passed together', :aggregate_failures do
           get api(base_url, user), params: { assignee_username: [assignee.username], assignee_id: another_assignee.id, scope: 'all' }
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -719,7 +719,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     describe "#to_reference" do
-      it 'exposes reference path in context of group' do
+      it 'exposes reference path in context of group', :aggregate_failures do
         get api(base_url, user)
 
         expect(json_response.first['references']['short']).to eq("##{group_closed_issue.iid}")
@@ -735,7 +735,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
           group_closed_issue.reload
         end
 
-        it 'exposes reference path in context of parent group' do
+        it 'exposes reference path in context of parent group', :aggregate_failures do
           get api("/groups/#{parent_group.id}/issues")
 
           expect(json_response.first['references']['short']).to eq("##{group_closed_issue.iid}")

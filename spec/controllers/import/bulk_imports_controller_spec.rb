@@ -121,12 +121,12 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
           params = { page: 1, per_page: 20, filter: '' }.merge(params_override)
 
           get :status,
-              params: params,
-              format: format,
-              session: {
-                bulk_import_gitlab_url: 'https://gitlab.example.com',
-                bulk_import_gitlab_access_token: 'demo-pat'
-              }
+            params: params,
+            format: format,
+            session: {
+              bulk_import_gitlab_url: 'https://gitlab.example.com',
+              bulk_import_gitlab_access_token: 'demo-pat'
+            }
         end
 
         include_context 'bulk imports requests context', 'https://gitlab.example.com'
@@ -157,8 +157,7 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
           end
 
           let(:source_version) do
-            Gitlab::VersionInfo.new(::BulkImport::MIN_MAJOR_VERSION,
-                                    ::BulkImport::MIN_MINOR_VERSION_FOR_PROJECT)
+            Gitlab::VersionInfo.new(::BulkImport::MIN_MAJOR_VERSION, ::BulkImport::MIN_MINOR_VERSION_FOR_PROJECT)
           end
 
           before do
@@ -270,8 +269,7 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
 
         context 'when connection error occurs' do
           let(:source_version) do
-            Gitlab::VersionInfo.new(::BulkImport::MIN_MAJOR_VERSION,
-                                    ::BulkImport::MIN_MINOR_VERSION_FOR_PROJECT)
+            Gitlab::VersionInfo.new(::BulkImport::MIN_MAJOR_VERSION, ::BulkImport::MIN_MINOR_VERSION_FOR_PROJECT)
           end
 
           before do

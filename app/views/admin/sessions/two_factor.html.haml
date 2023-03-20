@@ -1,4 +1,3 @@
-- @hide_breadcrumbs = true
 - page_title _('Enter 2FA for Admin Mode')
 
 .row.justify-content-center
@@ -11,5 +10,5 @@
             .login-body
               - if current_user.two_factor_otp_enabled?
                 = render 'admin/sessions/two_factor_otp'
-              - if current_user.two_factor_webauthn_u2f_enabled?
+              - if current_user.two_factor_webauthn_enabled?
                 = render 'authentication/authenticate', render_remember_me: false, target_path: admin_session_path

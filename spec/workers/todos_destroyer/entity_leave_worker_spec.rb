@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TodosDestroyer::EntityLeaveWorker do
+RSpec.describe TodosDestroyer::EntityLeaveWorker, feature_category: :team_planning do
   it "calls the Todos::Destroy::EntityLeaveService with the params it was given" do
     service = double
 

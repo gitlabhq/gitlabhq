@@ -116,7 +116,7 @@ RSpec.describe Gitlab::Email::Handler::CreateIssueHandler do
     context "when the issue could not be saved" do
       before do
         allow_any_instance_of(Issue).to receive(:persisted?).and_return(false)
-        allow_any_instance_of(Issue).to receive(:ensure_metrics).and_return(nil)
+        allow_any_instance_of(Issue).to receive(:ensure_metrics!).and_return(nil)
       end
 
       it "raises an InvalidIssueError" do

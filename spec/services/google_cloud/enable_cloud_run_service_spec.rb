@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GoogleCloud::EnableCloudRunService do
+RSpec.describe GoogleCloud::EnableCloudRunService, feature_category: :deployment_management do
   describe 'when a project does not have any gcp projects' do
     let_it_be(:project) { create(:project) }
 

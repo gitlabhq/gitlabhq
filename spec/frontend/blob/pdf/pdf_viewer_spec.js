@@ -26,11 +26,6 @@ describe('PDF renderer', () => {
     mountComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('shows loading icon', () => {
     expect(findLoading().exists()).toBe(true);
   });

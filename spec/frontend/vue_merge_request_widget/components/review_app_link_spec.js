@@ -17,10 +17,6 @@ describe('review app link', () => {
     wrapper = shallowMount(ReviewAppLink, { propsData: props });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders provided link as href attribute', () => {
     expect(wrapper.attributes('href')).toBe(props.link);
   });

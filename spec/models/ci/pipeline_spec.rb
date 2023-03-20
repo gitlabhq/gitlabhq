@@ -19,31 +19,66 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:user) }
-  it { is_expected.to belong_to(:auto_canceled_by) }
+  it { is_expected.to belong_to(:auto_canceled_by).class_name('Ci::Pipeline').inverse_of(:auto_canceled_pipelines) }
   it { is_expected.to belong_to(:pipeline_schedule) }
   it { is_expected.to belong_to(:merge_request) }
   it { is_expected.to belong_to(:external_pull_request) }
 
   it { is_expected.to have_many(:statuses) }
-  it { is_expected.to have_many(:trigger_requests) }
+  it { is_expected.to have_many(:trigger_requests).with_foreign_key(:commit_id).inverse_of(:pipeline) }
   it { is_expected.to have_many(:variables) }
   it { is_expected.to have_many(:builds) }
-  it { is_expected.to have_many(:statuses_order_id_desc) }
+
+  it do
+    is_expected.to have_many(:statuses_order_id_desc)
+      .class_name('CommitStatus').with_foreign_key(:commit_id).inverse_of(:pipeline)
+  end
+
   it { is_expected.to have_many(:bridges) }
   it { is_expected.to have_many(:job_artifacts).through(:builds) }
   it { is_expected.to have_many(:build_trace_chunks).through(:builds) }
-  it { is_expected.to have_many(:auto_canceled_pipelines) }
-  it { is_expected.to have_many(:auto_canceled_jobs) }
-  it { is_expected.to have_many(:sourced_pipelines) }
+
   it { is_expected.to have_many(:triggered_pipelines) }
   it { is_expected.to have_many(:pipeline_artifacts) }
 
-  it { is_expected.to have_one(:chat_data) }
+  it do
+    is_expected.to have_many(:failed_builds).class_name('Ci::Build')
+      .with_foreign_key(:commit_id).inverse_of(:pipeline)
+  end
+
+  it do
+    is_expected.to have_many(:cancelable_statuses).class_name('CommitStatus')
+      .with_foreign_key(:commit_id).inverse_of(:pipeline)
+  end
+
+  it do
+    is_expected.to have_many(:auto_canceled_pipelines).class_name('Ci::Pipeline')
+      .with_foreign_key(:auto_canceled_by_id).inverse_of(:auto_canceled_by)
+  end
+
+  it do
+    is_expected.to have_many(:auto_canceled_jobs).class_name('CommitStatus')
+      .with_foreign_key(:auto_canceled_by_id).inverse_of(:auto_canceled_by)
+  end
+
+  it do
+    is_expected.to have_many(:sourced_pipelines).class_name('Ci::Sources::Pipeline')
+      .with_foreign_key(:source_pipeline_id).inverse_of(:source_pipeline)
+  end
+
   it { is_expected.to have_one(:source_pipeline) }
+  it { is_expected.to have_one(:chat_data) }
   it { is_expected.to have_one(:triggered_by_pipeline) }
   it { is_expected.to have_one(:source_job) }
   it { is_expected.to have_one(:pipeline_config) }
   it { is_expected.to have_one(:pipeline_metadata) }
+
+  it do
+    is_expected.to have_many(:daily_build_group_report_results).class_name('Ci::DailyBuildGroupReportResult')
+      .with_foreign_key(:last_pipeline_id).inverse_of(:last_pipeline)
+  end
+
+  it { is_expected.to have_many(:latest_builds_report_results).through(:latest_builds).source(:report_results) }
 
   it { is_expected.to respond_to :git_author_name }
   it { is_expected.to respond_to :git_author_email }
@@ -872,6 +907,26 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         expect(pipeline).to be_valid
       end
     end
+
+    context 'when source is unknown' do
+      subject(:pipeline) { create(:ci_empty_pipeline, :created) }
+
+      let(:attr) { :source }
+      let(:attr_value) { :unknown }
+
+      it_behaves_like 'having enum with nil value'
+    end
+  end
+
+  describe '#config_source' do
+    context 'when source is unknown' do
+      subject(:pipeline) { create(:ci_empty_pipeline, :created) }
+
+      let(:attr) { :config_source }
+      let(:attr_value) { :unknown_source }
+
+      it_behaves_like 'having enum with nil value'
+    end
   end
 
   describe '#block' do
@@ -1658,6 +1713,154 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         let!(:downstream_pipeline) { create(:ci_pipeline, :with_job) }
 
         it_behaves_like 'upstream downstream pipeline'
+      end
+    end
+
+    describe 'merge status subscription trigger' do
+      shared_examples 'state transition not triggering GraphQL subscription mergeRequestMergeStatusUpdated' do
+        context 'when state transitions to running' do
+          it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.run }
+          end
+        end
+
+        context 'when state transitions to success' do
+          it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.succeed }
+          end
+        end
+
+        context 'when state transitions to failed' do
+          it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.drop }
+          end
+        end
+
+        context 'when state transitions to canceled' do
+          it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.cancel }
+          end
+        end
+
+        context 'when state transitions to skipped' do
+          it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.skip }
+          end
+        end
+      end
+
+      shared_examples 'state transition triggering GraphQL subscription mergeRequestMergeStatusUpdated' do
+        context 'when state transitions to running' do
+          it_behaves_like 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.run }
+          end
+        end
+
+        context 'when state transitions to success' do
+          it_behaves_like 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.succeed }
+          end
+        end
+
+        context 'when state transitions to failed' do
+          it_behaves_like 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.drop }
+          end
+        end
+
+        context 'when state transitions to canceled' do
+          it_behaves_like 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.cancel }
+          end
+        end
+
+        context 'when state transitions to skipped' do
+          it_behaves_like 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.skip }
+          end
+        end
+
+        context 'when only_allow_merge_if_pipeline_succeeds? returns false' do
+          let(:only_allow_merge_if_pipeline_succeeds?) { false }
+
+          it_behaves_like 'state transition not triggering GraphQL subscription mergeRequestMergeStatusUpdated'
+        end
+
+        context 'when pipeline_trigger_merge_status feature flag is disabled' do
+          before do
+            stub_feature_flags(pipeline_trigger_merge_status: false)
+          end
+
+          it_behaves_like 'state transition not triggering GraphQL subscription mergeRequestMergeStatusUpdated'
+        end
+      end
+
+      context 'when pipeline has merge requests' do
+        let(:merge_request) do
+          create(
+            :merge_request,
+            :simple,
+            source_project: project,
+            target_project: project
+          )
+        end
+
+        let(:only_allow_merge_if_pipeline_succeeds?) { true }
+
+        before do
+          allow(project)
+            .to receive(:only_allow_merge_if_pipeline_succeeds?)
+            .and_return(only_allow_merge_if_pipeline_succeeds?)
+        end
+
+        context 'when for a specific merge request' do
+          let(:pipeline) do
+            create(
+              :ci_pipeline,
+              project: project,
+              merge_request: merge_request
+            )
+          end
+
+          it_behaves_like 'state transition triggering GraphQL subscription mergeRequestMergeStatusUpdated'
+
+          context 'when pipeline is a child' do
+            let(:parent_pipeline) do
+              create(
+                :ci_pipeline,
+                project: project,
+                merge_request: merge_request
+              )
+            end
+
+            let(:pipeline) do
+              create(
+                :ci_pipeline,
+                child_of: parent_pipeline,
+                merge_request: merge_request
+              )
+            end
+
+            it_behaves_like 'state transition not triggering GraphQL subscription mergeRequestMergeStatusUpdated'
+          end
+        end
+
+        context 'when for merge requests matching the source branch and SHA' do
+          let(:pipeline) do
+            create(
+              :ci_pipeline,
+              project: project,
+              ref: merge_request.source_branch,
+              sha: merge_request.diff_head_sha
+            )
+          end
+
+          it_behaves_like 'state transition triggering GraphQL subscription mergeRequestMergeStatusUpdated'
+        end
+      end
+
+      context 'when pipeline has no merge requests' do
+        it_behaves_like 'state transition not triggering GraphQL subscription mergeRequestMergeStatusUpdated'
       end
     end
 

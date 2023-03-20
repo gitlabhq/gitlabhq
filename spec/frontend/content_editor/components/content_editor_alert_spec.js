@@ -29,10 +29,6 @@ describe('content_editor/components/content_editor_alert', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     variant      | message
     ${'danger'}  | ${'An error occurred'}

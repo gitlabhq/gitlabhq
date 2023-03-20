@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issuable::DestroyService do
+RSpec.describe Issuable::DestroyService, feature_category: :team_planning do
   let(:user) { create(:user) }
   let(:group) { create(:group, :public) }
   let(:project) { create(:project, :public, group: group) }

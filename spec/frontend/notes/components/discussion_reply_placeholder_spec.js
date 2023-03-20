@@ -17,10 +17,6 @@ describe('ReplyPlaceholder', () => {
 
   const findTextarea = () => wrapper.findComponent({ ref: 'textarea' });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('emits focus event on button click', async () => {
     createComponent({ options: { attachTo: document.body } });
 

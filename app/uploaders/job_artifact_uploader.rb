@@ -7,7 +7,7 @@ class JobArtifactUploader < GitlabUploader
 
   UnknownFileLocationError = Class.new(StandardError)
 
-  storage_options Gitlab.config.artifacts
+  storage_location :artifacts
 
   alias_method :upload, :model
 

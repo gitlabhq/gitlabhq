@@ -55,11 +55,6 @@ describe('Infrastructure Search', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('has a registry search component', () => {
     mountComponent();
 

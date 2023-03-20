@@ -38,7 +38,6 @@ describe('IssuableSidebarRoot', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     resetHTMLFixture();
   });
 

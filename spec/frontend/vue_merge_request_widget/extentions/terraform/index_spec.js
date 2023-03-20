@@ -48,7 +48,6 @@ describe('Terraform extension', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mock.restore();
   });
 

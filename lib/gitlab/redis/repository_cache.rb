@@ -3,6 +3,9 @@
 module Gitlab
   module Redis
     class RepositoryCache < ::Gitlab::Redis::Wrapper
+      # We create a subclass only for the purpose of differentiating between different stores in cache metrics
+      RepositoryCacheStore = Class.new(ActiveSupport::Cache::RedisCacheStore)
+
       class << self
         # The data we store on RepositoryCache used to be stored on Cache.
         def config_fallback
@@ -10,12 +13,11 @@ module Gitlab
         end
 
         def cache_store
-          @cache_store ||= ActiveSupport::Cache::RedisCacheStore.new(
+          @cache_store ||= RepositoryCacheStore.new(
             redis: pool,
             compress: Gitlab::Utils.to_boolean(ENV.fetch('ENABLE_REDIS_CACHE_COMPRESSION', '1')),
             namespace: Cache::CACHE_NAMESPACE,
-            expires_in: Cache.default_ttl_seconds,
-            error_handler: ::Gitlab::Redis::ERROR_HANDLER
+            expires_in: Cache.default_ttl_seconds
           )
         end
       end

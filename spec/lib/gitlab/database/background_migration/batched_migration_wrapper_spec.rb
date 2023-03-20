@@ -8,6 +8,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
   let(:connection) { Gitlab::Database.database_base_models[:main].connection }
   let(:metrics_tracker) { instance_double('::Gitlab::Database::BackgroundMigration::PrometheusMetrics', track: nil) }
   let(:job_class) { Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) }
+  let(:sub_batch_exception) { Gitlab::Database::BackgroundMigration::SubBatchTimeoutError }
 
   let_it_be(:pause_ms) { 250 }
   let_it_be(:active_migration) { create(:batched_background_migration, :active, job_arguments: [:id, :other_id]) }
@@ -39,7 +40,8 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
             sub_batch_size: 1,
             pause_ms: pause_ms,
             job_arguments: active_migration.job_arguments,
-            connection: connection)
+            connection: connection,
+            sub_batch_exception: sub_batch_exception)
       .and_return(job_instance)
 
     expect(job_instance).to receive(:perform).with(no_args)
@@ -119,12 +121,14 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
   end
 
   context 'when the migration job raises an error' do
-    shared_examples 'an error is raised' do |error_class|
+    shared_examples 'an error is raised' do |error_class, cause|
+      let(:expected_to_raise) { cause || error_class }
+
       it 'marks the tracking record as failed' do
         expect(job_instance).to receive(:perform).with(no_args).and_raise(error_class)
 
         freeze_time do
-          expect { perform }.to raise_error(error_class)
+          expect { perform }.to raise_error(expected_to_raise)
 
           reloaded_job_record = job_record.reload
 
@@ -137,13 +141,16 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
         expect(job_instance).to receive(:perform).with(no_args).and_raise(error_class)
         expect(metrics_tracker).to receive(:track).with(job_record)
 
-        expect { perform }.to raise_error(error_class)
+        expect { perform }.to raise_error(expected_to_raise)
       end
     end
 
     it_behaves_like 'an error is raised', RuntimeError.new('Something broke!')
     it_behaves_like 'an error is raised', SignalException.new('SIGTERM')
     it_behaves_like 'an error is raised', ActiveRecord::StatementTimeout.new('Timeout!')
+
+    error = StandardError.new
+    it_behaves_like('an error is raised', Gitlab::Database::BackgroundMigration::SubBatchTimeoutError.new(error), error)
   end
 
   context 'when the batched background migration does not inherit from BatchedMigrationJob' do

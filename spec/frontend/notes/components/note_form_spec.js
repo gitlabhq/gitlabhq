@@ -48,10 +48,6 @@ describe('issue_note_form component', () => {
     };
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('noteHash', () => {
     beforeEach(() => {
       wrapper = createComponentWrapper();

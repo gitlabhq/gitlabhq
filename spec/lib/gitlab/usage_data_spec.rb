@@ -529,8 +529,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       expect(count_data[:projects_prometheus_active]).to eq(1)
       expect(count_data[:projects_jenkins_active]).to eq(1)
       expect(count_data[:projects_jira_active]).to eq(4)
-      expect(count_data[:projects_jira_server_active]).to eq(2)
-      expect(count_data[:projects_jira_cloud_active]).to eq(2)
       expect(count_data[:jira_imports_projects_count]).to eq(2)
       expect(count_data[:jira_imports_total_imported_count]).to eq(3)
       expect(count_data[:jira_imports_total_imported_issues_count]).to eq(13)
@@ -614,14 +612,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         it 'raises an error' do
           expect { subject }.to raise_error(ActiveRecord::StatementInvalid)
         end
-
-        context 'when metric calls find_in_batches' do
-          let(:metric_method) { :find_in_batches }
-
-          it 'raises an error for jira_usage' do
-            expect { described_class.jira_usage }.to raise_error(ActiveRecord::StatementInvalid)
-          end
-        end
       end
 
       context 'with should_raise_for_dev? false' do
@@ -629,14 +619,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
 
         it 'does not raise an error' do
           expect { subject }.not_to raise_error
-        end
-
-        context 'when metric calls find_in_batches' do
-          let(:metric_method) { :find_in_batches }
-
-          it 'does not raise an error for jira_usage' do
-            expect { described_class.jira_usage }.not_to raise_error
-          end
         end
       end
     end
@@ -1044,16 +1026,12 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     let(:time) { Time.current }
 
     before do
-      counter = Gitlab::UsageDataCounters::TrackUniqueEvents
-      merge_request = Event::TARGET_TYPES[:merge_request]
-      design = Event::TARGET_TYPES[:design]
-
-      counter.track_event(event_action: :commented, event_target: merge_request, author_id: 1, time: time)
-      counter.track_event(event_action: :opened, event_target: merge_request, author_id: 1, time: time)
-      counter.track_event(event_action: :merged, event_target: merge_request, author_id: 2, time: time)
-      counter.track_event(event_action: :closed, event_target: merge_request, author_id: 3, time: time)
-      counter.track_event(event_action: :opened, event_target: merge_request, author_id: 4, time: time - 3.days)
-      counter.track_event(event_action: :created, event_target: design, author_id: 5, time: time)
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:merge_request_action, values: 1, time: time)
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:merge_request_action, values: 1, time: time)
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:merge_request_action, values: 2, time: time)
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:merge_request_action, values: 3, time: time)
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:merge_request_action, values: 4, time: time - 3.days)
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:design_action, values: 5, time: time)
     end
 
     it 'returns the distinct count of users using merge requests (via events table) within the specified time period' do
@@ -1066,42 +1044,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       travel_to(n.days.ago) do
         yield
       end
-    end
-  end
-
-  describe '#action_monthly_active_users', :clean_gitlab_redis_shared_state do
-    let(:time_period) { { created_at: 2.days.ago..time } }
-    let(:time) { Time.zone.now }
-    let(:user1) { build(:user, id: 1) }
-    let(:user2) { build(:user, id: 2) }
-    let(:user3) { build(:user, id: 3) }
-    let(:user4) { build(:user, id: 4) }
-    let(:project) { build(:project) }
-
-    before do
-      counter = Gitlab::UsageDataCounters::EditorUniqueCounter
-
-      counter.track_web_ide_edit_action(author: user1, project: project)
-      counter.track_web_ide_edit_action(author: user1, project: project)
-      counter.track_sfe_edit_action(author: user1, project: project)
-      counter.track_snippet_editor_edit_action(author: user1, project: project)
-      counter.track_snippet_editor_edit_action(author: user1, time: time - 3.days, project: project)
-
-      counter.track_web_ide_edit_action(author: user2, project: project)
-      counter.track_sfe_edit_action(author: user2, project: project)
-
-      counter.track_web_ide_edit_action(author: user3, time: time - 3.days, project: project)
-      counter.track_snippet_editor_edit_action(author: user3, project: project)
-    end
-
-    it 'returns the distinct count of user actions within the specified time period' do
-      expect(described_class.action_monthly_active_users(time_period)).to eq(
-        {
-          action_monthly_active_users_web_ide_edit: 2,
-          action_monthly_active_users_sfe_edit: 2,
-          action_monthly_active_users_snippet_editor_edit: 2
-        }
-      )
     end
   end
 

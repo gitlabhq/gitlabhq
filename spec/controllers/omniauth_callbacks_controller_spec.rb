@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe OmniauthCallbacksController, type: :controller do
+RSpec.describe OmniauthCallbacksController, type: :controller, feature_category: :system_access do
   include LoginHelpers
 
   describe 'omniauth' do
@@ -202,20 +202,30 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
           end
         end
 
-        context 'when user with 2FA is unconfirmed' do
+        context 'when a user has 2FA enabled' do
           render_views
 
           let(:user) { create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: provider) }
 
-          before do
-            user.update_column(:confirmed_at, nil)
+          context 'when a user is unconfirmed' do
+            before do
+              stub_application_setting_enum('email_confirmation_setting', 'hard')
+
+              user.update!(confirmed_at: nil)
+            end
+
+            it 'redirects to login page' do
+              post provider
+
+              expect(response).to redirect_to(new_user_session_path)
+              expect(flash[:alert]).to match(/You have to confirm your email address before continuing./)
+            end
           end
 
-          it 'redirects to login page' do
-            post provider
-
-            expect(response).to redirect_to(new_user_session_path)
-            expect(flash[:alert]).to match(/You have to confirm your email address before continuing./)
+          context 'when a user is confirmed' do
+            it 'returns 200 response' do
+              expect(response).to have_gitlab_http_status(:ok)
+            end
           end
         end
 
@@ -324,9 +334,10 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
             expect(controller).to receive(:atlassian_oauth2).and_wrap_original do |m, *args|
               m.call(*args)
 
-              expect(Gitlab::ApplicationContext.current)
-                .to include('meta.user' => user.username,
-                            'meta.caller_id' => 'OmniauthCallbacksController#atlassian_oauth2')
+              expect(Gitlab::ApplicationContext.current).to include(
+                'meta.user' => user.username,
+                'meta.caller_id' => 'OmniauthCallbacksController#atlassian_oauth2'
+              )
             end
 
             post :atlassian_oauth2
@@ -419,6 +430,31 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
     end
   end
 
+  describe '#openid_connect' do
+    let(:user) { create(:omniauth_user, extern_uid: extern_uid, provider: provider) }
+    let(:extern_uid) { 'my-uid' }
+    let(:provider) { 'openid_connect' }
+
+    before do
+      prepare_provider_route('openid_connect')
+
+      mock_auth_hash(provider, extern_uid, user.email, additional_info: {})
+
+      request.env['devise.mapping'] = Devise.mappings[:user]
+      request.env['omniauth.auth'] = Rails.application.env_config['omniauth.auth']
+    end
+
+    it_behaves_like 'known sign in' do
+      let(:post_action) { post provider }
+    end
+
+    it 'allows sign in' do
+      post provider
+
+      expect(request.env['warden']).to be_authenticated
+    end
+  end
+
   describe '#saml' do
     let(:last_request_id) { 'ONELOGIN_4fee3b046395c4e751011e97f8900b5273d56685' }
     let(:user) { create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: 'saml') }
@@ -431,8 +467,12 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
 
     before do
       stub_last_request_id(last_request_id)
-      stub_omniauth_saml_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'],
-                                providers: [saml_config])
+      stub_omniauth_saml_config(
+        enabled: true,
+        auto_link_saml_user: true,
+        allow_single_sign_on: ['saml'],
+        providers: [saml_config]
+      )
       mock_auth_hash_with_saml_xml('saml', +'my-uid', user.email, mock_saml_response)
       request.env['devise.mapping'] = Devise.mappings[:user]
       request.env['omniauth.auth'] = Rails.application.env_config['omniauth.auth']
@@ -523,9 +563,10 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
         expect(controller).to receive(:saml).and_wrap_original do |m, *args|
           m.call(*args)
 
-          expect(Gitlab::ApplicationContext.current)
-            .to include('meta.user' => user.username,
-                        'meta.caller_id' => 'OmniauthCallbacksController#saml')
+          expect(Gitlab::ApplicationContext.current).to include(
+            'meta.user' => user.username,
+            'meta.caller_id' => 'OmniauthCallbacksController#saml'
+          )
         end
 
         post :saml, params: { SAMLResponse: mock_saml_response }

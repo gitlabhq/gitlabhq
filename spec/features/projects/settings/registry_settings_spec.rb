@@ -21,6 +21,15 @@ feature_category: :projects do
   end
 
   context 'as owner', :js do
+    it 'passes axe automated accessibility testing' do
+      subject
+
+      wait_for_requests
+
+      expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-project-settings"]')
+                                  .skipping :'link-in-text-block'
+    end
+
     it 'shows active tab on sidebar' do
       subject
 

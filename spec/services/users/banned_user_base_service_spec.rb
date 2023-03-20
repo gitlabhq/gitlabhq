@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::BannedUserBaseService do
+RSpec.describe Users::BannedUserBaseService, feature_category: :user_management do
   let(:admin) { create(:admin) }
   let(:base_service) { described_class.new(admin) }
 

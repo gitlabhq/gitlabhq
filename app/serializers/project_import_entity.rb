@@ -16,4 +16,11 @@ class ProjectImportEntity < ProjectEntity
   expose :import_error, if: ->(project) { project.import_state&.failed? } do |project|
     project.import_failures.last&.exception_message
   end
+
+  # Only for GitHub importer where we pass client through
+  expose :relation_type do |project, options|
+    next nil if options[:client].nil? || Feature.disabled?(:remove_legacy_github_client)
+
+    ::Gitlab::GithubImport::ProjectRelationType.new(options[:client]).for(project.import_source)
+  end
 end

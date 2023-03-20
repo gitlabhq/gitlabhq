@@ -63,7 +63,6 @@ describe('IssuableMoveDropdown', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mock.restore();
   });
 

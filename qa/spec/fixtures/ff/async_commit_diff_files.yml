@@ -1,0 +1,8 @@
+---
+name: async_commit_diff_files
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38450
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/369439
+milestone: '13.3'
+type: development
+group: group::source code
+default_enabled: false

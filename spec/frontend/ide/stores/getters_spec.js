@@ -24,20 +24,13 @@ const TEST_FORK_PATH = '/test/fork/path';
 describe('IDE store getters', () => {
   let localState;
   let localStore;
-  let origGon;
 
   beforeEach(() => {
-    origGon = window.gon;
-
     // Feature flag is defaulted to on in prod
     window.gon = { features: { rejectUnsignedCommitsByGitlab: true } };
 
     localStore = createStore();
     localState = localStore.state;
-  });
-
-  afterEach(() => {
-    window.gon = origGon;
   });
 
   describe('activeFile', () => {

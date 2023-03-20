@@ -16,6 +16,7 @@ class Namespace < ApplicationRecord
   include EachBatch
   include BlocksUnsafeSerialization
   include Ci::NamespaceSettings
+  include Referable
 
   # Tells ActiveRecord not to store the full class name, in order to save some space
   # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69794
@@ -51,7 +52,8 @@ class Namespace < ApplicationRecord
   has_one :namespace_statistics
   has_one :namespace_route, foreign_key: :namespace_id, autosave: false, inverse_of: :namespace, class_name: 'Route'
   has_many :namespace_members, foreign_key: :member_namespace_id, inverse_of: :member_namespace, class_name: 'Member'
-  has_many :member_roles
+
+  has_one :namespace_ldap_settings, inverse_of: :namespace, class_name: 'Namespaces::LdapSetting', autosave: true
 
   has_many :runner_namespaces, inverse_of: :namespace, class_name: 'Ci::RunnerNamespace'
   has_many :runners, through: :runner_namespaces, source: :runner, class_name: 'Ci::Runner'
@@ -97,6 +99,7 @@ class Namespace < ApplicationRecord
   validates :path,
     presence: true,
     length: { maximum: URL_MAX_LENGTH }
+  validate :container_registry_namespace_path_validation
 
   validates :path, namespace_path: true, if: ->(n) { !n.project_namespace? }
   # Project path validator is used for project namespaces for now to assure
@@ -244,25 +247,40 @@ class Namespace < ApplicationRecord
     def clean_path(path, limited_to: Namespace.all)
       slug = Gitlab::Slug::Path.new(path).generate
       path = Namespaces::RandomizedSuffixPath.new(slug)
-      Uniquify.new.string(path) { |s| limited_to.find_by_path_or_name(s) }
+      Gitlab::Utils::Uniquify.new.string(path) { |s| limited_to.find_by_path_or_name(s) }
     end
 
     def clean_name(value)
       value.scan(Gitlab::Regex.group_name_regex_chars).join(' ')
     end
 
-    def find_by_pages_host(host)
-      gitlab_host = "." + Settings.pages.host.downcase
-      host = host.downcase
-      return unless host.ends_with?(gitlab_host)
-
-      name = host.delete_suffix(gitlab_host)
-      Namespace.top_most.by_path(name)
-    end
-
     def top_most
       by_parent(nil)
     end
+
+    def reference_prefix
+      User.reference_prefix
+    end
+
+    def reference_pattern
+      User.reference_pattern
+    end
+  end
+
+  def to_reference_base(from = nil, full: false)
+    return full_path if full || cross_namespace_reference?(from)
+    return path if cross_project_reference?(from)
+  end
+
+  def to_reference(*)
+    "#{self.class.reference_prefix}#{full_path}"
+  end
+
+  def container_registry_namespace_path_validation
+    return if Feature.disabled?(:restrict_special_characters_in_namespace_path, self)
+    return if !path_changed? || path.match?(Gitlab::Regex.oci_repository_path_regex)
+
+    errors.add(:path, Gitlab::Regex.oci_repository_path_regex_message)
   end
 
   def package_settings
@@ -286,11 +304,15 @@ class Namespace < ApplicationRecord
   end
 
   def any_project_has_container_registry_tags?
-    all_projects.includes(:container_repositories).any?(&:has_container_registry_tags?)
+    first_project_with_container_registry_tags.present?
   end
 
   def first_project_with_container_registry_tags
-    all_projects.find(&:has_container_registry_tags?)
+    if ContainerRegistry::GitlabApiClient.supports_gitlab_api? && Feature.enabled?(:use_sub_repositories_api)
+      ContainerRegistry::GitlabApiClient.one_project_with_container_registry_tag(full_path)
+    else
+      all_projects.includes(:container_repositories).find(&:has_container_registry_tags?)
+    end
   end
 
   def send_update_instructions
@@ -473,18 +495,6 @@ class Namespace < ApplicationRecord
     ContainerRepository.for_project_id(all_projects)
   end
 
-  def pages_virtual_domain
-    cache = if Feature.enabled?(:cache_pages_domain_api, root_ancestor)
-              ::Gitlab::Pages::CacheControl.for_namespace(root_ancestor.id)
-            end
-
-    Pages::VirtualDomain.new(
-      projects: all_projects_with_pages.includes(:route, :project_feature, pages_metadatum: :pages_deployment),
-      trim_prefix: full_path,
-      cache: cache
-    )
-  end
-
   def any_project_with_pages_deployed?
     all_projects.with_pages_deployed.any?
   end
@@ -599,7 +609,43 @@ class Namespace < ApplicationRecord
     namespace_settings&.all_ancestors_have_runner_registration_enabled?
   end
 
+  def all_projects_with_pages
+    all_projects.with_pages_deployed.includes(
+      :route,
+      :project_setting,
+      :project_feature,
+      pages_metadatum: :pages_deployment
+    )
+  end
+
   private
+
+  def cross_namespace_reference?(from)
+    return false if from == self
+
+    comparable_namespace_id = project_namespace? ? parent_id : id
+
+    case from
+    when Project
+      from.namespace_id != comparable_namespace_id
+    when Namespaces::ProjectNamespace
+      from.parent_id != comparable_namespace_id
+    when Namespace
+      parent != from
+    when User
+      true
+    end
+  end
+
+  # Check if a reference is being done cross-project
+  def cross_project_reference?(from)
+    case from
+    when Project
+      from.project_namespace_id != id
+    else
+      from && self != from
+    end
+  end
 
   def update_new_emails_created_column
     return if namespace_settings.nil?
@@ -628,10 +674,6 @@ class Namespace < ApplicationRecord
     all_projects.each_batch do |projects|
       projects.touch_all
     end
-  end
-
-  def all_projects_with_pages
-    all_projects.with_pages_deployed
   end
 
   def parent_changed?

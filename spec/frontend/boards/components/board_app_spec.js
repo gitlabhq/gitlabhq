@@ -28,13 +28,12 @@ describe('BoardApp', () => {
       store,
       provide: {
         initialBoardId: 'gid://gitlab/Board/1',
+        initialFilterParams: {},
       },
     });
   };
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     store = null;
   });
 

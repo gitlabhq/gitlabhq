@@ -401,3 +401,24 @@ RSpec.shared_examples 'package access with repository disabled' do
 
   it { is_expected.to be_allowed(:read_package) }
 end
+
+RSpec.shared_examples 'equivalent project policy abilities' do
+  where(:project_visibility, :user_role_on_project) do
+    project_visibilities = [:public, :internal, :private]
+    user_role_on_project = [:anonymous, :non_member, :guest, :reporter, :developer, :maintainer, :owner, :admin]
+    project_visibilities.product(user_role_on_project)
+  end
+
+  with_them do
+    it 'evaluates the same' do
+      project = public_send("#{project_visibility}_project")
+      current_user = public_send(user_role_on_project)
+      enable_admin_mode!(current_user) if user_role_on_project == :admin
+      policy = ProjectPolicy.new(current_user, project)
+      old_permissions = policy.allowed?(old_policy)
+      new_permissions = policy.allowed?(new_policy)
+
+      expect(old_permissions).to eq new_permissions
+    end
+  end
+end

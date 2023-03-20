@@ -61,9 +61,7 @@ module Resolvers
           upgrade_status: params[:upgrade_status],
           search: params[:search],
           sort: params[:sort]&.to_s,
-          preload: {
-            tag_name: node_selection&.selects?(:tag_list)
-          }
+          preload: false # we'll handle preloading ourselves
         }.compact
          .merge(parent_param)
       end
@@ -78,6 +76,31 @@ module Resolvers
 
       def parent
         object.respond_to?(:sync) ? object.sync : object
+      end
+
+      def preloads
+        super.merge({
+          created_by: [:creator],
+          tag_list: [:tags]
+        })
+      end
+
+      def nested_preloads
+        {
+          created_by: {
+            creator: {
+              full_path: [:route],
+              web_path: [:route],
+              web_url: [:route]
+            }
+          },
+          owner_project: {
+            owner_project: {
+              full_path: [:route, { namespace: [:route] }],
+              web_url: [:route, { namespace: [:route] }]
+            }
+          }
+        }
       end
     end
   end

@@ -10,6 +10,7 @@ export default () => {
       return createElement(CsvViewer, {
         props: {
           csv: el.dataset.data,
+          remoteFile: true,
         },
       });
     },

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PropagateIntegrationWorker do
+RSpec.describe PropagateIntegrationWorker, feature_category: :integrations do
   describe '#perform' do
     let(:project) { create(:project) }
     let(:integration) do

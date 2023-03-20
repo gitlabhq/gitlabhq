@@ -51,10 +51,6 @@ describe('User deletion obstacles list', () => {
     );
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findLinks = () => wrapper.findAllComponents(GlLink);
   const findTitle = () => wrapper.findByTestId('title');
   const findFooter = () => wrapper.findByTestId('footer');

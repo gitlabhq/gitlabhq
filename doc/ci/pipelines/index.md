@@ -423,8 +423,7 @@ You can group the jobs by:
 - [Job dependencies](#view-job-dependencies-in-the-pipeline-graph), which arranges
   jobs based on their [`needs`](../yaml/index.md#needs) dependencies.
 
-[Multi-project pipeline graphs](downstream_pipelines.md#view-multi-project-pipelines-in-pipeline-graphs) help
-you visualize the entire pipeline, including all cross-project inter-dependencies.
+Multi-project pipeline graphs help you visualize the entire pipeline, including all cross-project inter-dependencies.
 
 If a stage contains more than 100 jobs, only the first 100 jobs are listed in the
 pipeline graph. The remaining jobs still run as usual. To see the jobs:

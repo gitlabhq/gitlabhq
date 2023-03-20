@@ -10,17 +10,13 @@ describe('ToggleFocus', () => {
   const createComponent = () => {
     wrapper = shallowMountExtended(ToggleFocus, {
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       attachTo: document.body,
     });
   };
 
   const findButton = () => wrapper.findComponent(GlButton);
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   it('renders a button with `maximize` icon', () => {
     createComponent();

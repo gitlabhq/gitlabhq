@@ -1,4 +1,12 @@
-import { GlLoadingIcon, GlTable, GlLink, GlBadge, GlPagination, GlModal } from '@gitlab/ui';
+import {
+  GlLoadingIcon,
+  GlTable,
+  GlLink,
+  GlBadge,
+  GlPagination,
+  GlModal,
+  GlFormCheckbox,
+} from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import getJobArtifactsResponse from 'test_fixtures/graphql/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
@@ -8,21 +16,30 @@ import JobArtifactsTable from '~/artifacts/components/job_artifacts_table.vue';
 import FeedbackBanner from '~/artifacts/components/feedback_banner.vue';
 import ArtifactsTableRowDetails from '~/artifacts/components/artifacts_table_row_details.vue';
 import ArtifactDeleteModal from '~/artifacts/components/artifact_delete_modal.vue';
+import ArtifactsBulkDelete from '~/artifacts/components/artifacts_bulk_delete.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import getJobArtifactsQuery from '~/artifacts/graphql/queries/get_job_artifacts.query.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { ARCHIVE_FILE_TYPE, JOBS_PER_PAGE, I18N_FETCH_ERROR } from '~/artifacts/constants';
+import {
+  ARCHIVE_FILE_TYPE,
+  JOBS_PER_PAGE,
+  I18N_FETCH_ERROR,
+  INITIAL_CURRENT_PAGE,
+  BULK_DELETE_FEATURE_FLAG,
+} from '~/artifacts/constants';
 import { totalArtifactsSizeForJob } from '~/artifacts/utils';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
 describe('JobArtifactsTable component', () => {
   let wrapper;
   let requestHandlers;
+
+  const mockToastShow = jest.fn();
 
   const findBanner = () => wrapper.findComponent(FeedbackBanner);
 
@@ -55,6 +72,11 @@ describe('JobArtifactsTable component', () => {
   const findDeleteButton = () => wrapper.findByTestId('job-artifacts-delete-button');
   const findArtifactDeleteButton = () => wrapper.findByTestId('job-artifact-row-delete-button');
 
+  // first checkbox is a "select all", this finder should get the first job checkbox
+  const findJobCheckbox = () => wrapper.findAllComponents(GlFormCheckbox).at(1);
+  const findAnyCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+  const findBulkDelete = () => wrapper.findComponent(ArtifactsBulkDelete);
+
   const findPagination = () => wrapper.findComponent(GlPagination);
   const setPage = async (page) => {
     findPagination().vm.$emit('input', page);
@@ -69,7 +91,14 @@ describe('JobArtifactsTable component', () => {
     ];
   }
   const getJobArtifactsResponseThatPaginates = {
-    data: { project: { jobs: { nodes: enoughJobsToPaginate } } },
+    data: {
+      project: {
+        jobs: {
+          nodes: enoughJobsToPaginate,
+          pageInfo: { ...getJobArtifactsResponse.data.project.jobs.pageInfo, hasNextPage: true },
+        },
+      },
+    },
   };
 
   const job = getJobArtifactsResponse.data.project.jobs.nodes[0];
@@ -77,13 +106,14 @@ describe('JobArtifactsTable component', () => {
     (artifact) => artifact.fileType === ARCHIVE_FILE_TYPE,
   );
 
-  const createComponent = (
+  const createComponent = ({
     handlers = {
       getJobArtifactsQuery: jest.fn().mockResolvedValue(getJobArtifactsResponse),
     },
     data = {},
     canDestroyArtifacts = true,
-  ) => {
+    glFeatures = {},
+  } = {}) => {
     requestHandlers = handlers;
     wrapper = mountExtended(JobArtifactsTable, {
       apolloProvider: createMockApollo([
@@ -91,18 +121,21 @@ describe('JobArtifactsTable component', () => {
       ]),
       provide: {
         projectPath: 'project/path',
+        projectId: 'gid://projects/id',
         canDestroyArtifacts,
         artifactsManagementFeedbackImagePath: 'banner/image/path',
+        glFeatures,
+      },
+      mocks: {
+        $toast: {
+          show: mockToastShow,
+        },
       },
       data() {
         return data;
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   it('renders feedback banner', () => {
     createComponent();
@@ -118,7 +151,9 @@ describe('JobArtifactsTable component', () => {
 
   it('on error, shows an alert', async () => {
     createComponent({
-      getJobArtifactsQuery: jest.fn().mockRejectedValue(new Error('Error!')),
+      handlers: {
+        getJobArtifactsQuery: jest.fn().mockRejectedValue(new Error('Error!')),
+      },
     });
 
     await waitForPromises();
@@ -259,10 +294,10 @@ describe('JobArtifactsTable component', () => {
         archive: { downloadPath: null },
       };
 
-      createComponent(
-        { getJobArtifactsQuery: jest.fn() },
-        { jobArtifacts: [jobWithoutDownloadPath] },
-      );
+      createComponent({
+        handlers: { getJobArtifactsQuery: jest.fn() },
+        data: { jobArtifacts: [jobWithoutDownloadPath] },
+      });
 
       await waitForPromises();
 
@@ -285,10 +320,10 @@ describe('JobArtifactsTable component', () => {
         browseArtifactsPath: null,
       };
 
-      createComponent(
-        { getJobArtifactsQuery: jest.fn() },
-        { jobArtifacts: [jobWithoutBrowsePath] },
-      );
+      createComponent({
+        handlers: { getJobArtifactsQuery: jest.fn() },
+        data: { jobArtifacts: [jobWithoutBrowsePath] },
+      });
 
       await waitForPromises();
 
@@ -298,7 +333,7 @@ describe('JobArtifactsTable component', () => {
 
   describe('delete button', () => {
     it('does not show when user does not have permission', async () => {
-      createComponent({}, {}, false);
+      createComponent({ canDestroyArtifacts: false });
 
       await waitForPromises();
 
@@ -314,50 +349,125 @@ describe('JobArtifactsTable component', () => {
     });
   });
 
+  describe('bulk delete', () => {
+    describe('with permission and feature flag enabled', () => {
+      beforeEach(async () => {
+        createComponent({
+          canDestroyArtifacts: true,
+          glFeatures: { [BULK_DELETE_FEATURE_FLAG]: true },
+        });
+
+        await waitForPromises();
+      });
+
+      it('shows selected artifacts when a job is checked', async () => {
+        expect(findBulkDelete().exists()).toBe(false);
+
+        await findJobCheckbox().vm.$emit('input', true);
+
+        expect(findBulkDelete().exists()).toBe(true);
+        expect(findBulkDelete().props('selectedArtifacts')).toStrictEqual(
+          job.artifacts.nodes.map((node) => node.id),
+        );
+      });
+
+      it('disappears when selected artifacts are cleared', async () => {
+        await findJobCheckbox().vm.$emit('input', true);
+
+        expect(findBulkDelete().exists()).toBe(true);
+
+        await findBulkDelete().vm.$emit('clearSelectedArtifacts');
+
+        expect(findBulkDelete().exists()).toBe(false);
+      });
+
+      it('shows a toast when artifacts are deleted', async () => {
+        const count = job.artifacts.nodes.length;
+
+        await findJobCheckbox().vm.$emit('input', true);
+        findBulkDelete().vm.$emit('deleted', count);
+
+        expect(mockToastShow).toHaveBeenCalledWith(`${count} selected artifacts deleted`);
+      });
+    });
+
+    it('shows no checkboxes without permission', async () => {
+      createComponent({
+        canDestroyArtifacts: false,
+        glFeatures: { [BULK_DELETE_FEATURE_FLAG]: true },
+      });
+
+      await waitForPromises();
+
+      expect(findAnyCheckbox().exists()).toBe(false);
+    });
+
+    it('shows no checkboxes with feature flag disabled', async () => {
+      createComponent({
+        canDestroyArtifacts: true,
+        glFeatures: { [BULK_DELETE_FEATURE_FLAG]: false },
+      });
+
+      await waitForPromises();
+
+      expect(findAnyCheckbox().exists()).toBe(false);
+    });
+  });
+
   describe('pagination', () => {
-    const { pageInfo } = getJobArtifactsResponse.data.project.jobs;
+    const { pageInfo } = getJobArtifactsResponseThatPaginates.data.project.jobs;
+    const query = jest.fn().mockResolvedValue(getJobArtifactsResponseThatPaginates);
 
     beforeEach(async () => {
-      createComponent(
-        {
-          getJobArtifactsQuery: jest.fn().mockResolvedValue(getJobArtifactsResponseThatPaginates),
+      createComponent({
+        handlers: {
+          getJobArtifactsQuery: query,
         },
-        {
-          count: enoughJobsToPaginate.length,
-          pageInfo,
-        },
-      );
+        data: { pageInfo },
+      });
 
       await waitForPromises();
     });
 
     it('renders pagination and passes page props', () => {
-      expect(findPagination().exists()).toBe(true);
       expect(findPagination().props()).toMatchObject({
-        value: wrapper.vm.pagination.currentPage,
-        prevPage: wrapper.vm.prevPage,
-        nextPage: wrapper.vm.nextPage,
+        value: INITIAL_CURRENT_PAGE,
+        prevPage: Number(pageInfo.hasPreviousPage),
+        nextPage: Number(pageInfo.hasNextPage),
+      });
+
+      expect(query).toHaveBeenCalledWith({
+        projectPath: 'project/path',
+        firstPageSize: JOBS_PER_PAGE,
+        lastPageSize: null,
+        nextPageCursor: '',
+        prevPageCursor: '',
       });
     });
 
-    it('updates query variables when going to previous page', () => {
-      return setPage(1).then(() => {
-        expect(wrapper.vm.queryVariables).toMatchObject({
-          projectPath: 'project/path',
-          nextPageCursor: undefined,
-          prevPageCursor: pageInfo.startCursor,
-        });
+    it('updates query variables when going to previous page', async () => {
+      await setPage(1);
+
+      expect(query).toHaveBeenLastCalledWith({
+        projectPath: 'project/path',
+        firstPageSize: null,
+        lastPageSize: JOBS_PER_PAGE,
+        prevPageCursor: pageInfo.startCursor,
       });
+      expect(findPagination().props('value')).toEqual(1);
     });
 
-    it('updates query variables when going to next page', () => {
-      return setPage(2).then(() => {
-        expect(wrapper.vm.queryVariables).toMatchObject({
-          lastPageSize: null,
-          nextPageCursor: pageInfo.endCursor,
-          prevPageCursor: '',
-        });
+    it('updates query variables when going to next page', async () => {
+      await setPage(2);
+
+      expect(query).toHaveBeenLastCalledWith({
+        projectPath: 'project/path',
+        firstPageSize: JOBS_PER_PAGE,
+        lastPageSize: null,
+        prevPageCursor: '',
+        nextPageCursor: pageInfo.endCursor,
       });
+      expect(findPagination().props('value')).toEqual(2);
     });
   });
 });

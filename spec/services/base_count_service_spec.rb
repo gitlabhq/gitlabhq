@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BaseCountService, :use_clean_rails_memory_store_caching do
+RSpec.describe BaseCountService, :use_clean_rails_memory_store_caching, feature_category: :shared do
   let(:service) { described_class.new }
 
   describe '#relation_for_count' do

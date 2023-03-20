@@ -35,10 +35,6 @@ describe('Reviewer component', () => {
 
   const findCollapsedChildren = () => wrapper.findAll('.sidebar-collapsed-icon > *');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('No reviewers/users', () => {
     it('displays no reviewer icon when collapsed', () => {
       createWrapper();

@@ -23,6 +23,10 @@ module Ci
       enable :update_pipeline_schedule
     end
 
+    # `take_ownership_pipeline_schedule` is deprecated, and should not be used. It can be removed in 17.0
+    # once the deprecated field `take_ownership_pipeline_schedule` is removed from the GraphQL type
+    # `PermissionTypes::Ci::PipelineSchedules`.
+    # Use `admin_pipeline_schedule` to decide if a user has the ability to take ownership of a pipeline schedule.
     rule { can?(:admin_pipeline_schedule) & ~owner_of_schedule }.policy do
       enable :take_ownership_pipeline_schedule
     end

@@ -4,7 +4,7 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jira integrations **(FREE)**
+# Jira **(FREE)**
 
 If your organization uses [Jira](https://www.atlassian.com/software/jira) issues,
 you can [migrate your issues from Jira](../../user/project/import/jira.md) and work
@@ -37,7 +37,7 @@ displays in the [development panel](https://support.atlassian.com/jira-software-
 
 To set up the Jira development panel integration, use the GitLab for Jira Cloud app
 or the Jira DVCS (distributed version control system) connector,
-[depending on your installation](development_panel.md#configure-the-integration).
+[depending on your installation](development_panel.md#configure-the-panel).
 
 ### Direct feature comparison
 
@@ -63,8 +63,8 @@ The authentication method in Jira depends on whether you host Jira on your own s
   required. Connecting to Jira Server using the Central Authentication Service (CAS) is not possible. For more information, read
   how to [set up a user in Jira Server](jira_server_configuration.md).
 - **Jira on Atlassian cloud** supports authentication through an API token. When connecting to Jira on
-  Atlassian cloud, an email and API token are required. For more information, read
-  [create an API token for Jira in Atlassian cloud](jira_cloud_configuration.md).
+  Atlassian cloud, an email and API token are required. For more information, see
+  [Create a Jira Cloud API token](jira_cloud_configuration.md).
 
 ## Privacy considerations
 

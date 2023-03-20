@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class GroupDestroyWorker # rubocop:disable Scalability/IdempotentWorker
+class GroupDestroyWorker
   include ApplicationWorker
 
   data_consistency :always
@@ -9,6 +9,9 @@ class GroupDestroyWorker # rubocop:disable Scalability/IdempotentWorker
   include ExceptionBacktrace
 
   feature_category :subgroups
+
+  idempotent!
+  deduplicate :until_executed, ttl: 2.hours
 
   def perform(group_id, user_id)
     begin

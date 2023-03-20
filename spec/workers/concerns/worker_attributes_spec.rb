@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkerAttributes do
+RSpec.describe WorkerAttributes, feature_category: :shared do
   using RSpec::Parameterized::TableSyntax
 
   let(:worker) do

@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/database-team/team-tasks/-/issues/171) in GitLab 14.2.
 
 With the [automated migration testing pipeline](https://gitlab.com/gitlab-org/database-team/gitlab-com-database-testing)
-we can automatically test migrations in a production-like environment (similar to `#database-lab`).
+we can automatically test migrations in a production-like environment (using [Database Lab](database_lab.md)).
 It is based on an [architecture blueprint](../../architecture/blueprints/database_testing/index.md).
 
 Migration testing is enabled in the [GitLab project](https://gitlab.com/gitlab-org/gitlab)

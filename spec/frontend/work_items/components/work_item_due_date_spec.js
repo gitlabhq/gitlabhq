@@ -46,10 +46,6 @@ describe('WorkItemDueDate component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when can update', () => {
     describe('start date', () => {
       describe('`Add start date` button', () => {

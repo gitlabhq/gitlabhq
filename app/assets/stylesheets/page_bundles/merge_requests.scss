@@ -270,7 +270,8 @@ $tabs-holder-z-index: 250;
   position: -webkit-sticky;
   position: sticky;
   top: calc(var(--top-pos) + var(--performance-bar-height, 0px));
-  max-height: calc(100vh - var(--top-pos) - var(--system-header-height, 0px) - var(--performance-bar-height, 0px) - var(--review-bar-height, 0px));
+  min-height: 300px;
+  height: calc(100vh - var(--top-pos) - var(--system-header-height, 0px) - var(--performance-bar-height, 0px) - var(--review-bar-height, 0px));
 
   .drag-handle {
     bottom: 16px;
@@ -282,6 +283,7 @@ $tabs-holder-z-index: 250;
 }
 
 .tree-list-holder {
+  --file-row-height: 32px;
   height: 100%;
 
   .file-row {
@@ -295,6 +297,10 @@ $tabs-holder-z-index: 250;
   padding-bottom: $grid-size;
   overflow-y: scroll;
   overflow-x: auto;
+}
+
+.tree-list-gutter {
+  height: $grid-size;
 }
 
 .tree-list-search {
@@ -320,6 +326,12 @@ $tabs-holder-z-index: 250;
   right: 10px;
   left: auto;
   line-height: 0;
+}
+
+.file-row-header {
+  display: flex;
+  align-items: center;
+  height: var(--file-row-height);
 }
 
 @media (max-width: map-get($grid-breakpoints, lg)-1) {
@@ -807,7 +819,7 @@ $tabs-holder-z-index: 250;
 
 .mr-widget-body,
 .mr-widget-content {
-  padding: $gl-padding;
+  padding: $gl-padding-12 $gl-padding;
 }
 
 .mr-widget-body-ready-merge {
@@ -826,6 +838,11 @@ $tabs-holder-z-index: 250;
       border-bottom-right-radius: $border-radius-default - 1px;
     }
   }
+}
+
+.mr-widget-grouped-section .report-block-container {
+  border-bottom-left-radius: $border-radius-default;
+  border-bottom-right-radius: $border-radius-default;
 }
 
 .mr-widget-extension {
@@ -901,10 +918,10 @@ $tabs-holder-z-index: 250;
 
   &:not(:last-child)::before {
     content: '';
-    border-left: 2px solid var(--gray-10, $gray-10);
+    border-left: 2px solid var(--border-color, $border-color);
     position: absolute;
     bottom: -17px;
-    left: calc(1rem - 1px);
+    left: 26px;
     height: 16px;
   }
 }
@@ -994,7 +1011,7 @@ $tabs-holder-z-index: 250;
 .submit-review-dropdown {
   &.show .dropdown-menu {
     width: calc(100vw - 20px);
-    max-width: 650px;
+    max-width: 680px;
     max-height: calc(100vh - 50px);
 
     .gl-dropdown-inner {
@@ -1004,7 +1021,8 @@ $tabs-holder-z-index: 250;
     .md-header {
       .gl-tab-nav-item {
         color: var(--gl-text-color, $gl-text-color);
-        @include gl-pb-5;
+        @include gl-py-4;
+        @include gl-px-3;
 
         &:hover {
           @include gl-bg-none;
@@ -1070,6 +1088,9 @@ $tabs-holder-z-index: 250;
 .merge-request-sticky-header {
   z-index: 204;
   box-shadow: 0 1px 2px $issue-boards-card-shadow;
+}
+
+.page-with-contextual-sidebar .merge-request-sticky-header {
   --width: calc(100% - #{$contextual-sidebar-width});
 
   @include media-breakpoint-down(lg) {
@@ -1079,6 +1100,18 @@ $tabs-holder-z-index: 250;
 
 .page-with-icon-sidebar .issue-sticky-header {
   --width: calc(100% - #{$contextual-sidebar-collapsed-width});
+}
+
+.page-with-super-sidebar .merge-request-sticky-header {
+  @include media-breakpoint-up(xl) {
+    --width: calc(100% - #{$super-sidebar-width});
+  }
+}
+
+.page-with-super-sidebar-collapsed .merge-request-sticky-header {
+  @include media-breakpoint-up(xl) {
+    --width: 100%;
+  }
 }
 
 .merge-request-notification-toggle {

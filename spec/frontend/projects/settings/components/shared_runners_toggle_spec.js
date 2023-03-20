@@ -9,7 +9,7 @@ import SharedRunnersToggleComponent from '~/projects/settings/components/shared_
 
 const TEST_UPDATE_PATH = '/test/update_shared_runners';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('projects/settings/components/shared_runners', () => {
   let wrapper;
@@ -41,8 +41,6 @@ describe('projects/settings/components/shared_runners', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     mockAxios.restore();
   });
 

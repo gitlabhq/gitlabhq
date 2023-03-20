@@ -201,3 +201,34 @@ export const mockUpstreamQueryResponse = {
     },
   },
 };
+
+export const sshSignatureProp = {
+  __typename: 'SshSignature',
+  verificationStatus: 'VERIFIED',
+  keyFingerprintSha256: 'xxx',
+};
+
+export const gpgSignatureProp = {
+  __typename: 'GpgSignature',
+  verificationStatus: 'VERIFIED',
+  gpgKeyPrimaryKeyid: 'yyy',
+};
+
+export const x509SignatureProp = {
+  __typename: 'X509Signature',
+  verificationStatus: 'VERIFIED',
+  x509Certificate: {
+    subject: 'CN=gitlab@example.org,OU=Example,O=World',
+    subjectKeyIdentifier: 'BC:BC:BC:BC:BC:BC:BC:BC',
+    x509Issuer: {
+      subject: 'CN=PKI,OU=Example,O=World',
+      subjectKeyIdentifier: 'AB:AB:AB:AB:AB:AB:AB:AB:',
+    },
+  },
+};
+
+export const x509CertificateDetailsProp = {
+  title: 'Title',
+  subject: 'CN=gitlab@example.org,OU=Example,O=World',
+  subjectKeyIdentifier: 'BC BC BC BC BC BC BC BC',
+};

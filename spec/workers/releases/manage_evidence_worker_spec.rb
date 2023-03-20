@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Releases::ManageEvidenceWorker do
+RSpec.describe Releases::ManageEvidenceWorker, feature_category: :release_evidence do
   let(:project) { create(:project, :repository) }
 
   shared_examples_for 'does not create a new Evidence record' do

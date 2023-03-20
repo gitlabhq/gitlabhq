@@ -78,6 +78,7 @@ GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
     "system": true,
     "noteable_id": 377,
     "noteable_type": "Issue",
+    "project_id": 5,
     "noteable_iid": 377,
     "resolvable": false,
     "confidential": false,
@@ -100,6 +101,7 @@ GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
     "system": true,
     "noteable_id": 121,
     "noteable_type": "Issue",
+    "project_id": 5,
     "noteable_iid": 121,
     "resolvable": false,
     "confidential": true,
@@ -239,9 +241,9 @@ Parameters:
 
 ```json
 {
-  "id": 52,
-  "title": "Snippet",
-  "file_name": "snippet.rb",
+  "id": 302,
+  "body": "closed",
+  "attachment": null,
   "author": {
     "id": 1,
     "username": "pipin",
@@ -250,9 +252,16 @@ Parameters:
     "state": "active",
     "created_at": "2013-09-30T13:46:01Z"
   },
-  "expires_at": null,
-  "updated_at": "2013-10-02T07:34:20Z",
-  "created_at": "2013-10-02T07:34:20Z"
+  "created_at": "2013-10-02T09:22:45Z",
+  "updated_at": "2013-10-02T10:22:45Z",
+  "system": true,
+  "noteable_id": 377,
+  "noteable_type": "Issue",
+  "project_id": 5,
+  "noteable_iid": 377,
+  "resolvable": false,
+  "confidential": false,
+  "internal": false
 }
 ```
 
@@ -379,6 +388,7 @@ Parameters:
   "system": false,
   "noteable_id": 2,
   "noteable_type": "MergeRequest",
+  "project_id": 5,
   "noteable_iid": 2,
   "resolvable": false,
   "confidential": false,
@@ -392,8 +402,13 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ### Create new merge request note
 
-Creates a new note for a single merge request.
-If you create a note where the body only contains an Award Emoji, GitLab returns this object.
+Creates a new note for a single merge request. Notes are not attached to specific
+lines in a merge request. For other approaches with more granular control, see
+[Post comment to commit](commits.md#post-comment-to-commit) in the Commits API,
+and [Create a new thread in the merge request diff](discussions.md#create-a-new-thread-in-the-merge-request-diff)
+in the Discussions API.
+
+If you create a note where the body only contains an award emoji, GitLab returns this object.
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/notes
@@ -496,9 +511,9 @@ Parameters:
 
 ```json
 {
-  "id": 52,
-  "title": "Epic",
-  "file_name": "epic.rb",
+  "id": 302,
+  "body": "Epic note",
+  "attachment": null,
   "author": {
     "id": 1,
     "username": "pipin",
@@ -507,9 +522,14 @@ Parameters:
     "state": "active",
     "created_at": "2013-09-30T13:46:01Z"
   },
-  "expires_at": null,
-  "updated_at": "2013-10-02T07:34:20Z",
-  "created_at": "2013-10-02T07:34:20Z",
+  "created_at": "2013-10-02T09:22:45Z",
+  "updated_at": "2013-10-02T10:22:45Z",
+  "system": true,
+  "noteable_id": 11,
+  "noteable_type": "Epic",
+  "project_id": 5,
+  "noteable_iid": 11,
+  "resolvable": false,
   "confidential": false,
   "internal": false
 }

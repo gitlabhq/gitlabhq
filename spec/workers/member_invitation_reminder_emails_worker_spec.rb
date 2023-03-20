@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MemberInvitationReminderEmailsWorker do
+RSpec.describe MemberInvitationReminderEmailsWorker, feature_category: :subgroups do
   describe '#perform' do
     subject { described_class.new.perform }
 

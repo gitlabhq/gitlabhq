@@ -3,14 +3,14 @@ import { shallowMount } from '@vue/test-utils';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import * as urlUtils from '~/lib/utils/url_utility';
 import PromoteMilestoneModal from '~/milestones/components/promote_milestone_modal.vue';
 
 jest.mock('~/lib/utils/url_utility');
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Promote milestone modal', () => {
   let wrapper;
@@ -31,10 +31,6 @@ describe('Promote milestone modal', () => {
       Promote
       </button>`);
     wrapper = shallowMount(PromoteMilestoneModal);
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   describe('Modal opener button', () => {

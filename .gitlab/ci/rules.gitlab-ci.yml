@@ -85,9 +85,6 @@
 .if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
 
-.if-merge-request-labels-run-on-pg11: &if-merge-request-labels-run-on-pg11
-  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-on-pg11/'
-
 .if-merge-request-labels-skip-undercoverage: &if-merge-request-labels-skip-undercoverage
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-undercoverage/'
 
@@ -126,6 +123,9 @@
 
 .if-foss-schedule: &if-foss-schedule
   if: '$CI_PROJECT_PATH == "gitlab-org/gitlab-foss" && $CI_PIPELINE_SOURCE == "schedule"'
+
+.if-foss-default-branch: &if-foss-default-branch
+  if: '$CI_PROJECT_PATH == "gitlab-org/gitlab-foss" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
 
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
@@ -310,6 +310,9 @@
 .models-patterns: &models-patterns
   - "{,ee/,jh/}{app/models}/**/*"
 
+.decomposed-db-models-patterns: &decomposed-db-models-patterns
+  - "{,ee/,jh/}app/models/{ci,geo}/**/*"
+
 .lib-gitlab-patterns: &lib-gitlab-patterns
   - "{,ee/,jh/}lib/{,ee/,jh/}gitlab/**/*"
 
@@ -349,11 +352,13 @@
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration/**/*"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database{,_spec}.rb"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database/**/*"
+  - "{,ee/,jh/}spec/support/db_cleaner.rb"
   - "{,ee/,jh/}spec/support/helpers/database/**/*"
   - "{,ee/,jh/}spec/support/helpers/migrations_helpers/**/*"
   - "lib/api/admin/batched_background_migrations.rb"
   - "lib/gitlab/markdown_cache/active_record/**/*"
   - "spec/requests/api/admin/batched_background_migrations_spec.rb"
+  - "spec/support/database_cleaner.rb"
   - "config/prometheus/common_metrics.yml"  # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
   - "{,ee/,jh/}app/models/project_statistics.rb"  # Used to calculate sizes in migration specs
   # Gitaly has interactions with background migrations: https://gitlab.com/gitlab-org/gitlab/-/issues/336538
@@ -618,6 +623,7 @@
 
 .rails:rules:run-search-tests:
   rules:
+    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
     - <<: *if-merge-request-labels-group-global-search
       changes: *search-backend-patterns
     - <<: *if-merge-request-labels-group-global-search
@@ -968,6 +974,7 @@
 .frontend:rules:default-frontend-jobs:
   rules:
     - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
@@ -991,6 +998,22 @@
     - <<: *if-merge-request-labels-frontend-and-feature-flag
     - <<: *if-merge-request
       changes: *frontend-patterns-for-as-if-foss
+
+.frontend:rules:upload-frontend-fixtures:
+  rules:
+    # The new strategy to upload fixtures as generic packages is experimental and can be disabled by removing the `REUSE_FRONTEND_FIXTURES_ENABLED` variable
+    - if: '$REUSE_FRONTEND_FIXTURES_ENABLED != "true"'
+      when: never
+    - <<: *if-dot-com-gitlab-org-default-branch
+      changes: *code-backstage-patterns
+    - <<: *if-foss-default-branch
+      changes: *code-backstage-patterns
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes:
+        - ".gitlab/ci/frontend.gitlab-ci.yml"
+        - "scripts/gitlab_component_helpers.sh"
+      when: manual
+      allow_failure: true
 
 .frontend:rules:jest:
   rules:
@@ -1105,6 +1128,15 @@
     - if: '$CI_PIPELINE_SOURCE == "parent_pipeline"'
       when: never
     - if: '$CI_SLACK_WEBHOOK_URL && $NOTIFY_PIPELINE_FAILURE_CHANNEL'
+      when: on_failure
+      allow_failure: true
+
+.notify:rules:create-issues-for-failing-tests:
+  rules:
+    # Don't report child pipeline failures
+    - if: '$CI_PIPELINE_SOURCE == "parent_pipeline"'
+      when: never
+    - if: '$CREATE_ISSUES_FOR_FAILING_TESTS == "true"'
       when: on_failure
       allow_failure: true
 
@@ -1233,6 +1265,8 @@
     - <<: *if-merge-request-labels-run-single-db
     - <<: *if-merge-request
       changes: *db-patterns
+    - <<: *if-merge-request
+      changes: *decomposed-db-models-patterns
     - <<: *if-default-branch-schedule-nightly
 
 .rails:rules:db:check-migrations-single-db:
@@ -1240,6 +1274,25 @@
     - <<: *if-merge-request-labels-run-single-db
     - <<: *if-merge-request
       changes: *db-patterns
+    - <<: *if-merge-request
+      changes: *decomposed-db-models-patterns
+
+.rails:rules:single-db-ci-connection:
+  rules:
+    - <<: *if-merge-request-labels-run-single-db
+    - <<: *if-merge-request
+      changes: *db-patterns
+    - <<: *if-merge-request
+      changes: *decomposed-db-models-patterns
+    - <<: *if-default-branch-schedule-nightly
+
+.rails:rules:db:check-migrations-single-db-ci-connection:
+  rules:
+    - <<: *if-merge-request-labels-run-single-db
+    - <<: *if-merge-request
+      changes: *db-patterns
+    - <<: *if-merge-request
+      changes: *decomposed-db-models-patterns
 
 .rails:rules:db-backup:
   rules:
@@ -1326,6 +1379,8 @@
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - <<: *if-default-refs
       changes: *backend-patterns
+    - <<: *if-default-refs
+      changes: *backstage-patterns
 
 .rails:rules:ee-and-foss-unit:predictive:
   rules:
@@ -1335,6 +1390,8 @@
     - !reference [".rails:rules:unit-integration:predictive-default-rules", rules]
     - <<: *if-merge-request
       changes: *backend-patterns
+    - <<: *if-merge-request
+      changes: *backstage-patterns
 
 .rails:rules:ee-and-foss-integration:
   rules:
@@ -1605,7 +1662,6 @@
     - <<: *if-default-refs
       changes: *db-library-patterns
     - <<: *if-merge-request-labels-run-all-rspec
-    - <<: *if-merge-request-labels-run-on-pg11
 
 .rails:rules:ee-mr-and-default-branch-only:
   rules:
@@ -1694,11 +1750,6 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *backend-patterns
-
-.rails:rules:rspec-on-pg11:
-  rules:
-    - <<: *if-merge-request-labels-run-on-pg11
-    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-default-rules", rules]
 
 .rails:rules:default-branch-schedule-nightly--code-backstage-default-rules:
   rules:
@@ -1892,6 +1943,12 @@
       changes: ["vendor/gems/bundler-checksum/**/*"]
     - <<: *if-merge-request-labels-run-all-rspec
 
+.vendor:rules:cloud_profiler_agent:
+  rules:
+    - <<: *if-merge-request
+      changes: ["vendor/gems/cloud_profiler_agent/**/*"]
+    - <<: *if-merge-request-labels-run-all-rspec
+
 ##################
 # Releases rules #
 ##################
@@ -2013,13 +2070,6 @@
     - <<: *if-schedule-maintenance
     - <<: *if-merge-request
       changes: ["Gemfile.lock"]
-
-.reports:rules:license_scanning:
-  rules:
-    - if: '$LICENSE_MANAGEMENT_DISABLED || $GITLAB_FEATURES !~ /\blicense_scanning\b/'
-      when: never
-    - <<: *if-default-refs
-      changes: *dependency-patterns
 
 ################
 # Review rules #
@@ -2185,7 +2235,7 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
-.setup:rules:rails-production-environment:
+.setup:rules:rails-production-server-boot:
   rules:
     - <<: *if-default-refs
       changes: *code-patterns
@@ -2242,6 +2292,7 @@
     - <<: *if-default-refs
       changes: *workhorse-patterns
     - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
 
 .test-metadata:rules:update-tests-metadata:
   rules:

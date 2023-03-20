@@ -19,7 +19,7 @@ describe('Linked pipeline mini list', () => {
   const createComponent = (props = {}) => {
     wrapper = mount(LinkedPipelinesMiniList, {
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       propsData: {
         ...props,
@@ -32,11 +32,6 @@ describe('Linked pipeline mini list', () => {
       createComponent({
         triggeredBy: [mockData.triggered_by],
       });
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
-      wrapper = null;
     });
 
     it('should render one linked pipeline item', () => {
@@ -100,11 +95,6 @@ describe('Linked pipeline mini list', () => {
         triggered: mockData.triggered,
         pipelinePath: 'my/pipeline/path',
       });
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
-      wrapper = null;
     });
 
     it('should render three linked pipeline items', () => {

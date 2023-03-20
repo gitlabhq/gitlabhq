@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :pipeline_composition do
   include RepoHelpers
 
   let_it_be(:context_project) { create(:project) }
@@ -95,6 +95,36 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
           expect(project_file.error_message).to include("Project `#{project.full_path}` not found or access denied!")
         end
       end
+    end
+
+    context 'when a valid path is used in uppercase' do
+      let(:params) do
+        { project: project.full_path.upcase, file: '/file.yml' }
+      end
+
+      around do |example|
+        create_and_delete_files(project, { '/file.yml' => 'image: image:1.0' }) do
+          example.run
+        end
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when a valid different case path is used' do
+      let_it_be(:project) { create(:project, :repository, path: 'mY-teSt-proJect', name: 'My Test Project') }
+
+      let(:params) do
+        { project: "#{project.namespace.full_path}/my-test-projecT", file: '/file.yml' }
+      end
+
+      around do |example|
+        create_and_delete_files(project, { '/file.yml' => 'image: image:1.0' }) do
+          example.run
+        end
+      end
+
+      it { is_expected.to be_truthy }
     end
 
     context 'when a valid path with custom ref is used' do

@@ -76,6 +76,8 @@ export default {
       :disabled="!activeItem"
       :data-qa-text-style="activeItemLabel"
       data-qa-selector="text_style_dropdown"
+      size="small"
+      toggle-class="btn-default-tertiary"
       @select="execute"
     />
   </editor-state-observer>

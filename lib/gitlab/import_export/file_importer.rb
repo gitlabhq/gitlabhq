@@ -8,7 +8,6 @@ module Gitlab
       ImporterError = Class.new(StandardError)
 
       MAX_RETRIES = 8
-      IGNORED_FILENAMES = %w(. ..).freeze
 
       def self.import(*args, **kwargs)
         new(*args, **kwargs).import
@@ -24,7 +23,7 @@ module Gitlab
         mkdir_p(@shared.export_path)
         mkdir_p(@shared.archive_path)
 
-        remove_symlinks
+        remove_symlinks(@shared.export_path)
         copy_archive
 
         wait_for_archived_file do
@@ -36,7 +35,7 @@ module Gitlab
         false
       ensure
         remove_import_file
-        remove_symlinks
+        remove_symlinks(@shared.export_path)
       end
 
       private
@@ -86,20 +85,8 @@ module Gitlab
         end
       end
 
-      def remove_symlinks
-        extracted_files.each do |path|
-          FileUtils.rm(path) if File.lstat(path).symlink?
-        end
-
-        true
-      end
-
       def remove_import_file
         FileUtils.rm_rf(@archive_file)
-      end
-
-      def extracted_files
-        Dir.glob("#{@shared.export_path}/**/*", File::FNM_DOTMATCH).reject { |f| IGNORED_FILENAMES.include?(File.basename(f)) }
       end
 
       def validate_decompressed_archive_size

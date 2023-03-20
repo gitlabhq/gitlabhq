@@ -47,6 +47,7 @@ export const KEYDOWN_EVENT = 'keydown';
 
 export const PARSE_HTML_PRIORITY_LOWEST = 1;
 export const PARSE_HTML_PRIORITY_DEFAULT = 50;
+export const PARSE_HTML_PRIORITY_HIGH = 75;
 export const PARSE_HTML_PRIORITY_HIGHEST = 100;
 
 export const EXTENSION_PRIORITY_LOWER = 75;

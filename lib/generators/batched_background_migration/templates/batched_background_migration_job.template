@@ -1,0 +1,22 @@
+# frozen_string_literal: true
+
+# See https://docs.gitlab.com/ee/development/database/batched_background_migrations.html
+# for more information on how to use batched background migrations
+
+# Update below commented lines with appropriate values.
+
+module Gitlab
+  module BackgroundMigration
+    class <%= class_name %> < BatchedMigrationJob
+      # operation_name :my_operation
+      # scope_to ->(relation) { relation.where(column: "value") }
+      feature_category :<%= feature_category %>
+
+      def perform
+        each_sub_batch do |sub_batch|
+          # Your action on each sub_batch
+        end
+      end
+    end
+  end
+end

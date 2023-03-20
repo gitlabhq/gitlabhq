@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Discussions::CaptureDiffNotePositionService do
+RSpec.describe Discussions::CaptureDiffNotePositionService, feature_category: :code_review_workflow do
   subject { described_class.new(note.noteable, paths) }
 
   context 'image note on diff' do

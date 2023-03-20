@@ -13,6 +13,10 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   before_action :disable_query_limiting, only: [:usage_data]
 
+  before_action do
+    push_frontend_feature_flag(:ci_variables_pages, current_user)
+  end
+
   feature_category :not_owned, [ # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
     :general, :reporting, :metrics_and_profiling, :network,
     :preferences, :update, :reset_health_check_token
@@ -101,8 +105,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   def reset_error_tracking_access_token
     @application_setting.reset_error_tracking_access_token!
 
-    redirect_to general_admin_application_settings_path,
-                notice: _('New error tracking access token has been generated!')
+    redirect_to general_admin_application_settings_path, notice: _('New error tracking access token has been generated!')
   end
 
   def clear_repository_check_states

@@ -47,7 +47,6 @@ describe('Packages cleanup policy project settings', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 

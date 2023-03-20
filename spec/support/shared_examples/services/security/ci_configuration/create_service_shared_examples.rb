@@ -145,7 +145,7 @@ RSpec.shared_examples_for 'services security ci configuration create service' do
         let_it_be(:repository) { project.repository }
 
         it 'is successful' do
-          expect(repository).to receive(:root_ref_sha).and_raise(StandardError)
+          expect(repository).to receive(:commit).and_return(nil)
           expect(result.status).to eq(:success)
         end
       end
@@ -168,7 +168,7 @@ RSpec.shared_examples_for 'services security ci configuration create service' do
         it 'returns an error' do
           expect { result }.to raise_error { |error|
             expect(error).to be_a(Gitlab::Graphql::Errors::MutationError)
-            expect(error.message).to eq('You must <a target="_blank" rel="noopener noreferrer" ' \
+            expect(error.message).to eq('UF: You must <a target="_blank" rel="noopener noreferrer" ' \
                                         'href="http://localhost/help/user/project/repository/index.md' \
                                         '#add-files-to-a-repository">add at least one file to the repository' \
                                         '</a> before using Security features.')

@@ -49,10 +49,6 @@ describe('issue_note_body component', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should render the note', () => {
     expect(wrapper.find('.note-text').html()).toContain(note.note_html);
   });

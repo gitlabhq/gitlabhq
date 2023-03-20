@@ -21,10 +21,6 @@ describe('DynamicField', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findGlFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findGlFormCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findGlFormInput = () => wrapper.findComponent(GlFormInput);

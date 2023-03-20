@@ -210,4 +210,16 @@ RSpec.describe Gitlab::Instrumentation::RedisBase, :request_store do
       end
     end
   end
+
+  describe '.log_exception' do
+    it 'logs exception with storage details' do
+      expect(::Gitlab::ErrorTracking).to receive(:log_exception)
+                                           .with(
+                                             an_instance_of(StandardError),
+                                             storage: instrumentation_class_a.storage_key
+                                           )
+
+      instrumentation_class_a.log_exception(StandardError.new)
+    end
+  end
 end

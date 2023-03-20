@@ -19,10 +19,6 @@ describe('publish_method', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders', () => {
     mountComponent();
     expect(wrapper.element).toMatchSnapshot();

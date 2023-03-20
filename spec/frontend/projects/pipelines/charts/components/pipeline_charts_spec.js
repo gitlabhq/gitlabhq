@@ -37,11 +37,6 @@ describe('~/projects/pipelines/charts/components/pipeline_charts.vue', () => {
     await waitForPromises();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('overall statistics', () => {
     it('displays the statistics list', () => {
       const list = wrapper.findComponent(StatisticsList);

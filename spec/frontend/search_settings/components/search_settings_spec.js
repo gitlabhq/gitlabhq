@@ -79,10 +79,6 @@ describe('search_settings/components/search_settings.vue', () => {
     buildWrapper();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('hides sections that do not match the search term', () => {
     const hiddenSection = document.querySelector(`#${GENERAL_SETTINGS_ID}`);
     search(SEARCH_TERM);

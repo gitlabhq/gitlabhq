@@ -90,14 +90,16 @@ module Tooling
         changed_lines.each_with_index do |changed_line, i|
           next unless changed_line =~ RSPEC_TOP_LEVEL_DESCRIBE_REGEX
 
-          next_line_in_file = file_lines[file_lines.find_index(changed_line.delete_prefix('+')) + 1]
-
-          if changed_line.include?(FEATURE_CATEGORY_KEYWORD) || next_line_in_file.to_s.include?(FEATURE_CATEGORY_KEYWORD)
-            next
-          end
-
           line_number = file_lines.find_index(changed_line.delete_prefix('+'))
           next unless line_number
+
+          # Get the top level RSpec.describe line and the next 5 lines
+          lines_to_check = file_lines[line_number, 5]
+          # Remove all the lines after the first one that ends in `do`
+          last_line_number_of_describe_declaration = lines_to_check.index { |line| line.end_with?(' do') }
+          lines_to_check = lines_to_check[0..last_line_number_of_describe_declaration]
+
+          next if lines_to_check.any? { |line| line.include?(FEATURE_CATEGORY_KEYWORD) }
 
           suggested_line = file_lines[line_number]
 

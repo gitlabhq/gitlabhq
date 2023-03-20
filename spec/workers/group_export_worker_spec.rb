@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupExportWorker do
+RSpec.describe GroupExportWorker, feature_category: :importers do
   let!(:user) { create(:user) }
   let!(:group) { create(:group) }
 

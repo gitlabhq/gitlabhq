@@ -15,7 +15,7 @@ working in Slack, you can use Slack slash commands.
 To use Slack slash commands, you must configure both Slack and GitLab.
 
 GitLab can also send events (for example, `issue created`) to Slack as notifications.
-The [Slack notifications service](slack.md) is configured separately.
+The [Slack notifications integration](slack.md) is configured separately.
 
 ## Configure GitLab and Slack
 

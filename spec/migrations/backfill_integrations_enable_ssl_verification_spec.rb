@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillIntegrationsEnableSslVerification, feature_category: :authentication_and_authorization do
+RSpec.describe BackfillIntegrationsEnableSslVerification, feature_category: :system_access do
   let!(:migration) { described_class::MIGRATION }
   let!(:integrations) { described_class::Integration }
 

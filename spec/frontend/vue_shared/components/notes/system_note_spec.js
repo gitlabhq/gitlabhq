@@ -46,7 +46,6 @@ describe('system note component', () => {
   });
 
   afterEach(() => {
-    vm.destroy();
     mock.restore();
   });
 

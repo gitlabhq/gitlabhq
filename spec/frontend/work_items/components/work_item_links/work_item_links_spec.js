@@ -54,7 +54,6 @@ describe('WorkItemLinks', () => {
     mutationHandler = mutationChangeParentHandler,
     issueDetailsQueryHandler = jest.fn().mockResolvedValue(getIssueDetailsResponse()),
     hasIterationsFeature = false,
-    fetchByIid = false,
   } = {}) => {
     mockApollo = createMockApollo(
       [
@@ -76,11 +75,7 @@ describe('WorkItemLinks', () => {
       },
       provide: {
         projectPath: 'project/path',
-        iid: '1',
         hasIterationsFeature,
-        glFeatures: {
-          useIidInWorkItemsPath: fetchByIid,
-        },
       },
       propsData: { issuableId: 1 },
       apolloProvider: mockApollo,
@@ -351,7 +346,7 @@ describe('WorkItemLinks', () => {
 
       beforeEach(async () => {
         setWindowLocation('?iid_path=true');
-        await createComponent({ fetchByIid: true });
+        await createComponent();
 
         firstChild = findFirstWorkItemLinkChild();
       });
@@ -391,7 +386,7 @@ describe('WorkItemLinks', () => {
 
     it('starts prefetching work item by iid if URL contains work item id', async () => {
       setWindowLocation('?work_item_iid=5&iid_path=true');
-      await createComponent({ fetchByIid: true });
+      await createComponent();
 
       expect(childWorkItemByIidHandler).toHaveBeenCalledWith({
         iid: '5',
@@ -402,7 +397,7 @@ describe('WorkItemLinks', () => {
 
   it('does not open the modal if work item iid URL parameter is not found in child items', async () => {
     setWindowLocation('?work_item_iid=555&iid_path=true');
-    await createComponent({ fetchByIid: true });
+    await createComponent();
 
     expect(showModal).not.toHaveBeenCalled();
     expect(wrapper.findComponent(WorkItemDetailModal).props('workItemIid')).toBe(null);
@@ -410,7 +405,7 @@ describe('WorkItemLinks', () => {
 
   it('opens the modal if work item iid URL parameter is found in child items', async () => {
     setWindowLocation('?work_item_iid=2&iid_path=true');
-    await createComponent({ fetchByIid: true });
+    await createComponent();
 
     expect(showModal).toHaveBeenCalled();
     expect(wrapper.findComponent(WorkItemDetailModal).props('workItemIid')).toBe('2');

@@ -32,7 +32,6 @@ module Gitlab
     # Rails 6.1
     config.action_dispatch.cookies_same_site_protection = nil # New default is :lax
     ActiveSupport.utc_to_local_returns_utc_offset_times = false
-    config.action_controller.urlsafe_csrf_tokens = false
     config.action_view.preload_links_header = false
 
     # Rails 5.2
@@ -258,7 +257,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/_mixins_and_variables_and_functions.css"
     config.assets.precompile << "page_bundles/admin/application_settings_metrics_and_profiling.css"
     config.assets.precompile << "page_bundles/admin/elasticsearch_form.css"
-    config.assets.precompile << "page_bundles/admin/geo_nodes.css"
+    config.assets.precompile << "page_bundles/admin/geo_sites.css"
     config.assets.precompile << "page_bundles/admin/geo_replicable.css"
     config.assets.precompile << "page_bundles/admin/jobs_index.css"
     config.assets.precompile << "page_bundles/alert_management_details.css"
@@ -268,6 +267,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/branches.css"
     config.assets.precompile << "page_bundles/build.css"
     config.assets.precompile << "page_bundles/ci_status.css"
+    config.assets.precompile << "page_bundles/ci_cd_settings.css"
     config.assets.precompile << "page_bundles/cluster_agents.css"
     config.assets.precompile << "page_bundles/clusters.css"
     config.assets.precompile << "page_bundles/cycle_analytics.css"
@@ -300,6 +300,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/merge_request_analytics.css"
     config.assets.precompile << "page_bundles/merge_requests.css"
     config.assets.precompile << "page_bundles/milestone.css"
+    config.assets.precompile << "page_bundles/ml_experiment_tracking.css"
     config.assets.precompile << "page_bundles/new_namespace.css"
     config.assets.precompile << "page_bundles/notifications.css"
     config.assets.precompile << "page_bundles/oncall_schedules.css"
@@ -403,7 +404,7 @@ module Gitlab
 
     config.middleware.insert_before ActionDispatch::RemoteIp, ::Gitlab::Middleware::HandleIpSpoofAttackError
 
-    config.middleware.insert_after ActionDispatch::ActionableExceptions, ::Gitlab::Middleware::HandleMalformedStrings
+    config.middleware.insert_after Rails::Rack::Logger, ::Gitlab::Middleware::HandleMalformedStrings
 
     config.middleware.insert_after Rack::Sendfile, ::Gitlab::Middleware::RackMultipartTempfileFactory
 

@@ -31,7 +31,7 @@ export default {
           },
           actionPrimary: {
             text: I18N_USER_ACTIONS.unlock,
-            attributes: [{ variant: 'confirm' }],
+            attributes: { variant: 'confirm' },
           },
         },
       });

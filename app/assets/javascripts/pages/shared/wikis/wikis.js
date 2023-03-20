@@ -16,6 +16,17 @@ export default class Wikis {
       sidebarToggles[i].addEventListener('click', (e) => this.handleToggleSidebar(e));
     }
 
+    const listToggles = document.querySelectorAll('.js-wiki-list-toggle');
+
+    listToggles.forEach((listToggle) => {
+      listToggle.querySelector('.js-wiki-list-expand-button')?.addEventListener('click', () => {
+        listToggle.classList.remove('collapsed');
+      });
+      listToggle.querySelector('.js-wiki-list-collapse-button')?.addEventListener('click', () => {
+        listToggle.classList.add('collapsed');
+      });
+    });
+
     window.addEventListener('resize', () => this.renderSidebar());
     this.renderSidebar();
 

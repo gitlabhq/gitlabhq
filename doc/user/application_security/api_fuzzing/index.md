@@ -50,6 +50,7 @@ Example projects using these methods are available:
 - [Example Postman Collection project](https://gitlab.com/gitlab-org/security-products/demos/api-fuzzing/postman-api-fuzzing-example)
 - [Example GraphQL project](https://gitlab.com/gitlab-org/security-products/demos/api-fuzzing/graphql-api-fuzzing-example)
 - [Example SOAP project](https://gitlab.com/gitlab-org/security-products/demos/api-fuzzing/soap-api-fuzzing-example)
+- [Authentication Token using Selenium](https://gitlab.com/gitlab-org/security-products/demos/api-fuzzing/auth-token-selenium)
 
 ## Enable Web API fuzzing
 
@@ -98,7 +99,7 @@ a YAML snippet that you can paste in your GitLab CI/CD configuration.
 To generate an API Fuzzing configuration snippet:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. On the left sidebar, select **Security and Compliance > Security configuration**.
 1. In the **API Fuzzing** row, select **Enable API Fuzzing**.
 1. Complete the fields. For details see [Available CI/CD variables](#available-cicd-variables).
 1. Select **Generate code snippet**.
@@ -329,6 +330,8 @@ This example is a minimal configuration for API Fuzzing. From here you can:
 - Learn how to [handle false positives](#handling-false-positives).
 
 #### API Fuzzing with a GraphQL Schema file
+
+API Fuzzing can use a GraphQL schema file to understand and test a GraphQL endpoint that has introspection disabled. To use a GraphQL schema file, it must be in the introspection JSON format. A GraphQL schema can be converted to a the introspection JSON format using an online 3rd party tool: [https://transform.tools/graphql-to-introspection-json](https://transform.tools/graphql-to-introspection-json).
 
 To configure API Fuzzing to use a GraphQl schema file that provides information about the target API to test:
 
@@ -1994,7 +1997,7 @@ When configured correctly, a CI/CD pipeline contains a `fuzz` stage and an `apif
 typical operation, the job always succeeds even if faults are identified during fuzz testing.
 
 Faults are displayed on the **Security** pipeline tab with the suite name. When testing against the
-repositories default branch, the fuzzing faults are also shown on the Security & Compliance's
+repositories default branch, the fuzzing faults are also shown on the Security and Compliance's
 Vulnerability Report page.
 
 To prevent an excessive number of reported faults, the API fuzzing scanner limits the number of
@@ -2026,7 +2029,7 @@ Follow these steps to view details of a fuzzing fault:
 
 1. You can view faults in a project, or a merge request:
 
-   - In a project, go to the project's **Security & Compliance > Vulnerability Report**
+   - In a project, go to the project's **Security and Compliance > Vulnerability Report**
      page. This page shows all vulnerabilities from the default branch only.
    - In a merge request, go the merge request's **Security** section and select the **Expand**
      button. API Fuzzing faults are available in a section labeled
@@ -2702,7 +2705,7 @@ You can expedite the investigation with the [testssl.sh tool](https://testssl.sh
 To get support for your particular problem use the [getting help channels](https://about.gitlab.com/get-help/).
 
 The [GitLab issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues) is the right place for bugs and feature proposals about API Security and API Fuzzing.
-Use `~"Category:API Security"` [label](../../../development/contributing/issue_workflow.md#labels) when opening a new issue regarding API fuzzing to ensure it is quickly reviewed by the right people. Refer to our [review response SLO](https://about.gitlab.com/handbook/engineering/workflow/code-review/#review-response-slo) to understand when you should receive a response.
+Use `~"Category:API Security"` [label](../../../development/labels/index.md) when opening a new issue regarding API fuzzing to ensure it is quickly reviewed by the right people. Refer to our [review response SLO](https://about.gitlab.com/handbook/engineering/workflow/code-review/#review-response-slo) to understand when you should receive a response.
 
 [Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) for similar entries before submitting your own, there's a good chance somebody else had the same issue or feature proposal. Show your support with an award emoji and or join the discussion.
 

@@ -15,7 +15,7 @@ module QA
       end
 
       it 'by adding a home page to the wiki',
-testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347809' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347809' do
         project.visit!
 
         Page::Project::Menu.perform(&:click_wiki)
@@ -36,7 +36,7 @@ testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347809' do
       end
 
       it 'by adding a second page to the wiki',
-testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347808' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347808' do
         wiki.visit!
 
         Page::Project::Wiki::Show.perform(&:click_new_page)
@@ -56,7 +56,7 @@ testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347808' do
       end
 
       it 'by adding a home page to the wiki using git push',
-testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347806' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347806' do
         empty_wiki = Resource::Wiki::ProjectPage.new do |empty_wiki|
           empty_wiki.project = project
         end
@@ -76,7 +76,7 @@ testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347806' do
       end
 
       it 'by adding a second page to the wiki using git push',
-testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347807' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347807' do
         Resource::Repository::WikiPush.fabricate! do |push|
           push.file_name = "#{new_wiki_title}.md"
           push.file_content = new_wiki_content

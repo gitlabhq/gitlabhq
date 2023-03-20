@@ -11,6 +11,9 @@ export default {
     CollapseToggle: GlCollapseToggleDirective,
   },
   props: {
+    /*
+     * Contains metadata about the current view, e.g. `id`, `title` and `avatar`
+     */
     context: {
       type: Object,
       required: true,
@@ -24,6 +27,9 @@ export default {
     collapseIcon() {
       return this.expanded ? 'chevron-up' : 'chevron-down';
     },
+    avatarShape() {
+      return this.context.avatar_shape || 'rect';
+    },
   },
 };
 </script>
@@ -32,13 +38,27 @@ export default {
   <button
     v-collapse-toggle.context-switcher
     type="button"
-    class="context-switcher-toggle gl-bg-transparent gl-border-0 border-top border-bottom gl-border-gray-a-08 gl-box-shadow-none gl-display-flex gl-align-items-center gl-font-weight-bold gl-w-full gl-pl-3 gl-pr-5 gl-h-8"
+    class="context-switcher-toggle gl-p-0 gl-bg-transparent gl-hover-bg-t-gray-a-08 gl-border-0 border-top border-bottom gl-border-gray-a-08 gl-box-shadow-none gl-display-flex gl-align-items-center gl-font-weight-bold gl-w-full gl-h-8"
   >
-    <gl-avatar :size="32" shape="rect" :src="context.avatar" class="gl-mr-3" />
+    <span
+      v-if="context.icon"
+      class="gl-avatar avatar-container gl-bg-t-gray-a-08 icon-avatar rect-avatar s24 gl-mr-3 gl-ml-4"
+    >
+      <gl-icon :name="context.icon" :size="16" />
+    </span>
+    <gl-avatar
+      v-else
+      :size="24"
+      :shape="avatarShape"
+      :entity-name="context.title"
+      :entity-id="context.id"
+      :src="context.avatar"
+      class="gl-mr-3 gl-ml-4"
+    />
     <div class="gl-overflow-auto">
       <gl-truncate :text="context.title" />
     </div>
-    <span class="gl-flex-grow-1 gl-text-right">
+    <span class="gl-flex-grow-1 gl-text-right gl-mr-4">
       <gl-icon :name="collapseIcon" />
     </span>
   </button>

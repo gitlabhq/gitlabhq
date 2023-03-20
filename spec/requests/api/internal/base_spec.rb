@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Internal::Base, feature_category: :authentication_and_authorization do
+RSpec.describe API::Internal::Base, feature_category: :system_access do
   include GitlabShellHelpers
   include APIInternalBaseHelpers
 
@@ -514,7 +514,7 @@ RSpec.describe API::Internal::Base, feature_category: :authentication_and_author
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
           expect(json_response["gl_key_type"]).to eq("key")
           expect(json_response["gl_key_id"]).to eq(key.id)
-          expect(user.reload.last_activity_on).to be_nil
+          expect(user.reload.last_activity_on).to eql(Date.today)
         end
 
         it_behaves_like 'sets hook env' do
@@ -553,7 +553,7 @@ RSpec.describe API::Internal::Base, feature_category: :authentication_and_author
           expect(json_response["status"]).to be_truthy
           expect(json_response["gl_project_path"]).to eq(personal_snippet.repository.full_path)
           expect(json_response["gl_repository"]).to eq("snippet-#{personal_snippet.id}")
-          expect(user.reload.last_activity_on).to be_nil
+          expect(user.reload.last_activity_on).to eql(Date.today)
         end
 
         it_behaves_like 'sets hook env' do
@@ -585,7 +585,7 @@ RSpec.describe API::Internal::Base, feature_category: :authentication_and_author
           expect(json_response["status"]).to be_truthy
           expect(json_response["gl_project_path"]).to eq(project_snippet.repository.full_path)
           expect(json_response["gl_repository"]).to eq("snippet-#{project_snippet.id}")
-          expect(user.reload.last_activity_on).to be_nil
+          expect(user.reload.last_activity_on).to eql(Date.today)
         end
 
         it_behaves_like 'sets hook env' do
@@ -703,7 +703,7 @@ RSpec.describe API::Internal::Base, feature_category: :authentication_and_author
             expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
             expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
             expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
-            expect(user.reload.last_activity_on).to be_nil
+            expect(user.reload.last_activity_on).to eql(Date.today)
           end
 
           it_behaves_like 'rate limited request' do
@@ -862,7 +862,7 @@ RSpec.describe API::Internal::Base, feature_category: :authentication_and_author
           expect(json_response['status']).to be_truthy
           expect(json_response['payload']).to eql(payload)
           expect(json_response['gl_console_messages']).to eql(console_messages)
-          expect(user.reload.last_activity_on).to be_nil
+          expect(user.reload.last_activity_on).to eql(Date.today)
         end
       end
     end

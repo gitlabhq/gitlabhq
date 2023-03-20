@@ -10,27 +10,22 @@ import {
   HTTP_STATUS_OK,
 } from '~/lib/utils/http_status';
 
-jest.mock('~/flash');
-
 describe('Api', () => {
   const dummyApiVersion = 'v3000';
   const dummyUrlRoot = '/gitlab';
-  const dummyGon = {
-    api_version: dummyApiVersion,
-    relative_url_root: dummyUrlRoot,
-  };
-  let originalGon;
+
   let mock;
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    originalGon = window.gon;
-    window.gon = { ...dummyGon };
+    window.gon = {
+      api_version: dummyApiVersion,
+      relative_url_root: dummyUrlRoot,
+    };
   });
 
   afterEach(() => {
     mock.restore();
-    window.gon = originalGon;
   });
 
   describe('buildUrl', () => {
@@ -1423,7 +1418,7 @@ describe('Api', () => {
 
     describe('when service data increment counter is called with feature flag disabled', () => {
       beforeEach(() => {
-        gon.features = { ...gon.features, usageDataApi: false };
+        gon.features = { usageDataApi: false };
       });
 
       it('returns null', () => {
@@ -1437,7 +1432,7 @@ describe('Api', () => {
 
     describe('when service data increment counter is called', () => {
       beforeEach(() => {
-        gon.features = { ...gon.features, usageDataApi: true };
+        gon.features = { usageDataApi: true };
       });
 
       it('resolves the Promise', () => {
@@ -1468,7 +1463,7 @@ describe('Api', () => {
 
       describe('when service data increment unique users is called with feature flag disabled', () => {
         beforeEach(() => {
-          gon.features = { ...gon.features, usageDataApi: false };
+          gon.features = { usageDataApi: false };
         });
 
         it('returns null and does not call the endpoint', () => {
@@ -1483,7 +1478,7 @@ describe('Api', () => {
 
       describe('when service data increment unique users is called', () => {
         beforeEach(() => {
-          gon.features = { ...gon.features, usageDataApi: true };
+          gon.features = { usageDataApi: true };
         });
 
         it('resolves the Promise', () => {
@@ -1500,7 +1495,7 @@ describe('Api', () => {
 
     describe('when user is not set and feature flag enabled', () => {
       beforeEach(() => {
-        gon.features = { ...gon.features, usageDataApi: true };
+        gon.features = { usageDataApi: true };
       });
 
       it('returns null and does not call the endpoint', () => {

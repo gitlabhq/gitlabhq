@@ -90,8 +90,9 @@ describe('note_app', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     axiosMock.restore();
+    // eslint-disable-next-line @gitlab/vtu-no-explicit-wrapper-destroy
+    wrapper.destroy();
   });
 
   describe('render', () => {

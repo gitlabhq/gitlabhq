@@ -20,6 +20,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     it { is_expected.to belong_to(:target_project).class_name('Project') }
     it { is_expected.to belong_to(:source_project).class_name('Project') }
     it { is_expected.to belong_to(:merge_user).class_name("User") }
+
+    it do
+      is_expected.to belong_to(:head_pipeline).class_name('Ci::Pipeline').inverse_of(:merge_requests_as_head_pipeline)
+    end
+
     it { is_expected.to have_many(:assignees).through(:merge_request_assignees) }
     it { is_expected.to have_many(:reviewers).through(:merge_request_reviewers) }
     it { is_expected.to have_many(:merge_request_diffs) }
@@ -393,8 +398,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         instance1 = MergeRequest.find(merge_request.id)
         instance2 = MergeRequest.find(merge_request.id)
 
-        instance1.ensure_metrics
-        instance2.ensure_metrics
+        instance1.ensure_metrics!
+        instance2.ensure_metrics!
 
         metrics_records = MergeRequest::Metrics.where(merge_request_id: merge_request.id)
         expect(metrics_records.size).to eq(1)
@@ -757,6 +762,23 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           mrs = project.merge_requests.where(id: mr1.id)
 
           expect(mrs.total_time_to_merge).to be_nil
+        end
+      end
+
+      context 'when scoped with :merged_before and :merged_after' do
+        before do
+          mr2.metrics.update!(merged_at: mr1.metrics.merged_at - 1.week)
+          mr3.metrics.update!(merged_at: mr1.metrics.merged_at + 1.week)
+        end
+
+        it 'excludes merge requests outside of the date range' do
+          expect(
+            project.merge_requests.merge(
+              MergeRequest::Metrics
+                .merged_before(mr1.metrics.merged_at + 1.day)
+                .merged_after(mr1.metrics.merged_at - 1.day)
+            ).total_time_to_merge
+          ).to be_within(1).of(expected_total_time([mr1]))
         end
       end
 
@@ -4274,8 +4296,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     it 'refreshes the number of open merge requests of the target project' do
       project = subject.target_project
 
-      expect { subject.destroy! }
-        .to change { project.open_merge_requests_count }.from(1).to(0)
+      expect do
+        subject.destroy!
+
+        BatchLoader::Executor.clear_current
+      end.to change { project.open_merge_requests_count }.from(1).to(0)
     end
   end
 
@@ -4299,6 +4324,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(subject).and_call_original
 
         transition!
+      end
+
+      context 'when skip_merge_status_trigger is set to true' do
+        before do
+          subject.skip_merge_status_trigger = true
+        end
+
+        it_behaves_like 'transition not triggering mergeRequestMergeStatusUpdated GraphQL subscription'
       end
 
       context 'when transaction is not committed' do

@@ -62,36 +62,71 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
   end
 
   describe '#super_sidebar_context' do
-    let(:user) { build(:user) }
-    let(:group) { build(:group) }
+    let_it_be(:user) { build(:user) }
+    let_it_be(:group) { build(:group) }
+    let_it_be(:panel) { {} }
 
-    subject { helper.super_sidebar_context(user, group: group, project: nil) }
+    subject do
+      helper.super_sidebar_context(user, group: group, project: nil, panel: panel)
+    end
 
     before do
       allow(helper).to receive(:current_user) { user }
-      Rails.cache.write(['users', user.id, 'assigned_open_issues_count'], 1)
-      Rails.cache.write(['users', user.id, 'assigned_open_merge_requests_count'], 4)
-      Rails.cache.write(['users', user.id, 'review_requested_open_merge_requests_count'], 0)
-      Rails.cache.write(['users', user.id, 'todos_pending_count'], 3)
-      Rails.cache.write(['users', user.id, 'total_merge_requests_count'], 4)
+      allow(helper).to receive(:can?).and_return(true)
+      allow(panel).to receive(:super_sidebar_menu_items).and_return(nil)
+      allow(panel).to receive(:super_sidebar_context_header).and_return(nil)
+      allow(user).to receive(:assigned_open_issues_count).and_return(1)
+      allow(user).to receive(:assigned_open_merge_requests_count).and_return(4)
+      allow(user).to receive(:review_requested_open_merge_requests_count).and_return(0)
+      allow(user).to receive(:todos_pending_count).and_return(3)
+      allow(user).to receive(:total_merge_requests_count).and_return(4)
     end
 
     it 'returns sidebar values from user', :use_clean_rails_memory_store_caching do
       expect(subject).to include({
+        current_context_header: nil,
+        current_menu_items: nil,
         name: user.name,
         username: user.username,
         avatar_url: user.avatar_url,
+        has_link_to_profile: helper.current_user_menu?(:profile),
+        link_to_profile: user_url(user),
+        status: {
+          can_update: helper.can?(user, :update_user_status, user),
+          busy: user.status&.busy?,
+          customized: user.status&.customized?,
+          availability: user.status&.availability.to_s,
+          emoji: user.status&.emoji,
+          message: user.status&.message_html&.html_safe,
+          clear_after: nil
+        },
+        trial: {
+          has_start_trial: helper.current_user_menu?(:start_trial),
+          url: helper.trials_link_url
+        },
+        settings: {
+          has_settings: helper.current_user_menu?(:settings),
+          profile_path: profile_path,
+          profile_preferences_path: profile_preferences_path
+        },
+        can_sign_out: helper.current_user_menu?(:sign_out),
+        sign_out_link: destroy_user_session_path,
         assigned_open_issues_count: 1,
         todos_pending_count: 3,
         issues_dashboard_path: issues_dashboard_path(assignee_username: user.username),
         total_merge_requests_count: 4,
+        projects_path: projects_path,
+        groups_path: groups_path,
         support_path: helper.support_url,
         display_whats_new: helper.display_whats_new?,
         whats_new_most_recent_release_items_count: helper.whats_new_most_recent_release_items_count,
         whats_new_version_digest: helper.whats_new_version_digest,
         show_version_check: helper.show_version_check?,
         gitlab_version: Gitlab.version_info,
-        gitlab_version_check: helper.gitlab_version_check
+        gitlab_version_check: helper.gitlab_version_check,
+        gitlab_com_but_not_canary: Gitlab.com_but_not_canary?,
+        gitlab_com_and_canary: Gitlab.com_and_canary?,
+        canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url
       })
     end
 
@@ -138,7 +173,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           items: array_including(
             { href: "/projects/new", text: "New project/repository" },
             { href: "/groups/new#create-group-pane", text: "New subgroup" },
-            { href: "/groups/#{group.full_path}/-/group_members", text: "Invite members" }
+            { href: '', text: "Invite members" }
           )
         ),
         a_hash_including(
@@ -150,6 +185,109 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           )
         )
       )
+    end
+
+    describe 'current context' do
+      context 'when current context is a project' do
+        let_it_be(:project) { build(:project) }
+
+        subject do
+          helper.super_sidebar_context(user, group: nil, project: project, panel: panel)
+        end
+
+        before do
+          allow(project).to receive(:persisted?).and_return(true)
+        end
+
+        it 'returns project context' do
+          expect(subject[:current_context]).to eq({
+            namespace: 'projects',
+            item: {
+              id: project.id,
+              avatarUrl: project.avatar_url,
+              name: project.name,
+              namespace: project.full_name,
+              webUrl: project_path(project)
+            }
+          })
+        end
+      end
+
+      context 'when current context is a group' do
+        subject do
+          helper.super_sidebar_context(user, group: group, project: nil, panel: panel)
+        end
+
+        before do
+          allow(group).to receive(:persisted?).and_return(true)
+        end
+
+        it 'returns group context' do
+          expect(subject[:current_context]).to eq({
+            namespace: 'groups',
+            item: {
+              id: group.id,
+              avatarUrl: group.avatar_url,
+              name: group.name,
+              namespace: group.full_name,
+              webUrl: group_path(group)
+            }
+          })
+        end
+      end
+
+      context 'when current context is not tracked' do
+        subject do
+          helper.super_sidebar_context(user, group: nil, project: nil, panel: panel)
+        end
+
+        it 'returns no context' do
+          expect(subject[:current_context]).to eq({})
+        end
+      end
+    end
+  end
+
+  describe '#super_sidebar_nav_panel' do
+    let(:user) { build(:user) }
+    let(:group) { build(:group) }
+    let(:project) { build(:project) }
+
+    before do
+      allow(helper).to receive(:project_sidebar_context_data).and_return(
+        { current_user: nil, container: project, can_view_pipeline_editor: false, learn_gitlab_enabled: false })
+      allow(helper).to receive(:group_sidebar_context_data).and_return({ current_user: nil, container: group })
+
+      allow(group).to receive(:to_global_id).and_return(5)
+      Rails.cache.write(['users', user.id, 'assigned_open_issues_count'], 1)
+      Rails.cache.write(['users', user.id, 'assigned_open_merge_requests_count'], 4)
+      Rails.cache.write(['users', user.id, 'review_requested_open_merge_requests_count'], 0)
+      Rails.cache.write(['users', user.id, 'todos_pending_count'], 3)
+      Rails.cache.write(['users', user.id, 'total_merge_requests_count'], 4)
+    end
+
+    it 'returns Project Panel for project nav' do
+      expect(helper.super_sidebar_nav_panel(nav: 'project')).to be_a(Sidebars::Projects::SuperSidebarPanel)
+    end
+
+    it 'returns Group Panel for group nav' do
+      expect(helper.super_sidebar_nav_panel(nav: 'group')).to be_a(Sidebars::Groups::SuperSidebarPanel)
+    end
+
+    it 'returns User Settings Panel for profile nav' do
+      expect(helper.super_sidebar_nav_panel(nav: 'profile')).to be_a(Sidebars::UserSettings::Panel)
+    end
+
+    it 'returns User profile Panel for user profile nav' do
+      expect(helper.super_sidebar_nav_panel(nav: 'user_profile')).to be_a(Sidebars::UserProfile::Panel)
+    end
+
+    it 'returns "Your Work" Panel for your_work nav', :use_clean_rails_memory_store_caching do
+      expect(helper.super_sidebar_nav_panel(nav: 'your_work', user: user)).to be_a(Sidebars::YourWork::Panel)
+    end
+
+    it 'returns "Your Work" Panel as a fallback', :use_clean_rails_memory_store_caching do
+      expect(helper.super_sidebar_nav_panel(user: user)).to be_a(Sidebars::YourWork::Panel)
     end
   end
 end

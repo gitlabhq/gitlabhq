@@ -30,8 +30,8 @@ describe('TooltipOnTruncate component', () => {
         default: [MOCK_TITLE],
       },
       directives: {
-        GlTooltip: createMockDirective(),
-        GlResizeObserver: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
+        GlResizeObserver: createMockDirective('gl-resize-observer'),
       },
       ...options,
     });
@@ -42,8 +42,8 @@ describe('TooltipOnTruncate component', () => {
       ...TooltipOnTruncate,
       directives: {
         ...TooltipOnTruncate.directives,
-        GlTooltip: createMockDirective(),
-        GlResizeObserver: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
+        GlResizeObserver: createMockDirective('gl-resize-observer'),
       },
     };
 
@@ -78,10 +78,6 @@ describe('TooltipOnTruncate component', () => {
     await nextTick();
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when truncated', () => {
     beforeEach(async () => {
       hasHorizontalOverflow.mockReturnValueOnce(true);
@@ -90,7 +86,7 @@ describe('TooltipOnTruncate component', () => {
 
     it('renders tooltip', async () => {
       expect(hasHorizontalOverflow).toHaveBeenLastCalledWith(wrapper.element);
-      expect(getTooltipValue()).toMatchObject({
+      expect(getTooltipValue()).toStrictEqual({
         title: MOCK_TITLE,
         placement: 'top',
         disabled: false,
@@ -144,7 +140,7 @@ describe('TooltipOnTruncate component', () => {
 
       await nextTick();
 
-      expect(getTooltipValue()).toMatchObject({
+      expect(getTooltipValue()).toStrictEqual({
         title: MOCK_TITLE,
         placement: 'top',
         disabled: false,
@@ -194,20 +190,22 @@ describe('TooltipOnTruncate component', () => {
     });
   });
 
-  describe('placement', () => {
-    it('sets placement when tooltip is rendered', () => {
-      const mockPlacement = 'bottom';
-
+  describe('tooltip customization', () => {
+    it.each`
+      property       | mockValue
+      ${'placement'} | ${'bottom'}
+      ${'boundary'}  | ${'viewport'}
+    `('sets $property when the tooltip is rendered', ({ property, mockValue }) => {
       hasHorizontalOverflow.mockReturnValueOnce(true);
       createComponent({
         propsData: {
-          placement: mockPlacement,
+          [property]: mockValue,
         },
       });
 
       expect(hasHorizontalOverflow).toHaveBeenLastCalledWith(wrapper.element);
       expect(getTooltipValue()).toMatchObject({
-        placement: mockPlacement,
+        [property]: mockValue,
       });
     });
   });

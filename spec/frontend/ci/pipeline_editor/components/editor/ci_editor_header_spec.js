@@ -26,7 +26,6 @@ describe('CI Editor Header', () => {
   const findHelpBtn = () => wrapper.findByTestId('drawer-toggle');
 
   afterEach(() => {
-    wrapper.destroy();
     unmockTracking();
   });
 

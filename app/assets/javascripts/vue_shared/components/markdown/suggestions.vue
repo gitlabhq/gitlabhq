@@ -1,7 +1,7 @@
 <script>
 import Vue from 'vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import SuggestionDiff from './suggestion_diff.vue';
 

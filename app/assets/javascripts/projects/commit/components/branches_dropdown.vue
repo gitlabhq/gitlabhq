@@ -1,7 +1,7 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { debounce } from 'lodash';
+import { debounce, uniqBy } from 'lodash';
 import {
   I18N_NO_RESULTS_MESSAGE,
   I18N_BRANCH_HEADER,
@@ -19,11 +19,6 @@ export default {
       required: false,
       default: '',
     },
-    blanked: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   i18n: {
     noResultsMessage: I18N_NO_RESULTS_MESSAGE,
@@ -32,26 +27,26 @@ export default {
   },
   data() {
     return {
-      searchTerm: this.blanked ? '' : this.value,
+      searchTerm: '',
     };
   },
   computed: {
     ...mapGetters(['joinedBranches']),
-    ...mapState(['isFetching']),
+    ...mapState(['isFetching', 'branch']),
     listboxItems() {
-      return this.joinedBranches.map((value) => ({ value, text: value }));
-    },
-  },
-  watch: {
-    // Parent component can set the branch value (e.g. when the user selects a different project)
-    // and we need to keep the search term in sync with the selected value
-    value(val) {
-      this.searchTerm = val;
-      this.fetchBranches(this.searchTerm);
+      const selectedItem = { value: this.branch, text: this.branch };
+      const transformedList = this.joinedBranches.map((value) => ({ value, text: value }));
+
+      if (this.searchTerm) {
+        return transformedList;
+      }
+
+      // Add selected item to top of list if not searching
+      return uniqBy([selectedItem].concat(transformedList), 'value');
     },
   },
   mounted() {
-    this.fetchBranches(this.searchTerm);
+    this.fetchBranches();
   },
   methods: {
     ...mapActions(['fetchBranches']),
@@ -70,8 +65,10 @@ export default {
 </script>
 <template>
   <gl-collapsible-listbox
+    class="gl-max-w-full"
     :header-text="$options.i18n.branchHeaderTitle"
     :toggle-text="value"
+    toggle-class="gl-w-full"
     :items="listboxItems"
     searchable
     :search-placeholder="$options.i18n.branchSearchPlaceholder"

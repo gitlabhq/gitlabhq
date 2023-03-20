@@ -31,7 +31,7 @@ describe('initCopyToClipboard', () => {
   const defaultButtonAttributes = {
     'data-clipboard-text': 'foo bar',
     title,
-    'data-title': title,
+    'data-original-title': title,
   };
   const createButton = (attributes = {}) => {
     const combinedAttributes = { ...defaultButtonAttributes, ...attributes };

@@ -129,8 +129,6 @@ describe('DiffFile', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     axiosMock.restore();
   });
 
@@ -222,20 +220,9 @@ describe('DiffFile', () => {
 
   describe('computed', () => {
     describe('showLocalFileReviews', () => {
-      let gon;
-
       function setLoggedIn(bool) {
         window.gon.current_user_id = bool;
       }
-
-      beforeAll(() => {
-        gon = window.gon;
-        window.gon = {};
-      });
-
-      afterEach(() => {
-        window.gon = gon;
-      });
 
       it.each`
         loggedIn | bool

@@ -22,11 +22,11 @@ export default {
     title: __('Do you want to remove this deploy key?'),
     actionPrimary: {
       text: __('Remove deploy key'),
-      attributes: [{ variant: 'danger' }],
+      attributes: { variant: 'danger' },
     },
     actionSecondary: {
       text: __('Cancel'),
-      attributes: [{ category: 'tertiary' }],
+      attributes: { category: 'tertiary' },
     },
     static: true,
     modalId: 'confirm-remove-deploy-key',

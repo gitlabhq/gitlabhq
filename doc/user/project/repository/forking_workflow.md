@@ -23,7 +23,7 @@ submit them through a merge request to the repository you don't have access to.
 
 To fork an existing project in GitLab:
 
-1. On the project's home page, in the upper right, select **{fork}** **Fork**:
+1. On the project's homepage, in the upper-right corner, select **Fork** (**{fork}**):
    ![Fork this project](img/forking_workflow_fork_button_v13_10.png)
 1. Optional. Edit the **Project name**.
 1. For **Project URL**, select the [namespace](../../namespace/index.md)
@@ -137,3 +137,11 @@ You can unlink your fork from its upstream project in the [advanced settings](..
 
 - GitLab blog post: [How to keep your fork up to date with its origin](https://about.gitlab.com/blog/2016/12/01/how-to-keep-your-fork-up-to-date-with-its-origin/).
 - GitLab community forum: [Refreshing a fork](https://forum.gitlab.com/t/refreshing-a-fork/).
+
+## Troubleshooting
+
+### An error occurred while forking the project. Please try again
+
+This error can be due to a mismatch in shared runner settings between the forked project
+and the new namespace. See [Forks](../../../ci/runners/configure_runners.md#forks)
+in the Runner documentation for more information.

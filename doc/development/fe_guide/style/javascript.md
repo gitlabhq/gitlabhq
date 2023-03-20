@@ -329,3 +329,22 @@ Only export the constants as a collection (array, or object) when there is a nee
   // good, if the constants need to be iterated over
   export const VARIANTS = [VARIANT_WARNING, VARIANT_ERROR];
   ```
+
+## Error handling
+
+When catching a server-side error you should use the error message
+utility function contained in `app/assets/javascripts/lib/utils/error_message.js`.
+This utility parses the received error message and checks for a prefix that indicates
+whether the message is meant to be user-facing or not. The utility returns
+an object with the message, and a boolean indicating whether the message is meant to be user-facing or not. Please make sure that the Backend is aware of the utils usage and is adding the prefix
+to the error message accordingly.
+
+```javascript
+import { parseErrorMessage } from '~/lib/utils/error_message';
+
+onError(error) {
+  const { message, userFacing } = parseErrorMessage(error);
+
+  const errorMessage = userFacing ? message : genericErrorText;
+}
+```

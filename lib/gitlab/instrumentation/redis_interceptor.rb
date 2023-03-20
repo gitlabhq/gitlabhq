@@ -40,7 +40,13 @@ module Gitlab
 
         yield
       rescue ::Redis::BaseError => ex
-        instrumentation_class.instance_count_exception(ex)
+        if ex.message.start_with?('MOVED', 'ASK')
+          instrumentation_class.instance_count_cluster_redirection(ex)
+        else
+          instrumentation_class.instance_count_exception(ex)
+        end
+
+        instrumentation_class.log_exception(ex)
         raise ex
       ensure
         duration = Gitlab::Metrics::System.monotonic_time - start

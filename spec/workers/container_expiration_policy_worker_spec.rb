@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ContainerExpirationPolicyWorker do
+RSpec.describe ContainerExpirationPolicyWorker, feature_category: :container_registry do
   include ExclusiveLeaseHelpers
 
   let(:worker) { described_class.new }
@@ -33,15 +33,17 @@ RSpec.describe ContainerExpirationPolicyWorker do
     end
 
     context 'process stale ongoing cleanups' do
-      let_it_be(:stuck_cleanup) { create(:container_repository, :cleanup_ongoing, expiration_policy_started_at: 1.day.ago) }
+      let_it_be(:stuck_cleanup1) { create(:container_repository, :cleanup_ongoing, expiration_policy_started_at: 1.day.ago) }
+      let_it_be(:stuck_cleanup2) { create(:container_repository, :cleanup_ongoing, expiration_policy_started_at: nil) }
       let_it_be(:container_repository1) { create(:container_repository, :cleanup_scheduled) }
       let_it_be(:container_repository2) { create(:container_repository, :cleanup_unfinished) }
 
       it 'set them as unfinished' do
         expect { subject }
-          .to change { ContainerRepository.cleanup_ongoing.count }.from(1).to(0)
-          .and change { ContainerRepository.cleanup_unfinished.count }.from(1).to(2)
-        expect(stuck_cleanup.reload).to be_cleanup_unfinished
+          .to change { ContainerRepository.cleanup_ongoing.count }.from(2).to(0)
+          .and change { ContainerRepository.cleanup_unfinished.count }.from(1).to(3)
+        expect(stuck_cleanup1.reload).to be_cleanup_unfinished
+        expect(stuck_cleanup2.reload).to be_cleanup_unfinished
       end
     end
 

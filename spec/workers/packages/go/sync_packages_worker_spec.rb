@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Go::SyncPackagesWorker, type: :worker do
+RSpec.describe Packages::Go::SyncPackagesWorker, type: :worker, feature_category: :package_registry do
   include_context 'basic Go module'
 
   before do

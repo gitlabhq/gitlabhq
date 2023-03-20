@@ -3,7 +3,7 @@ import { GlDropdown, GlSearchBoxByType } from '@gitlab/ui';
 import { debounce } from 'lodash';
 
 import { s__ } from '~/locale';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import searchNamespacesWhereUserCanCreateProjectsQuery from '~/projects/new/queries/search_namespaces_where_user_can_create_projects.query.graphql';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
 import { MINIMUM_SEARCH_LENGTH } from '~/graphql_shared/constants';

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Groups::Menus::KubernetesMenu, :request_store do
+RSpec.describe Sidebars::Groups::Menus::KubernetesMenu, :request_store, feature_category: :navigation do
   let_it_be(:owner) { create(:user) }
   let_it_be(:group) do
     build(:group, :private).tap do |g|
@@ -13,6 +13,15 @@ RSpec.describe Sidebars::Groups::Menus::KubernetesMenu, :request_store do
   let(:user) { owner }
   let(:context) { Sidebars::Groups::Context.new(current_user: user, container: group) }
   let(:menu) { described_class.new(context) }
+
+  it_behaves_like 'serializable as super_sidebar_menu_args' do
+    let(:extra_attrs) do
+      {
+        super_sidebar_parent: Sidebars::Groups::SuperSidebarMenus::OperationsMenu,
+        item_id: :group_kubernetes_clusters
+      }
+    end
+  end
 
   describe '#render?' do
     context 'when user can read clusters' do

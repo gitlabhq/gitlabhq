@@ -145,6 +145,40 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
         expect_graphql_errors_to_be_empty
       end
     end
+
+    describe 'runner_for_registration.query.graphql', :freeze_time, type: :request do
+      runner_for_registration_query = 'register/runner_for_registration.query.graphql'
+
+      let_it_be(:query) do
+        get_graphql_query_as_string("#{query_path}#{runner_for_registration_query}")
+      end
+
+      it "#{fixtures_path}#{runner_for_registration_query}.json" do
+        post_graphql(query, current_user: admin, variables: {
+          id: runner.to_global_id.to_s
+        })
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
+
+    describe 'runner_create.mutation.graphql', type: :request do
+      runner_create_mutation = 'new/runner_create.mutation.graphql'
+
+      let_it_be(:query) do
+        get_graphql_query_as_string("#{query_path}#{runner_create_mutation}")
+      end
+
+      it "#{fixtures_path}#{runner_create_mutation}.json" do
+        post_graphql(query, current_user: admin, variables: {
+          input: {
+            description: 'My dummy runner'
+          }
+        })
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
   end
 
   describe 'as group owner', GraphQL::Query do

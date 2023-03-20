@@ -766,6 +766,49 @@ redis['master'] = false
 
 You can find the relevant attributes defined in [`gitlab_rails.rb`](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-cookbooks/gitlab/libraries/gitlab_rails.rb).
 
+### Control startup behavior
+
+> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6646) in GitLab 15.10.
+
+To prevent the bundled Redis service from starting at boot or restarting after changing its configuration:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   redis['start_down'] = true
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+If you need to test a new replica node, you may set `start_down` to
+`true` and manually start the node. After the new replica node is confirmed
+working in the Redis cluster, set `start_down` to `false` and reconfigure GitLab
+to ensure the node starts and restarts as expected during operation.
+
+### Control replica configuration
+
+> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6646) in GitLab 15.10.
+
+To prevent the `replicaof` line from rendering in the Redis configuration file:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   redis['set_replicaof'] = false
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+This setting can be used to prevent replication of a Redis node independently of other Redis settings.
+
 ## Troubleshooting
 
 See the [Redis troubleshooting guide](troubleshooting.md).

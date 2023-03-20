@@ -13,7 +13,7 @@ module Projects
       before_action :define_variables
 
       before_action do
-        push_frontend_feature_flag(:ci_inbound_job_token_scope, @project)
+        push_frontend_feature_flag(:ci_variables_pages, current_user)
       end
 
       helper_method :highlight_badge

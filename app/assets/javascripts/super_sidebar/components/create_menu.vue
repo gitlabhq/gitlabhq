@@ -30,6 +30,7 @@ export default {
       text-sr-only
       :toggle-text="$options.i18n.createNew"
       :toggle-id="$options.toggleId"
+      data-qa-selector="new_menu_toggle"
     />
     <gl-tooltip :target="`#${$options.toggleId}`" placement="bottom" container="#super-sidebar">
       {{ $options.i18n.createNew }}

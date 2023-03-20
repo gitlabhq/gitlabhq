@@ -8,7 +8,7 @@ import runnerDeleteMutation from '~/ci/runner/graphql/shared/runner_delete.mutat
 import waitForPromises from 'helpers/wait_for_promises';
 import { captureException } from '~/ci/runner/sentry_utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { I18N_DELETE_RUNNER } from '~/ci/runner/constants';
 
 import RunnerDeleteButton from '~/ci/runner/components/runner_delete_button.vue';
@@ -21,7 +21,7 @@ const mockRunnerName = `#${mockRunnerId} (${mockRunner.shortSha})`;
 
 Vue.use(VueApollo);
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
 
 describe('RunnerDeleteButton', () => {
@@ -53,8 +53,8 @@ describe('RunnerDeleteButton', () => {
       },
       apolloProvider,
       directives: {
-        GlTooltip: createMockDirective(),
-        GlModal: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
+        GlModal: createMockDirective('gl-modal'),
       },
     });
   };
@@ -81,10 +81,6 @@ describe('RunnerDeleteButton', () => {
     jest.spyOn(apolloCache, 'gc');
 
     createComponent();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('Displays a delete button without an icon', () => {

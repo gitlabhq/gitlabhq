@@ -28,10 +28,6 @@ describe('Harbor List Row', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('image title and path', () => {
     it('contains a link to the details page', () => {
       mountComponent();

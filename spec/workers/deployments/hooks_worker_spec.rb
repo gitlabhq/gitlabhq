@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Deployments::HooksWorker do
+RSpec.describe Deployments::HooksWorker, feature_category: :continuous_delivery do
   let(:worker) { described_class.new }
 
   describe '#perform' do

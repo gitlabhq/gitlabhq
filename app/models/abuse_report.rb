@@ -42,7 +42,9 @@ class AbuseReport < ApplicationRecord
   before_validation :filter_empty_strings_from_links_to_spam
   validate :links_to_spam_contains_valid_urls
 
-  scope :by_user, ->(user) { where(user_id: user) }
+  scope :by_user_id, ->(id) { where(user_id: id) }
+  scope :by_reporter_id, ->(id) { where(reporter_id: id) }
+  scope :by_category, ->(category) { where(category: category) }
   scope :with_users, -> { includes(:reporter, :user) }
 
   enum category: {
@@ -54,6 +56,11 @@ class AbuseReport < ApplicationRecord
     copyright: 6,
     malware: 7,
     other: 8
+  }
+
+  enum status: {
+    open: 1,
+    closed: 2
   }
 
   # For CacheMarkdownField

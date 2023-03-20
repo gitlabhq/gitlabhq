@@ -12,10 +12,6 @@ describe('Visual and Lint card', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the title', () => {
     expect(wrapper.text()).toContain(wrapper.vm.$options.i18n.title);
   });

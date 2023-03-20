@@ -1,12 +1,12 @@
 import MockAdapter from 'axios-mock-adapter';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import PersistentUserCallout from '~/persistent_user_callout';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('PersistentUserCallout', () => {
   const dismissEndpoint = '/dismiss';

@@ -25,16 +25,15 @@ module QA
           when :personal_access_token
             "\"#{personal_access_token}\""
           when :ci_job_token
+            package_project_inbound_job_token_disabled
+            client_project_inbound_job_token_disabled
             'System.getenv("CI_JOB_TOKEN")'
           when :project_deploy_token
             "\"#{project_deploy_token.token}\""
           end
         end
 
-        it 'pushes and pulls a maven package via gradle', testcase: params[:testcase], quarantine: {
-          type: :stale,
-          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391650'
-        } do
+        it 'pushes and pulls a maven package via gradle', testcase: params[:testcase] do
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             Resource::Repository::Commit.fabricate_via_api! do |commit|
               gradle_upload_yaml = ERB.new(read_fixture('package_managers/maven/gradle', 'gradle_upload_package.yaml.erb')).result(binding)

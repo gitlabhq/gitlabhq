@@ -16,17 +16,18 @@ export const setupEditorTheme = () => {
   monacoEditor.setTheme(theme ? themeName : DEFAULT_THEME);
 };
 
-export const getBlobLanguage = (blobPath) => {
+export const getBlobLanguage = (path) => {
   const defaultLanguage = 'plaintext';
 
-  if (!blobPath) {
+  if (!path) {
     return defaultLanguage;
   }
 
-  const ext = `.${blobPath.split('.').pop()}`;
+  const blobPath = path.split('/').pop();
+  const ext = blobPath.includes('.') ? `.${blobPath.split('.').pop()}` : blobPath;
   const language = monacoLanguages
     .getLanguages()
-    .find((lang) => lang.extensions.indexOf(ext) !== -1);
+    .find((lang) => lang.extensions.indexOf(ext.toLowerCase()) !== -1);
   return language ? language.id : defaultLanguage;
 };
 

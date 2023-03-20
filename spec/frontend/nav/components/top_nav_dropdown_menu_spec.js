@@ -36,10 +36,6 @@ describe('~/nav/components/top_nav_dropdown_menu.vue', () => {
       active: idx === activeIndex,
     }));
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   beforeEach(() => {
     jest.spyOn(console, 'error').mockImplementation();
   });

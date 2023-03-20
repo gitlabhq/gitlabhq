@@ -108,7 +108,6 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
         end
 
         it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-          let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
           let(:namespace) { issue.namespace }
           let(:category) { described_class.to_s }
           let(:action) { 'incident_management_incident_comment' }
@@ -123,10 +122,6 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
         let(:counter) { Gitlab::UsageDataCounters::NoteCounter }
 
         let(:execute_create_service) { described_class.new(project, user, opts).execute }
-
-        before do
-          stub_feature_flags(notes_create_service_tracking: false)
-        end
 
         it 'tracks commit comment usage data', :clean_gitlab_redis_shared_state do
           expect(counter).to receive(:count).with(:create, 'Commit').and_call_original

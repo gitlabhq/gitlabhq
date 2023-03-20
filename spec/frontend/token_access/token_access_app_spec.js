@@ -11,12 +11,8 @@ describe('TokenAccessApp component', () => {
   const findInboundTokenAccess = () => wrapper.findComponent(InboundTokenAccess);
   const findOptInJwt = () => wrapper.findComponent(OptInJwt);
 
-  const createComponent = (flagState = false) => {
-    wrapper = shallowMount(TokenAccessApp, {
-      provide: {
-        glFeatures: { ciInboundJobTokenScope: flagState },
-      },
-    });
+  const createComponent = () => {
+    wrapper = shallowMount(TokenAccessApp);
   };
 
   describe('default', () => {
@@ -32,12 +28,6 @@ describe('TokenAccessApp component', () => {
       expect(findOutboundTokenAccess().exists()).toBe(true);
     });
 
-    it('does not render the inbound token access component', () => {
-      expect(findInboundTokenAccess().exists()).toBe(false);
-    });
-  });
-
-  describe('with feature flag enabled', () => {
     it('renders the inbound token access component', () => {
       createComponent(true);
 

@@ -8,7 +8,7 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 
 import {
@@ -17,10 +17,11 @@ import {
   OPTIONS_NONE_ANY,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
+import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 
 import { mockReactionEmojiToken, mockEmojis } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 const GlEmoji = { template: '<img/>' };
 const defaultStubs = {
   Portal: true,
@@ -60,58 +61,72 @@ describe('EmojiToken', () => {
   let mock;
   let wrapper;
 
+  const findBaseToken = () => wrapper.findComponent(BaseToken);
+  const triggerFetchEmojis = (searchTerm = null) => {
+    findBaseToken().vm.$emit('fetch-suggestions', searchTerm);
+    return waitForPromises();
+  };
+
   beforeEach(() => {
     mock = new MockAdapter(axios);
   });
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
   });
 
   describe('methods', () => {
-    beforeEach(() => {
-      wrapper = createComponent();
-    });
-
     describe('fetchEmojis', () => {
-      it('calls `config.fetchEmojis` with provided searchTerm param', () => {
-        jest.spyOn(wrapper.vm.config, 'fetchEmojis');
+      it('sets loading state', async () => {
+        wrapper = createComponent({
+          config: {
+            fetchEmojis: jest.fn().mockResolvedValue(new Promise(() => {})),
+          },
+        });
+        await nextTick();
 
-        wrapper.vm.fetchEmojis('foo');
-
-        expect(wrapper.vm.config.fetchEmojis).toHaveBeenCalledWith('foo');
+        expect(findBaseToken().props('suggestionsLoading')).toBe(true);
       });
 
-      it('sets response to `emojis` when request is successful', () => {
-        jest.spyOn(wrapper.vm.config, 'fetchEmojis').mockResolvedValue(mockEmojis);
+      describe('when request is successful', () => {
+        const searchTerm = 'foo';
 
-        wrapper.vm.fetchEmojis('foo');
+        beforeEach(async () => {
+          wrapper = createComponent({
+            config: {
+              fetchEmojis: jest.fn().mockResolvedValue({ data: mockEmojis }),
+            },
+          });
+          return triggerFetchEmojis(searchTerm);
+        });
 
-        return waitForPromises().then(() => {
-          expect(wrapper.vm.emojis).toEqual(mockEmojis);
+        it('calls `config.fetchEmojis` with provided searchTerm param', () => {
+          expect(findBaseToken().props('config').fetchEmojis).toHaveBeenCalledWith(searchTerm);
+        });
+
+        it('sets response to `emojis`', () => {
+          expect(findBaseToken().props('suggestions')).toEqual(mockEmojis);
         });
       });
 
-      it('calls `createAlert` with flash error message when request fails', () => {
-        jest.spyOn(wrapper.vm.config, 'fetchEmojis').mockRejectedValue({});
+      describe('when request fails', () => {
+        beforeEach(() => {
+          wrapper = createComponent({
+            config: {
+              fetchEmojis: jest.fn().mockRejectedValue({}),
+            },
+          });
+          return triggerFetchEmojis();
+        });
 
-        wrapper.vm.fetchEmojis('foo');
-
-        return waitForPromises().then(() => {
+        it('calls `createAlert` with alert error message', () => {
           expect(createAlert).toHaveBeenCalledWith({
             message: 'There was a problem fetching emojis.',
           });
         });
-      });
 
-      it('sets `loading` to false when request completes', () => {
-        jest.spyOn(wrapper.vm.config, 'fetchEmojis').mockRejectedValue({});
-
-        wrapper.vm.fetchEmojis('foo');
-
-        return waitForPromises().then(() => {
-          expect(wrapper.vm.loading).toBe(false);
+        it('sets `loading` to false when request completes', () => {
+          expect(findBaseToken().props('suggestionsLoading')).toBe(false);
         });
       });
     });
@@ -123,15 +138,10 @@ describe('EmojiToken', () => {
     beforeEach(async () => {
       wrapper = createComponent({
         value: { data: `"${mockEmojis[0].name}"` },
+        config: {
+          initialEmojis: mockEmojis,
+        },
       });
-
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({
-        emojis: mockEmojis,
-      });
-
-      await nextTick();
     });
 
     it('renders gl-filtered-search-token component', () => {

@@ -1,13 +1,43 @@
 include:
   - local: .gitlab/ci/rails/shared.gitlab-ci.yml
 
+db:rollback single-db-ci-connection:
+  extends:
+    - db:rollback
+    - .single-db-ci-connection
+    - .rails:rules:single-db-ci-connection
+
+db:migrate:reset single-db-ci-connection:
+  extends:
+    - db:migrate:reset
+    - .single-db-ci-connection
+    - .rails:rules:single-db-ci-connection
+
+db:check-schema-single-db-ci-connection:
+  extends:
+    - db:check-schema
+    - .single-db-ci-connection
+    - .rails:rules:single-db-ci-connection
+
+db:post_deployment_migrations_validator-single-db-ci-connection:
+  extends:
+    - db:post_deployment_migrations_validator
+    - .single-db-ci-connection
+    - .rails:rules:db:check-migrations-single-db-ci-connection
+
+db:backup_and_restore single-db-ci-connection:
+  extends:
+    - db:backup_and_restore
+    - .single-db-ci-connection
+    - .rails:rules:db-backup
+
 db:rollback:
   extends:
     - .db-job-base
     - .rails:rules:db-rollback
   script:
-    - scripts/db_tasks db:migrate VERSION=20220502173045  # 14.10 (last 14.x version)
-    - scripts/db_tasks db:migrate
+    - bundle exec rake db:migrate VERSION=20220502173045  # 14.10 (last 14.x version)
+    - bundle exec rake db:migrate
 
 db:rollback single-db:
   extends:
@@ -31,8 +61,7 @@ db:check-schema:
     - .db-job-base
     - .rails:rules:ee-mr-and-default-branch-only
   script:
-    - run_timed_command "bundle exec rake db:drop db:create"
-    - run_timed_command "scripts/db_tasks db:migrate"
+    - run_timed_command "bundle exec rake db:drop db:create db:migrate"
 
 db:check-schema-single-db:
   extends:
@@ -97,7 +126,7 @@ db:backup_and_restore:
     GITLAB_ASSUME_YES: "1"
   script:
     - . scripts/prepare_build.sh
-    - bundle exec rake db:drop db:create db:structure:load db:seed_fu
+    - bundle exec rake db:drop db:create db:schema:load db:seed_fu
     - mkdir -p tmp/tests/public/uploads tmp/tests/{artifacts,pages,lfs-objects,terraform_state,registry,packages}
     - bundle exec rake gitlab:backup:create
     - date
