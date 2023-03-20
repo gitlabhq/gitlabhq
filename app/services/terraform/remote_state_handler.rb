@@ -70,7 +70,7 @@ module Terraform
       state = if find_only
                 find_state!(find_params)
               else
-                Terraform::State.create_or_find_by(find_params)
+                Terraform::State.safe_find_or_create_by(find_params)
               end
 
       raise StateDeletedError if state.deleted_at?

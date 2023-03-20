@@ -85,6 +85,7 @@ RSpec.describe Terraform::RemoteStateHandler, feature_category: :infrastructure_
         end
 
         expect(record.reload.name).to eq 'new-name'
+        expect(record.reload.project).to eq project
       end
 
       it 'raises exception if lock has not been acquired before' do
