@@ -20640,7 +20640,7 @@ msgstr ""
 msgid "GroupSettings|When the number of active users exceeds this number, additional users must be %{user_cap_docs_link_start}approved by an owner%{user_cap_docs_link_end}. Leave empty if you don't want to enforce approvals. Increasing the user cap will not automatically approve pending users."
 msgstr ""
 
-msgid "GroupSettings|You can only transfer the group to a group you manage."
+msgid "GroupSettings|You must have the Owner role in the target group"
 msgstr ""
 
 msgid "GroupSettings|You will need to update your local repositories to point to the new location."

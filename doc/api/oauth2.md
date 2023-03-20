@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # OAuth 2.0 identity provider API **(FREE)**
 
 GitLab provides an API to allow third-party services to access GitLab resources on a user's behalf
-with the [OAuth2](https://oauth.net/2/) protocol.
+with the [OAuth 2.0](https://oauth.net/2/) protocol.
 
 To configure GitLab for this, see
 [Configure GitLab as an OAuth 2.0 authentication identity provider](../integration/oauth_provider.md).
@@ -45,7 +45,6 @@ GitLab supports the following authorization flows:
 - **Resource owner password credentials:** To be used **only** for securely
   hosted, first-party services. GitLab recommends against use of this flow.
 
-Device Authorization Grant is not yet supported. See feature request
 Device Authorization Grant is not supported. [Issue 332682](https://gitlab.com/gitlab-org/gitlab/-/issues/332682) proposes to add support.
 
 The draft specification for [OAuth 2.1](https://oauth.net/2.1/) specifically omits both the

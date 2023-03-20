@@ -110,10 +110,13 @@ GET /groups?statistics=true
       "packages_size": 0,
       "snippets_size": 50,
       "uploads_size": 0
-    }
+    },
+    "wiki_access_level": "private"
   }
 ]
 ```
+
+Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
 
 You can search for groups by name or path, see below.
 
@@ -183,6 +186,8 @@ GET /groups/:id/subgroups
   }
 ]
 ```
+
+Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
 
 ## List a group's descendant groups
 
@@ -266,6 +271,8 @@ GET /groups/:id/descendant_groups
   }
 ]
 ```
+
+Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
 
 ## List a group's projects
 
@@ -695,10 +702,15 @@ Example response:
 
 The `prevent_sharing_groups_outside_hierarchy` attribute is present only on top-level groups.
 
-Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
-the `shared_runners_minutes_limit` and `extra_shared_runners_minutes_limit` parameters:
+Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see the attributes:
 
-Additional response parameters:
+- `shared_runners_minutes_limit`
+- `extra_shared_runners_minutes_limit`
+- `marked_for_deletion_on`
+- `membership_lock`
+- `wiki_access_level`
+
+Additional response attributes:
 
 ```json
 {
@@ -706,30 +718,9 @@ Additional response parameters:
   "description": "Aliquid qui quis dignissimos distinctio ut commodi voluptas est.",
   "shared_runners_minutes_limit": 133,
   "extra_shared_runners_minutes_limit": 133,
-  ...
-}
-```
-
-Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
-the `marked_for_deletion_on` attribute:
-
-```json
-{
-  "id": 4,
-  "description": "Aliquid qui quis dignissimos distinctio ut commodi voluptas est.",
   "marked_for_deletion_on": "2020-04-03",
-  ...
-}
-```
-
-Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
-the `membership_lock` attribute:
-
-```json
-{
-  "id": 4,
-  "description": "Aliquid qui quis dignissimos distinctio ut commodi voluptas est.",
   "membership_lock": false,
+  "wiki_access_level": "disabled",
   ...
 }
 ```
@@ -832,6 +823,7 @@ Parameters:
 | `membership_lock` **(PREMIUM)**                         | boolean | no       | Users cannot be added to projects in this group. |
 | `extra_shared_runners_minutes_limit` **(PREMIUM SELF)**      | integer | no       | Can be set by administrators only. Additional CI/CD minutes for this group. |
 | `shared_runners_minutes_limit` **(PREMIUM SELF)**            | integer | no       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
+| `wiki_access_level` **(PREMIUM)**                            | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. |
 
 ### Options for `default_branch_protection`
 
@@ -996,6 +988,7 @@ PUT /groups/:id
 | `unique_project_download_limit_alertlist` **(ULTIMATE)** | array of integers | no | List of user IDs that are emailed when the unique project download limit is exceeded. Available only on top-level groups. Default: `[]`, Maximum: 100 user IDs. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110201) in GitLab 15.9. |
 | `auto_ban_user_on_excessive_projects_download` **(ULTIMATE)** | boolean | no | When enabled, users are automatically banned from the group when they download more than the maximum number of unique projects specified by `unique_project_download_limit` and `unique_project_download_limit_interval_in_seconds`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94159) in GitLab 15.4. |
 | `ip_restriction_ranges` **(PREMIUM)**                   | string  | no       | Comma-separated list of IP addresses or subnet masks to restrict group access. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351493) in GitLab 15.4. |
+| `wiki_access_level` **(PREMIUM)**                       | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. |
 
 NOTE:
 The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
@@ -1077,6 +1070,8 @@ Example response:
 ```
 
 The `prevent_sharing_groups_outside_hierarchy` attribute is present in the response only for top-level groups.
+
+Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
 
 ### Disable the results limit **(FREE SELF)**
 

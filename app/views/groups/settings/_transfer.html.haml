@@ -10,7 +10,7 @@
       - learn_more_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: learn_more_link }
       - warning_text = s_("GroupSettings|Be careful. Changing a group's parent can have unintended side effects. %{learn_more_link_start}Learn more.%{learn_more_link_end}") % { learn_more_link_start: learn_more_link_start, learn_more_link_end: '</a>'.html_safe }
       %li= warning_text.html_safe
-      %li= s_('GroupSettings|You can only transfer the group to a group you manage.')
+      %li= s_('GroupSettings|You must have the Owner role in the target group')
       %li= s_('GroupSettings|You will need to update your local repositories to point to the new location.')
       %li= s_("GroupSettings|If the parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility.")
     - if group.paid?
