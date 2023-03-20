@@ -2,7 +2,7 @@ import { isEqual, orderBy } from 'lodash';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { formatNumber } from '~/locale';
 import { joinPaths } from '~/lib/utils/url_utility';
-import { languageFilterData } from '~/search/sidebar/constants/language_filter_data';
+import { languageFilterData } from '~/search/sidebar/components/language_filter/data';
 import {
   MAX_FREQUENT_ITEMS,
   MAX_FREQUENCY,

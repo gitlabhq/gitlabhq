@@ -29,6 +29,48 @@ Value stream analytics is also available for [projects](../../analytics/value_st
 
 ## How value stream analytics works
 
+Value stream analytics calculates the duration of every stage of your software development process.
+
+Value stream analytics is made of three core objects:
+
+- A **value stream** contains a value stream stage list.
+- Each value stream stage list contains one or more **stages**.
+- Each stage has two **events**: start and stop.
+
+### Value stream stages
+
+A stage represents an event pair (start and end events) with additional metadata, such as the name of the stage. You can configure the stages in the pairing rules defined in the backend.
+
+### Value streams
+
+Value streams are container objects for the stages. You can have multiple value streams per group, to focus on different aspects of the DevOps lifecycle.
+
+### Value stream stage events
+
+Events are the smallest building blocks of the value stream analytics feature. A stage consists of a start event and an end event.
+
+The following stage events are available:
+
+- Issue closed
+- Issue created
+- Issue first added to board
+- Issue first associated with milestone
+- Issue first mentioned
+- Issue label added
+- Issue label removed
+- MR closed
+- MR merged
+- MR created
+- MR first commit time
+- MR first deployed
+- MR label added
+- MR label removed
+- MR last pipeline duration
+
+These events play a key role in the duration calculation, which is calculated by the formula: duration = end event time - start event time.
+
+To learn what start and end events can be paired, see [Validating start and end events](../../../development/value_stream_analytics.md#validating-start-and-end-events).
+
 ### How value stream analytics aggregates data
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335391) in GitLab 14.5.

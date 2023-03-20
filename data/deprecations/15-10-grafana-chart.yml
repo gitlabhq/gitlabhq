@@ -1,0 +1,37 @@
+# This is a template for announcing a feature deprecation or other important planned change.
+#
+# Please refer to the deprecation guidelines to confirm your understanding of GitLab's definitions.
+# https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology
+#
+# Deprecations and other future breaking changes must be announced at least
+# three releases prior to removal.
+#
+# Breaking changes must happen in a major release.
+#
+# See the OPTIONAL END OF SUPPORT FIELDS section below if an End of Support period also applies.
+#
+# For more information please refer to the handbook documentation here:
+# https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-and-other-planned-breaking-change-announcements
+#
+# Please delete this line and above before submitting your merge request.
+#
+# REQUIRED FIELDS
+#
+- title: "Bundled Grafana Helm Chart is deprecated"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+  announcement_milestone: "15.10"  # (required) The milestone when this feature was first announced as deprecated.
+  removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: twk3  # (required) GitLab username of the person reporting the change
+  stage: enablement  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/charts/gitlab/-/issues/4353  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    The Grafana Helm chart that is bundled with the GitLab Helm Chart is deprecated and will be removed in the GitLab Helm Chart 7.0 release (releasing along with GitLab 16.0).
+
+    The bundled Grafana Helm chart is an optional service that can be turned on to provide the Grafana UI connected to the GitLab Helm Chart's Prometheus metrics.
+
+    The version of Grafana that the GitLab Helm Chart is currently providing is no longer a supported Grafana version.
+    If you're using the bundled Grafana, you should switch to the [newer chart version from Grafana Labs](https://artifacthub.io/packages/helm/grafana/grafana)
+    or a Grafana Operator from a trusted provider.
+
+    In your new Grafana instance, you can [configure the GitLab provided Prometheus as a data source](https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html#integration-with-gitlab-ui)
+    and [connect Grafana to the GitLab UI](https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html#integration-with-gitlab-ui).

@@ -1,5 +1,5 @@
 import { findKey, has } from 'lodash';
-import { languageFilterData } from '~/search/sidebar/constants/language_filter_data';
+import { languageFilterData } from '~/search/sidebar/components/language_filter/data';
 
 import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY } from './constants';
 

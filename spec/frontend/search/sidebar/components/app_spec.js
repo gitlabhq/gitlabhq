@@ -5,7 +5,7 @@ import { MOCK_QUERY } from 'jest/search/mock_data';
 import GlobalSearchSidebar from '~/search/sidebar/components/app.vue';
 import ResultsFilters from '~/search/sidebar/components/results_filters.vue';
 import ScopeNavigation from '~/search/sidebar/components/scope_navigation.vue';
-import LanguageFilter from '~/search/sidebar/components/language_filter.vue';
+import LanguageFilter from '~/search/sidebar/components/language_filter/index.vue';
 
 Vue.use(Vuex);
 

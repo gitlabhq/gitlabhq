@@ -230,12 +230,12 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
             = render partial: "subfolder/my-partial4"
             = render(partial:"subfolder/my-partial5", path: 'else')
             = render partial:"subfolder/my-partial6"
-            = render_if_exist("subfolder/my-partial7", path: 'else')
-            = render_if_exist "subfolder/my-partial8"
-            = render_if_exist(partial: "subfolder/my-partial9", path: 'else')
-            = render_if_exist partial: "subfolder/my-partial10"
-            = render_if_exist(partial:"subfolder/my-partial11", path: 'else')
-            = render_if_exist partial:"subfolder/my-partial12"
+            = render_if_exists("subfolder/my-partial7", path: 'else')
+            = render_if_exists "subfolder/my-partial8"
+            = render_if_exists(partial: "subfolder/my-partial9", path: 'else')
+            = render_if_exists partial: "subfolder/my-partial10"
+            = render_if_exists(partial:"subfolder/my-partial11", path: 'else')
+            = render_if_exists partial:"subfolder/my-partial12"
 
             End of file
           FILE

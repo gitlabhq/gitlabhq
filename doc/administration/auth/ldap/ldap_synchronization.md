@@ -7,7 +7,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # LDAP synchronization **(PREMIUM SELF)**
 
 If you have [configured LDAP to work with GitLab](index.md), GitLab can automatically synchronize
-users and groups. This process updates user and group information.
+users and groups.
+
+LDAP synchronization updates existing GitLab user and group information. It does not create new GitLab users through LDAP.
 
 You can change when synchronization occurs.
 

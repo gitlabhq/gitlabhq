@@ -142,6 +142,8 @@ Items that are exported include:
 - Group members are exported as project members, as long as the user has the Maintainer role in the
   exported project's group, or is an administrator
 
+### Items that are not exported
+
 Items that are **not** exported include:
 
 - [Child pipeline history](https://gitlab.com/gitlab-org/gitlab/-/issues/221088)
@@ -240,11 +242,11 @@ possible through a [professional services engagement](https://about.gitlab.com/s
 
 To help avoid abuse, by default, users are rate limited to:
 
-| Request Type     | Limit |
-| ---------------- | ----- |
-| Export           | 6 projects per minute |
-| Download export  | 1 download per group per minute |
-| Import           | 6 projects per minute |
+| Request type    | Limit                           |
+|:----------------|:--------------------------------|
+| Export          | 6 projects per minute           |
+| Download export | 1 download per group per minute |
+| Import          | 6 projects per minute           |
 
 ## Related topics
 

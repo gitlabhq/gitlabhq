@@ -4,26 +4,16 @@ group: Anti-Abuse
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Git abuse rate limit (administration) **(ULTIMATE)**
+# Git abuse rate limit (administration) **(ULTIMATE SELF)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8066) in GitLab 15.2 [with a flag](../../../administration/feature_flags.md) named `git_abuse_rate_limit_feature_flag`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `git_abuse_rate_limit_feature_flag`. On GitLab.com, this feature is available.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8066) in GitLab 15.2 [with a flag](../../../administration/feature_flags.md) named `git_abuse_rate_limit_feature_flag`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/394996) in GitLab 15.10. Feature flag `git_abuse_rate_limit_feature_flag` removed.
 
 This is the administration documentation. For information about Git abuse rate limiting at the group level, see the [group-level documentation](../../group/reporting/git_abuse_rate_limit.md).
 
 Git abuse rate limiting is a feature to automatically [ban users](../moderate_users.md#ban-and-unban-users) who download or clone more than a specified number of repositories in any project in the instance in a given time frame. Banned users cannot sign in to the instance and cannot access any non-public group via HTTP or SSH. The rate limit also applies to users who authenticate with a [personal](../../../user/profile/personal_access_tokens.md) or [group access token](../../../user/group/settings/group_access_tokens.md).
 
 Git abuse rate limiting does not apply to instance administrators, [deploy tokens](../../../user/project/deploy_tokens/index.md), or [deploy keys](../../../user/project/deploy_keys/index.md).
-
-## Automatic ban notifications
-
-If the `git_abuse_rate_limit_feature_flag` feature flag is enabled, selected users receive an email when a user is about to be banned.
-
-If automatic banning is disabled, a user is not banned automatically when they exceed the limit. However, notifications are still sent. You can use this setup to determine the correct values of the rate limit settings before enabling automatic banning.
-
-If automatic banning is enabled, an email notification is sent when a user is about to be banned, and the user is automatically banned from the GitLab instance.
 
 ## Configure Git abuse rate limiting
 
@@ -37,6 +27,12 @@ If automatic banning is enabled, an email notification is sent when a user is ab
    1. Add up to `100` users to the **Send notifications to** field. You must select at least one user. All application administrators are selected by default.
    1. Optional. Turn on the **Automatically ban users from this namespace when they exceed the specified limits** toggle to enable automatic banning.
 1. Select **Save changes**.
+
+## Automatic ban notifications
+
+If automatic banning is disabled, a user is not banned automatically when they exceed the limit. However, notifications are still sent to the users listed under **Send notifications to**. You can use this setup to determine the correct values of the rate limit settings before enabling automatic banning.
+
+If automatic banning is enabled, an email notification is sent when a user is about to be banned, and the user is automatically banned from the GitLab instance.
 
 ## Unban a user
 

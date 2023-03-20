@@ -1,19 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'test_file_finder'
+require_relative '../lib/tooling/find_tests'
 
-changes = ARGV.shift
-output_file = ARGV.shift
+changes_file         = ARGV.shift
+matching_tests_paths = ARGV.shift
 
-changed_files = File.read(changes).split(' ')
-
-tff = TestFileFinder::FileFinder.new(paths: changed_files).tap do |file_finder|
-  file_finder.use TestFileFinder::MappingStrategies::PatternMatching.load('tests.yml')
-
-  if ENV['RSPEC_TESTS_MAPPING_ENABLED']
-    file_finder.use TestFileFinder::MappingStrategies::DirectMatching.load_json(ENV['RSPEC_TESTS_MAPPING_PATH'])
-  end
-end
-
-File.write(output_file, tff.test_files.uniq.join(' '))
+Tooling::FindTests.new(changes_file, matching_tests_paths).execute

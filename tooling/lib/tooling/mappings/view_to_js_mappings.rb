@@ -11,7 +11,7 @@ module Tooling
       HTML_ATTRIBUTE_VALUE_REGEXP = /js-[-\w]+/.freeze
 
       # Search for Rails partials included in an HTML file
-      RAILS_PARTIAL_INVOCATION_REGEXP = %r{(?:render|render_if_exist)(?: |\()(?:partial: ?)?['"]([\w/-]+)['"]}.freeze
+      RAILS_PARTIAL_INVOCATION_REGEXP = %r{(?:render|render_if_exists)(?: |\()(?:partial: ?)?['"]([\w/-]+)['"]}.freeze
 
       def initialize(view_base_folder: 'app/views', js_base_folder: 'app/assets/javascripts')
         @view_base_folders = folders_for_available_editions(view_base_folder)

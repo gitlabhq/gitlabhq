@@ -3,10 +3,18 @@ import { GlButton, GlAlert, GlForm } from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { __, s__, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { DEFAULT_ITEM_LENGTH, MAX_ITEM_LENGTH } from '../constants/language_filter_data';
-import { HR_DEFAULT_CLASSES, ONLY_SHOW_MD } from '../constants';
-import { convertFiltersData } from '../utils';
-import CheckboxFilter from './checkbox_filter.vue';
+import { HR_DEFAULT_CLASSES, ONLY_SHOW_MD } from '../../constants';
+import { convertFiltersData } from '../../utils';
+import CheckboxFilter from '../checkbox_filter.vue';
+import {
+  trackShowMore,
+  trackShowHasOverMax,
+  trackSubmitQuery,
+  trackResetQuery,
+  TRACKING_ACTION_SELECT,
+} from './tracking';
+
+import { DEFAULT_ITEM_LENGTH, MAX_ITEM_LENGTH } from './data';
 
 export default {
   name: 'LanguageFilter',
@@ -76,11 +84,21 @@ export default {
     ]),
     onShowMore() {
       this.showAll = true;
+      trackShowMore();
+
+      if (this.hasOverMax) {
+        trackShowHasOverMax();
+      }
+    },
+    submitQuery() {
+      trackSubmitQuery();
+      this.applyQuery();
     },
     trimBuckets(length) {
       return this.languageAggregationBuckets.slice(0, length);
     },
     cleanResetFilters() {
+      trackResetQuery();
       if (this.currentUrlQueryHasLanguageFilters) {
         return this.resetLanguageQueryWithRedirect();
       }
@@ -89,6 +107,7 @@ export default {
     },
   },
   HR_DEFAULT_CLASSES,
+  TRACKING_ACTION_SELECT,
 };
 </script>
 
@@ -96,7 +115,7 @@ export default {
   <gl-form
     v-if="hasBuckets"
     class="gl-pt-5 gl-md-pt-0 language-filter-checkbox"
-    @submit.prevent="applyQuery"
+    @submit.prevent="submitQuery"
   >
     <hr :class="dividerClasses" />
     <div
@@ -104,7 +123,10 @@ export default {
       class="gl-overflow-x-hidden gl-overflow-y-auto"
       :class="{ 'language-filter-max-height': showAll }"
     >
-      <checkbox-filter :filters-data="filtersData" />
+      <checkbox-filter
+        :filters-data="filtersData"
+        :tracking-namespace="$options.TRACKING_ACTION_SELECT"
+      />
       <span v-if="showAll && hasOverMax" data-testid="has-over-max-text">{{
         $options.i18n.showingMax
       }}</span>

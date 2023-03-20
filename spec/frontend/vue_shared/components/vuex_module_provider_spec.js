@@ -3,10 +3,10 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VuexModuleProvider from '~/vue_shared/components/vuex_module_provider.vue';
 
-const TestComponent = Vue.extend({
+const TestComponent = {
   inject: ['vuexModule'],
   template: `<div data-testid="vuexModule">{{ vuexModule }}</div> `,
-});
+};
 
 const TEST_VUEX_MODULE = 'testVuexModule';
 

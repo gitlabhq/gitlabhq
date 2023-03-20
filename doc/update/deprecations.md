@@ -47,6 +47,29 @@ and [GraphQL](https://docs.gitlab.com/ee/api/graphql/removed_items.html) depreca
 
 <div class="deprecation removal-160 breaking-change">
 
+### Bundled Grafana Helm Chart is deprecated
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The Grafana Helm chart that is bundled with the GitLab Helm Chart is deprecated and will be removed in the GitLab Helm Chart 7.0 release (releasing along with GitLab 16.0).
+
+The bundled Grafana Helm chart is an optional service that can be turned on to provide the Grafana UI connected to the GitLab Helm Chart's Prometheus metrics.
+
+The version of Grafana that the GitLab Helm Chart is currently providing is no longer a supported Grafana version.
+If you're using the bundled Grafana, you should switch to the [newer chart version from Grafana Labs](https://artifacthub.io/packages/helm/grafana/grafana)
+or a Grafana Operator from a trusted provider.
+
+In your new Grafana instance, you can [configure the GitLab provided Prometheus as a data source](https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html#integration-with-gitlab-ui)
+and [connect Grafana to the GitLab UI](https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html#integration-with-gitlab-ui).
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Deprecated Consul http metrics
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
@@ -114,6 +137,28 @@ The change improves consistency between Omnibus GitLab and source installs and e
 
 You should update to the new configuration structure as soon as possible using
 [the upgrade instructions](https://docs.gitlab.com/ee/update/#gitaly-omnibus-gitlab-configuration-structure-change).
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Major bundled Helm Chart updates for the GitLab Helm Chart
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+To coincide with GitLab 16.0, the GitLab Helm Chart will release the 7.0 major version. The following major bundled chart updates will be included:
+
+- In GitLab 16.0, [PostgreSQL 12 support is being removed, and PostgreSQL 13 is becoming the new minimum](#postgresql-12-deprecated).
+  - Installs using production-ready external databases will need to complete their migration to a newer PostgreSQL version before upgrading.
+  - Installs using the [non-production bundled PostgreSQL 12 chart](https://docs.gitlab.com/charts/installation/tools.html#postgresql) will have the chart upgraded to the new version. For more information, [see issue 4118](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/4118)
+- Installs using the [non-production bundled Redis chart](https://docs.gitlab.com/charts/installation/tools.html#redis) will have the chart upgraded to a newer version. For more information, [see issue 3375](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3375)
+- Installs using the [bundled cert-manager chart](https://docs.gitlab.com/charts/installation/tls.html#option-1-cert-manager-and-lets-encrypt) will have the chart upgraded to a newer version. For more information, [see issue 4313](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/4313)
+
+The full GitLab Helm Chart 7.0 upgrade steps will be available in the [upgrade docs](https://docs.gitlab.com/charts/installation/upgrade.html).
 
 </div>
 </div>
@@ -1988,7 +2033,7 @@ In GitLab 16.0, PostgreSQL 13 becomes the minimum required PostgreSQL version.
 PostgreSQL 12 will be supported for the full GitLab 15 release cycle.
 PostgreSQL 13 will also be supported for instances that want to upgrade prior to GitLab 16.0.
 
-Upgrading to PostgreSQL 13 is not yet supported for GitLab instances with Geo enabled. Geo support for PostgreSQL 13 will be announced in a minor release version of GitLab 15, after the process is fully supported and validated. For more information, read the Geo related verifications on the [support epic for PostgreSQL 13](https://gitlab.com/groups/gitlab-org/-/epics/3832).
+Support for PostgreSQL 13 was added to Geo in GitLab 15.2.
 
 </div>
 

@@ -1,9 +1,14 @@
 <script>
+import Vue from 'vue';
 import { GlFormCheckboxGroup, GlFormCheckbox } from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { intersection } from 'lodash';
+import Tracking from '~/tracking';
 import { NAV_LINK_COUNT_DEFAULT_CLASSES, LABEL_DEFAULT_CLASSES } from '../constants';
 import { formatSearchResultCount } from '../../store/utils';
+
+export const TRACKING_LABEL_SET = 'set';
+export const TRACKING_LABEL_CHECKBOX = 'checkbox';
 
 export default {
   name: 'CheckboxFilter',
@@ -14,6 +19,10 @@ export default {
   props: {
     filtersData: {
       type: Object,
+      required: true,
+    },
+    trackingNamespace: {
+      type: String,
       required: true,
     },
   },
@@ -30,8 +39,11 @@ export default {
       get() {
         return intersection(this.flatDataFilterValues, this.queryLanguageFilters);
       },
-      set(value) {
+      async set(value) {
         this.setQuery({ key: this.filtersData?.filterParam, value });
+
+        await Vue.nextTick();
+        this.trackSelectCheckbox();
       },
     },
     labelCountClasses() {
@@ -40,8 +52,14 @@ export default {
   },
   methods: {
     ...mapActions(['setQuery']),
-    getFormatedCount(count) {
+    getFormattedCount(count) {
       return formatSearchResultCount(count);
+    },
+    trackSelectCheckbox() {
+      Tracking.event(this.trackingNamespace, TRACKING_LABEL_CHECKBOX, {
+        label: TRACKING_LABEL_SET,
+        property: this.selectedFilter,
+      });
     },
   },
   NAV_LINK_COUNT_DEFAULT_CLASSES,
@@ -67,7 +85,7 @@ export default {
             {{ f.label }}
           </span>
           <span v-if="f.count" :class="labelCountClasses" data-testid="labelCount">
-            {{ getFormatedCount(f.count) }}
+            {{ getFormattedCount(f.count) }}
           </span>
         </span>
       </gl-form-checkbox>

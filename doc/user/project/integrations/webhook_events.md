@@ -1392,6 +1392,7 @@ Payload example:
   "build_started_at": null,
   "build_finished_at": null,
   "build_duration": null,
+  "build_queued_duration": 1095.588715, // duration in seconds
   "build_allow_failure": false,
   "build_failure_reason": "script_failure",
   "retries_count": 2,        // the second retry of this job
