@@ -140,18 +140,6 @@ kbd kbd {
   background-color: #fbfafd;
   opacity: 1;
 }
-.form-inline {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-}
-@media (min-width: 576px) {
-  .form-inline .form-control {
-    display: inline-block;
-    width: auto;
-    vertical-align: middle;
-  }
-}
 .btn {
   display: inline-block;
   font-weight: 400;
@@ -562,16 +550,12 @@ strong {
 svg {
   vertical-align: baseline;
 }
-.form-control,
-.search form {
+.form-control {
   font-size: 0.875rem;
 }
 .hidden {
   display: none !important;
   visibility: hidden !important;
-}
-.hide {
-  display: none;
 }
 .badge:not(.gl-badge) {
   padding: 4px 5px;
@@ -637,37 +621,6 @@ html {
 }
 .dropdown {
   position: relative;
-}
-.dropdown-menu-toggle:active {
-  box-shadow: 0 0 0 1px #fff, 0 0 0 3px #428fdc;
-  outline: none;
-}
-.search-input-container .dropdown-menu {
-  margin-top: 11px;
-}
-.dropdown-menu-toggle {
-  padding: 6px 8px 6px 10px;
-  background-color: #fff;
-  color: #333238;
-  font-size: 14px;
-  text-align: left;
-  border: 1px solid #bfbfc3;
-  border-radius: 0.25rem;
-  white-space: nowrap;
-}
-.dropdown-menu-toggle.no-outline {
-  outline: 0;
-}
-.dropdown-menu-toggle.dropdown-menu-toggle {
-  justify-content: flex-start;
-  overflow: hidden;
-  padding-top: 7px;
-  padding-bottom: 7px;
-  padding-right: 25px;
-  position: relative;
-  text-overflow: ellipsis;
-  line-height: 16px;
-  width: 160px;
 }
 .dropdown-menu {
   display: none;
@@ -748,11 +701,6 @@ html {
   header.navbar-gitlab .dropdown .dropdown-menu {
     width: 100%;
     min-width: 100%;
-  }
-}
-@media (max-width: 767.98px) {
-  .dropdown-menu-toggle.dropdown-menu-toggle {
-    width: 100%;
   }
 }
 input {

@@ -31,10 +31,7 @@
           %ul.nav.navbar-nav.gl-w-full.gl-align-items-center
             %li.nav-item.header-search-new.gl-display-none.gl-lg-display-block.gl-w-full
               - unless current_controller?(:search)
-                - if Feature.enabled?(:new_header_search)
-                  = render 'layouts/header_search'
-                - else
-                  = render 'layouts/search'
+                = render 'layouts/header_search'
             %li.nav-item{ class: 'd-none d-sm-inline-block d-lg-none' }
               = link_to search_menu_item.fetch(:href), title: search_menu_item.fetch(:title), aria: { label: search_menu_item.fetch(:title) },
                 data: { toggle: 'tooltip', placement: 'bottom', container: 'body',

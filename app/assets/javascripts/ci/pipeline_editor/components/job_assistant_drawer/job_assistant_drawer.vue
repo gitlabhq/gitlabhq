@@ -1,11 +1,9 @@
 <script>
 import { GlDrawer, GlAccordion, GlButton } from '@gitlab/ui';
-import { stringify } from 'yaml';
-import { mapMutations, mapState } from 'vuex';
+import { stringify, parse } from 'yaml';
 import { set, omit, trim } from 'lodash';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import eventHub, { SCROLL_EDITOR_TO_BOTTOM } from '~/ci/pipeline_editor/event_hub';
-import { UPDATE_CI_CONFIG } from '~/ci/pipeline_editor/store/mutation_types';
 import getAllRunners from '~/ci/runner/graphql/list/all_runners.query.graphql';
 import { DRAWER_CONTAINER_CLASS, JOB_TEMPLATE, i18n } from './constants';
 import { removeEmptyObj, trimFields } from './utils';
@@ -32,6 +30,14 @@ export default {
       required: false,
       default: 200,
     },
+    ciConfigData: {
+      type: Object,
+      required: true,
+    },
+    ciFileContent: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -49,7 +55,12 @@ export default {
     },
   },
   computed: {
-    ...mapState(['currentCiFileContent']),
+    availableStages() {
+      if (this.ciConfigData?.mergedYaml) {
+        return parse(this.ciConfigData.mergedYaml).stages;
+      }
+      return [];
+    },
     tagOptions() {
       const options = [];
       this.runners?.forEach((runner) => options.push(...runner.tagList));
@@ -65,9 +76,6 @@ export default {
     },
   },
   methods: {
-    ...mapMutations({
-      updateCiConfig: UPDATE_CI_CONFIG,
-    }),
     closeDrawer() {
       this.clearJob();
       this.$emit('close-job-assistant-drawer');
@@ -81,7 +89,7 @@ export default {
       }
 
       const newJobString = this.generateYmlString();
-      this.updateCiConfig(`${this.currentCiFileContent}\n${newJobString}`);
+      this.$emit('updateCiConfig', `${this.ciFileContent}\n${newJobString}`);
       eventHub.$emit(SCROLL_EDITOR_TO_BOTTOM);
 
       this.closeDrawer();
@@ -131,6 +139,7 @@ export default {
         :job="job"
         :is-name-valid="isNameValid"
         :is-script-valid="isScriptValid"
+        :available-stages="availableStages"
         @update-job="updateJob"
       />
       <image-item :job="job" @update-job="updateJob" />

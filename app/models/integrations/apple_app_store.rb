@@ -53,7 +53,7 @@ module Integrations
         s_("Use the Apple App Store Connect integration to easily connect to the Apple App Store with Fastlane in CI/CD pipelines."),
         s_("After the Apple App Store Connect integration is activated, the following protected variables will be created for CI/CD use."),
         variable_list.join('<br>'),
-        s_(format("To get started, see the <a href='%{url}' target='_blank'>integration documentation</a> for instructions on how to generate App Store Connect credentials, and how to use this integration.", url: "https://docs.gitlab.com/ee/integration/apple_app_store.html")).html_safe
+        s_(format("To get started, see the <a href='%{url}' target='_blank'>integration documentation</a> for instructions on how to generate App Store Connect credentials, and how to use this integration.", url: Rails.application.routes.url_helpers.help_page_url('user/project/integrations/apple_app_store'))).html_safe
       ]
       # rubocop:enable Layout/LineLength
 

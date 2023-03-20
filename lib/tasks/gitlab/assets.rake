@@ -16,6 +16,13 @@ module Tasks
         babel.config.js
         config/webpack.config.js
       ].freeze
+      # Ruby gems might emit assets which have an impact on compilation
+      # or have a direct impact on asset compilation (e.g. scss) and therefore
+      # we should compile when these change
+      RAILS_ASSET_FILES = %w[
+        Gemfile
+        Gemfile.lock
+      ].freeze
       EXCLUDE_PATTERNS = %w[
         app/assets/javascripts/locale/**/app.js
       ].freeze
@@ -55,6 +62,7 @@ module Tasks
 
         asset_files = Dir.glob(JS_ASSET_PATTERNS)
         asset_files += JS_ASSET_FILES
+        asset_files += RAILS_ASSET_FILES
 
         assets_folders.each do |folder|
           asset_files.concat(Dir.glob(["#{folder}/**/*.*"]))

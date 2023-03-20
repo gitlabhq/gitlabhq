@@ -38440,9 +38440,6 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-msgid "Search GitLab"
-msgstr ""
-
 msgid "Search Within"
 msgstr ""
 
@@ -38564,33 +38561,6 @@ msgid "Search your project dependencies for their licenses and apply policies."
 msgstr ""
 
 msgid "Search your projects"
-msgstr ""
-
-msgid "SearchAutocomplete|All GitLab"
-msgstr ""
-
-msgid "SearchAutocomplete|Issues I've created"
-msgstr ""
-
-msgid "SearchAutocomplete|Issues assigned to me"
-msgstr ""
-
-msgid "SearchAutocomplete|Merge requests I've created"
-msgstr ""
-
-msgid "SearchAutocomplete|Merge requests assigned to me"
-msgstr ""
-
-msgid "SearchAutocomplete|Merge requests that I'm a reviewer"
-msgstr ""
-
-msgid "SearchAutocomplete|in all GitLab"
-msgstr ""
-
-msgid "SearchAutocomplete|in group %{groupName}"
-msgstr ""
-
-msgid "SearchAutocomplete|in project %{projectName}"
 msgstr ""
 
 msgid "SearchCodeResults|of %{link_to_project}"

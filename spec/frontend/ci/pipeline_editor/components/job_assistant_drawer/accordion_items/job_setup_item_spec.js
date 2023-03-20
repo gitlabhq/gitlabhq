@@ -1,4 +1,3 @@
-import createStore from '~/ci/pipeline_editor/store';
 import JobSetupItem from '~/ci/pipeline_editor/components/job_assistant_drawer/accordion_items/job_setup_item.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { JOB_TEMPLATE } from '~/ci/pipeline_editor/components/job_assistant_drawer/constants';
@@ -18,8 +17,8 @@ describe('Job setup item', () => {
 
   const createComponent = () => {
     wrapper = shallowMountExtended(JobSetupItem, {
-      store: createStore(),
       propsData: {
+        availableStages: ['.pre', dummyJobStage, '.post'],
         tagOptions: [
           { id: 'tag1', name: 'tag1' },
           { id: 'tag2', name: 'tag2' },

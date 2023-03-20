@@ -56,10 +56,6 @@ module QA
           element :menu_item_link
         end
 
-        view 'app/views/layouts/_search.html.haml' do
-          element :search_term_field
-        end
-
         view 'app/views/layouts/_header_search.html.haml' do
           element :search_box
         end

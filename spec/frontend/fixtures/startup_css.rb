@@ -40,21 +40,6 @@ RSpec.describe 'Startup CSS fixtures', type: :controller do
       expect(response).to be_successful
     end
 
-    # This Feature Flag is on by default
-    # This ensures that the correct css is generated
-    # When the feature flag is on, the general startup will capture it
-    # This will be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/339348
-    it "startup_css/project-#{type}-search-ff-off.html" do
-      stub_feature_flags(new_header_search: false)
-
-      get :show, params: {
-        namespace_id: project.namespace.to_param,
-        id: project
-      }
-
-      expect(response).to be_successful
-    end
-
     # This Feature Flag is off by default
     # This ensures that the correct css is generated for super sidebar
     # When the feature flag is off, the general startup will capture it

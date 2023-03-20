@@ -14,7 +14,7 @@ class UserSyncedAttributesMetadata < ApplicationRecord
   def read_only_attributes
     return [] unless sync_profile_from_provider?
 
-    self.class.syncable_attributes.select { |key| synced?(key) }
+    SYNCABLE_ATTRIBUTES.select { |key| synced?(key) }
   end
 
   def synced?(attribute)
@@ -26,12 +26,11 @@ class UserSyncedAttributesMetadata < ApplicationRecord
   end
 
   class << self
-    def syncable_attributes
-      if Gitlab.config.ldap.enabled && !Gitlab.config.ldap.sync_name
-        SYNCABLE_ATTRIBUTES - %i[name]
-      else
-        SYNCABLE_ATTRIBUTES
-      end
+    def syncable_attributes(provider = nil)
+      return SYNCABLE_ATTRIBUTES unless provider && ldap_provider?(provider)
+      return SYNCABLE_ATTRIBUTES if ldap_sync_name?(provider)
+
+      SYNCABLE_ATTRIBUTES - %i[name]
     end
   end
 
@@ -39,5 +38,18 @@ class UserSyncedAttributesMetadata < ApplicationRecord
 
   def sync_profile_from_provider?
     Gitlab::Auth::OAuth::Provider.sync_profile_from_provider?(provider)
+  end
+
+  class << self
+    def ldap_provider?(provider)
+      Gitlab::Auth::OAuth::Provider.ldap_provider?(provider)
+    end
+
+    def ldap_sync_name?(provider)
+      return false unless provider
+
+      config = Gitlab::Auth::Ldap::Config.new(provider)
+      config.enabled? && config.sync_name
+    end
   end
 end

@@ -161,6 +161,27 @@ To coincide with GitLab 16.0, the GitLab Helm Chart will release the 7.0 major v
 The full GitLab Helm Chart 7.0 upgrade steps will be available in the [upgrade docs](https://docs.gitlab.com/charts/installation/upgrade.html).
 
 </div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Work items path with global ID at the end of the path is deprecated
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Usage of global IDs in work item URLs is deprecated. In the future, only internal IDs (IID) will be supported.
+
+Because GitLab supports multiple work item types, a path such as `https://gitlab.com/gitlab-org/gitlab/-/work_items/<global_id>` can display, for example, a [task](https://docs.gitlab.com/ee/user/tasks.html) or an [OKR](https://docs.gitlab.com/ee/user/okrs.html).
+
+In GitLab 15.10 we added support for using internal IDs (IID) in that path by appending a query param at
+the end (`iid_path`) in the following format: `https://gitlab.com/gitlab-org/gitlab/-/work_items/<iid>?iid_path=true`.
+
+In GitLab 16.0 we will remove the ability to use a global ID in the work items path. The number at the end of the path will be considered an internal ID (IID) without the need of adding a query param at the end. Only the following format will be supported: `https://gitlab.com/gitlab-org/gitlab/-/work_items/<iid>`.
+
+</div>
 </div>
 
 <div class="announcement-milestone">

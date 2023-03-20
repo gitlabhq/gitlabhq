@@ -45,28 +45,40 @@ merge request, authored by the user who suggested the changes.
 
 > [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/232339) in GitLab 13.11: suggestions in multi-line comments also become multi-line.
 
-Reviewers can also suggest changes to multiple lines with a single suggestion
-within merge request diff threads by selecting and dragging selection to all
-relevant line numbers or by adjusting the range offsets. The
-offsets are relative to the position of the diff thread, and specify the
-range to be replaced by the suggestion when it is applied.
+When you review a merge request diff, you can propose changes to multiple lines (up to 200)
+in a single suggestion, by either:
 
-![Multi-line suggestion syntax](img/multi-line-suggestion-syntax.png)
+- Selecting and dragging, as described in [Create suggestions](#create-suggestions).
+  GitLab creates a suggestion block for you.
+- Selecting a single line, then manually adjusting the range offsets.
 
-In the previous example, the suggestion covers three lines above and four lines
-below the commented line. When applied, it would replace from 3 lines _above_
-to 4 lines _below_ the commented line, with the suggested change.
+The range offsets in the first line of the suggestion describe line numbers relative
+to the line you selected. The offsets specify the lines your suggestion intends to replace.
+For example, this suggestion covers 3 lines above and 4 lines below the
+commented line:
+
+````markdown
+```suggestion:-3+4
+        "--talk-name=ca.desrt.dconf",
+        "--socket=wayland",
+```
+````
+
+When applied, the suggestion replaces from 3 lines above to 4 lines below the commented line:
 
 ![Multi-line suggestion preview](img/multi-line-suggestion-preview.png)
 
-NOTE:
 Suggestions for multiple lines are limited to 100 lines _above_ and 100
 lines _below_ the commented diff line. This allows for up to 200 changed lines per
 suggestion.
 
 ## Apply suggestions
 
-The merge request author can apply suggested changes directly from the merge request:
+Prerequisites:
+
+- You must be the author of the merge request, or have at least the Developer role in the project.
+
+To apply suggested changes directly from the merge request:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Merge requests** and find your merge request.
@@ -148,30 +160,24 @@ For example, to customize the commit message to output
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/320755) in GitLab 13.11. [Feature flag `batch_suggestions`](https://gitlab.com/gitlab-org/gitlab/-/issues/320755) removed.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326168) custom commit messages for batch suggestions in GitLab 14.4.
 
-You can apply multiple suggestions at once to reduce the number of commits added
-to your branch to address your reviewers' requests.
+To reduce the number of commits added to your branch, you can apply multiple
+suggestions in a single commit.
 
-1. To start a batch of suggestions to apply with a single commit, select **Add suggestion to batch**:
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Merge requests** and find your merge request.
+1. For each suggestion you want to apply, and select **Add suggestion to batch**.
+1. Optional. To remove a suggestion, select **Remove from batch**.
+1. After you add your desired suggestions, select **Apply suggestions**.
 
-   ![A code change suggestion displayed, with the add-suggestion option highlighted.](img/add_first_suggestion_to_batch_v13_1.jpg "Add a suggestion to a batch")
+   WARNING:
+   If you apply a batch of suggestions containing changes from multiple authors,
+   you are credited as the resulting commit's author. If your project is configured
+   to [prevent approvals from users who add commits](../approvals/settings.md#prevent-approvals-by-users-who-add-commits), you are no longer an eligible
+   approver for this merge request.
 
-1. Add as many additional suggestions to the batch as you wish:
-
-   ![A code change suggestion displayed, with the add-more suggestion option highlighted.](img/add_another_suggestion_to_batch_v13_1.jpg "Add another suggestion to a batch")
-
-1. To remove suggestions, select **Remove from batch**:
-
-   ![A code change suggestion displayed, with the option to remove that suggestion from its batch highlighted.](img/remove_suggestion_from_batch_v13_1.jpg "Remove a suggestion from a batch")
-
-1. Having added all the suggestions to your liking, when ready, select **Apply suggestions**. You
-   can optionally specify a custom commit message for [batch suggestions](#batch-suggestions)
-   (GitLab 14.4 and later) to describe your change. If you don't specify it, the default commit
-   message is used.
-
-   ![A code change suggestion displayed, with the option to apply the batch of suggestions highlighted.](img/apply_batch_of_suggestions_v13_1.jpg "Apply a batch of suggestions")
-
-WARNING:
-Suggestions applied from multiple authors creates a commit authored by the user applying the suggestions.
+1. Optional. Provide a custom commit message for [batch suggestions](#batch-suggestions)
+   (GitLab 14.4 and later) to describe your change. If you don't specify one,
+   the default commit message is used.
 
 ## Related topics
 

@@ -1,0 +1,17 @@
+- title: "Work items path with global ID at the end of the path is deprecated"
+  announcement_milestone: "15.10"
+  removal_milestone: "16.0"
+  breaking_change: true
+  reporter: mcelicalderonG
+  stage: Plan
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/393836
+  body: |
+    Usage of global IDs in work item URLs is deprecated. In the future, only internal IDs (IID) will be supported.
+
+    Because GitLab supports multiple work item types, a path such as `https://gitlab.com/gitlab-org/gitlab/-/work_items/<global_id>` can display, for example, a [task](https://docs.gitlab.com/ee/user/tasks.html) or an [OKR](https://docs.gitlab.com/ee/user/okrs.html).
+
+    In GitLab 15.10 we added support for using internal IDs (IID) in that path by appending a query param at
+    the end (`iid_path`) in the following format: `https://gitlab.com/gitlab-org/gitlab/-/work_items/<iid>?iid_path=true`.
+
+    In GitLab 16.0 we will remove the ability to use a global ID in the work items path. The number at the end of the path will be considered an internal ID (IID) without the need of adding a query param at the end. Only the following format will be supported: `https://gitlab.com/gitlab-org/gitlab/-/work_items/<iid>`.
+  tiers: [Free, Silver, Gold, Core, Premium, Ultimate]

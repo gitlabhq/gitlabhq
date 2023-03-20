@@ -415,10 +415,6 @@ RSpec.configure do |config|
       ./ee/spec/requests/api/projects_spec.rb
       ./ee/spec/requests/api/settings_spec.rb
       ./ee/spec/requests/api/users_spec.rb
-      ./ee/spec/requests/api/vulnerabilities_spec.rb
-      ./ee/spec/requests/api/vulnerability_exports_spec.rb
-      ./ee/spec/requests/api/vulnerability_findings_spec.rb
-      ./ee/spec/requests/api/vulnerability_issue_links_spec.rb
       ./ee/spec/support/shared_examples/requests/api/project_approval_rules_api_shared_examples.rb
     ]
 

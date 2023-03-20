@@ -1,8 +1,0 @@
----
-name: new_header_search
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68681
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/339348
-milestone: '14.3'
-type: development
-group: group::global search
-default_enabled: true

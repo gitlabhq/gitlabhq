@@ -1,7 +1,6 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import ScopeNavigation from '~/search/sidebar/components/scope_navigation.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SCOPE_ISSUES, SCOPE_MERGE_REQUESTS, SCOPE_BLOB } from '../constants';
 import ResultsFilters from './results_filters.vue';
 import LanguageFilter from './language_filter/index.vue';
@@ -13,7 +12,6 @@ export default {
     ScopeNavigation,
     LanguageFilter,
   },
-  mixins: [glFeatureFlagsMixin()],
   computed: {
     ...mapState(['urlQuery']),
     ...mapGetters(['currentScope']),

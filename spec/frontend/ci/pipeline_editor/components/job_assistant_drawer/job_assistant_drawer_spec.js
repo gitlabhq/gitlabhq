@@ -8,8 +8,11 @@ import ImageItem from '~/ci/pipeline_editor/components/job_assistant_drawer/acco
 import getAllRunners from '~/ci/runner/graphql/list/all_runners.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createStore from '~/ci/pipeline_editor/store';
-import { mockAllRunnersQueryResponse } from 'jest/ci/pipeline_editor/mock_data';
+import {
+  mockAllRunnersQueryResponse,
+  mockLintResponse,
+  mockCiYml,
+} from 'jest/ci/pipeline_editor/mock_data';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import eventHub, { SCROLL_EDITOR_TO_BOTTOM } from '~/ci/pipeline_editor/event_hub';
 
@@ -37,8 +40,9 @@ describe('Job assistant drawer', () => {
     ]);
 
     wrapper = mountExtended(JobAssistantDrawer, {
-      store: createStore(),
       propsData: {
+        ciConfigData: mockLintResponse,
+        ciFileContent: mockCiYml,
         isVisible: true,
       },
       apolloProvider: mockApollo,
@@ -75,7 +79,6 @@ describe('Job assistant drawer', () => {
   });
 
   it('trigger validate if job name is empty', async () => {
-    const updateCiConfigSpy = jest.spyOn(wrapper.vm, 'updateCiConfig');
     findJobSetupItem().vm.$emit('update-job', 'script', 'b');
     findConfirmButton().trigger('click');
 
@@ -83,7 +86,7 @@ describe('Job assistant drawer', () => {
 
     expect(findJobSetupItem().props('isNameValid')).toBe(false);
     expect(findJobSetupItem().props('isScriptValid')).toBe(true);
-    expect(updateCiConfigSpy).toHaveBeenCalledTimes(0);
+    expect(wrapper.emitted('updateCiConfig')).toBeUndefined();
   });
 
   describe('when enter valid input', () => {
@@ -130,18 +133,18 @@ describe('Job assistant drawer', () => {
     });
 
     it('should update correct ci content when click add button', () => {
-      const updateCiConfigSpy = jest.spyOn(wrapper.vm, 'updateCiConfig');
-
       findConfirmButton().trigger('click');
 
-      expect(updateCiConfigSpy).toHaveBeenCalledWith(
-        `\n${stringify({
-          [dummyJobName]: {
-            script: dummyJobScript,
-            image: { name: dummyImageName, entrypoint: [dummyImageEntrypoint] },
-          },
-        })}`,
-      );
+      expect(wrapper.emitted('updateCiConfig')).toStrictEqual([
+        [
+          `${wrapper.props('ciFileContent')}\n${stringify({
+            [dummyJobName]: {
+              script: dummyJobScript,
+              image: { name: dummyImageName, entrypoint: [dummyImageEntrypoint] },
+            },
+          })}`,
+        ],
+      ]);
     });
 
     it('should emit scroll editor to button event when click add button', () => {
