@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require_relative '../../app/models/concerns/token_authenticatable'
-require_relative '../../app/models/concerns/token_authenticatable_strategies/base'
-require_relative '../../app/models/concerns/token_authenticatable_strategies/insecure'
-require_relative '../../app/models/concerns/token_authenticatable_strategies/digest'
-
 namespace :tokens do
+  require_relative '../../app/models/concerns/token_authenticatable'
+  require_relative '../../app/models/concerns/token_authenticatable_strategies/base'
+  require_relative '../../app/models/concerns/token_authenticatable_strategies/insecure'
+  require_relative '../../app/models/concerns/token_authenticatable_strategies/digest'
+
   desc "Reset all GitLab incoming email tokens"
   task reset_all_email: :environment do
     reset_all_users_token(:reset_incoming_email_token!)

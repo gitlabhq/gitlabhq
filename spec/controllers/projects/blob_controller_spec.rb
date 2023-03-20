@@ -360,7 +360,6 @@ RSpec.describe Projects::BlobController do
         let(:namespace) { project.namespace.reload }
         let(:property) { target_event }
         let(:label) { 'usage_activity_by_stage_monthly.create.action_monthly_active_users_sfe_edit' }
-        let(:feature_flag_name) { 'route_hll_to_snowplow_phase4' }
       end
     end
   end
@@ -520,7 +519,6 @@ RSpec.describe Projects::BlobController do
       let(:namespace) { project.namespace }
       let(:property) { target_event }
       let(:label) { 'usage_activity_by_stage_monthly.create.action_monthly_active_users_sfe_edit' }
-      let(:feature_flag_name) { 'route_hll_to_snowplow_phase4' }
     end
 
     it 'redirects to blob' do

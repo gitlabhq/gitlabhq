@@ -416,7 +416,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
         initialTitleText: issue.title,
         initialDescriptionHtml: '<p dir="auto">issue text</p>',
         initialDescriptionText: 'issue text',
-        initialTaskStatus: '0 of 0 checklist items completed',
+        initialTaskCompletionStatus: { completed_count: 0, count: 0 },
         issueType: 'issue',
         iid: issue.iid.to_s,
         isHidden: false

@@ -105,10 +105,12 @@ module Ci
       }
 
       experiment(:runners_availability_section, namespace: project.root_ancestor) do |e|
+        e.control {} # rubocop:disable Lint/EmptyBlock
         e.candidate { data[:any_runners_available] = project.active_runners.exists?.to_s }
       end
 
       experiment(:ios_specific_templates, actor: current_user, project: project, sticky_to: project) do |e|
+        e.control {} # rubocop:disable Lint/EmptyBlock
         e.candidate do
           data[:registration_token] = project.runners_token if can?(current_user, :register_project_runners, project)
           data[:ios_runners_available] = (project.shared_runners_available? && Gitlab.com?).to_s

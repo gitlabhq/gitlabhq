@@ -703,6 +703,6 @@ Domain experts:
 | Area                         | Who
 |------------------------------|------------------------|
 | Verify / Pipeline authoring  | Avielle Wolfe          |
-| Verify / Pipeline authoring  | Laura Montemayor-Rodriguez  |
+| Verify / Pipeline authoring  | Laura Montemayor       |
 
 <!-- vale gitlab.Spelling = YES -->

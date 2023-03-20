@@ -456,6 +456,30 @@ web browser under `<hostIP>:8929` and push using SSH under the port `2289`.
 A `docker-compose.yml` example that uses different ports can be found in the
 [Docker compose](#install-gitlab-using-docker-compose) section.
 
+### Configure multiple database connections
+
+In GitLab 16.0, GitLab will default to using two database connections that point to the same PostgreSQL database.
+
+If you want to opt-in for this feature:
+
+1. Edit `/etc/gitlab/gitlab.rb` inside the container:
+
+   ```shell
+   sudo docker exec -it gitlab editor /etc/gitlab/gitlab.rb
+   ```
+
+1. Add the following line:
+
+   ```ruby
+   gitlab_rails['databases']['ci']['enable'] = true
+   ```
+
+1. Restart the container:
+
+```shell
+sudo docker restart gitlab
+```
+
 ## Upgrade
 
 In most cases, upgrading GitLab is as easy as downloading the newest Docker

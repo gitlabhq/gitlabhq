@@ -58,21 +58,28 @@ describe('AbuseReportsFilteredSearchBar', () => {
     });
   });
 
-  it('sets status=open query when there is no initial status query', () => {
-    createComponent();
+  it.each([undefined, 'invalid'])(
+    'sets status=open query when initial status query is %s',
+    (status) => {
+      if (status) {
+        setWindowLocation(`?status=${status}`);
+      }
 
-    expect(updateHistory).toHaveBeenCalledWith({
-      url: 'https://localhost/?status=open',
-      replace: true,
-    });
+      createComponent();
 
-    expect(findFilteredSearchBar().props('initialFilterValue')).toMatchObject([
-      {
-        type: FILTERED_SEARCH_TOKEN_STATUS.type,
-        value: { data: 'open', operator: '=' },
-      },
-    ]);
-  });
+      expect(updateHistory).toHaveBeenCalledWith({
+        url: 'https://localhost/?status=open',
+        replace: true,
+      });
+
+      expect(findFilteredSearchBar().props('initialFilterValue')).toMatchObject([
+        {
+          type: FILTERED_SEARCH_TOKEN_STATUS.type,
+          value: { data: 'open', operator: '=' },
+        },
+      ]);
+    },
+  );
 
   it('parses and passes search param to `FilteredSearchBar` component as `initialFilterValue` prop', () => {
     setWindowLocation('?status=closed&user=mr_abuser&reporter=ms_nitch');

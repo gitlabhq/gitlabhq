@@ -7,10 +7,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # License scanning of CycloneDX files **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 [with two flags](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags are disabled by default and both flags must be enabled for this feature to work.
-
-FLAG:
-On self-managed GitLab, this feature is not available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 for GitLab SaaS [with two flags](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags are disabled by default and both flags must be enabled for this feature to work.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/385173) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385173) in GitLab 15.10 for self-managed GitLab [with two flags](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`, both of which must be enabled for this feature to work. The flags are disabled by default due to the initial performance load when the license database is first imported. Work to improve performance is being tracked in [issue 397670](https://gitlab.com/gitlab-org/gitlab/-/issues/397670).
 
 To detect the licenses in use, License Compliance relies on running the
 [Dependency Scanning CI Jobs](../../application_security/dependency_scanning/index.md),

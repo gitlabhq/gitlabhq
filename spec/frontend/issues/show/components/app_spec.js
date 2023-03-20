@@ -1,6 +1,5 @@
 import { GlIcon, GlIntersectionObserver } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
-import { setHTMLFixture } from 'helpers/fixtures';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -100,22 +99,6 @@ describe('Issuable output', () => {
   };
 
   beforeEach(() => {
-    setHTMLFixture(`
-      <div>
-        <title>Title</title>
-        <div class="detail-page-description content-block">
-        <details open>
-          <summary>One</summary>
-        </details>
-        <details>
-          <summary>Two</summary>
-        </details>
-      </div>
-        <div class="flash-container"></div>
-        <span id="task_status"></span>
-      </div>
-    `);
-
     jest.spyOn(eventHub, '$emit');
 
     axiosMock = new MockAdapter(axios);

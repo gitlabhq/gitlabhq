@@ -164,7 +164,8 @@ function rspec_paralellized_job() {
   local test_tool="${job_name[0]}"
   local test_level="${job_name[1]}"
   local report_name=$(echo "${CI_JOB_NAME}" | sed -E 's|[/ ]|_|g') # e.g. 'rspec unit pg12 1/24' would become 'rspec_unit_pg12_1_24'
-  local rspec_opts="${1}"
+  local rspec_opts="${1:-}"
+  local rspec_tests_mapping_enabled="${RSPEC_TESTS_MAPPING_ENABLED:-}"
   local spec_folder_prefixes=""
   local rspec_flaky_folder_path="$(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH}")/"
   local knapsack_folder_path="$(dirname "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}")/"
@@ -218,7 +219,7 @@ function rspec_paralellized_job() {
 
   debug_rspec_variables
 
-  if [[ -n "${RSPEC_TESTS_MAPPING_ENABLED}" ]]; then
+  if [[ -n "${rspec_tests_mapping_enabled}" ]]; then
     tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" --filter "${RSPEC_TESTS_FILTER_FILE}" || rspec_run_status=$?
   else
     tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" || rspec_run_status=$?

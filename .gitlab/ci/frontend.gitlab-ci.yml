@@ -116,6 +116,27 @@ update-storybook-yarn-cache:
   script:
     - yarn_install_script
 
+retrieve-frontend-fixtures:
+  variables:
+    SETUP_DB: "false"
+  extends:
+    - .default-retry
+    - .frontend:rules:default-frontend-jobs
+  stage: prepare
+  script:
+    - export FIXTURES_SHA="${CI_MERGE_REQUEST_TARGET_BRANCH_SHA:-${CI_MERGE_REQUEST_DIFF_BASE_SHA:-$CI_COMMIT_SHA}}"
+    - source scripts/utils.sh
+    - source scripts/gitlab_component_helpers.sh
+    - |
+      if check_fixtures_download; then
+        run_timed_command "download_and_extract_fixtures"
+      fi
+  artifacts:
+    paths:
+      - tmp/tests/frontend/
+
+# Download fixtures only when a merge request contains changes to only JS files
+# and fixtures are present in the package registry.
 .frontend-fixtures-base:
   extends:
     - .default-retry
@@ -125,8 +146,18 @@ update-storybook-yarn-cache:
   stage: fixtures
   needs: ["setup-test-env", "retrieve-tests-metadata"]
   variables:
+    CRYSTALBALL: "false"
     WEBPACK_VENDOR_DLL: "true"
   script:
+    - export FIXTURES_SHA="${CI_MERGE_REQUEST_TARGET_BRANCH_SHA:-${CI_MERGE_REQUEST_DIFF_BASE_SHA:-$CI_COMMIT_SHA}}"
+    - source scripts/utils.sh
+    - source scripts/gitlab_component_helpers.sh
+    - |
+      if check_fixtures_download; then
+        exit 0
+      else
+        echo "No frontend fixtures directory, generating frontend fixtures."
+      fi
     - run_timed_command "gem install knapsack --no-document"
     - run_timed_command "scripts/gitaly-test-spawn"
     - source ./scripts/rspec_helpers.sh
@@ -157,6 +188,11 @@ rspec-all frontend_fixture as-if-foss:
     - .frontend-fixtures-base
     - .frontend:rules:frontend_fixture-as-if-foss
     - .as-if-foss
+  variables:
+    CRYSTALBALL: "false"
+    WEBPACK_VENDOR_DLL: "true"
+    KNAPSACK_GENERATE_REPORT: ""
+    FLAKY_RSPEC_GENERATE_REPORT: ""
   needs:
     - !reference [.frontend-fixtures-base, needs]
     - "compile-test-assets as-if-foss"
@@ -170,6 +206,8 @@ upload-frontend-fixtures:
   stage: fixtures
   needs: ["rspec-all frontend_fixture"]
   script:
+    - export FIXTURES_SHA="${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-$CI_COMMIT_SHA}"
+    - source scripts/utils.sh
     - source scripts/gitlab_component_helpers.sh
     - 'fixtures_archive_doesnt_exist || { echoinfo "INFO: Exiting early as package exists."; exit 0; }'
     - run_timed_command "create_fixtures_package"
@@ -224,7 +262,7 @@ jest:
   extends:
     - .jest-base
     - .frontend:rules:jest
-  needs: ["rspec-all frontend_fixture"]
+  needs: ["rspec-all frontend_fixture", "retrieve-frontend-fixtures"]
   artifacts:
     name: coverage-frontend
     expire_in: 31d
@@ -274,6 +312,7 @@ jest-integration:
     - run_timed_command "yarn jest:integration --ci"
   needs:
     - job: "rspec-all frontend_fixture"
+    - job: "retrieve-frontend-fixtures"
     - job: "graphql-schema-dump"
 
 coverage-frontend:
@@ -360,6 +399,7 @@ startup-css-check:
   needs:
     - job: "compile-test-assets"
     - job: "rspec-all frontend_fixture"
+    - job: "retrieve-frontend-fixtures"
 
 startup-css-check as-if-foss:
   extends:
@@ -386,6 +426,7 @@ compile-storybook:
   needs:
     - !reference [.compile-storybook-base, needs]
     - job: "rspec-all frontend_fixture"
+    - job: "retrieve-frontend-fixtures"
   artifacts:
     name: storybook
     expire_in: 31d

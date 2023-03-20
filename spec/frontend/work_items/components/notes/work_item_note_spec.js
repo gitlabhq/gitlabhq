@@ -178,8 +178,7 @@ describe('Work Item Note', () => {
         },
       });
 
-      expect(findEditedAt().exists()).toBe(true);
-      expect(findEditedAt().props()).toEqual({
+      expect(findEditedAt().props()).toMatchObject({
         updatedAt: '2023-02-12T07:47:40Z',
         updatedByName: 'Administrator',
         updatedByPath: 'test-path',

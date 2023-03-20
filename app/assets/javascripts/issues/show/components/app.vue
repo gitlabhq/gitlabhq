@@ -95,10 +95,10 @@ export default {
       required: false,
       default: '',
     },
-    initialTaskStatus: {
-      type: String,
+    initialTaskCompletionStatus: {
+      type: Object,
       required: false,
-      default: '',
+      default: () => ({}),
     },
     updatedAt: {
       type: String,
@@ -197,7 +197,7 @@ export default {
       updatedAt: this.updatedAt,
       updatedByName: this.updatedByName,
       updatedByPath: this.updatedByPath,
-      taskStatus: this.initialTaskStatus,
+      taskCompletionStatus: this.initialTaskCompletionStatus,
       lock_version: this.lockVersion,
     });
 
@@ -221,9 +221,6 @@ export default {
     },
     formState() {
       return this.store.formState;
-    },
-    hasUpdated() {
-      return Boolean(this.state.updatedAt);
     },
     issueChanged() {
       const {
@@ -557,7 +554,6 @@ export default {
         :description-html="state.descriptionHtml"
         :description-text="state.descriptionText"
         :updated-at="state.updatedAt"
-        :task-status="state.taskStatus"
         :issuable-type="issuableType"
         :update-url="updateEndpoint"
         :lock-version="state.lock_version"
@@ -570,7 +566,7 @@ export default {
       />
 
       <edited-component
-        v-if="hasUpdated"
+        :task-completion-status="state.taskCompletionStatus"
         :updated-at="state.updatedAt"
         :updated-by-name="state.updatedByName"
         :updated-by-path="state.updatedByPath"

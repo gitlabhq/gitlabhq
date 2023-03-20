@@ -71,7 +71,7 @@ To open group settings:
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Scroll to **Wiki** and select one of these options:
-   - **Enabled**: Everyone who can access the group can access the wiki.
+   - **Enabled**: For public groups, everyone can access the wiki. For internal groups, only authenticated users can access the wiki.
    - **Private**: Only group members can access the wiki.
    - **Disabled**: The wiki isn't accessible, and cannot be downloaded.
 1. Select **Save changes**.

@@ -3,6 +3,7 @@
 class AbuseReportsFinder
   attr_reader :params, :reports
 
+  DEFAULT_STATUS_FILTER = 'open'
   DEFAULT_SORT = 'created_at_desc'
   ALLOWED_SORT = [DEFAULT_SORT, *%w[created_at_asc updated_at_desc updated_at_asc]].freeze
 
@@ -30,9 +31,13 @@ class AbuseReportsFinder
   end
 
   def filter_by_status
+    return unless Feature.enabled?(:abuse_reports_list)
     return unless params[:status].present?
 
-    case params[:status]
+    status = params[:status]
+    status = DEFAULT_STATUS_FILTER unless status.in?(AbuseReport.statuses.keys)
+
+    case status
     when 'open'
       @reports = @reports.open
     when 'closed'

@@ -15652,9 +15652,6 @@ msgstr ""
 msgid "Edited %{timeago} by %{author}"
 msgstr ""
 
-msgid "Edited by %{author}"
-msgstr ""
-
 msgid "Editing"
 msgstr ""
 
@@ -35310,6 +35307,9 @@ msgid "ProtectedEnvironments|Set which groups, access levels or users that are a
 msgstr ""
 
 msgid "ProtectedEnvironments|Unified approval rules have been removed from the settings UI"
+msgstr ""
+
+msgid "ProtectedEnvironments|Unprotect"
 msgstr ""
 
 msgid "ProtectedEnvironments|Users"

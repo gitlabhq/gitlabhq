@@ -1,8 +1,6 @@
-import $ from 'jquery';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
-import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -24,10 +22,6 @@ import {
 import { descriptionProps as initialProps, descriptionHtmlWithList } from '../mock_data/mock_data';
 
 jest.mock('~/alert');
-jest.mock('~/lib/utils/url_utility', () => ({
-  ...jest.requireActual('~/lib/utils/url_utility'),
-  updateHistory: jest.fn(),
-}));
 jest.mock('~/task_list');
 jest.mock('~/behaviors/markdown/render_gfm');
 
@@ -87,21 +81,6 @@ describe('Description component', () => {
 
   beforeEach(() => {
     window.gon = { sprite_icons: mockSpriteIcons };
-
-    setWindowLocation(TEST_HOST);
-
-    if (!document.querySelector('.issuable-meta')) {
-      const metaData = document.createElement('div');
-      metaData.classList.add('issuable-meta');
-      metaData.innerHTML =
-        '<div class="flash-container"></div><span id="task_status"></span><span id="task_status_short"></span>';
-
-      document.body.appendChild(metaData);
-    }
-  });
-
-  afterAll(() => {
-    $('.issuable-meta .flash-container').remove();
   });
 
   it('doesnt animate first description changes', async () => {
@@ -199,46 +178,6 @@ describe('Description component', () => {
         onError: expect.any(Function),
         lockVersion: 0,
       });
-    });
-  });
-
-  describe('taskStatus', () => {
-    it('adds full taskStatus', async () => {
-      createComponent({
-        props: {
-          taskStatus: '1 of 1',
-        },
-      });
-      await nextTick();
-
-      expect(document.querySelector('.issuable-meta #task_status').textContent.trim()).toBe(
-        '1 of 1',
-      );
-    });
-
-    it('adds short taskStatus', async () => {
-      createComponent({
-        props: {
-          taskStatus: '1 of 1',
-        },
-      });
-      await nextTick();
-
-      expect(document.querySelector('.issuable-meta #task_status_short').textContent.trim()).toBe(
-        '1/1 checklist item',
-      );
-    });
-
-    it('clears task status text when no tasks are present', async () => {
-      createComponent({
-        props: {
-          taskStatus: '0 of 0',
-        },
-      });
-
-      await nextTick();
-
-      expect(document.querySelector('.issuable-meta #task_status').textContent.trim()).toBe('');
     });
   });
 

@@ -179,7 +179,7 @@ describe('WorkItemDescription', () => {
             }),
           });
 
-          expect(findEditedAt().props()).toEqual({
+          expect(findEditedAt().props()).toMatchObject({
             updatedAt: lastEditedAt,
             updatedByName: lastEditedBy.name,
             updatedByPath: lastEditedBy.webPath,

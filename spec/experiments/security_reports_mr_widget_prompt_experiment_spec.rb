@@ -4,6 +4,6 @@ require 'spec_helper'
 
 RSpec.describe SecurityReportsMrWidgetPromptExperiment do
   it "defines a control and candidate" do
-    expect(subject.behaviors.keys).to match_array(%w[control candidate])
+    expect(subject.behaviors.keys).to match_array(%i[control candidate])
   end
 end

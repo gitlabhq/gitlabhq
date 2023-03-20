@@ -52,7 +52,7 @@ If you have any questions on configuring the SAML app, contact your provider's s
 
 ### Set up Azure
 
-To set up SSO with Azure as your identification provider:
+To set up SSO with Azure as your identity provider:
 
 1. In GitLab, on the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > SAML SSO**.
@@ -78,19 +78,23 @@ To set up SSO with Azure as your identification provider:
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 View a demo of [SCIM provisioning on Azure using SAML SSO for groups](https://youtu.be/24-ZxmTeEBU). The `objectID` mapping is outdated in this video. Follow the [SCIM documentation](scim_setup.md#configure-azure-active-directory) instead.
 
-View an [example configuration page](example_saml_config.md#azure-active-directory).
+For more information, see an [example configuration page](example_saml_config.md#azure-active-directory).
 
 ### Set up Google Workspace
 
-1. [Set up SSO with Google as your identity provider](https://support.google.com/a/answer/6087519?hl=en).
-   The following GitLab settings correspond to the Google Workspace fields.
+To set up Google Workspace as your identity provider:
 
-   | GitLab setting                       | Google Workspace field |
-   |:-------------------------------------|:-----------------------|
-   | Identifier                           | **Entity ID**          |
-   | Assertion consumer service URL       | **ACS URL**            |
-   | GitLab single sign-on URL            | **Start URL**          |
-   | Identity provider single sign-on URL | **SSO URL**            |
+1. In GitLab, on the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > SAML SSO**.
+1. Note the information on this page.
+1. Follow the instructions for [setting up SSO with Google as your identity provider](https://support.google.com/a/answer/6087519?hl=en). The following GitLab settings correspond to the Google Workspace fields.
+
+   | GitLab setting                           | Google Workspace field |
+   |:-----------------------------------------|:-----------------------|
+   | **Identifier**                           | **Entity ID**          |
+   | **Assertion consumer service URL**       | **ACS URL**            |
+   | **GitLab single sign-on URL**            | **Start URL**          |
+   | **Identity provider single sign-on URL** | **SSO URL**            |
 
 1. Google Workspace displays a SHA256 fingerprint. To retrieve the SHA1 fingerprint
    required by GitLab to [configure SAML](#configure-gitlab):
@@ -111,7 +115,7 @@ View an [example configuration page](example_saml_config.md#azure-active-directo
 On the GitLab SAML SSO page, when you select **Verify SAML Configuration**, disregard
 the warning that recommends setting the **NameID** format to `persistent`.
 
-For details, see the [example configuration page](example_saml_config.md#google-workspace).
+For more information, see an [example configuration page](example_saml_config.md#google-workspace).
 
 ### Set up Okta
 
