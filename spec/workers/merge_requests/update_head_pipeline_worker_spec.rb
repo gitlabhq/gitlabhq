@@ -74,9 +74,12 @@ RSpec.describe MergeRequests::UpdateHeadPipelineWorker, feature_category: :code_
 
     context 'when there is no pipeline for source branch' do
       it "does not update merge request head pipeline" do
-        merge_request = create(:merge_request, source_branch: 'feature',
-                                               target_branch: "branch_1",
-                                               source_project: project)
+        merge_request = create(
+          :merge_request,
+          source_branch: 'feature',
+          target_branch: "branch_1",
+          source_project: project
+        )
 
         subject
 
@@ -96,10 +99,13 @@ RSpec.describe MergeRequests::UpdateHeadPipelineWorker, feature_category: :code_
       end
 
       it 'updates head pipeline for merge request' do
-        merge_request = create(:merge_request, source_branch: 'feature',
-                                               target_branch: "master",
-                                               source_project: project,
-                                               target_project: target_project)
+        merge_request = create(
+          :merge_request,
+          source_branch: 'feature',
+          target_branch: "master",
+          source_project: project,
+          target_project: target_project
+        )
 
         subject
 
@@ -109,9 +115,12 @@ RSpec.describe MergeRequests::UpdateHeadPipelineWorker, feature_category: :code_
 
     context 'when the pipeline is not the latest for the branch' do
       it 'does not update merge request head pipeline' do
-        merge_request = create(:merge_request, source_branch: 'master',
-                                               target_branch: "branch_1",
-                                               source_project: project)
+        merge_request = create(
+          :merge_request,
+          source_branch: 'master',
+          target_branch: "branch_1",
+          source_project: project
+        )
 
         create(:ci_pipeline, project: pipeline.project, ref: pipeline.ref)
 
@@ -127,9 +136,12 @@ RSpec.describe MergeRequests::UpdateHeadPipelineWorker, feature_category: :code_
       end
 
       it 'updates merge request head pipeline reference' do
-        merge_request = create(:merge_request, source_branch: 'master',
-                                               target_branch: 'feature',
-                                               source_project: project)
+        merge_request = create(
+          :merge_request,
+          source_branch: 'master',
+          target_branch: 'feature',
+          source_project: project
+        )
 
         subject
 

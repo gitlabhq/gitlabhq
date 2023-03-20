@@ -77,7 +77,6 @@ Style/RedundantRegexpEscape:
     - 'lib/gitlab/utils/sanitize_node_link.rb'
     - 'lib/gitlab/word_diff/segments/diff_hunk.rb'
     - 'lib/product_analytics/tracker.rb'
-    - 'lib/tasks/gettext.rake'
     - 'lib/tasks/gitlab/info.rake'
     - 'qa/spec/runtime/key/ecdsa_spec.rb'
     - 'qa/spec/runtime/key/ed25519_spec.rb'

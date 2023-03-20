@@ -168,6 +168,7 @@ class Project < ApplicationRecord
   alias_method :parent, :namespace
   alias_attribute :parent_id, :namespace_id
 
+  has_one :catalog_resource, class_name: 'Ci::Catalog::Resource', inverse_of: :project
   has_one :last_event, -> { order 'events.created_at DESC' }, class_name: 'Event'
   has_many :boards
 

@@ -57,14 +57,16 @@ RSpec.describe RepositoryUpdateRemoteMirrorWorker, :clean_gitlab_redis_shared_st
     end
 
     it 'retries 3 times for the worker to finish before rescheduling' do
-      expect(subject).to receive(:in_lock)
-                           .with("#{described_class.name}:#{remote_mirror.id}",
-                                 retries: 3,
-                                 ttl: remote_mirror.max_runtime,
-                                 sleep_sec: described_class::LOCK_WAIT_TIME)
-                           .and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
-      expect(described_class).to receive(:perform_in)
-                                   .with(remote_mirror.backoff_delay, remote_mirror.id, scheduled_time, 0)
+      expect(subject).to receive(:in_lock).with(
+        "#{described_class.name}:#{remote_mirror.id}",
+        retries: 3,
+        ttl: remote_mirror.max_runtime,
+        sleep_sec: described_class::LOCK_WAIT_TIME
+      ).and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+
+      expect(described_class)
+        .to receive(:perform_in)
+        .with(remote_mirror.backoff_delay, remote_mirror.id, scheduled_time, 0)
 
       subject.perform(remote_mirror.id, scheduled_time)
     end

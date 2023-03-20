@@ -140,7 +140,7 @@ The DORA metrics are displayed on the following charts:
 
 The table below provides an overview of the DORA metrics' data aggregation in different charts.
 
-| Metric name | Measured values | Data aggregation in the [Value Streams Dashboard](value_streams_dashboard.md) | Data aggregation in CI/CD analytics charts | Data aggregation in Value stream analytics | Data aggregation in Custom insights reporting |
+| Metric name | Measured values | Data aggregation in the [Value Streams Dashboard](value_streams_dashboard.md) | Data aggregation in [CI/CD analytics charts](ci_cd_analytics.md) | Data aggregation in Value stream analytics | Data aggregation in [Custom insights reporting](../../user/project/insights/index.md#dora-query-parameters) |
 |---------------------------|-------------------|-----------------------------------------------------|------------------------|-----------------------|----------|
 | Deployment frequency | Number of successful deployments | daily average per month | daily average | daily average | `day` (default) or `month` |
 | Lead time for changes | Number of seconds to successfully deliver a commit into production | daily median per month | median time |  median time |  `day` (default) or `month` |

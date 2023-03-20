@@ -493,7 +493,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
     it 'uses specified numbers of retries for workers with exceptions encoded here', :aggregate_failures do
       retry_exception_workers.each do |worker|
         expect(worker.retries).to eq(retry_exceptions[worker.klass.to_s]),
-                                  "#{worker.klass} has #{worker.retries} retries, expected #{retry_exceptions[worker.klass]}"
+          "#{worker.klass} has #{worker.retries} retries, expected #{retry_exceptions[worker.klass]}"
       end
     end
   end

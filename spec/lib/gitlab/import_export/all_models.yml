@@ -493,6 +493,7 @@ container_repositories:
 - project
 - name
 project:
+- catalog_resource
 - external_status_checks
 - base_tags
 - project_topics
@@ -998,3 +999,5 @@ resource_iteration_events:
 iterations_cadence:
   - group
   - iterations
+catalog_resource:
+  - project

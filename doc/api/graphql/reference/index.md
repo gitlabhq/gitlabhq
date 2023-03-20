@@ -795,6 +795,29 @@ Input type: `AchievementsCreateInput`
 | <a id="mutationachievementscreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationachievementscreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.achievementsDelete`
+
+WARNING:
+**Introduced** in 15.11.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Input type: `AchievementsDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationachievementsdeleteachievementid"></a>`achievementId` | [`AchievementsAchievementID!`](#achievementsachievementid) | Global ID of the achievement being deleted. |
+| <a id="mutationachievementsdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationachievementsdeleteachievement"></a>`achievement` | [`Achievement`](#achievement) | Achievement. |
+| <a id="mutationachievementsdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationachievementsdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.achievementsRevoke`
 
 WARNING:

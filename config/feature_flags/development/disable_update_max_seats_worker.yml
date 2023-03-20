@@ -1,8 +1,0 @@
----
-name: disable_update_max_seats_worker
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114127
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382725
-milestone: '15.10'
-type: development
-group: group::utilization
-default_enabled: false

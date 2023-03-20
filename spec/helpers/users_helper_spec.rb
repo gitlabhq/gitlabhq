@@ -524,4 +524,54 @@ RSpec.describe UsersHelper do
       })
     end
   end
+
+  describe '#load_max_project_member_accesses' do
+    let_it_be(:projects) { create_list(:project, 3) }
+
+    before(:all) do
+      projects.first.add_developer(user)
+    end
+
+    context 'without current_user' do
+      before do
+        allow(helper).to receive(:current_user).and_return(nil)
+      end
+
+      it 'executes no queries' do
+        sample = ActiveRecord::QueryRecorder.new do
+          helper.load_max_project_member_accesses(projects)
+        end
+
+        expect(sample).not_to exceed_query_limit(0)
+      end
+    end
+
+    context 'when current_user is present', :request_store do
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+      end
+
+      it 'preloads ProjectPolicy#lookup_access_level! and UsersHelper#max_member_project_member_access for current_user in two queries', :aggregate_failures do
+        preload_queries = ActiveRecord::QueryRecorder.new do
+          helper.load_max_project_member_accesses(projects)
+        end
+
+        helper_queries = ActiveRecord::QueryRecorder.new do
+          projects.each do |project|
+            helper.max_project_member_access(project)
+          end
+        end
+
+        access_queries = ActiveRecord::QueryRecorder.new do
+          projects.each do |project|
+            user.can?(:read_code, project)
+          end
+        end
+
+        expect(preload_queries).not_to exceed_query_limit(2)
+        expect(helper_queries).not_to exceed_query_limit(0)
+        expect(access_queries).not_to exceed_query_limit(0)
+      end
+    end
+  end
 end

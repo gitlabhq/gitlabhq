@@ -30,8 +30,10 @@ RSpec.describe RemoteMirrorNotificationWorker, :mailer, feature_category: :sourc
     end
 
     it 'does nothing when a notification has already been sent' do
-      mirror.update_columns(last_error: "There was a problem fetching",
-                            error_notification_sent: true)
+      mirror.update_columns(
+        last_error: "There was a problem fetching",
+        error_notification_sent: true
+      )
 
       expect(NotificationService).not_to receive(:new)
 

@@ -6079,7 +6079,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/tasks/admin_mode_spec.rb'
     - 'spec/tasks/config_lint_spec.rb'
     - 'spec/tasks/dev_rake_spec.rb'
-    - 'spec/tasks/gettext_rake_spec.rb'
     - 'spec/tasks/gitlab/artifacts/check_rake_spec.rb'
     - 'spec/tasks/gitlab/artifacts/migrate_rake_spec.rb'
     - 'spec/tasks/gitlab/background_migrations_rake_spec.rb'

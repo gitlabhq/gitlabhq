@@ -33673,9 +33673,6 @@ msgstr ""
 msgid "Project URL"
 msgstr ""
 
-msgid "Project access must be granted explicitly to each user. If this project is part of a group, access is granted to members of the group."
-msgstr ""
-
 msgid "Project access token creation is disabled in this group. You can still use and manage existing tokens. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
@@ -43627,15 +43624,6 @@ msgstr ""
 msgid "The global settings require you to enable Two-Factor Authentication for your account."
 msgstr ""
 
-msgid "The group and any internal projects can be viewed by any logged in user except external users."
-msgstr ""
-
-msgid "The group and any public projects can be viewed without any authentication."
-msgstr ""
-
-msgid "The group and its projects can only be viewed by members."
-msgstr ""
-
 msgid "The group export can be downloaded from:"
 msgstr ""
 
@@ -43793,12 +43781,6 @@ msgid "The pipeline has been deleted"
 msgstr ""
 
 msgid "The pipelines schedule runs pipelines in the future, repeatedly, for specific branches or tags. Those scheduled pipelines will inherit limited project access based on their associated user."
-msgstr ""
-
-msgid "The project can be accessed by any logged in user except external users."
-msgstr ""
-
-msgid "The project can be accessed without any authentication."
 msgstr ""
 
 msgid "The project has already been added to your dashboard."
@@ -48058,7 +48040,28 @@ msgstr ""
 msgid "VisibilityLevel|Private"
 msgstr ""
 
+msgid "VisibilityLevel|Project access must be granted explicitly to each user. If this project is part of a group, access is granted to members of the group."
+msgstr ""
+
 msgid "VisibilityLevel|Public"
+msgstr ""
+
+msgid "VisibilityLevel|The group and any internal projects can be viewed by any logged in user except external users."
+msgstr ""
+
+msgid "VisibilityLevel|The group and any public projects can be viewed without any authentication."
+msgstr ""
+
+msgid "VisibilityLevel|The group and its projects can only be viewed by members."
+msgstr ""
+
+msgid "VisibilityLevel|The group, any public projects, and any of their members, issues, and merge requests can be viewed without authentication. Public groups and projects will be indexed by search engines. Read more about %{free_user_limit_doc_link_start}free user limits%{link_end}, or %{group_billings_link_start}upgrade to a paid tier%{link_end}."
+msgstr ""
+
+msgid "VisibilityLevel|The project can be accessed by any logged in user except external users."
+msgstr ""
+
+msgid "VisibilityLevel|The project can be accessed without any authentication."
 msgstr ""
 
 msgid "VisibilityLevel|Unknown"

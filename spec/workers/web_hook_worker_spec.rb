@@ -28,8 +28,6 @@ RSpec.describe WebHookWorker, feature_category: :integrations do
         .to change { Gitlab::WebHooks::RecursionDetection::UUID.instance.request_uuid }.to(uuid)
     end
 
-    it_behaves_like 'worker with data consistency',
-                  described_class,
-                  data_consistency: :delayed
+    it_behaves_like 'worker with data consistency', described_class, data_consistency: :delayed
   end
 end

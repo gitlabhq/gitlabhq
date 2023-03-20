@@ -37,7 +37,5 @@ RSpec.describe PipelineHooksWorker, feature_category: :continuous_integration do
     end
   end
 
-  it_behaves_like 'worker with data consistency',
-                  described_class,
-                  data_consistency: :delayed
+  it_behaves_like 'worker with data consistency', described_class, data_consistency: :delayed
 end

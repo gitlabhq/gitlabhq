@@ -102,7 +102,7 @@ gem 'acme-client', '~> 2.0'
 gem 'browser', '~> 5.3.1'
 
 # OS detection for usage ping
-gem 'ohai', '~> 16.10'
+gem 'ohai', '~> 17.9'
 
 # GPG
 gem 'gpgme', '~> 2.0.22'

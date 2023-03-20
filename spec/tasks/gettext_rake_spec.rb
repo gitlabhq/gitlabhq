@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gettext', :silence_stdout do
+RSpec.describe 'gettext', :silence_stdout, feature_category: :internationalization do
   let(:locale_path) { Rails.root.join('tmp/gettext_spec') }
   let(:pot_file_path) { File.join(locale_path, 'gitlab.pot') }
 
@@ -35,9 +35,16 @@ RSpec.describe 'gettext', :silence_stdout do
   end
 
   describe ':regenerate' do
+    let(:locale_nz_path) { File.join(locale_path, 'en_NZ') }
+    let(:po_file_path) { File.join(locale_nz_path, 'gitlab.po') }
+
     before do
+      FileUtils.mkdir(locale_nz_path)
+      File.write(po_file_path, fixture_file('valid.po'))
+
+      Rake::Task['gettext:setup'].invoke
       # this task takes a *really* long time to complete, so stub it for the spec
-      allow(Rake::Task['gettext:find']).to receive(:invoke) { invoke_find.call }
+      allow(Rake::Task['gettext:pot:create']).to receive(:invoke) { invoke_find.call }
     end
 
     context 'when the locale folder is not found' do
@@ -53,39 +60,6 @@ RSpec.describe 'gettext', :silence_stdout do
       end
     end
 
-    context 'where there are existing /**/gitlab.po files' do
-      let(:locale_nz_path) { File.join(locale_path, 'en_NZ') }
-      let(:po_file_path) { File.join(locale_nz_path, 'gitlab.po') }
-
-      let(:invoke_find) { -> { File.write pot_file_path, 'pot file test updates' } }
-
-      before do
-        FileUtils.mkdir(locale_nz_path)
-        File.write(po_file_path, fixture_file('valid.po'))
-      end
-
-      it 'does not remove that locale' do
-        expect { run_rake_task('gettext:regenerate') }
-          .not_to change { Dir.exist?(locale_nz_path) }
-      end
-    end
-
-    context 'when there are locale folders without a gitlab.po file' do
-      let(:empty_locale_path) { File.join(locale_path, 'en_NZ') }
-
-      let(:invoke_find) { -> { File.write pot_file_path, 'pot file test updates' } }
-
-      before do
-        FileUtils.mkdir(empty_locale_path)
-      end
-
-      it 'removes those folders' do
-        expect { run_rake_task('gettext:regenerate') }
-          .to change { Dir.exist?(empty_locale_path) }
-          .to eq false
-      end
-    end
-
     context 'when the gitlab.pot file cannot be generated' do
       let(:invoke_find) { -> { true } }
 
@@ -95,7 +69,7 @@ RSpec.describe 'gettext', :silence_stdout do
       end
     end
 
-    context 'when gettext:find changes the revision dates' do
+    context 'when gettext:pot:create changes the revision dates' do
       let(:invoke_find) { -> { File.write pot_file_path, fixture_file('valid.po') } }
 
       before do

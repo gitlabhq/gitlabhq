@@ -761,9 +761,6 @@ Gitlab.ee do
   Settings.cron_jobs['ldap_sync_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['ldap_sync_worker']['cron'] ||= '30 1 * * *'
   Settings.cron_jobs['ldap_sync_worker']['job_class'] = 'LdapSyncWorker'
-  Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker']['cron'] ||= '0 12 * * *'
-  Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker']['job_class'] = 'UpdateMaxSeatsUsedForGitlabComSubscriptionsWorker'
   Settings.cron_jobs['elastic_index_bulk_cron_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['job_class'] ||= 'ElasticIndexBulkCronWorker'

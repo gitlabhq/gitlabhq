@@ -82,11 +82,13 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
 
     context 'when commit is a merge request merge commit to the default branch' do
       let(:merge_request) do
-        create(:merge_request,
-               description: "Closes #{issue.to_reference}",
-               source_branch: 'feature-merged',
-               target_branch: 'master',
-               source_project: project)
+        create(
+          :merge_request,
+          description: "Closes #{issue.to_reference}",
+          source_branch: 'feature-merged',
+          target_branch: 'master',
+          source_project: project
+        )
       end
 
       let(:commit) do

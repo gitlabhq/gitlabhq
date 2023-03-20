@@ -60,8 +60,6 @@ RSpec.describe Deployments::HooksWorker, feature_category: :continuous_delivery 
       worker.perform(deployment_id: deployment.id, status_changed_at: status_changed_at)
     end
 
-    it_behaves_like 'worker with data consistency',
-                    described_class,
-                    data_consistency: :delayed
+    it_behaves_like 'worker with data consistency', described_class, data_consistency: :delayed
   end
 end
