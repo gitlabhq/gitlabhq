@@ -87,7 +87,6 @@ module ProtectedBranches
 
     def cache_metadata
       Gitlab::Cache::Metadata.new(
-        caller_id: Gitlab::ApplicationContext.current_context_attribute(:caller_id),
         cache_identifier: "#{self.class}#fetch",
         feature_category: :source_code_management,
         backing_resource: :cpu

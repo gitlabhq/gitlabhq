@@ -23,66 +23,6 @@ RSpec.describe Clusters::Applications::Ingress do
     it { expect(subject.version).to eq(described_class::VERSION) }
   end
 
-  describe '#can_uninstall?' do
-    subject { ingress.can_uninstall? }
-
-    context 'with jupyter installed' do
-      before do
-        create(:clusters_applications_jupyter, :installed, cluster: ingress.cluster)
-      end
-
-      it 'returns false if external_ip_or_hostname? is true' do
-        ingress.external_ip = 'IP'
-
-        is_expected.to be_falsey
-      end
-
-      it 'returns false if external_ip_or_hostname? is false' do
-        is_expected.to be_falsey
-      end
-    end
-
-    context 'with jupyter installable' do
-      before do
-        create(:clusters_applications_jupyter, :installable, cluster: ingress.cluster)
-      end
-
-      it 'returns true if external_ip_or_hostname? is true' do
-        ingress.external_ip = 'IP'
-
-        is_expected.to be_truthy
-      end
-
-      it 'returns false if external_ip_or_hostname? is false' do
-        is_expected.to be_falsey
-      end
-    end
-
-    context 'with jupyter nil' do
-      it 'returns false if external_ip_or_hostname? is false' do
-        is_expected.to be_falsey
-      end
-
-      context 'if external_ip_or_hostname? is true' do
-        context 'with IP' do
-          before do
-            ingress.external_ip = 'IP'
-          end
-
-          it { is_expected.to be_truthy }
-        end
-
-        context 'with hostname' do
-          before do
-            ingress.external_hostname = 'example.com'
-          end
-
-          it { is_expected.to be_truthy }
-        end
-      end
-    end
-  end
-
   describe '#make_installed!' do
     before do
       application.make_installed!

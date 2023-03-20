@@ -1,7 +1,5 @@
 ---
 table_name: clusters_applications_jupyter
-classes:
-- Clusters::Applications::Jupyter
 feature_categories:
 - kubernetes_management
 description: "(Deprecated) A GitLab managed Jupyter installation in a Kubernetes cluster"

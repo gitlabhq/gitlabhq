@@ -7,14 +7,12 @@ RSpec.describe Gitlab::Cache::Metrics do
 
   let(:metadata) do
     Gitlab::Cache::Metadata.new(
-      caller_id: caller_id,
       cache_identifier: cache_identifier,
       feature_category: feature_category,
       backing_resource: backing_resource
     )
   end
 
-  let(:caller_id) { 'caller-id' }
   let(:cache_identifier) { 'ApplicationController#show' }
   let(:feature_category) { :source_code_management }
   let(:backing_resource) { :unknown }
@@ -37,7 +35,6 @@ RSpec.describe Gitlab::Cache::Metrics do
         .to receive(:increment)
         .with(
           {
-            caller_id: caller_id,
             cache_identifier: cache_identifier,
             feature_category: feature_category,
             backing_resource: backing_resource,
@@ -57,7 +54,6 @@ RSpec.describe Gitlab::Cache::Metrics do
         .to receive(:increment)
         .with(
           {
-            caller_id: caller_id,
             cache_identifier: cache_identifier,
             feature_category: feature_category,
             backing_resource: backing_resource,
@@ -86,7 +82,6 @@ RSpec.describe Gitlab::Cache::Metrics do
         :redis_cache_generation_duration_seconds,
         'Duration of Redis cache generation',
         {
-          caller_id: caller_id,
           cache_identifier: cache_identifier,
           feature_category: feature_category,
           backing_resource: backing_resource

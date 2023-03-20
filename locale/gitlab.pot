@@ -29769,9 +29769,6 @@ msgstr ""
 msgid "OnCallSchedules|Add a rotation"
 msgstr ""
 
-msgid "OnCallSchedules|Add a schedule"
-msgstr ""
-
 msgid "OnCallSchedules|Add an additional schedule to your project"
 msgstr ""
 

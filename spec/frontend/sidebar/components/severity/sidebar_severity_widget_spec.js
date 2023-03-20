@@ -1,5 +1,7 @@
 import { GlDropdown, GlDropdownItem, GlLoadingIcon, GlTooltip, GlSprintf } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
@@ -11,15 +13,18 @@ import SidebarSeverityWidget from '~/sidebar/components/severity/sidebar_severit
 
 jest.mock('~/alert');
 
-describe('SidebarSeverity', () => {
+Vue.use(VueApollo);
+
+describe('SidebarSeverityWidget', () => {
   let wrapper;
-  let mutate;
+  let mockApollo;
   const projectPath = 'gitlab-org/gitlab-test';
   const iid = '1';
   const severity = 'CRITICAL';
-  let canUpdate = true;
 
-  function createComponent(props = {}) {
+  function createComponent({ props, canUpdate = true, mutationMock } = {}) {
+    mockApollo = createMockApollo([[updateIssuableSeverity, mutationMock]]);
+
     const propsData = {
       projectPath,
       iid,
@@ -27,102 +32,101 @@ describe('SidebarSeverity', () => {
       initialSeverity: severity,
       ...props,
     };
-    mutate = jest.fn();
+
     wrapper = mountExtended(SidebarSeverityWidget, {
       propsData,
       provide: {
         canUpdate,
       },
-      mocks: {
-        $apollo: {
-          mutate,
-        },
-      },
+      apolloProvider: mockApollo,
       stubs: {
         GlSprintf,
       },
     });
   }
 
-  beforeEach(() => {
-    createComponent();
+  afterEach(() => {
+    mockApollo = null;
   });
 
   const findSeverityToken = () => wrapper.findAllComponents(SeverityToken);
   const findEditBtn = () => wrapper.findByTestId('edit-button');
   const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findCriticalSeverityDropdownItem = () => wrapper.findComponent(GlDropdownItem);
+  const findCriticalSeverityDropdownItem = () => wrapper.findComponent(GlDropdownItem); // First dropdown item is critical severity
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findTooltip = () => wrapper.findComponent(GlTooltip);
   const findCollapsedSeverity = () => wrapper.findComponent({ ref: 'severity' });
 
   describe('Severity widget', () => {
     it('renders severity dropdown and token', () => {
+      createComponent();
+
       expect(findSeverityToken().exists()).toBe(true);
       expect(findDropdown().exists()).toBe(true);
     });
 
     describe('edit button', () => {
       it('is rendered when `canUpdate` provided as `true`', () => {
+        createComponent();
+
         expect(findEditBtn().exists()).toBe(true);
       });
 
       it('is NOT rendered when `canUpdate` provided as `false`', () => {
-        canUpdate = false;
-        createComponent();
+        createComponent({ canUpdate: false });
+
         expect(findEditBtn().exists()).toBe(false);
       });
     });
   });
 
   describe('Update severity', () => {
-    it('calls `$apollo.mutate` with `updateIssuableSeverity`', () => {
-      jest
-        .spyOn(wrapper.vm.$apollo, 'mutate')
-        .mockResolvedValueOnce({ data: { issueSetSeverity: { issue: { severity } } } });
+    it('calls mutate with `updateIssuableSeverity`', async () => {
+      const mutationMock = jest.fn().mockResolvedValue({
+        data: { issueSetSeverity: { issue: { severity } } },
+      });
+      createComponent({ mutationMock });
 
       findCriticalSeverityDropdownItem().vm.$emit('click');
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-        mutation: updateIssuableSeverity,
-        variables: {
-          iid,
-          projectPath,
-          severity,
-        },
+
+      expect(mutationMock).toHaveBeenCalledWith({
+        iid,
+        projectPath,
+        severity,
       });
     });
 
     it('shows error alert when severity update fails', async () => {
-      const errorMsg = 'Something went wrong';
-      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValueOnce(errorMsg);
-      findCriticalSeverityDropdownItem().vm.$emit('click');
+      const mutationMock = jest.fn().mockRejectedValue('Something went wrong');
+      createComponent({ mutationMock });
 
+      findCriticalSeverityDropdownItem().vm.$emit('click');
       await waitForPromises();
 
       expect(createAlert).toHaveBeenCalled();
     });
 
     it('shows loading icon while updating', async () => {
-      let resolvePromise;
-      wrapper.vm.$apollo.mutate = jest.fn(
-        () =>
-          new Promise((resolve) => {
-            resolvePromise = resolve;
-          }),
-      );
-      findCriticalSeverityDropdownItem().vm.$emit('click');
+      const mutationMock = jest.fn().mockRejectedValue({});
+      createComponent({ mutationMock });
 
+      findCriticalSeverityDropdownItem().vm.$emit('click');
       await nextTick();
+
       expect(findLoadingIcon().exists()).toBe(true);
 
-      resolvePromise();
       await waitForPromises();
+
       expect(findLoadingIcon().exists()).toBe(false);
     });
   });
 
   describe('Switch between collapsed/expanded view of the sidebar', () => {
     describe('collapsed', () => {
+      beforeEach(() => {
+        createComponent({ canUpdate: false });
+      });
+
       it('should have collapsed icon class', () => {
         expect(findCollapsedSeverity().classes('sidebar-collapsed-icon')).toBe(true);
       });
@@ -136,17 +140,19 @@ describe('SidebarSeverity', () => {
 
     describe('expanded', () => {
       it('toggles dropdown with edit button', async () => {
-        canUpdate = true;
         createComponent();
         await nextTick();
+
         expect(findDropdown().isVisible()).toBe(false);
 
         findEditBtn().vm.$emit('click');
         await nextTick();
+
         expect(findDropdown().isVisible()).toBe(true);
 
         findEditBtn().vm.$emit('click');
         await nextTick();
+
         expect(findDropdown().isVisible()).toBe(false);
       });
     });

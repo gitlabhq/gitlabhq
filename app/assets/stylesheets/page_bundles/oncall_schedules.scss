@@ -73,7 +73,6 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
     @include gl-float-left;
     height: $header-item-height;
     border-bottom: $border-style;
-    background-color: var(--white, $white);
   }
 
   .timeline-header-blank {
@@ -159,7 +158,6 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
   @include gl-left-0;
   width: $details-cell-width;
   @include gl-font-base;
-  background-color: var(--white, $white);
   z-index: 10;
 }
 

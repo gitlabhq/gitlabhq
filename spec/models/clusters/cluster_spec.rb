@@ -714,11 +714,10 @@ feature_category: :kubernetes_management do
       let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
       let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
       let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
-      let!(:jupyter) { create(:clusters_applications_jupyter, cluster: cluster) }
       let!(:knative) { create(:clusters_applications_knative, cluster: cluster) }
 
       it 'returns a list of created applications' do
-        is_expected.to contain_exactly(helm, ingress, runner, jupyter, knative)
+        is_expected.to contain_exactly(helm, ingress, runner, knative)
       end
     end
 

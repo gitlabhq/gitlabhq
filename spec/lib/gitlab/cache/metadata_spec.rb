@@ -5,24 +5,18 @@ require 'spec_helper'
 RSpec.describe Gitlab::Cache::Metadata, feature_category: :source_code_management do
   subject(:attributes) do
     described_class.new(
-      caller_id: caller_id,
       cache_identifier: cache_identifier,
       feature_category: feature_category,
       backing_resource: backing_resource
     )
   end
 
-  let(:caller_id) { 'caller-id' }
   let(:cache_identifier) { 'ApplicationController#show' }
   let(:feature_category) { :source_code_management }
   let(:backing_resource) { :unknown }
 
   describe '#initialize' do
     context 'when optional arguments are not set' do
-      before do
-        Gitlab::ApplicationContext.push(caller_id: 'context-id')
-      end
-
       it 'sets default value for them' do
         attributes = described_class.new(
           cache_identifier: cache_identifier,
@@ -30,7 +24,6 @@ RSpec.describe Gitlab::Cache::Metadata, feature_category: :source_code_managemen
         )
 
         expect(attributes.backing_resource).to eq(:unknown)
-        expect(attributes.caller_id).to eq('context-id')
       end
     end
 
@@ -66,12 +59,6 @@ RSpec.describe Gitlab::Cache::Metadata, feature_category: :source_code_managemen
         end
       end
     end
-  end
-
-  describe '#caller_id' do
-    subject { attributes.caller_id }
-
-    it { is_expected.to eq caller_id }
   end
 
   describe '#cache_identifier' do
