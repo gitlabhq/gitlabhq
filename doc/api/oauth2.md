@@ -45,6 +45,9 @@ GitLab supports the following authorization flows:
 - **Resource owner password credentials:** To be used **only** for securely
   hosted, first-party services. GitLab recommends against use of this flow.
 
+Device Authorization Grant is not yet supported. See feature request
+Device Authorization Grant is not supported. [Issue 332682](https://gitlab.com/gitlab-org/gitlab/-/issues/332682) proposes to add support.
+
 The draft specification for [OAuth 2.1](https://oauth.net/2.1/) specifically omits both the
 Implicit grant and Resource Owner Password Credentials flows.
 

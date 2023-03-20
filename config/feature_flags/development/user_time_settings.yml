@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/321407
 milestone: '11.11'
 type: development
-group: group::workspace
+group: group::tenant scale
 default_enabled: false

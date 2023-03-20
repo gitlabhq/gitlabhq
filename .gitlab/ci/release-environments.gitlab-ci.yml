@@ -9,7 +9,8 @@ start-release-environments-pipeline:
   #
   # https://gitlab.com/gitlab-org/gitlab/-/issues/387183
   inherit:
-    variables: false
+    variables:
+      - RUBY_VERSION
 
   # These variables are set in the pipeline schedules.
   # They need to be explicitly passed on to the child pipeline.

@@ -100,7 +100,7 @@ The `rules` definitions for full Jest tests are defined at `.frontend:rules:jest
 We run only the predictive RSpec & Jest jobs for fork pipelines, unless the `pipeline:run-all-rspec`
 label is set on the MR. The goal is to reduce the CI/CD minutes consumed by fork pipelines.
 
-See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1170).
+See the [experiment issue](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1170).
 
 ## Fail-fast job in merge request pipelines
 
@@ -444,7 +444,7 @@ so that they're ultimately fixed by their respective group.
 
 The automatic skipping of flaky tests can still be enabled by setting the `$SKIP_FLAKY_TESTS_AUTOMATICALLY` variable to `true`.
 
-See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1069).
+See the [experiment issue](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1069).
 
 ### Automatic retry of failing tests in a separate process
 
@@ -453,7 +453,7 @@ RSpec process. The goal is to get rid of most side-effects from previous tests t
 
 We keep track of retried tests in the `$RETRIED_TESTS_REPORT_FILE` file saved as artifact by the `rspec:flaky-tests-report` job.
 
-See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1148).
+See the [experiment issue](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1148).
 
 ## Compatibility testing
 

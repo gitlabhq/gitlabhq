@@ -18048,7 +18048,7 @@ CREATE SEQUENCE merge_request_diffs_id_seq
 ALTER SEQUENCE merge_request_diffs_id_seq OWNED BY merge_request_diffs.id;
 
 CREATE TABLE merge_request_metrics (
-    id integer NOT NULL,
+    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     merge_request_id integer NOT NULL,
     latest_build_started_at timestamp without time zone,
     latest_build_finished_at timestamp without time zone,
@@ -18071,7 +18071,7 @@ CREATE TABLE merge_request_metrics (
     added_lines integer,
     removed_lines integer,
     target_project_id integer,
-    id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
+    id bigint NOT NULL,
     CONSTRAINT check_e03d0900bf CHECK ((target_project_id IS NOT NULL))
 );
 
