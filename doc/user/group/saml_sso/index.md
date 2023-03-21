@@ -197,11 +197,17 @@ After you set up your identity provider to work with GitLab, you must configure 
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > SAML SSO**.
-1. Find the SSO URL from your identity provider and enter it the **Identity provider single sign-on URL** field.
-1. Find and enter the fingerprint for the SAML token signing certificate in the **Certificate** field.
-1. Select the access level to be applied to newly added users in the **Default membership role** field. The default access level is 'Guest'.
+1. Complete the fields:
+   - In the **Identity provider single sign-on URL** field, enter the SSO URL from your identity provider.
+   - In the **Certificate fingerprint** field, enter the fingerprint for the SAML token signing certificate.
+1. In the **Default membership role** field, select the role to assign to new users.
+   The default role is **Guest**.
 1. Select the **Enable SAML authentication for this group** checkbox.
-1. Select the **Save changes** button.
+1. Optional. Select:
+   - **Enforce SSO-only authentication for web activity for this group**.
+   - **Enforce SSO-only authentication for Git activity for this group**.
+   For more information, see the [SSO enforcement documentation](#sso-enforcement).
+1. Select **Save changes**.
 
 ![Group SAML Settings for GitLab.com](img/group_saml_settings_v13_12.png)
 

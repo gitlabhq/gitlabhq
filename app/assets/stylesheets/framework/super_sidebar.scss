@@ -36,7 +36,7 @@
   width: $super-sidebar-width;
   z-index: $super-sidebar-z-index;
 
-  &:focus {
+  &:focus-visible {
     @include gl-focus;
   }
 

@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: A tutorial using Flux with Project Access Tokens
 ---
 

@@ -966,3 +966,16 @@ Cop/FeatureFlagUsage:
 Style/ArgumentsForwarding:
   Enabled: true
   AllowOnlyRestArgument: false
+
+Search/NamespacedClass:
+  Enabled: true
+  Exclude:
+    - 'config/**/*.rb'
+    - 'db/**/*.rb'
+    - 'ee/db/**/*.rb'
+    - 'ee/bin/**/*'
+    - 'ee/elastic/**/*.rb' # Advanced Search migrations issue: <>
+    - 'scripts/**/*'
+    - 'spec/migrations/**/*.rb'
+    - 'app/experiments/**/*_experiment.rb'
+    - 'ee/app/experiments/**/*_experiment.rb'

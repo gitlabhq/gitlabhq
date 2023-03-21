@@ -72,25 +72,34 @@ RSpec.describe Gitlab::Usage::ServicePingReport, :use_clean_rails_memory_store_c
 
   context 'when using cached' do
     let(:new_usage_data) { { 'uuid' => '1112' } }
+    let(:instrumented_payload) { { 'instrumented' => { 'metric' => 1 } } }
+    let(:full_payload) { usage_data.merge(instrumented_payload) }
+    let(:new_full_payload) { new_usage_data.merge(instrumented_payload) }
+
+    before do
+      allow_next_instance_of(Gitlab::Usage::ServicePing::InstrumentedPayload) do |instance|
+        allow(instance).to receive(:build).and_return(instrumented_payload)
+      end
+    end
 
     context 'for cached: true' do
       it 'caches the values' do
         allow(Gitlab::UsageData).to receive(:data).and_return(usage_data, new_usage_data)
 
-        expect(described_class.for(output: :all_metrics_values)).to eq(usage_data)
-        expect(described_class.for(output: :all_metrics_values, cached: true)).to eq(usage_data)
+        expect(described_class.for(output: :all_metrics_values)).to eq(full_payload)
+        expect(described_class.for(output: :all_metrics_values, cached: true)).to eq(full_payload)
 
-        expect(Rails.cache.fetch('usage_data')).to eq(usage_data)
+        expect(Rails.cache.fetch('usage_data')).to eq(full_payload)
       end
 
       it 'writes to cache and returns fresh data' do
         allow(Gitlab::UsageData).to receive(:data).and_return(usage_data, new_usage_data)
 
-        expect(described_class.for(output: :all_metrics_values)).to eq(usage_data)
-        expect(described_class.for(output: :all_metrics_values)).to eq(new_usage_data)
-        expect(described_class.for(output: :all_metrics_values, cached: true)).to eq(new_usage_data)
+        expect(described_class.for(output: :all_metrics_values)).to eq(full_payload)
+        expect(described_class.for(output: :all_metrics_values)).to eq(new_full_payload)
+        expect(described_class.for(output: :all_metrics_values, cached: true)).to eq(new_full_payload)
 
-        expect(Rails.cache.fetch('usage_data')).to eq(new_usage_data)
+        expect(Rails.cache.fetch('usage_data')).to eq(new_full_payload)
       end
     end
 
@@ -98,10 +107,10 @@ RSpec.describe Gitlab::Usage::ServicePingReport, :use_clean_rails_memory_store_c
       it 'returns fresh data' do
         allow(Gitlab::UsageData).to receive(:data).and_return(usage_data, new_usage_data)
 
-        expect(described_class.for(output: :all_metrics_values)).to eq(usage_data)
-        expect(described_class.for(output: :all_metrics_values)).to eq(new_usage_data)
+        expect(described_class.for(output: :all_metrics_values)).to eq(full_payload)
+        expect(described_class.for(output: :all_metrics_values)).to eq(new_full_payload)
 
-        expect(Rails.cache.fetch('usage_data')).to eq(new_usage_data)
+        expect(Rails.cache.fetch('usage_data')).to eq(new_full_payload)
       end
     end
   end

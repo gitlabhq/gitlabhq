@@ -31,6 +31,12 @@ module API
           .execute(get_draft_note(params: params))
       end
 
+      def publish_draft_notes(params:)
+        ::DraftNotes::PublishService
+          .new(merge_request(params: params), current_user)
+          .execute
+      end
+
       def authorize_create_note!(params:)
         access_denied! unless can?(current_user, :create_note, merge_request(params: params))
       end
@@ -187,6 +193,30 @@ module API
         ":id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id/publish",
         feature_category: :code_review_workflow) do
         result = publish_draft_note(params: params)
+
+        if result[:status] == :success
+          status 204
+          body false
+        else
+          status 500
+        end
+      end
+
+      desc "Bulk publish all pending draft notes" do
+        success code: 204
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+      end
+      params do
+        requires :id,                type: String,  desc: "The ID of a project"
+        requires :merge_request_iid, type: Integer, desc: "The ID of a merge request"
+      end
+      post(
+        ":id/merge_requests/:merge_request_iid/draft_notes/bulk_publish",
+        feature_category: :code_review_workflow) do
+        result = publish_draft_notes(params: params)
 
         if result[:status] == :success
           status 204

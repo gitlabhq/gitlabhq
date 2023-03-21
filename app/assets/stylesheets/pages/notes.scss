@@ -450,40 +450,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
       }
     }
   }
-
-  .timeline-icon {
-    float: left;
-  }
-
-  .system-note,
-  .discussion-filter-note {
-    .timeline-icon {
-      display: flex;
-      align-items: center;
-      background-color: $gray-50;
-      width: $system-note-icon-size;
-      height: $system-note-icon-size;
-      border: 1px solid $gray-50;
-      border-radius: $system-note-icon-size;
-      margin: -$gl-spacing-scale-1 0 0 $gl-spacing-scale-2;
-
-      svg {
-        width: $system-note-svg-size;
-        height: $system-note-svg-size;
-        fill: $gray-600;
-        display: block;
-        margin: 0 auto;
-      }
-    }
-  }
-
-  .discussion-filter-note {
-    .timeline-icon {
-      width: $system-note-icon-size;
-      height: $system-note-icon-size;
-      margin-top: -8px;
-    }
-  }
 }
 
 .card .notes {

@@ -322,4 +322,47 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
       end
     end
   end
+
+  describe "Bulk publishing draft notes" do
+    let(:bulk_publish_draft_notes) do
+      post api(
+        "#{base_url}/bulk_publish",
+        user
+      )
+    end
+
+    let!(:draft_note_by_current_user_2) { create(:draft_note, merge_request: merge_request, author: user) }
+
+    context "when publishing an existing draft note by the user" do
+      it "returns 204 No Content status" do
+        bulk_publish_draft_notes
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      it "publishes the specified draft notes" do
+        expect { bulk_publish_draft_notes }.to change { Note.count }.by(2)
+        expect(DraftNote.exists?(draft_note_by_current_user.id)).to eq(false)
+        expect(DraftNote.exists?(draft_note_by_current_user_2.id)).to eq(false)
+      end
+
+      it "only publishes the user's draft notes" do
+        bulk_publish_draft_notes
+
+        expect(DraftNote.exists?(draft_note_by_random_user.id)).to eq(true)
+      end
+    end
+
+    context "when DraftNotes::PublishService returns a non-success" do
+      it "returns an :internal_server_error and a message" do
+        expect_next_instance_of(DraftNotes::PublishService) do |instance|
+          expect(instance).to receive(:execute).and_return({ status: :failure, message: "Error message" })
+        end
+
+        bulk_publish_draft_notes
+
+        expect(response).to have_gitlab_http_status(:internal_server_error)
+      end
+    end
+  end
 end

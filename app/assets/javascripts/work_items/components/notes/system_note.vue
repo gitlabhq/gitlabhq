@@ -127,7 +127,11 @@ export default {
     :class="{ target: isTargetNote, 'pr-0': shouldShowDescriptionVersion }"
     class="note system-note note-wrapper"
   >
-    <div class="timeline-icon"><gl-icon :name="note.systemNoteIconName" /></div>
+    <div
+      class="gl-float-left gl--flex-center gl-rounded-full gl-mt-n1 gl-ml-2 gl-w-6 gl-h-6 gl-bg-gray-50 gl-text-gray-600"
+    >
+      <gl-icon :name="note.systemNoteIconName" />
+    </div>
     <div class="timeline-content">
       <div class="note-header">
         <note-header
