@@ -37,7 +37,7 @@ RSpec.describe Ci::Sources::Pipeline, feature_category: :continuous_integration 
     end
   end
 
-  describe 'partitioning', :ci_partitioning do
+  describe 'partitioning', :ci_partitionable do
     include Ci::PartitioningHelpers
 
     let(:new_pipeline) { create(:ci_pipeline) }

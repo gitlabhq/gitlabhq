@@ -1,6 +1,6 @@
 <script>
 import * as Sentry from '@sentry/browser';
-import { GlSearchBoxByType } from '@gitlab/ui';
+import { GlSearchBoxByType, GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import searchUserProjectsAndGroups from '../graphql/queries/search_user_groups_and_projects.query.graphql';
@@ -14,11 +14,12 @@ export default {
     contextNavigation: s__('Navigation|Context navigation'),
     switchTo: s__('Navigation|Switch to...'),
     searchPlaceholder: s__('Navigation|Search for projects or groups'),
+    searchingLabel: s__('Navigation|Retrieving search results'),
+    searchError: s__('Navigation|There was an error fetching search results.'),
   },
   apollo: {
     groupsAndProjects: {
       query: searchUserProjectsAndGroups,
-      debounce: DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
       manual: true,
       variables() {
         return {
@@ -27,6 +28,7 @@ export default {
         };
       },
       result(response) {
+        this.hasError = false;
         try {
           const {
             data: {
@@ -40,11 +42,11 @@ export default {
           this.projects = formatContextSwitcherItems(projects);
           this.groups = formatContextSwitcherItems(groups);
         } catch (e) {
-          Sentry.captureException(e);
+          this.handleError(e);
         }
       },
       error(e) {
-        Sentry.captureException(e);
+        this.handleError(e);
       },
       skip() {
         return !this.searchString;
@@ -53,6 +55,8 @@ export default {
   },
   components: {
     GlSearchBoxByType,
+    GlLoadingIcon,
+    GlAlert,
     NavItem,
     ProjectsList,
     GroupsList,
@@ -85,11 +89,15 @@ export default {
       searchString: '',
       projects: [],
       groups: [],
+      hasError: false,
     };
   },
   computed: {
     isSearch() {
       return Boolean(this.searchString);
+    },
+    isSearching() {
+      return this.$apollo.queries.groupsAndProjects.loading;
     },
   },
   created() {
@@ -97,6 +105,20 @@ export default {
       trackContextAccess(this.username, this.currentContext);
     }
   },
+  methods: {
+    /**
+     * This needs to be exposed publicly so that we can auto-focus the search input when the parent
+     * GlCollapse is shown.
+     */
+    focusInput() {
+      this.$refs['search-box'].focusInput();
+    },
+    handleError(e) {
+      Sentry.captureException(e);
+      this.hasError = true;
+    },
+  },
+  DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
 };
 </script>
 
@@ -104,13 +126,24 @@ export default {
   <div>
     <div class="gl-p-1 gl-border-b gl-border-gray-50 gl-bg-white">
       <gl-search-box-by-type
+        ref="search-box"
         v-model="searchString"
         class="context-switcher-search-box"
         :placeholder="$options.i18n.searchPlaceholder"
+        :debounce="$options.DEFAULT_DEBOUNCE_AND_THROTTLE_MS"
         borderless
       />
     </div>
-    <nav :aria-label="$options.i18n.contextNavigation">
+    <gl-loading-icon
+      v-if="isSearching"
+      class="gl-mt-5"
+      size="md"
+      :label="$options.i18n.searchingLabel"
+    />
+    <gl-alert v-else-if="hasError" variant="danger" :dismissible="false" class="gl-m-2">
+      {{ $options.i18n.searchError }}
+    </gl-alert>
+    <nav v-else :aria-label="$options.i18n.contextNavigation">
       <ul class="gl-p-0 gl-list-style-none">
         <li v-if="!isSearch">
           <div aria-hidden="true" class="gl-font-weight-bold gl-px-3 gl-py-3">

@@ -5781,7 +5781,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe 'metadata partitioning', :ci_partitioning do
+  describe 'metadata partitioning', :ci_partitionable do
     let(:pipeline) { create(:ci_pipeline, project: project, partition_id: ci_testing_partition_id) }
 
     let(:build) do

@@ -111,13 +111,14 @@ export default {
       <div class="item-title gl-display-flex gl-gap-3 gl-min-w-0">
         <gl-icon
           v-if="hasState"
+          :id="`iconElementXL-${itemId}`"
           ref="iconElementXL"
           :class="iconClasses"
           :name="iconName"
           :title="stateTitle"
           :aria-label="state"
         />
-        <gl-tooltip :target="() => $refs.iconElementXL">
+        <gl-tooltip :target="`iconElementXL-${itemId}`">
           <span v-safe-html="stateTitle"></span>
         </gl-tooltip>
         <gl-icon
@@ -221,7 +222,7 @@ export default {
       category="tertiary"
       size="small"
       :disabled="removeDisabled"
-      class="js-issue-item-remove-button"
+      class="js-issue-item-remove-button gl-mr-2"
       data-qa-selector="remove_related_issue_button"
       :title="__('Remove')"
       :aria-label="__('Remove')"

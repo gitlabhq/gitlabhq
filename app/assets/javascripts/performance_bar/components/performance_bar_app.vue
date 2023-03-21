@@ -72,6 +72,11 @@ export default {
       keys: ['request', 'body'],
     },
     {
+      metric: 'zkt',
+      header: s__('PerformanceBar|Zoekt calls'),
+      keys: ['request', 'body'],
+    },
+    {
       metric: 'external-http',
       title: 'external',
       header: s__('PerformanceBar|External Http calls'),
@@ -127,6 +132,16 @@ export default {
     memoryReportPath() {
       return mergeUrlParams({ performance_bar: 'memory' }, window.location.href);
     },
+    showZoekt() {
+      return document.body.dataset.page === 'search:show';
+    },
+  },
+  created() {
+    if (!this.showZoekt) {
+      this.$options.detailedMetrics = this.$options.detailedMetrics.filter(
+        (item) => item.metric !== 'zkt',
+      );
+    }
   },
   mounted() {
     this.currentRequest = this.requestId;

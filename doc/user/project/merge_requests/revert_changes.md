@@ -58,7 +58,8 @@ To do this:
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. If you know the merge request that contains the commit:
    1. On the left sidebar, select **Merge requests** and identify your merge request.
-   1. Select **Commits**, then select the title of the commit you want to revert. GitLab displays the contents of the commit.
+   1. Select **Commits**, then select the title of the commit you want to revert. This displays the commit in the **Changes** tab of your merge request.
+   1. Select the commit hash you want to revert. GitLab displays the contents of the commit.
 1. If you don't know the merge request the commit originated from:
    1. On the left sidebar, select **Repository > Commits**.
    1. Select the title of the commit to display full information about the commit.

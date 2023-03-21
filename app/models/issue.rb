@@ -594,6 +594,10 @@ class Issue < ApplicationRecord
 
   # rubocop: disable CodeReuse/ServiceClass
   def update_project_counter_caches
+    # TODO: Fix counter cache for issues in group
+    # TODO: see https://gitlab.com/gitlab-org/gitlab/-/work_items/393125?iid_path=true
+    return unless project
+
     Projects::OpenIssuesCountService.new(project).refresh_cache
   end
   # rubocop: enable CodeReuse/ServiceClass
@@ -688,6 +692,10 @@ class Issue < ApplicationRecord
   end
 
   def expire_etag_cache
+    # TODO: Fix this for the case when issues is created at group level
+    # TODO: https://gitlab.com/gitlab-org/gitlab/-/work_items/395814?iid_path=true
+    return unless project
+
     key = Gitlab::Routing.url_helpers.realtime_changes_project_issue_path(project, self)
     Gitlab::EtagCaching::Store.new.touch(key)
   end
@@ -700,6 +708,10 @@ class Issue < ApplicationRecord
   # we need sometimes GID of an issue instance to be represented as WorkItem GID. E.g. notes subscriptions.
   def to_work_item_global_id
     ::Gitlab::GlobalId.as_global_id(id, model_name: WorkItem.name)
+  end
+
+  def resource_parent
+    project || namespace
   end
 
   private
@@ -729,6 +741,10 @@ class Issue < ApplicationRecord
 
   override :persist_pg_full_text_search_vector
   def persist_pg_full_text_search_vector(search_vector)
+    # TODO: Fix search vector for issues at group level
+    # TODO: https://gitlab.com/gitlab-org/gitlab/-/work_items/393126?iid_path=true
+    return unless project
+
     Issues::SearchData.upsert({ project_id: project_id, issue_id: id, search_vector: search_vector }, unique_by: %i(project_id issue_id))
   end
 
@@ -745,12 +761,14 @@ class Issue < ApplicationRecord
   end
 
   def record_create_action
-    Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_created_action(author: author, project: project)
+    Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_created_action(
+      author: author, namespace: namespace.reset
+    )
   end
 
   # Returns `true` if this Issue is visible to everybody.
   def publicly_visible?
-    project.public? && project.feature_available?(:issues, nil) &&
+    resource_parent.public? && resource_parent.feature_available?(:issues, nil) &&
       !confidential? && !hidden? && !::Gitlab::ExternalAuthorization.enabled?
   end
 

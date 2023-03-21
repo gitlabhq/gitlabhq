@@ -6,11 +6,12 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   let_it_be(:user1) { build(:user, id: 1) }
   let_it_be(:user2) { build(:user, id: 2) }
   let_it_be(:user3) { build(:user, id: 3) }
-  let_it_be(:project) { build(:project) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:category) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CATEGORY }
   let_it_be(:event_action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_ACTION }
   let_it_be(:event_label) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_LABEL }
 
+  let(:original_params) { nil }
   let(:event_property) { action }
   let(:time) { Time.zone.now }
 
@@ -67,6 +68,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   context 'for Issue created actions' do
     it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
       let(:action) { described_class::ISSUE_CREATED }
+      let(:original_params) { { namespace: project.project_namespace.reload } }
 
       def track_action(params)
         described_class.track_issue_created_action(**params)

@@ -287,7 +287,7 @@ describe('GroupRunnersApp', () => {
       });
     });
 
-    it('When runner is paused or unpaused, some data is refetched', async () => {
+    it('When runner is paused or unpaused, some data is refetched', () => {
       expect(mockGroupRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES);
 
       findRunnerActionsCell().vm.$emit('toggledPaused');
@@ -299,7 +299,7 @@ describe('GroupRunnersApp', () => {
       expect(showToast).toHaveBeenCalledTimes(0);
     });
 
-    it('When runner is deleted, data is refetched and a toast message is shown', async () => {
+    it('When runner is deleted, data is refetched and a toast message is shown', () => {
       findRunnerActionsCell().vm.$emit('deleted', { message: 'Runner deleted' });
 
       expect(showToast).toHaveBeenCalledTimes(1);
@@ -416,7 +416,7 @@ describe('GroupRunnersApp', () => {
       expect(createAlert).not.toHaveBeenCalled();
     });
 
-    it('shows an empty state', async () => {
+    it('shows an empty state', () => {
       expect(findRunnerListEmptyState().exists()).toBe(true);
     });
   });
@@ -427,11 +427,11 @@ describe('GroupRunnersApp', () => {
       await createComponent();
     });
 
-    it('error is shown to the user', async () => {
+    it('error is shown to the user', () => {
       expect(createAlert).toHaveBeenCalledTimes(1);
     });
 
-    it('error is reported to sentry', async () => {
+    it('error is reported to sentry', () => {
       expect(captureException).toHaveBeenCalledWith({
         error: new Error('Error!'),
         component: 'GroupRunnersApp',

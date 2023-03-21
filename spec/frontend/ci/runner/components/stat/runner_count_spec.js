@@ -67,7 +67,7 @@ describe('RunnerCount', () => {
       expect(wrapper.html()).toBe(`<strong>${runnersCountData.data.runners.count}</strong>`);
     });
 
-    it('does not fetch from the group query', async () => {
+    it('does not fetch from the group query', () => {
       expect(mockGroupRunnersCountHandler).not.toHaveBeenCalled();
     });
 
@@ -89,7 +89,7 @@ describe('RunnerCount', () => {
       await createComponent({ props: { scope: INSTANCE_TYPE, skip: true } });
     });
 
-    it('does not fetch data', async () => {
+    it('does not fetch data', () => {
       expect(mockRunnersCountHandler).not.toHaveBeenCalled();
       expect(mockGroupRunnersCountHandler).not.toHaveBeenCalled();
 
@@ -106,7 +106,7 @@ describe('RunnerCount', () => {
       await createComponent({ props: { scope: INSTANCE_TYPE } });
     });
 
-    it('data is not shown and error is reported', async () => {
+    it('data is not shown and error is reported', () => {
       expect(wrapper.html()).toBe('<strong></strong>');
 
       expect(captureException).toHaveBeenCalledWith({
@@ -121,7 +121,7 @@ describe('RunnerCount', () => {
       await createComponent({ props: { scope: GROUP_TYPE } });
     });
 
-    it('fetches data from the group query', async () => {
+    it('fetches data from the group query', () => {
       expect(mockGroupRunnersCountHandler).toHaveBeenCalledTimes(1);
       expect(mockGroupRunnersCountHandler).toHaveBeenCalledWith({});
 
@@ -141,7 +141,7 @@ describe('RunnerCount', () => {
       wrapper.vm.refetch();
     });
 
-    it('data is not shown and error is reported', async () => {
+    it('data is not shown and error is reported', () => {
       expect(mockRunnersCountHandler).toHaveBeenCalledTimes(2);
     });
   });

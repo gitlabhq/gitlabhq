@@ -444,6 +444,23 @@ namespace :gitlab do
       end
     end
 
+    namespace :schema_checker do
+      desc 'Checks schema inconsistencies'
+      task run: :environment do
+        database_model = Gitlab::Database.database_base_models[Gitlab::Database::MAIN_DATABASE_NAME]
+        database = Gitlab::Database::SchemaValidation::Database.new(database_model.connection)
+
+        stucture_sql_path = Rails.root.join('db/structure.sql')
+        structure_sql = Gitlab::Database::SchemaValidation::StructureSql.new(stucture_sql_path)
+
+        inconsistencies = Gitlab::Database::SchemaValidation::Runner.new(structure_sql, database).execute
+
+        inconsistencies.each do |inconsistency|
+          puts inconsistency.inspect
+        end
+      end
+    end
+
     namespace :dictionary do
       DB_DOCS_PATH = File.join(Rails.root, 'db', 'docs')
       EE_DICTIONARY_PATH = File.join(Rails.root, 'ee', 'db', 'docs')

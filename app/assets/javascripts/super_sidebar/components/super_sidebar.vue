@@ -31,7 +31,7 @@ export default {
   },
   data() {
     return {
-      contextSwitcherOpened: false,
+      contextSwitcherOpen: false,
       isCollapased: isCollapsed(),
     };
   },
@@ -43,6 +43,9 @@ export default {
   methods: {
     collapseSidebar() {
       toggleSuperSidebarCollapsed(true, false);
+    },
+    onContextSwitcherShown() {
+      this.$refs['context-switcher'].focusInput();
     },
   },
 };
@@ -72,10 +75,15 @@ export default {
         <div class="gl-flex-grow-1 gl-overflow-auto">
           <context-switcher-toggle
             :context="sidebarData.current_context_header"
-            :expanded="contextSwitcherOpened"
+            :expanded="contextSwitcherOpen"
           />
-          <gl-collapse id="context-switcher" v-model="contextSwitcherOpened">
+          <gl-collapse
+            id="context-switcher"
+            v-model="contextSwitcherOpen"
+            @shown="onContextSwitcherShown"
+          >
             <context-switcher
+              ref="context-switcher"
               :persistent-links="sidebarData.context_switcher_links"
               :username="sidebarData.username"
               :projects-path="sidebarData.projects_path"
@@ -83,7 +91,7 @@ export default {
               :current-context="sidebarData.current_context"
             />
           </gl-collapse>
-          <gl-collapse :visible="!contextSwitcherOpened">
+          <gl-collapse :visible="!contextSwitcherOpen">
             <sidebar-menu :items="menuItems" />
             <sidebar-portal-target />
           </gl-collapse>

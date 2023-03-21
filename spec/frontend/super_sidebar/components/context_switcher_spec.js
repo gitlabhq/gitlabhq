@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlSearchBoxByType } from '@gitlab/ui';
+import { GlSearchBoxByType, GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { s__ } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -23,6 +23,7 @@ jest.mock('~/super_sidebar/utils', () => ({
     .formatContextSwitcherItems,
   trackContextAccess: jest.fn(),
 }));
+const focusInputMock = jest.fn();
 
 const persistentLinks = [{ title: 'Explore', link: '/explore', icon: 'compass' }];
 const username = 'root';
@@ -39,6 +40,8 @@ describe('ContextSwitcher component', () => {
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findProjectsList = () => wrapper.findComponent(ProjectsList);
   const findGroupsList = () => wrapper.findComponent(GroupsList);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   const triggerSearchQuery = async () => {
     findSearchBox().vm.$emit('input', 'foo');
@@ -72,6 +75,7 @@ describe('ContextSwitcher component', () => {
       stubs: {
         GlSearchBoxByType: stubComponent(GlSearchBoxByType, {
           props: ['placeholder'],
+          methods: { focusInput: focusInputMock },
         }),
         ProjectsList: stubComponent(ProjectsList, {
           props: ['username', 'viewAllLink', 'isSearch', 'searchResults'],
@@ -118,8 +122,21 @@ describe('ContextSwitcher component', () => {
       });
     });
 
+    it('focuses the search input when focusInput is called', () => {
+      wrapper.vm.focusInput();
+
+      expect(focusInputMock).toHaveBeenCalledTimes(1);
+    });
+
     it('does not trigger the search query on mount', () => {
       expect(searchUserProjectsAndGroupsHandlerSuccess).not.toHaveBeenCalled();
+    });
+
+    it('shows a loading spinner when search query is typed in', async () => {
+      findSearchBox().vm.$emit('input', 'foo');
+      await nextTick();
+
+      expect(findLoadingIcon().exists()).toBe(true);
     });
   });
 
@@ -154,6 +171,10 @@ describe('ContextSwitcher component', () => {
 
     it('triggers the search query on search', () => {
       expect(searchUserProjectsAndGroupsHandlerSuccess).toHaveBeenCalled();
+    });
+
+    it('hides the loading spinner', () => {
+      expect(findLoadingIcon().exists()).toBe(false);
     });
 
     it('passes the projects to the frequent projects list', () => {
@@ -206,7 +227,7 @@ describe('ContextSwitcher component', () => {
       jest.spyOn(Sentry, 'captureException');
     });
 
-    it('captures exception if response is formatted incorrectly', async () => {
+    it('captures exception and shows an alert if response is formatted incorrectly', async () => {
       createWrapper({
         requestHandlers: {
           searchUserProjectsAndGroupsQueryHandler: jest.fn().mockResolvedValue({
@@ -217,9 +238,10 @@ describe('ContextSwitcher component', () => {
       await triggerSearchQuery();
 
       expect(Sentry.captureException).toHaveBeenCalled();
+      expect(findAlert().exists()).toBe(true);
     });
 
-    it('captures exception if query fails', async () => {
+    it('captures exception and shows an alert if query fails', async () => {
       createWrapper({
         requestHandlers: {
           searchUserProjectsAndGroupsQueryHandler: jest.fn().mockRejectedValue(),
@@ -228,6 +250,7 @@ describe('ContextSwitcher component', () => {
       await triggerSearchQuery();
 
       expect(Sentry.captureException).toHaveBeenCalled();
+      expect(findAlert().exists()).toBe(true);
     });
   });
 });

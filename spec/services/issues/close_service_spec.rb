@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Issues::CloseService, feature_category: :team_planning do
   let(:project) { create(:project, :repository) }
+  let(:delegated_project) { project.project_namespace.project }
   let(:user) { create(:user, email: "user@example.com") }
   let(:user2) { create(:user, email: "user2@example.com") }
   let(:guest) { create(:user) }
@@ -434,10 +435,10 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
       end
 
       it 'executes issue hooks' do
-        expect(project).to receive(:execute_hooks).with(expected_payload, :issue_hooks)
-        expect(project).to receive(:execute_integrations).with(expected_payload, :issue_hooks)
+        expect(delegated_project).to receive(:execute_hooks).with(expected_payload, :issue_hooks)
+        expect(delegated_project).to receive(:execute_integrations).with(expected_payload, :issue_hooks)
 
-        described_class.new(container: project, current_user: user).close_issue(issue)
+        described_class.new(container: delegated_project, current_user: user).close_issue(issue)
       end
     end
 
@@ -445,8 +446,8 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
       it 'executes confidential issue hooks' do
         issue = create(:issue, :confidential, project: project)
 
-        expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
-        expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :confidential_issue_hooks)
+        expect(delegated_project).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
+        expect(delegated_project).to receive(:execute_integrations).with(an_instance_of(Hash), :confidential_issue_hooks)
 
         described_class.new(container: project, current_user: user).close_issue(issue)
       end

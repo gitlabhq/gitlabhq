@@ -61,7 +61,6 @@ describe('ImportHistoryApp', () => {
 
   beforeEach(() => {
     gon.api_version = 'v4';
-    gon.features = { fullPathProjectSearch: true };
     mock = new MockAdapter(axios);
   });
 

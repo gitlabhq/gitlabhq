@@ -20,12 +20,13 @@ module WorkItems
             return
           end
 
-          project = work_item.project
+          resource_group = work_item.project&.group || work_item.namespace
+          project_ids = [work_item.project&.id].compact
           milestone = MilestonesFinder.new({
-                                             project_ids: [project.id],
-                                             group_ids: project.group&.self_and_ancestors&.select(:id),
-                                             ids: [params[:milestone_id]]
-                                           }).execute.first
+            project_ids: project_ids,
+            group_ids: resource_group&.self_and_ancestors&.select(:id),
+            ids: [params[:milestone_id]]
+          }).execute.first
 
           if milestone
             work_item.milestone = milestone

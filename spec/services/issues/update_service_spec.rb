@@ -592,8 +592,8 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
       end
 
       it 'executes confidential issue hooks' do
-        expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
-        expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :confidential_issue_hooks)
+        expect(project.project_namespace).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
+        expect(project.project_namespace).to receive(:execute_integrations).with(an_instance_of(Hash), :confidential_issue_hooks)
 
         update_issue(confidential: true)
       end
@@ -1164,9 +1164,9 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
         end
 
         it 'triggers webhooks' do
-          expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
-          expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :issue_hooks)
-          expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :incident_hooks)
+          expect(project.project_namespace).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
+          expect(project.project_namespace).to receive(:execute_integrations).with(an_instance_of(Hash), :issue_hooks)
+          expect(project.project_namespace).to receive(:execute_integrations).with(an_instance_of(Hash), :incident_hooks)
 
           update_issue(opts)
         end
@@ -1278,9 +1278,9 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
         end
 
         it 'triggers webhooks' do
-          expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
-          expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :issue_hooks)
-          expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :incident_hooks)
+          expect(project.project_namespace).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
+          expect(project.project_namespace).to receive(:execute_integrations).with(an_instance_of(Hash), :issue_hooks)
+          expect(project.project_namespace).to receive(:execute_integrations).with(an_instance_of(Hash), :incident_hooks)
 
           update_issue(opts)
         end

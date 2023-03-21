@@ -37,8 +37,8 @@ RSpec.shared_examples 'daily tracked issuable snowplow and service ping events w
         .to_h
     end
 
-    let(:track_params) { { project: project } }
-    let(:event_params) { track_params.merge(label: event_label, property: event_property, namespace: project.namespace, context: [context]) }
+    let(:track_params) { original_params || { project: project } }
+    let(:event_params) { { project: project }.merge(label: event_label, property: event_property, namespace: project.namespace, context: [context]) }
   end
 end
 

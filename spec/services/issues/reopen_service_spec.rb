@@ -109,8 +109,8 @@ RSpec.describe Issues::ReopenService, feature_category: :team_planning do
         end
 
         it 'executes issue hooks' do
-          expect(project).to receive(:execute_hooks).with(expected_payload, :issue_hooks)
-          expect(project).to receive(:execute_integrations).with(expected_payload, :issue_hooks)
+          expect(project.project_namespace).to receive(:execute_hooks).with(expected_payload, :issue_hooks)
+          expect(project.project_namespace).to receive(:execute_integrations).with(expected_payload, :issue_hooks)
 
           execute
         end
@@ -120,8 +120,9 @@ RSpec.describe Issues::ReopenService, feature_category: :team_planning do
         let(:issue) { create(:issue, :confidential, :closed, project: project) }
 
         it 'executes confidential issue hooks' do
-          expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
-          expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :confidential_issue_hooks)
+          issue_hooks = :confidential_issue_hooks
+          expect(project.project_namespace).to receive(:execute_hooks).with(an_instance_of(Hash), issue_hooks)
+          expect(project.project_namespace).to receive(:execute_integrations).with(an_instance_of(Hash), issue_hooks)
 
           execute
         end

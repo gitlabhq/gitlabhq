@@ -500,7 +500,7 @@ class Project < ApplicationRecord
   delegate :previous_default_branch, :previous_default_branch=, to: :project_setting
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
-  delegate :add_member, :add_members, to: :team
+  delegate :add_member, :add_members, :member?, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_owner, :add_role, to: :team
   delegate :group_runners_enabled, :group_runners_enabled=, to: :ci_cd_settings, allow_nil: true
   delegate :root_ancestor, to: :namespace, allow_nil: true
@@ -3141,6 +3141,12 @@ class Project < ApplicationRecord
   # overridden in EE
   def suggested_reviewers_available?
     false
+  end
+
+  def crm_enabled?
+    return false unless group
+
+    group.crm_enabled?
   end
 
   private

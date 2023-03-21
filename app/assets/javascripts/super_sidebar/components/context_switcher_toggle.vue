@@ -44,7 +44,7 @@ export default {
       v-if="context.icon"
       class="gl-avatar avatar-container gl-bg-t-gray-a-08 icon-avatar rect-avatar s24 gl-mr-3 gl-ml-4"
     >
-      <gl-icon :name="context.icon" :size="16" />
+      <gl-icon class="gl-text-gray-700" :name="context.icon" :size="16" />
     </span>
     <gl-avatar
       v-else
@@ -55,11 +55,11 @@ export default {
       :src="context.avatar"
       class="gl-mr-3 gl-ml-4"
     />
-    <div class="gl-overflow-auto">
+    <div class="gl-overflow-auto gl-text-gray-900">
       <gl-truncate :text="context.title" />
     </div>
     <span class="gl-flex-grow-1 gl-text-right gl-mr-4">
-      <gl-icon :name="collapseIcon" />
+      <gl-icon class="gl-text-gray-400" :name="collapseIcon" />
     </span>
   </button>
 </template>

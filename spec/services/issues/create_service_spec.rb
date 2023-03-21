@@ -436,8 +436,8 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
         end
 
         it 'executes issue hooks' do
-          expect(project).to receive(:execute_hooks).with(expected_payload, :issue_hooks)
-          expect(project).to receive(:execute_integrations).with(expected_payload, :issue_hooks)
+          expect(project.project_namespace).to receive(:execute_hooks).with(expected_payload, :issue_hooks)
+          expect(project.project_namespace).to receive(:execute_integrations).with(expected_payload, :issue_hooks)
 
           described_class.new(container: project, current_user: user, params: opts, spam_params: spam_params).execute
         end
@@ -459,8 +459,8 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
           end
 
           it 'executes confidential issue hooks' do
-            expect(project).to receive(:execute_hooks).with(expected_payload, :confidential_issue_hooks)
-            expect(project).to receive(:execute_integrations).with(expected_payload, :confidential_issue_hooks)
+            expect(project.project_namespace).to receive(:execute_hooks).with(expected_payload, :confidential_issue_hooks)
+            expect(project.project_namespace).to receive(:execute_integrations).with(expected_payload, :confidential_issue_hooks)
 
             described_class.new(container: project, current_user: user, params: opts, spam_params: spam_params).execute
           end
@@ -493,7 +493,7 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
       end
 
       it 'schedules a namespace onboarding create action worker' do
-        expect(Onboarding::IssueCreatedWorker).to receive(:perform_async).with(project.namespace.id)
+        expect(Onboarding::IssueCreatedWorker).to receive(:perform_async).with(project.project_namespace_id)
 
         issue
       end

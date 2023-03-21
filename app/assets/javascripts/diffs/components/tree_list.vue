@@ -154,7 +154,7 @@ export default {
     <div
       ref="scrollRoot"
       :class="{ 'tree-list-blobs': !renderTreeList || search }"
-      class="gl-flex-grow-1"
+      class="gl-flex-grow-1 mr-tree-list"
     >
       <recycle-scroller
         v-if="flatFilteredTreeList.length"
@@ -172,7 +172,7 @@ export default {
             :hide-file-stats="hideFileStats"
             :current-diff-file-id="currentDiffFileId"
             :style="{ '--level': item.level }"
-            :class="{ 'tree-list-parent': item.tree.length }"
+            :class="{ 'tree-list-parent': item.level > 0 }"
             class="gl-relative"
             @toggleTreeOpen="toggleTreeOpen"
             @clickFile="(path) => scrollToFile({ path })"

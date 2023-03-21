@@ -9,14 +9,11 @@ describe('~/api/projects_api.js', () => {
   let mock;
 
   const projectId = 1;
-  const setfullPathProjectSearch = (value) => {
-    window.gon.features.fullPathProjectSearch = value;
-  };
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
-    window.gon = { api_version: 'v7', features: { fullPathProjectSearch: true } };
+    window.gon = { api_version: 'v7' };
   });
 
   afterEach(() => {
@@ -59,19 +56,6 @@ describe('~/api/projects_api.js', () => {
       const expectedParams = {
         params: { per_page: 20, search: 'group/project1', search_namespaces: true, simple: true },
       };
-      const query = 'group/project1';
-
-      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, { data: expectedProjects });
-
-      return projectsApi.getProjects(query, options).then(({ data }) => {
-        expect(axios.get).toHaveBeenCalledWith(expectedUrl, expectedParams);
-        expect(data.data).toEqual(expectedProjects);
-      });
-    });
-
-    it('does not search namespaces if fullPathProjectSearch is disabled', () => {
-      setfullPathProjectSearch(false);
-      const expectedParams = { params: { per_page: 20, search: 'group/project1', simple: true } };
       const query = 'group/project1';
 
       mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, { data: expectedProjects });

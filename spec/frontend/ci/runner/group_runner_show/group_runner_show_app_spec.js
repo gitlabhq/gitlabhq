@@ -83,7 +83,7 @@ describe('GroupRunnerShowApp', () => {
       await createComponent({ mountFn: mountExtended });
     });
 
-    it('expect GraphQL ID to be requested', async () => {
+    it('expect GraphQL ID to be requested', () => {
       expect(mockRunnerQuery).toHaveBeenCalledWith({ id: mockRunnerGraphqlId });
     });
 
@@ -91,7 +91,7 @@ describe('GroupRunnerShowApp', () => {
       expect(findRunnerHeader().text()).toContain(`Runner #${mockRunnerId}`);
     });
 
-    it('displays the runner edit and pause buttons', async () => {
+    it('displays the runner edit and pause buttons', () => {
       expect(findRunnerEditButton().attributes('href')).toBe(mockEditGroupRunnerPath);
       expect(findRunnerPauseButton().exists()).toBe(true);
       expect(findRunnerDeleteButton().exists()).toBe(true);

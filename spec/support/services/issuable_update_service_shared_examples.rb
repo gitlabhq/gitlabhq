@@ -23,8 +23,9 @@ RSpec.shared_examples 'issuable update service' do
       end
 
       it 'executes hooks' do
-        expect(project).to receive(:execute_hooks).with(expected_payload, hook_event)
-        expect(project).to receive(:execute_integrations).with(expected_payload, hook_event)
+        hooks_container = described_class < Issues::BaseService ? project.project_namespace : project
+        expect(hooks_container).to receive(:execute_hooks).with(expected_payload, hook_event)
+        expect(hooks_container).to receive(:execute_integrations).with(expected_payload, hook_event)
 
         described_class.new(**described_class.constructor_container_arg(project), current_user: user, params: { state_event: 'reopen' }).execute(closed_issuable)
       end
@@ -45,8 +46,9 @@ RSpec.shared_examples 'issuable update service' do
       end
 
       it 'executes hooks' do
-        expect(project).to receive(:execute_hooks).with(expected_payload, hook_event)
-        expect(project).to receive(:execute_integrations).with(expected_payload, hook_event)
+        hooks_container = described_class < Issues::BaseService ? project.project_namespace : project
+        expect(hooks_container).to receive(:execute_hooks).with(expected_payload, hook_event)
+        expect(hooks_container).to receive(:execute_integrations).with(expected_payload, hook_event)
 
         described_class.new(**described_class.constructor_container_arg(project), current_user: user, params: { state_event: 'close' }).execute(open_issuable)
       end

@@ -107,6 +107,9 @@
     &[aria-expanded='true'] {
       background-color: $t-gray-a-08;
     }
+
+    &:focus {
+      @include gl-focus($inset: true); }
   }
 
   .btn-with-notification {

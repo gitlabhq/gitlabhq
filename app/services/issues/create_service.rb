@@ -22,7 +22,7 @@ module Issues
     end
 
     def execute(skip_system_notes: false)
-      return error(_('Operation not allowed'), 403) unless @current_user.can?(authorization_action, @project)
+      return error(_('Operation not allowed'), 403) unless @current_user.can?(authorization_action, container)
 
       @issue = @build_service.execute
       # issue_type is set in BuildService, so we can delete it from params, in later phase
@@ -60,7 +60,8 @@ module Issues
       issue.run_after_commit do
         NewIssueWorker.perform_async(issue.id, user.id, issue.class.to_s)
         Issues::PlacementWorker.perform_async(nil, issue.project_id)
-        Onboarding::IssueCreatedWorker.perform_async(issue.project.namespace_id)
+        # issue.namespace_id can point to either a project through project namespace or a group.
+        Onboarding::IssueCreatedWorker.perform_async(issue.namespace_id)
       end
     end
 

@@ -352,6 +352,40 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     end
   end
 
+  describe 'schema inconsistencies' do
+    let(:expected_value) do
+      [
+        { inconsistency_type: 'wrong_indexes', object_name: 'index_1' },
+        { inconsistency_type: 'missing_indexes', object_name: 'index_2' }
+      ]
+    end
+
+    let(:runner) { instance_double(Gitlab::Database::SchemaValidation::Runner, execute: inconsistencies) }
+    let(:inconsistency_class) { Gitlab::Database::SchemaValidation::Inconsistency }
+
+    let(:inconsistencies) do
+      [
+        instance_double(inconsistency_class, inspect: 'index_statement_1'),
+        instance_double(inconsistency_class, inspect: 'index_statement_2')
+      ]
+    end
+
+    let(:rake_output) do
+      <<~MSG
+        index_statement_1
+        index_statement_2
+      MSG
+    end
+
+    before do
+      allow(Gitlab::Database::SchemaValidation::Runner).to receive(:new).and_return(runner)
+    end
+
+    it 'prints the inconsistency message' do
+      expect { run_rake_task('gitlab:db:schema_checker:run') }.to output(rake_output).to_stdout
+    end
+  end
+
   describe 'dictionary generate' do
     let(:db_config) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: 'fake_db') }
 

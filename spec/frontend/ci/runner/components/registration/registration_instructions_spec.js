@@ -84,7 +84,7 @@ describe('RegistrationInstructions', () => {
     window.gon.gitlab_url = TEST_HOST;
   });
 
-  it('loads runner with id', async () => {
+  it('loads runner with id', () => {
     createComponent();
 
     expect(mockRunnerQuery).toHaveBeenCalledWith({ id: mockRunner.id });

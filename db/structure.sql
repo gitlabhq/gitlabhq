@@ -27226,7 +27226,7 @@ ALTER TABLE ONLY operations_user_lists
     ADD CONSTRAINT operations_user_lists_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY p_ci_runner_machine_builds
-    ADD CONSTRAINT p_ci_runner_machine_builds_pkey PRIMARY KEY (partition_id, build_id);
+    ADD CONSTRAINT p_ci_runner_machine_builds_pkey PRIMARY KEY (build_id, partition_id);
 
 ALTER TABLE ONLY packages_build_infos
     ADD CONSTRAINT packages_build_infos_pkey PRIMARY KEY (id);
@@ -27341,6 +27341,9 @@ ALTER TABLE ONLY pages_domain_acme_orders
 
 ALTER TABLE ONLY pages_domains
     ADD CONSTRAINT pages_domains_pkey PRIMARY KEY (id);
+
+ALTER TABLE ci_builds
+    ADD CONSTRAINT partitioning_constraint CHECK ((partition_id = 100)) NOT VALID;
 
 ALTER TABLE ONLY path_locks
     ADD CONSTRAINT path_locks_pkey PRIMARY KEY (id);

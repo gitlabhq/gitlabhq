@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Database::SchemaValidation::Runner, feature_category: :da
       subject(:inconsistencies) { described_class.new(structure_sql, database, validators: validators).execute }
 
       let(:class_name) { 'Gitlab::Database::SchemaValidation::Validators::ExtraIndexes' }
-      let(:inconsistency_class_name) { 'Gitlab::Database::SchemaValidation::Validators::BaseValidator::Inconsistency' }
+      let(:inconsistency_class_name) { 'Gitlab::Database::SchemaValidation::Inconsistency' }
 
       let(:extra_indexes) { class_double(class_name) }
       let(:instace_extra_index) { instance_double(class_name, execute: [inconsistency]) }

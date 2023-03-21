@@ -82,7 +82,7 @@ describe('RunnerCreateForm', () => {
         expect(findSubmitBtn().props('loading')).toBe(true);
       });
 
-      it('saves runner', async () => {
+      it('saves runner', () => {
         expect(runnerCreateHandler).toHaveBeenCalledWith({
           input: {
             ...defaultRunnerModel,
@@ -100,7 +100,7 @@ describe('RunnerCreateForm', () => {
         await waitForPromises();
       });
 
-      it('emits "saved" result', async () => {
+      it('emits "saved" result', () => {
         expect(wrapper.emitted('saved')[0]).toEqual([mockCreatedRunner]);
       });
 
@@ -119,7 +119,7 @@ describe('RunnerCreateForm', () => {
         await waitForPromises();
       });
 
-      it('emits "error" result', async () => {
+      it('emits "error" result', () => {
         expect(wrapper.emitted('error')[0]).toEqual([error]);
       });
 
@@ -154,7 +154,7 @@ describe('RunnerCreateForm', () => {
         await waitForPromises();
       });
 
-      it('emits "error" results', async () => {
+      it('emits "error" results', () => {
         expect(wrapper.emitted('error')[0]).toEqual([new Error(`${errorMsg1} ${errorMsg2}`)]);
       });
 

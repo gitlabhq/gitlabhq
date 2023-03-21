@@ -1741,7 +1741,8 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
 
     context 'when project in user namespace' do
-      let(:project) { build_stubbed(:project_empty_repo) }
+      let(:project_namespace) { build_stubbed(:project_namespace) }
+      let(:project) { build_stubbed(:project_empty_repo, project_namespace: project_namespace) }
       let(:project_id) { project.id }
       let(:namespace_id) { nil }
 
@@ -1750,7 +1751,8 @@ RSpec.describe Issue, feature_category: :team_planning do
 
     context 'when project in a group namespace' do
       let(:group) { create(:group) }
-      let(:project) { build_stubbed(:project_empty_repo, group: group) }
+      let(:project_namespace) { build_stubbed(:project_namespace) }
+      let(:project) { build_stubbed(:project_empty_repo, group: group, project_namespace: project_namespace) }
       let(:project_id) { nil }
       let(:namespace_id) { group.id }
 

@@ -164,7 +164,7 @@ describe('RunnerList', () => {
       });
     });
 
-    it('Emits a deleted event', async () => {
+    it('Emits a deleted event', () => {
       const event = { message: 'Deleted!' };
       findRunnerBulkDelete().vm.$emit('deleted', event);
 

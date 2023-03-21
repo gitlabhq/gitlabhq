@@ -7,7 +7,16 @@ module Issues
     def execute
       filter_resolve_discussion_params
 
-      @issue = model_klass.new(issue_params.merge(project: project)).tap do |issue|
+      container_param = case container
+                        when Project
+                          { project: project }
+                        when Namespaces::ProjectNamespace
+                          { project: container.project }
+                        else
+                          { namespace: container }
+                        end
+
+      @issue = model_klass.new(issue_params.merge(container_param)).tap do |issue|
         ensure_milestone_available(issue)
       end
     end
@@ -91,9 +100,10 @@ module Issues
 
       params[:work_item_type] = WorkItems::Type.find_by(id: params[:work_item_type_id]) if params[:work_item_type_id].present? # rubocop: disable CodeReuse/ActiveRecord
 
-      public_issue_params << :milestone_id if can?(current_user, :admin_issue, project)
-      public_issue_params << :issue_type if create_issue_type_allowed?(project, params[:issue_type])
-      public_issue_params << :work_item_type if create_issue_type_allowed?(project, params[:work_item_type]&.base_type)
+      public_issue_params << :milestone_id if can?(current_user, :admin_issue, container)
+      public_issue_params << :issue_type if create_issue_type_allowed?(container, params[:issue_type])
+      base_type = params[:work_item_type]&.base_type
+      public_issue_params << :work_item_type if create_issue_type_allowed?(container, base_type)
 
       params.slice(*public_issue_params)
     end

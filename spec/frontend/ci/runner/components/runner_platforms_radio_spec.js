@@ -41,7 +41,7 @@ describe('RunnerPlatformsRadio', () => {
       expect(findFormRadio().attributes('value')).toBe(mockValue);
     });
 
-    it('emits when item is clicked', async () => {
+    it('emits when item is clicked', () => {
       findDiv().trigger('click');
 
       expect(wrapper.emitted('input')).toEqual([[mockValue]]);
@@ -94,7 +94,7 @@ describe('RunnerPlatformsRadio', () => {
       expect(wrapper.classes('gl-cursor-pointer')).toBe(false);
     });
 
-    it('does not emit when item is clicked', async () => {
+    it('does not emit when item is clicked', () => {
       findDiv().trigger('click');
 
       expect(wrapper.emitted('input')).toBe(undefined);

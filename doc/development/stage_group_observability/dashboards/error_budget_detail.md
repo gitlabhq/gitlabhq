@@ -100,28 +100,3 @@ In the graphs, there is a single line per service. In the previous example image
 
 Sidekiq is not included in this dashboard. We're tracking this in
 [epic 700](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/700).
-
-### SLI detail
-
-![Rails requests SLI detail](img/error_budget_detail_sli_detail.png)
-
-The SLI details row shows a breakdown of a specific SLI based on the
-labels present on the source metrics.
-
-For example, in the previous image, the `rails_requests` SLI has an `endpoint_id` label.
-We can show how much a certain endpoint was requested (RPS), and how much it contributed to the error
-budget spend.
-
-For Apdex we show the **Apdex Attribution** panel. The more prominent
-color is the one that contributed most to the spend. To see the
-top spending endpoint over the entire range, sort by the average.
-
-For error ratio we show an error rate. To see which label contributed most to the spend, sort by the
-average.
-
-We don't have endpoint information available for Rails errors. This work is being planned in
-[epic 663](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/663).
-
-The number of series to be loaded in the SLI details graphs is very
-high when compared to the other aggregations. Because of this, it's not possible to
-load more than a few days' worth of data.

@@ -273,7 +273,7 @@ describe('AdminRunnersApp', () => {
       await createComponent({ mountFn: mountExtended });
     });
 
-    it('Links to the runner page', async () => {
+    it('Links to the runner page', () => {
       const runnerLink = wrapper.find('tr [data-testid="td-summary"]').findComponent(GlLink);
 
       expect(runnerLink.text()).toBe(`#${id} (${shortSha})`);
@@ -292,7 +292,7 @@ describe('AdminRunnersApp', () => {
       expect(badgeHref.hash).toBe(`#${JOBS_ROUTE_PATH}`);
     });
 
-    it('When runner is paused or unpaused, some data is refetched', async () => {
+    it('When runner is paused or unpaused, some data is refetched', () => {
       expect(mockRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES);
 
       findRunnerActionsCell().vm.$emit('toggledPaused');
@@ -301,7 +301,7 @@ describe('AdminRunnersApp', () => {
       expect(showToast).toHaveBeenCalledTimes(0);
     });
 
-    it('When runner is deleted, data is refetched and a toast message is shown', async () => {
+    it('When runner is deleted, data is refetched and a toast message is shown', () => {
       findRunnerActionsCell().vm.$emit('deleted', { message: 'Runner deleted' });
 
       expect(showToast).toHaveBeenCalledTimes(1);
@@ -410,7 +410,7 @@ describe('AdminRunnersApp', () => {
         await createComponent({ mountFn: mountExtended });
       });
 
-      it('count data is refetched', async () => {
+      it('count data is refetched', () => {
         expect(mockRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES);
 
         findRunnerList().vm.$emit('deleted', { message: 'Runners deleted' });
@@ -418,7 +418,7 @@ describe('AdminRunnersApp', () => {
         expect(mockRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES * 2);
       });
 
-      it('toast is shown', async () => {
+      it('toast is shown', () => {
         expect(showToast).toHaveBeenCalledTimes(0);
 
         findRunnerList().vm.$emit('deleted', { message: 'Runners deleted' });
@@ -480,11 +480,11 @@ describe('AdminRunnersApp', () => {
       await createComponent();
     });
 
-    it('error is shown to the user', async () => {
+    it('error is shown to the user', () => {
       expect(createAlert).toHaveBeenCalledTimes(1);
     });
 
-    it('error is reported to sentry', async () => {
+    it('error is reported to sentry', () => {
       expect(captureException).toHaveBeenCalledWith({
         error: new Error('Error!'),
         component: 'AdminRunnersApp',

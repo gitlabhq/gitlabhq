@@ -103,8 +103,8 @@ module Issues
     def execute_hooks(issue, action = 'open', old_associations: {})
       issue_data  = Gitlab::Lazy.new { hook_data(issue, action, old_associations: old_associations) }
       hooks_scope = issue.confidential? ? :confidential_issue_hooks : :issue_hooks
-      issue.project.execute_hooks(issue_data, hooks_scope)
-      issue.project.execute_integrations(issue_data, hooks_scope)
+      issue.namespace.execute_hooks(issue_data, hooks_scope)
+      issue.namespace.execute_integrations(issue_data, hooks_scope)
 
       execute_incident_hooks(issue, issue_data) if issue.incident?
     end
@@ -114,7 +114,7 @@ module Issues
     def execute_incident_hooks(issue, issue_data)
       issue_data[:object_kind] = 'incident'
       issue_data[:event_type] = 'incident'
-      issue.project.execute_integrations(issue_data, :incident_hooks)
+      issue.namespace.execute_integrations(issue_data, :incident_hooks)
     end
 
     def update_project_counter_caches?(issue)

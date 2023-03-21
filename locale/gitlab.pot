@@ -28435,10 +28435,16 @@ msgstr ""
 msgid "Navigation|Projects you visit often will appear here."
 msgstr ""
 
+msgid "Navigation|Retrieving search results"
+msgstr ""
+
 msgid "Navigation|Search for projects or groups"
 msgstr ""
 
 msgid "Navigation|Switch to..."
+msgstr ""
+
+msgid "Navigation|There was an error fetching search results."
 msgstr ""
 
 msgid "Navigation|View all groups"
@@ -31319,6 +31325,9 @@ msgid "PerformanceBar|Total duration"
 msgstr ""
 
 msgid "PerformanceBar|Trace"
+msgstr ""
+
+msgid "PerformanceBar|Zoekt calls"
 msgstr ""
 
 msgid "PerformanceBar|cpu"

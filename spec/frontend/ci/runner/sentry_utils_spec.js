@@ -6,7 +6,7 @@ jest.mock('@sentry/browser');
 describe('~/ci/runner/sentry_utils', () => {
   let mockSetTag;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockSetTag = jest.fn();
 
     Sentry.withScope.mockImplementation((fn) => {

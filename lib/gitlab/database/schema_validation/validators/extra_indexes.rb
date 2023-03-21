@@ -5,11 +5,13 @@ module Gitlab
     module SchemaValidation
       module Validators
         class ExtraIndexes < BaseValidator
-          def execute
-            database.indexes.filter_map do |index|
-              next if structure_sql.index_exists?(index.name)
+          ERROR_MESSAGE = "The index %s is present in the database, but not in the structure.sql file"
 
-              build_inconsistency(self.class, index)
+          def execute
+            database.indexes.filter_map do |database_index|
+              next if structure_sql.index_exists?(database_index.name)
+
+              build_inconsistency(self.class, nil, database_index)
             end
           end
         end

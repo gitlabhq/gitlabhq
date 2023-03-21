@@ -134,7 +134,7 @@ describe('RunnerPauseButton', () => {
           await clickAndWait();
         });
 
-        it(`The mutation to that sets active to ${newActiveValue} is called`, async () => {
+        it(`The mutation to that sets active to ${newActiveValue} is called`, () => {
           expect(runnerToggleActiveHandler).toHaveBeenCalledTimes(1);
           expect(runnerToggleActiveHandler).toHaveBeenCalledWith({
             input: {
