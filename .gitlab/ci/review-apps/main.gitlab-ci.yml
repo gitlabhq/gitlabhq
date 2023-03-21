@@ -4,6 +4,7 @@ default:
 stages:
   - prepare
   - deploy
+  - post-deploy
   - qa
   - post-qa
   - dast
@@ -143,6 +144,34 @@ review-deploy:
       dotenv: environment.env
     expire_in: 7 days
     when: always
+
+review-deploy-failure-notification:
+  stage: post-deploy
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
+  rules:
+    - when: on_failure
+      allow_failure: true
+  variables:
+    BROKEN_REVIEW_APPS_INCIDENTS_PROJECT: "gitlab-org/quality/engineering-productivity/review-apps-broken-incidents"
+    BROKEN_REVIEW_APPS_INCIDENT_JSON: "${CI_PROJECT_DIR}/incident.json"
+    SLACK_CHANNEL: "review-apps-broken"
+    FAILED_PIPELINE_SLACK_MESSAGE_FILE: "${CI_PROJECT_DIR}/failed_pipeline_slack_message.json"
+  before_script:
+    - source scripts/utils.sh
+    - apt-get update && apt-get install -y jq
+    - install_gitlab_gem
+  script:
+    # Check that the review-deploy failed. If not, we don't do anything.
+    # It can be possible that other jobs were failing, but here we only
+    # care about review-deploy
+    - curl "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs?scope=failed" | jq -e 'any(.name == "review-deploy")'
+    - |
+      scripts/create-pipeline-failure-incident.rb -p ${BROKEN_REVIEW_APPS_INCIDENTS_PROJECT} -f ${BROKEN_REVIEW_APPS_INCIDENT_JSON} -t ${BROKEN_REVIEW_APPS_INCIDENTS_PROJECT_TOKEN};
+      echosuccess "Created incident $(jq '.web_url' ${BROKEN_REVIEW_APPS_INCIDENT_JSON})";
+    - |
+      scripts/generate-failed-pipeline-slack-message.rb -p ${BROKEN_REVIEW_APPS_INCIDENTS_PROJECT} -i ${BROKEN_REVIEW_APPS_INCIDENT_JSON} -f ${FAILED_PIPELINE_SLACK_MESSAGE_FILE};
+      curl -X POST -H 'Content-Type: application/json' --data @${FAILED_PIPELINE_SLACK_MESSAGE_FILE} "$CI_SLACK_WEBHOOK_URL" ||
+        scripts/slack ${SLACK_CHANNEL} "☠️  Broken pipeline notification failed! ☠️  See ${CI_JOB_URL}" ci_failing "Failed pipeline reporter"
 
 review-deploy-sample-projects:
   extends:

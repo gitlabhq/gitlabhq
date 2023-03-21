@@ -46,8 +46,8 @@ Users with the Owner role for a group can add streaming destinations for it:
 1. Select **Add streaming destination** to show the section for adding destinations.
 1. Enter the destination URL to add.
 1. Optional. Locate the **Custom HTTP headers** table.
-1. Ignore the **Active** checkbox because it isn't functional. To track progress on adding functionality to the **Active** checkbox, see the
-   [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/361925).
+1. Ignore the **Active** checkbox because it isn't functional. To track progress on adding functionality to the
+   **Active** checkbox, see [issue 367509](https://gitlab.com/gitlab-org/gitlab/-/issues/367509).
 1. Select **Add header** to create a new name and value pair. Enter as many name and value pairs as required. You can add up to
    20 headers per streaming destination.
 1. After all headers have been filled out, select **Add** to add the new streaming destination.
@@ -169,8 +169,8 @@ To update a streaming destinations custom HTTP headers:
 1. To the right of the item, select **Edit** (**{pencil}**).
 1. Locate the **Custom HTTP headers** table.
 1. Locate the header that you wish to update.
-1. Ignore the **Active** checkbox because it isn't functional. To track progress on adding functionality to the **Active** checkbox, see the
-   [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/361925).
+1. Ignore the **Active** checkbox because it isn't functional. To track progress on adding functionality to the
+   **Active** checkbox, see [issue 367509](https://gitlab.com/gitlab-org/gitlab/-/issues/367509).
 1. Select **Add header** to create a new name and value pair. Enter as many name and value pairs as required. You can add up to
    20 headers per streaming destination.
 1. Select **Save** to update the streaming destination.

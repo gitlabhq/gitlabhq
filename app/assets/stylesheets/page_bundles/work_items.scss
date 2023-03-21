@@ -87,19 +87,6 @@
   }
 }
 
-.work-item-link-child {
-  @include gl-border-1;
-  @include gl-border-solid;
-  @include gl-border-transparent;
-  @include gl-rounded-base;
-
-  &:hover,
-  &:focus-within {
-    @include gl-bg-white;
-    @include gl-border-gray-50;
-  }
-}
-
 // sticky error placement for errors in modals , by default it is 83px for full view
 #work-item-detail-modal {
   .flash-container.flash-container-page.sticky {

@@ -9,11 +9,13 @@ require_relative 'api/pipeline_failed_jobs'
 
 class GenerateFailedPipelineSlackMessage
   DEFAULT_OPTIONS = {
+    project: nil,
     failed_pipeline_slack_message_file: 'failed_pipeline_slack_message.json',
     incident_json_file: 'incident.json'
   }.freeze
 
   def initialize(options)
+    @project            = options.delete(:project)
     @incident_json_file = options.delete(:incident_json_file)
   end
 
@@ -73,7 +75,7 @@ class GenerateFailedPipelineSlackMessage
 
   private
 
-  attr_reader :incident_json_file
+  attr_reader :project, :incident_json_file
 
   def failed_jobs
     @failed_jobs ||= PipelineFailedJobs.new(API::DEFAULT_OPTIONS.dup.merge(exclude_allowed_to_fail_jobs: true)).execute
@@ -107,7 +109,7 @@ class GenerateFailedPipelineSlackMessage
     if incident_exist?
       incident['web_url']
     else
-      "#{ENV['CI_SERVER_URL']}/#{ENV['BROKEN_BRANCH_INCIDENTS_PROJECT']}/-/issues/new?" \
+      "#{ENV['CI_SERVER_URL']}/#{project}/-/issues/new?" \
         "issuable_template=incident&issue%5Bissue_type%5D=incident"
     end
   end
@@ -153,6 +155,11 @@ if $PROGRAM_NAME == __FILE__
   options = GenerateFailedPipelineSlackMessage::DEFAULT_OPTIONS.dup
 
   OptionParser.new do |opts|
+    opts.on("-p", "--project PROJECT", String, "Full project path where the incidents are stored (defaults to "\
+      "`#{GenerateFailedPipelineSlackMessage::DEFAULT_OPTIONS[:project]}`)") do |value|
+      options[:project] = value
+    end
+
     opts.on("-i", "--incident-json-file file_path", String, "Path to a file where the incident JSON data "\
       "can be found (defaults to "\
       "`#{GenerateFailedPipelineSlackMessage::DEFAULT_OPTIONS[:incident_json_file]}`)") do |value|

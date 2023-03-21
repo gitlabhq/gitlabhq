@@ -73,6 +73,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     before do
       allow(helper).to receive(:current_user) { user }
       allow(helper).to receive(:can?).and_return(true)
+      allow(helper).to receive(:header_search_context).and_return({ some: "search data" })
       allow(panel).to receive(:super_sidebar_menu_items).and_return(nil)
       allow(panel).to receive(:super_sidebar_context_header).and_return(nil)
       allow(user).to receive(:assigned_open_issues_count).and_return(1)
@@ -126,7 +127,14 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         gitlab_version_check: helper.gitlab_version_check,
         gitlab_com_but_not_canary: Gitlab.com_but_not_canary?,
         gitlab_com_and_canary: Gitlab.com_and_canary?,
-        canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url
+        canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url,
+        search: {
+          search_path: search_path,
+          issues_path: issues_dashboard_path,
+          mr_path: merge_requests_dashboard_path,
+          autocomplete_path: search_autocomplete_path,
+          search_context: helper.header_search_context
+        }
       })
     end
 

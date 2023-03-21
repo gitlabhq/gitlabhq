@@ -1,11 +1,17 @@
 import { GlBadge } from '@gitlab/ui';
+import Vuex from 'vuex';
+import Vue from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { __ } from '~/locale';
 import CreateMenu from '~/super_sidebar/components/create_menu.vue';
+import SearchModal from '~/super_sidebar/components/global_search/components/global_search.vue';
 import MergeRequestMenu from '~/super_sidebar/components/merge_request_menu.vue';
 import Counter from '~/super_sidebar/components/counter.vue';
 import UserBar from '~/super_sidebar/components/user_bar.vue';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import waitForPromises from 'helpers/wait_for_promises';
 import { sidebarData } from '../mock_data';
+import { MOCK_DEFAULT_SEARCH_OPTIONS } from './global_search/mock_data';
 
 describe('UserBar component', () => {
   let wrapper;
@@ -14,7 +20,16 @@ describe('UserBar component', () => {
   const findCounter = (at) => wrapper.findAllComponents(Counter).at(at);
   const findMergeRequestMenu = () => wrapper.findComponent(MergeRequestMenu);
   const findBrandLogo = () => wrapper.findByTestId('brand-header-custom-logo');
+  const findSearchButton = () => wrapper.findByTestId('super-sidebar-search-button');
+  const findSearchModal = () => wrapper.findComponent(SearchModal);
 
+  Vue.use(Vuex);
+
+  const store = new Vuex.Store({
+    getters: {
+      searchOptions: () => MOCK_DEFAULT_SEARCH_OPTIONS,
+    },
+  });
   const createWrapper = (extraSidebarData = {}) => {
     wrapper = shallowMountExtended(UserBar, {
       propsData: {
@@ -24,6 +39,10 @@ describe('UserBar component', () => {
         rootPath: '/',
         toggleNewNavEndpoint: '/-/profile/preferences',
       },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
+      store,
     });
   };
 
@@ -79,6 +98,26 @@ describe('UserBar component', () => {
         const badge = wrapper.findComponent(GlBadge);
         expect(badge.exists()).toBe(false);
       });
+    });
+  });
+
+  describe('Search', () => {
+    beforeEach(async () => {
+      createWrapper();
+      await waitForPromises();
+    });
+
+    it('should render search button', () => {
+      expect(findSearchButton().exists()).toBe(true);
+    });
+
+    it('search button should have tooltip', () => {
+      const tooltip = getBinding(findSearchButton().element, 'gl-tooltip');
+      expect(tooltip.value).toBe(`Search GitLab <kbd>/</kbd>`);
+    });
+
+    it('should render search modal', async () => {
+      expect(findSearchModal().exists()).toBe(true);
     });
   });
 });

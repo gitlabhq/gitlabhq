@@ -44,7 +44,6 @@ class MergeRequest < ApplicationRecord
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
-  belongs_to :iteration, foreign_key: 'sprint_id'
 
   has_internal_id :iid, scope: :target_project, track_if: -> { !importing? },
                         init: ->(mr, scope) do

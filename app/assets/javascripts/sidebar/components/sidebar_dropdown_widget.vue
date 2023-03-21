@@ -81,7 +81,7 @@ export default {
     },
   },
   apollo: {
-    currentAttribute: {
+    issuable: {
       query() {
         const { current } = this.issuableAttributeQuery;
         const { query } = current[this.issuableType];
@@ -95,11 +95,12 @@ export default {
         };
       },
       update(data) {
+        return data.workspace?.issuable || {};
+      },
+      result({ data }) {
         if (this.glFeatures?.epicWidgetEditConfirmation && this.isEpic) {
           this.hasCurrentAttribute = data?.workspace?.issuable.hasEpic;
         }
-
-        return data?.workspace?.issuable.attribute;
       },
       error(error) {
         createAlert({
@@ -108,13 +109,26 @@ export default {
           error,
         });
       },
+      subscribeToMore: {
+        document() {
+          return issuableAttributesQueries[this.issuableAttribute].subscription;
+        },
+        variables() {
+          return {
+            issuableId: this.issuableId,
+          };
+        },
+        skip() {
+          return this.shouldSkipRealTimeEpicLinkUpdates;
+        },
+      },
     },
   },
   data() {
     return {
       updating: false,
       selectedTitle: null,
-      currentAttribute: null,
+      issuable: {},
       hasCurrentAttribute: false,
       editConfirmation: false,
       tracking: {
@@ -125,6 +139,12 @@ export default {
     };
   },
   computed: {
+    currentAttribute() {
+      return this.issuable.attribute;
+    },
+    issuableId() {
+      return this.issuable.id;
+    },
     issuableAttributeQuery() {
       return this.issuableAttributesQueries[this.issuableAttribute];
     },
@@ -135,7 +155,7 @@ export default {
       return this.currentAttribute?.webUrl;
     },
     loading() {
-      return this.$apollo.queries.currentAttribute.loading;
+      return this.$apollo.queries.issuable.loading;
     },
     attributeTypeTitle() {
       return this.widgetTitleText[this.issuableAttribute];
@@ -169,6 +189,13 @@ export default {
       return this.isEpic && this.currentAttribute === null && this.hasCurrentAttribute
         ? !this.editConfirmation
         : false;
+    },
+    shouldSkipRealTimeEpicLinkUpdates() {
+      return (
+        !this.issuableId ||
+        this.issuableAttribute !== IssuableAttributeType.Epic ||
+        !this.glFeatures?.realTimeIssueEpicLinks
+      );
     },
   },
   methods: {

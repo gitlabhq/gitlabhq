@@ -1625,7 +1625,7 @@ class Project < ApplicationRecord
   end
 
   def external_issue_reference_pattern
-    external_issue_tracker.class.reference_pattern(only_long: issues_enabled?)
+    external_issue_tracker.reference_pattern(only_long: issues_enabled?)
   end
 
   def default_issues_tracker?

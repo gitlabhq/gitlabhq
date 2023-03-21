@@ -17520,9 +17520,13 @@ CREATE TABLE jira_tracker_data (
     vulnerabilities_enabled boolean DEFAULT false NOT NULL,
     jira_issue_transition_automatic boolean DEFAULT false NOT NULL,
     integration_id integer,
+    jira_issue_prefix text,
+    jira_issue_regex text,
     CONSTRAINT check_0bf84b76e9 CHECK ((char_length(vulnerabilities_issuetype) <= 255)),
     CONSTRAINT check_0fbd71d9f2 CHECK ((integration_id IS NOT NULL)),
-    CONSTRAINT check_214cf6a48b CHECK ((char_length(project_key) <= 255))
+    CONSTRAINT check_214cf6a48b CHECK ((char_length(project_key) <= 255)),
+    CONSTRAINT check_4cc5bbc801 CHECK ((char_length(jira_issue_prefix) <= 255)),
+    CONSTRAINT check_9863a0a5fd CHECK ((char_length(jira_issue_regex) <= 255))
 );
 
 CREATE SEQUENCE jira_tracker_data_id_seq

@@ -15,7 +15,6 @@ class CreatePipelineFailureIncident
     project: nil,
     incident_json_file: 'incident.json'
   }.freeze
-  DEFAULT_LABELS = ['Engineering Productivity', 'master-broken::undetermined'].freeze
 
   def initialize(options)
     @project = options.delete(:project)
@@ -48,6 +47,10 @@ class CreatePipelineFailureIncident
     ENV['CI_COMMIT_REF_NAME'] =~ /^[\d-]+-stable(-ee)?$/
   end
 
+  def review_apps_incident?
+    project.end_with?('review-apps-broken-incidents')
+  end
+
   def failed_jobs
     @failed_jobs ||= PipelineFailedJobs.new(API::DEFAULT_OPTIONS.merge(exclude_allowed_to_fail_jobs: true)).execute
   end
@@ -76,9 +79,13 @@ class CreatePipelineFailureIncident
   end
 
   def description
-    return broken_stable_description_content if stable_branch_incident?
-
-    broken_master_description_content
+    if stable_branch_incident?
+      broken_stable_description_content
+    elsif review_apps_incident?
+      broken_review_apps_description_content
+    else
+      broken_master_description_content
+    end
   end
 
   def broken_master_description_content
@@ -177,17 +184,41 @@ class CreatePipelineFailureIncident
     MARKDOWN
   end
 
+  def broken_review_apps_description_content
+    <<~MARKDOWN
+    ## #{project_link} pipeline #{pipeline_link} failed
+
+    **Branch: #{branch_link}**
+
+    **Commit: #{commit_link}**
+
+    **Triggered by** #{triggered_by_link} • **Source:** #{source} • **Duration:** #{pipeline_duration} minutes
+
+    **Failed jobs (#{failed_jobs.size}):**
+
+    #{failed_jobs_list}
+
+    ### General guidelines
+
+    Please refer to [the review-apps triaging process](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/review-apps.md#review-apps-broken-slack-channel-isnt-empty).
+    MARKDOWN
+  end
+
   def incident_labels
-    return ['release-blocker'] if stable_branch_incident?
+    if stable_branch_incident?
+      ['release-blocker']
+    elsif review_apps_incident?
+      ['review-apps-broken', 'Engineering Productivity', 'ep::review-apps']
+    else
+      master_broken_label =
+        if ENV['CI_PROJECT_NAME'] == 'gitlab-foss'
+          'master:foss-broken'
+        else
+          'master:broken'
+        end
 
-    master_broken_label =
-      if ENV['CI_PROJECT_NAME'] == 'gitlab-foss'
-        'master:foss-broken'
-      else
-        'master:broken'
-      end
-
-    DEFAULT_LABELS.dup << master_broken_label
+      [master_broken_label, 'Engineering Productivity', 'master-broken::undetermined']
+    end
   end
 
   def assignee_ids
@@ -249,7 +280,7 @@ if $PROGRAM_NAME == __FILE__
     end
 
     opts.on("-f", "--incident-json-file file_path", String, "Path to a file where to save the incident JSON data "\
-      "(defaults to `#{CreatePipelineFailureIncident::DEFAULT_OPTIONS[:incident_json_file]}`)") do |value|
+      "(defaults to `#{CreatePipelineFailureIncident::DEFAULT_OPTIONS[:incident_json_file] || 'nil'}`)") do |value|
       options[:incident_json_file] = value
     end
 

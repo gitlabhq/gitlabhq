@@ -29,7 +29,7 @@ describe('Header Search Store Mutations', () => {
       mutations[types.RECEIVE_AUTOCOMPLETE_SUCCESS](state, MOCK_AUTOCOMPLETE_OPTIONS_RES);
 
       expect(state.loading).toBe(false);
-      expect(state.autocompleteOptions).toStrictEqual(MOCK_AUTOCOMPLETE_OPTIONS);
+      expect(state.autocompleteOptions).toEqual(MOCK_AUTOCOMPLETE_OPTIONS);
       expect(state.autocompleteError).toBe(false);
     });
   });

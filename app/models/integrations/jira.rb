@@ -23,6 +23,8 @@ module Integrations
     validates :api_url, public_url: true, allow_blank: true
     validates :username, presence: true, if: :activated?
     validates :password, presence: true, if: :activated?
+    validates :jira_issue_prefix, untrusted_regexp: true, length: { maximum: 255 }, if: :activated?
+    validates :jira_issue_regex,  untrusted_regexp: true, length: { maximum: 255 }, if: :activated?
 
     validates :jira_issue_transition_id,
               format: {
@@ -72,6 +74,18 @@ module Integrations
           non_empty_password_help: -> { s_('JiraService|Leave blank to use your current password or API token.') },
           help: -> { s_('JiraService|Password for the server version or an API token for the cloud version') }
 
+    field :jira_issue_regex,
+           section: SECTION_TYPE_CONFIGURATION,
+           required: false,
+           title: -> { s_('JiraService|Jira issue regex') },
+           help: -> { s_('JiraService|Use regular expression to match Jira issue keys.') }
+
+    field :jira_issue_prefix,
+          section: SECTION_TYPE_CONFIGURATION,
+          required: false,
+          title: -> { s_('JiraService|Jira issue prefix') },
+          help: -> { s_('JiraService|Use a prefix to match Jira issue keys.') }
+
     field :jira_issue_transition_id, api_only: true
 
     # TODO: we can probably just delegate as part of
@@ -90,8 +104,8 @@ module Integrations
     end
 
     # {PROJECT-KEY}-{NUMBER} Examples: JIRA-1, PROJECT-1
-    def self.reference_pattern(only_long: true)
-      @reference_pattern ||= /(?<issue>\b#{Gitlab::Regex.jira_issue_key_regex})/
+    def reference_pattern(only_long: true)
+      @reference_pattern ||= jira_issue_match_regex
     end
 
     def self.valid_jira_cloud_url?(url)
@@ -166,6 +180,11 @@ module Integrations
           type: SECTION_TYPE_JIRA_TRIGGER,
           title: _('Trigger'),
           description: s_('JiraService|When a Jira issue is mentioned in a commit or merge request, a remote link and comment (if enabled) will be created.')
+        },
+        {
+          type: SECTION_TYPE_CONFIGURATION,
+          title: _('Jira issue matching'),
+          description: s_('Configure custom rules for Jira issue key matching')
         }
       ]
 
@@ -324,6 +343,12 @@ module Integrations
     end
 
     private
+
+    def jira_issue_match_regex
+      match_regex = (jira_issue_regex.presence || Gitlab::Regex.jira_issue_key_regex)
+
+      /\b#{jira_issue_prefix}(?<issue>#{match_regex})/
+    end
 
     def parse_project_from_issue_key(issue_key)
       issue_key.gsub(Gitlab::Regex.jira_issue_key_project_key_extraction_regex, '')

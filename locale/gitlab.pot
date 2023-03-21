@@ -10886,6 +10886,9 @@ msgstr ""
 msgid "Configure advanced permissions, Large File Storage, two-factor authentication, and customer relations settings."
 msgstr ""
 
+msgid "Configure custom rules for Jira issue key matching"
+msgstr ""
+
 msgid "Configure existing installation"
 msgstr ""
 
@@ -19674,6 +19677,9 @@ msgstr ""
 msgid "GlobalSearch|Search GitLab"
 msgstr ""
 
+msgid "GlobalSearch|Search GitLab %{kbdOpen}/%{kbdClose}"
+msgstr ""
+
 msgid "GlobalSearch|Search for projects, issues, etc."
 msgstr ""
 
@@ -19690,6 +19696,9 @@ msgid "GlobalSearch|Showing top %{maxItems}"
 msgstr ""
 
 msgid "GlobalSearch|Syntax options"
+msgstr ""
+
+msgid "GlobalSearch|The search term must be at least 3 characters long."
 msgstr ""
 
 msgid "GlobalSearch|There was an error fetching search autocomplete suggestions."
@@ -24399,6 +24408,9 @@ msgstr ""
 msgid "Jira integration not configured."
 msgstr ""
 
+msgid "Jira issue matching"
+msgstr ""
+
 msgid "Jira project key is not configured."
 msgstr ""
 
@@ -24573,6 +24585,12 @@ msgstr ""
 msgid "JiraService|Jira comments are created when an issue is referenced in a merge request."
 msgstr ""
 
+msgid "JiraService|Jira issue prefix"
+msgstr ""
+
+msgid "JiraService|Jira issue regex"
+msgstr ""
+
 msgid "JiraService|Jira issues"
 msgstr ""
 
@@ -24621,7 +24639,13 @@ msgstr ""
 msgid "JiraService|Use Jira as this project's issue tracker."
 msgstr ""
 
+msgid "JiraService|Use a prefix to match Jira issue keys."
+msgstr ""
+
 msgid "JiraService|Use custom transitions"
+msgstr ""
+
+msgid "JiraService|Use regular expression to match Jira issue keys."
 msgstr ""
 
 msgid "JiraService|Username for the server version or an email for the cloud version"
@@ -38203,6 +38227,9 @@ msgstr ""
 msgid "SSL verification"
 msgstr ""
 
+msgid "SVG could not be rendered correctly: "
+msgstr ""
+
 msgid "Sat"
 msgstr ""
 
@@ -44392,6 +44419,9 @@ msgstr ""
 msgid "This code snippet contains everything reflected in the configuration form. Copy and paste it into %{linkStart}.gitlab-ci.yml%{linkEnd} file and save your changes. Future %{scanType} scans will use these settings."
 msgstr ""
 
+msgid "This comment appears to have a token in it. Are you sure you want to add it?"
+msgstr ""
+
 msgid "This comment changed after you started editing it. Review the %{startTag}updated comment%{endTag} to ensure information is not lost."
 msgstr ""
 
@@ -46658,6 +46688,9 @@ msgstr ""
 msgid "Upvotes"
 msgstr ""
 
+msgid "Usage"
+msgstr ""
+
 msgid "Usage Trends"
 msgstr ""
 
@@ -46754,6 +46787,9 @@ msgstr ""
 msgid "UsageQuota|Local proxy used for frequently-accessed upstream Docker images. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
+msgid "UsageQuota|Month"
+msgstr ""
+
 msgid "UsageQuota|Namespace storage used"
 msgstr ""
 
@@ -46842,6 +46878,9 @@ msgid "UsageQuota|This table omits projects that used 0 CI/CD minutes or 0 share
 msgstr ""
 
 msgid "UsageQuota|Transfer"
+msgstr ""
+
+msgid "UsageQuota|Transfer data used by month"
 msgstr ""
 
 msgid "UsageQuota|Uploads"

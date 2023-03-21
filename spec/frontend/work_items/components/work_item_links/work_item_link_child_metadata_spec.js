@@ -1,4 +1,4 @@
-import { GlLabel, GlAvatarsInline } from '@gitlab/ui';
+import { GlAvatarsInline } from '@gitlab/ui';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
@@ -8,10 +8,9 @@ import WorkItemLinkChildMetadata from '~/work_items/components/work_item_links/w
 import { workItemObjectiveMetadataWidgets } from '../../mock_data';
 
 describe('WorkItemLinkChildMetadata', () => {
-  const { MILESTONE, ASSIGNEES, LABELS } = workItemObjectiveMetadataWidgets;
+  const { MILESTONE, ASSIGNEES } = workItemObjectiveMetadataWidgets;
   const mockMilestone = MILESTONE.milestone;
   const mockAssignees = ASSIGNEES.assignees.nodes;
-  const mockLabels = LABELS.labels.nodes;
   let wrapper;
 
   const createComponent = ({ metadataWidgets = workItemObjectiveMetadataWidgets } = {}) => {
@@ -52,19 +51,5 @@ describe('WorkItemLinkChildMetadata', () => {
       badgeTooltipProp: 'name',
       badgeSrOnlyText: '',
     });
-  });
-
-  it('renders labels', () => {
-    const labels = wrapper.findAllComponents(GlLabel);
-    const mockLabel = mockLabels[0];
-
-    expect(labels).toHaveLength(mockLabels.length);
-    expect(labels.at(0).props()).toMatchObject({
-      title: mockLabel.title,
-      backgroundColor: mockLabel.color,
-      description: mockLabel.description,
-      scoped: false,
-    });
-    expect(labels.at(1).props('scoped')).toBe(true); // Second label is scoped
   });
 });

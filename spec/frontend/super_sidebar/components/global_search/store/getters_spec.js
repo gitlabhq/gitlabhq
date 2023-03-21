@@ -9,7 +9,7 @@ import {
   MOCK_SEARCH_CONTEXT,
   MOCK_DEFAULT_SEARCH_OPTIONS,
   MOCK_SCOPED_SEARCH_OPTIONS,
-  MOCK_SCOPED_SEARCH_OPTIONS_DEF,
+  MOCK_SCOPED_SEARCH_GROUP,
   MOCK_PROJECT,
   MOCK_GROUP,
   MOCK_ALL_PATH,
@@ -17,9 +17,10 @@ import {
   MOCK_AUTOCOMPLETE_OPTIONS,
   MOCK_GROUPED_AUTOCOMPLETE_OPTIONS,
   MOCK_SORTED_AUTOCOMPLETE_OPTIONS,
+  MOCK_SCOPED_SEARCH_OPTIONS_DEF,
 } from '../mock_data';
 
-describe('Header Search Store Getters', () => {
+describe('Global Search Store Getters', () => {
   let state;
 
   const createState = (initialState) => {
@@ -288,7 +289,7 @@ describe('Header Search Store Getters', () => {
 
   describe.each`
     search         | defaultSearchOptions           | scopedSearchOptions           | autocompleteGroupedSearchOptions     | expectedArray
-    ${null}        | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${MOCK_GROUPED_AUTOCOMPLETE_OPTIONS} | ${MOCK_DEFAULT_SEARCH_OPTIONS}
+    ${null}        | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${MOCK_SCOPED_SEARCH_GROUP}   | ${MOCK_GROUPED_AUTOCOMPLETE_OPTIONS} | ${MOCK_DEFAULT_SEARCH_OPTIONS}
     ${MOCK_SEARCH} | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${[]}                                | ${MOCK_SCOPED_SEARCH_OPTIONS}
     ${MOCK_SEARCH} | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${[]}                         | ${MOCK_GROUPED_AUTOCOMPLETE_OPTIONS} | ${MOCK_SORTED_AUTOCOMPLETE_OPTIONS}
     ${MOCK_SEARCH} | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${MOCK_GROUPED_AUTOCOMPLETE_OPTIONS} | ${MOCK_SCOPED_SEARCH_OPTIONS.concat(MOCK_SORTED_AUTOCOMPLETE_OPTIONS)}

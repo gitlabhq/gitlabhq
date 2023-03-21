@@ -167,6 +167,9 @@ export default {
       this.trackEvents();
       this.initCallout();
     },
+    closeDropdown() {
+      this.$refs.userDropdown.close();
+    },
     initCallout() {
       if (this.showNotificationDot) {
         PersistentUserCallout.factory(this.$refs?.buyPipelineMinutesNotificationCallout.$el);
@@ -189,6 +192,7 @@ export default {
 <template>
   <div>
     <gl-disclosure-dropdown
+      ref="userDropdown"
       placement="right"
       data-testid="user-dropdown"
       data-qa-selector="user_menu"
@@ -220,6 +224,7 @@ export default {
           v-if="data.status.can_update"
           :item="statusItem"
           data-testid="status-item"
+          @action="closeDropdown"
         />
 
         <gl-disclosure-dropdown-item

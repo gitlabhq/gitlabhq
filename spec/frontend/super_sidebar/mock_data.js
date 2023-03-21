@@ -87,6 +87,9 @@ export const sidebarData = {
   gitlab_com_and_canary: false,
   canary_toggle_com_url: 'https://next.gitlab.com',
   context_switcher_links: [],
+  search: {
+    search_path: '/search',
+  },
 };
 
 export const userMenuMockStatus = {

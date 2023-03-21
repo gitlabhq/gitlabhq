@@ -38,16 +38,18 @@ module Resolvers
     def resolve(**_args)
       return unless Feature.enabled?(:data_transfer_monitoring)
 
+      # TODO: This is mock data as this feature is in development
+      # Follow this epic for recent progress: https://gitlab.com/groups/gitlab-org/-/epics/9330
       start_date = Date.new(2023, 0o1, 0o1)
       date_for_index = ->(i) { (start_date + i.months).strftime('%Y-%m-%d') }
 
-      nodes = 0.upto(3).map do |i|
+      nodes = 0.upto(11).map do |i|
         {
           date: date_for_index.call(i),
-          repository_egress: 250_000,
-          artifacts_egress: 250_000,
-          packages_egress: 250_000,
-          registry_egress: 250_000
+          repository_egress: rand(70000..550000),
+          artifacts_egress: rand(70000..550000),
+          packages_egress: rand(70000..550000),
+          registry_egress: rand(70000..550000)
         }
       end
 

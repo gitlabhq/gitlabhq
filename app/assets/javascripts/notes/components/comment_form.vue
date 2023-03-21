@@ -7,6 +7,7 @@ import { createAlert } from '~/alert';
 import { badgeState } from '~/issuable/components/status_box.vue';
 import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
 import { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
+import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secret_detection';
 import {
   capitalizeFirstCharacter,
   convertToCamelCase,
@@ -224,7 +225,7 @@ export default {
     handleSaveDraft() {
       this.handleSave({ isDraft: true });
     },
-    handleSave({ withIssueAction = false, isDraft = false } = {}) {
+    async handleSave({ withIssueAction = false, isDraft = false } = {}) {
       this.errors = [];
 
       if (this.note.length) {
@@ -244,6 +245,13 @@ export default {
 
         if (this.noteType === constants.DISCUSSION) {
           noteData.data.note.type = constants.DISCUSSION_NOTE;
+        }
+
+        if (containsSensitiveToken(this.note)) {
+          const confirmed = await confirmSensitiveAction();
+          if (!confirmed) {
+            return;
+          }
         }
 
         this.note = ''; // Empty textarea while being requested. Repopulate in catch

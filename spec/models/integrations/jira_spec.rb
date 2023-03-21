@@ -11,6 +11,8 @@ RSpec.describe Integrations::Jira do
   let(:url) { 'http://jira.example.com' }
   let(:api_url) { 'http://api-jira.example.com' }
   let(:username) { 'jira-username' }
+  let(:jira_issue_prefix) { '' }
+  let(:jira_issue_regex) { '' }
   let(:password) { 'jira-password' }
   let(:project_key) { nil }
   let(:transition_id) { 'test27' }
@@ -48,6 +50,8 @@ RSpec.describe Integrations::Jira do
       it { is_expected.to validate_presence_of(:url) }
       it { is_expected.to validate_presence_of(:username) }
       it { is_expected.to validate_presence_of(:password) }
+      it { is_expected.to validate_length_of(:jira_issue_regex).is_at_most(255) }
+      it { is_expected.to validate_length_of(:jira_issue_prefix).is_at_most(255) }
 
       it_behaves_like 'issue tracker integration URL attribute', :url
       it_behaves_like 'issue tracker integration URL attribute', :api_url
@@ -62,6 +66,8 @@ RSpec.describe Integrations::Jira do
       it { is_expected.not_to validate_presence_of(:url) }
       it { is_expected.not_to validate_presence_of(:username) }
       it { is_expected.not_to validate_presence_of(:password) }
+      it { is_expected.not_to validate_length_of(:jira_issue_regex).is_at_most(255) }
+      it { is_expected.not_to validate_length_of(:jira_issue_prefix).is_at_most(255) }
     end
 
     describe 'jira_issue_transition_id' do
@@ -167,7 +173,7 @@ RSpec.describe Integrations::Jira do
     subject(:fields) { integration.fields }
 
     it 'returns custom fields' do
-      expect(fields.pluck(:name)).to eq(%w[url api_url username password jira_issue_transition_id])
+      expect(fields.pluck(:name)).to eq(%w[url api_url username password jira_issue_regex jira_issue_prefix jira_issue_transition_id])
     end
   end
 
@@ -202,7 +208,7 @@ RSpec.describe Integrations::Jira do
     end
   end
 
-  describe '.reference_pattern' do
+  describe '#reference_pattern' do
     using RSpec::Parameterized::TableSyntax
 
     where(:key, :result) do
@@ -216,11 +222,77 @@ RSpec.describe Integrations::Jira do
       '3EXT_EXT-1234'      | ''
       'CVE-2022-123'       | ''
       'CVE-123'            | 'CVE-123'
+      'abc-JIRA-1234'      | 'JIRA-1234'
     end
 
     with_them do
       specify do
-        expect(described_class.reference_pattern.match(key).to_s).to eq(result)
+        expect(jira_integration.reference_pattern.match(key).to_s).to eq(result)
+      end
+    end
+
+    context 'with match prefix' do
+      before do
+        jira_integration.jira_issue_prefix = 'jira#'
+      end
+
+      where(:key, :result, :issue_key) do
+        'jira##123'                  | ''               | ''
+        'jira#1#23#12'               | ''               | ''
+        'jira#JIRA-1234A'            | 'jira#JIRA-1234' | 'JIRA-1234'
+        'jira#JIRA-1234-some_tag'    | 'jira#JIRA-1234' | 'JIRA-1234'
+        'JIRA-1234A'                 | ''               | ''
+        'JIRA-1234-some_tag'         | ''               | ''
+        'myjira#JIRA-1234-some_tag'  | ''               | ''
+        'MYjira#JIRA-1234-some_tag'  | ''               | ''
+        'my-jira#JIRA-1234-some_tag' | 'jira#JIRA-1234' | 'JIRA-1234'
+      end
+
+      with_them do
+        specify do
+          expect(jira_integration.reference_pattern.match(key).to_s).to eq(result)
+
+          expect(jira_integration.reference_pattern.match(key)[:issue]).to eq(issue_key) unless result.empty?
+        end
+      end
+    end
+
+    context 'with trailing space in jira_issue_prefix' do
+      before do
+        jira_integration.jira_issue_prefix = 'Jira# '
+      end
+
+      it 'leaves the trailing space' do
+        expect(jira_integration.jira_issue_prefix).to eq('Jira# ')
+      end
+
+      it 'pulls the issue ID without a prefix' do
+        expect(jira_integration.reference_pattern.match('Jira# FOO-123')[:issue]).to eq('FOO-123')
+      end
+    end
+
+    context 'with custom issue pattern' do
+      before do
+        jira_integration.jira_issue_regex = '[A-Z][0-9]-[0-9]+'
+      end
+
+      where(:key, :result) do
+        'J1-123'                | 'J1-123'
+        'AAbJ J1-123'           | 'J1-123'
+        '#A1-123'               | 'A1-123'
+        'J1-1234-some_tag'      | 'J1-1234'
+        'J1-1234A'              | 'J1-1234'
+        'J1-1234-some_tag'      | 'J1-1234'
+        'JI1-123'               | ''
+        'J1I-123'               | ''
+        'JI-123'                | ''
+        '#123'                  | ''
+      end
+
+      with_them do
+        specify do
+          expect(jira_integration.reference_pattern.match(key).to_s).to eq(result)
+        end
       end
     end
   end
@@ -252,6 +324,8 @@ RSpec.describe Integrations::Jira do
         url: url,
         api_url: api_url,
         username: username, password: password,
+        jira_issue_regex: jira_issue_regex,
+        jira_issue_prefix: jira_issue_prefix,
         jira_issue_transition_id: transition_id
       }
     end
@@ -267,6 +341,8 @@ RSpec.describe Integrations::Jira do
       expect(integration.jira_tracker_data.api_url).to eq(api_url)
       expect(integration.jira_tracker_data.username).to eq(username)
       expect(integration.jira_tracker_data.password).to eq(password)
+      expect(integration.jira_tracker_data.jira_issue_regex).to eq(jira_issue_regex)
+      expect(integration.jira_tracker_data.jira_issue_prefix).to eq(jira_issue_prefix)
       expect(integration.jira_tracker_data.jira_issue_transition_id).to eq(transition_id)
       expect(integration.jira_tracker_data.deployment_cloud?).to be_truthy
     end

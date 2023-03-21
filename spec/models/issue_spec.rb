@@ -12,7 +12,6 @@ RSpec.describe Issue, feature_category: :team_planning do
 
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
-    it { is_expected.to belong_to(:iteration) }
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:work_item_type).class_name('WorkItems::Type') }
     it { is_expected.to belong_to(:moved_to).class_name('Issue') }

@@ -7,6 +7,9 @@ type: reference
 
 # CI/CD minutes quota **(PREMIUM)**
 
+NOTE:
+`CI/CD minutes` is being renamed to `compute credits`. During this transition, you might see references in the UI and documentation to `CI minutes`, `CI/CD minutes`, `pipeline minutes`, `CI pipeline minutes`, and `compute credits`. All of these terms refer to compute credits.
+
 Administrators can limit the amount of time that projects can use to run jobs on
 [shared runners](../runners/runners_scope.md#shared-runners) each month. This limit
 is tracked with a quota of CI/CD minutes.

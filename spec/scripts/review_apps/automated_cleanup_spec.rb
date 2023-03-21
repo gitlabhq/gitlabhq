@@ -76,6 +76,54 @@ RSpec.describe ReviewApps::AutomatedCleanup, feature_category: :tooling do
     end
   end
 
+  describe '.parse_args' do
+    subject { described_class.parse_args(argv) }
+
+    context 'when no arguments are provided' do
+      let(:argv) { %w[] }
+
+      it 'returns the default options' do
+        expect(subject).to eq(dry_run: false)
+      end
+    end
+
+    describe '--dry-run' do
+      context 'when no DRY_RUN variable is provided' do
+        let(:argv) { ['--dry-run='] }
+
+        # This is the default behavior of OptionParser.
+        # We should always pass an environment variable with a value, or not pass the flag at all.
+        it 'raises an error' do
+          expect { subject }.to raise_error(OptionParser::InvalidArgument, 'invalid argument: --dry-run=')
+        end
+      end
+
+      context 'when the DRY_RUN variable is not set to true' do
+        let(:argv) { %w[--dry-run=false] }
+
+        it 'returns the default options' do
+          expect(subject).to eq(dry_run: false)
+        end
+      end
+
+      context 'when the DRY_RUN variable is set to true' do
+        let(:argv) { %w[--dry-run=true] }
+
+        it 'returns the correct dry_run value' do
+          expect(subject).to eq(dry_run: true)
+        end
+      end
+
+      context 'when the short version of the flag is used' do
+        let(:argv) { %w[-d true] }
+
+        it 'returns the correct dry_run value' do
+          expect(subject).to eq(dry_run: true)
+        end
+      end
+    end
+  end
+
   describe '#perform_stale_pvc_cleanup!' do
     subject { instance.perform_stale_pvc_cleanup!(days: days) }
 

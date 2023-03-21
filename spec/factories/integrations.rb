@@ -88,6 +88,8 @@ FactoryBot.define do
       jira_issue_transition_automatic { false }
       jira_issue_transition_id { '56-1' }
       issues_enabled { false }
+      jira_issue_prefix { '' }
+      jira_issue_regex { '' }
       project_key { nil }
       vulnerabilities_enabled { false }
       vulnerabilities_issuetype { nil }

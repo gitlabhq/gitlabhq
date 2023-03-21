@@ -34,7 +34,7 @@ gem 'sprockets', '~> 3.7.0'
 gem 'view_component', '~> 2.74.1'
 
 # Supported DBs
-gem 'pg', '~> 1.4.5'
+gem 'pg', '~> 1.4.6'
 
 gem 'rugged', '~> 1.5'
 gem 'grape-path-helpers', '~> 1.7.1'
@@ -210,7 +210,7 @@ gem 'diffy', '~> 3.4'
 gem 'diff_match_patch', '~> 0.1.0'
 
 # Application server
-gem 'rack', '~> 2.2.6', '>= 2.2.6.2'
+gem 'rack', '~> 2.2.6', '>= 2.2.6.4'
 # https://github.com/zombocom/rack-timeout/blob/master/README.md#rails-apps-manually
 gem 'rack-timeout', '~> 0.6.3', require: 'rack/timeout/base'
 
@@ -371,7 +371,7 @@ gem 'prometheus-client-mmap', '~> 0.19', require: 'prometheus/client'
 gem 'warning', '~> 1.3.0'
 
 group :development do
-  gem 'lefthook', '~> 1.3.3', require: false
+  gem 'lefthook', '~> 1.3.5', require: false
   gem 'rubocop'
   gem 'solargraph', '~> 0.47.2', require: false
 

@@ -31,27 +31,27 @@ RSpec.describe Integrations::Ewm do
 
   describe "ReferencePatternValidation" do
     it "extracts bug" do
-      expect(described_class.reference_pattern.match("This is bug 123")[:issue]).to eq("bug 123")
+      expect(subject.reference_pattern.match("This is bug 123")[:issue]).to eq("bug 123")
     end
 
     it "extracts task" do
-      expect(described_class.reference_pattern.match("This is task 123.")[:issue]).to eq("task 123")
+      expect(subject.reference_pattern.match("This is task 123.")[:issue]).to eq("task 123")
     end
 
     it "extracts work item" do
-      expect(described_class.reference_pattern.match("This is work item 123 now")[:issue]).to eq("work item 123")
+      expect(subject.reference_pattern.match("This is work item 123 now")[:issue]).to eq("work item 123")
     end
 
     it "extracts workitem" do
-      expect(described_class.reference_pattern.match("workitem 123 at the beginning")[:issue]).to eq("workitem 123")
+      expect(subject.reference_pattern.match("workitem 123 at the beginning")[:issue]).to eq("workitem 123")
     end
 
     it "extracts defect" do
-      expect(described_class.reference_pattern.match("This is defect 123 defect")[:issue]).to eq("defect 123")
+      expect(subject.reference_pattern.match("This is defect 123 defect")[:issue]).to eq("defect 123")
     end
 
     it "extracts rtcwi" do
-      expect(described_class.reference_pattern.match("This is rtcwi 123")[:issue]).to eq("rtcwi 123")
+      expect(subject.reference_pattern.match("This is rtcwi 123")[:issue]).to eq("rtcwi 123")
     end
   end
 end

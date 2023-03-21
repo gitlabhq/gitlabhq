@@ -15,7 +15,7 @@ RSpec.describe CreatePipelineFailureIncident, feature_category: :tooling do
 
     let(:options) do
       {
-        project: 1234,
+        project: 'gitlab-org/gitlab-test-project',
         api_token: 'asdf1234'
       }
     end
@@ -104,13 +104,55 @@ RSpec.describe CreatePipelineFailureIncident, feature_category: :tooling do
     end
 
     context 'when other branch' do
-      let(:incident_labels) { ['Engineering Productivity', 'master-broken::undetermined', 'master:broken'] }
       let(:title) { /broken `master`/ }
       let(:description) { /Follow the \[Broken `master` handbook guide\]/ }
 
       before do
         stub_env(
           'CI_COMMIT_REF_NAME' => 'master'
+        )
+      end
+
+      context 'when GitLab FOSS' do
+        let(:incident_labels) { ['master:foss-broken', 'Engineering Productivity', 'master-broken::undetermined'] }
+
+        before do
+          stub_env(
+            'CI_PROJECT_NAME' => 'gitlab-foss'
+          )
+        end
+
+        it_behaves_like 'creating an issue'
+      end
+
+      context 'when GitLab EE' do
+        let(:incident_labels) { ['master:broken', 'Engineering Productivity', 'master-broken::undetermined'] }
+
+        before do
+          stub_env(
+            'CI_PROJECT_NAME' => 'gitlab'
+          )
+        end
+
+        it_behaves_like 'creating an issue'
+      end
+    end
+
+    context 'when review-apps' do
+      let(:options) do
+        {
+          project: 'gitlab-org/quality/engineering-productivity/review-apps-broken-incidents',
+          api_token: 'asdf1234'
+        }
+      end
+
+      let(:incident_labels) { ["review-apps-broken", "Engineering Productivity", "ep::review-apps"] }
+      let(:title)           { /broken `my-branch`/ }
+      let(:description)     { /Please refer to \[the review-apps triaging process\]/ }
+
+      before do
+        stub_env(
+          'CI_COMMIT_REF_NAME' => 'my-branch'
         )
       end
 

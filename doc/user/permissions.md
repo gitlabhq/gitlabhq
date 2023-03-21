@@ -427,8 +427,12 @@ For more information, see
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in GitLab 13.4.
 
-Owners can add members with a "minimal access" role to a root group. Such users don't automatically have access to
-projects and subgroups underneath. Owners must explicitly add these "minimal access" users to the specific subgroups and
+Owners can add members with a "minimal access" role to a root group. Such users do not:
+
+- Count as licensed seats.
+- Automatically have access to projects and subgroups in that root group.
+
+Owners must explicitly add these "minimal access" users to the specific subgroups and
 projects.
 
 You can use minimal access to give the same member more than one role in a group:
@@ -442,12 +446,6 @@ Because of an [outstanding issue](https://gitlab.com/gitlab-org/gitlab/-/issues/
 - Sign in with Group SSO, they receive a `404` error immediately because they are redirected to the parent group page.
 
 To work around the issue, give these users the Guest role or higher to any project or subgroup within the parent group.
-
-### Minimal access users take license seats
-
-Users with even a "minimal access" role are counted against your number of license seats. This
-requirement does not apply for [GitLab Ultimate](https://about.gitlab.com/pricing/)
-subscriptions.
 
 ## Related topics
 

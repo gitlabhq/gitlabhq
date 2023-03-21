@@ -81,7 +81,8 @@ module SidebarsHelper
       gitlab_com_and_canary: Gitlab.com_and_canary?,
       canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url,
       current_context: super_sidebar_current_context(project: project, group: group),
-      context_switcher_links: context_switcher_links
+      context_switcher_links: context_switcher_links,
+      search: search_data
     }
   end
 
@@ -111,6 +112,16 @@ module SidebarsHelper
   end
 
   private
+
+  def search_data
+    {
+      search_path: search_path,
+      issues_path: issues_dashboard_path,
+      mr_path: merge_requests_dashboard_path,
+      autocomplete_path: search_autocomplete_path,
+      search_context: header_search_context
+    }
+  end
 
   def user_status_menu_data(user)
     {

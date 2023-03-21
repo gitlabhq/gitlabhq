@@ -1,7 +1,9 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { initStatusTriggers } from '../header';
+import createStore from './components/global_search/store';
 import {
   bindSuperSidebarCollapsedEvents,
   initSuperSidebarCollapsedState,
@@ -23,6 +25,10 @@ export const initSuperSidebar = () => {
   initSuperSidebarCollapsedState();
 
   const { rootPath, sidebar, toggleNewNavEndpoint } = el.dataset;
+  const sidebarData = JSON.parse(sidebar);
+  const searchData = convertObjectPropsToCamelCase(sidebarData.search);
+
+  const { searchPath, issuesPath, mrPath, autocompletePath, searchContext } = searchData;
 
   return new Vue({
     el,
@@ -32,10 +38,18 @@ export const initSuperSidebar = () => {
       rootPath,
       toggleNewNavEndpoint,
     },
+    store: createStore({
+      searchPath,
+      issuesPath,
+      mrPath,
+      autocompletePath,
+      searchContext,
+      search: '',
+    }),
     render(h) {
       return h(SuperSidebar, {
         props: {
-          sidebarData: JSON.parse(sidebar),
+          sidebarData,
         },
       });
     },

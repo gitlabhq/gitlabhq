@@ -264,6 +264,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     status = merge!
 
+    Gitlab::ApplicationContext.push(merge_action_status: status.to_s)
+
     if @merge_request.merge_error
       render json: { status: status, merge_error: @merge_request.merge_error }
     else

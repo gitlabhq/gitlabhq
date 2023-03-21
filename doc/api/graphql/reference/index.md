@@ -877,6 +877,7 @@ Input type: `AdminSidekiqQueuesDeleteJobsInput`
 | <a id="mutationadminsidekiqqueuesdeletejobsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationadminsidekiqqueuesdeletejobsfeaturecategory"></a>`featureCategory` | [`String`](#string) | Delete jobs matching feature_category in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsjobid"></a>`jobId` | [`String`](#string) | Delete jobs matching job_id in the context metadata. |
+| <a id="mutationadminsidekiqqueuesdeletejobsmergeactionstatus"></a>`mergeActionStatus` | [`String`](#string) | Delete jobs matching merge_action_status in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobspipelineid"></a>`pipelineId` | [`String`](#string) | Delete jobs matching pipeline_id in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsproject"></a>`project` | [`String`](#string) | Delete jobs matching project in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsqueuename"></a>`queueName` | [`String!`](#string) | Name of the queue to delete jobs from. |
@@ -20399,6 +20400,7 @@ Represents the scan result policy.
 | <a id="scanresultpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
 | <a id="scanresultpolicygroupapprovers"></a>`groupApprovers` | [`[Group!]`](#group) | Approvers of the group type. |
 | <a id="scanresultpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
+| <a id="scanresultpolicyroleapprovers"></a>`roleApprovers` | [`[MemberAccessLevelName!]`](#memberaccesslevelname) | Approvers of the role type. Users belonging to these role(s) alone will be approvers. |
 | <a id="scanresultpolicysource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | <a id="scanresultpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
 | <a id="scanresultpolicyuserapprovers"></a>`userApprovers` | [`[UserCore!]`](#usercore) | Approvers of the user type. |
@@ -23674,6 +23676,18 @@ Access level of a group or project member.
 | <a id="memberaccesslevelminimal_access"></a>`MINIMAL_ACCESS` | Minimal access. |
 | <a id="memberaccesslevelowner"></a>`OWNER` | Owner access. |
 | <a id="memberaccesslevelreporter"></a>`REPORTER` | Reporter access. |
+
+### `MemberAccessLevelName`
+
+Name of access levels of a group or project member.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="memberaccesslevelnamedeveloper"></a>`DEVELOPER` | Developer access. |
+| <a id="memberaccesslevelnameguest"></a>`GUEST` | Guest access. |
+| <a id="memberaccesslevelnamemaintainer"></a>`MAINTAINER` | Maintainer access. |
+| <a id="memberaccesslevelnameowner"></a>`OWNER` | Owner access. |
+| <a id="memberaccesslevelnamereporter"></a>`REPORTER` | Reporter access. |
 
 ### `MemberSort`
 

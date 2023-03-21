@@ -575,6 +575,16 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
       it 'returns :failed' do
         expect(json_response).to eq('status' => 'failed')
       end
+
+      context 'for logging' do
+        let(:expected_params) { { merge_action_status: 'failed' } }
+        let(:subject_proc) { proc { subject } }
+
+        subject { post :merge, params: base_params }
+
+        it_behaves_like 'storing arguments in the application context'
+        it_behaves_like 'not executing any extra queries for the application context'
+      end
     end
 
     context 'when the sha parameter does not match the source SHA' do
@@ -584,6 +594,16 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
 
       it 'returns :sha_mismatch' do
         expect(json_response).to eq('status' => 'sha_mismatch')
+      end
+
+      context 'for logging' do
+        let(:expected_params) { { merge_action_status: 'sha_mismatch' } }
+        let(:subject_proc) { proc { subject } }
+
+        subject { post :merge, params: base_params.merge(sha: 'foo') }
+
+        it_behaves_like 'storing arguments in the application context'
+        it_behaves_like 'not executing any extra queries for the application context'
       end
     end
 
@@ -604,6 +624,16 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         expect(MergeWorker).to receive(:perform_async).with(merge_request.id, anything, { 'sha' => merge_request.diff_head_sha })
 
         merge_with_sha
+      end
+
+      context 'for logging' do
+        let(:expected_params) { { merge_action_status: 'success' } }
+        let(:subject_proc) { proc { subject } }
+
+        subject { merge_with_sha }
+
+        it_behaves_like 'storing arguments in the application context'
+        it_behaves_like 'not executing any extra queries for the application context'
       end
 
       context 'when squash is passed as 1' do
@@ -671,6 +701,16 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
           expect(service).to receive(:execute).with(merge_request)
 
           merge_when_pipeline_succeeds
+        end
+
+        context 'for logging' do
+          let(:expected_params) { { merge_action_status: 'merge_when_pipeline_succeeds' } }
+          let(:subject_proc) { proc { subject } }
+
+          subject { merge_when_pipeline_succeeds }
+
+          it_behaves_like 'storing arguments in the application context'
+          it_behaves_like 'not executing any extra queries for the application context'
         end
 
         context 'when project.only_allow_merge_if_pipeline_succeeds? is true' do

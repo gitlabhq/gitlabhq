@@ -1,6 +1,5 @@
 import { omitBy, isNil } from 'lodash';
 import { objectToQuery } from '~/lib/utils/url_utility';
-
 import {
   MSG_ISSUES_ASSIGNED_TO_ME,
   MSG_ISSUES_IVE_CREATED,
@@ -10,8 +9,10 @@ import {
   MSG_IN_ALL_GITLAB,
   PROJECTS_CATEGORY,
   GROUPS_CATEGORY,
-  DROPDOWN_ORDER,
+  SEARCH_RESULTS_ORDER,
 } from '~/vue_shared/global_search/constants';
+import { getFormattedItem } from '../utils';
+
 import {
   ICON_GROUP,
   ICON_SUBGROUP,
@@ -62,32 +63,27 @@ export const defaultSearchOptions = (state, getters) => {
 
   const issues = [
     {
-      html_id: 'default-issues-assigned',
-      title: MSG_ISSUES_ASSIGNED_TO_ME,
-      url: `${getters.scopedIssuesPath}/?assignee_username=${userName}`,
+      text: MSG_ISSUES_ASSIGNED_TO_ME,
+      href: `${getters.scopedIssuesPath}/?assignee_username=${userName}`,
     },
     {
-      html_id: 'default-issues-created',
-      title: MSG_ISSUES_IVE_CREATED,
-      url: `${getters.scopedIssuesPath}/?author_username=${userName}`,
+      text: MSG_ISSUES_IVE_CREATED,
+      href: `${getters.scopedIssuesPath}/?author_username=${userName}`,
     },
   ];
 
   const mergeRequests = [
     {
-      html_id: 'default-mrs-assigned',
-      title: MSG_MR_ASSIGNED_TO_ME,
-      url: `${getters.scopedMRPath}/?assignee_username=${userName}`,
+      text: MSG_MR_ASSIGNED_TO_ME,
+      href: `${getters.scopedMRPath}/?assignee_username=${userName}`,
     },
     {
-      html_id: 'default-mrs-reviewer',
-      title: MSG_MR_IM_REVIEWER,
-      url: `${getters.scopedMRPath}/?reviewer_username=${userName}`,
+      text: MSG_MR_IM_REVIEWER,
+      href: `${getters.scopedMRPath}/?reviewer_username=${userName}`,
     },
     {
-      html_id: 'default-mrs-created',
-      title: MSG_MR_IVE_CREATED,
-      url: `${getters.scopedMRPath}/?author_username=${userName}`,
+      text: MSG_MR_IVE_CREATED,
+      href: `${getters.scopedMRPath}/?author_username=${userName}`,
     },
   ];
   return [...(getters.scopedIssuesPath ? issues : []), ...mergeRequests];
@@ -145,58 +141,64 @@ export const allUrl = (state) => {
 };
 
 export const scopedSearchOptions = (state, getters) => {
-  const options = [];
+  const items = [];
 
   if (state.searchContext?.project) {
-    options.push({
-      html_id: 'scoped-in-project',
+    items.push({
+      text: 'scoped-in-project',
       scope: state.searchContext.project?.name || '',
       scopeCategory: PROJECTS_CATEGORY,
       icon: ICON_PROJECT,
-      url: getters.projectUrl,
+      href: getters.projectUrl,
     });
   }
 
   if (state.searchContext?.group) {
-    options.push({
-      html_id: 'scoped-in-group',
+    items.push({
+      text: 'scoped-in-group',
       scope: state.searchContext.group?.name || '',
       scopeCategory: GROUPS_CATEGORY,
       icon: state.searchContext.group?.full_name?.includes('/') ? ICON_SUBGROUP : ICON_GROUP,
-      url: getters.groupUrl,
+      href: getters.groupUrl,
     });
   }
 
-  options.push({
-    html_id: 'scoped-in-all',
+  items.push({
+    text: 'scoped-in-all',
     description: MSG_IN_ALL_GITLAB,
-    url: getters.allUrl,
+    href: getters.allUrl,
   });
 
-  return options;
+  return items;
+};
+
+export const scopedSearchGroup = (state, getters) => {
+  const items = getters.scopedSearchOptions?.length ? getters.scopedSearchOptions.slice(1) : [];
+  return { items };
 };
 
 export const autocompleteGroupedSearchOptions = (state) => {
   const groupedOptions = {};
   const results = [];
 
-  state.autocompleteOptions.forEach((option) => {
-    const category = groupedOptions[option.category];
+  state.autocompleteOptions.forEach((item) => {
+    const group = groupedOptions[item.category];
+    const formattedItem = getFormattedItem(item, state.searchContext);
 
-    if (category) {
-      category.data.push(option);
+    if (group) {
+      group.items.push(formattedItem);
     } else {
-      groupedOptions[option.category] = {
-        category: option.category,
-        data: [option],
+      groupedOptions[item.category] = {
+        name: formattedItem.category,
+        items: [formattedItem],
       };
 
-      results.push(groupedOptions[option.category]);
+      results.push(groupedOptions[formattedItem.category]);
     }
   });
 
   return results.sort(
-    (a, b) => DROPDOWN_ORDER.indexOf(a.category) - DROPDOWN_ORDER.indexOf(b.category),
+    (a, b) => SEARCH_RESULTS_ORDER.indexOf(a.name) - SEARCH_RESULTS_ORDER.indexOf(b.name),
   );
 };
 
@@ -206,8 +208,8 @@ export const searchOptions = (state, getters) => {
   }
 
   const sortedAutocompleteOptions = Object.values(getters.autocompleteGroupedSearchOptions).reduce(
-    (options, group) => {
-      return [...options, ...group.data];
+    (items, group) => {
+      return [...items, ...group.items];
     },
     [],
   );
@@ -216,5 +218,5 @@ export const searchOptions = (state, getters) => {
     return sortedAutocompleteOptions;
   }
 
-  return getters.scopedSearchOptions.concat(sortedAutocompleteOptions);
+  return (getters.scopedSearchOptions ?? []).concat(sortedAutocompleteOptions);
 };

@@ -20,13 +20,7 @@ You can configure SAML SSO for the top-level group only.
 
 ## Configure your identity provider
 
-1. Find the information in GitLab required for configuration:
-   1. On the top bar, select **Main menu > Groups** and find your group.
-   1. On the left sidebar, select **Settings > SAML SSO**.
-   1. Note the **Assertion consumer service URL**, **Identifier**, and **GitLab single sign-on URL**.
-1. Configure your SAML identity provider app using the noted details.
-   Alternatively, GitLab provides a [metadata XML configuration](#set-up-identity-provider-using-metadata).
-   See [specific identity provider documentation](#set-up-identity-provider) for more details.
+1. [Configure your SAML identity provider](#set-up-identity-provider).
 1. Configure the SAML response to include a [NameID](#nameid) that uniquely identifies each user.
 1. Configure the required [user attributes](#user-attributes), ensuring you include the user's email address.
 1. While the default is enabled for most SAML providers, ensure the app is set to have service provider
@@ -69,7 +63,7 @@ To set up SSO with Azure as your identity provider:
 
 1. You should set the following attributes:
    - **Unique User Identifier (Name identifier)** to `user.objectID`.
-   - **nameid-format** to `persistent`.
+   - **nameid-format** to `persistent`. For more information, see the [NameID documentation](#nameid).
    - **Additional claims** to [supported attributes](#user-attributes).
 
 1. Optional. If you use [Group Sync](#group-sync), customize the name of the
@@ -106,11 +100,11 @@ To set up Google Workspace as your identity provider:
       ```
 
 1. Set these values:
-   - For **Primary email**: `email`
-   - For **First name**: `first_name`
-   - For **Last name**: `last_name`
-   - For **Name ID format**: `EMAIL`
-   - For **NameID**: `Basic Information > Primary email`
+   - For **Primary email**: `email`.
+   - For **First name**: `first_name`.
+   - For **Last name**: `last_name`.
+   - For **Name ID format**: `EMAIL`. For more information, see the [NameID format documentation](#nameid-format).
+   - For **NameID**: `Basic Information > Primary email`. For more information, see the [NameID documentation](#nameid).
 
 On the GitLab SAML SSO page, when you select **Verify SAML Configuration**, disregard
 the warning that recommends setting the **NameID** format to `persistent`.
@@ -119,47 +113,60 @@ For more information, see an [example configuration page](example_saml_config.md
 
 ### Set up Okta
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a demo of the Okta SAML setup including SCIM, see [Demo: Okta Group SAML & SCIM setup](https://youtu.be/0ES9HsZq0AQ).
+To set up SSO with Okta as your identity provider:
 
-1. [Set up a SAML application in Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/).
+1. In GitLab, on the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > SAML SSO**.
+1. Note the information on this page.
+1. Follow the instructions for [setting up a SAML application in Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/).
+
    The following GitLab settings correspond to the Okta fields.
 
-   | GitLab setting                       | Okta field                                                 |
-   | ------------------------------------ | ---------------------------------------------------------- |
-   | Identifier                           | **Audience URI**                                               |
-   | Assertion consumer service URL       | **Single sign-on URL**                                         |
-   | GitLab single sign-on URL            | **Login page URL** (under **Application Login Page** settings) |
-   | Identity provider single sign-on URL | **Identity Provider Single Sign-On URL**                       |
+   | GitLab setting                           | Okta field                                                     |
+   | ---------------------------------------- | -------------------------------------------------------------- |
+   | **Identifier**                           | **Audience URI**                                               |
+   | **Assertion consumer service URL**       | **Single sign-on URL**                                         |
+   | **GitLab single sign-on URL**            | **Login page URL** (under **Application Login Page** settings) |
+   | **Identity provider single sign-on URL** | **Identity Provider Single Sign-On URL**                       |
 
 1. Under the Okta **Single sign-on URL** field, select the **Use this for Recipient URL and Destination URL** checkbox.
 
 1. Set these values:
-   - For **Application username (NameID)**: **Custom** `user.getInternalProperty("id")`
-   - For **Name ID Format**: `Persistent`
+   - For **Application username (NameID)**: **Custom** `user.getInternalProperty("id")`.
+   - For **Name ID Format**: `Persistent`. For more information, see the [NameID documentation](#nameid).
 
 The Okta GitLab application available in the App Catalog only supports [SCIM](scim_setup.md). Support
 for SAML is proposed in [issue 216173](https://gitlab.com/gitlab-org/gitlab/-/issues/216173).
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a demo of the Okta SAML setup including SCIM, see [Demo: Okta Group SAML & SCIM setup](https://youtu.be/0ES9HsZq0AQ).
+
+For more information, see an [example configuration page](example_saml_config.md#okta)
 
 ### Set up OneLogin
 
 OneLogin supports its own [GitLab (SaaS) application](https://onelogin.service-now.com/support?id=kb_article&sys_id=92e4160adbf16cd0ca1c400e0b961923&kb_category=50984e84db738300d5505eea4b961913).
 
+To set up OneLogin as your identity provider:
+
+1. In GitLab, on the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > SAML SSO**.
+1. Note the information on this page.
 1. If you use the OneLogin generic
    [SAML Test Connector (Advanced)](https://onelogin.service-now.com/support?id=kb_article&sys_id=b2c19353dbde7b8024c780c74b9619fb&kb_category=93e869b0db185340d5505eea4b961934),
    you should [use the OneLogin SAML Test Connector](https://onelogin.service-now.com/support?id=kb_article&sys_id=93f95543db109700d5505eea4b96198f). The following GitLab settings correspond
    to the OneLogin fields:
 
-   | GitLab setting                                   | OneLogin field                   |
-   | ------------------------------------------------ | -------------------------------- |
-   | Identifier                                       | **Audience**                     |
-   | Assertion consumer service URL                   | **Recipient**                    |
-   | Assertion consumer service URL                   | **ACS (Consumer) URL**           |
-   | Assertion consumer service URL (escaped version) | **ACS (Consumer) URL Validator** |
-   | GitLab single sign-on URL                        | **Login URL**                    |
-   | Identity provider single sign-on URL             | **SAML 2.0 Endpoint**            |
+   | GitLab setting                                       | OneLogin field                   |
+   | ---------------------------------------------------- | -------------------------------- |
+   | **Identifier**                                       | **Audience**                     |
+   | **Assertion consumer service URL**                   | **Recipient**                    |
+   | **Assertion consumer service URL**                   | **ACS (Consumer) URL**           |
+   | **Assertion consumer service URL (escaped version)** | **ACS (Consumer) URL Validator** |
+   | **GitLab single sign-on URL**                        | **Login URL**                    |
+   | **Identity provider single sign-on URL**             | **SAML 2.0 Endpoint**            |
 
-1. For **NameID**, use `OneLogin ID`.
+1. For **NameID**, use `OneLogin ID`. For more information, see the [NameID documentation](#nameid).
 
 ### Set up identity provider using metadata
 
@@ -172,28 +179,6 @@ To find this URL:
 1. Follow your identity provider's documentation and paste the metadata URL when it's requested.
 
 Check your identity provider's documentation to see if it supports the GitLab metadata URL.
-
-### NameID
-
-GitLab.com uses the SAML NameID to identify users. The NameID element:
-
-- Is a required field in the SAML response.
-- Must be unique to each user.
-- Must be a persistent value that never changes, such as a randomly generated unique user ID.
-- Is case sensitive. The NameID must match exactly on subsequent login attempts, so should not rely on user input that could change between upper and lower case.
-- Should not be an email address or username. We strongly recommend against these as it's hard to
-  guarantee it doesn't ever change, for example, when a person's name changes. Email addresses are
-  also case-insensitive, which can result in users being unable to sign in.
-
-The relevant field name and recommended value for supported providers are in the [provider specific notes](#set-up-identity-provider).
-
-WARNING:
-Once users have signed into GitLab using the SSO SAML setup, changing the `NameID` breaks the configuration and potentially locks users out of the GitLab group.
-
-#### NameID Format
-
-We recommend setting the NameID format to `Persistent` unless using a field (such as email) that requires a different format.
-Most NameID formats can be used, except `Transient` due to the temporary nature of this format.
 
 ### User attributes
 
@@ -319,14 +304,14 @@ After you have configured your identity provider, you can:
 - Migrate to a different identity provider.
 - Change email domains.
 
-### Change the identity provider
+#### Change the identity provider
 
 To change the identity provider:
 
 - If the `NameID` is not identical in the existing and new identity providers, [change the NameID for users](#change-nameid-for-one-or-more-users).
 - If the `NameID` is identical, users do not have to make any changes.
 
-### Migrate to a different identity provider
+#### Migrate to a different identity provider
 
 You can migrate to a different identity provider. During the migration process,
 users cannot access any of the SAML groups. To mitigate this, you can disable
@@ -337,7 +322,7 @@ To migrate identity providers:
 1. [Configure](#configure-your-identity-provider) the group with the new identity provider.
 1. [Change the NameID for users](#change-nameid-for-one-or-more-users).
 
-### Change email domains
+#### Change email domains
 
 To migrate users to a new email domain, tell users to:
 
@@ -474,7 +459,7 @@ To rescind a user's access to the group when only SAML SSO is configured, either
 - Remove (in order) the user from:
   1. The user data store on the identity provider or the list of users on the specific app.
   1. The GitLab.com group.
-- Use [Group Sync](group_sync.md#automatic-member-removal) at the top-level of your group with the [default role](#role) set to [minimal access](../../permissions.md#users-with-minimal-access) to automatically block access to all resources within the group. Users may continue to [use a seat](../../permissions.md#minimal-access-users-take-license-seats).
+- Use [Group Sync](group_sync.md#automatic-member-removal) at the top-level of your group with the [default role](#role) set to [minimal access](../../permissions.md#users-with-minimal-access) to automatically block access to all resources within the group.
 
 To rescind a user's access to the group when also using SCIM, refer to [Remove access](scim_setup.md#remove-access).
 
@@ -507,6 +492,28 @@ For information on automatically managing GitLab group membership, see [SAML Gro
 ## Passwords for users created via SAML SSO for Groups
 
 The [Generated passwords for users created through integrated authentication](../../../security/passwords_for_integrated_authentication_methods.md) guide provides an overview of how GitLab generates and sets passwords for users created via SAML SSO for Groups.
+
+### NameID
+
+GitLab.com uses the SAML NameID to identify users. The NameID element:
+
+- Is a required field in the SAML response.
+- Must be unique to each user.
+- Must be a persistent value that never changes, such as a randomly generated unique user ID.
+- Is case sensitive. The NameID must match exactly on subsequent login attempts, so should not rely on user input that could change between upper and lower case.
+- Should not be an email address or username. We strongly recommend against these as it's hard to
+  guarantee it doesn't ever change, for example, when a person's name changes. Email addresses are
+  also case-insensitive, which can result in users being unable to sign in.
+
+The relevant field name and recommended value for supported providers are in the [provider specific notes](#set-up-identity-provider).
+
+WARNING:
+Once users have signed into GitLab using the SSO SAML setup, changing the `NameID` breaks the configuration and potentially locks users out of the GitLab group.
+
+#### NameID Format
+
+We recommend setting the NameID format to `Persistent` unless using a field (such as email) that requires a different format.
+Most NameID formats can be used, except `Transient` due to the temporary nature of this format.
 
 ## Related topics
 

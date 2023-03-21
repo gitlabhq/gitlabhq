@@ -57,11 +57,10 @@ class Issue < ApplicationRecord
 
   belongs_to :duplicated_to, class_name: 'Issue'
   belongs_to :closed_by, class_name: 'User'
-  belongs_to :iteration, foreign_key: 'sprint_id'
   belongs_to :work_item_type, class_name: 'WorkItems::Type', inverse_of: :work_items
 
-  belongs_to :moved_to, class_name: 'Issue'
-  has_one :moved_from, class_name: 'Issue', foreign_key: :moved_to_id
+  belongs_to :moved_to, class_name: 'Issue', inverse_of: :moved_from
+  has_one :moved_from, class_name: 'Issue', foreign_key: :moved_to_id, inverse_of: :moved_to
 
   has_internal_id :iid, scope: :namespace, track_if: -> { !importing? }, init: ->(issue, scope) do
     # we need this init for the case where the IID allocation in internal_ids#last_value

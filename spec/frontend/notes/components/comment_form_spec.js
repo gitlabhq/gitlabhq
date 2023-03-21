@@ -652,6 +652,37 @@ describe('issue_comment_form component', () => {
     });
   });
 
+  describe('check sensitive tokens', () => {
+    const sensitiveMessage = 'token: glpat-1234567890abcdefghij';
+    const nonSensitiveMessage = 'text';
+
+    it('should not save note when it contains sensitive token', () => {
+      mountComponent({
+        mountFunction: mount,
+        initialData: { note: sensitiveMessage },
+      });
+
+      jest.spyOn(wrapper.vm, 'saveNote').mockResolvedValue();
+
+      clickCommentButton();
+
+      expect(wrapper.vm.saveNote).not.toHaveBeenCalled();
+    });
+
+    it('should save note it does not contain sensitive token', () => {
+      mountComponent({
+        mountFunction: mount,
+        initialData: { note: nonSensitiveMessage },
+      });
+
+      jest.spyOn(wrapper.vm, 'saveNote').mockResolvedValue();
+
+      clickCommentButton();
+
+      expect(wrapper.vm.saveNote).toHaveBeenCalled();
+    });
+  });
+
   describe('user is not logged in', () => {
     beforeEach(() => {
       mountComponent({ userData: null, noteableData: loggedOutnoteableData, mountFunction: mount });

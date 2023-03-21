@@ -133,7 +133,7 @@ describe('SidebarDropdownWidget', () => {
           $apollo: {
             mutate: mutationPromise(),
             queries: {
-              currentAttribute: { loading: false },
+              issuable: { loading: false },
               attributesList: { loading: false },
               ...queries,
             },
@@ -161,7 +161,9 @@ describe('SidebarDropdownWidget', () => {
     beforeEach(() => {
       createComponent({
         data: {
-          currentAttribute: { id: 'id', title: 'title', webUrl: 'webUrl', dueDate: '2021-09-09' },
+          issuable: {
+            attribute: { id: 'id', title: 'title', webUrl: 'webUrl', dueDate: '2021-09-09' },
+          },
         },
         stubs: {
           GlDropdown,
@@ -185,7 +187,7 @@ describe('SidebarDropdownWidget', () => {
     it('shows a loading spinner while fetching the current attribute', () => {
       createComponent({
         queries: {
-          currentAttribute: { loading: true },
+          issuable: { loading: true },
         },
       });
 
@@ -199,7 +201,7 @@ describe('SidebarDropdownWidget', () => {
           selectedTitle: 'Some milestone title',
         },
         queries: {
-          currentAttribute: { loading: false },
+          issuable: { loading: false },
         },
       });
 
@@ -224,10 +226,10 @@ describe('SidebarDropdownWidget', () => {
         createComponent({
           data: {
             hasCurrentAttribute: true,
-            currentAttribute: null,
+            issuable: {},
           },
           queries: {
-            currentAttribute: { loading: false },
+            issuable: { loading: false },
           },
         });
 
@@ -251,7 +253,9 @@ describe('SidebarDropdownWidget', () => {
                       { id: '123', title: '123' },
                       { id: 'id', title: 'title' },
                     ],
-                    currentAttribute: { id: '123' },
+                    issuable: {
+                      attribute: { id: '123' },
+                    },
                   },
                   mutationPromise: mutationResp,
                 });

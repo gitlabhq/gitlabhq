@@ -220,3 +220,38 @@
     }
   }
 }
+
+.global-search-modal {
+  padding: 3rem 0.5rem 0;
+
+  &.gl-modal .modal-dialog {
+    align-items: flex-start;
+  }
+
+  @include gl-media-breakpoint-up(sm) {
+    padding: 5rem 1rem 0;
+  }
+
+  // This is a temporary workaround!
+  // the button in GitLab UI Search components need to be updated to not be the small size
+  // see in Figma: https://www.figma.com/file/qEddyqCrI7kPSBjGmwkZzQ/Component-library?node-id=43905%3A45540
+  .gl-search-box-by-type-clear.btn-sm {
+    padding: 0.5rem !important;
+  }
+
+  .is-searching {
+    .in-search-scope-help {
+      position: absolute;
+      top: 0.625rem;
+      right: 2.5rem;
+    }
+  }
+
+  .gl-search-box-by-type-input-borderless {
+    @include gl-rounded-base;
+  }
+
+  .global-search-results {
+    max-height: 30rem;
+  }
+}

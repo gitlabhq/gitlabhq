@@ -1,6 +1,6 @@
 <script>
-import { GlBadge, GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { GlBadge, GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
+import { __, s__, sprintf } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import logo from '../../../../views/shared/_logo.svg';
 import { toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
@@ -8,12 +8,14 @@ import CreateMenu from './create_menu.vue';
 import Counter from './counter.vue';
 import MergeRequestMenu from './merge_request_menu.vue';
 import UserMenu from './user_menu.vue';
+import { SEARCH_MODAL_ID } from './global_search/constants';
 
 export default {
   // "GitLab Next" is a proper noun, so don't translate "Next"
   /* eslint-disable-next-line @gitlab/require-i18n-strings */
   NEXT_LABEL: 'Next',
   logo,
+  SEARCH_MODAL_ID,
   components: {
     Counter,
     CreateMenu,
@@ -21,6 +23,10 @@ export default {
     GlButton,
     MergeRequestMenu,
     UserMenu,
+    SearchModal: () =>
+      import(
+        /* webpackChunkName: 'global_search_modal' */ './global_search/components/global_search.vue'
+      ),
   },
   i18n: {
     collapseSidebar: __('Collapse sidebar'),
@@ -28,10 +34,16 @@ export default {
     issues: __('Issues'),
     mergeRequests: __('Merge requests'),
     search: __('Search'),
+    searchKbdHelp: sprintf(
+      s__('GlobalSearch|Search GitLab %{kbdOpen}/%{kbdClose}'),
+      { kbdOpen: '<kbd>', kbdClose: '</kbd>' },
+      false,
+    ),
     todoList: __('To-Do list'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    GlModal: GlModalDirective,
     SafeHtml,
   },
   inject: ['rootPath'],
@@ -77,12 +89,18 @@ export default {
         @click="collapseSidebar"
       />
       <create-menu :groups="sidebarData.create_new_menu_groups" />
+
       <gl-button
+        id="super-sidebar-search"
+        v-gl-tooltip.bottom.hover.html="$options.i18n.searchKbdHelp"
+        v-gl-modal="$options.SEARCH_MODAL_ID"
+        data-testid="super-sidebar-search-button"
         icon="search"
         :aria-label="$options.i18n.search"
         category="tertiary"
-        href="/search"
       />
+      <search-modal />
+
       <user-menu :data="sidebarData" />
     </div>
     <div class="gl-display-flex gl-justify-content-space-between gl-px-3 gl-py-2 gl-gap-2">

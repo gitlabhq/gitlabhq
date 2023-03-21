@@ -93,6 +93,14 @@ describe('UserMenu component', () => {
         expect(item.find('.js-set-status-modal-trigger').exists()).toBe(true);
       });
 
+      it('should close the dropdown when status modal opened', () => {
+        setItem({ can_update: true });
+        wrapper.vm.$refs.userDropdown.close = jest.fn();
+        expect(wrapper.vm.$refs.userDropdown.close).not.toHaveBeenCalled();
+        item.vm.$emit('action');
+        expect(wrapper.vm.$refs.userDropdown.close).toHaveBeenCalled();
+      });
+
       describe('renders correct label', () => {
         it.each`
           busy     | customized | label

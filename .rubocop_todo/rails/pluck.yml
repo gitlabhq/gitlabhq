@@ -25,7 +25,7 @@ Rails/Pluck:
     - 'ee/app/workers/geo/repository_shard_sync_worker.rb'
     - 'ee/app/workers/geo/repository_verification/secondary/shard_worker.rb'
     - 'ee/app/workers/geo/scheduler/scheduler_worker.rb'
-    - 'ee/lib/ee/banzai/filter/references/iteration_reference_filter.rb'
+    - 'ee/lib/banzai/filter/references/iteration_reference_filter.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/person.rb'
     - 'ee/lib/ee/gitlab/background_migration/delete_invalid_epic_issues.rb'
     - 'ee/lib/ee/gitlab/background_migration/populate_uuids_for_security_findings.rb'

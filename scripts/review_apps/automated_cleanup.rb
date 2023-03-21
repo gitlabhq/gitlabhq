@@ -24,6 +24,25 @@ module ReviewApps
     ].freeze
     ENVIRONMENTS_NOT_FOUND_THRESHOLD = 3
 
+    def self.parse_args(argv)
+      options = {
+        dry_run: false
+      }
+
+      OptionParser.new do |opts|
+        opts.on("-d BOOLEAN", "--dry-run BOOLEAN", String, "Whether to perform a dry-run or not.") do |value|
+          options[:dry_run] = true if value == 'true'
+        end
+
+        opts.on("-h", "--help", "Prints this help") do
+          puts opts
+          exit
+        end
+      end.parse!(argv)
+
+      options
+    end
+
     # $GITLAB_PROJECT_REVIEW_APP_CLEANUP_API_TOKEN => `Automated Review App Cleanup` project token
     def initialize(
       project_path: ENV['CI_PROJECT_PATH'],
@@ -279,21 +298,7 @@ def timed(task)
 end
 
 if $PROGRAM_NAME == __FILE__
-  options = {
-    dry_run: false
-  }
-
-  OptionParser.new do |opts|
-    opts.on("-d", "--dry-run BOOLEAN", String, "Whether to perform a dry-run or not.") do |value|
-      options[:dry_run] = true if value == 'true'
-    end
-
-    opts.on("-h", "--help", "Prints this help") do
-      puts opts
-      exit
-    end
-  end.parse!
-
+  options           = ReviewApps::AutomatedCleanup.parse_args(ARGV)
   automated_cleanup = ReviewApps::AutomatedCleanup.new(options: options)
 
   timed('Docs Review Apps cleanup') do

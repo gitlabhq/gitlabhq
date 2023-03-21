@@ -1,4 +1,4 @@
-import { GlIcon } from '@gitlab/ui';
+import { GlLabel, GlIcon } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -37,6 +37,8 @@ describe('WorkItemLinkChild', () => {
   const WORK_ITEM_ID = 'gid://gitlab/WorkItem/2';
   let wrapper;
   let getWorkItemTreeQueryHandler;
+  const { LABELS } = workItemObjectiveMetadataWidgets;
+  const mockLabels = LABELS.labels.nodes;
 
   Vue.use(VueApollo);
 
@@ -165,8 +167,6 @@ describe('WorkItemLinkChild', () => {
       expect(metadataEl.props()).toMatchObject({
         metadataWidgets: workItemObjectiveMetadataWidgets,
       });
-
-      expect(wrapper.find('[data-testid="links-child"]').classes()).toContain('gl-py-3');
     });
 
     it('does not render item metadata component when item has no metadata present', () => {
@@ -176,8 +176,20 @@ describe('WorkItemLinkChild', () => {
       });
 
       expect(findMetadataComponent().exists()).toBe(false);
+    });
 
-      expect(wrapper.find('[data-testid="links-child"]').classes()).toContain('gl-py-0');
+    it('renders labels', () => {
+      const labels = wrapper.findAllComponents(GlLabel);
+      const mockLabel = mockLabels[0];
+
+      expect(labels).toHaveLength(mockLabels.length);
+      expect(labels.at(0).props()).toMatchObject({
+        title: mockLabel.title,
+        backgroundColor: mockLabel.color,
+        description: mockLabel.description,
+        scoped: false,
+      });
+      expect(labels.at(1).props('scoped')).toBe(true); // Second label is scoped
     });
   });
 

@@ -611,6 +611,18 @@ module API
             },
             {
               required: false,
+              name: :jira_issue_prefix,
+              type: String,
+              desc: 'Prefix to match Jira issue keys'
+            },
+            {
+              required: false,
+              name: :jira_issue_regex,
+              type: String,
+              desc: 'Regular expression to match Jira issue keys'
+            },
+            {
+              required: false,
               name: :comment_on_event_enabled,
               type: Boolean,
               desc: 'Enable comments inside Jira issues on each GitLab event (commit / merge request)'

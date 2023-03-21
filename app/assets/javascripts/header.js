@@ -135,6 +135,8 @@ function initNewNavToggle() {
   });
 }
 
-requestIdleCallback(initStatusTriggers);
+if (!gon?.use_new_navigation) {
+  requestIdleCallback(initStatusTriggers);
+}
 requestIdleCallback(initNavUserDropdownTracking);
 requestIdleCallback(initNewNavToggle);
