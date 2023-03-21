@@ -258,7 +258,7 @@ describe('packages_list', () => {
       return nextTick();
     });
 
-    it('should display an alert message', () => {
+    it('should display an alert', () => {
       expect(findErrorPackageAlert().exists()).toBe(true);
       expect(findErrorPackageAlert().props('title')).toBe(
         'There was an error publishing a error package package',

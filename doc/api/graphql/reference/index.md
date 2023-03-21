@@ -6278,7 +6278,7 @@ Input type: `VulnerabilityConfirmInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilityconfirmclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationvulnerabilityconfirmcomment"></a>`comment` | [`String`](#string) | Comment why vulnerability was marked as confirmed (max. 50 000 characters). |
+| <a id="mutationvulnerabilityconfirmcomment"></a>`comment` | [`String`](#string) | Comment why vulnerability was confirmed (maximum 50,000 characters). |
 | <a id="mutationvulnerabilityconfirmid"></a>`id` | [`VulnerabilityID!`](#vulnerabilityid) | ID of the vulnerability to be confirmed. |
 
 #### Fields
@@ -6330,7 +6330,7 @@ Input type: `VulnerabilityDismissInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilitydismissclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationvulnerabilitydismisscomment"></a>`comment` | [`String`](#string) | Comment why vulnerability should be dismissed (max. 50 000 characters). |
+| <a id="mutationvulnerabilitydismisscomment"></a>`comment` | [`String`](#string) | Comment why vulnerability was dismissed (maximum 50,000 characters). |
 | <a id="mutationvulnerabilitydismissdismissalreason"></a>`dismissalReason` | [`VulnerabilityDismissalReason`](#vulnerabilitydismissalreason) | Reason why vulnerability should be dismissed. |
 | <a id="mutationvulnerabilitydismissid"></a>`id` | [`VulnerabilityID!`](#vulnerabilityid) | ID of the vulnerability to be dismissed. |
 
@@ -6340,7 +6340,7 @@ Input type: `VulnerabilityDismissInput`
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilitydismissclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvulnerabilitydismisserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationvulnerabilitydismissvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Vulnerability after dismissal. |
+| <a id="mutationvulnerabilitydismissvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Vulnerability after state change. |
 
 ### `Mutation.vulnerabilityExternalIssueLinkCreate`
 
@@ -6416,7 +6416,7 @@ Input type: `VulnerabilityResolveInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilityresolveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationvulnerabilityresolvecomment"></a>`comment` | [`String`](#string) | Comment why vulnerability was reverted to detected (max. 50 000 characters). |
+| <a id="mutationvulnerabilityresolvecomment"></a>`comment` | [`String`](#string) | Comment why vulnerability was resolved (maximum 50,000 characters). |
 | <a id="mutationvulnerabilityresolveid"></a>`id` | [`VulnerabilityID!`](#vulnerabilityid) | ID of the vulnerability to be resolved. |
 
 #### Fields
@@ -6436,8 +6436,8 @@ Input type: `VulnerabilityRevertToDetectedInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilityreverttodetectedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationvulnerabilityreverttodetectedcomment"></a>`comment` | [`String`](#string) | Comment why vulnerability was reverted to detected (max. 50 000 characters). |
-| <a id="mutationvulnerabilityreverttodetectedid"></a>`id` | [`VulnerabilityID!`](#vulnerabilityid) | ID of the vulnerability to be reverted. |
+| <a id="mutationvulnerabilityreverttodetectedcomment"></a>`comment` | [`String`](#string) | Comment why vulnerability was reverted to detected (maximum 50,000 characters). |
+| <a id="mutationvulnerabilityreverttodetectedid"></a>`id` | [`VulnerabilityID!`](#vulnerabilityid) | ID of the vulnerability to be reverted to detected. |
 
 #### Fields
 
@@ -6445,7 +6445,7 @@ Input type: `VulnerabilityRevertToDetectedInput`
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilityreverttodetectedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvulnerabilityreverttodetectederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationvulnerabilityreverttodetectedvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Vulnerability after revert. |
+| <a id="mutationvulnerabilityreverttodetectedvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Vulnerability after state change. |
 
 ### `Mutation.workItemCreate`
 

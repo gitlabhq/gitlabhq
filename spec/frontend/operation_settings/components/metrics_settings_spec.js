@@ -198,7 +198,7 @@ describe('operation settings external dashboard component', () => {
         expect(refreshCurrentPage).toHaveBeenCalled();
       });
 
-      it('creates alert banner on error', async () => {
+      it('creates an alert on error', async () => {
         mountComponent(false);
         const message = 'mockErrorMessage';
         axios.patch.mockRejectedValue({ response: { data: { message } } });

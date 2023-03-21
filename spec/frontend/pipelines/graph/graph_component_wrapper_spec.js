@@ -1,10 +1,10 @@
-import { GlAlert, GlButton, GlButtonGroup, GlLoadingIcon } from '@gitlab/ui';
-import { mount, shallowMount } from '@vue/test-utils';
+import { GlAlert, GlButton, GlButtonGroup, GlLoadingIcon, GlToggle } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import waitForPromises from 'helpers/wait_for_promises';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
@@ -48,23 +48,25 @@ describe('Pipeline graph wrapper', () => {
   useLocalStorageSpy();
 
   let wrapper;
-  const getAlert = () => wrapper.findComponent(GlAlert);
-  const getDependenciesToggle = () => wrapper.find('[data-testid="show-links-toggle"]');
-  const getLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const getLinksLayer = () => wrapper.findComponent(LinksLayer);
-  const getGraph = () => wrapper.findComponent(PipelineGraph);
-  const getStageColumnTitle = () => wrapper.find('[data-testid="stage-column-title"]');
-  const getAllStageColumnGroupsInColumn = () =>
+  let requestHandlers;
+  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findDependenciesToggle = () => wrapper.findByTestId('show-links-toggle');
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findLinksLayer = () => wrapper.findComponent(LinksLayer);
+  const findGraph = () => wrapper.findComponent(PipelineGraph);
+  const findStageColumnTitle = () => wrapper.findByTestId('stage-column-title');
+  const findAllStageColumnGroupsInColumn = () =>
     wrapper.findComponent(StageColumnComponent).findAll('[data-testid="stage-column-group"]');
-  const getViewSelector = () => wrapper.findComponent(GraphViewSelector);
-  const getViewSelectorTrip = () => getViewSelector().findComponent(GlAlert);
+  const findViewSelector = () => wrapper.findComponent(GraphViewSelector);
+  const findViewSelectorToggle = () => findViewSelector().findComponent(GlToggle);
+  const findViewSelectorTrip = () => findViewSelector().findComponent(GlAlert);
   const getLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
 
   const createComponent = ({
     apolloProvider,
     data = {},
     provide = {},
-    mountFn = shallowMount,
+    mountFn = shallowMountExtended,
   } = {}) => {
     wrapper = mountFn(PipelineGraphWrapper, {
       provide: {
@@ -84,37 +86,41 @@ describe('Pipeline graph wrapper', () => {
     calloutsList = [],
     data = {},
     getPipelineDetailsHandler = jest.fn().mockResolvedValue(mockPipelineResponse),
-    mountFn = shallowMount,
+    mountFn = shallowMountExtended,
     provide = {},
   } = {}) => {
     const callouts = mapCallouts(calloutsList);
-    const getUserCalloutsHandler = jest.fn().mockResolvedValue(mockCalloutsResponse(callouts));
-    const getPipelineHeaderDataHandler = jest.fn().mockResolvedValue(mockRunningPipelineHeaderData);
 
-    const requestHandlers = [
-      [getPipelineHeaderData, getPipelineHeaderDataHandler],
-      [getPipelineDetails, getPipelineDetailsHandler],
-      [getUserCallouts, getUserCalloutsHandler],
+    requestHandlers = {
+      getUserCalloutsHandler: jest.fn().mockResolvedValue(mockCalloutsResponse(callouts)),
+      getPipelineHeaderDataHandler: jest.fn().mockResolvedValue(mockRunningPipelineHeaderData),
+      getPipelineDetailsHandler,
+    };
+
+    const handlers = [
+      [getPipelineHeaderData, requestHandlers.getPipelineHeaderDataHandler],
+      [getPipelineDetails, requestHandlers.getPipelineDetailsHandler],
+      [getUserCallouts, requestHandlers.getUserCalloutsHandler],
     ];
 
-    const apolloProvider = createMockApollo(requestHandlers);
+    const apolloProvider = createMockApollo(handlers);
     createComponent({ apolloProvider, data, provide, mountFn });
   };
 
   describe('when data is loading', () => {
     it('displays the loading icon', () => {
       createComponentWithApollo();
-      expect(getLoadingIcon().exists()).toBe(true);
+      expect(findLoadingIcon().exists()).toBe(true);
     });
 
     it('does not display the alert', () => {
       createComponentWithApollo();
-      expect(getAlert().exists()).toBe(false);
+      expect(findAlert().exists()).toBe(false);
     });
 
     it('does not display the graph', () => {
       createComponentWithApollo();
-      expect(getGraph().exists()).toBe(false);
+      expect(findGraph().exists()).toBe(false);
     });
 
     it('skips querying headerPipeline', () => {
@@ -130,19 +136,19 @@ describe('Pipeline graph wrapper', () => {
     });
 
     it('does not display the loading icon', () => {
-      expect(getLoadingIcon().exists()).toBe(false);
+      expect(findLoadingIcon().exists()).toBe(false);
     });
 
     it('does not display the alert', () => {
-      expect(getAlert().exists()).toBe(false);
+      expect(findAlert().exists()).toBe(false);
     });
 
     it('displays the graph', () => {
-      expect(getGraph().exists()).toBe(true);
+      expect(findGraph().exists()).toBe(true);
     });
 
     it('passes the etag resource and metrics path to the graph', () => {
-      expect(getGraph().props('configPaths')).toMatchObject({
+      expect(findGraph().props('configPaths')).toMatchObject({
         graphqlResourceEtag: defaultProvide.graphqlResourceEtag,
         metricsPath: defaultProvide.metricsPath,
       });
@@ -158,15 +164,15 @@ describe('Pipeline graph wrapper', () => {
     });
 
     it('does not display the loading icon', () => {
-      expect(getLoadingIcon().exists()).toBe(false);
+      expect(findLoadingIcon().exists()).toBe(false);
     });
 
     it('displays the alert', () => {
-      expect(getAlert().exists()).toBe(true);
+      expect(findAlert().exists()).toBe(true);
     });
 
     it('does not display the graph', () => {
-      expect(getGraph().exists()).toBe(false);
+      expect(findGraph().exists()).toBe(false);
     });
   });
 
@@ -181,18 +187,18 @@ describe('Pipeline graph wrapper', () => {
     });
 
     it('does not display the loading icon', () => {
-      expect(getLoadingIcon().exists()).toBe(false);
+      expect(findLoadingIcon().exists()).toBe(false);
     });
 
     it('displays the no iid alert', () => {
-      expect(getAlert().exists()).toBe(true);
-      expect(getAlert().text()).toBe(
+      expect(findAlert().exists()).toBe(true);
+      expect(findAlert().text()).toBe(
         'The data in this pipeline is too old to be rendered as a graph. Please check the Jobs tab to access historical data.',
       );
     });
 
     it('does not display the graph', () => {
-      expect(getGraph().exists()).toBe(false);
+      expect(findGraph().exists()).toBe(false);
     });
   });
 
@@ -203,11 +209,11 @@ describe('Pipeline graph wrapper', () => {
     });
     describe('when receiving `setSkipRetryModal` event', () => {
       it('passes down `skipRetryModal` value as true', async () => {
-        expect(getGraph().props('skipRetryModal')).toBe(false);
+        expect(findGraph().props('skipRetryModal')).toBe(false);
 
-        await getGraph().vm.$emit('setSkipRetryModal');
+        await findGraph().vm.$emit('setSkipRetryModal');
 
-        expect(getGraph().props('skipRetryModal')).toBe(true);
+        expect(findGraph().props('skipRetryModal')).toBe(true);
       });
     });
   });
@@ -216,36 +222,37 @@ describe('Pipeline graph wrapper', () => {
     beforeEach(async () => {
       createComponentWithApollo();
       await waitForPromises();
-      await getGraph().vm.$emit('error', { type: ACTION_FAILURE });
+      await findGraph().vm.$emit('error', { type: ACTION_FAILURE });
     });
 
     it('does not display the loading icon', () => {
-      expect(getLoadingIcon().exists()).toBe(false);
+      expect(findLoadingIcon().exists()).toBe(false);
     });
 
     it('displays the action error alert', () => {
-      expect(getAlert().exists()).toBe(true);
-      expect(getAlert().text()).toBe('An error occurred while performing this action.');
+      expect(findAlert().exists()).toBe(true);
+      expect(findAlert().text()).toBe('An error occurred while performing this action.');
     });
 
     it('displays the graph', () => {
-      expect(getGraph().exists()).toBe(true);
+      expect(findGraph().exists()).toBe(true);
     });
   });
 
   describe('when refresh action is emitted', () => {
     beforeEach(async () => {
       createComponentWithApollo();
-      jest.spyOn(wrapper.vm.$apollo.queries.headerPipeline, 'refetch');
-      jest.spyOn(wrapper.vm.$apollo.queries.pipeline, 'refetch');
       await waitForPromises();
-      getGraph().vm.$emit('refreshPipelineGraph');
+      findGraph().vm.$emit('refreshPipelineGraph');
     });
 
     it('calls refetch', () => {
-      expect(wrapper.vm.$apollo.queries.headerPipeline.skip).toBe(false);
-      expect(wrapper.vm.$apollo.queries.headerPipeline.refetch).toHaveBeenCalled();
-      expect(wrapper.vm.$apollo.queries.pipeline.refetch).toHaveBeenCalled();
+      expect(requestHandlers.getPipelineHeaderDataHandler).toHaveBeenCalledWith({
+        fullPath: 'frog/amphibirama',
+        iid: '22',
+      });
+      expect(requestHandlers.getPipelineDetailsHandler).toHaveBeenCalledTimes(2);
+      expect(requestHandlers.getUserCalloutsHandler).toHaveBeenCalledWith({});
     });
   });
 
@@ -277,18 +284,18 @@ describe('Pipeline graph wrapper', () => {
 
     it('shows correct errors and does not overwrite populated data when data is empty', async () => {
       /* fails at first, shows error, no data yet */
-      expect(getAlert().exists()).toBe(true);
-      expect(getGraph().exists()).toBe(false);
+      expect(findAlert().exists()).toBe(true);
+      expect(findGraph().exists()).toBe(false);
 
       /* succeeds, clears error, shows graph */
       await advanceApolloTimers();
-      expect(getAlert().exists()).toBe(false);
-      expect(getGraph().exists()).toBe(true);
+      expect(findAlert().exists()).toBe(false);
+      expect(findGraph().exists()).toBe(true);
 
       /* fails again, alert returns but data persists */
       await advanceApolloTimers();
-      expect(getAlert().exists()).toBe(true);
-      expect(getGraph().exists()).toBe(true);
+      expect(findAlert().exists()).toBe(true);
+      expect(findGraph().exists()).toBe(true);
     });
   });
 
@@ -298,38 +305,38 @@ describe('Pipeline graph wrapper', () => {
       beforeEach(async () => {
         layersFn = jest.spyOn(parsingUtils, 'listByLayers');
         createComponentWithApollo({
-          mountFn: mount,
+          mountFn: mountExtended,
         });
 
         await waitForPromises();
       });
 
       it('appears when pipeline uses needs', () => {
-        expect(getViewSelector().exists()).toBe(true);
+        expect(findViewSelector().exists()).toBe(true);
       });
 
       it('switches between views', async () => {
         const groupsInFirstColumn =
           mockPipelineResponse.data.project.pipeline.stages.nodes[0].groups.nodes.length;
-        expect(getAllStageColumnGroupsInColumn()).toHaveLength(groupsInFirstColumn);
-        expect(getStageColumnTitle().text()).toBe('build');
-        await getViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
-        expect(getAllStageColumnGroupsInColumn()).toHaveLength(groupsInFirstColumn + 1);
-        expect(getStageColumnTitle().text()).toBe('');
+        expect(findAllStageColumnGroupsInColumn()).toHaveLength(groupsInFirstColumn);
+        expect(findStageColumnTitle().text()).toBe('build');
+        await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+        expect(findAllStageColumnGroupsInColumn()).toHaveLength(groupsInFirstColumn + 1);
+        expect(findStageColumnTitle().text()).toBe('');
       });
 
       it('saves the view type to local storage', async () => {
-        await getViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+        await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
         expect(localStorage.setItem.mock.calls).toEqual([[VIEW_TYPE_KEY, LAYER_VIEW]]);
       });
 
       it('calls listByLayers only once no matter how many times view is switched', async () => {
         expect(layersFn).not.toHaveBeenCalled();
-        await getViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+        await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
         expect(layersFn).toHaveBeenCalledTimes(1);
-        await getViewSelector().vm.$emit('updateViewType', STAGE_VIEW);
-        await getViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
-        await getViewSelector().vm.$emit('updateViewType', STAGE_VIEW);
+        await findViewSelector().vm.$emit('updateViewType', STAGE_VIEW);
+        await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+        await findViewSelector().vm.$emit('updateViewType', STAGE_VIEW);
         expect(layersFn).toHaveBeenCalledTimes(1);
       });
     });
@@ -340,7 +347,7 @@ describe('Pipeline graph wrapper', () => {
           data: {
             currentViewType: LAYER_VIEW,
           },
-          mountFn: mount,
+          mountFn: mountExtended,
         });
 
         jest.runOnlyPendingTimers();
@@ -349,10 +356,10 @@ describe('Pipeline graph wrapper', () => {
 
       it('sets showLinks to true', async () => {
         /* This spec uses .props for performance reasons. */
-        expect(getLinksLayer().exists()).toBe(true);
-        expect(getLinksLayer().props('showLinks')).toBe(false);
-        expect(getViewSelector().props('type')).toBe(LAYER_VIEW);
-        await getDependenciesToggle().vm.$emit('change', true);
+        expect(findLinksLayer().exists()).toBe(true);
+        expect(findLinksLayer().props('showLinks')).toBe(false);
+        expect(findViewSelector().props('type')).toBe(LAYER_VIEW);
+        await findDependenciesToggle().vm.$emit('change', true);
 
         jest.runOnlyPendingTimers();
         await waitForPromises();
@@ -367,15 +374,15 @@ describe('Pipeline graph wrapper', () => {
             currentViewType: LAYER_VIEW,
             showLinks: true,
           },
-          mountFn: mount,
+          mountFn: mountExtended,
         });
 
         await waitForPromises();
       });
 
       it('shows the hover tip in the view selector', async () => {
-        await getViewSelector().setData({ showLinksActive: true });
-        expect(getViewSelectorTrip().exists()).toBe(true);
+        await findViewSelectorToggle().vm.$emit('change', true);
+        expect(findViewSelectorTrip().exists()).toBe(true);
       });
     });
 
@@ -386,7 +393,7 @@ describe('Pipeline graph wrapper', () => {
             currentViewType: LAYER_VIEW,
             showLinks: true,
           },
-          mountFn: mount,
+          mountFn: mountExtended,
           calloutsList: ['pipeline_needs_hover_tip'.toUpperCase()],
         });
 
@@ -395,8 +402,8 @@ describe('Pipeline graph wrapper', () => {
       });
 
       it('does not show the hover tip', async () => {
-        await getViewSelector().setData({ showLinksActive: true });
-        expect(getViewSelectorTrip().exists()).toBe(false);
+        await findViewSelectorToggle().vm.$emit('change', true);
+        expect(findViewSelectorTrip().exists()).toBe(false);
       });
     });
 
@@ -405,7 +412,7 @@ describe('Pipeline graph wrapper', () => {
         localStorage.setItem(VIEW_TYPE_KEY, LAYER_VIEW);
 
         createComponentWithApollo({
-          mountFn: mount,
+          mountFn: mountExtended,
         });
 
         await waitForPromises();
@@ -436,7 +443,7 @@ describe('Pipeline graph wrapper', () => {
         localStorage.setItem(VIEW_TYPE_KEY, LAYER_VIEW);
 
         createComponentWithApollo({
-          mountFn: mount,
+          mountFn: mountExtended,
           getPipelineDetailsHandler: jest.fn().mockResolvedValue(nonNeedsResponse),
         });
 
@@ -448,7 +455,7 @@ describe('Pipeline graph wrapper', () => {
       });
 
       it('still passes stage type to graph', () => {
-        expect(getGraph().props('viewType')).toBe(STAGE_VIEW);
+        expect(findGraph().props('viewType')).toBe(STAGE_VIEW);
       });
     });
 
@@ -458,7 +465,7 @@ describe('Pipeline graph wrapper', () => {
         nonNeedsResponse.data.project.pipeline.usesNeeds = false;
 
         createComponentWithApollo({
-          mountFn: mount,
+          mountFn: mountExtended,
           getPipelineDetailsHandler: jest.fn().mockResolvedValue(nonNeedsResponse),
         });
 
@@ -467,7 +474,7 @@ describe('Pipeline graph wrapper', () => {
       });
 
       it('does not appear when pipeline does not use needs', () => {
-        expect(getViewSelector().exists()).toBe(false);
+        expect(findViewSelector().exists()).toBe(false);
       });
     });
   });

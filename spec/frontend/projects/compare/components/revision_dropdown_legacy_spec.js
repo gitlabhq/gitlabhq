@@ -90,7 +90,7 @@ describe('RevisionDropdown component', () => {
     expect(findTagsDropdownItem()).toHaveLength(0);
   });
 
-  it('shows alert message on error', async () => {
+  it('shows an alert on error', async () => {
     axiosMock.onGet('some/invalid/path').replyOnce(HTTP_STATUS_NOT_FOUND);
 
     await waitForPromises();

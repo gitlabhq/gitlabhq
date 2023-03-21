@@ -346,7 +346,7 @@ export default {
     </div>
 
     <div v-if="stateToRender !== $options.stateMap.emptyState" class="gl-display-flex">
-      <div class="row-content-block gl-display-flex gl-flex-grow-1">
+      <div class="row-content-block gl-display-flex gl-flex-grow-1 gl-border-b-0">
         <pipelines-filtered-search
           class="gl-display-flex gl-flex-grow-1 gl-mr-4"
           :project-id="projectId"

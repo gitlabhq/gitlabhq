@@ -1179,9 +1179,11 @@ export default class Notes {
     const form = textarea.parents('form');
     const reopenbtn = form.find('.js-note-target-reopen');
     const closebtn = form.find('.js-note-target-close');
+    const savebtn = form.find('.js-comment-save-button');
     const commentTypeComponent = form.get(0)?.commentTypeComponent;
 
     if (textarea.val().trim().length > 0) {
+      savebtn.enable();
       reopentext = reopenbtn.attr('data-alternative-text');
       closetext = closebtn.attr('data-alternative-text');
       if (reopenbtn.text() !== reopentext) {
@@ -1200,6 +1202,7 @@ export default class Notes {
         commentTypeComponent.disabled = false;
       }
     } else {
+      savebtn.disable();
       reopentext = reopenbtn.data('originalText');
       closetext = closebtn.data('originalText');
       if (reopenbtn.text() !== reopentext) {

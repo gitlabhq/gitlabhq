@@ -2238,7 +2238,7 @@ class Project < ApplicationRecord
     wiki.repository.expire_content_cache
 
     DetectRepositoryLanguagesWorker.perform_async(id)
-    ProjectCacheWorker.perform_async(self.id, [], [:repository_size])
+    ProjectCacheWorker.perform_async(self.id, [], [:repository_size, :wiki_size])
     AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(id)
 
     enqueue_record_project_target_platforms

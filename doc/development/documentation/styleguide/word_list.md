@@ -305,6 +305,12 @@ You can also use **cloud-native GitLab** for short. It should be hyphenated and 
 
 Use **collapse** instead of **close** when you are talking about expanding or collapsing a section in the UI.
 
+## command line
+
+Use **From the command line** to introduce commands.
+
+Hyphenate when using as an adjective. For example, **a command-line tool**.
+
 ## confirmation dialog
 
 Use **confirmation dialog** to describe the dialog box that asks you to confirm your action. For example:

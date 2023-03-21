@@ -58,7 +58,7 @@ describe('Mutations TestReports Store', () => {
       expect(mockState.errorMessage).toBe(message);
     });
 
-    it('should show an alert message otherwise', () => {
+    it('should show an alert otherwise', () => {
       mutations[types.SET_SUITE_ERROR](mockState, {});
 
       expect(createAlert).toHaveBeenCalled();
