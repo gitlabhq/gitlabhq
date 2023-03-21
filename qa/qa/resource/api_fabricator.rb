@@ -114,8 +114,9 @@ module QA
           body = flatten_hash(parse_body(graphql_response))
 
           unless graphql_response.code == HTTP_STATUS_OK && (body[:errors].nil? || body[:errors].empty?)
+            action = post_body =~ /mutation {\s+destroy/ ? 'Deletion' : 'Fabrication'
             raise(ResourceFabricationFailedError, <<~MSG.strip)
-              Fabrication of #{self.class.name} using the API failed (#{graphql_response.code}) with `#{graphql_response}`.
+              #{action} of #{self.class.name} using the API failed (#{graphql_response.code}) with `#{graphql_response}`.
               #{QA::Support::Loglinking.failure_metadata(graphql_response.headers[:x_request_id])}
             MSG
           end
@@ -157,17 +158,21 @@ module QA
       end
 
       def api_delete
-        request = Runtime::API::Request.new(api_client, api_delete_path)
-        response = delete(request.url)
+        if api_delete_path == "/graphql"
+          api_post_to(api_delete_path, api_delete_body)
+        else
+          request = Runtime::API::Request.new(api_client, api_delete_path)
+          response = delete(request.url)
 
-        unless [HTTP_STATUS_NO_CONTENT, HTTP_STATUS_ACCEPTED].include? response.code
-          raise(ResourceNotDeletedError, <<~MSG.strip)
-            Resource at #{request.mask_url} could not be deleted (#{response.code}): `#{response}`.
-            #{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}
-          MSG
+          unless [HTTP_STATUS_NO_CONTENT, HTTP_STATUS_ACCEPTED].include? response.code
+            raise(ResourceNotDeletedError, <<~MSG.strip)
+              Resource at #{request.mask_url} could not be deleted (#{response.code}): `#{response}`.
+              #{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}
+            MSG
+          end
+
+          response
         end
-
-        response
       end
 
       def resource_web_url(resource)

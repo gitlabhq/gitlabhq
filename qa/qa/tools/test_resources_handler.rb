@@ -31,6 +31,7 @@ module QA
         QA::Resource::CiVariable
         QA::Resource::Repository::Commit
         QA::Resource::Design
+        QA::EE::Resource::ComplianceFramework
         QA::EE::Resource::GroupIteration
         QA::EE::Resource::Settings::Elasticsearch
         QA::EE::Resource::VulnerabilityItem
