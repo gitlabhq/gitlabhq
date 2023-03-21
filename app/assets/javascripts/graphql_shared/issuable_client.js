@@ -126,6 +126,13 @@ export const config = {
                 };
               },
             },
+            Board: {
+              fields: {
+                epics: {
+                  keyArgs: ['boardId'],
+                },
+              },
+            },
             BoardEpicConnection: {
               merge(existing = { nodes: [] }, incoming, { args }) {
                 if (!args.after) {

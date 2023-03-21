@@ -12,6 +12,11 @@ import groupBoardQuery from './graphql/group_board.query.graphql';
 import projectBoardQuery from './graphql/project_board.query.graphql';
 import listIssuesQuery from './graphql/lists_issues.query.graphql';
 
+export const BoardType = {
+  project: 'project',
+  group: 'group',
+};
+
 export const ListType = {
   assignee: 'assignee',
   milestone: 'milestone',

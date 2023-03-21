@@ -152,15 +152,10 @@ If you can't enable this setting, do one of the following:
 ### Public runner releases URL is blocked
 
 Most GitLab instances have their `public_runner_releases_url` set to
-`https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-runner/releases`.
-You can't change or disable this setting in the Admin Area, which can prevent you from [filtering requests](#filter-requests).
+`https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-runner/releases`,
+which can prevent you from [filtering requests](#filter-requests).
 
-To enable the setting, use the [Rails console](../administration/operations/rails_console.md) to set `public_runner_releases_url` to the instance host:
-
-```ruby
-current_settings = ApplicationSetting.find_or_create_without_cache;
-ApplicationSettings::UpdateService.new(current_settings, nil, public_runner_releases_url: Gitlab.config.gitlab.base_url).execute
-```
+To resolve this issue, [configure GitLab to no longer fetch runner release version data from GitLab.com](../user/admin_area/settings/continuous_integration.md#disable-runner-version-management).
 
 ### GitLab subscription management is blocked
 

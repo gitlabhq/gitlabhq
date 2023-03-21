@@ -206,6 +206,7 @@ export default {
     <epics-swimlanes
       v-else-if="boardListsToUse.length"
       ref="swimlanes"
+      :board-id="boardId"
       :lists="boardListsToUse"
       :can-admin-list="canAdminList"
       :filters="filterParams"

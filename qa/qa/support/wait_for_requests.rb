@@ -26,6 +26,10 @@ module QA
         Capybara.page.evaluate_script(script).zero? # rubocop:disable Style/NumericPredicate
       end
 
+      def spinner_exists?
+        Capybara.page.has_css?('.gl-spinner', wait: 2)
+      end
+
       def finished_loading?(wait: DEFAULT_MAX_WAIT_TIME)
         # The number of selectors should be able to be reduced after
         # migration to the new spinner is complete.

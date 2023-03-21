@@ -1,6 +1,5 @@
 - breadcrumb_title _("Projects")
 - page_title _("Projects")
-- @content_class = "limit-container-width" unless fluid_layout
 
 = render Pajamas::CardComponent.new(card_options: { class: 'gl-mt-3 js-search-settings-section' }, header_options: { class: 'gl-display-flex' }, body_options: { class: 'gl-py-0' }) do |c|
   - c.header do

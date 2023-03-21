@@ -345,8 +345,8 @@ To restrict all users in an instance from registering runners:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. Clear the checkbox if you don't want to display runner registration
-   information in the UI for group or project members.
+1. In the **Runner registration** section, clear the **Members of the project can register runners** and
+   **Members of the group can register runners** checkboxes to remove runner registration from the UI.
 1. Select **Save changes**.
 
 NOTE:
@@ -368,6 +368,20 @@ To restrict runner registration by members in a specific group:
 1. On the left sidebar, select **Overview > Groups** and find your group.
 1. Select **Edit**.
 1. Clear the **New group runners can be registered** checkbox if you want to disable runner registration by all members in the group. If the setting is read-only, you must enable runner registration for the [instance](#restrict-runner-registration-by-all-users-in-an-instance).
+1. Select **Save changes**.
+
+## Disable runner version management
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114041) in GitLab 15.10.
+
+By default, GitLab instances periodically fetch official runner version data from GitLab.com to [determine whether the runners need upgrades](../../../ci/runners/configure_runners.md#determine-which-runners-need-to-be-upgraded).
+
+To disable your instance fetching this data:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Runners**.
+1. In the **Runner version management** section, clear the **Fetch GitLab Runner release version data from GitLab.com** checkbox.
 1. Select **Save changes**.
 
 ## Troubleshooting

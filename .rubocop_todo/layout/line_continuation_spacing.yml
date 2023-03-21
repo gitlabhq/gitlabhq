@@ -56,7 +56,6 @@ Layout/LineContinuationSpacing:
     - 'ee/lib/ee/gitlab/ci/pipeline/quota/size.rb'
     - 'ee/lib/ee/gitlab/git_access.rb'
     - 'ee/lib/tasks/gitlab/geo.rake'
-    - 'ee/spec/components/namespaces/free_user_cap/usage_quota_trial_alert_component_spec.rb'
     - 'ee/spec/controllers/groups/group_members_controller_spec.rb'
     - 'ee/spec/controllers/projects/security/configuration_controller_spec.rb'
     - 'ee/spec/features/admin/admin_emails_spec.rb'

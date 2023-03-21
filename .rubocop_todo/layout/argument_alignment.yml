@@ -1313,7 +1313,6 @@ Layout/ArgumentAlignment:
     - 'ee/lib/gitlab/zoekt/search_results.rb'
     - 'ee/lib/slack/block_kit/app_home_opened.rb'
     - 'ee/spec/components/billing/plan_component_spec.rb'
-    - 'ee/spec/components/namespaces/free_user_cap/notification_alert_component_spec.rb'
     - 'ee/spec/components/namespaces/storage/pre_enforcement_alert_component_spec.rb'
     - 'ee/spec/controllers/ee/admin/sessions_controller_spec.rb'
     - 'ee/spec/controllers/ee/search_controller_spec.rb'

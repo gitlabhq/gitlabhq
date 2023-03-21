@@ -1,11 +1,7 @@
 ---
 RSpec/MissingFeatureCategory:
   Exclude:
-    - 'ee/spec/components/namespaces/free_user_cap/enforcement_alert_component_spec.rb'
-    - 'ee/spec/components/namespaces/free_user_cap/enforcement_at_limit_alert_component_spec.rb'
-    - 'ee/spec/components/namespaces/free_user_cap/non_owner_alert_component_spec.rb'
-    - 'ee/spec/components/namespaces/free_user_cap/usage_quota_alert_component_spec.rb'
-    - 'ee/spec/components/namespaces/free_user_cap/usage_quota_trial_alert_component_spec.rb'
+    - 'ee/spec/components/billing/plan_component_spec.rb'
     - 'ee/spec/components/namespaces/storage/limit_alert_component_spec.rb'
     - 'ee/spec/components/namespaces/storage/project_pre_enforcement_alert_component_spec.rb'
     - 'ee/spec/components/namespaces/storage/subgroup_pre_enforcement_alert_component_spec.rb'
