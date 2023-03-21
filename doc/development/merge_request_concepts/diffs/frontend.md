@@ -84,39 +84,8 @@ The most important part of the metadata response is the diff file names. This da
 app to render the file browser inside of the diffs app, without waiting for all batch diffs
 requests to complete.
 
-When the metadata response is received, the diff file data gets sent to a web worker. The web worker
-exists to allow for this data, which for larger merge requests could be huge, to be processed off
-the main thread. Processing this data involves getting the data into the correct structure
+When the metadata response is received, the diff file data is processed into the correct structure
 that the frontend requires to render the file browser in either tree view or list view.
-
-```mermaid
-graph TD
-    A[fetchDiffFilesMeta]
-    B[Create web worker]
-    C[Fetch data]
-    D[SET_DIFF_METADATA]
-    E[Post worker data]
-    F[Worker message event listener]
-    K[SET_TREE_DATA]
-
-    G[TreeWorker]
-    H[onMessage]
-    I[generateTreeList]
-    J[postMessage sortTree]
-
-    A -->B
-    E -->F
-    B -->C
-    C -->D
-    D -->E
-
-    G -->H
-    H -->I
-    I -->J
-    J -->F
-
-    F -->K
-```
 
 The structure for this file object is:
 
@@ -128,6 +97,11 @@ The structure for this file object is:
   "type": "",
   "tree": [],
   "changed": true,
+  "diffLoaded": false,
+  "filePaths": {
+    "old": file.old_path,
+    "new": file.new_path
+  },
   "tempFile": false,
   "deleted": false,
   "fileHash": "",

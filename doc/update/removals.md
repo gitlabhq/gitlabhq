@@ -34,6 +34,12 @@ For removal reviewers (Technical Writers only):
   https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-removals-doc
 -->
 
+## Removed in 15.11
+
+### Exporting and importing groups and projects in JSON format is no longer supported
+
+Before version 14.0, GitLab produced project file exports in JSON format. To support transitions, importing JSON-formatted group and project file exports was still possible if you configured the relevant feature flags. As of GitLab 15.11, importing a JSON-formatted group and project file export is no longer supported.
+
 ## Removed in 15.9
 
 ### Live Preview no longer available in the Web IDE

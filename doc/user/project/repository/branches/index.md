@@ -82,7 +82,7 @@ and their protection methods:
 
 Prerequisites:
 
-- You must have at least the Developer role in the project.
+- You must have at least the Maintainer role in the project.
 
 To view the **Branch rules overview** list:
 

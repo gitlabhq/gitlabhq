@@ -234,13 +234,14 @@ module QA
         page.validate_elements_present! if page
       end
 
-      # Uses capybara to locate and click an element instead of `click_element`.
-      # This can be used when it's not possible to add a QA selector but we still want to log the click
+      # Uses capybara to locate and interact with an element instead of using `*_element`.
+      # This can be used when it's not possible to add a QA selector but we still want to log the action
       #
       # @param [String] method the capybara method to use
       # @param [String] locator the selector used to find the element
-      def click_via_capybara(method, locator)
-        page.public_send(method, locator)
+      # @param [Hash] **kwargs optional arguments
+      def act_via_capybara(method, locator, **kwargs)
+        page.public_send(method, locator, **kwargs)
       end
 
       def fill_element(name, content)

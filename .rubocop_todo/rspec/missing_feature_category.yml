@@ -1179,7 +1179,6 @@ RSpec/MissingFeatureCategory:
     - 'ee/spec/models/broadcast_message_spec.rb'
     - 'ee/spec/models/ci/bridge_spec.rb'
     - 'ee/spec/models/ci/daily_build_group_report_result_spec.rb'
-    - 'ee/spec/models/ci/minutes/additional_pack_spec.rb'
     - 'ee/spec/models/ci/minutes/context_spec.rb'
     - 'ee/spec/models/ci/minutes/namespace_monthly_usage_spec.rb'
     - 'ee/spec/models/ci/minutes/notification_spec.rb'

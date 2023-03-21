@@ -151,7 +151,8 @@ RSpec.shared_examples 'edits content using the content editor' do
       end
     end
 
-    it 'toggles the diagram when preview button is clicked' do
+    it 'toggles the diagram when preview button is clicked',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/397682' do
       find('[data-testid="preview-diagram"]').click
 
       expect(find(content_editor_testid)).not_to have_selector('iframe')

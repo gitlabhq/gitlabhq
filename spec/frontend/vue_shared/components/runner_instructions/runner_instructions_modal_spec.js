@@ -202,7 +202,7 @@ describe('RunnerInstructionsModal component', () => {
       expect(findAlert().exists()).toBe(true);
     });
 
-    it('should show alert when instructions cannot be loaded', async () => {
+    it('should show an alert when instructions cannot be loaded', async () => {
       createComponent();
       await waitForPromises();
 

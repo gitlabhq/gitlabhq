@@ -465,6 +465,58 @@ Issue.each_batch(of: 1000) do |relation|
 end
 ```
 
+### Counting records
+
+For tables with a large amount of data, counting records through queries can result
+in timeouts. The `EachBatch` module provides an alternative way to iteratively count
+records. The downside of using `each_batch` is the extra count query which is executed
+on the yielded relation object.
+
+The `each_batch_count` method is a more efficient approach that eliminates the need
+for the extra count query. By invoking this method, the iteration process can be
+paused and resumed as needed. This feature is particularly useful in situations
+where error budget violations are triggered after five minutes, such as when performing
+counting operations within Sidekiq workers.
+
+To illustrate, counting records using `EachBatch` involves invoking an additional
+count query as follows:
+
+```ruby
+count = 0
+
+Issue.each_batch do |relation|
+  count += relation.count
+end
+
+puts count
+```
+
+On the other hand, the `each_batch_count` method enables the counting process to be
+performed more efficiently (counting is part of the iteration query) without invoking
+an extra count query:
+
+```ruby
+count, _last_value = Issue.each_batch_count # last value can be ignored here
+```
+
+Furthermore, the `each_batch_count` method allows the counting process to be paused
+and resumed at any point. This capability is demonstrated in the following code snippet:
+
+```ruby
+stop_at = Time.current + 3.minutes
+
+count, last_value = Issue.each_batch_count do
+  Time.current > stop_at # condition for stopping the counting
+end
+
+# Continue the counting later
+stop_at = Time.current + 3.minutes
+
+count, last_value = Issue.each_batch_count(last_count: count, last_value: last_value) do
+  Time.current > stop_at
+end
+```
+
 ### `EachBatch` vs `BatchCount`
 
 When adding new counters for Service Ping, the preferred way to count records is using the

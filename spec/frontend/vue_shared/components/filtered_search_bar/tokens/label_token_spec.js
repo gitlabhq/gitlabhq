@@ -152,7 +152,7 @@ describe('LabelToken', () => {
           await triggerFetchLabels();
         });
 
-        it('calls `createAlert` with alert error message', () => {
+        it('calls `createAlert`', () => {
           expect(createAlert).toHaveBeenCalledWith({
             message: 'There was a problem fetching labels.',
           });

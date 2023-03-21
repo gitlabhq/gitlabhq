@@ -199,7 +199,7 @@ describe('MarkdownDrawer', () => {
     afterEach(() => {
       getRenderedMarkdown.mockClear();
     });
-    it('shows alert', () => {
+    it('shows an alert', () => {
       expect(findAlert().exists()).toBe(true);
     });
   });

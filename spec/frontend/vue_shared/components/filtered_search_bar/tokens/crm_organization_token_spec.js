@@ -157,7 +157,7 @@ describe('CrmOrganizationToken', () => {
         });
       });
 
-      it('calls `createAlert` with alert error message when request fails', async () => {
+      it('calls `createAlert` when request fails', async () => {
         mountComponent();
 
         jest.spyOn(wrapper.vm.$apollo, 'query').mockRejectedValue({});

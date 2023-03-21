@@ -337,7 +337,7 @@ describe('WorkItemDetail component', () => {
           expect(findLoadingIcon().exists()).toBe(false);
         });
 
-        it('shows alert message when mutation fails', async () => {
+        it('shows an alert when mutation fails', async () => {
           createComponent({
             handler: handlerMock,
             confidentialityMock: confidentialityFailureMock,
