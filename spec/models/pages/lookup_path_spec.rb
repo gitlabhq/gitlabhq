@@ -138,14 +138,14 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
     end
   end
 
-  describe '#unique_domain' do
+  describe '#unique_url' do
     let(:project) { build(:project) }
 
     context 'when unique domain is disabled' do
       it 'returns nil' do
         project.project_setting.pages_unique_domain_enabled = false
 
-        expect(lookup_path.unique_domain).to be_nil
+        expect(lookup_path.unique_url).to be_nil
       end
     end
 
@@ -154,7 +154,7 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
         project.project_setting.pages_unique_domain_enabled = true
         project.project_setting.pages_unique_domain = 'unique-domain'
 
-        expect(lookup_path.unique_domain).to eq('unique-domain')
+        expect(lookup_path.unique_url).to eq('http://unique-domain.example.com')
       end
     end
   end

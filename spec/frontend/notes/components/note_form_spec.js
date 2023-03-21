@@ -2,7 +2,6 @@ import { GlLink } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
-import { getDraft, updateDraft } from '~/lib/utils/autosave';
 import NoteForm from '~/notes/components/note_form.vue';
 import createStore from '~/notes/stores';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
@@ -12,30 +11,25 @@ import { noteableDataMock, notesDataMock, discussionMock, note } from '../mock_d
 jest.mock('~/lib/utils/autosave');
 
 describe('issue_note_form component', () => {
-  const dummyAutosaveKey = 'some-autosave-key';
-  const dummyDraft = 'dummy draft content';
-
   let store;
   let wrapper;
   let props;
+  let features;
 
   const createComponentWrapper = () => {
     return mount(NoteForm, {
       store,
       propsData: props,
+      provide: {
+        glFeatures: features || {},
+      },
     });
   };
 
   const findCancelButton = () => wrapper.find('[data-testid="cancel"]');
 
   beforeEach(() => {
-    getDraft.mockImplementation((key) => {
-      if (key === dummyAutosaveKey) {
-        return dummyDraft;
-      }
-
-      return null;
-    });
+    features = {};
 
     store = createStore();
     store.dispatch('setNoteableData', noteableDataMock);
@@ -66,6 +60,20 @@ describe('issue_note_form component', () => {
 
       expect(wrapper.vm.noteHash).toBe('#');
     });
+  });
+
+  it('hides content editor switcher if feature flag content_editor_on_issues is off', () => {
+    features = { contentEditorOnIssues: false };
+    wrapper = createComponentWrapper();
+
+    expect(wrapper.text()).not.toContain('Rich text');
+  });
+
+  it('shows content editor switcher if feature flag content_editor_on_issues is on', () => {
+    features = { contentEditorOnIssues: true };
+    wrapper = createComponentWrapper();
+
+    expect(wrapper.text()).toContain('Rich text');
   });
 
   describe('conflicts editing', () => {
@@ -117,12 +125,14 @@ describe('issue_note_form component', () => {
       ${true}  | ${'Write an internal note or drag your files here…'}
     `(
       'should set correct textarea placeholder text when discussion confidentiality is $internal',
-      ({ internal, placeholder }) => {
+      async ({ internal, placeholder }) => {
         props.note = {
           ...note,
           internal,
         };
         wrapper = createComponentWrapper();
+
+        await nextTick();
 
         expect(wrapper.find('textarea').attributes('placeholder')).toBe(placeholder);
       },
@@ -204,7 +214,7 @@ describe('issue_note_form component', () => {
         });
         await nextTick();
 
-        const textareaEl = wrapper.vm.$refs.textarea;
+        const textareaEl = wrapper.vm.$refs.markdownEditor.$el.querySelector('textarea');
         const cancelButton = findCancelButton();
         textareaEl.classList.add(AT_WHO_ACTIVE_CLASS);
         cancelButton.vm.$emit('click');
@@ -226,78 +236,6 @@ describe('issue_note_form component', () => {
 
         expect(wrapper.vm.isSubmitting).toBe(true);
       });
-    });
-  });
-
-  describe('with autosaveKey', () => {
-    describe('with draft', () => {
-      beforeEach(() => {
-        Object.assign(props, {
-          noteBody: '',
-          autosaveKey: dummyAutosaveKey,
-        });
-        wrapper = createComponentWrapper();
-
-        return nextTick();
-      });
-
-      it('displays the draft in textarea', () => {
-        const textarea = wrapper.find('textarea');
-
-        expect(textarea.element.value).toBe(dummyDraft);
-      });
-    });
-
-    describe('without draft', () => {
-      beforeEach(() => {
-        Object.assign(props, {
-          noteBody: '',
-          autosaveKey: 'some key without draft',
-        });
-        wrapper = createComponentWrapper();
-
-        return nextTick();
-      });
-
-      it('leaves the textarea empty', () => {
-        const textarea = wrapper.find('textarea');
-
-        expect(textarea.element.value).toBe('');
-      });
-    });
-
-    it('updates the draft if textarea content changes', () => {
-      Object.assign(props, {
-        noteBody: '',
-        autosaveKey: dummyAutosaveKey,
-      });
-      wrapper = createComponentWrapper();
-      const textarea = wrapper.find('textarea');
-      const dummyContent = 'some new content';
-
-      textarea.setValue(dummyContent);
-
-      expect(updateDraft).toHaveBeenCalledWith(dummyAutosaveKey, dummyContent);
-    });
-
-    it('does not save draft when ctrl+enter is pressed', () => {
-      const options = {
-        noteBody: '',
-        autosaveKey: dummyAutosaveKey,
-      };
-
-      props = { ...props, ...options };
-      wrapper = createComponentWrapper();
-
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ isSubmittingWithKeydown: true });
-
-      const textarea = wrapper.find('textarea');
-      textarea.setValue('some content');
-      textarea.trigger('keydown.enter', { metaKey: true });
-
-      expect(updateDraft).not.toHaveBeenCalled();
     });
   });
 

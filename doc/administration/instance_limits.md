@@ -126,7 +126,7 @@ Read more about [import/export rate limits](../user/admin_area/settings/import_e
 
 Limit the maximum daily member invitations allowed per group hierarchy.
 
-- GitLab.com: Free members may invite 20 members per day.
+- GitLab.com: Free members may invite 20 members per day, Premium trial and Ultimate trial members may invite 50 members per day.
 - Self-managed: Invites are not limited.
 
 ### Webhook rate limit

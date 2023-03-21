@@ -50,16 +50,12 @@ module ReviewApps
       end
     end
 
-    def review_apps_namespace
-      'review-apps'
-    end
-
     def helm
       @helm ||= Tooling::Helm3Client.new
     end
 
     def kubernetes
-      @kubernetes ||= Tooling::KubernetesClient.new(namespace: review_apps_namespace)
+      @kubernetes ||= Tooling::KubernetesClient.new
     end
 
     def perform_gitlab_environment_cleanup!(days_for_delete:)
@@ -164,14 +160,14 @@ module ReviewApps
 
     def perform_stale_namespace_cleanup!(days:)
       puts "Dry-run mode." if dry_run
-      kubernetes_client = Tooling::KubernetesClient.new(namespace: nil)
 
-      kubernetes_client.cleanup_review_app_namespaces(created_before: threshold_time(days: days), wait: false) unless dry_run
+      kubernetes.cleanup_namespaces_by_created_at(created_before: threshold_time(days: days)) unless dry_run
     end
 
     def perform_stale_pvc_cleanup!(days:)
       puts "Dry-run mode." if dry_run
-      kubernetes.cleanup_by_created_at(resource_type: 'pvc', created_before: threshold_time(days: days), wait: false) unless dry_run
+
+      kubernetes.cleanup_pvcs_by_created_at(created_before: threshold_time(days: days)) unless dry_run
     end
 
     private
@@ -245,8 +241,7 @@ module ReviewApps
       releases_names = releases.map(&:name)
       unless dry_run
         helm.delete(release_name: releases_names)
-        kubernetes.cleanup_by_release(release_name: releases_names, wait: false)
-        kubernetes.delete_namespaces_by_exact_names(resource_names: releases_names, wait: false)
+        kubernetes.delete_namespaces(releases_names)
       end
 
     rescue Tooling::Helm3Client::CommandFailedError => ex
@@ -289,8 +284,8 @@ if $PROGRAM_NAME == __FILE__
   }
 
   OptionParser.new do |opts|
-    opts.on("-d", "--dry-run", "Whether to perform a dry-run or not.") do |value|
-      options[:dry_run] = true
+    opts.on("-d", "--dry-run BOOLEAN", String, "Whether to perform a dry-run or not.") do |value|
+      options[:dry_run] = true if value == 'true'
     end
 
     opts.on("-h", "--help", "Prints this help") do

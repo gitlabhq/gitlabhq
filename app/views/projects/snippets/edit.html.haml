@@ -1,7 +1,6 @@
 - add_to_breadcrumbs _("Snippets"), project_snippets_path(@project)
 - breadcrumb_title @snippet.to_reference
 - page_title _("Edit"), "#{@snippet.title} (#{@snippet.to_reference})", _("Snippets")
-- @content_class = "limit-container-width" unless fluid_layout
 
 %h1.page-title.gl-font-size-h-display
   = _("Edit Snippet")

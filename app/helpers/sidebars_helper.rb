@@ -50,15 +50,7 @@ module SidebarsHelper
       has_link_to_profile: current_user_menu?(:profile),
       link_to_profile: user_url(user),
       logo_url: current_appearance&.header_logo_path,
-      status: {
-        can_update: can?(current_user, :update_user_status, current_user),
-        busy: user.status&.busy?,
-        customized: user.status&.customized?,
-        availability: user.status&.availability.to_s,
-        emoji: user.status&.emoji,
-        message: user.status&.message_html&.html_safe,
-        clear_after: user_clear_status_at(user)
-      },
+      status: user_status_menu_data(user),
       trial: {
         has_start_trial: current_user_menu?(:start_trial),
         url: trials_link_url
@@ -88,7 +80,8 @@ module SidebarsHelper
       gitlab_com_but_not_canary: Gitlab.com_but_not_canary?,
       gitlab_com_and_canary: Gitlab.com_and_canary?,
       canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url,
-      current_context: super_sidebar_current_context(project: project, group: group)
+      current_context: super_sidebar_current_context(project: project, group: group),
+      context_switcher_links: context_switcher_links
     }
   end
 
@@ -118,6 +111,18 @@ module SidebarsHelper
   end
 
   private
+
+  def user_status_menu_data(user)
+    {
+      can_update: can?(user, :update_user_status, user),
+      busy: user.status&.busy?,
+      customized: user.status&.customized?,
+      availability: user.status&.availability.to_s,
+      emoji: user.status&.emoji,
+      message: user.status&.message_html&.html_safe,
+      clear_after: user_clear_status_at(user)
+    }
+  end
 
   def create_new_menu_groups(group:, project:)
     new_dropdown_sections = new_dropdown_view_model(group: group, project: project)[:menu_sections]
@@ -259,6 +264,22 @@ module SidebarsHelper
     end
 
     {}
+  end
+
+  def context_switcher_links
+    links = [
+      # We should probably not return "You work" when used is not logged-in
+      { title: s_('Navigation|Your work'), link: root_path, icon: 'work' },
+      { title: s_('Navigation|Explore'), link: explore_root_path, icon: 'compass' }
+    ]
+
+    if current_user&.can_admin_all_resources?
+      links.append(
+        { title: s_('Navigation|Admin'), link: admin_root_path, icon: 'admin' }
+      )
+    end
+
+    links
   end
 end
 

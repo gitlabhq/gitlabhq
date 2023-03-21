@@ -30,10 +30,8 @@ RSpec.describe ReviewApps::AutomatedCleanup, feature_category: :tooling do
     allow(Tooling::Helm3Client).to receive(:new).and_return(helm_client)
     allow(Tooling::KubernetesClient).to receive(:new).and_return(kubernetes_client)
 
-    allow(kubernetes_client).to receive(:cleanup_by_created_at)
-    allow(kubernetes_client).to receive(:cleanup_by_release)
-    allow(kubernetes_client).to receive(:cleanup_review_app_namespaces)
-    allow(kubernetes_client).to receive(:delete_namespaces_by_exact_names)
+    allow(kubernetes_client).to receive(:cleanup_pvcs_by_created_at)
+    allow(kubernetes_client).to receive(:cleanup_namespaces_by_created_at)
   end
 
   shared_examples 'the days argument is an integer in the correct range' do
@@ -86,11 +84,7 @@ RSpec.describe ReviewApps::AutomatedCleanup, feature_category: :tooling do
     it_behaves_like 'the days argument is an integer in the correct range'
 
     it 'performs Kubernetes cleanup by created at' do
-      expect(kubernetes_client).to receive(:cleanup_by_created_at).with(
-        resource_type: 'pvc',
-        created_before: two_days_ago,
-        wait: false
-      )
+      expect(kubernetes_client).to receive(:cleanup_pvcs_by_created_at).with(created_before: two_days_ago)
 
       subject
     end
@@ -99,7 +93,7 @@ RSpec.describe ReviewApps::AutomatedCleanup, feature_category: :tooling do
       let(:dry_run) { true }
 
       it 'does not delete anything' do
-        expect(kubernetes_client).not_to receive(:cleanup_by_created_at)
+        expect(kubernetes_client).not_to receive(:cleanup_pvcs_by_created_at)
       end
     end
   end
@@ -112,10 +106,7 @@ RSpec.describe ReviewApps::AutomatedCleanup, feature_category: :tooling do
     it_behaves_like 'the days argument is an integer in the correct range'
 
     it 'performs Kubernetes cleanup for review apps namespaces' do
-      expect(kubernetes_client).to receive(:cleanup_review_app_namespaces).with(
-        created_before: two_days_ago,
-        wait: false
-      )
+      expect(kubernetes_client).to receive(:cleanup_namespaces_by_created_at).with(created_before: two_days_ago)
 
       subject
     end
@@ -124,7 +115,7 @@ RSpec.describe ReviewApps::AutomatedCleanup, feature_category: :tooling do
       let(:dry_run) { true }
 
       it 'does not delete anything' do
-        expect(kubernetes_client).not_to receive(:cleanup_review_app_namespaces)
+        expect(kubernetes_client).not_to receive(:cleanup_namespaces_by_created_at)
       end
     end
   end
@@ -147,8 +138,7 @@ RSpec.describe ReviewApps::AutomatedCleanup, feature_category: :tooling do
 
       before do
         allow(helm_client).to receive(:delete)
-        allow(kubernetes_client).to receive(:cleanup_by_release)
-        allow(kubernetes_client).to receive(:delete_namespaces_by_exact_names)
+        allow(kubernetes_client).to receive(:delete_namespaces)
       end
 
       it 'deletes the helm release' do
@@ -157,16 +147,8 @@ RSpec.describe ReviewApps::AutomatedCleanup, feature_category: :tooling do
         subject
       end
 
-      it 'empties the k8s resources in the k8s namespace for the release' do
-        expect(kubernetes_client).to receive(:cleanup_by_release).with(release_name: releases_names, wait: false)
-
-        subject
-      end
-
       it 'deletes the associated k8s namespace' do
-        expect(kubernetes_client).to receive(:delete_namespaces_by_exact_names).with(
-          resource_names: releases_names, wait: false
-        )
+        expect(kubernetes_client).to receive(:delete_namespaces).with(releases_names)
 
         subject
       end
@@ -179,14 +161,8 @@ RSpec.describe ReviewApps::AutomatedCleanup, feature_category: :tooling do
         subject
       end
 
-      it 'does not empty the k8s resources in the k8s namespace for the release' do
-        expect(kubernetes_client).not_to receive(:cleanup_by_release)
-
-        subject
-      end
-
       it 'does not delete the associated k8s namespace' do
-        expect(kubernetes_client).not_to receive(:delete_namespaces_by_exact_names)
+        expect(kubernetes_client).not_to receive(:delete_namespaces)
 
         subject
       end

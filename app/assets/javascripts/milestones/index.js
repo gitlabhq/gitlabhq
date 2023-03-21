@@ -64,8 +64,6 @@ export function initDeleteMilestoneModal() {
     if (!successful) {
       button.removeAttribute('disabled');
     }
-
-    button.querySelector('.js-loading-icon').classList.add('hidden');
   };
 
   const deleteMilestoneButtons = document.querySelectorAll('.js-delete-milestone-button');
@@ -75,7 +73,6 @@ export function initDeleteMilestoneModal() {
       `.js-delete-milestone-button[data-milestone-url="${milestoneUrl}"]`,
     );
     button.setAttribute('disabled', '');
-    button.querySelector('.js-loading-icon').classList.remove('hidden');
     eventHub.$once('deleteMilestoneModal.requestFinished', onRequestFinished);
   };
 

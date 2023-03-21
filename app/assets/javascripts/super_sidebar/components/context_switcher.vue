@@ -4,7 +4,6 @@ import { GlSearchBoxByType } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import searchUserProjectsAndGroups from '../graphql/queries/search_user_groups_and_projects.query.graphql';
-import { contextSwitcherItems } from '../mock_data';
 import { trackContextAccess, formatContextSwitcherItems } from '../utils';
 import NavItem from './nav_item.vue';
 import ProjectsList from './projects_list.vue';
@@ -59,6 +58,10 @@ export default {
     GroupsList,
   },
   props: {
+    persistentLinks: {
+      type: Array,
+      required: true,
+    },
     username: {
       type: String,
       required: true,
@@ -89,7 +92,6 @@ export default {
       return Boolean(this.searchString);
     },
   },
-  contextSwitcherItems,
   created() {
     if (this.currentContext.namespace) {
       trackContextAccess(this.username, this.currentContext);
@@ -115,8 +117,7 @@ export default {
             {{ $options.i18n.switchTo }}
           </div>
           <ul :aria-label="$options.i18n.switchTo" class="gl-p-0">
-            <nav-item :item="$options.contextSwitcherItems.yourWork" />
-            <nav-item :item="$options.contextSwitcherItems.explore" />
+            <nav-item v-for="item in persistentLinks" :key="item.link" :item="item" />
           </ul>
         </li>
         <projects-list

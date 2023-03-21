@@ -246,6 +246,38 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         end
       end
     end
+
+    describe 'context switcher persistent links' do
+      let_it_be(:public_link) do
+        [
+          { title: s_('Navigation|Your work'), link: '/', icon: 'work' },
+          { title: s_('Navigation|Explore'), link: '/explore', icon: 'compass' }
+        ]
+      end
+
+      subject do
+        helper.super_sidebar_context(user, group: nil, project: nil, panel: panel)
+      end
+
+      context 'when user is not an admin' do
+        it 'returns only the public links' do
+          expect(subject[:context_switcher_links]).to eq(public_link)
+        end
+      end
+
+      context 'when user is an admin' do
+        before do
+          allow(user).to receive(:can_admin_all_resources?).and_return(true)
+        end
+
+        it 'returns public links and admin area link' do
+          expect(subject[:context_switcher_links]).to eq([
+            *public_link,
+            { title: s_('Navigation|Admin'), link: '/admin', icon: 'admin' }
+          ])
+        end
+      end
+    end
   end
 
   describe '#super_sidebar_nav_panel' do

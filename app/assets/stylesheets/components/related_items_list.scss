@@ -61,10 +61,6 @@ $item-remove-button-space: 42px;
     color: $orange-500;
   }
 
-  .item-title-wrapper {
-    max-width: calc(100% - #{$item-remove-button-space});
-  }
-
   .item-title {
     flex-basis: 100%;
     font-size: $gl-font-size-small;

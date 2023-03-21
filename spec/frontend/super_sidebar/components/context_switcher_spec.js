@@ -5,6 +5,7 @@ import * as Sentry from '@sentry/browser';
 import { s__ } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ContextSwitcher from '~/super_sidebar/components/context_switcher.vue';
+import NavItem from '~/super_sidebar/components/nav_item.vue';
 import ProjectsList from '~/super_sidebar/components/projects_list.vue';
 import GroupsList from '~/super_sidebar/components/groups_list.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -23,6 +24,7 @@ jest.mock('~/super_sidebar/utils', () => ({
   trackContextAccess: jest.fn(),
 }));
 
+const persistentLinks = [{ title: 'Explore', link: '/explore', icon: 'compass' }];
 const username = 'root';
 const projectsPath = 'projectsPath';
 const groupsPath = 'groupsPath';
@@ -33,6 +35,7 @@ describe('ContextSwitcher component', () => {
   let wrapper;
   let mockApollo;
 
+  const findNavItems = () => wrapper.findAllComponents(NavItem);
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findProjectsList = () => wrapper.findComponent(ProjectsList);
   const findGroupsList = () => wrapper.findComponent(GroupsList);
@@ -60,6 +63,7 @@ describe('ContextSwitcher component', () => {
     wrapper = shallowMountExtended(ContextSwitcher, {
       apolloProvider: mockApollo,
       propsData: {
+        persistentLinks,
         username,
         projectsPath,
         groupsPath,
@@ -82,6 +86,12 @@ describe('ContextSwitcher component', () => {
   describe('default', () => {
     beforeEach(() => {
       createWrapper();
+    });
+
+    it('renders the persistent links', () => {
+      const navItems = findNavItems();
+      expect(navItems.length).toBe(persistentLinks.length);
+      expect(navItems.at(0).props('item')).toBe(persistentLinks[0]);
     });
 
     it('passes the placeholder to the search box', () => {
@@ -136,6 +146,10 @@ describe('ContextSwitcher component', () => {
     beforeEach(() => {
       createWrapper();
       return triggerSearchQuery();
+    });
+
+    it('hides persistent links', () => {
+      expect(findNavItems().length).toBe(0);
     });
 
     it('triggers the search query on search', () => {

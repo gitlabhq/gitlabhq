@@ -63,6 +63,7 @@ Replace `<project>` with the project full path, or create a shorter [project ali
 | `/gitlab <project> issue comment <id> <shift+return> <comment>` | Adds a new comment with the comment body `<comment>` to the issue with the ID `<id>`. |
 | `/gitlab <project> deploy <from> to <to>` | [Deploys](#the-deploy-slash-command) from the `<from>` environment to the `<to>` environment. |
 | `/gitlab <project> run <job name> <arguments>` | Executes the [ChatOps](../../../ci/chatops/index.md) job `<job name>` on the default branch. |
+| `/gitlab incident declare` | **Beta** Opens modal to [create a new incident](../../../operations/incident_management/slack.md). |
 
 ### The deploy slash command
 

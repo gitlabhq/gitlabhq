@@ -19,7 +19,6 @@ describe('ManageTwoFactorForm', () => {
     wrapper = mountExtended(ManageTwoFactorForm, {
       provide: {
         ...defaultProvide,
-        webauthnEnabled: options?.webauthnEnabled ?? false,
         isCurrentPasswordRequired: options?.currentPasswordRequired ?? true,
       },
       stubs: {
@@ -91,17 +90,7 @@ describe('ManageTwoFactorForm', () => {
     describe('when clicked', () => {
       itShowsValidationMessageIfCurrentPasswordFieldIsEmpty(findDisableButton);
 
-      itShowsConfirmationModal(i18n.confirm);
-
-      describe('when webauthnEnabled', () => {
-        beforeEach(() => {
-          createComponent({
-            webauthnEnabled: true,
-          });
-        });
-
-        itShowsConfirmationModal(i18n.confirmWebAuthn);
-      });
+      itShowsConfirmationModal(i18n.confirmWebAuthn);
 
       it('modifies the form action and method when submitted through the button', async () => {
         const form = findForm();

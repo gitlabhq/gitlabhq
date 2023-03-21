@@ -2,7 +2,6 @@
 - page_title _('Two-Factor Authentication'), _('Account')
 - add_to_breadcrumbs _('Account'), profile_account_path
 - @content_class = "limit-container-width" unless fluid_layout
-- webauthn_enabled = Feature.enabled?(:webauthn)
 
 .js-two-factor-auth{ 'data-two-factor-skippable' => "#{two_factor_skippable?}", 'data-two_factor_skip_url' => skip_profile_two_factor_auth_path }
   .row.gl-mt-3
@@ -68,7 +67,7 @@
       %p
         = _('Set up a hardware device to enable two-factor authentication (2FA).')
       %p
-        - if webauthn_enabled && Feature.enabled?(:webauthn_without_totp)
+        - if Feature.enabled?(:webauthn_without_totp)
           = _("Not all browsers support WebAuthn. You must save your recovery codes after you first register a two-factor authenticator to be able to sign in, even from an unsupported browser.")
         - else
           = _("Not all browsers support WebAuthn. Therefore, we require that you set up a two-factor authentication app first. That way you'll always be able to sign in, even from an unsupported browser.")
@@ -134,7 +133,7 @@
             dismissible: false) do |c|
             = c.body do
               = link_to _('Try the troubleshooting steps here.'), help_page_path('user/profile/account/two_factor_authentication.md', anchor: 'troubleshooting'), target: '_blank', rel: 'noopener noreferrer'
-        .js-manage-two-factor-form{ data: { webauthn_enabled: webauthn_enabled, current_password_required: current_password_required?.to_s, profile_two_factor_auth_path: profile_two_factor_auth_path, profile_two_factor_auth_method: 'delete', codes_profile_two_factor_auth_path: codes_profile_two_factor_auth_path, codes_profile_two_factor_auth_method: 'post' } }
+        .js-manage-two-factor-form{ data: { current_password_required: current_password_required?.to_s, profile_two_factor_auth_path: profile_two_factor_auth_path, profile_two_factor_auth_method: 'delete', codes_profile_two_factor_auth_path: codes_profile_two_factor_auth_path, codes_profile_two_factor_auth_method: 'post' } }
       - else
         %p
           = _("Register a one-time password authenticator or a WebAuthn device first.")

@@ -306,6 +306,46 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     end
   end
 
+  describe 'projects_autocomplete' do
+    let_it_be(:user) { create(:user, name: "madelein") }
+    let_it_be(:project_1) { create(:project, name: 'test 1') }
+    let_it_be(:project_2) { create(:project, name: 'test 2') }
+    let(:search_term) { 'test' }
+
+    before do
+      allow(self).to receive(:current_user).and_return(user)
+    end
+
+    context 'when the user does not have access to projects' do
+      it 'does not return any results' do
+        expect(projects_autocomplete(search_term)).to eq([])
+      end
+    end
+
+    context 'when the user has access to one project' do
+      before do
+        project_2.add_developer(user)
+      end
+
+      it 'returns the project' do
+        expect(projects_autocomplete(search_term).pluck(:id)).to eq([project_2.id])
+      end
+
+      context 'when a project namespace matches the search term but the project does not' do
+        let_it_be(:group) { create(:group, name: 'test group') }
+        let_it_be(:project_3) { create(:project, name: 'nothing', namespace: group) }
+
+        before do
+          group.add_owner(user)
+        end
+
+        it 'returns all projects matching the term' do
+          expect(projects_autocomplete(search_term).pluck(:id)).to match_array([project_2.id, project_3.id])
+        end
+      end
+    end
+  end
+
   describe 'search_entries_info' do
     using RSpec::Parameterized::TableSyntax
 

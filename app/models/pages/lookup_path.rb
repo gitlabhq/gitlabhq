@@ -54,12 +54,12 @@ module Pages
     end
     strong_memoize_attr :prefix
 
-    def unique_domain
+    def unique_url
       return unless project.project_setting.pages_unique_domain_enabled?
 
-      project.project_setting.pages_unique_domain
+      project.pages_unique_url
     end
-    strong_memoize_attr :unique_domain
+    strong_memoize_attr :unique_url
 
     private
 

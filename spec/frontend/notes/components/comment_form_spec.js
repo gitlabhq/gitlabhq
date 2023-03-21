@@ -5,6 +5,7 @@ import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { createAlert } from '~/alert';
@@ -27,6 +28,8 @@ jest.mock('~/alert');
 Vue.use(Vuex);
 
 describe('issue_comment_form component', () => {
+  useLocalStorageSpy();
+
   let store;
   let wrapper;
   let axiosMock;

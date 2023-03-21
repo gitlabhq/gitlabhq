@@ -341,7 +341,7 @@ module SearchHelper
   # Autocomplete results for the current user's projects
   # rubocop: disable CodeReuse/ActiveRecord
   def projects_autocomplete(term, limit = 5)
-    current_user.authorized_projects.order_id_desc.search_by_title(term)
+    current_user.authorized_projects.order_id_desc.search(term, include_namespace: true)
       .sorted_by_stars_desc.non_archived.limit(limit).map do |p|
       {
         category: "Projects",

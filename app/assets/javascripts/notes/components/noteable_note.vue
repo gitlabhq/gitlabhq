@@ -294,7 +294,6 @@ export default {
       this.isRequesting = false;
       this.oldContent = null;
       renderGFM(this.$refs.noteBody.$el);
-      this.$refs.noteBody.resetAutoSave();
       this.$emit('updateSuccess');
     },
     formUpdateHandler({ noteText, callback, resolveDiscussion }) {
@@ -383,7 +382,6 @@ export default {
         });
         if (!confirmed) return;
       }
-      this.$refs.noteBody.resetAutoSave();
       if (this.oldContent) {
         // eslint-disable-next-line vue/no-mutating-props
         this.note.note_html = this.oldContent;

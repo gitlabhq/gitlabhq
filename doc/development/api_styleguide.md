@@ -338,11 +338,12 @@ Also see [verifying N+1 performance](#verifying-with-tests) in tests.
 When throwing an error with a message that is meant to be user-facing, you should
 use the error message utility function contained in `lib/gitlab/utils/error_message.rb`.
 It adds a prefix to the error message, making it distinguishable from non-user-facing error messages.
-Please make sure that the Frontend is aware of the prefix usage and is using the according utils.
 
 ```ruby
 Gitlab::Utils::ErrorMessage.to_user_facing('Example user-facing error-message')
 ```
+
+Please make sure that the Frontend is aware of the prefix usage and is using the according utils. See [Error handling](fe_guide/style/javascript.md#error-handling) in JavaScript style guide for more information.
 
 ## Include a changelog entry
 

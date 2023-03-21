@@ -1,7 +1,9 @@
+import { GlCollapse } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { s__ } from '~/locale';
 import SearchResults from '~/super_sidebar/components/search_results.vue';
 import ItemsList from '~/super_sidebar/components/items_list.vue';
+import { stubComponent } from 'helpers/stub_component';
 
 const title = s__('Navigation|PROJECTS');
 const noResultsText = s__('Navigation|No project matches found');
@@ -9,7 +11,8 @@ const noResultsText = s__('Navigation|No project matches found');
 describe('SearchResults component', () => {
   let wrapper;
 
-  const findListTitle = () => wrapper.findByTestId('list-title');
+  const findSearchResultsToggle = () => wrapper.findByTestId('search-results-toggle');
+  const findCollapsibleSection = () => wrapper.findComponent(GlCollapse);
   const findItemsList = () => wrapper.findComponent(ItemsList);
   const findEmptyText = () => wrapper.findByTestId('empty-text');
 
@@ -20,6 +23,11 @@ describe('SearchResults component', () => {
         noResultsText,
         ...props,
       },
+      stubs: {
+        GlCollapse: stubComponent(GlCollapse, {
+          props: ['visible'],
+        }),
+      },
     });
   };
 
@@ -29,7 +37,11 @@ describe('SearchResults component', () => {
     });
 
     it("renders the list's title", () => {
-      expect(findListTitle().text()).toBe(title);
+      expect(findSearchResultsToggle().text()).toBe(title);
+    });
+
+    it('is expanded', () => {
+      expect(findCollapsibleSection().props('visible')).toBe(true);
     });
 
     it('renders the empty text', () => {

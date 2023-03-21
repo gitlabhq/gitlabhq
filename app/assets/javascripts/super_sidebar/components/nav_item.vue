@@ -110,9 +110,9 @@ export default {
           <gl-icon v-if="item.icon" :name="item.icon" class="gl-ml-2" />
         </slot>
       </div>
-      <div class="gl-pr-3 gl-text-gray-900">
+      <div class="gl-pr-3 gl-text-gray-900 gl-truncate-end">
         {{ item.title }}
-        <div v-if="item.subtitle" class="gl-font-sm gl-text-gray-500">
+        <div v-if="item.subtitle" class="gl-font-sm gl-text-gray-500 gl-truncate-end">
           {{ item.subtitle }}
         </div>
       </div>

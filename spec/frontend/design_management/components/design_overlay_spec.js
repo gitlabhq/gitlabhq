@@ -1,6 +1,6 @@
-import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import DesignOverlay from '~/design_management/components/design_overlay.vue';
@@ -16,22 +16,20 @@ describe('Design overlay component', () => {
 
   const mockDimensions = { width: 100, height: 100 };
 
-  const findOverlay = () => wrapper.find('[data-testid="design-overlay"]');
-  const findAllNotes = () => wrapper.findAll('[data-testid="note-pin"]');
-  const findCommentBadge = () => wrapper.find('[data-testid="comment-badge"]');
+  const findOverlay = () => wrapper.findByTestId('design-overlay');
+  const findAllNotes = () => wrapper.findAllByTestId('note-pin');
+  const findCommentBadge = () => wrapper.findByTestId('comment-badge');
   const findBadgeAtIndex = (noteIndex) => findAllNotes().at(noteIndex);
   const findFirstBadge = () => findBadgeAtIndex(0);
   const findSecondBadge = () => findBadgeAtIndex(1);
 
-  const clickAndDragBadge = async (elem, fromPoint, toPoint) => {
+  const clickAndDragBadge = (elem, fromPoint, toPoint) => {
     elem.vm.$emit(
       'mousedown',
       new MouseEvent('click', { clientX: fromPoint.x, clientY: fromPoint.y }),
     );
     findOverlay().trigger('mousemove', { clientX: toPoint.x, clientY: toPoint.y });
-    await nextTick();
     elem.vm.$emit('mouseup', new MouseEvent('click', { clientX: toPoint.x, clientY: toPoint.y }));
-    await nextTick();
   };
 
   function createComponent(props = {}, data = {}) {
@@ -47,7 +45,7 @@ describe('Design overlay component', () => {
       },
     });
 
-    wrapper = shallowMount(DesignOverlay, {
+    wrapper = shallowMountExtended(DesignOverlay, {
       apolloProvider,
       propsData: {
         dimensions: mockDimensions,
@@ -80,7 +78,7 @@ describe('Design overlay component', () => {
     expect(wrapper.attributes().style).toBe('width: 100px; height: 100px; top: 0px; left: 0px;');
   });
 
-  it('should emit `openCommentForm` when clicking on overlay', async () => {
+  it('should emit `openCommentForm` when clicking on overlay', () => {
     createComponent();
     const newCoordinates = {
       x: 10,
@@ -90,7 +88,7 @@ describe('Design overlay component', () => {
     wrapper
       .find('[data-qa-selector="design_image_button"]')
       .trigger('mouseup', { offsetX: newCoordinates.x, offsetY: newCoordinates.y });
-    await nextTick();
+
     expect(wrapper.emitted('openCommentForm')).toEqual([
       [{ x: newCoordinates.x, y: newCoordinates.y }],
     ]);
@@ -175,25 +173,15 @@ describe('Design overlay component', () => {
       });
     });
 
-    it('should recalculate badges positions on window resize', async () => {
+    it('should calculate badges positions based on dimensions', () => {
       createComponent({
         notes,
-        dimensions: {
-          width: 400,
-          height: 400,
-        },
-      });
-
-      expect(findFirstBadge().props('position')).toEqual({ left: '40px', top: '60px' });
-
-      wrapper.setProps({
         dimensions: {
           width: 200,
           height: 200,
         },
       });
 
-      await nextTick();
       expect(findFirstBadge().props('position')).toEqual({ left: '20px', top: '30px' });
     });
 
@@ -216,7 +204,6 @@ describe('Design overlay component', () => {
         new MouseEvent('click', { clientX: position.x, clientY: position.y }),
       );
 
-      await nextTick();
       findFirstBadge().vm.$emit(
         'mouseup',
         new MouseEvent('click', { clientX: position.x, clientY: position.y }),
@@ -290,7 +277,7 @@ describe('Design overlay component', () => {
     });
 
     describe('when moving the comment badge', () => {
-      it('should update badge style when note-moving action ends', async () => {
+      it('should update badge style when note-moving action ends', () => {
         const { position } = notes[0];
         createComponent({
           currentCommentForm: {
@@ -298,19 +285,15 @@ describe('Design overlay component', () => {
           },
         });
 
-        const commentBadge = findCommentBadge();
+        expect(findCommentBadge().props('position')).toEqual({ left: '10px', top: '15px' });
+
         const toPoint = { x: 20, y: 20 };
 
-        await clickAndDragBadge(commentBadge, { x: position.x, y: position.y }, toPoint);
-        commentBadge.vm.$emit('mouseup', new MouseEvent('click'));
-        // simulates the currentCommentForm being updated in index.vue component, and
-        // propagated back down to this prop
-        wrapper.setProps({
+        createComponent({
           currentCommentForm: { height: position.height, width: position.width, ...toPoint },
         });
 
-        await nextTick();
-        expect(commentBadge.props('position')).toEqual({ left: '20px', top: '20px' });
+        expect(findCommentBadge().props('position')).toEqual({ left: '20px', top: '20px' });
       });
 
       it('should emit `openCommentForm` event when mouseleave fired on overlay element', async () => {
@@ -330,8 +313,7 @@ describe('Design overlay component', () => {
           newCoordinates,
         );
 
-        wrapper.trigger('mouseleave');
-        await nextTick();
+        findOverlay().vm.$emit('mouseleave');
         expect(wrapper.emitted('openCommentForm')).toEqual([[newCoordinates]]);
       });
 

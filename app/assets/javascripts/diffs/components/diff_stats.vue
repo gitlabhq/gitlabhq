@@ -76,7 +76,7 @@ export default {
         class="diff-stats-group gl-text-red-500 gl-display-flex gl-align-items-center"
         :class="{ bold: isCompareVersionsHeader }"
       >
-        <span>-</span>
+        <span>−</span>
         <span data-testid="js-file-deletion-line">{{ removedLines }}</span>
       </div>
     </div>

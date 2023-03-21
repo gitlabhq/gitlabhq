@@ -24,7 +24,7 @@
       "additionalProperties": false
     },
     "prefix": { "type": "string" },
-    "unique_domain": { "type": ["string", "null"] }
+    "unique_url": { "type": ["string", "null"] }
   },
   "additionalProperties": false
 }

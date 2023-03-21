@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../lib/tooling/mappings/partial_to_views_mappings'
+
+changes_file = ARGV.shift
+output_file  = ARGV.shift
+
+Tooling::Mappings::PartialToViewsMappings.new(changes_file, output_file).execute

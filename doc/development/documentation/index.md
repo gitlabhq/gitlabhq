@@ -114,21 +114,6 @@ The following metadata should be added when a page is moved to another location:
 - `redirect_to`: The relative path and filename (with an `.md` extension) of the
   location to which visitors should be redirected for a moved page.
   [Learn more](redirects.md).
-- `disqus_identifier`: Identifier for Disqus commenting system. Used to keep
-  comments with a page that has been moved to a new URL.
-  [Learn more](redirects.md#redirections-for-pages-with-disqus-comments).
-
-### Comments metadata
-
-The [docs website](site_architecture/index.md) has comments (provided by Disqus)
-enabled by default. In case you want to disable them (for example in index pages),
-set it to `false`:
-
-```yaml
----
-comments: false
----
-```
 
 ### Additional page metadata
 
@@ -352,28 +337,6 @@ feedback: false
 
 The default is to leave it there. If you want to omit it from a document, you
 must check with a technical writer before doing so.
-
-## Disqus
-
-We have integrated the docs site with Disqus (introduced by
-[!151](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/151)),
-allowing our users to post comments.
-
-To omit only the comments from the feedback section, use the following key in
-the front matter:
-
-```yaml
----
-comments: false
----
-```
-
-We're hiding comments only in main index pages, such as [the main documentation index](../../index.md),
-since its content is too broad to comment on. Before omitting Disqus, you must
-check with a technical writer.
-
-Note that after adding `feedback: false` to the front matter, it will omit
-Disqus, therefore, don't add both keys to the same document.
 
 The click events in the feedback section are tracked with Google Tag Manager.
 The conversions can be viewed on Google Analytics by navigating to

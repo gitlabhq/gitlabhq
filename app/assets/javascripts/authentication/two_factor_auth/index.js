@@ -13,7 +13,6 @@ export const initManageTwoFactorForm = () => {
   }
 
   const {
-    webauthnEnabled = false,
     currentPasswordRequired,
     profileTwoFactorAuthPath = '',
     profileTwoFactorAuthMethod = '',
@@ -26,7 +25,6 @@ export const initManageTwoFactorForm = () => {
   return new Vue({
     el,
     provide: {
-      webauthnEnabled,
       isCurrentPasswordRequired,
       profileTwoFactorAuthPath,
       profileTwoFactorAuthMethod,

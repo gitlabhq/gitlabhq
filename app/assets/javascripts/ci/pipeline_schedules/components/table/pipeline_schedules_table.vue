@@ -68,7 +68,12 @@ export default {
 </script>
 
 <template>
-  <gl-table-lite :fields="$options.fields" :items="schedules" stacked="md">
+  <gl-table-lite
+    :fields="$options.fields"
+    :items="schedules"
+    :tbody-tr-attr="{ 'data-testid': 'pipeline-schedule-table-row' }"
+    stacked="md"
+  >
     <template #table-colgroup="{ fields }">
       <col v-for="field in fields" :key="field.key" :class="field.columnClass" />
     </template>

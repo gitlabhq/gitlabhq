@@ -1,7 +1,6 @@
 <script>
 import { GlTab, GlTabs, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
-import { parseErrorMessage } from '~/lib/utils/error_message';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import SectionLayout from '~/vue_shared/security_configuration/components/section_layout.vue';
@@ -34,9 +33,6 @@ export const i18n = {
     'SecurityConfiguration|Enable security training to help your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability.',
   ),
   securityTrainingDoc: s__('SecurityConfiguration|Learn more about vulnerability training'),
-  genericErrorText: s__(
-    `SecurityConfiguration|Something went wrong. Please refresh the page, or try again later.`,
-  ),
 };
 
 export default {
@@ -128,9 +124,8 @@ export default {
       dismissedProjects.add(this.projectFullPath);
       this.autoDevopsEnabledAlertDismissedProjects = Array.from(dismissedProjects);
     },
-    onError(error) {
-      const { message, userFacing } = parseErrorMessage(error);
-      this.errorMessage = userFacing ? message : i18n.genericErrorText;
+    onError(message) {
+      this.errorMessage = message;
     },
     dismissAlert() {
       this.errorMessage = '';

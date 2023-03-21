@@ -1,286 +1,373 @@
 # frozen_string_literal: true
 
+require 'time'
 require_relative '../../../../tooling/lib/tooling/kubernetes_client'
 
 RSpec.describe Tooling::KubernetesClient do
-  let(:namespace) { 'review-apps' }
-  let(:release_name) { 'my-release' }
-  let(:pod_for_release) { "pod-my-release-abcd" }
-  let(:raw_resource_names_str) { "NAME\nfoo\n#{pod_for_release}\nbar" }
-  let(:raw_resource_names) { raw_resource_names_str.lines.map(&:strip) }
+  let(:instance)       { described_class.new }
+  let(:one_day_ago)    { Time.now - 3600 * 24 * 1 }
+  let(:two_days_ago)   { Time.now - 3600 * 24 * 2 }
+  let(:three_days_ago) { Time.now - 3600 * 24 * 3 }
 
-  subject { described_class.new(namespace: namespace) }
-
-  describe 'RESOURCE_LIST' do
-    it 'returns the correct list of resources separated by commas' do
-      expect(described_class::RESOURCE_LIST).to eq('ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa,crd')
-    end
+  before do
+    # Global mock to ensure that no kubectl commands are run by accident in a test.
+    allow(instance).to receive(:run_command)
   end
 
-  describe '#cleanup_by_release' do
-    before do
-      allow(subject).to receive(:raw_resource_names).and_return(raw_resource_names)
+  describe '#cleanup_pvcs_by_created_at' do
+    let(:pvc_1_created_at) { three_days_ago }
+    let(:pvc_2_created_at) { three_days_ago }
+    let(:pvc_1_namespace) { 'review-first-review-app' }
+    let(:pvc_2_namespace) { 'review-second-review-app' }
+    let(:kubectl_pvcs_json) do
+      <<~JSON
+        {
+          "apiVersion": "v1",
+          "items": [
+              {
+                  "apiVersion": "v1",
+                  "kind": "PersistentVolumeClaim",
+                  "metadata": {
+                      "creationTimestamp": "#{pvc_1_created_at.utc.iso8601}",
+                      "name": "pvc1",
+                      "namespace": "#{pvc_1_namespace}"
+                  }
+              },
+              {
+                  "apiVersion": "v1",
+                  "kind": "PersistentVolumeClaim",
+                  "metadata": {
+                      "creationTimestamp": "#{pvc_2_created_at.utc.iso8601}",
+                      "name": "pvc2",
+                      "namespace": "#{pvc_2_namespace}"
+                  }
+              }
+          ]
+        }
+      JSON
     end
 
-    shared_examples 'a kubectl command to delete resources' do
-      let(:wait) { true }
-      let(:release_names_in_command) { release_name.respond_to?(:join) ? %(-l 'release in (#{release_name.join(', ')})') : %(-l release="#{release_name}") }
-
-      specify do
-        expect(Gitlab::Popen).to receive(:popen_with_detail)
-          .with(["kubectl delete #{described_class::RESOURCE_LIST} " +
-            %(--namespace "#{namespace}" --now --ignore-not-found --wait=#{wait} #{release_names_in_command})])
-          .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
-
-        expect(Gitlab::Popen).to receive(:popen_with_detail)
-          .with([%(kubectl delete --namespace "#{namespace}" --ignore-not-found #{pod_for_release})])
-          .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
-
-        # We're not verifying the output here, just silencing it
-        expect { subject.cleanup_by_release(release_name: release_name) }.to output.to_stdout
-      end
-    end
-
-    it 'raises an error if the Kubernetes command fails' do
-      expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with(["kubectl delete #{described_class::RESOURCE_LIST} " +
-          %(--namespace "#{namespace}" --now --ignore-not-found --wait=true -l release="#{release_name}")])
-        .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: false)))
-
-      expect { subject.cleanup_by_release(release_name: release_name) }.to raise_error(described_class::CommandFailedError)
-    end
-
-    it_behaves_like 'a kubectl command to delete resources'
-
-    context 'with multiple releases' do
-      let(:release_name) { %w[my-release my-release-2] }
-
-      it_behaves_like 'a kubectl command to delete resources'
-    end
-
-    context 'with `wait: false`' do
-      let(:wait) { false }
-
-      it_behaves_like 'a kubectl command to delete resources'
-    end
-  end
-
-  describe '#cleanup_by_created_at' do
-    let(:two_days_ago) { Time.now - 3600 * 24 * 2 }
-    let(:resource_type) { 'pvc' }
-    let(:resource_names) { [pod_for_release] }
+    subject { instance.cleanup_pvcs_by_created_at(created_before: two_days_ago) }
 
     before do
-      allow(subject).to receive(:resource_names_created_before).with(resource_type: resource_type, created_before: two_days_ago).and_return(resource_names)
+      allow(instance).to receive(:run_command).with(
+        "kubectl get pvc --all-namespaces --sort-by='{.metadata.creationTimestamp}' -o json"
+      ).and_return(kubectl_pvcs_json)
     end
 
-    shared_examples 'a kubectl command to delete resources by older than given creation time' do
-      let(:wait) { true }
-      let(:release_names_in_command) { resource_names.join(' ') }
+    context 'when no pvcs are stale' do
+      let(:pvc_1_created_at) { one_day_ago }
+      let(:pvc_2_created_at) { one_day_ago }
 
-      specify do
-        expect(Gitlab::Popen).to receive(:popen_with_detail)
-          .with(["kubectl delete #{resource_type} ".squeeze(' ') +
-            %(--namespace "#{namespace}" --now --ignore-not-found --wait=#{wait} #{release_names_in_command})])
-          .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
+      it 'does not delete any PVC' do
+        expect(instance).not_to receive(:run_command).with(/kubectl delete pvc/)
 
-        # We're not verifying the output here, just silencing it
-        expect { subject.cleanup_by_created_at(resource_type: resource_type, created_before: two_days_ago) }.to output.to_stdout
+        subject
       end
     end
 
-    it 'raises an error if the Kubernetes command fails' do
-      expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with(["kubectl delete #{resource_type} " +
-          %(--namespace "#{namespace}" --now --ignore-not-found --wait=true #{pod_for_release})])
-        .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: false)))
+    context 'when some pvcs are stale' do
+      let(:pvc_1_created_at) { three_days_ago }
+      let(:pvc_2_created_at) { three_days_ago }
 
-      expect { subject.cleanup_by_created_at(resource_type: resource_type, created_before: two_days_ago) }.to raise_error(described_class::CommandFailedError)
-    end
+      context 'when some pvcs are not in a review app namespaces' do
+        let(:pvc_1_namespace) { 'review-my-review-app' }
+        let(:pvc_2_namespace) { 'review-apps' } # This is not a review apps namespace, so we should not delete PVCs inside it
 
-    it_behaves_like 'a kubectl command to delete resources by older than given creation time'
+        it 'deletes the stale pvcs inside of review-apps namespaces only' do
+          expect(instance).to receive(:run_command).with("kubectl delete pvc --namespace=#{pvc_1_namespace} --now --ignore-not-found pvc1")
+          expect(instance).not_to receive(:run_command).with(/kubectl delete pvc --namespace=#{pvc_2_namespace}/)
 
-    context 'with multiple resource names' do
-      let(:resource_names) { %w[pod-1 pod-2] }
+          subject
+        end
+      end
 
-      it_behaves_like 'a kubectl command to delete resources by older than given creation time'
-    end
+      context 'when all pvcs are in review-apps namespaces' do
+        let(:pvc_1_namespace) { 'review-my-review-app' }
+        let(:pvc_2_namespace) { 'review-another-review-app' }
 
-    context 'with `wait: false`' do
-      let(:wait) { false }
+        it 'deletes all of the stale pvcs' do
+          expect(instance).to receive(:run_command).with("kubectl delete pvc --namespace=#{pvc_1_namespace} --now --ignore-not-found pvc1")
+          expect(instance).to receive(:run_command).with("kubectl delete pvc --namespace=#{pvc_2_namespace} --now --ignore-not-found pvc2")
 
-      it_behaves_like 'a kubectl command to delete resources by older than given creation time'
-    end
-
-    context 'with no resource_type given' do
-      let(:resource_type) { nil }
-
-      it_behaves_like 'a kubectl command to delete resources by older than given creation time'
-    end
-
-    context 'with multiple resource_type given' do
-      let(:resource_type) { 'pvc,service' }
-
-      it_behaves_like 'a kubectl command to delete resources by older than given creation time'
-    end
-
-    context 'with no resources found' do
-      let(:resource_names) { [] }
-
-      it 'does not call #delete_by_exact_names' do
-        expect(subject).not_to receive(:delete_by_exact_names)
-
-        subject.cleanup_by_created_at(resource_type: resource_type, created_before: two_days_ago)
+          subject
+        end
       end
     end
   end
 
-  describe '#cleanup_review_app_namespaces' do
-    let(:two_days_ago) { Time.now - 3600 * 24 * 2 }
-    let(:namespaces) { %w[review-abc-123 review-xyz-789] }
+  describe '#cleanup_namespaces_by_created_at' do
+    let(:namespace_1_created_at) { three_days_ago }
+    let(:namespace_2_created_at) { three_days_ago }
+    let(:namespace_1_name) { 'review-first-review-app' }
+    let(:namespace_2_name) { 'review-second-review-app' }
+    let(:kubectl_namespaces_json) do
+      <<~JSON
+        {
+          "apiVersion": "v1",
+          "items": [
+              {
+                  "apiVersion": "v1",
+                  "kind": "namespace",
+                  "metadata": {
+                      "creationTimestamp": "#{namespace_1_created_at.utc.iso8601}",
+                      "name": "#{namespace_1_name}"
+                  }
+              },
+              {
+                  "apiVersion": "v1",
+                  "kind": "namespace",
+                  "metadata": {
+                      "creationTimestamp": "#{namespace_2_created_at.utc.iso8601}",
+                      "name": "#{namespace_2_name}"
+                  }
+              }
+          ]
+        }
+      JSON
+    end
 
-    subject { described_class.new(namespace: nil) }
+    subject { instance.cleanup_namespaces_by_created_at(created_before: two_days_ago) }
 
     before do
-      allow(subject).to receive(:review_app_namespaces_created_before).with(created_before: two_days_ago).and_return(namespaces)
+      allow(instance).to receive(:run_command).with(
+        "kubectl get namespace --all-namespaces --sort-by='{.metadata.creationTimestamp}' -o json"
+      ).and_return(kubectl_namespaces_json)
     end
 
-    shared_examples 'a kubectl command to delete namespaces older than given creation time' do
-      let(:wait) { true }
+    context 'when no namespaces are stale' do
+      let(:namespace_1_created_at) { one_day_ago }
+      let(:namespace_2_created_at) { one_day_ago }
 
-      specify do
-        expect(Gitlab::Popen).to receive(:popen_with_detail)
-                                   .with(["kubectl delete namespace " +
-                                            %(--now --ignore-not-found --wait=#{wait} #{namespaces.join(' ')})])
-                                   .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
+      it 'does not delete any namespace' do
+        expect(instance).not_to receive(:run_command).with(/kubectl delete namespace/)
 
-        # We're not verifying the output here, just silencing it
-        expect { subject.cleanup_review_app_namespaces(created_before: two_days_ago) }.to output.to_stdout
+        subject
       end
     end
 
-    it_behaves_like 'a kubectl command to delete namespaces older than given creation time'
+    context 'when some namespaces are stale' do
+      let(:namespace_1_created_at) { three_days_ago }
+      let(:namespace_2_created_at) { three_days_ago }
 
-    it 'raises an error if the Kubernetes command fails' do
-      expect(Gitlab::Popen).to receive(:popen_with_detail)
-                                 .with(["kubectl delete namespace " +
-                                          %(--now --ignore-not-found --wait=true #{namespaces.join(' ')})])
-                                 .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: false)))
+      context 'when some namespaces are not review app namespaces' do
+        let(:namespace_1_name) { 'review-my-review-app' }
+        let(:namespace_2_name) { 'review-apps' } # This is not a review apps namespace, so we should not try to delete it
 
-      expect { subject.cleanup_review_app_namespaces(created_before: two_days_ago) }.to raise_error(described_class::CommandFailedError)
-    end
+        it 'only deletes the review app namespaces' do
+          expect(instance).to receive(:run_command).with("kubectl delete namespace --now --ignore-not-found #{namespace_1_name}")
 
-    context 'with no namespaces found' do
-      let(:namespaces) { [] }
+          subject
+        end
+      end
 
-      it 'does not call #delete_namespaces_by_exact_names' do
-        expect(subject).not_to receive(:delete_namespaces_by_exact_names)
+      context 'when all namespaces are review app namespaces' do
+        let(:namespace_1_name) { 'review-my-review-app' }
+        let(:namespace_2_name) { 'review-another-review-app' }
 
-        subject.cleanup_review_app_namespaces(created_before: two_days_ago)
+        it 'deletes all of the stale namespaces' do
+          expect(instance).to receive(:run_command).with("kubectl delete namespace --now --ignore-not-found #{namespace_1_name} #{namespace_2_name}")
+
+          subject
+        end
       end
     end
   end
 
-  describe '#raw_resource_names' do
-    it 'calls kubectl to retrieve the resource names' do
-      expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with(["kubectl get #{described_class::RESOURCE_LIST} " +
-          %(--namespace "#{namespace}" -o name)])
-        .and_return(Gitlab::Popen::Result.new([], raw_resource_names_str, '', double(success?: true)))
+  describe '#delete_pvc' do
+    let(:pvc_name) { 'my-pvc' }
 
-      expect(subject.__send__(:raw_resource_names)).to eq(raw_resource_names)
-    end
-  end
+    subject { instance.delete_pvc(pvc_name, pvc_namespace) }
 
-  describe '#resource_names_created_before' do
-    let(:three_days_ago) { Time.now - 3600 * 24 * 3 }
-    let(:two_days_ago) { Time.now - 3600 * 24 * 2 }
-    let(:pvc_created_three_days_ago) { 'pvc-created-three-days-ago' }
-    let(:resource_type) { 'pvc' }
-    let(:raw_resources) do
-      {
-        items: [
-          {
-            apiVersion: "v1",
-            kind: "PersistentVolumeClaim",
-            metadata: {
-                creationTimestamp: three_days_ago,
-                name: pvc_created_three_days_ago
-            }
-          },
-          {
-            apiVersion: "v1",
-            kind: "PersistentVolumeClaim",
-            metadata: {
-                creationTimestamp: Time.now,
-                name: 'another-pvc'
-            }
-          }
-        ]
-      }.to_json
-    end
+    context 'when the namespace is not a review app namespace' do
+      let(:pvc_namespace) { 'not-a-review-app-namespace' }
 
-    shared_examples 'a kubectl command to retrieve resource names sorted by creationTimestamp' do
-      specify do
-        expect(Gitlab::Popen).to receive(:popen_with_detail)
-          .with(["kubectl get #{resource_type} ".squeeze(' ') +
-            %(--namespace "#{namespace}" ) +
-            "--sort-by='{.metadata.creationTimestamp}' -o json"])
-          .and_return(Gitlab::Popen::Result.new([], raw_resources, '', double(success?: true)))
+      it 'does not delete the pvc' do
+        expect(instance).not_to receive(:run_command).with(/kubectl delete pvc/)
 
-        expect(subject.__send__(:resource_names_created_before, resource_type: resource_type, created_before: two_days_ago)).to contain_exactly(pvc_created_three_days_ago)
+        subject
       end
     end
 
-    it_behaves_like 'a kubectl command to retrieve resource names sorted by creationTimestamp'
+    context 'when the namespace is a review app namespace' do
+      let(:pvc_namespace) { 'review-apple-test' }
 
-    context 'with no resource_type given' do
-      let(:resource_type) { nil }
+      it 'deletes the pvc' do
+        expect(instance).to receive(:run_command).with("kubectl delete pvc --namespace=#{pvc_namespace} --now --ignore-not-found #{pvc_name}")
 
-      it_behaves_like 'a kubectl command to retrieve resource names sorted by creationTimestamp'
-    end
-
-    context 'with multiple resource_type given' do
-      let(:resource_type) { 'pvc,service' }
-
-      it_behaves_like 'a kubectl command to retrieve resource names sorted by creationTimestamp'
+        subject
+      end
     end
   end
 
-  describe '#review_app_namespaces_created_before' do
-    let(:three_days_ago) { Time.now - 3600 * 24 * 3 }
-    let(:two_days_ago) { Time.now - 3600 * 24 * 2 }
-    let(:namespace_created_three_days_ago) { 'review-ns-created-three-days-ago' }
-    let(:resource_type) { 'namespace' }
-    let(:raw_resources) do
-      {
-        items: [
-          {
-            apiVersion: "v1",
-            kind: "Namespace",
-            metadata: {
-              creationTimestamp: three_days_ago,
-              name: namespace_created_three_days_ago
-            }
-          },
-          {
-            apiVersion: "v1",
-            kind: "Namespace",
-            metadata: {
-              creationTimestamp: Time.now,
-              name: 'another-namespace'
-            }
-          }
-        ]
-      }.to_json
+  describe '#delete_namespaces' do
+    subject { instance.delete_namespaces(namespaces) }
+
+    context 'when at least one namespace is not a review app namespace' do
+      let(:namespaces) { %w[review-ns-1 default] }
+
+      it 'does not delete any namespace' do
+        expect(instance).not_to receive(:run_command).with(/kubectl delete namespace/)
+
+        subject
+      end
     end
 
-    specify do
-      expect(Gitlab::Popen).to receive(:popen_with_detail)
-                          .with(["kubectl get namespace --sort-by='{.metadata.creationTimestamp}' -o json"])
-                          .and_return(Gitlab::Popen::Result.new([], raw_resources, '', double(success?: true)))
+    context 'when all namespaces are review app namespaces' do
+      let(:namespaces) { %w[review-ns-1 review-ns-2] }
 
-      expect(subject.__send__(:review_app_namespaces_created_before, created_before: two_days_ago)).to eq([namespace_created_three_days_ago])
+      it 'deletes the namespaces' do
+        expect(instance).to receive(:run_command).with("kubectl delete namespace --now --ignore-not-found #{namespaces.join(' ')}")
+
+        subject
+      end
+    end
+  end
+
+  describe '#pvcs_created_before' do
+    subject { instance.pvcs_created_before(created_before: two_days_ago) }
+
+    let(:pvc_1_created_at) { three_days_ago }
+    let(:pvc_2_created_at) { three_days_ago }
+    let(:pvc_1_namespace) { 'review-first-review-app' }
+    let(:pvc_2_namespace) { 'review-second-review-app' }
+    let(:kubectl_pvcs_json) do
+      <<~JSON
+        {
+          "apiVersion": "v1",
+          "items": [
+              {
+                  "apiVersion": "v1",
+                  "kind": "PersistentVolumeClaim",
+                  "metadata": {
+                      "creationTimestamp": "#{pvc_1_created_at.utc.iso8601}",
+                      "name": "pvc1",
+                      "namespace": "#{pvc_1_namespace}"
+                  }
+              },
+              {
+                  "apiVersion": "v1",
+                  "kind": "PersistentVolumeClaim",
+                  "metadata": {
+                      "creationTimestamp": "#{pvc_2_created_at.utc.iso8601}",
+                      "name": "pvc2",
+                      "namespace": "#{pvc_2_namespace}"
+                  }
+              }
+          ]
+        }
+      JSON
+    end
+
+    it 'calls #resource_created_before with the correct parameters' do
+      expect(instance).to receive(:resource_created_before).with(resource_type: 'pvc', created_before: two_days_ago)
+
+      subject
+    end
+
+    it 'returns a hash with two keys' do
+      allow(instance).to receive(:run_command).with(
+        "kubectl get pvc --all-namespaces --sort-by='{.metadata.creationTimestamp}' -o json"
+      ).and_return(kubectl_pvcs_json)
+
+      expect(subject).to match_array([
+        {
+          resource_name: 'pvc1',
+          namespace: 'review-first-review-app'
+        },
+        {
+          resource_name: 'pvc2',
+          namespace: 'review-second-review-app'
+        }
+      ])
+    end
+  end
+
+  describe '#namespaces_created_before' do
+    subject { instance.namespaces_created_before(created_before: two_days_ago) }
+
+    let(:namespace_1_created_at) { three_days_ago }
+    let(:namespace_2_created_at) { three_days_ago }
+    let(:namespace_1_name) { 'review-first-review-app' }
+    let(:namespace_2_name) { 'review-second-review-app' }
+    let(:kubectl_namespaces_json) do
+      <<~JSON
+        {
+          "apiVersion": "v1",
+          "items": [
+              {
+                  "apiVersion": "v1",
+                  "kind": "namespace",
+                  "metadata": {
+                      "creationTimestamp": "#{namespace_1_created_at.utc.iso8601}",
+                      "name": "#{namespace_1_name}"
+                  }
+              },
+              {
+                  "apiVersion": "v1",
+                  "kind": "namespace",
+                  "metadata": {
+                      "creationTimestamp": "#{namespace_2_created_at.utc.iso8601}",
+                      "name": "#{namespace_2_name}"
+                  }
+              }
+          ]
+        }
+      JSON
+    end
+
+    it 'calls #resource_created_before with the correct parameters' do
+      expect(instance).to receive(:resource_created_before).with(resource_type: 'namespace', created_before: two_days_ago)
+
+      subject
+    end
+
+    it 'returns an array of namespaces' do
+      allow(instance).to receive(:run_command).with(
+        "kubectl get namespace --all-namespaces --sort-by='{.metadata.creationTimestamp}' -o json"
+      ).and_return(kubectl_namespaces_json)
+
+      expect(subject).to match_array(%w[review-first-review-app review-second-review-app])
+    end
+  end
+
+  describe '#run_command' do
+    subject { instance.run_command(command) }
+
+    before do
+      # We undo the global mock just for this method
+      allow(instance).to receive(:run_command).and_call_original
+
+      # Mock stdout
+      allow(instance).to receive(:puts)
+    end
+
+    context 'when executing a successful command' do
+      let(:command) { 'true' } # https://linux.die.net/man/1/true
+
+      it 'displays the name of the command to stdout' do
+        expect(instance).to receive(:puts).with("Running command: `#{command}`")
+
+        subject
+      end
+
+      it 'does not raise an error' do
+        expect { subject }.not_to raise_error
+      end
+    end
+
+    context 'when executing an unsuccessful command' do
+      let(:command) { 'false' } # https://linux.die.net/man/1/false
+
+      it 'displays the name of the command to stdout' do
+        expect(instance).to receive(:puts).with("Running command: `#{command}`")
+
+        expect { subject }.to raise_error(described_class::CommandFailedError)
+      end
+
+      it 'raises an error' do
+        expect { subject }.to raise_error(described_class::CommandFailedError)
+      end
     end
   end
 end

@@ -165,6 +165,7 @@ variables:
   RSPEC_FOSS_IMPACT_PIPELINE_TEMPLATE_YML: .gitlab/ci/rails/rspec-foss-impact.gitlab-ci.yml.erb
   RSPEC_LAST_RUN_RESULTS_FILE: rspec/rspec_last_run_results.txt
   RSPEC_MATCHING_JS_FILES_PATH: rspec/js_matching_files.txt
+  RSPEC_VIEWS_INCLUDING_PARTIALS_PATH: rspec/views_including_partials.txt
   RSPEC_MATCHING_TESTS_PATH: rspec/matching_tests.txt
   RSPEC_MATCHING_TESTS_FOSS_PATH: rspec/matching_tests-foss.txt
   RSPEC_MATCHING_TESTS_EE_PATH: rspec/matching_tests-ee.txt

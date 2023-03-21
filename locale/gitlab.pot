@@ -27674,6 +27674,9 @@ msgid_plural "Milestones"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Milestone actions"
+msgstr ""
+
 msgid "Milestone due date"
 msgstr ""
 
@@ -28397,6 +28400,9 @@ msgid "NavigationTheme|Light Red"
 msgstr ""
 
 msgid "NavigationTheme|Red"
+msgstr ""
+
+msgid "Navigation|Admin"
 msgstr ""
 
 msgid "Navigation|Context navigation"

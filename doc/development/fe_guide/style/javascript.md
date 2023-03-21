@@ -332,19 +332,23 @@ Only export the constants as a collection (array, or object) when there is a nee
 
 ## Error handling
 
-When catching a server-side error you should use the error message
+When catching a server-side error, you should use the error message
 utility function contained in `app/assets/javascripts/lib/utils/error_message.js`.
-This utility parses the received error message and checks for a prefix that indicates
-whether the message is meant to be user-facing or not. The utility returns
-an object with the message, and a boolean indicating whether the message is meant to be user-facing or not. Please make sure that the Backend is aware of the utils usage and is adding the prefix
-to the error message accordingly.
+This utility accepts two parameters: the error object received from the server response and a
+default error message. The utility examines the message in the error object for a prefix that
+indicates whether the message is meant to be user-facing or not. If the message is intended
+to be user-facing, the utility returns it as is. Otherwise, it returns the default error
+message passed as a parameter.
 
 ```javascript
 import { parseErrorMessage } from '~/lib/utils/error_message';
 
 onError(error) {
-  const { message, userFacing } = parseErrorMessage(error);
-
-  const errorMessage = userFacing ? message : genericErrorText;
+  const errorMessage = parseErrorMessage(error, genericErrorText);
 }
 ```
+
+To benefit from this parsing mechanism, the utility user should ensure that the server-side
+code is aware of this utility's usage and prefixes the error messages where appropriate
+before sending them back to the user. See
+[Error handling for API](../../api_styleguide.md#error-handling) for more information.

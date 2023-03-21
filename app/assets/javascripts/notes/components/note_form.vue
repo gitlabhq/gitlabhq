@@ -1,10 +1,10 @@
 <script>
 import { GlButton, GlSprintf, GlLink } from '@gitlab/ui';
 import { mapGetters, mapActions, mapState } from 'vuex';
-import { getDraft, updateDraft } from '~/lib/utils/autosave';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
+import glFeaturesFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../event_hub';
 import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
@@ -15,13 +15,13 @@ export default {
   i18n: COMMENT_FORM,
   name: 'NoteForm',
   components: {
-    MarkdownField,
+    MarkdownEditor,
     CommentFieldLayout,
     GlButton,
     GlSprintf,
     GlLink,
   },
-  mixins: [issuableStateMixin, resolvable],
+  mixins: [issuableStateMixin, resolvable, glFeaturesFlagMixin()],
   props: {
     noteBody: {
       type: String,
@@ -95,20 +95,22 @@ export default {
     },
   },
   data() {
-    let updatedNoteBody = this.noteBody;
-
-    if (!updatedNoteBody && this.autosaveKey) {
-      updatedNoteBody = getDraft(this.autosaveKey) || '';
-    }
-
     return {
-      updatedNoteBody,
+      updatedNoteBody: this.noteBody,
       conflictWhileEditing: false,
       isSubmitting: false,
       isResolving: this.resolveDiscussion,
       isUnresolving: !this.resolveDiscussion,
       resolveAsThread: true,
       isSubmittingWithKeydown: false,
+      formFieldProps: {
+        id: 'note_note',
+        name: 'note[note]',
+        'aria-label': __('Reply to comment'),
+        placeholder: this.$options.i18n.bodyPlaceholder,
+        class: 'note-textarea js-gfm-input js-note-text markdown-area js-vue-issue-note-form',
+        'data-qa-selector': 'reply_field',
+      },
     };
   },
   computed: {
@@ -134,11 +136,6 @@ export default {
           .filter((n) => n.resolvable)
           .some((n) => n.current_user?.can_resolve_discussion) || this.isDraft
       );
-    },
-    textareaPlaceholder() {
-      return this.discussionNote?.internal
-        ? this.$options.i18n.bodyPlaceholderInternal
-        : this.$options.i18n.bodyPlaceholder;
     },
     noteHash() {
       if (this.noteId) {
@@ -214,6 +211,9 @@ export default {
         placeholder: { link: ['startTag', 'endTag'] },
       };
     },
+    enableContentEditor() {
+      return Boolean(this.glFeatures.contentEditorOnIssues);
+    },
   },
   watch: {
     noteBody() {
@@ -225,7 +225,7 @@ export default {
     },
   },
   mounted() {
-    this.$refs.textarea.focus();
+    this.updatePlaceholder();
   },
   methods: {
     ...mapActions(['toggleResolveNote']),
@@ -252,19 +252,21 @@ export default {
     },
     cancelHandler(shouldConfirm = false) {
       // check if any dropdowns are active before sending the cancelation event
-      if (!this.$refs.textarea.classList.contains('at-who-active')) {
+      if (
+        !this.$refs.markdownEditor.$el
+          .querySelector('textarea')
+          ?.classList.contains('at-who-active')
+      ) {
         this.$emit('cancelForm', shouldConfirm, this.noteBody !== this.updatedNoteBody);
       }
     },
-    onInput() {
-      if (this.isSubmittingWithKeydown) {
-        return;
-      }
-
-      if (this.autosaveKey) {
-        const { autosaveKey, updatedNoteBody: text } = this;
-        updateDraft(autosaveKey, text);
-      }
+    updatePlaceholder() {
+      this.formFieldProps.placeholder = this.discussionNote?.internal
+        ? this.$options.i18n.bodyPlaceholderInternal
+        : this.$options.i18n.bodyPlaceholder;
+    },
+    onInput(value) {
+      this.updatedNoteBody = value;
     },
     handleKeySubmit() {
       if (this.showBatchCommentsActions) {
@@ -273,6 +275,7 @@ export default {
         this.isSubmittingWithKeydown = true;
         this.handleUpdate();
       }
+      this.updatedNoteBody = '';
     },
     handleUpdate(shouldResolve) {
       const beforeSubmitDiscussionState = this.discussionResolved;
@@ -333,41 +336,32 @@ export default {
         :noteable-data="getNoteableData"
         :is-internal-note="discussion.internal"
       >
-        <markdown-field
-          :markdown-preview-path="markdownPreviewPath"
+        <markdown-editor
+          ref="markdownEditor"
+          :enable-content-editor="enableContentEditor"
+          :value="updatedNoteBody"
+          :render-markdown-path="markdownPreviewPath"
           :markdown-docs-path="markdownDocsPath"
-          :quick-actions-docs-path="quickActionsDocsPath"
           :line="line"
           :lines="lines"
-          :note="discussionNote"
           :can-suggest="canSuggest"
           :add-spacing-classes="false"
           :help-page-path="helpPagePath"
+          :note="discussionNote"
+          :form-field-props="formFieldProps"
           :show-suggest-popover="showSuggestPopover"
-          :textarea-value="updatedNoteBody"
+          :quick-actions-docs-path="quickActionsDocsPath"
+          :autosave-key="autosaveKey"
+          :disabled="isSubmitting"
+          supports-quick-actions
+          autofocus
+          @keydown.meta.enter="handleKeySubmit()"
+          @keydown.ctrl.enter="handleKeySubmit()"
+          @keydown.exact.up="editMyLastNote()"
+          @keydown.exact.esc="cancelHandler(true)"
+          @input="onInput"
           @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
-        >
-          <template #textarea>
-            <textarea
-              id="note_note"
-              ref="textarea"
-              v-model="updatedNoteBody"
-              :disabled="isSubmitting"
-              data-supports-quick-actions="true"
-              name="note[note]"
-              class="note-textarea js-gfm-input js-note-text js-autosize markdown-area js-vue-issue-note-form"
-              data-qa-selector="reply_field"
-              dir="auto"
-              :aria-label="__('Reply to comment')"
-              :placeholder="textareaPlaceholder"
-              @keydown.meta.enter="handleKeySubmit()"
-              @keydown.ctrl.enter="handleKeySubmit()"
-              @keydown.exact.up="editMyLastNote()"
-              @keydown.exact.esc="cancelHandler(true)"
-              @input="onInput"
-            ></textarea>
-          </template>
-        </markdown-field>
+        />
       </comment-field-layout>
       <div class="note-form-actions">
         <template v-if="showBatchCommentsActions">

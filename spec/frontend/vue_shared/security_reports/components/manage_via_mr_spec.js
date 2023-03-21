@@ -8,7 +8,9 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { humanize } from '~/lib/utils/text_utility';
 import { redirectTo } from '~/lib/utils/url_utility';
-import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
+import ManageViaMr, {
+  i18n,
+} from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
 import { REPORT_TYPE_SAST } from '~/vue_shared/security_reports/constants';
 import { buildConfigureSecurityFeatureMockFactory } from './apollo_mocks';
 
@@ -77,10 +79,11 @@ describe('ManageViaMr component', () => {
         buildConfigureSecurityFeatureMock({
           successPath: '',
         });
-      const errorHandler = async () =>
-        buildConfigureSecurityFeatureMock({
-          errors: ['foo'],
+      const errorHandler = async (message = 'foo') => {
+        return buildConfigureSecurityFeatureMock({
+          errors: [message],
         });
+      };
       const pendingHandler = () => new Promise(() => {});
 
       describe('when feature is configured', () => {
@@ -147,9 +150,11 @@ describe('ManageViaMr component', () => {
       });
 
       describe.each`
-        handler                 | message
-        ${noSuccessPathHandler} | ${`${featureName} merge request creation mutation failed`}
-        ${errorHandler}         | ${'foo'}
+        handler                                   | message
+        ${noSuccessPathHandler}                   | ${`${featureName} merge request creation mutation failed`}
+        ${errorHandler.bind(null, 'UF: message')} | ${'message'}
+        ${errorHandler.bind(null, 'message')}     | ${i18n.genericErrorText}
+        ${errorHandler}                           | ${i18n.genericErrorText}
       `('given an error response', ({ handler, message }) => {
         beforeEach(() => {
           const apolloProvider = createMockApolloProvider(mutation, handler);

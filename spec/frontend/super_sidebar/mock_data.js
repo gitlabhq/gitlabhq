@@ -86,6 +86,7 @@ export const sidebarData = {
   gitlab_version_check: { severity: 'success' },
   gitlab_com_and_canary: false,
   canary_toggle_com_url: 'https://next.gitlab.com',
+  context_switcher_links: [],
 };
 
 export const userMenuMockStatus = {

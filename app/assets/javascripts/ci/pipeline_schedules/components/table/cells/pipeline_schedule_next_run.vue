@@ -23,7 +23,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div data-testid="next-run-cell">
     <time-ago-tooltip v-if="showTimeAgo" :time="realNextRunTime" />
     <span v-else data-testid="pipeline-schedule-inactive">
       {{ s__('PipelineSchedules|Inactive') }}

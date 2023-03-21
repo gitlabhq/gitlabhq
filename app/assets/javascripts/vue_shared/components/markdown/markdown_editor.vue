@@ -97,6 +97,7 @@ export default {
   mounted() {
     this.autofocusTextarea();
 
+    this.$emit('input', this.markdown);
     this.saveDraft();
   },
   methods: {
@@ -176,8 +177,8 @@ export default {
       :quick-actions-docs-path="quickActionsDocsPath"
       :show-content-editor-switcher="enableContentEditor"
       :drawio-enabled="drawioEnabled"
-      class="bordered-box"
       @enableContentEditor="onEditingModeChange('contentEditor')"
+      @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
     >
       <template #textarea>
         <textarea

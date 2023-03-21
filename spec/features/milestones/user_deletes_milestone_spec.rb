@@ -18,6 +18,7 @@ RSpec.describe "User deletes milestone", :js, feature_category: :team_planning d
       project.add_developer(user)
       visit(project_milestones_path(project))
       click_link(milestone.title)
+      click_button("Milestone actions")
       click_button("Delete")
       click_button("Delete milestone")
 
@@ -38,6 +39,7 @@ RSpec.describe "User deletes milestone", :js, feature_category: :team_planning d
       visit(group_milestones_path(group))
 
       click_link(milestone_to_be_deleted.title)
+      click_button("Milestone actions")
       click_button("Delete")
       click_button("Delete milestone")
 
