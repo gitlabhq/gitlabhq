@@ -13,7 +13,6 @@ import { partition, isString, uniqueId, isEmpty } from 'lodash';
 import InviteModalBase from 'ee_else_ce/invite_members/components/invite_modal_base.vue';
 import Api from '~/api';
 import Tracking from '~/tracking';
-import ExperimentTracking from '~/experimentation/experiment_tracking';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { getParameterValues } from '~/lib/utils/url_utility';
 import { n__, sprintf } from '~/locale';
@@ -248,14 +247,10 @@ export default {
 
     eventHub.$on('openModal', (options) => {
       this.openModal(options);
-      if (this.isOnLearnGitlab) {
-        this.trackEvent(INVITE_MEMBERS_FOR_TASK.name, this.source);
-      }
     });
 
     if (this.tasksToBeDoneEnabled) {
       this.openModal({ source: 'in_product_marketing_email' });
-      this.trackEvent(INVITE_MEMBERS_FOR_TASK.name, INVITE_MEMBERS_FOR_TASK.view);
     }
   },
   methods: {
@@ -282,10 +277,6 @@ export default {
     },
     closeModal() {
       this.$root.$emit(BV_HIDE_MODAL, this.modalId);
-    },
-    trackEvent(experimentName, eventName) {
-      const tracking = new ExperimentTracking(experimentName);
-      tracking.event(eventName);
     },
     showEmptyInvitesAlert() {
       this.invalidFeedbackMessage = this.$options.labels.placeHolder;
@@ -347,8 +338,7 @@ export default {
     trackinviteMembersForTask() {
       const label = 'selected_tasks_to_be_done';
       const property = this.selectedTasksToBeDone.join(',');
-      const tracking = new ExperimentTracking(INVITE_MEMBERS_FOR_TASK.name, { label, property });
-      tracking.event(INVITE_MEMBERS_FOR_TASK.submit);
+      this.track(INVITE_MEMBERS_FOR_TASK.submit, { label, property });
     },
     onCancel() {
       this.track('click_cancel', { label: this.source });

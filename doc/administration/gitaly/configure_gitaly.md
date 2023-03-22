@@ -1560,3 +1560,54 @@ proposed in issue [19185](https://gitlab.com/gitlab-org/gitlab/-/issues/19185).
    ```
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
+
+## Generate configuration using an external command
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4828) in GitLab 15.10.
+
+You can generate parts of the Gitaly configuration using an external command. You might do this:
+
+- To configure nodes without having to distribute the full configuration to each of them.
+- To configure using auto-discovery of the node's settings. For example, using DNS entries.
+- To configure secrets at startup of the node, so that don't need to be visible in plain text.
+
+To generate configuration using an external command, you must provide a script that dumps the
+desired configuration of the Gitaly node in JSON format to its standard output.
+
+For example, the following command configures the HTTP password used to connect to the
+GitLab internal API using an AWS secret:
+
+```ruby
+#!/usr/bin/env ruby
+require 'json'
+JSON.generate({"gitlab": {"http_settings": {"password": `aws get-secret-value --secret-id ...`}}})
+```
+
+You must then make the script path known to Gitaly.
+
+**For Omnibus GitLab**
+
+Edit `/etc/gitlab/gitlab.rb` and configure the `config_command`:
+
+```ruby
+gitaly['configuration'] = {
+    config_command: '/path/to/config_command',
+}
+```
+
+**For installations from source**
+
+Edit `/home/git/gitaly/config.toml` and configure `config_command`:
+
+```toml
+config_command = "/path/to/config_command"
+```
+
+After configuration, Gitaly executes the command on startup and parses its
+standard output as JSON. The resulting configuration is then merged back into
+the other Gitaly configuration.
+
+Gitaly fails to start up if either:
+
+- The configuration command fails.
+- The output produced by the command cannot be parsed as valid JSON.

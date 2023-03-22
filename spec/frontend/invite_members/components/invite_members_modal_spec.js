@@ -6,7 +6,6 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
-import ExperimentTracking from '~/experimentation/experiment_tracking';
 import InviteMembersModal from '~/invite_members/components/invite_members_modal.vue';
 import InviteModalBase from '~/invite_members/components/invite_modal_base.vue';
 import ModalConfetti from '~/invite_members/components/confetti.vue';
@@ -63,11 +62,12 @@ describe('InviteMembersModal', () => {
   let mock;
   let trackingSpy;
 
-  const expectTracking = (
-    action,
-    label = undefined,
-    category = INVITE_MEMBER_MODAL_TRACKING_CATEGORY,
-  ) => expect(trackingSpy).toHaveBeenCalledWith(category, action, { label, category });
+  const expectTracking = (action, label = undefined, property = undefined) =>
+    expect(trackingSpy).toHaveBeenCalledWith(INVITE_MEMBER_MODAL_TRACKING_CATEGORY, action, {
+      label,
+      category: INVITE_MEMBER_MODAL_TRACKING_CATEGORY,
+      property,
+    });
 
   const createComponent = (props = {}, stubs = {}) => {
     wrapper = shallowMountExtended(InviteMembersModal, {
@@ -278,38 +278,18 @@ describe('InviteMembersModal', () => {
     });
 
     describe('tracking events', () => {
-      it('tracks the view for invite_members_for_task', async () => {
-        await setupComponentWithTasks();
-
-        expect(ExperimentTracking).toHaveBeenCalledWith(INVITE_MEMBERS_FOR_TASK.name);
-        expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith(
-          INVITE_MEMBERS_FOR_TASK.view,
-        );
-      });
-
       it('tracks the submit for invite_members_for_task', async () => {
         await setupComponentWithTasks();
+
         await triggerMembersTokenSelect([user1]);
 
+        trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+
         clickInviteButton();
 
-        expect(ExperimentTracking).toHaveBeenCalledWith(INVITE_MEMBERS_FOR_TASK.name, {
-          label: 'selected_tasks_to_be_done',
-          property: 'ci,code',
-        });
-        expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith(
-          INVITE_MEMBERS_FOR_TASK.submit,
-        );
-      });
+        expectTracking(INVITE_MEMBERS_FOR_TASK.submit, 'selected_tasks_to_be_done', 'ci,code');
 
-      it('does not track the submit for invite_members_for_task when invites have not been entered', async () => {
-        await setupComponentWithTasks();
-        clickInviteButton();
-
-        expect(ExperimentTracking).not.toHaveBeenCalledWith(
-          INVITE_MEMBERS_FOR_TASK.name,
-          expect.any,
-        );
+        unmockTracking();
       });
     });
   });
@@ -953,23 +933,6 @@ describe('InviteMembersModal', () => {
 
           expect(Api.inviteGroupMembers).toHaveBeenCalledWith(propsData.id, postData);
         });
-      });
-    });
-
-    describe('tracking', () => {
-      beforeEach(async () => {
-        createComponent();
-        await triggerMembersTokenSelect([user3]);
-
-        wrapper.vm.$toast = { show: jest.fn() };
-        jest.spyOn(Api, 'inviteGroupMembers').mockResolvedValue({});
-      });
-
-      it('tracks the view for learn_gitlab source', () => {
-        eventHub.$emit('openModal', { source: LEARN_GITLAB });
-
-        expect(ExperimentTracking).toHaveBeenCalledWith(INVITE_MEMBERS_FOR_TASK.name);
-        expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith(LEARN_GITLAB);
       });
     });
   });

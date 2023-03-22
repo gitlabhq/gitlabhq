@@ -5,8 +5,6 @@ export const VALID_TOKEN_BACKGROUND = 'gl-bg-green-100';
 export const INVALID_TOKEN_BACKGROUND = 'gl-bg-red-100';
 export const INVITE_MEMBERS_FOR_TASK = {
   minimum_access_level: 30,
-  name: 'invite_members_for_task',
-  view: 'modal_opened_from_email',
   submit: 'submit',
 };
 export const TOAST_MESSAGE_LOCALSTORAGE_KEY = 'members_invited_successfully';

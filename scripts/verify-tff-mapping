@@ -196,6 +196,11 @@ tests = [
     explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/287#note_1192008962',
     source: 'ee/lib/ee/gitlab/usage_data_counters/known_events/common.yml',
     expected: ['ee/spec/config/metrics/every_metric_definition_spec.rb']
+  },
+  {
+    explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/146',
+    source: 'config/feature_categories.yml',
+    expected: ['spec/db/docs_spec.rb', 'ee/spec/lib/ee/gitlab/database/docs/docs_spec.rb']
   }
 ]
 
