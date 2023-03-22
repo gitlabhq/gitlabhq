@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'shows and resets runner registration token' do
-  include Spec::Support::Helpers::Features::RunnersHelpers
+  include Features::RunnersHelpers
   include Spec::Support::Helpers::ModalHelpers
 
   before do

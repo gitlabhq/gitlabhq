@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'The group dashboard', :js, feature_category: :subgroups do
   include ExternalAuthorizationServiceHelpers
-  include Spec::Support::Helpers::Features::TopNavSpecHelpers
+  include Features::TopNavSpecHelpers
 
   let(:user) { create(:user) }
 

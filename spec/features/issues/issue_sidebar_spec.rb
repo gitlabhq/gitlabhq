@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
   include MobileHelpers
-  include Spec::Support::Helpers::Features::InviteMembersModalHelper
+  include Features::InviteMembersModalHelpers
 
   let_it_be(:group) { create(:group, :nested) }
   let_it_be(:project) { create(:project, :public, namespace: group) }

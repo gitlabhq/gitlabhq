@@ -140,7 +140,7 @@ RSpec.shared_examples 'work items description' do
 end
 
 RSpec.shared_examples 'work items invite members' do
-  include Spec::Support::Helpers::Features::InviteMembersModalHelper
+  include Features::InviteMembersModalHelpers
 
   it 'successfully assigns the current user by searching' do
     # The button is only when the mouse is over the input

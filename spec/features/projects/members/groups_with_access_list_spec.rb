@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Members > Groups with access list', :js, feature_category: :subgroups do
-  include Spec::Support::Helpers::Features::MembersHelpers
+  include Features::MembersHelpers
   include Spec::Support::Helpers::ModalHelpers
-  include Spec::Support::Helpers::Features::InviteMembersModalHelper
+  include Features::InviteMembersModalHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public) }

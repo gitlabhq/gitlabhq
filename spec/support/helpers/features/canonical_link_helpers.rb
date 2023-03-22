@@ -4,25 +4,19 @@
 #
 # Usage:
 #   describe "..." do
-#     include Spec::Support::Helpers::Features::CanonicalLinkHelpers
+#     include Features::CanonicalLinkHelpers
 #     ...
 #
 #     expect(page).to have_canonical_link(url)
 #
-module Spec
-  module Support
-    module Helpers
-      module Features
-        module CanonicalLinkHelpers
-          def have_canonical_link(url)
-            have_xpath("//link[@rel=\"canonical\" and @href=\"#{url}\"]", visible: false)
-          end
+module Features
+  module CanonicalLinkHelpers
+    def have_canonical_link(url)
+      have_xpath("//link[@rel=\"canonical\" and @href=\"#{url}\"]", visible: false)
+    end
 
-          def have_any_canonical_links
-            have_xpath('//link[@rel="canonical"]', visible: false)
-          end
-        end
-      end
+    def have_any_canonical_links
+      have_xpath('//link[@rel="canonical"]', visible: false)
     end
   end
 end

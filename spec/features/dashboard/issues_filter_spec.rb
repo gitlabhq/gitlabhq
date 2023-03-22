@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Dashboard Issues filtering', :js, feature_category: :team_planning do
-  include Spec::Support::Helpers::Features::SortingHelpers
+  include Features::SortingHelpers
   include FilteredSearchHelpers
 
   let(:user)      { create(:user) }

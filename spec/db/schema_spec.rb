@@ -313,6 +313,25 @@ RSpec.describe 'Database schema', feature_category: :database do
         expect(problematic_tables).to be_empty
       end
     end
+
+    context 'for CI partitioned table' do
+      # Check that each partitionable model with more than 1 column has the partition_id column at the trailing
+      # position. Using PARTITIONABLE_MODELS instead of iterating tables since when partitioning existing tables,
+      # the routing table only gets created after the PK has already been created, which would be too late for a check.
+      Ci::Partitionable::Testing::PARTITIONABLE_MODELS.each do |klass|
+        model = klass.safe_constantize
+        table_name = model.table_name
+
+        primary_key_columns = Array(model.connection.primary_key(table_name))
+        next if primary_key_columns.count == 1
+
+        describe table_name do
+          it 'expects every PK to have partition_id at trailing position' do
+            expect(primary_key_columns).to match([an_instance_of(String), 'partition_id'])
+          end
+        end
+      end
+    end
   end
 
   context 'index names' do

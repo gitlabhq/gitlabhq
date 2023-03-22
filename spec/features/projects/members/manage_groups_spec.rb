@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe 'Project > Members > Manage groups', :js, feature_category: :subgroups do
   include ActionView::Helpers::DateHelper
-  include Spec::Support::Helpers::Features::MembersHelpers
-  include Spec::Support::Helpers::Features::InviteMembersModalHelper
+  include Features::MembersHelpers
+  include Features::InviteMembersModalHelpers
 
   let_it_be(:maintainer) { create(:user) }
 

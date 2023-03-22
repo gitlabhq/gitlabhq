@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'CI Lint', :js, feature_category: :pipeline_composition do
-  include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
+  include Features::SourceEditorSpecHelpers
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }

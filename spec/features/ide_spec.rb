@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'IDE', :js, feature_category: :web_ide do
-  include WebIdeSpecHelpers
+  include Features::WebIdeSpecHelpers
 
   let_it_be(:ide_iframe_selector) { '#ide iframe' }
   let_it_be(:normal_project) { create(:project, :repository) }

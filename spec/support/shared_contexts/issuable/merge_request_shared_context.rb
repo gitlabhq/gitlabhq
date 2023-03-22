@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'merge request show action' do
-  include Spec::Support::Helpers::Features::MergeRequestHelpers
+  include Features::MergeRequestHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }

@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :projects do
-  include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
+  include Features::SourceEditorSpecHelpers
   include ProjectForksHelper
-  include BlobSpecHelpers
+  include Features::BlobSpecHelpers
 
   let(:project) { create(:project, :repository, name: 'Shop') }
   let(:project2) { create(:project, :repository, name: 'Another Project', path: 'another-project') }

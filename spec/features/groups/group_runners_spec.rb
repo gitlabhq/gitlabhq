@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe "Group Runners", feature_category: :runner_fleet do
-  include Spec::Support::Helpers::Features::RunnersHelpers
+  include Features::RunnersHelpers
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:group_owner) { create(:user) }

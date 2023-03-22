@@ -8,7 +8,7 @@ require 'spec_helper'
 # Because this kind of spec takes more time to run there is no need to add new ones
 # for each existing quick action unless they test something not tested by existing tests.
 RSpec.describe 'Issues > User uses quick actions', :js, feature_category: :team_planning do
-  include Spec::Support::Helpers::Features::NotesHelpers
+  include Features::NotesHelpers
 
   context "issuable common quick actions" do
     let(:new_url_opts) { {} }

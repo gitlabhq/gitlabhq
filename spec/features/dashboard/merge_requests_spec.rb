@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Dashboard Merge Requests', feature_category: :code_review_workflow do
-  include Spec::Support::Helpers::Features::SortingHelpers
+  include Features::SortingHelpers
   include FilteredSearchHelpers
   include ProjectForksHelper
 

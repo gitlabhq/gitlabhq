@@ -63,6 +63,7 @@ module Integrations
       :namespace,
       :new_issue_url,
       :notify_only_broken_pipelines,
+      :package_name,
       :password,
       :priority,
       :project_key,

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Members > Tabs', :js, feature_category: :subgroups do
-  include Spec::Support::Helpers::Features::MembersHelpers
+  include Features::MembersHelpers
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }

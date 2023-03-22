@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe "User comments on issue", :js, feature_category: :team_planning do
-  include Spec::Support::Helpers::Features::NotesHelpers
+  include Features::NotesHelpers
 
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:issue) { create(:issue, project: project) }

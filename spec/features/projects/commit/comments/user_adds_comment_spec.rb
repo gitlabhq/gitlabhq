@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe "User adds a comment on a commit", :js, feature_category: :source_code_management do
-  include Spec::Support::Helpers::Features::NotesHelpers
+  include Features::NotesHelpers
   include RepoHelpers
 
   let(:comment_text) { "XML attached" }

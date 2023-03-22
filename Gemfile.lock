@@ -635,6 +635,8 @@ GEM
       i18n (>= 0.7)
       multi_json
       request_store (>= 1.0)
+    google-apis-androidpublisher_v3 (0.34.0)
+      google-apis-core (>= 0.9.1, < 2.a)
     google-apis-cloudbilling_v1 (0.21.0)
       google-apis-core (>= 0.9.1, < 2.a)
     google-apis-cloudresourcemanager_v1 (0.31.0)
@@ -1728,6 +1730,7 @@ DEPENDENCIES
   gitlab_chronic_duration (~> 0.10.6.2)
   gitlab_omniauth-ldap (~> 2.2.0)
   gon (~> 6.4.0)
+  google-apis-androidpublisher_v3 (~> 0.34.0)
   google-apis-cloudbilling_v1 (~> 0.21.0)
   google-apis-cloudresourcemanager_v1 (~> 0.31.0)
   google-apis-compute_v1 (~> 0.57.0)

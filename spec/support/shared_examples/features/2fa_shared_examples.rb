@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'hardware device for 2fa' do |device_type|
-  include Spec::Support::Helpers::Features::TwoFactorHelpers
+  include Features::TwoFactorHelpers
   include Spec::Support::Helpers::ModalHelpers
 
   def register_device(device_type, **kwargs)

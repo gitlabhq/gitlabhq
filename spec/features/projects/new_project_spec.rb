@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'New project', :js, feature_category: :projects do
-  include Spec::Support::Helpers::Features::TopNavSpecHelpers
+  include Features::TopNavSpecHelpers
 
   context 'as a user' do
     let_it_be(:user) { create(:user) }

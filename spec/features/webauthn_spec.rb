@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_category: :system_access do
-  include Spec::Support::Helpers::Features::TwoFactorHelpers
+  include Features::TwoFactorHelpers
   let(:app_id) { "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}" }
 
   before do

@@ -94,7 +94,7 @@ module Tooling
       end
 
       def find_pattern_in_file(file, pattern)
-        File.read(file).scan(pattern).flatten.uniq
+        File.read(file).scan(pattern).flatten.compact.uniq
       end
 
       private

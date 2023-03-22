@@ -29,7 +29,7 @@ namespace :tw do
       CodeOwnerRule.new('Code Review', '@aqualls'),
       CodeOwnerRule.new('Compliance', '@eread'),
       CodeOwnerRule.new('Composition Analysis', '@rdickenson'),
-      CodeOwnerRule.new('Configure', '@phillipwells'),
+      CodeOwnerRule.new('Environments', '@phillipwells'),
       CodeOwnerRule.new('Container Registry', '@marcel.amirault'),
       CodeOwnerRule.new('Contributor Experience', '@eread'),
       CodeOwnerRule.new('Database', '@aqualls'),

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition do
-  include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
+  include Features::SourceEditorSpecHelpers
 
   let(:project) { create(:project_empty_repo, :public) }
   let(:user) { create(:user) }

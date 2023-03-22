@@ -2,7 +2,7 @@
 
 module Ci
   ##
-  # This module implements a way to set the `partion_id` value on a dependent
+  # This module implements a way to set the `partition_id` value on a dependent
   # resource from a parent record.
   # Usage:
   #

@@ -169,3 +169,20 @@ PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id/p
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5/publish"
 ```
+
+## Publish all pending draft notes
+
+Bulk publishes all existing draft notes for a given merge request that belong to the user.
+
+```plaintext
+POST /projects/:id/merge_requests/:merge_request_iid/draft_notes/bulk_publish
+```
+
+| Attribute           | Type              | Required | Description           |
+| ------------------- | ----------------- | -------- | --------------------- |
+| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).
+| `merge_request_iid` | integer           | yes      | The IID of a project merge request.
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/bulk_publish"
+```

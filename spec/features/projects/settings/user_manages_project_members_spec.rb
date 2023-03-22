@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Settings > User manages project members', feature_category: :projects do
-  include Spec::Support::Helpers::Features::MembersHelpers
+  include Features::MembersHelpers
   include Spec::Support::Helpers::ModalHelpers
   include ListboxHelpers
 

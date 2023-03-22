@@ -272,6 +272,7 @@ FactoryBot.define do
     active { true }
     type { 'Integrations::GooglePlay' }
 
+    package_name { 'com.gitlab.foo.bar' }
     service_account_key_file_name { 'service_account.json' }
     service_account_key { File.read('spec/fixtures/service_account.json') }
   end

@@ -461,7 +461,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/operations/moving_repositories.md @eread
 /doc/administration/package_information/ @axil
 /doc/administration/packages/ @marcel.amirault
-/doc/administration/pages/ @ashrafkhamis
 /doc/administration/polling.md @axil
 /doc/administration/postgresql/ @aqualls
 /doc/administration/postgresql/multiple_databases.md @lciutacu
@@ -490,7 +489,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/troubleshooting/postgresql.md @aqualls
 /doc/administration/uploads.md @axil
 /doc/administration/user_settings.md @jglassman1
-/doc/administration/wikis/ @ashrafkhamis
 /doc/api/access_requests.md @jglassman1
 /doc/api/admin_sidekiq_queues.md @axil
 /doc/api/alert_management_alerts.md @msedlakjakubowski
@@ -551,7 +549,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/group_relations_export.md @eread
 /doc/api/group_releases.md @phillipwells
 /doc/api/group_repository_storage_moves.md @ashrafkhamis
-/doc/api/group_wikis.md @ashrafkhamis
 /doc/api/groups.md @lciutacu
 /doc/api/import.md @eread
 /doc/api/index.md @ashrafkhamis
@@ -588,8 +585,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/openapi/ @ashrafkhamis
 /doc/api/packages.md @marcel.amirault
 /doc/api/packages/ @marcel.amirault
-/doc/api/pages.md @ashrafkhamis
-/doc/api/pages_domains.md @ashrafkhamis
 /doc/api/personal_access_tokens.md @eread
 /doc/api/pipeline_schedules.md @drcatherinepope
 /doc/api/pipeline_triggers.md @drcatherinepope
@@ -651,7 +646,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/vulnerabilities.md @rdickenson
 /doc/api/vulnerability_exports.md @rdickenson
 /doc/api/vulnerability_findings.md @rdickenson
-/doc/api/wikis.md @ashrafkhamis
+/doc/architecture/blueprints/cells/ @lciutacu
 /doc/architecture/blueprints/database/scalability/patterns/ @aqualls
 /doc/architecture/blueprints/database_scaling/ @aqualls
 /doc/ci/ @drcatherinepope
@@ -715,9 +710,9 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/developing_with_solargraph.md @aqualls
 /doc/development/development_processes.md @sselhorn
 /doc/development/distributed_tracing.md @msedlakjakubowski
+/doc/development/distribution/ @axil
 /doc/development/documentation/ @sselhorn
 /doc/development/export_csv.md @eread
-/doc/development/fe_guide/content_editor.md @ashrafkhamis
 /doc/development/fe_guide/customizable_dashboards.md @lciutacu
 /doc/development/fe_guide/dark_mode.md @sselhorn
 /doc/development/fe_guide/graphql.md @sselhorn
@@ -758,7 +753,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/omnibus.md @axil
 /doc/development/organization/ @lciutacu
 /doc/development/packages/ @marcel.amirault
-/doc/development/pages/ @ashrafkhamis
 /doc/development/permissions.md @jglassman1
 /doc/development/policies.md @jglassman1
 /doc/development/project_templates.md @aqualls
@@ -775,7 +769,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/testing_guide/ @sselhorn
 /doc/development/value_stream_analytics.md @lciutacu
 /doc/development/value_stream_analytics/ @lciutacu
-/doc/development/wikis.md @ashrafkhamis
 /doc/development/work_items.md @msedlakjakubowski
 /doc/development/work_items_widgets.md @msedlakjakubowski
 /doc/development/workhorse/ @aqualls
@@ -912,11 +905,11 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/permissions.md @jglassman1
 /doc/user/product_analytics/ @lciutacu
 /doc/user/profile/account/ @jglassman1
+/doc/user/profile/comment_templates.md @aqualls
 /doc/user/profile/contributions_calendar.md @lciutacu
 /doc/user/profile/index.md @jglassman1
 /doc/user/profile/notifications.md @msedlakjakubowski
 /doc/user/profile/personal_access_tokens.md @jglassman1
-/doc/user/profile/saved_replies.md @aqualls
 /doc/user/profile/user_passwords.md @jglassman1
 /doc/user/project/autocomplete_characters.md @aqualls
 /doc/user/project/badges.md @lciutacu
@@ -948,7 +941,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/project/merge_requests/status_checks.md @eread
 /doc/user/project/milestones/ @msedlakjakubowski
 /doc/user/project/organize_work_with_projects.md @lciutacu
-/doc/user/project/pages/ @ashrafkhamis
 /doc/user/project/protected_branches.md @aqualls
 /doc/user/project/protected_tags.md @aqualls
 /doc/user/project/push_options.md @aqualls
@@ -970,7 +962,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/project/time_tracking.md @msedlakjakubowski
 /doc/user/project/web_ide/ @ashrafkhamis
 /doc/user/project/web_ide_beta/ @ashrafkhamis
-/doc/user/project/wiki/ @ashrafkhamis
 /doc/user/project/working_with_projects.md @lciutacu
 /doc/user/public_access.md @lciutacu
 /doc/user/report_abuse.md @phillipwells

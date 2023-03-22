@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Members > Anonymous user sees members' do
-  include Spec::Support::Helpers::Features::MembersHelpers
+  include Features::MembersHelpers
 
   let(:user) { create(:user) }
   let(:group) { create(:group, :public) }

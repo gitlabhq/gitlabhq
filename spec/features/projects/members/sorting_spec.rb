@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Members > Sorting', :js, feature_category: :subgroups do
-  include Spec::Support::Helpers::Features::MembersHelpers
+  include Features::MembersHelpers
 
   let(:maintainer) { create(:user, name: 'John Doe', created_at: 5.days.ago, last_activity_on: Date.today) }
   let(:developer) { create(:user, name: 'Mary Jane', created_at: 1.day.ago, last_sign_in_at: 5.days.ago, last_activity_on: Date.today - 5) }

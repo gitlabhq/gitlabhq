@@ -61,7 +61,8 @@ RSpec.describe Tooling::Mappings::PartialToViewsMappings, feature_category: :too
       let(:changed_files) do
         [
           "#{view_base_folder}/my_view.html.haml",
-          "#{view_base_folder}/_my_partial.html.haml"
+          "#{view_base_folder}/_my_partial.html.haml",
+          "#{view_base_folder}/_my_other_partial.html.haml"
         ]
       end
 

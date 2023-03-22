@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.shared_examples 'confidential notes on issuables' do
-  include Spec::Support::Helpers::Features::NotesHelpers
+  include Features::NotesHelpers
 
   context 'when user does not have permissions' do
     it 'does not show confidential note checkbox' do

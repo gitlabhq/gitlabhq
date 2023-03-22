@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Admin::Users::User', feature_category: :user_management do
-  include Spec::Support::Helpers::Features::AdminUsersHelpers
+  include Features::AdminUsersHelpers
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:user) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
