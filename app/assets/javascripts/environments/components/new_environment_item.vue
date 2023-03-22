@@ -223,7 +223,7 @@ export default {
           :icon="icon"
           :aria-label="label"
           size="small"
-          category="tertiary"
+          category="secondary"
           @click="toggleCollapse"
         />
         <gl-link

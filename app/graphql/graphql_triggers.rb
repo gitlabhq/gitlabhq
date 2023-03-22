@@ -48,6 +48,8 @@ module GraphqlTriggers
   end
 
   def self.merge_request_merge_status_updated(merge_request)
+    return unless Feature.enabled?(:realtime_mr_status_change, merge_request.project)
+
     GitlabSchema.subscriptions.trigger(
       'mergeRequestMergeStatusUpdated', { issuable_id: merge_request.to_gid }, merge_request
     )

@@ -1,6 +1,6 @@
 - @hide_top_links = true
-- @hide_breadcrumbs = true
 - @no_container = true
+- breadcrumb_title user_display_name(@user)
 - page_title       user_display_name(@user)
 - page_description @user.bio unless @user.blocked? || !@user.confirmed?
 - page_itemtype    'http://schema.org/Person'
@@ -14,161 +14,162 @@
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
 
 .user-profile
-  .cover-block.user-cover-block{ class: [('border-bottom' if profile_tabs.empty?)] }
-    = render layout: 'users/cover_controls' do
-      - if @user == current_user
-        = render Pajamas::ButtonComponent.new(href: profile_path,
-          icon: 'pencil',
-          button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: s_('UserProfile|Edit profile'), 'aria-label': 'Edit profile', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
-      - elsif current_user
-        #js-report-abuse{ data: { report_abuse_path: add_category_abuse_reports_path, reported_user_id: @user.id, reported_from_url: user_url(@user) } }
-      - verified_gpg_keys = @user.gpg_keys.select(&:verified?)
-      - if verified_gpg_keys.any?
-        = render Pajamas::ButtonComponent.new(href: user_gpg_keys_path,
-          icon: 'key',
-          button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: n_('View public GPG key', 'View public GPG keys', verified_gpg_keys.length), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
-      - if can?(current_user, :read_user_profile, @user)
-        = render Pajamas::ButtonComponent.new(href: user_path(@user, rss_url_options),
-          icon: 'rss',
-          button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: s_('UserProfile|Subscribe'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
-      - if current_user && current_user.admin?
-        = render Pajamas::ButtonComponent.new(href: [:admin, @user],
-          icon: 'user',
-          button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: s_('UserProfile|View user in admin area'), data: {toggle: 'tooltip', placement: 'bottom', container: 'body'}})
-      - if current_user && current_user.id != @user.id
-        - if current_user.following?(@user)
-          = form_tag user_unfollow_path(@user, :json), class: link_classes + 'gl-display-inline-block' do
-            = render Pajamas::ButtonComponent.new(type: :submit, button_options: { class: 'gl-w-full', data: { track_action: 'click_button', track_label: 'unfollow_from_profile' } }) do
-              = _('Unfollow')
-        - else
-          = form_tag user_follow_path(@user, :json), class: link_classes + 'gl-display-inline-block' do
-            = render Pajamas::ButtonComponent.new(variant: :confirm, type: :submit, button_options: { class: 'gl-w-full', data: { qa_selector: 'follow_user_link', track_action: 'click_button', track_label: 'follow_from_profile' } }) do
-              = _('Follow')
+  %div{ class: container_class }
+    .cover-block.user-cover-block{ class: [('border-bottom' if profile_tabs.empty? || show_super_sidebar?)] }
+      = render layout: 'users/cover_controls' do
+        - if @user == current_user
+          = render Pajamas::ButtonComponent.new(href: profile_path,
+            icon: 'pencil',
+            button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: s_('UserProfile|Edit profile'), 'aria-label': 'Edit profile', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
+        - elsif current_user
+          #js-report-abuse{ data: { report_abuse_path: add_category_abuse_reports_path, reported_user_id: @user.id, reported_from_url: user_url(@user) } }
+        - verified_gpg_keys = @user.gpg_keys.select(&:verified?)
+        - if verified_gpg_keys.any?
+          = render Pajamas::ButtonComponent.new(href: user_gpg_keys_path,
+            icon: 'key',
+            button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: n_('View public GPG key', 'View public GPG keys', verified_gpg_keys.length), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
+        - if can?(current_user, :read_user_profile, @user)
+          = render Pajamas::ButtonComponent.new(href: user_path(@user, rss_url_options),
+            icon: 'rss',
+            button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: s_('UserProfile|Subscribe'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
+        - if current_user && current_user.admin?
+          = render Pajamas::ButtonComponent.new(href: [:admin, @user],
+            icon: 'user',
+            button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: s_('UserProfile|View user in admin area'), data: {toggle: 'tooltip', placement: 'bottom', container: 'body'}})
+        - if current_user && current_user.id != @user.id
+          - if current_user.following?(@user)
+            = form_tag user_unfollow_path(@user, :json), class: link_classes + 'gl-display-inline-block' do
+              = render Pajamas::ButtonComponent.new(type: :submit, button_options: { class: 'gl-w-full', data: { track_action: 'click_button', track_label: 'unfollow_from_profile' } }) do
+                = _('Unfollow')
+          - else
+            = form_tag user_follow_path(@user, :json), class: link_classes + 'gl-display-inline-block' do
+              = render Pajamas::ButtonComponent.new(variant: :confirm, type: :submit, button_options: { class: 'gl-w-full', data: { qa_selector: 'follow_user_link', track_action: 'click_button', track_label: 'follow_from_profile' } }) do
+                = _('Follow')
 
-    .profile-header{ class: [('with-no-profile-tabs' if profile_tabs.empty?)] }
-      .gl-display-inline-block.gl-mx-8.gl-vertical-align-top
-        .avatar-holder
-          = link_to avatar_icon_for_user(@user, 400, current_user: current_user), target: '_blank', rel: 'noopener noreferrer' do
-            = render Pajamas::AvatarComponent.new(@user, alt: "", size: 96, avatar_options: { itemprop: "image" })
-        #js-user-achievements{ data: { root_url: root_url, user_id: @user.id } }
-      .gl-display-inline-block.gl-vertical-align-top.gl-text-left
-        - if @user.blocked? || !@user.confirmed?
-          .user-info
-            %h1.cover-title.gl-my-0
-              = user_display_name(@user)
-          = render "users/profile_basic_info"
-        - else
-          .user-info
-            %h1.cover-title.gl-my-0{ itemprop: 'name' }
-              = @user.name
-              - if @user.pronouns.present?
-                %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle
-                  = "(#{@user.pronouns})"
-              - if @user.status&.busy?
-                %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle= s_("UserProfile|(Busy)")
-
-            - if @user.pronunciation.present?
-              .gl-align-items-center
-                %p.gl-mb-4.gl-text-gray-500.gl-max-w-80.gl-mx-auto= s_("UserProfile|Pronounced as: %{pronunciation}") % { pronunciation: @user.pronunciation }
-
-            - if @user.status&.customized?
-              .cover-status.gl-display-inline-flex.gl-align-items-center.gl-mb-3
-                = emoji_icon(@user.status.emoji, class: 'gl-mr-2')
-                = markdown_field(@user.status, :message)
+      .profile-header{ class: [('with-no-profile-tabs' if profile_tabs.empty?)] }
+        .gl-display-inline-block.gl-mx-8.gl-vertical-align-top
+          .avatar-holder
+            = link_to avatar_icon_for_user(@user, 400, current_user: current_user), target: '_blank', rel: 'noopener noreferrer' do
+              = render Pajamas::AvatarComponent.new(@user, alt: "", size: 96, avatar_options: { itemprop: "image" })
+          #js-user-achievements{ data: { root_url: root_url, user_id: @user.id } }
+        .gl-display-inline-block.gl-vertical-align-top.gl-text-left
+          - if @user.blocked? || !@user.confirmed?
+            .user-info
+              %h1.cover-title.gl-my-0
+                = user_display_name(@user)
             = render "users/profile_basic_info"
-            - user_local_time = local_time(@user.timezone)
-            - if @user.location.present? || user_local_time.present? || work_information(@user).present?
-              .gl-text-gray-900
-                - if @user.location.present?
-                  = render 'middle_dot_divider', stacking: true, itemprop: 'address', itemscope: true, itemtype: 'https://schema.org/PostalAddress' do
-                    = sprite_icon('location', css_class: 'fgray')
-                    %span{ itemprop: 'addressLocality' }
-                      = @user.location
-                - if user_local_time.present?
-                  = render 'middle_dot_divider', stacking: true, data: { testid: 'user-local-time' } do
-                    = sprite_icon('clock', css_class: 'fgray')
-                    %span
-                      = user_local_time
-                - if work_information(@user).present?
-                  = render 'middle_dot_divider', stacking: true do
-                    = sprite_icon('work', css_class: 'fgray')
-                    %span
-                      = work_information(@user, with_schema_markup: true)
-            .gl-text-gray-900
-              - if @user.skype.present?
-                = render 'middle_dot_divider' do
-                  = link_to "skype:#{@user.skype}", class: 'gl-hover-text-decoration-none', title: "Skype" do
-                    = sprite_icon('skype', css_class: 'skype-icon')
-              - if @user.linkedin.present?
-                = render 'middle_dot_divider' do
-                  = link_to linkedin_url(@user), class: 'gl-hover-text-decoration-none', title: "LinkedIn", target: '_blank', rel: 'noopener noreferrer nofollow' do
-                    = sprite_icon('linkedin', css_class: 'linkedin-icon')
-              - if @user.twitter.present?
-                = render 'middle_dot_divider', breakpoint: 'sm' do
-                  = link_to twitter_url(@user), class: 'gl-hover-text-decoration-none', title: "Twitter", target: '_blank', rel: 'noopener noreferrer nofollow' do
-                    = sprite_icon('twitter', css_class: 'twitter-icon')
-              - if @user.discord.present?
-                = render 'middle_dot_divider', breakpoint: 'sm' do
-                  = link_to discord_url(@user), class: 'gl-hover-text-decoration-none', title: "Discord", target: '_blank', rel: 'noopener noreferrer nofollow' do
-                    = sprite_icon('discord', css_class: 'discord-icon')
-              - if @user.website_url.present?
-                = render 'middle_dot_divider', stacking: true do
-                  - if Feature.enabled?(:security_auto_fix) && @user.bot?
-                    = sprite_icon('question', css_class: 'gl-text-blue-600')
-                  = link_to @user.short_website_url, @user.full_website_url, target: '_blank', rel: 'me noopener noreferrer nofollow', itemprop: 'url'
-              - if display_public_email?(@user)
-                = render 'middle_dot_divider', stacking: true do
-                  = link_to @user.public_email, "mailto:#{@user.public_email}", itemprop: 'email'
-            - if @user.bio.present? && @user.confirmed? && !@user.blocked?
-              %p.profile-user-bio.gl-mb-3
-                = @user.bio
+          - else
+            .user-info
+              %h1.cover-title.gl-my-0{ itemprop: 'name' }
+                = @user.name
+                - if @user.pronouns.present?
+                  %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle
+                    = "(#{@user.pronouns})"
+                - if @user.status&.busy?
+                  %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle= s_("UserProfile|(Busy)")
 
-    - if !profile_tabs.empty? && !Feature.enabled?(:profile_tabs_vue, current_user)
-      .scrolling-tabs-container{ class: [('gl-display-none' if show_super_sidebar?)] }
-        .fade-left= sprite_icon('chevron-lg-left', size: 12)
-        .fade-right= sprite_icon('chevron-lg-right', size: 12)
-        %ul.nav-links.user-profile-nav.scrolling-tabs.nav.nav-tabs
-          - if profile_tab?(:overview)
-            %li.js-overview-tab
-              = link_to user_path, data: { target: 'div#js-overview', action: 'overview', toggle: 'tab' } do
-                = s_('UserProfile|Overview')
-          - if profile_tab?(:activity)
-            %li.js-activity-tab
-              = link_to user_activity_path, data: { target: 'div#activity', action: 'activity', toggle: 'tab' } do
-                = s_('UserProfile|Activity')
-          - unless Feature.enabled?(:security_auto_fix) && @user.bot?
-            - if profile_tab?(:groups)
-              %li.js-groups-tab
-                = link_to user_groups_path, data: { target: 'div#groups', action: 'groups', toggle: 'tab', endpoint: user_groups_path(format: :json) } do
-                  = s_('UserProfile|Groups')
-            - if profile_tab?(:contributed)
-              %li.js-contributed-tab
-                = link_to user_contributed_projects_path, data: { target: 'div#contributed', action: 'contributed', toggle: 'tab', endpoint: user_contributed_projects_path(format: :json) } do
-                  = s_('UserProfile|Contributed projects')
-            - if profile_tab?(:projects)
-              %li.js-projects-tab
-                = link_to user_projects_path, data: { target: 'div#projects', action: 'projects', toggle: 'tab', endpoint: user_projects_path(format: :json) } do
-                  = s_('UserProfile|Personal projects')
-            - if profile_tab?(:starred)
-              %li.js-starred-tab
-                = link_to user_starred_projects_path, data: { target: 'div#starred', action: 'starred', toggle: 'tab', endpoint: user_starred_projects_path(format: :json) } do
-                  = s_('UserProfile|Starred projects')
-            - if profile_tab?(:snippets)
-              %li.js-snippets-tab
-                = link_to user_snippets_path, data: { target: 'div#snippets', action: 'snippets', toggle: 'tab', endpoint: user_snippets_path(format: :json) } do
-                  = s_('UserProfile|Snippets')
-            - if profile_tab?(:followers)
-              %li.js-followers-tab
-                = link_to user_followers_path, data: { target: 'div#followers', action: 'followers', toggle: 'tab', endpoint: user_followers_path(format: :json) } do
-                  = s_('UserProfile|Followers')
-                  = gl_badge_tag @user.followers.count, size: :sm
-            - if profile_tab?(:following)
-              %li.js-following-tab
-                = link_to user_following_path, data: { target: 'div#following', action: 'following', toggle: 'tab', endpoint: user_following_path(format: :json), qa_selector: 'following_tab' } do
-                  = s_('UserProfile|Following')
-                  = gl_badge_tag @user.followees.count, size: :sm
-  - if !profile_tabs.empty? && Feature.enabled?(:profile_tabs_vue, current_user)
-    #js-profile-tabs{ data: user_profile_tabs_app_data(@user) }
+              - if @user.pronunciation.present?
+                .gl-align-items-center
+                  %p.gl-mb-4.gl-text-gray-500.gl-max-w-80.gl-mx-auto= s_("UserProfile|Pronounced as: %{pronunciation}") % { pronunciation: @user.pronunciation }
+
+              - if @user.status&.customized?
+                .cover-status.gl-display-inline-flex.gl-align-items-center.gl-mb-3
+                  = emoji_icon(@user.status.emoji, class: 'gl-mr-2')
+                  = markdown_field(@user.status, :message)
+              = render "users/profile_basic_info"
+              - user_local_time = local_time(@user.timezone)
+              - if @user.location.present? || user_local_time.present? || work_information(@user).present?
+                .gl-text-gray-900
+                  - if @user.location.present?
+                    = render 'middle_dot_divider', stacking: true, itemprop: 'address', itemscope: true, itemtype: 'https://schema.org/PostalAddress' do
+                      = sprite_icon('location', css_class: 'fgray')
+                      %span{ itemprop: 'addressLocality' }
+                        = @user.location
+                  - if user_local_time.present?
+                    = render 'middle_dot_divider', stacking: true, data: { testid: 'user-local-time' } do
+                      = sprite_icon('clock', css_class: 'fgray')
+                      %span
+                        = user_local_time
+                  - if work_information(@user).present?
+                    = render 'middle_dot_divider', stacking: true do
+                      = sprite_icon('work', css_class: 'fgray')
+                      %span
+                        = work_information(@user, with_schema_markup: true)
+              .gl-text-gray-900
+                - if @user.skype.present?
+                  = render 'middle_dot_divider' do
+                    = link_to "skype:#{@user.skype}", class: 'gl-hover-text-decoration-none', title: "Skype" do
+                      = sprite_icon('skype', css_class: 'skype-icon')
+                - if @user.linkedin.present?
+                  = render 'middle_dot_divider' do
+                    = link_to linkedin_url(@user), class: 'gl-hover-text-decoration-none', title: "LinkedIn", target: '_blank', rel: 'noopener noreferrer nofollow' do
+                      = sprite_icon('linkedin', css_class: 'linkedin-icon')
+                - if @user.twitter.present?
+                  = render 'middle_dot_divider', breakpoint: 'sm' do
+                    = link_to twitter_url(@user), class: 'gl-hover-text-decoration-none', title: "Twitter", target: '_blank', rel: 'noopener noreferrer nofollow' do
+                      = sprite_icon('twitter', css_class: 'twitter-icon')
+                - if @user.discord.present?
+                  = render 'middle_dot_divider', breakpoint: 'sm' do
+                    = link_to discord_url(@user), class: 'gl-hover-text-decoration-none', title: "Discord", target: '_blank', rel: 'noopener noreferrer nofollow' do
+                      = sprite_icon('discord', css_class: 'discord-icon')
+                - if @user.website_url.present?
+                  = render 'middle_dot_divider', stacking: true do
+                    - if Feature.enabled?(:security_auto_fix) && @user.bot?
+                      = sprite_icon('question', css_class: 'gl-text-blue-600')
+                    = link_to @user.short_website_url, @user.full_website_url, target: '_blank', rel: 'me noopener noreferrer nofollow', itemprop: 'url'
+                - if display_public_email?(@user)
+                  = render 'middle_dot_divider', stacking: true do
+                    = link_to @user.public_email, "mailto:#{@user.public_email}", itemprop: 'email'
+                - if @user.bio.present? && @user.confirmed? && !@user.blocked?
+                  %p.profile-user-bio.gl-mb-3
+                    = @user.bio
+
+      - if !profile_tabs.empty? && !Feature.enabled?(:profile_tabs_vue, current_user)
+        .scrolling-tabs-container{ class: [('gl-display-none' if show_super_sidebar?)] }
+          .fade-left= sprite_icon('chevron-lg-left', size: 12)
+          .fade-right= sprite_icon('chevron-lg-right', size: 12)
+          %ul.nav-links.user-profile-nav.scrolling-tabs.nav.nav-tabs
+            - if profile_tab?(:overview)
+              %li.js-overview-tab
+                = link_to user_path, data: { target: 'div#js-overview', action: 'overview', toggle: 'tab' } do
+                  = s_('UserProfile|Overview')
+            - if profile_tab?(:activity)
+              %li.js-activity-tab
+                = link_to user_activity_path, data: { target: 'div#activity', action: 'activity', toggle: 'tab' } do
+                  = s_('UserProfile|Activity')
+            - unless Feature.enabled?(:security_auto_fix) && @user.bot?
+              - if profile_tab?(:groups)
+                %li.js-groups-tab
+                  = link_to user_groups_path, data: { target: 'div#groups', action: 'groups', toggle: 'tab', endpoint: user_groups_path(format: :json) } do
+                    = s_('UserProfile|Groups')
+              - if profile_tab?(:contributed)
+                %li.js-contributed-tab
+                  = link_to user_contributed_projects_path, data: { target: 'div#contributed', action: 'contributed', toggle: 'tab', endpoint: user_contributed_projects_path(format: :json) } do
+                    = s_('UserProfile|Contributed projects')
+              - if profile_tab?(:projects)
+                %li.js-projects-tab
+                  = link_to user_projects_path, data: { target: 'div#projects', action: 'projects', toggle: 'tab', endpoint: user_projects_path(format: :json) } do
+                    = s_('UserProfile|Personal projects')
+              - if profile_tab?(:starred)
+                %li.js-starred-tab
+                  = link_to user_starred_projects_path, data: { target: 'div#starred', action: 'starred', toggle: 'tab', endpoint: user_starred_projects_path(format: :json) } do
+                    = s_('UserProfile|Starred projects')
+              - if profile_tab?(:snippets)
+                %li.js-snippets-tab
+                  = link_to user_snippets_path, data: { target: 'div#snippets', action: 'snippets', toggle: 'tab', endpoint: user_snippets_path(format: :json) } do
+                    = s_('UserProfile|Snippets')
+              - if profile_tab?(:followers)
+                %li.js-followers-tab
+                  = link_to user_followers_path, data: { target: 'div#followers', action: 'followers', toggle: 'tab', endpoint: user_followers_path(format: :json) } do
+                    = s_('UserProfile|Followers')
+                    = gl_badge_tag @user.followers.count, size: :sm
+              - if profile_tab?(:following)
+                %li.js-following-tab
+                  = link_to user_following_path, data: { target: 'div#following', action: 'following', toggle: 'tab', endpoint: user_following_path(format: :json), qa_selector: 'following_tab' } do
+                    = s_('UserProfile|Following')
+                    = gl_badge_tag @user.followees.count, size: :sm
+    - if !profile_tabs.empty? && Feature.enabled?(:profile_tabs_vue, current_user)
+      #js-profile-tabs{ data: user_profile_tabs_app_data(@user) }
   %div{ class: container_class }
     - unless Feature.enabled?(:profile_tabs_vue, current_user)
       .tab-content

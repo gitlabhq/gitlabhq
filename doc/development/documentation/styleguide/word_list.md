@@ -320,7 +320,7 @@ Use **compute credits** instead of these (or similar) terms:
 - **CI pipeline minutes**
 - **pipeline minutes quota**
 
-As of March, 2022, this language is still being standardized in the documentation and UI.
+This language is still being standardized in the documentation and UI beginning in March, 2023.
 For more information, see [issue 5218](https://gitlab.com/gitlab-com/Product/-/issues/5218).
 
 ## confirmation dialog

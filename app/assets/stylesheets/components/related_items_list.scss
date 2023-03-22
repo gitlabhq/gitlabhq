@@ -55,6 +55,10 @@ $item-remove-button-space: 42px;
   .item-weight .board-card-info-icon {
     min-width: $gl-padding;
     cursor: help;
+
+    &:focus {
+      @include gl-focus;
+    }
   }
 
   .confidential-icon {

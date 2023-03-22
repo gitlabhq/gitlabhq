@@ -382,6 +382,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
       const button = await expandCollapsedSection();
 
       expect(button.attributes('aria-label')).toBe(__('Collapse'));
+      expect(button.props('category')).toBe('secondary');
       expect(collapse.attributes('visible')).toBe('visible');
       expect(icon.props('name')).toBe('chevron-lg-down');
       expect(environmentName.classes('gl-font-weight-bold')).toBe(true);

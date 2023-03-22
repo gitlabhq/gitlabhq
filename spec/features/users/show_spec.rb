@@ -15,6 +15,14 @@ RSpec.describe 'User page', feature_category: :user_profile do
     expect(page).to have_content("User ID: #{user.id}")
   end
 
+  it 'shows name on breadcrumbs' do
+    subject
+
+    page.within '.breadcrumbs' do
+      expect(page).to have_content(user.name)
+    end
+  end
+
   context 'with public profile' do
     context 'with `profile_tabs_vue` feature flag disabled' do
       before do

@@ -115,6 +115,20 @@ RSpec.describe GraphqlTriggers do
 
       GraphqlTriggers.merge_request_merge_status_updated(merge_request)
     end
+
+    context 'when realtime_mr_status_change feature flag is disabled' do
+      before do
+        stub_feature_flags(realtime_mr_status_change: false)
+      end
+
+      it 'does not trigger mergeRequestMergeStatusUpdated subscription' do
+        merge_request = build_stubbed(:merge_request)
+
+        expect(GitlabSchema.subscriptions).not_to receive(:trigger)
+
+        GraphqlTriggers.merge_request_merge_status_updated(merge_request)
+      end
+    end
   end
 
   describe '.merge_request_approval_state_updated' do
