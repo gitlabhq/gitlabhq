@@ -611,7 +611,6 @@ Lint/UnusedMethodArgument:
     - 'spec/lib/gitlab/sidekiq_middleware/duplicate_jobs/server_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/worker_context/server_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware_spec.rb'
-    - 'spec/lib/gitlab/url_blocker_spec.rb'
     - 'spec/migrations/20211018152654_schedule_remove_duplicate_vulnerabilities_findings3_spec.rb'
     - 'spec/migrations/20211116111644_schedule_remove_occurrence_pipelines_and_duplicate_vulnerabilities_findings_spec.rb'
     - 'spec/migrations/20211207135331_schedule_recalculate_uuid_on_vulnerabilities_occurrences4_spec.rb'

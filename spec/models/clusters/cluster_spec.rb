@@ -714,10 +714,9 @@ feature_category: :kubernetes_management do
       let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
       let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
       let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
-      let!(:knative) { create(:clusters_applications_knative, cluster: cluster) }
 
       it 'returns a list of created applications' do
-        is_expected.to contain_exactly(helm, ingress, runner, knative)
+        is_expected.to contain_exactly(helm, ingress, runner)
       end
     end
 
@@ -1425,36 +1424,6 @@ feature_category: :kubernetes_management do
     end
   end
 
-  describe '#knative_pre_installed?' do
-    subject(:knative_pre_installed?) { cluster.knative_pre_installed? }
-
-    before do
-      allow(cluster).to receive(:provider).and_return(provider)
-    end
-
-    context 'without provider' do
-      let(:provider) {}
-
-      it { is_expected.to eq(false) }
-    end
-
-    context 'with provider' do
-      let(:provider) { instance_double(Clusters::Providers::Aws, knative_pre_installed?: knative_pre_installed?) }
-
-      context 'with knative_pre_installed? set to true' do
-        let(:knative_pre_installed?) { true }
-
-        it { is_expected.to eq(true) }
-      end
-
-      context 'with knative_pre_installed? set to false' do
-        let(:knative_pre_installed?) { false }
-
-        it { is_expected.to eq(false) }
-      end
-    end
-  end
-
   describe '#platform_kubernetes_active?' do
     subject(:platform_kubernetes_active?) { cluster.platform_kubernetes_active? }
 
@@ -1560,36 +1529,6 @@ feature_category: :kubernetes_management do
 
     context 'with application_ingress' do
       let(:application_ingress) { instance_double(Clusters::Applications::Ingress, available?: available?) }
-
-      context 'with available? set to true' do
-        let(:available?) { true }
-
-        it { is_expected.to eq(true) }
-      end
-
-      context 'with available? set to false' do
-        let(:available?) { false }
-
-        it { is_expected.to eq(false) }
-      end
-    end
-  end
-
-  describe '#application_knative_available?' do
-    subject(:application_knative_available?) { cluster.application_knative_available? }
-
-    before do
-      allow(cluster).to receive(:application_knative).and_return(application_knative)
-    end
-
-    context 'without application_knative' do
-      let(:application_knative) {}
-
-      it { is_expected.to eq(false) }
-    end
-
-    context 'with application_knative' do
-      let(:application_knative) { instance_double(Clusters::Applications::Knative, available?: available?) }
 
       context 'with available? set to true' do
         let(:available?) { true }

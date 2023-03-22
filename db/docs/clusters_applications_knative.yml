@@ -1,7 +1,5 @@
 ---
 table_name: clusters_applications_knative
-classes:
-- Clusters::Applications::Knative
 feature_categories:
 - kubernetes_management
 description: "(Deprecated) A GitLab managed Knative installation in a Kubernetes cluster"

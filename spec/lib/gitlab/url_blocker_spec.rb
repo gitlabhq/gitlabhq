@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
+RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :shared do
   include StubRequests
 
   let(:schemes) { %w[http https] }
@@ -21,7 +21,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
       end
     end
 
-    shared_context 'instance configured to deny all requests' do
+    shared_context 'when instance configured to deny all requests' do
       before do
         allow(Gitlab::CurrentSettings).to receive(:current_application_settings?).and_return(true)
         stub_application_setting(deny_all_requests_except_allowed: true)
@@ -30,7 +30,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
 
     shared_examples 'a URI denied by `deny_all_requests_except_allowed`' do
       context 'when instance setting is enabled' do
-        include_context 'instance configured to deny all requests'
+        include_context 'when instance configured to deny all requests'
 
         it 'blocks the request' do
           expect { subject }.to raise_error(described_class::BlockedUrlError)
@@ -81,7 +81,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
     end
 
     shared_examples 'a URI exempt from `deny_all_requests_except_allowed`' do
-      include_context 'instance configured to deny all requests'
+      include_context 'when instance configured to deny all requests'
 
       it 'does not block the request' do
         expect { subject }.not_to raise_error
@@ -256,7 +256,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
       end
 
       context 'when domain is too long' do
-        let(:import_url) { 'https://example' + 'a' * 1024 + '.com' }
+        let(:import_url) { "https://example#{'a' * 1024}.com" }
 
         it 'raises an error' do
           expect { subject }.to raise_error(described_class::BlockedUrlError)
@@ -285,7 +285,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
       end
     end
 
-    context 'DNS rebinding protection with IP allowed' do
+    context 'when DNS rebinding protection with IP allowed' do
       let(:import_url) { 'http://a.192.168.0.120.3times.127.0.0.1.1time.repeat.rebind.network:9121/scrape?target=unix:///var/opt/gitlab/redis/redis.socket&amp;check-keys=*' }
 
       before do
@@ -302,7 +302,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
       it_behaves_like 'a URI exempt from `deny_all_requests_except_allowed`'
     end
 
-    context 'disabled DNS rebinding protection' do
+    context 'with disabled DNS rebinding protection' do
       let(:options) { { dns_rebind_protection: false, schemes: schemes } }
 
       context 'when URI is internal' do
@@ -366,6 +366,32 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
         end
       end
     end
+
+    describe 'options' do
+      describe 'schemes' do
+        context 'with :none' do
+          let(:schemes) { :none }
+
+          context 'when URL has no scheme' do
+            let(:import_url) { '1.1.1.1' }
+
+            it_behaves_like 'validates URI and hostname' do
+              let(:expected_uri) { import_url }
+              let(:expected_hostname) { nil }
+            end
+          end
+
+          context 'when URL has a scheme' do
+            let(:import_url) { 'http://1.1.1.1' }
+
+            it 'raises an error' do
+              expect { subject }
+                .to raise_error(described_class::BlockedUrlError, "No scheme allowed but got `http://`")
+            end
+          end
+        end
+      end
+    end
   end
 
   describe '#blocked_url?' do
@@ -392,6 +418,11 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
     it 'returns true for bad scheme' do
       expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git', schemes: ['https'])).to be false
       expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git', schemes: ['http'])).to be true
+    end
+
+    it 'return true when schemes is :none' do
+      expect(described_class.blocked_url?('gitlab.com', schemes: :none)).to be false
+      expect(described_class.blocked_url?('smtp://gitlab.com', schemes: :none)).to be true
     end
 
     it 'returns true for bad protocol on configured web/SSH host and ports' do
@@ -483,7 +514,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
       expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git', schemes: schemes)).to be false
     end
 
-    context 'when allow_local_network is' do
+    describe 'allow_local_network' do
       let(:shared_address_space_ips) { ['100.64.0.0', '100.64.127.127', '100.64.255.255'] }
 
       let(:local_ips) do
@@ -564,11 +595,11 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
         end
       end
 
-      context 'true (default)' do
+      context 'when true (default)' do
         it_behaves_like 'allows local requests', { allow_localhost: true, allow_local_network: true, schemes: %w[http https] }
       end
 
-      context 'false' do
+      context 'when false' do
         it 'blocks urls from private networks' do
           local_ips.each do |ip|
             stub_domain_resolv(fake_domain, ip) do
@@ -721,14 +752,14 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
                 end
               end
 
-              context 'when dns_rebinding_setting is' do
-                context 'enabled' do
+              describe 'dns_rebinding_setting' do
+                context 'when enabled' do
                   let(:dns_rebind_value) { true }
 
                   it_behaves_like 'allowlists the domain'
                 end
 
-                context 'disabled' do
+                context 'when disabled' do
                   let(:dns_rebind_value) { false }
 
                   it_behaves_like 'allowlists the domain'
@@ -768,8 +799,8 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
       end
     end
 
-    context 'when enforce_user is' do
-      context 'false (default)' do
+    describe 'enforce_user' do
+      context 'when false (default)' do
         it 'does not block urls with a non-alphanumeric username' do
           expect(described_class).not_to be_blocked_url('ssh://-oProxyCommand=whoami@example.com/a', schemes: ['ssh'])
 
@@ -781,7 +812,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
         end
       end
 
-      context 'true' do
+      context 'when true' do
         it 'blocks urls with a non-alphanumeric username' do
           aggregate_failures do
             expect(described_class).to be_blocked_url('ssh://-oProxyCommand=whoami@example.com/a', enforce_user: true, schemes: ['ssh'])
@@ -849,7 +880,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
       end
     end
 
-    def stub_domain_resolv(domain, ip, port = 80, &block)
+    def stub_domain_resolv(domain, ip, port = 80)
       address = instance_double(Addrinfo,
         ip_address: ip,
         ipv4_private?: true,

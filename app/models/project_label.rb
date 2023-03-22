@@ -23,6 +23,10 @@ class ProjectLabel < Label
     super(project, target_project: target_project, format: format, full: full)
   end
 
+  def preloaded_parent_container
+    association(:project).loaded? ? project : parent_container
+  end
+
   private
 
   def title_must_not_exist_at_group_level

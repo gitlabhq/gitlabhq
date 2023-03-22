@@ -218,7 +218,6 @@ Style/StringConcatenation:
     - 'spec/lib/gitlab/themes_spec.rb'
     - 'spec/lib/gitlab/throttle_spec.rb'
     - 'spec/lib/gitlab/tree_summary_spec.rb'
-    - 'spec/lib/gitlab/url_blocker_spec.rb'
     - 'spec/lib/gitlab/utils_spec.rb'
     - 'spec/lib/gitlab/visibility_level_spec.rb'
     - 'spec/lib/gitlab/wiki_pages/front_matter_parser_spec.rb'

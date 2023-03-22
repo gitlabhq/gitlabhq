@@ -101,10 +101,5 @@ FactoryBot.define do
     factory :clusters_applications_runner, class: 'Clusters::Applications::Runner' do
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
     end
-
-    factory :clusters_applications_knative, class: 'Clusters::Applications::Knative' do
-      hostname { 'example.com' }
-      cluster factory: %i(cluster with_installed_helm provided_by_gcp)
-    end
   end
 end

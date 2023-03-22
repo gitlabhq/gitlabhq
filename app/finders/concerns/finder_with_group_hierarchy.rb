@@ -27,11 +27,8 @@ module FinderWithGroupHierarchy
       # we can preset root group for all of them to optimize permission checks
       Group.preset_root_ancestor_for(groups)
 
-      # Preloading the max access level for the given groups to avoid N+1 queries
-      # during the access check.
-      if !skip_authorization && current_user && Feature.enabled?(:preload_max_access_levels_for_labels_finder, group)
-        Preloaders::UserMaxAccessLevelInGroupsPreloader.new(groups, current_user).execute
-      end
+      preload_associations(groups) if !skip_authorization && current_user && Feature.enabled?(
+        :preload_max_access_levels_for_labels_finder, group)
 
       groups_user_can_read_items(groups).map(&:id)
     end
@@ -77,4 +74,10 @@ module FinderWithGroupHierarchy
       groups.select { |group| authorized_to_read_item?(group) }
     end
   end
+
+  def preload_associations(groups)
+    Preloaders::UserMaxAccessLevelInGroupsPreloader.new(groups, current_user).execute
+  end
 end
+
+FinderWithGroupHierarchy.prepend_mod_with('FinderWithGroupHierarchy')

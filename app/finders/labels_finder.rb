@@ -11,6 +11,11 @@ class LabelsFinder < UnionFinder
   def initialize(current_user, params = {})
     @current_user = current_user
     @params = params
+    # Preload container records (project, group) by default, in some cases we invoke
+    # the LabelsPreloader on the loaded records to prevent all N+1 queries.
+    # In that case we disable the default with_preloaded_container scope because it
+    # interferes with the LabelsPreloader.
+    @preload_parent_association = params.fetch(:preload_parent_association, true)
   end
 
   def execute(skip_authorization: false)
@@ -19,7 +24,9 @@ class LabelsFinder < UnionFinder
     items = with_title(items)
     items = by_subscription(items)
     items = by_search(items)
-    sort(items.with_preloaded_container)
+
+    items = items.with_preloaded_container if @preload_parent_association
+    sort(items)
   end
 
   private

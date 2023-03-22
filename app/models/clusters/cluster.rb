@@ -14,8 +14,7 @@ module Clusters
     APPLICATIONS = {
       Clusters::Applications::Helm.application_name => Clusters::Applications::Helm,
       Clusters::Applications::Ingress.application_name => Clusters::Applications::Ingress,
-      Clusters::Applications::Runner.application_name => Clusters::Applications::Runner,
-      Clusters::Applications::Knative.application_name => Clusters::Applications::Knative
+      Clusters::Applications::Runner.application_name => Clusters::Applications::Runner
     }.freeze
     DEFAULT_ENVIRONMENT = '*'
     KUBE_INGRESS_BASE_DOMAIN = 'KUBE_INGRESS_BASE_DOMAIN'
@@ -54,7 +53,6 @@ module Clusters
     has_one_cluster_application :helm
     has_one_cluster_application :ingress
     has_one_cluster_application :runner
-    has_one_cluster_application :knative
 
     has_many :kubernetes_namespaces
     has_many :metrics_dashboard_annotations, class_name: 'Metrics::Dashboard::Annotation', inverse_of: :cluster
@@ -270,10 +268,6 @@ module Clusters
 
     def application_ingress_available?
       !!application_ingress&.available?
-    end
-
-    def application_knative_available?
-      !!application_knative&.available?
     end
 
     def integration_prometheus_available?

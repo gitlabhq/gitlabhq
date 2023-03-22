@@ -337,7 +337,7 @@ describe('AppComponent', () => {
         });
       });
 
-      it('shows appropriate error alert if request forbidden to leave group', () => {
+      it('shows appropriate error alert if request forbids to leave group', () => {
         const message = 'Failed to leave the group. Please make sure you are not the only owner.';
         jest.spyOn(vm.service, 'leaveGroup').mockRejectedValue({ status: HTTP_STATUS_FORBIDDEN });
         jest.spyOn(vm.store, 'removeGroup');

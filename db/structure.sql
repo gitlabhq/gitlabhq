@@ -15367,11 +15367,11 @@ ALTER SEQUENCE design_management_versions_id_seq OWNED BY design_management_vers
 CREATE TABLE design_user_mentions (
     id bigint NOT NULL,
     design_id integer NOT NULL,
-    note_id integer NOT NULL,
+    note_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     mentioned_users_ids integer[],
     mentioned_projects_ids integer[],
     mentioned_groups_ids integer[],
-    note_id_convert_to_bigint bigint DEFAULT 0 NOT NULL
+    note_id bigint NOT NULL
 );
 
 CREATE SEQUENCE design_user_mentions_id_seq
