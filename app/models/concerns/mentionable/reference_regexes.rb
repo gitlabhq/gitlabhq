@@ -5,9 +5,7 @@ module Mentionable
     extend Gitlab::Utils::StrongMemoize
 
     def self.reference_pattern(link_patterns, issue_pattern)
-      Regexp.union(link_patterns,
-                   issue_pattern,
-                   *other_patterns)
+      Regexp.union(link_patterns, issue_pattern, *other_patterns)
     end
 
     def self.other_patterns

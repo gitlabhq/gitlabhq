@@ -15,7 +15,7 @@ RSpec.describe API::PersonalAccessTokens, feature_category: :system_access do
     shared_examples 'response as expected' do |params|
       subject { get api(path, personal_access_token: current_users_token), params: params }
 
-      it "status, count and result as expected" do
+      it "status, count and result as expected", :aggregate_failures do
         subject
 
         case status
@@ -32,9 +32,9 @@ RSpec.describe API::PersonalAccessTokens, feature_category: :system_access do
 
     context 'logged in as an Administrator' do
       let_it_be(:current_user) { create(:admin) }
-      let_it_be(:current_users_token) { create(:personal_access_token, user: current_user) }
+      let_it_be(:current_users_token) { create(:personal_access_token, :admin_mode, user: current_user) }
 
-      it 'returns all PATs by default' do
+      it 'returns all PATs by default', :aggregate_failures do
         get api(path, current_user)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -45,8 +45,8 @@ RSpec.describe API::PersonalAccessTokens, feature_category: :system_access do
         let_it_be(:token) { create(:personal_access_token) }
         let_it_be(:token_impersonated) { create(:personal_access_token, impersonation: true, user: token.user) }
 
-        it 'returns only PATs belonging to that user' do
-          get api(path, current_user), params: { user_id: token.user.id }
+        it 'returns only PATs belonging to that user', :aggregate_failures do
+          get api(path, current_user, admin_mode: true), params: { user_id: token.user.id }
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response.count).to eq(2)
@@ -243,7 +243,7 @@ RSpec.describe API::PersonalAccessTokens, feature_category: :system_access do
       let_it_be(:current_user) { create(:user) }
       let_it_be(:current_users_token) { create(:personal_access_token, user: current_user) }
 
-      it 'returns all PATs belonging to the signed-in user' do
+      it 'returns all PATs belonging to the signed-in user', :aggregate_failures do
         get api(path, personal_access_token: current_users_token)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -255,7 +255,7 @@ RSpec.describe API::PersonalAccessTokens, feature_category: :system_access do
       context 'filtered with user_id parameter' do
         let_it_be(:user) { create(:user) }
 
-        it 'returns PATs belonging to the specific user' do
+        it 'returns PATs belonging to the specific user', :aggregate_failures do
           get api(path, current_user, personal_access_token: current_users_token), params: { user_id: current_user.id }
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -393,14 +393,14 @@ RSpec.describe API::PersonalAccessTokens, feature_category: :system_access do
       let_it_be(:admin_token) { create(:personal_access_token, user: admin_user) }
       let_it_be(:admin_path) { "/personal_access_tokens/#{admin_token.id}" }
 
-      it 'returns admins own PAT by id' do
+      it 'returns admins own PAT by id', :aggregate_failures do
         get api(admin_path, admin_user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['id']).to eq(admin_token.id)
       end
 
-      it 'returns a different users PAT by id' do
+      it 'returns a different users PAT by id', :aggregate_failures do
         get api(user_token_path, admin_user)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -417,7 +417,7 @@ RSpec.describe API::PersonalAccessTokens, feature_category: :system_access do
     context 'when current_user is not an administrator' do
       let_it_be(:other_users_path) { "/personal_access_tokens/#{token1.id}" }
 
-      it 'returns users own PAT by id' do
+      it 'returns users own PAT by id', :aggregate_failures do
         get api(user_token_path, current_user)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -458,7 +458,7 @@ RSpec.describe API::PersonalAccessTokens, feature_category: :system_access do
         create(:personal_access_token, scopes: ['read_repository'], user: admin_user)
       end
 
-      it 'revokes a different users token' do
+      it 'revokes a different users token', :aggregate_failures do
         delete api(path, admin_user)
 
         expect(response).to have_gitlab_http_status(:no_content)

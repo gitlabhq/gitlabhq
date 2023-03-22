@@ -360,21 +360,13 @@ RSpec.configure do |config|
       ./spec/requests/api/broadcast_messages_spec.rb
       ./spec/requests/api/deploy_keys_spec.rb
       ./spec/requests/api/deploy_tokens_spec.rb
-      ./spec/requests/api/groups_spec.rb
       ./spec/requests/api/keys_spec.rb
-      ./spec/requests/api/merge_requests_spec.rb
       ./spec/requests/api/namespaces_spec.rb
-      ./spec/requests/api/notes_spec.rb
-      ./spec/requests/api/personal_access_tokens/self_information_spec.rb
-      ./spec/requests/api/personal_access_tokens_spec.rb
       ./spec/requests/api/project_export_spec.rb
       ./spec/requests/api/project_repository_storage_moves_spec.rb
       ./spec/requests/api/project_snapshots_spec.rb
       ./spec/requests/api/project_snippets_spec.rb
       ./spec/requests/api/projects_spec.rb
-      ./spec/requests/api/releases_spec.rb
-      ./spec/requests/api/sidekiq_metrics_spec.rb
-      ./spec/requests/api/snippet_repository_storage_moves_spec.rb
       ./spec/requests/api/snippets_spec.rb
       ./spec/requests/api/statistics_spec.rb
       ./spec/requests/api/system_hooks_spec.rb

@@ -112,9 +112,10 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
       it 'does not allow the local value to be saved' do
         subgroup_settings.send("#{settings_attribute_name}=", nil)
 
-        expect { subgroup_settings.save! }
-          .to raise_error(ActiveRecord::RecordInvalid,
-                          /cannot be changed because it is locked by an ancestor/)
+        expect { subgroup_settings.save! }.to raise_error(
+          ActiveRecord::RecordInvalid,
+          /cannot be changed because it is locked by an ancestor/
+        )
       end
     end
 
@@ -321,9 +322,10 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
       it 'does not allow the attribute to be saved' do
         subgroup_settings.send("lock_#{settings_attribute_name}=", true)
 
-        expect { subgroup_settings.save! }
-          .to raise_error(ActiveRecord::RecordInvalid,
-                          /cannot be changed because it is locked by an ancestor/)
+        expect { subgroup_settings.save! }.to raise_error(
+          ActiveRecord::RecordInvalid,
+          /cannot be changed because it is locked by an ancestor/
+        )
       end
     end
 
@@ -343,9 +345,10 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
       it 'does not allow the lock to be saved when the attribute is nil' do
         subgroup_settings.send("#{settings_attribute_name}=", nil)
 
-        expect { subgroup_settings.save! }
-          .to raise_error(ActiveRecord::RecordInvalid,
-                          /cannot be nil when locking the attribute/)
+        expect { subgroup_settings.save! }.to raise_error(
+          ActiveRecord::RecordInvalid,
+          /cannot be nil when locking the attribute/
+        )
       end
 
       it 'copies the cascaded value when locking the attribute if the local value is nil', :aggregate_failures do
@@ -364,9 +367,10 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
       it 'does not allow the attribute to be saved' do
         subgroup_settings.send("lock_#{settings_attribute_name}=", true)
 
-        expect { subgroup_settings.save! }
-          .to raise_error(ActiveRecord::RecordInvalid,
-                          /cannot be changed because it is locked by an ancestor/)
+        expect { subgroup_settings.save! }.to raise_error(
+          ActiveRecord::RecordInvalid,
+          /cannot be changed because it is locked by an ancestor/
+        )
       end
     end
 

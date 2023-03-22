@@ -368,4 +368,179 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       end
     end
   end
+
+  describe '#allowed_work_item_type_change' do
+    let_it_be(:all_types) { WorkItems::Type::BASE_TYPES.keys }
+
+    it 'is possible to change between all types', :aggregate_failures do
+      all_types.each do |type|
+        work_item = build(:work_item, type, project: reusable_project)
+
+        (all_types - [type]).each do |new_type|
+          work_item.work_item_type_id = WorkItems::Type.default_by_type(new_type).id
+
+          expect(work_item).to be_valid, "#{type} to #{new_type}"
+        end
+      end
+    end
+
+    context 'with ParentLink relation' do
+      let_it_be(:old_type) { create(:work_item_type) }
+      let_it_be(:new_type) { create(:work_item_type) }
+
+      context 'with hierarchy restrictions' do
+        let_it_be(:child_type) { create(:work_item_type) }
+
+        let_it_be_with_reload(:parent) { create(:work_item, work_item_type: old_type, project: reusable_project) }
+        let_it_be_with_reload(:child) { create(:work_item, work_item_type: child_type, project: reusable_project) }
+
+        let_it_be(:hierarchy_restriction) do
+          create(:hierarchy_restriction, parent_type: old_type, child_type: child_type)
+        end
+
+        let_it_be(:link) { create(:parent_link, work_item_parent: parent, work_item: child) }
+
+        context 'when child items restrict the type change' do
+          before do
+            parent.work_item_type = new_type
+          end
+
+          context 'when child items are compatible with the new type' do
+            let_it_be(:hierarchy_restriction_new_type) do
+              create(:hierarchy_restriction, parent_type: new_type, child_type: child_type)
+            end
+
+            it 'allows to change types' do
+              expect(parent).to be_valid
+              expect(parent.errors).to be_empty
+            end
+          end
+
+          context 'when child items are not compatible with the new type' do
+            it 'does not allow to change types' do
+              expect(parent).not_to be_valid
+              expect(parent.errors[:work_item_type_id])
+                .to include("cannot be changed to #{new_type.name} with these child item types.")
+            end
+          end
+        end
+
+        context 'when the parent restricts the type change' do
+          before do
+            child.work_item_type = new_type
+          end
+
+          it 'does not allow to change types' do
+            expect(child.valid?).to eq(false)
+            expect(child.errors[:work_item_type_id])
+              .to include("cannot be changed to #{new_type.name} with #{parent.work_item_type.name} as parent type.")
+          end
+        end
+      end
+
+      context 'with hierarchy depth restriction' do
+        let_it_be_with_reload(:item1) { create(:work_item, work_item_type: new_type, project: reusable_project) }
+        let_it_be_with_reload(:item2) { create(:work_item, work_item_type: new_type, project: reusable_project) }
+        let_it_be_with_reload(:item3) { create(:work_item, work_item_type: new_type, project: reusable_project) }
+        let_it_be_with_reload(:item4) { create(:work_item, work_item_type: new_type, project: reusable_project) }
+
+        let_it_be(:hierarchy_restriction1) do
+          create(:hierarchy_restriction, parent_type: old_type, child_type: new_type)
+        end
+
+        let_it_be(:hierarchy_restriction2) do
+          create(:hierarchy_restriction, parent_type: new_type, child_type: old_type)
+        end
+
+        let_it_be_with_reload(:hierarchy_restriction3) do
+          create(:hierarchy_restriction, parent_type: new_type, child_type: new_type, maximum_depth: 4)
+        end
+
+        let_it_be(:link1) { create(:parent_link, work_item_parent: item1, work_item: item2) }
+        let_it_be(:link2) { create(:parent_link, work_item_parent: item2, work_item: item3) }
+        let_it_be(:link3) { create(:parent_link, work_item_parent: item3, work_item: item4) }
+
+        before do
+          hierarchy_restriction3.update!(maximum_depth: maximum_depth)
+        end
+
+        shared_examples 'validates the depth correctly' do
+          before do
+            work_item.update!(work_item_type: old_type)
+          end
+
+          context 'when it is valid' do
+            let(:maximum_depth) { 4 }
+
+            it 'allows to change types' do
+              work_item.work_item_type = new_type
+
+              expect(work_item).to be_valid
+            end
+          end
+
+          context 'when it is not valid' do
+            let(:maximum_depth) { 3 }
+
+            it 'does not allow to change types' do
+              work_item.work_item_type = new_type
+
+              expect(work_item).not_to be_valid
+              expect(work_item.errors[:work_item_type_id]).to include("reached maximum depth")
+            end
+          end
+        end
+
+        context 'with the highest ancestor' do
+          let_it_be_with_reload(:work_item) { item1 }
+
+          it_behaves_like 'validates the depth correctly'
+        end
+
+        context 'with a child item' do
+          let_it_be_with_reload(:work_item) { item2 }
+
+          it_behaves_like 'validates the depth correctly'
+        end
+
+        context 'with the last child item' do
+          let_it_be_with_reload(:work_item) { item4 }
+
+          it_behaves_like 'validates the depth correctly'
+        end
+
+        context 'when ancestor is still the old type' do
+          let_it_be(:hierarchy_restriction4) do
+            create(:hierarchy_restriction, parent_type: old_type, child_type: old_type)
+          end
+
+          before do
+            item1.update!(work_item_type: old_type)
+            item2.update!(work_item_type: old_type)
+          end
+
+          context 'when it exceeds maximum depth' do
+            let(:maximum_depth) { 2 }
+
+            it 'does not allow to change types' do
+              item2.work_item_type = new_type
+
+              expect(item2).not_to be_valid
+              expect(item2.errors[:work_item_type_id]).to include("reached maximum depth")
+            end
+          end
+
+          context 'when it does not exceed maximum depth' do
+            let(:maximum_depth) { 3 }
+
+            it 'does allow to change types' do
+              item2.work_item_type = new_type
+
+              expect(item2).to be_valid
+            end
+          end
+        end
+      end
+    end
+  end
 end

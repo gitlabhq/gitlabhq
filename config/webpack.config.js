@@ -31,14 +31,11 @@ const { VueLoaderPlugin } = require(VUE_LOADER_MODULE);
 const VUE_LOADER_VERSION = require(`${VUE_LOADER_MODULE}/package.json`).version;
 const VUE_VERSION = require('vue/package.json').version;
 
-const { EsbuildPlugin } = require('esbuild-loader');
-
 const webpack = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { StatsWriterPlugin } = require('webpack-stats-plugin');
 const WEBPACK_VERSION = require('webpack/package.json').version;
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
-const esbuildConfiguration = require('./esbuild.config');
 
 const createIncrementalWebpackCompiler = require('./helpers/incremental_webpack_compiler');
 const IS_EE = require('./helpers/is_ee_env');
@@ -58,8 +55,6 @@ const VENDOR_DLL = process.env.WEBPACK_VENDOR_DLL && process.env.WEBPACK_VENDOR_
 const CACHE_PATH = process.env.WEBPACK_CACHE_PATH || path.join(ROOT_PATH, 'tmp/cache');
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 const IS_DEV_SERVER = process.env.WEBPACK_SERVE === 'true';
-const WEBPACK_USE_ESBUILD_LOADER =
-  process.env.WEBPACK_USE_ESBUILD_LOADER && process.env.WEBPACK_USE_ESBUILD_LOADER !== 'false';
 
 const { DEV_SERVER_HOST, DEV_SERVER_PUBLIC_ADDR } = process.env;
 const DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10);
@@ -69,11 +64,9 @@ const DEV_SERVER_LIVERELOAD = IS_DEV_SERVER && process.env.DEV_SERVER_LIVERELOAD
 const INCREMENTAL_COMPILER_ENABLED =
   IS_DEV_SERVER &&
   process.env.DEV_SERVER_INCREMENTAL &&
-  process.env.DEV_SERVER_INCREMENTAL !== 'false' &&
-  !WEBPACK_USE_ESBUILD_LOADER;
+  process.env.DEV_SERVER_INCREMENTAL !== 'false';
 const INCREMENTAL_COMPILER_TTL = Number(process.env.DEV_SERVER_INCREMENTAL_TTL) || Infinity;
-const INCREMENTAL_COMPILER_RECORD_HISTORY =
-  IS_DEV_SERVER && !process.env.CI && !WEBPACK_USE_ESBUILD_LOADER;
+const INCREMENTAL_COMPILER_RECORD_HISTORY = IS_DEV_SERVER && !process.env.CI;
 const WEBPACK_REPORT = process.env.WEBPACK_REPORT && process.env.WEBPACK_REPORT !== 'false';
 const WEBPACK_MEMORY_TEST =
   process.env.WEBPACK_MEMORY_TEST && process.env.WEBPACK_MEMORY_TEST !== 'false';
@@ -294,10 +287,6 @@ const defaultJsOptions = {
   cacheCompression: false,
 };
 
-if (WEBPACK_USE_ESBUILD_LOADER) {
-  console.log('esbuild-loader is active');
-}
-
 const vueLoaderOptions = {
   ident: 'vue-loader-options',
 
@@ -374,13 +363,7 @@ module.exports = {
         include: /node_modules/,
         loader: 'babel-loader',
       },
-      WEBPACK_USE_ESBUILD_LOADER && {
-        test: /\.(js|cjs)$/,
-        exclude: shouldExcludeFromCompliling,
-        loader: 'esbuild-loader',
-        options: esbuildConfiguration,
-      },
-      !WEBPACK_USE_ESBUILD_LOADER && {
+      {
         test: /\.(js|cjs)$/,
         exclude: shouldExcludeFromCompliling,
         use: [
@@ -399,16 +382,7 @@ module.exports = {
           },
         ],
       },
-      WEBPACK_USE_ESBUILD_LOADER && {
-        test: /\.(js|cjs)$/,
-        include: (modulePath) =>
-          /node_modules\/(monaco-worker-manager|monaco-marker-data-provider)\/index\.js/.test(
-            modulePath,
-          ) || /node_modules\/yaml/.test(modulePath),
-        loader: 'esbuild-loader',
-        options: esbuildConfiguration,
-      },
-      !WEBPACK_USE_ESBUILD_LOADER && {
+      {
         test: /\.(js|cjs)$/,
         include: (modulePath) =>
           /node_modules\/(monaco-worker-manager|monaco-marker-data-provider)\/index\.js/.test(
@@ -586,7 +560,6 @@ module.exports = {
         },
       },
     },
-    ...(WEBPACK_USE_ESBUILD_LOADER ? { minimizer: [new EsbuildPlugin(esbuildConfiguration)] } : {}),
   },
 
   plugins: [

@@ -84,9 +84,12 @@ RSpec.shared_examples 'a timebox' do |timebox_type|
     let(:max_date) { mid_point + 10.days }
 
     def box(from, to)
-      create(factory, *timebox_args,
-             start_date: from || open_on_left,
-             due_date: to || open_on_right)
+      create(
+        factory,
+        *timebox_args,
+        start_date: from || open_on_left,
+        due_date: to || open_on_right
+      )
     end
 
     it 'can find overlapping timeboxes' do

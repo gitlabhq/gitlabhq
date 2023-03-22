@@ -56,13 +56,23 @@ RSpec.describe DeploymentPlatform do
 
       context 'when project does not have a cluster but has group clusters' do
         let!(:default_cluster) do
-          create(:cluster, :provided_by_user,
-                cluster_type: :group_type, groups: [group], environment_scope: '*')
+          create(
+            :cluster,
+            :provided_by_user,
+            cluster_type: :group_type,
+            groups: [group],
+            environment_scope: '*'
+          )
         end
 
         let!(:cluster) do
-          create(:cluster, :provided_by_user,
-                cluster_type: :group_type, environment_scope: 'review/*', groups: [group])
+          create(
+            :cluster,
+            :provided_by_user,
+            cluster_type: :group_type,
+            environment_scope: 'review/*',
+            groups: [group]
+          )
         end
 
         let(:environment) { 'review/name' }
@@ -99,8 +109,13 @@ RSpec.describe DeploymentPlatform do
 
           context 'when parent_group has a cluster with default scope' do
             let!(:parent_group_cluster) do
-              create(:cluster, :provided_by_user,
-                    cluster_type: :group_type, environment_scope: '*', groups: [parent_group])
+              create(
+                :cluster,
+                :provided_by_user,
+                cluster_type: :group_type,
+                environment_scope: '*',
+                groups: [parent_group]
+              )
             end
 
             it_behaves_like 'matching environment scope'
@@ -108,8 +123,13 @@ RSpec.describe DeploymentPlatform do
 
           context 'when parent_group has a cluster that is an exact match' do
             let!(:parent_group_cluster) do
-              create(:cluster, :provided_by_user,
-                    cluster_type: :group_type, environment_scope: 'review/name', groups: [parent_group])
+              create(
+                :cluster,
+                :provided_by_user,
+                cluster_type: :group_type,
+                environment_scope: 'review/name',
+                groups: [parent_group]
+              )
             end
 
             it_behaves_like 'matching environment scope'
@@ -160,8 +180,13 @@ RSpec.describe DeploymentPlatform do
         let!(:cluster) { create(:cluster, :provided_by_user, environment_scope: 'review/*', projects: [project]) }
 
         let!(:group_default_cluster) do
-          create(:cluster, :provided_by_user,
-                cluster_type: :group_type, groups: [group], environment_scope: '*')
+          create(
+            :cluster,
+            :provided_by_user,
+            cluster_type: :group_type,
+            groups: [group],
+            environment_scope: '*'
+          )
         end
 
         let(:environment) { 'review/name' }

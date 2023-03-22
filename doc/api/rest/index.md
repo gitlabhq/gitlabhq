@@ -483,13 +483,14 @@ pagination headers.
 Keyset-based pagination is supported only for selected resources and ordering
 options:
 
-| Resource                                                        | Options                          | Availability                                                                                                  |
-|:----------------------------------------------------------------|:---------------------------------|:--------------------------------------------------------------------------------------------------------------|
-| [Projects](../projects.md)                                      | `order_by=id` only               | Authenticated and unauthenticated users                                                                       |
-| [Groups](../groups.md)                                          | `order_by=name`, `sort=asc` only | Unauthenticated users only                                                                                    |
-| [Group audit events](../audit_events.md#group-audit-events)     | `order_by=id`, `sort=desc` only  | Authenticated users only ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2)  |
-| [Project audit events](../audit_events.md#project-audit-events) | `order_by=id`, `sort=desc` only  | Authenticated users only ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.10) |
-| [Jobs](../jobs.md)                                              | `order_by=id`, `sort=desc` only  | Authenticated users only ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362172) in GitLab 15.9)  |
+| Resource                                                          | Options                          | Availability                                                                                                  |
+|:------------------------------------------------------------------|:---------------------------------|:--------------------------------------------------------------------------------------------------------------|
+| [Projects](../projects.md)                                        | `order_by=id` only               | Authenticated and unauthenticated users                                                                       |
+| [Groups](../groups.md)                                            | `order_by=name`, `sort=asc` only | Unauthenticated users only                                                                                    |
+| [Instance audit events](../audit_events.md#instance-audit-events) | `order_by=id`, `sort=desc` only  | Authenticated users only ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.11) |
+| [Group audit events](../audit_events.md#group-audit-events)       | `order_by=id`, `sort=desc` only  | Authenticated users only ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2)  |
+| [Project audit events](../audit_events.md#project-audit-events)   | `order_by=id`, `sort=desc` only  | Authenticated users only ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.10) |
+| [Jobs](../jobs.md)                                                | `order_by=id`, `sort=desc` only  | Authenticated users only ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362172) in GitLab 15.9)  |
 
 ### Pagination response headers
 

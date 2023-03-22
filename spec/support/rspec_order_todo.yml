@@ -8231,7 +8231,6 @@
 - './spec/models/preloaders/merge_request_diff_preloader_spec.rb'
 - './spec/models/preloaders/user_max_access_level_in_groups_preloader_spec.rb'
 - './spec/models/preloaders/user_max_access_level_in_projects_preloader_spec.rb'
-- './spec/models/preloaders/users_max_access_level_in_projects_preloader_spec.rb'
 - './spec/models/product_analytics_event_spec.rb'
 - './spec/models/programming_language_spec.rb'
 - './spec/models/project_authorization_spec.rb'

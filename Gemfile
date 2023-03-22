@@ -527,7 +527,7 @@ gem 'flipper', '~> 0.25.0'
 gem 'flipper-active_record', '~> 0.25.0'
 gem 'flipper-active_support_cache_store', '~> 0.25.0'
 gem 'unleash', '~> 3.2.2'
-gem 'gitlab-experiment', '~> 0.8.0'
+gem 'gitlab-experiment', '~> 0.7.1'
 
 # Structured logging
 gem 'lograge', '~> 0.5'

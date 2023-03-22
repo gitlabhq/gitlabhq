@@ -72,7 +72,6 @@ module IdeHelper
 
   def enable_environments_guidance?(project)
     experiment(:in_product_guidance_environments_webide, project: project) do |e|
-      e.control { 'false' }
       e.candidate { !has_dismissed_ide_environments_callout? }
 
       e.run

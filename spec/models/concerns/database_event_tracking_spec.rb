@@ -46,24 +46,42 @@ RSpec.describe DatabaseEventTracking, :snowplow do
     it 'when created' do
       create_test_class_record
 
-      expect_snowplow_event(category: category, action: "#{event}_create", label: 'application_setting_terms',
-                            property: 'create', namespace: nil, "id" => 1)
+      expect_snowplow_event(
+        category: category,
+        action: "#{event}_create",
+        label: 'application_setting_terms',
+        property: 'create',
+        namespace: nil,
+        "id" => 1
+      )
     end
 
     it 'when updated' do
       create_test_class_record
       test_class.first.update!(id: 3)
 
-      expect_snowplow_event(category: category, action: "#{event}_update", label: 'application_setting_terms',
-                            property: 'update', namespace: nil, "id" => 3)
+      expect_snowplow_event(
+        category: category,
+        action: "#{event}_update",
+        label: 'application_setting_terms',
+        property: 'update',
+        namespace: nil,
+        "id" => 3
+      )
     end
 
     it 'when destroyed' do
       create_test_class_record
       test_class.first.destroy!
 
-      expect_snowplow_event(category: category, action: "#{event}_destroy", label: 'application_setting_terms',
-                            property: 'destroy', namespace: nil, "id" => 1)
+      expect_snowplow_event(
+        category: category,
+        action: "#{event}_destroy",
+        label: 'application_setting_terms',
+        property: 'destroy',
+        namespace: nil,
+        "id" => 1
+      )
     end
   end
 end

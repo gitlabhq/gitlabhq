@@ -59,13 +59,14 @@ RSpec.describe Ci::Partitionable::Switch, :aggregate_failures do
     model.include(Ci::Partitionable)
 
     model.partitionable scope: ->(r) { 1 },
-                        through: { table: :_test_p_ci_jobs_metadata, flag: table_rollout_flag }
+      through: { table: :_test_p_ci_jobs_metadata, flag: table_rollout_flag }
 
     model.belongs_to :job, anonymous_class: jobs_model
 
-    jobs_model.has_one :metadata, anonymous_class: model,
-                                  foreign_key: :job_id, inverse_of: :job,
-                                  dependent: :destroy
+    jobs_model.has_one :metadata,
+      anonymous_class: model,
+      foreign_key: :job_id, inverse_of: :job,
+      dependent: :destroy
 
     allow(Feature::Definition).to receive(:get).and_call_original
     allow(Feature::Definition).to receive(:get).with(table_rollout_flag)

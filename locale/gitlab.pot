@@ -50896,6 +50896,9 @@ msgstr ""
 msgid "can not be changed to %{new_type}"
 msgstr ""
 
+msgid "can not be changed when assigned to an epic"
+msgstr ""
+
 msgid "can not be set for this resource"
 msgstr ""
 
@@ -50957,6 +50960,12 @@ msgid "cannot be changed if shared runners are enabled"
 msgstr ""
 
 msgid "cannot be changed since member is associated with a custom role"
+msgstr ""
+
+msgid "cannot be changed to %{new_type} with %{parent_type} as parent type."
+msgstr ""
+
+msgid "cannot be changed to %{new_type} with these child item types."
 msgstr ""
 
 msgid "cannot be enabled"

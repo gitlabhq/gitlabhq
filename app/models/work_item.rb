@@ -130,6 +130,75 @@ class WorkItem < Issue
 
     ::Gitlab::WorkItems::WorkItemHierarchy.new(base, options: options)
   end
+
+  override :allowed_work_item_type_change
+  def allowed_work_item_type_change
+    return unless work_item_type_id_changed?
+
+    child_links = WorkItems::ParentLink.for_parents(id)
+    parent_link = ::WorkItems::ParentLink.find_by(work_item: self)
+
+    validate_parent_restrictions(parent_link)
+    validate_child_restrictions(child_links)
+    validate_depth(parent_link, child_links)
+  end
+
+  def validate_parent_restrictions(parent_link)
+    return unless parent_link
+
+    parent_link.work_item.work_item_type_id = work_item_type_id
+
+    unless parent_link.valid?
+      errors.add(
+        :work_item_type_id,
+        format(
+          _('cannot be changed to %{new_type} with %{parent_type} as parent type.'),
+          new_type: work_item_type.name, parent_type: parent_link.work_item_parent.work_item_type.name
+        )
+      )
+    end
+  end
+
+  def validate_child_restrictions(child_links)
+    return if child_links.empty?
+
+    child_type_ids = child_links.joins(:work_item).select(self.class.arel_table[:work_item_type_id]).distinct
+    restrictions = ::WorkItems::HierarchyRestriction.where(
+      parent_type_id: work_item_type_id,
+      child_type_id: child_type_ids
+    )
+
+    # We expect a restriction for every child type
+    if restrictions.size < child_type_ids.size
+      errors.add(
+        :work_item_type_id,
+        format(_('cannot be changed to %{new_type} with these child item types.'), new_type: work_item_type.name)
+      )
+    end
+  end
+
+  def validate_depth(parent_link, child_links)
+    restriction = ::WorkItems::HierarchyRestriction.find_by_parent_type_id_and_child_type_id(
+      work_item_type_id,
+      work_item_type_id
+    )
+    return unless restriction&.maximum_depth
+
+    children_with_new_type = self.class.where(id: child_links.select(:work_item_id))
+      .where(work_item_type_id: work_item_type_id)
+    max_child_depth = ::Gitlab::WorkItems::WorkItemHierarchy.new(children_with_new_type).max_descendants_depth.to_i
+
+    ancestor_depth =
+      if parent_link&.work_item_parent && parent_link.work_item_parent.work_item_type_id == work_item_type_id
+        parent_link.work_item_parent.same_type_base_and_ancestors.count
+      else
+        0
+      end
+
+    if max_child_depth + ancestor_depth > restriction.maximum_depth - 1
+      errors.add(:work_item_type_id, _('reached maximum depth'))
+    end
+  end
 end
 
 WorkItem.prepend_mod

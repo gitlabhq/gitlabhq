@@ -339,7 +339,6 @@ class Projects::PipelinesController < Projects::ApplicationController
     return if helpers.has_gitlab_ci?(project)
 
     experiment(:runners_availability_section, namespace: project.root_ancestor) do |e|
-      e.control {}
       e.candidate {}
     end
   end

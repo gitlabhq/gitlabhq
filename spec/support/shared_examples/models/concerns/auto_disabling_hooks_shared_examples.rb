@@ -17,8 +17,12 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
         [4, 1.second.from_now], # Exceeded the grace period, set by #backoff!
         [4, Time.current] # Exceeded the grace period, set by #backoff!, edge-case
       ].map do |(recent_failures, disabled_until)|
-        create(hook_factory, **default_factory_arguments, recent_failures: recent_failures,
-disabled_until: disabled_until)
+        create(
+          hook_factory,
+          **default_factory_arguments,
+          recent_failures: recent_failures,
+          disabled_until: disabled_until
+        )
       end
     end
 
@@ -45,8 +49,12 @@ disabled_until: disabled_until)
         [0, suspended],
         [0, expired]
       ].map do |(recent_failures, disabled_until)|
-        create(hook_factory, **default_factory_arguments, recent_failures: recent_failures,
-disabled_until: disabled_until)
+        create(
+          hook_factory,
+          **default_factory_arguments,
+          recent_failures: recent_failures,
+          disabled_until: disabled_until
+        )
       end
     end
 

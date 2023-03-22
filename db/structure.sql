@@ -30335,6 +30335,8 @@ CREATE UNIQUE INDEX index_fork_network_members_on_project_id ON fork_network_mem
 
 CREATE UNIQUE INDEX index_fork_networks_on_root_project_id ON fork_networks USING btree (root_project_id);
 
+CREATE INDEX index_fuc_over_limit_notified_at ON namespace_details USING btree (free_user_cap_over_limit_notified_at);
+
 CREATE INDEX index_geo_event_log_on_cache_invalidation_event_id ON geo_event_log USING btree (cache_invalidation_event_id) WHERE (cache_invalidation_event_id IS NOT NULL);
 
 CREATE INDEX index_geo_event_log_on_geo_event_id ON geo_event_log USING btree (geo_event_id) WHERE (geo_event_id IS NOT NULL);

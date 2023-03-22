@@ -7,20 +7,20 @@ module DiscussionOnDiff
   NUMBER_OF_TRUNCATED_DIFF_LINES = 16
 
   included do
-    delegate  :line_code,
-              :original_line_code,
-              :note_diff_file,
-              :diff_line,
-              :active?,
-              :created_at_diff?,
-              to: :first_note
+    delegate :line_code,
+      :original_line_code,
+      :note_diff_file,
+      :diff_line,
+      :active?,
+      :created_at_diff?,
+      to: :first_note
 
-    delegate  :file_path,
-              :blob,
-              :highlighted_diff_lines,
-              :diff_lines,
-              to: :diff_file,
-              allow_nil: true
+    delegate :file_path,
+      :blob,
+      :highlighted_diff_lines,
+      :diff_lines,
+      to: :diff_file,
+      allow_nil: true
   end
 
   def diff_discussion?

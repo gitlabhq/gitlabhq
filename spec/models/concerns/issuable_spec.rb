@@ -150,8 +150,10 @@ RSpec.describe Issuable do
     end
 
     it 'gives preference to state_id if present' do
-      issuable = MergeRequest.new('state' => 'opened',
-                                  'state_id' => described_class::STATE_ID_MAP['merged'])
+      issuable = MergeRequest.new(
+        'state' => 'opened',
+        'state_id' => described_class::STATE_ID_MAP['merged']
+      )
 
       expect(issuable.state).to eq('merged')
       expect(issuable.state_id).to eq(described_class::STATE_ID_MAP['merged'])
