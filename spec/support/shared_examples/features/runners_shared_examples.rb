@@ -63,16 +63,15 @@ RSpec.shared_examples 'shows and resets runner registration token' do
 end
 
 RSpec.shared_examples 'shows no runners registered' do
-  it 'shows total count with 0' do
+  it 'shows 0 count and the empty state' do
     expect(find('[data-testid="runner-type-tabs"]')).to have_text "#{s_('Runners|All')} 0"
 
     # No stats are shown
     expect(page).not_to have_text s_('Runners|Online')
     expect(page).not_to have_text s_('Runners|Offline')
     expect(page).not_to have_text s_('Runners|Stale')
-  end
 
-  it 'shows "no runners" message' do
+    # "no runners" message
     expect(page).to have_text s_('Runners|Get started with runners')
   end
 end
@@ -84,16 +83,14 @@ RSpec.shared_examples 'shows no runners found' do
 end
 
 RSpec.shared_examples 'shows runner in list' do
-  it 'does not show empty state' do
-    expect(page).not_to have_content s_('Runners|Get started with runners')
-  end
-
-  it 'shows runner row' do
+  it 'shows runner row and no empty state' do
     within_runner_row(runner.id) do
       expect(page).to have_text "##{runner.id}"
       expect(page).to have_text runner.short_sha
       expect(page).to have_text runner.description
     end
+
+    expect(page).not_to have_content s_('Runners|Get started with runners')
   end
 end
 

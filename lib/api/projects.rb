@@ -708,7 +708,7 @@ module API
         requires :group_access, type: Integer, values: Gitlab::Access.values, as: :link_group_access, desc: 'The group access level'
         optional :expires_at, type: Date, desc: 'Share expiration date'
       end
-      post ":id/share", feature_category: :system_access do
+      post ":id/share", feature_category: :projects do
         authorize! :admin_project, user_project
         shared_with_group = Group.find_by_id(params[:group_id])
 
@@ -738,7 +738,7 @@ module API
         requires :group_id, type: Integer, desc: 'The ID of the group'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      delete ":id/share/:group_id", feature_category: :system_access do
+      delete ":id/share/:group_id", feature_category: :projects do
         authorize! :admin_project, user_project
 
         link = user_project.project_group_links.find_by(group_id: params[:group_id])

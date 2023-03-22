@@ -2613,9 +2613,9 @@ In this example:
 
 #### `needs:pipeline`
 
-You can mirror the pipeline status from an upstream pipeline to a bridge job by
+You can mirror the pipeline status from an upstream pipeline to a job by
 using the `needs:pipeline` keyword. The latest pipeline status from the default branch is
-replicated to the bridge job.
+replicated to the job.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2628,7 +2628,7 @@ replicated to the bridge job.
 **Example of `needs:pipeline`**:
 
 ```yaml
-upstream_bridge:
+upstream_status:
   stage: test
   needs:
     pipeline: other/project

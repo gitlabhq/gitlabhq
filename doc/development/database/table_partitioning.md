@@ -6,6 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Database table partitioning
 
+WARNING:
+If you have questions not answered below, check for and add them
+to [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/398650).
+Tag `@gitlab-org/database-team/triage` and we'll get back to you with an
+answer as soon as possible. If you get an answer in Slack, document
+it on the issue as well so we can update this document in the future.
+
 Table partitioning is a powerful database feature that allows a table's
 data to be split into smaller physical tables that act as a single large
 table. If the application is designed to work with partitioning in mind,

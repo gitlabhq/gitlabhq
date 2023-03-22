@@ -3,12 +3,12 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe EnsureTimelogsNoteIdBigintBackfillIsFinishedForGitlabDotCom, feature_category: :database do
+RSpec.describe EnsureMrUserMentionsNoteIdBigintBackfillIsFinishedForGitlabDotCom, feature_category: :database do
   describe '#up' do
     let(:migration_arguments) do
       {
         job_class_name: 'CopyColumnUsingBackgroundMigrationJob',
-        table_name: 'timelogs',
+        table_name: 'merge_request_user_mentions',
         column_name: 'id',
         job_arguments: [['note_id'], ['note_id_convert_to_bigint']]
       }

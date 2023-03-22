@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Snippets, factory_default: :keep, feature_category: :source_code_management do
+RSpec.describe API::Snippets, :aggregate_failures, factory_default: :keep, feature_category: :source_code_management do
   include SnippetHelpers
 
   let_it_be(:admin)            { create(:user, :admin) }
@@ -448,7 +448,7 @@ RSpec.describe API::Snippets, factory_default: :keep, feature_category: :source_
     end
 
     context "when admin" do
-      let_it_be(:token) { create(:personal_access_token, user: admin, scopes: [:sudo]) }
+      let_it_be(:token) { create(:personal_access_token, :admin_mode, user: admin, scopes: [:sudo]) }
 
       subject do
         put api("/snippets/#{snippet.id}", personal_access_token: token), params: { visibility: 'private', sudo: user.id }
@@ -504,7 +504,7 @@ RSpec.describe API::Snippets, factory_default: :keep, feature_category: :source_
     it 'exposes known attributes' do
       user_agent_detail = create(:user_agent_detail, subject: snippet)
 
-      get api("/snippets/#{snippet.id}/user_agent_detail", admin)
+      get api("/snippets/#{snippet.id}/user_agent_detail", admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['user_agent']).to eq(user_agent_detail.user_agent)

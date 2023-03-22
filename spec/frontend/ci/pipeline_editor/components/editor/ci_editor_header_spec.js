@@ -58,7 +58,7 @@ describe('CI Editor Header', () => {
       expect(findLinkBtn().props('icon')).toBe('external-link');
     });
 
-    it('tracks the click on the browse button', async () => {
+    it('tracks the click on the browse button', () => {
       const { browseTemplates } = pipelineEditorTrackingOptions.actions;
 
       testTracker(findLinkBtn(), browseTemplates);
@@ -91,7 +91,7 @@ describe('CI Editor Header', () => {
         expect(wrapper.emitted('open-drawer')).toHaveLength(1);
       });
 
-      it('tracks open help drawer action', async () => {
+      it('tracks open help drawer action', () => {
         const { actions } = pipelineEditorTrackingOptions;
 
         testTracker(findHelpBtn(), actions.openHelpDrawer);

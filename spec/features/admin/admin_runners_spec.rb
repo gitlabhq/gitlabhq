@@ -371,11 +371,9 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
 
           it_behaves_like 'shows no runners found'
 
-          it 'shows active tab' do
+          it 'shows active tab with no runner' do
             expect(page).to have_link('Instance', class: 'active')
-          end
 
-          it 'shows no runner' do
             expect(page).not_to have_content 'runner-project'
             expect(page).not_to have_content 'runner-group'
           end
@@ -469,10 +467,12 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
       it_behaves_like 'shows no runners registered'
 
       it 'shows tabs with total counts equal to 0' do
-        expect(page).to have_link('All 0')
-        expect(page).to have_link('Instance 0')
-        expect(page).to have_link('Group 0')
-        expect(page).to have_link('Project 0')
+        aggregate_failures do
+          expect(page).to have_link('All 0')
+          expect(page).to have_link('Instance 0')
+          expect(page).to have_link('Group 0')
+          expect(page).to have_link('Project 0')
+        end
       end
     end
 
@@ -567,11 +567,8 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
         end
       end
 
-      it 'deletes runner' do
+      it 'deletes runner and redirects to runner list' do
         expect(page.find('[data-testid="alert-success"]')).to have_content('deleted')
-      end
-
-      it 'redirects to runner list' do
         expect(current_url).to match(admin_runners_path)
       end
     end
@@ -614,12 +611,9 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
         wait_for_requests
       end
 
-      it 'show success alert' do
-        expect(page.find('[data-testid="alert-success"]')).to have_content('saved')
-      end
-
-      it 'redirects to runner page' do
+      it 'show success alert and redirects to runner page' do
         expect(current_url).to match(admin_runner_path(project_runner))
+        expect(page.find('[data-testid="alert-success"]')).to have_content('saved')
       end
     end
 
@@ -658,7 +652,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
       end
 
       context 'with project runner' do
-        let(:project_runner) { create(:ci_runner, :project, projects: [project1]) }
+        let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project1]) }
 
         before do
           visit edit_admin_runner_path(project_runner)
@@ -668,7 +662,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
       end
 
       context 'with locked runner' do
-        let(:locked_runner) { create(:ci_runner, :project, projects: [project1], locked: true) }
+        let_it_be(:locked_runner) { create(:ci_runner, :project, projects: [project1], locked: true) }
 
         before do
           visit edit_admin_runner_path(locked_runner)
@@ -679,7 +673,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
     end
 
     describe 'disable/destroy' do
-      let(:runner) { create(:ci_runner, :project, projects: [project1]) }
+      let_it_be(:runner) { create(:ci_runner, :project, projects: [project1]) }
 
       before do
         visit edit_admin_runner_path(runner)

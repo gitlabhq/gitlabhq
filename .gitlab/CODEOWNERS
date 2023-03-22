@@ -57,7 +57,7 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 /ee/app/finders/ @gitlab-org/maintainers/database
 /rubocop/rubocop-migrations.yml @gitlab-org/maintainers/database
 
-^[Engineering Productivity]
+[Engineering Productivity]
 /.gitlab-ci.yml @gl-quality/eng-prod
 /.gitlab/ci/ @gl-quality/eng-prod
 /.gitlab/ci/docs.gitlab-ci.yml @gl-quality/eng-prod @gl-docsteam
@@ -390,12 +390,12 @@ Dangerfile @gl-quality/eng-prod
 /lib/gitlab/utils.rb @gitlab-com/gl-security/appsec
 
 ^[Gitaly]
-lib/gitlab/git_access.rb @proglottis @toon @zj-gitlab
-lib/gitlab/git_access_*.rb @proglottis @toon @zj-gitlab
-ee/lib/ee/gitlab/git_access.rb @proglottis @toon @zj-gitlab
-ee/lib/ee/gitlab/git_access_*.rb @proglottis @toon @zj-gitlab
-ee/lib/ee/gitlab/checks/** @proglottis @toon @zj-gitlab
-lib/gitlab/checks/** @proglottis @toon @zj-gitlab
+lib/gitlab/git_access.rb @proglottis @toon
+lib/gitlab/git_access_*.rb @proglottis @toon
+ee/lib/ee/gitlab/git_access.rb @proglottis @toon
+ee/lib/ee/gitlab/git_access_*.rb @proglottis @toon
+ee/lib/ee/gitlab/checks/** @proglottis @toon
+lib/gitlab/checks/** @proglottis @toon
 
 ^[Documentation Directories]
 /doc/ @gl-docsteam

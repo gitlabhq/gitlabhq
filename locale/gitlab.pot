@@ -47356,6 +47356,9 @@ msgstr ""
 msgid "UserProfile|Explore public groups to find projects to contribute to."
 msgstr ""
 
+msgid "UserProfile|Failed to set avatar. Please reload the page to try again."
+msgstr ""
+
 msgid "UserProfile|Followers"
 msgstr ""
 

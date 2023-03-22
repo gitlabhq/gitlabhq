@@ -288,7 +288,7 @@ describe('Pipeline editor branch switcher', () => {
     });
 
     describe('with a search term', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         mockAvailableBranchQuery.mockResolvedValue(mockSearchBranches);
       });
 

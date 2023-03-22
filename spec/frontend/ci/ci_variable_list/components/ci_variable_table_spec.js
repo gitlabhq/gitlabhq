@@ -82,11 +82,11 @@ describe('Ci variable table', () => {
         expect(findRevealButton().exists()).toBe(true);
       });
 
-      it('displays the correct amount of variables', async () => {
+      it('displays the correct amount of variables', () => {
         expect(wrapper.findAll('.js-ci-variable-row')).toHaveLength(defaultProps.variables.length);
       });
 
-      it('displays the correct variable options', async () => {
+      it('displays the correct variable options', () => {
         expect(findOptionsValues(0)).toBe('Protected, Expanded');
         expect(findOptionsValues(1)).toBe('Masked');
       });

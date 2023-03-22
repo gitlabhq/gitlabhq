@@ -39,7 +39,6 @@ module.exports = {
       'three',
       'moment-mini',
       'dompurify',
-      'bootstrap/dist/js/bootstrap.js',
       'sortablejs/modular/sortable.esm.js',
       'popper.js',
       '@apollo/client/core',

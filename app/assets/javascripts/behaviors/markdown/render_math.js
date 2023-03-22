@@ -97,7 +97,7 @@ class SafeMathRenderer {
                 <button class="js-lazy-render-math btn gl-alert-action btn-confirm btn-md gl-button">Display anyway</button>
               </div>
             </div>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <button type="button" class="close js-close" aria-label="Close">
               ${spriteIcon('close', 's16')}
             </button>
           </div>
@@ -184,17 +184,24 @@ class SafeMathRenderer {
 
   attachEvents() {
     document.body.addEventListener('click', (event) => {
-      if (!event.target.classList.contains('js-lazy-render-math')) {
+      const alert = event.target.closest('.js-lazy-render-math-container');
+
+      if (!alert) {
         return;
       }
 
-      const parent = event.target.closest('.js-lazy-render-math-container');
+      // Handle alert close
+      if (event.target.closest('.js-close')) {
+        alert.remove();
+        return;
+      }
 
-      const pre = parent.nextElementSibling;
-
-      parent.remove();
-
-      this.renderElement(pre);
+      // Handle "render anyway"
+      if (event.target.classList.contains('js-lazy-render-math')) {
+        const pre = alert.nextElementSibling;
+        alert.remove();
+        this.renderElement(pre);
+      }
     });
   }
 }

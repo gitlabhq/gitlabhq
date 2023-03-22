@@ -16,9 +16,9 @@ RSpec.describe "Group Runners", feature_category: :runner_fleet do
   end
 
   describe "Group runners page", :js do
-    let!(:group_registration_token) { group.runners_token }
-
     describe "runners registration" do
+      let_it_be(:group_registration_token) { group.runners_token }
+
       before do
         visit group_runners_path(group)
       end
@@ -60,15 +60,11 @@ RSpec.describe "Group Runners", feature_category: :runner_fleet do
         let(:runner) { group_runner }
       end
 
-      it 'shows a group badge' do
-        within_runner_row(group_runner.id) do
-          expect(page).to have_selector '.badge', text: s_('Runners|Group')
-        end
-      end
-
-      it 'can edit runner information' do
+      it 'shows an editable group badge' do
         within_runner_row(group_runner.id) do
           expect(find_link('Edit')[:href]).to end_with(edit_group_runner_path(group, group_runner))
+
+          expect(page).to have_selector '.badge', text: s_('Runners|Group')
         end
       end
 
@@ -102,15 +98,11 @@ RSpec.describe "Group Runners", feature_category: :runner_fleet do
         let(:runner) { project_runner }
       end
 
-      it 'shows a project badge' do
-        within_runner_row(project_runner.id) do
-          expect(page).to have_selector '.badge', text: s_('Runners|Project')
-        end
-      end
-
-      it 'can edit runner information' do
+      it 'shows an editable project runner' do
         within_runner_row(project_runner.id) do
           expect(find_link('Edit')[:href]).to end_with(edit_group_runner_path(group, project_runner))
+
+          expect(page).to have_selector '.badge', text: s_('Runners|Project')
         end
       end
     end

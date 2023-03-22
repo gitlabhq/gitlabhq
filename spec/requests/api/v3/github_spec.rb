@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::V3::Github, feature_category: :integrations do
+RSpec.describe API::V3::Github, :aggregate_failures, feature_category: :integrations do
   let_it_be(:user) { create(:user) }
   let_it_be(:unauthorized_user) { create(:user) }
   let_it_be(:admin) { create(:user, :admin) }
@@ -300,7 +300,7 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
 
       context 'when instance admin' do
         it 'returns the requested merge request in github format' do
-          jira_get v3_api("/repos/#{project.namespace.path}/#{project.path}/pulls/#{merge_request.id}", admin)
+          jira_get v3_api("/repos/#{project.namespace.path}/#{project.path}/pulls/#{merge_request.id}", admin, admin_mode: true)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('entities/github/pull_request')
@@ -312,8 +312,8 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
   describe 'GET /users/:namespace/repos' do
     let(:group) { create(:group, name: 'foo') }
 
-    def expect_project_under_namespace(projects, namespace, user)
-      jira_get v3_api("/users/#{namespace.path}/repos", user)
+    def expect_project_under_namespace(projects, namespace, user, admin_mode = false)
+      jira_get v3_api("/users/#{namespace.path}/repos", user, admin_mode: admin_mode)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
@@ -343,7 +343,7 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
         let(:user) { create(:user, :admin) }
 
         it 'returns an array of projects belonging to group' do
-          expect_project_under_namespace([project, project2], group, user)
+          expect_project_under_namespace([project, project2], group, user, true)
         end
 
         context 'with a private group' do
@@ -351,7 +351,7 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
           let!(:project2) { create(:project, :private, group: group) }
 
           it 'returns an array of projects belonging to group' do
-            expect_project_under_namespace([project, project2], group, user)
+            expect_project_under_namespace([project, project2], group, user, true)
           end
         end
       end
@@ -473,7 +473,7 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
-      context 'when the project has no repository', :aggregate_failures do
+      context 'when the project has no repository' do
         let_it_be(:project) { create(:project, creator: user) }
 
         it 'returns an empty collection response' do
@@ -516,7 +516,7 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
     end
 
     context 'authenticated' do
-      it 'returns commit with github format', :aggregate_failures do
+      it 'returns commit with github format' do
         call_api
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -552,7 +552,7 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
             .and_call_original
         end
 
-        it 'handles the error, logs it, and returns empty diff files', :aggregate_failures do
+        it 'handles the error, logs it, and returns empty diff files' do
           allow(Gitlab::GitalyClient).to receive(:call)
             .with(*commit_diff_args)
             .and_raise(GRPC::DeadlineExceeded)
@@ -567,7 +567,7 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
           expect(response_diff_files(response)).to be_blank
         end
 
-        it 'only calls Gitaly once for all attempts within a period of time', :aggregate_failures do
+        it 'only calls Gitaly once for all attempts within a period of time' do
           expect(Gitlab::GitalyClient).to receive(:call)
             .with(*commit_diff_args)
             .once # <- once
@@ -581,7 +581,7 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
           end
         end
 
-        it 'calls Gitaly again after a period of time', :aggregate_failures do
+        it 'calls Gitaly again after a period of time' do
           expect(Gitlab::GitalyClient).to receive(:call)
             .with(*commit_diff_args)
             .twice # <- twice
@@ -648,13 +648,14 @@ RSpec.describe API::V3::Github, feature_category: :integrations do
     get path, headers: { 'User-Agent' => user_agent }
   end
 
-  def v3_api(path, user = nil, personal_access_token: nil, oauth_access_token: nil)
+  def v3_api(path, user = nil, personal_access_token: nil, oauth_access_token: nil, admin_mode: false)
     api(
       path,
       user,
       version: 'v3',
       personal_access_token: personal_access_token,
-      oauth_access_token: oauth_access_token
+      oauth_access_token: oauth_access_token,
+      admin_mode: admin_mode
     )
   end
 end

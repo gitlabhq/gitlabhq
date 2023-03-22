@@ -152,7 +152,7 @@ describe('Ci variable modal', () => {
         findModal().vm.$emit('shown');
       });
 
-      it('keeps the value as false', async () => {
+      it('keeps the value as false', () => {
         expect(
           findProtectedVariableCheckbox().attributes('data-is-protected-checked'),
         ).toBeUndefined();

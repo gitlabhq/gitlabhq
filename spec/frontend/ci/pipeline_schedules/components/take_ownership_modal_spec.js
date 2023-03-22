@@ -26,13 +26,13 @@ describe('Take ownership modal', () => {
     );
   });
 
-  it('emits the takeOwnership event', async () => {
+  it('emits the takeOwnership event', () => {
     findModal().vm.$emit('primary');
 
     expect(wrapper.emitted()).toEqual({ takeOwnership: [[]] });
   });
 
-  it('emits the hideModal event', async () => {
+  it('emits the hideModal event', () => {
     findModal().vm.$emit('hide');
 
     expect(wrapper.emitted()).toEqual({ hideModal: [[]] });

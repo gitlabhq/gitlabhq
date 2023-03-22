@@ -682,7 +682,7 @@ module Ci
     # rubocop: enable CodeReuse/ServiceClass
 
     def lazy_ref_commit
-      BatchLoader.for(ref).batch do |refs, loader|
+      BatchLoader.for(ref).batch(key: project.id) do |refs, loader|
         next unless project.repository_exists?
 
         project.repository.list_commits_by_ref_name(refs).then do |commits|

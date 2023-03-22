@@ -17,8 +17,6 @@
 #     validates :ftp_url, addressable_url: { schemes: %w(ftp) }
 #
 #     validates :git_url, addressable_url: { schemes: %w(http https ssh git) }
-#
-#     validates :smtp_adderss, addressable_url: { schemes: :none }
 #   end
 #
 # This validator can also block urls pointing to localhost or the local network to
@@ -27,7 +25,7 @@
 # Configuration options:
 # * <tt>message</tt> - A custom error message, used when the URL is blank. (default is: "must be a valid URL").
 # * <tt>blocked_message</tt> - A custom error message, used when the URL is blocked. Default: +'is blocked: %{exception_message}'+.
-# * <tt>schemes</tt> - Array of URI schemes or `:none`. Default: +['http', 'https']+
+# * <tt>schemes</tt> - Array of URI schemes. Default: +['http', 'https']+
 # * <tt>allow_localhost</tt> - Allow urls pointing to +localhost+. Default: +true+
 # * <tt>allow_local_network</tt> - Allow urls pointing to private network addresses. Default: +true+
 # * <tt>allow_blank</tt> - Allow urls to be +blank+. Default: +false+

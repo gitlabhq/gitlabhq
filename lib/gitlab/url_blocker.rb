@@ -12,7 +12,6 @@ module Gitlab
     class << self
       # Validates the given url according to the constraints specified by arguments.
       #
-      # schemes - Array of URI schemes or `:none` if scheme must not be set.
       # ports - Raises error if the given URL port is not between given ports.
       # allow_localhost - Raises error if URL resolves to a localhost IP address and argument is false.
       # allow_local_network - Raises error if URL resolves to a link-local address and argument is false.
@@ -230,12 +229,6 @@ module Gitlab
       end
 
       def validate_scheme(scheme, schemes)
-        if schemes == :none
-          return if scheme.nil?
-
-          raise BlockedUrlError, "No scheme allowed but got `#{scheme}://`"
-        end
-
         if scheme.blank? || (schemes.any? && schemes.exclude?(scheme))
           raise BlockedUrlError, "Only allowed schemes are #{schemes.join(', ')}"
         end

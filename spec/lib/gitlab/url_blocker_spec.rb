@@ -366,32 +366,6 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
         end
       end
     end
-
-    describe 'options' do
-      describe 'schemes' do
-        context 'with :none' do
-          let(:schemes) { :none }
-
-          context 'when URL has no scheme' do
-            let(:import_url) { '1.1.1.1' }
-
-            it_behaves_like 'validates URI and hostname' do
-              let(:expected_uri) { import_url }
-              let(:expected_hostname) { nil }
-            end
-          end
-
-          context 'when URL has a scheme' do
-            let(:import_url) { 'http://1.1.1.1' }
-
-            it 'raises an error' do
-              expect { subject }
-                .to raise_error(described_class::BlockedUrlError, "No scheme allowed but got `http://`")
-            end
-          end
-        end
-      end
-    end
   end
 
   describe '#blocked_url?' do
@@ -418,11 +392,6 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
     it 'returns true for bad scheme' do
       expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git', schemes: ['https'])).to be false
       expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git', schemes: ['http'])).to be true
-    end
-
-    it 'return true when schemes is :none' do
-      expect(described_class.blocked_url?('gitlab.com', schemes: :none)).to be false
-      expect(described_class.blocked_url?('smtp://gitlab.com', schemes: :none)).to be true
     end
 
     it 'returns true for bad protocol on configured web/SSH host and ports' do

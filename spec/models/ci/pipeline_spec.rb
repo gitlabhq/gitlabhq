@@ -2016,6 +2016,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   context 'with non-empty project' do
     let(:pipeline) do
       create(:ci_pipeline,
+             project: project,
              ref: project.default_branch,
              sha: project.commit.sha)
     end
@@ -2023,27 +2024,46 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     describe '#lazy_ref_commit' do
       let(:another) do
         create(:ci_pipeline,
+               project: project,
                ref: 'feature',
                sha: project.commit('feature').sha)
       end
 
       let(:unicode) do
         create(:ci_pipeline,
+               project: project,
                ref: 'ü/unicode/multi-byte')
       end
 
-      it 'returns the latest commit for a ref lazily' do
+      let(:in_another_project) do
+        other_project = create(:project, :repository)
+        create(:ci_pipeline,
+               project: other_project,
+               ref: other_project.default_branch,
+               sha: other_project.commit.sha)
+      end
+
+      it 'returns the latest commit for a ref lazily', :aggregate_failures do
         expect(project.repository)
           .to receive(:list_commits_by_ref_name).once
           .and_call_original
 
+        requests_before = Gitlab::GitalyClient.get_request_count
         pipeline.lazy_ref_commit
         another.lazy_ref_commit
         unicode.lazy_ref_commit
+        in_another_project.lazy_ref_commit
+        requests_after = Gitlab::GitalyClient.get_request_count
+
+        expect(requests_after - requests_before).to eq(0)
 
         expect(pipeline.lazy_ref_commit.id).to eq pipeline.sha
         expect(another.lazy_ref_commit.id).to eq another.sha
-        expect(unicode.lazy_ref_commit).to be_nil
+        expect(unicode.lazy_ref_commit.itself).to be_nil
+        expect(in_another_project.lazy_ref_commit.id).to eq in_another_project.sha
+
+        expect(pipeline.lazy_ref_commit.repository.container).to eq project
+        expect(in_another_project.lazy_ref_commit.repository.container).to eq in_another_project.project
       end
     end
 

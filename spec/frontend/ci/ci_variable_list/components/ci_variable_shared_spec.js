@@ -70,7 +70,7 @@ describe('Ci Variable Shared Component', () => {
   const findCiSettings = () => wrapper.findComponent(ciVariableSettings);
 
   // eslint-disable-next-line consistent-return
-  async function createComponentWithApollo({
+  function createComponentWithApollo({
     customHandlers = null,
     isLoading = false,
     props = { ...createProjectProps() },
@@ -409,7 +409,7 @@ describe('Ci Variable Shared Component', () => {
         describe('queryData', () => {
           let error;
 
-          beforeEach(async () => {
+          beforeEach(() => {
             mockVariables.mockResolvedValue(mockGroupVariables);
           });
 
@@ -447,7 +447,7 @@ describe('Ci Variable Shared Component', () => {
         describe('mutationData', () => {
           let error;
 
-          beforeEach(async () => {
+          beforeEach(() => {
             mockVariables.mockResolvedValue(mockGroupVariables);
           });
 

@@ -367,14 +367,6 @@ RSpec.configure do |config|
       ./spec/requests/api/project_snapshots_spec.rb
       ./spec/requests/api/project_snippets_spec.rb
       ./spec/requests/api/projects_spec.rb
-      ./spec/requests/api/snippets_spec.rb
-      ./spec/requests/api/statistics_spec.rb
-      ./spec/requests/api/system_hooks_spec.rb
-      ./spec/requests/api/topics_spec.rb
-      ./spec/requests/api/usage_data_non_sql_metrics_spec.rb
-      ./spec/requests/api/usage_data_queries_spec.rb
-      ./spec/requests/api/users_spec.rb
-      ./spec/requests/api/v3/github_spec.rb
       ./spec/support/shared_examples/requests/api/custom_attributes_shared_examples.rb
       ./spec/support/shared_examples/requests/api/hooks_shared_examples.rb
       ./spec/support/shared_examples/requests/api/notes_shared_examples.rb

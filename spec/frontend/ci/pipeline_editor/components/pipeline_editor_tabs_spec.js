@@ -314,13 +314,13 @@ describe('Pipeline editor tabs component', () => {
         createComponent();
       });
 
-      it('shows walkthrough popover', async () => {
+      it('shows walkthrough popover', () => {
         expect(findWalkthroughPopover().exists()).toBe(true);
       });
     });
 
     describe('when isNewCiConfigFile prop is false', () => {
-      it('does not show walkthrough popover', async () => {
+      it('does not show walkthrough popover', () => {
         createComponent({ props: { isNewCiConfigFile: false } });
         expect(findWalkthroughPopover().exists()).toBe(false);
       });

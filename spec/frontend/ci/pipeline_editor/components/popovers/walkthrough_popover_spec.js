@@ -18,7 +18,7 @@ describe('WalkthroughPopover component', () => {
       await wrapper.findByTestId('ctaBtn').trigger('click');
     });
 
-    it('emits "walkthrough-popover-cta-clicked" event', async () => {
+    it('emits "walkthrough-popover-cta-clicked" event', () => {
       expect(wrapper.emitted()['walkthrough-popover-cta-clicked']).toHaveLength(1);
     });
   });

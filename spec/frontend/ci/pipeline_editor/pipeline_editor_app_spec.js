@@ -96,7 +96,7 @@ describe('Pipeline editor app component', () => {
     });
   };
 
-  const createComponentWithApollo = async ({
+  const createComponentWithApollo = ({
     provide = {},
     stubs = {},
     withUndefinedBranch = false,
@@ -260,7 +260,7 @@ describe('Pipeline editor app component', () => {
         expect(findAlert().exists()).toBe(false);
       });
 
-      it('ci config query is called with correct variables', async () => {
+      it('ci config query is called with correct variables', () => {
         expect(mockCiConfigData).toHaveBeenCalledWith({
           content: mockCiYml,
           projectPath: mockProjectFullPath,
@@ -287,7 +287,7 @@ describe('Pipeline editor app component', () => {
           .mockImplementation(jest.fn());
       });
 
-      it('shows an empty state and does not show editor home component', async () => {
+      it('shows an empty state and does not show editor home component', () => {
         expect(findEmptyState().exists()).toBe(true);
         expect(findAlert().exists()).toBe(false);
         expect(findEditorHome().exists()).toBe(false);

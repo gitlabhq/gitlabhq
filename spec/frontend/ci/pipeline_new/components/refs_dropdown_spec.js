@@ -54,7 +54,7 @@ describe('Pipeline New Form', () => {
     expect(findRefsDropdownItems()).toHaveLength(0);
   });
 
-  it('does not make requests immediately', async () => {
+  it('does not make requests immediately', () => {
     expect(mock.history.get).toHaveLength(0);
   });
 
@@ -117,14 +117,14 @@ describe('Pipeline New Form', () => {
         await waitForPromises();
       });
 
-      it('requests filtered tags and branches', async () => {
+      it('requests filtered tags and branches', () => {
         expect(mock.history.get).toHaveLength(2);
         expect(mock.history.get[1].params).toEqual({
           search: mockSearchTerm,
         });
       });
 
-      it('displays dropdown with branches and tags', async () => {
+      it('displays dropdown with branches and tags', () => {
         const filteredRefLength = mockFilteredRefs.Tags.length + mockFilteredRefs.Branches.length;
 
         expect(findRefsDropdownItems()).toHaveLength(filteredRefLength);

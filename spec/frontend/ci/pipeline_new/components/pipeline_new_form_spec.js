@@ -142,7 +142,7 @@ describe('Pipeline New Form', () => {
       await waitForPromises();
     });
 
-    it('displays the correct values for the provided query params', async () => {
+    it('displays the correct values for the provided query params', () => {
       expect(findVariableTypes().at(0).props('text')).toBe('Variable');
       expect(findVariableTypes().at(1).props('text')).toBe('File');
       expect(findRefsDropdown().props('value')).toEqual({ shortName: 'tag-1' });
@@ -154,7 +154,7 @@ describe('Pipeline New Form', () => {
       expect(findValueInputs().at(0).element.value).toBe('test_var_val');
     });
 
-    it('displays an empty variable for the user to fill out', async () => {
+    it('displays an empty variable for the user to fill out', () => {
       expect(findKeyInputs().at(2).element.value).toBe('');
       expect(findValueInputs().at(2).element.value).toBe('');
       expect(findVariableTypes().at(2).props('text')).toBe('Variable');
@@ -186,12 +186,12 @@ describe('Pipeline New Form', () => {
   });
 
   describe('Pipeline creation', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       mockCiConfigVariables.mockResolvedValue(mockEmptyCiConfigVariablesResponse);
       mock.onPost(pipelinesPath).reply(HTTP_STATUS_OK, newPipelinePostResponse);
     });
 
-    it('does not submit the native HTML form', async () => {
+    it('does not submit the native HTML form', () => {
       createComponentWithApollo();
 
       findForm().vm.$emit('submit', dummySubmitEvent);
@@ -328,7 +328,7 @@ describe('Pipeline New Form', () => {
   });
 
   const testBehaviorWhenCacheIsPopulated = (queryResponse) => {
-    beforeEach(async () => {
+    beforeEach(() => {
       mockCiConfigVariables.mockResolvedValue(queryResponse);
       createComponentWithApollo({ method: mountExtended });
     });
@@ -406,7 +406,7 @@ describe('Pipeline New Form', () => {
         await waitForPromises();
       });
 
-      it('displays all the variables', async () => {
+      it('displays all the variables', () => {
         expect(findVariableRows()).toHaveLength(6);
       });
 
@@ -445,7 +445,7 @@ describe('Pipeline New Form', () => {
         await waitForPromises();
       });
 
-      it('displays variables with description only', async () => {
+      it('displays variables with description only', () => {
         expect(findVariableRows()).toHaveLength(2); // extra empty variable is added at the end
       });
     });
