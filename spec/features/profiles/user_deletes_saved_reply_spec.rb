@@ -14,6 +14,7 @@ RSpec.describe 'Profile > Saved replies > User deletes saved reply', :js,
   it 'shows the user a list of their saved replies' do
     visit profile_saved_replies_path
 
+    click_button 'Saved reply actions'
     find('[data-testid="saved-reply-delete-btn"]').click
 
     page.within('.gl-modal') do

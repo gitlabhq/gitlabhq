@@ -14,6 +14,7 @@ module Projects
 
       before_action do
         push_frontend_feature_flag(:ci_variables_pages, current_user)
+        push_frontend_feature_flag(:ci_limit_environment_scope, @project)
       end
 
       helper_method :highlight_badge

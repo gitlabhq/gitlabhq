@@ -10,10 +10,12 @@ import {
   EVENT_LABEL,
   EVENT_ACTION,
   ENVIRONMENT_SCOPE_LINK_TITLE,
+  groupString,
   instanceString,
+  projectString,
   variableOptions,
 } from '~/ci/ci_variable_list/constants';
-import { mockVariablesWithScopes } from '../mocks';
+import { mockEnvs, mockVariablesWithScopes, mockVariablesWithUniqueScopes } from '../mocks';
 import ModalStub from '../stubs';
 
 describe('Ci variable modal', () => {
@@ -42,12 +44,13 @@ describe('Ci variable modal', () => {
   };
 
   const defaultProps = {
+    areEnvironmentsLoading: false,
     areScopedVariablesAvailable: true,
     environments: [],
     hideEnvironmentScope: false,
     mode: ADD_VARIABLE_ACTION,
     selectedVariable: {},
-    variable: [],
+    variables: [],
   };
 
   const createComponent = ({ mountFn = shallowMountExtended, props = {}, provide = {} } = {}) => {
@@ -348,6 +351,42 @@ describe('Ci variable modal', () => {
 
           expect(link.attributes('title')).toBe(ENVIRONMENT_SCOPE_LINK_TITLE);
           expect(link.attributes('href')).toBe(defaultProvide.environmentScopeLink);
+        });
+
+        describe('when feature flag is enabled', () => {
+          beforeEach(() => {
+            createComponent({
+              props: {
+                environments: mockEnvs,
+                variables: mockVariablesWithUniqueScopes(projectString),
+              },
+              provide: { glFeatures: { ciLimitEnvironmentScope: true } },
+            });
+          });
+
+          it('does not merge environment scope sources', () => {
+            const expectedLength = mockEnvs.length;
+
+            expect(findCiEnvironmentsDropdown().props('environments')).toHaveLength(expectedLength);
+          });
+        });
+
+        describe('when feature flag is disabled', () => {
+          const mockGroupVariables = mockVariablesWithUniqueScopes(groupString);
+          beforeEach(() => {
+            createComponent({
+              props: {
+                environments: mockEnvs,
+                variables: mockGroupVariables,
+              },
+            });
+          });
+
+          it('merges environment scope sources', () => {
+            const expectedLength = mockGroupVariables.length + mockEnvs.length;
+
+            expect(findCiEnvironmentsDropdown().props('environments')).toHaveLength(expectedLength);
+          });
         });
       });
 

@@ -112,7 +112,7 @@ export default {
 
 <template>
   <gl-form
-    class="new-note common-note-form"
+    class="new-note common-note-form gl-mb-6"
     data-testid="saved-reply-form"
     @submit.prevent="onSubmit"
   >

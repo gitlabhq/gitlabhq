@@ -56,6 +56,11 @@ export const mockVariablesWithScopes = (kind) =>
     return { ...variable, environmentScope: '*' };
   });
 
+export const mockVariablesWithUniqueScopes = (kind) =>
+  mockVariables(kind).map((variable) => {
+    return { ...variable, environmentScope: variable.value };
+  });
+
 const createDefaultVars = ({ withScope = true, kind } = {}) => {
   let base = mockVariables(kind);
 

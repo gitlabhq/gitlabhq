@@ -16,6 +16,7 @@ RSpec.describe 'Profile > Saved replies > User updated saved reply', :js,
   end
 
   it 'shows the user a list of their saved replies' do
+    click_button 'Saved reply actions'
     find('[data-testid="saved-reply-edit-btn"]').click
     find('[data-testid="saved-reply-name-input"]').set('test')
 

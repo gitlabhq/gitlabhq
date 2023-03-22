@@ -354,7 +354,6 @@ class ProjectPolicy < BasePolicy
     enable :metrics_dashboard
     enable :read_confidential_issues
     enable :read_package
-    enable :read_product_analytics
     enable :read_ci_cd_analytics
     enable :read_external_emails
     enable :read_grafana

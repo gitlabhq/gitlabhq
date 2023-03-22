@@ -601,7 +601,7 @@ eventually pick it up. When they're done, they move it to **Done**, to close the
 issue.
 
 This process can be seen clearly when visiting an issue. With every move
-to another list, the label changes and a system note is recorded.
+to another list, the label changes and a [system note](system_notes.md) is recorded.
 
 ![issue board system notes](img/issue_board_system_notes_v13_6.png)
 

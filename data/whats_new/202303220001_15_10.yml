@@ -1,0 +1,77 @@
+- name: Automatically resolve SAST findings when rules are disabled
+  description: |
+      On GitLab.com, GitLab SAST now automatically [resolves](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/#vulnerability-status-values) vulnerabilities from the [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)- and [KICS](https://gitlab.com/gitlab-org/security-products/analyzers/kics)-based analyzers when either you [disable a predefined rule](https://docs.gitlab.com/ee/user/application_security/sast/customize_rulesets.html#disable-predefined-rules), or we remove a rule from the default ruleset. The Vulnerability Management system then leaves a comment explaining that the rule was removed, so you still have a historical record of the vulnerability. This feature is enabled by default on GitLab.com and in GitLab 15.10.
+  stage: Secure
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/sast/#automatic-vulnerability-resolution'
+  image_url: 'https://about.gitlab.com/images/15_10/automatic-resolution.png'
+  published_at: 2023-03-22
+  release: 15.10
+- name: See all branch-related settings together
+  description: |
+      All branch-related protections now display on a single page. To see a unified list of your branches and all their protection methods, go to **Settings > Repository > Branch rules**. Each branch shows the merge request approvals, security approvals, protected branches, and status checks configured for it. It is now easier to see a holistic view of a specific branch's protections. We hope this change helps you discover, use, and monitor these settings more easily. We'd love your feedback [in issue #388149](https://gitlab.com/gitlab-org/gitlab/-/issues/388149).
+  stage: Create
+  self-managed: false
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/project/repository/branches/'
+  image_url: 'https://img.youtube.com/vi/AUrwtjIr124/hqdefault.jpg'
+  published_at: 2023-03-22
+  release: 15.10
+- name: Create and switch branches in the Web IDE Beta
+  description: |
+      When you open the Web IDE Beta from a repository or merge request, the currently selected branch is used by default. You can create a new branch with your changes or, if you're not on a protected branch, commit to the current branch. Starting with GitLab 15.10, you can now also create a new branch any time while making changes or switch branches in the Web IDE Beta. This way, you can boost your productivity by not having to close the Web IDE Beta to switch contexts.
+  stage: Create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/project/web_ide_beta/#switch-branches'
+  image_url: 'https://about.gitlab.com/images/15_10/create-web-ide-manage-branches.png'
+  published_at: 2023-03-22
+  release: 15.10
+- name: Compliance frameworks report
+  description: |
+      Previous versions of GitLab provided a compliance report that shows compliance violations. In GitLab 15.10, we've added a compliance framework report so you can quickly see which compliance frameworks have been applied to the projects in your group.
+  stage: Govern
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/compliance/compliance_report/#compliance-frameworks-report'
+  image_url: 'https://about.gitlab.com/images/15_10/govern-compliance-framework-report.png'
+  published_at: 2023-03-22
+  release: 15.10
+- name: Suggested Reviewers generally available
+  description: |
+      Since release in closed beta, Suggested Reviewers has been enabled in over 1,000 projects and suggested over 200,000 reviewers. We've also made the service more reliable and are now making it generally available to all Ultimate customers. Now, GitLab can now recommend a reviewer with [Suggested Reviewers](https://docs.gitlab.com/ee/user/project/merge_requests/reviews/#suggested-reviewers). With this feature, machine learning (ML)-powered suggestions appear in the [reviewer dropdown](https://docs.gitlab.com/ee/user/project/merge_requests/getting_started.html#reviewer) in the merge request sidebar. Suggested Reviewers is our [first of many fully available ML features](https://about.gitlab.com/blog/2023/03/16/what-the-ml-ai/) at GitLab.
+  stage: Modelops
+  self-managed: false
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/project/merge_requests/reviews/#suggested-reviewers'
+  image_url: 'https://about.gitlab.com/images/15_10/create-code-review-suggested-reviewers.png'
+  published_at: 2023-03-22
+  release: 15.10
+- name: Create diagrams in wikis by using the diagrams.net editor
+  description: |
+      With GitLab 15.10, you can more easily create and edit diagrams in wikis by using the diagrams.net GUI editor. This feature is available in the Markdown editor and the content editor and was implemented in close collaboration with the GitLab wider community.
+  stage: Plan
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/markdown.html#diagramsnet-editor'
+  image_url: 'https://img.youtube.com/vi/F6kfhpRN3ZE/hqdefault.jpg'
+  published_at: 2023-03-22
+  release: 15.10
+- name: Apple App Store integration
+  description: |
+      From GitLab 15.10, you can configure and validate your projects with Apple App Store credentials. You can then use those credentials in CI/CD pipelines to automate releases to Test Flight and the App Store. To record your experiences with the App Store integration, see this [feedback issue](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/10).
+  stage: Deploy
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/project/integrations/apple_app_store.html'
+  image_url: 'https://img.youtube.com/vi/CwzAWVgJeK8/hqdefault.jpg'
+  published_at: 2023-03-22
+  release: 15.10

@@ -15,6 +15,10 @@ module Backup
       repositories_paths: 'REPOSITORIES_PATHS'
     }.freeze
 
+    YAML_PERMITTED_CLASSES = [
+      ActiveSupport::TimeWithZone, ActiveSupport::TimeZone, Symbol, Time
+    ].freeze
+
     TaskDefinition = Struct.new(
       :enabled, # `true` if the task can be used. Treated as `true` when not specified.
       :human_name, # Name of the task used for logging.
@@ -247,7 +251,9 @@ module Backup
     end
 
     def read_backup_information
-      @backup_information ||= YAML.load_file(File.join(backup_path, MANIFEST_NAME))
+      @backup_information ||= YAML.safe_load_file(
+        File.join(backup_path, MANIFEST_NAME),
+        permitted_classes: YAML_PERMITTED_CLASSES)
     end
 
     def write_backup_information

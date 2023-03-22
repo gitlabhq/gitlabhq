@@ -18,13 +18,14 @@ Other 3rd party scanners may also be used as long as they produce a CycloneDX fi
 This method of scanning is also capable of parsing and identifying over 500 different types of licenses, as defined in [the SPDX list](https://spdx.org/licenses/).
 Licenses not in the SPDX list are reported as "Unknown". License information can also be extracted from packages that are dual-licensed, or have multiple different licenses that apply.
 
-To enable license detection using Dependency Scanning in a project,
-include the `Jobs/Dependency-Scanning.gitlab-ci.yml` template in its CI configuration,
-but do not include the `Jobs/License-Scanning.gitlab-ci.yml` template.
+## Enable license scanning
 
-## Requirements
+Prerequisites:
 
-The license scanning requirements are the same as those for [Dependency Scanning](../../application_security/dependency_scanning/index.md#requirements).
+- Enable [Dependency Scanning](../../application_security/dependency_scanning/index.md#configuration).
+
+From the `.gitlab-ci.yml` file, remove the deprecated line `Jobs/License-Scanning.gitlab-ci.yml`, if
+it's present.
 
 ## Supported languages and package managers
 
@@ -102,11 +103,6 @@ License scanning is supported for the following languages and package managers:
 
 The supported files and versions are the ones supported by
 [Dependency Scanning](../../application_security/dependency_scanning/index.md#supported-languages-and-package-managers).
-
-## Configuration
-
-To enable license scanning of CycloneDX files,
-you must configure [Dependency Scanning](../../application_security/dependency_scanning/index.md#configuration).
 
 ## License expressions
 

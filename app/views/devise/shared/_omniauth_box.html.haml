@@ -13,6 +13,6 @@
         %span.gl-button-text
           = label_for_provider(provider)
   - unless hide_remember_me
-    = render Pajamas::CheckboxTagComponent.new(name: 'remember_me', value: nil) do |c|
+    = render Pajamas::CheckboxTagComponent.new(name: 'remember_me_omniauth', value: nil) do |c|
       = c.label do
         = _('Remember me')

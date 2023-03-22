@@ -499,7 +499,7 @@ For information on automatically managing GitLab group membership, see [SAML Gro
 
 The [Generated passwords for users created through integrated authentication](../../../security/passwords_for_integrated_authentication_methods.md) guide provides an overview of how GitLab generates and sets passwords for users created via SAML SSO for Groups.
 
-### NameID
+## NameID
 
 GitLab.com uses the SAML NameID to identify users. The NameID element:
 
@@ -516,7 +516,7 @@ The relevant field name and recommended value for supported providers are in the
 WARNING:
 Once users have signed into GitLab using the SSO SAML setup, changing the `NameID` breaks the configuration and potentially locks users out of the GitLab group.
 
-#### NameID Format
+### NameID Format
 
 We recommend setting the NameID format to `Persistent` unless using a field (such as email) that requires a different format.
 Most NameID formats can be used, except `Transient` due to the temporary nature of this format.

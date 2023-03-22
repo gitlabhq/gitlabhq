@@ -103,7 +103,7 @@ When bulk editing issues in a group, you can edit the following attributes:
 ## Move an issue
 
 When you move an issue, it's closed and copied to the target project.
-The original issue is not deleted. A system note, which indicates
+The original issue is not deleted. A [system note](../system_notes.md), which indicates
 where it came from and went to, is added to both issues.
 
 Be careful when moving an issue to a project with different access rules. Before moving the issue, make sure it does not contain sensitive data.

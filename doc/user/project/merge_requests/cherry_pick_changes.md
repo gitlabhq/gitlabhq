@@ -125,7 +125,7 @@ project, from the GitLab user interface:
 
 ## View system notes for cherry-picked commits
 
-When you cherry-pick a merge commit in the GitLab UI or API, GitLab adds a system note
+When you cherry-pick a merge commit in the GitLab UI or API, GitLab adds a [system note](../system_notes.md)
 to the related merge request thread in the format **{cherry-pick-commit}**
 `[USER]` **picked the changes into the branch** `[BRANCHNAME]` with commit** `[SHA]` `[DATE]`:
 

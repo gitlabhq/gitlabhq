@@ -107,7 +107,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
       with_them do
         before do
           allow(Kernel).to receive(:system).and_return(true)
-          allow(YAML).to receive(:load_file).and_return({ gitlab_version: Gitlab::VERSION })
+          allow(YAML).to receive(:safe_load_file).and_return({ gitlab_version: Gitlab::VERSION })
           allow(File).to receive(:delete).with(backup_restore_pid_path).and_return(1)
           allow(File).to receive(:open).and_call_original
           allow(File).to receive(:open).with(backup_restore_pid_path, any_args).and_yield(pid_file)
@@ -158,7 +158,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
 
       context 'when restore matches gitlab version' do
         before do
-          allow(YAML).to receive(:load_file)
+          allow(YAML).to receive(:safe_load_file)
             .and_return({ gitlab_version: gitlab_version })
           expect_next_instance_of(::Backup::Manager) do |instance|
             backup_types.each do |subtask|
@@ -212,7 +212,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         allow(Kernel).to receive(:system).and_return(true)
         allow(FileUtils).to receive(:cp_r).and_return(true)
         allow(FileUtils).to receive(:mv).and_return(true)
-        allow(YAML).to receive(:load_file)
+        allow(YAML).to receive(:safe_load_file)
           .and_return({ gitlab_version: Gitlab::VERSION })
 
         expect_next_instance_of(::Backup::Manager) do |instance|

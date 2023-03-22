@@ -35,6 +35,9 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
     ]
   end
 
+  let(:source_entity_identifier) { ERB::Util.url_encode(params[0][:source_full_path]) }
+  let(:source_entity_type) { BulkImports::CreateService::ENTITY_TYPES_MAPPING.fetch(params[0][:source_type]) }
+
   subject { described_class.new(user, params, credentials) }
 
   describe '#execute' do
@@ -59,6 +62,34 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
         end
       end
 
+      context 'when direct transfer setting query returns a 404' do
+        it 'raises a ServiceResponse::Error' do
+          stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token').to_return(status: 404)
+          stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token')
+            .to_return(
+              status: 200,
+              body: source_version.to_json,
+              headers: { 'Content-Type' => 'application/json' }
+            )
+          stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/#{source_entity_identifier}/export_relations/status?page=1&per_page=30&private_token=token")
+            .to_return(status: 404)
+
+          expect_next_instance_of(BulkImports::Clients::HTTP) do |client|
+            expect(client).to receive(:get).and_raise(BulkImports::Error.setting_not_enabled)
+          end
+
+          result = subject.execute
+
+          expect(result).to be_a(ServiceResponse)
+          expect(result).to be_error
+          expect(result.message)
+            .to eq(
+              "Group import disabled on source or destination instance. " \
+              "Ask an administrator to enable it on both instances and try again."
+            )
+        end
+      end
+
       context 'when required scopes are not present' do
         it 'returns ServiceResponse with error if token does not have api scope' do
           stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token').to_return(status: 404)
@@ -68,9 +99,13 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
               body: source_version.to_json,
               headers: { 'Content-Type' => 'application/json' }
             )
+          stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/#{source_entity_identifier}/export_relations/status?page=1&per_page=30&private_token=token")
+            .to_return(
+              status: 200
+            )
 
           allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
-            allow(client).to receive(:validate_instance_version!).and_raise(BulkImports::Error.scope_validation_failure)
+            allow(client).to receive(:validate_import_scopes!).and_raise(BulkImports::Error.scope_validation_failure)
           end
 
           result = subject.execute
@@ -90,6 +125,10 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
           stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token').to_return(status: 404)
           stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token')
             .to_return(status: 200, body: source_version.to_json, headers: { 'Content-Type' => 'application/json' })
+          stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/#{source_entity_identifier}/export_relations/status?page=1&per_page=30&private_token=token")
+            .to_return(
+              status: 200
+            )
           stub_request(:get, 'http://gitlab.example/api/v4/personal_access_tokens/self?private_token=token')
             .to_return(
               status: 200,
@@ -169,6 +208,10 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
         allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
           allow(instance).to receive(:instance_version).and_return(source_version)
           allow(instance).to receive(:instance_enterprise).and_return(false)
+          stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/#{source_entity_identifier}/export_relations/status?page=1&per_page=30&private_token=token")
+            .to_return(
+              status: 200
+            )
         end
       end
 
@@ -321,6 +364,105 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
               user: user,
               extra: { user_role: 'Owner', import_type: 'bulk_import_group' }
             )
+          end
+        end
+      end
+
+      describe '.validate_setting_enabled!' do
+        let(:entity_source_id) { 'gid://gitlab/Model/12345' }
+        let(:graphql_client) { instance_double(BulkImports::Clients::Graphql) }
+        let(:http_client) { instance_double(BulkImports::Clients::HTTP) }
+        let(:http_response) { double(code: 200, success?: true) } # rubocop:disable RSpec/VerifiedDoubles
+
+        before do
+          allow(BulkImports::Clients::HTTP).to receive(:new).and_return(http_client)
+          allow(BulkImports::Clients::Graphql).to receive(:new).and_return(graphql_client)
+
+          allow(http_client).to receive(:instance_version).and_return(status: 200)
+          allow(http_client).to receive(:instance_enterprise).and_return(false)
+          allow(http_client).to receive(:validate_instance_version!).and_return(source_version)
+          allow(http_client).to receive(:validate_import_scopes!).and_return(true)
+        end
+
+        context 'when the source_type is a group' do
+          context 'when the source_full_path contains only integer characters' do
+            let(:query_string) { BulkImports::Groups::Graphql::GetGroupQuery.new(context: nil).to_s }
+            let(:graphql_response) do
+              double(original_hash: { 'data' => { 'group' => { 'id' => entity_source_id } } }) # rubocop:disable RSpec/VerifiedDoubles
+            end
+
+            let(:params) do
+              [
+                {
+                  source_type: 'group_entity',
+                  source_full_path: '67890',
+                  destination_slug: 'destination-group-1',
+                  destination_namespace: 'destination1'
+                }
+              ]
+            end
+
+            before do
+              allow(graphql_client).to receive(:parse).with(query_string)
+              allow(graphql_client).to receive(:execute).and_return(graphql_response)
+
+              allow(http_client).to receive(:get)
+                .with("/groups/12345/export_relations/status")
+                .and_return(http_response)
+
+              stub_request(:get, "http://gitlab.example/api/v4/groups/12345/export_relations/status?page=1&per_page=30&private_token=token")
+                  .to_return(status: 200, body: "", headers: {})
+            end
+
+            it 'makes a graphql request using the group full path and an http request with the correct id' do
+              expect(graphql_client).to receive(:parse).with(query_string)
+              expect(graphql_client).to receive(:execute).and_return(graphql_response)
+
+              expect(http_client).to receive(:get).with("/groups/12345/export_relations/status")
+
+              subject.execute
+            end
+          end
+        end
+
+        context 'when the source_type is a project' do
+          context 'when the source_full_path contains only integer characters' do
+            let(:query_string) { BulkImports::Projects::Graphql::GetProjectQuery.new(context: nil).to_s }
+            let(:graphql_response) do
+              double(original_hash: { 'data' => { 'project' => { 'id' => entity_source_id } } })  # rubocop:disable RSpec/VerifiedDoubles
+            end
+
+            let(:params) do
+              [
+                {
+                  source_type: 'project_entity',
+                  source_full_path: '67890',
+                  destination_slug: 'destination-group-1',
+                  destination_namespace: 'destination1'
+                }
+              ]
+            end
+
+            before do
+              allow(graphql_client).to receive(:parse).with(query_string)
+              allow(graphql_client).to receive(:execute).and_return(graphql_response)
+
+              allow(http_client).to receive(:get)
+                .with("/projects/12345/export_relations/status")
+                .and_return(http_response)
+
+              stub_request(:get, "http://gitlab.example/api/v4/projects/12345/export_relations/status?page=1&per_page=30&private_token=token")
+                  .to_return(status: 200, body: "", headers: {})
+            end
+
+            it 'makes a graphql request using the group full path and an http request with the correct id' do
+              expect(graphql_client).to receive(:parse).with(query_string)
+              expect(graphql_client).to receive(:execute).and_return(graphql_response)
+
+              expect(http_client).to receive(:get).with("/projects/12345/export_relations/status")
+
+              subject.execute
+            end
           end
         end
       end

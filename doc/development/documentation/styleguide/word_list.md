@@ -286,8 +286,7 @@ CI/CD is always uppercase. No need to spell it out on first use.
 
 ## CI/CD minutes
 
-Use **CI/CD minutes** instead of **CI minutes**, **pipeline minutes**, **pipeline minutes quota**, or
-**CI pipeline minutes**. This decision was made in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342813).
+Do not use **CI/CD minutes**. This term was renamed to [**compute credits**](#compute-credits).
 
 ## click
 
@@ -310,6 +309,19 @@ Use **collapse** instead of **close** when you are talking about expanding or co
 Use **From the command line** to introduce commands.
 
 Hyphenate when using as an adjective. For example, **a command-line tool**.
+
+## compute credits
+
+Use **compute credits** instead of these (or similar) terms:
+
+- **CI/CD minutes**
+- **CI minutes**
+- **pipeline minutes**
+- **CI pipeline minutes**
+- **pipeline minutes quota**
+
+As of March, 2022, this language is still being standardized in the documentation and UI.
+For more information, see [issue 5218](https://gitlab.com/gitlab-com/Product/-/issues/5218).
 
 ## confirmation dialog
 

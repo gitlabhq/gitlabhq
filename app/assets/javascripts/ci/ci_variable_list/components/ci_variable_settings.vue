@@ -9,6 +9,10 @@ export default {
     CiVariableModal,
   },
   props: {
+    areEnvironmentsLoading: {
+      type: Boolean,
+      required: true,
+    },
     areScopedVariablesAvailable: {
       type: Boolean,
       required: false,
@@ -100,6 +104,7 @@ export default {
       />
       <ci-variable-modal
         v-if="showModal"
+        :are-environments-loading="areEnvironmentsLoading"
         :are-scoped-variables-available="areScopedVariablesAvailable"
         :environments="environments"
         :hide-environment-scope="hideEnvironmentScope"
@@ -110,6 +115,7 @@ export default {
         @delete-variable="deleteVariable"
         @hideModal="hideModal"
         @update-variable="updateVariable"
+        @search-environment-scope="$emit('search-environment-scope', $event)"
       />
     </div>
   </div>

@@ -10,7 +10,7 @@ RSpec.describe Ci::Catalog::ResourcesHelper, feature_category: :pipeline_composi
 
     before do
       allow(helper).to receive(:can_collaborate_with_project?).and_return(true)
-      stub_licensed_features(ci_private_catalog: false)
+      stub_licensed_features(ci_namespace_catalog: false)
     end
 
     it 'user cannot view the Catalog in CE regardless of permissions' do

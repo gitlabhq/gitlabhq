@@ -1,0 +1,11 @@
+- breadcrumb_title _("Projects")
+- page_title _("Explore projects")
+
+= render_dashboard_ultimate_trial(current_user)
+
+.page-title-holder.gl-display-flex.gl-align-items-center
+  %h1.page-title.gl-font-size-h-display= page_title
+  .page-title-controls
+    - if current_user&.can_create_project?
+      = render Pajamas::ButtonComponent.new(href: new_project_path, variant: :confirm) do
+        = _("New project")

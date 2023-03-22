@@ -62,6 +62,8 @@ import {
   idleCallback,
   allDiscussionWrappersExpanded,
   prepareLineForRenamedFile,
+  parseUrlHashAsFileHash,
+  isUrlHashNoteLink,
 } from './utils';
 
 export const setBaseConfig = ({ commit }, options) => {
@@ -99,6 +101,47 @@ export const setBaseConfig = ({ commit }, options) => {
 
     commit(types.SET_DIFF_FILE_VIEWED, { id: viewedId, seen: true });
   });
+};
+
+export const fetchFileByFile = async ({ state, getters, commit }) => {
+  const isNoteLink = isUrlHashNoteLink(window?.location?.hash);
+  const id = parseUrlHashAsFileHash(window?.location?.hash, state.currentDiffFileId);
+  const treeEntry = id
+    ? getters.flatBlobsList.find(({ fileHash }) => fileHash === id)
+    : getters.flatBlobsList[0];
+
+  if (treeEntry && !treeEntry.diffLoaded && !getters.getDiffFileByHash(id)) {
+    // Overloading "batch" loading indicators so the UI stays mostly the same
+    commit(types.SET_BATCH_LOADING_STATE, 'loading');
+    commit(types.SET_RETRIEVING_BATCHES, true);
+
+    const urlParams = {
+      old_path: treeEntry.filePaths.old,
+      new_path: treeEntry.filePaths.new,
+      w: state.showWhitespace ? '0' : '1',
+      view: 'inline',
+    };
+
+    axios
+      .get(mergeUrlParams({ ...urlParams }, state.endpointDiffForPath))
+      .then(({ data: diffData }) => {
+        commit(types.SET_DIFF_DATA_BATCH, { diff_files: diffData.diff_files });
+
+        if (!isNoteLink && !state.currentDiffFileId) {
+          commit(types.SET_CURRENT_DIFF_FILE, state.diffFiles[0]?.file_hash || '');
+        }
+
+        commit(types.SET_BATCH_LOADING_STATE, 'loaded');
+
+        eventHub.$emit('diffFilesModified');
+      })
+      .catch(() => {
+        commit(types.SET_BATCH_LOADING_STATE, 'error');
+      })
+      .finally(() => {
+        commit(types.SET_RETRIEVING_BATCHES, false);
+      });
+  }
 };
 
 export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {

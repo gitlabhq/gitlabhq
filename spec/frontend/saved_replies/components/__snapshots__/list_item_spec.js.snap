@@ -2,43 +2,130 @@
 
 exports[`Saved replies list item component renders list item 1`] = `
 <li
-  class="gl-mb-5"
+  class="gl-pt-4 gl-pb-5 gl-border-b"
 >
   <div
     class="gl-display-flex gl-align-items-center"
   >
-    <strong
+    <h6
+      class="gl-mr-3 gl-my-0"
       data-testid="saved-reply-name"
     >
       test
-    </strong>
+    </h6>
      
     <div
       class="gl-ml-auto"
     >
-      <gl-button-stub
-        aria-label="Edit"
-        buttontextclasses=""
-        category="primary"
-        class="gl-mr-3"
-        data-testid="saved-reply-edit-btn"
-        icon="pencil"
-        size="medium"
-        title="Edit"
-        to="[object Object]"
-        variant="default"
-      />
+      <div
+        class="gl-new-dropdown gl-disclosure-dropdown"
+      >
+        <button
+          aria-controls="base-dropdown-5"
+          aria-labelledby="actions-toggle-3"
+          class="btn btn-default btn-md gl-button btn-default-tertiary gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret"
+          data-testid="base-dropdown-toggle"
+          id="actions-toggle-3"
+          listeners="[object Object]"
+          type="button"
+        >
+          <!---->
+           
+          <svg
+            aria-hidden="true"
+            class="gl-button-icon gl-icon s16"
+            data-testid="ellipsis_v-icon"
+            role="img"
+          >
+            <use
+              href="#ellipsis_v"
+            />
+          </svg>
+            
+          <span
+            class="gl-button-text"
+          >
+            <span
+              class="gl-new-dropdown-button-text gl-sr-only"
+            >
+              
+        Saved reply actions
+      
+            </span>
+             
+            <!---->
+          </span>
+        </button>
+         
+        <div
+          class="gl-new-dropdown-panel"
+          data-testid="base-dropdown-menu"
+          id="base-dropdown-5"
+        >
+          <div
+            class="gl-new-dropdown-inner"
+          >
+              
+            <ul
+              aria-labelledby="actions-toggle-3"
+              class="gl-new-dropdown-contents"
+              data-testid="disclosure-content"
+              id="disclosure-4"
+              tabindex="-1"
+            >
+              <li
+                class="gl-new-dropdown-item"
+                data-testid="disclosure-dropdown-item"
+                tabindex="0"
+              >
+                <button
+                  class="gl-new-dropdown-item-content"
+                  data-testid="saved-reply-edit-btn"
+                  tabindex="-1"
+                  type="button"
+                >
+                  <span
+                    class="gl-new-dropdown-item-text-wrapper"
+                  >
+                    
+          Edit
+        
+                  </span>
+                </button>
+              </li>
+              <li
+                class="gl-new-dropdown-item"
+                data-testid="disclosure-dropdown-item"
+                tabindex="0"
+              >
+                <button
+                  class="gl-new-dropdown-item-content gl-text-red-500!"
+                  data-testid="saved-reply-delete-btn"
+                  tabindex="-1"
+                  type="button"
+                >
+                  <span
+                    class="gl-new-dropdown-item-text-wrapper"
+                  >
+                    
+          Delete
+        
+                  </span>
+                </button>
+              </li>
+            </ul>
+             
+          </div>
+        </div>
+      </div>
        
-      <gl-button-stub
-        aria-label="Delete"
-        buttontextclasses=""
-        category="secondary"
-        data-testid="saved-reply-delete-btn"
-        icon="remove"
-        size="medium"
-        title="Delete"
-        variant="danger"
-      />
+      <div
+        class="gl-tooltip"
+      >
+        
+        Saved reply actions
+      
+      </div>
     </div>
   </div>
    
@@ -48,20 +135,6 @@ exports[`Saved replies list item component renders list item 1`] = `
     /assign_reviewer
   </div>
    
-  <gl-modal-stub
-    actionprimary="[object Object]"
-    actionsecondary="[object Object]"
-    arialabel=""
-    dismisslabel="Close"
-    modalclass=""
-    modalid="delete-saved-reply-2"
-    size="sm"
-    title="Delete saved reply"
-    titletag="h4"
-  >
-    <gl-sprintf-stub
-      message="Are you sure you want to delete %{name}? This action cannot be undone."
-    />
-  </gl-modal-stub>
+  <!---->
 </li>
 `;

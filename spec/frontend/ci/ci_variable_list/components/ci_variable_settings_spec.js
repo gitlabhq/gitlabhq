@@ -1,4 +1,3 @@
-import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import CiVariableSettings from '~/ci/ci_variable_list/components/ci_variable_settings.vue';
 import ciVariableModal from '~/ci/ci_variable_list/components/ci_variable_modal.vue';
@@ -16,6 +15,7 @@ describe('Ci variable table', () => {
   let wrapper;
 
   const defaultProps = {
+    areEnvironmentsLoading: false,
     areScopedVariablesAvailable: true,
     entity: 'project',
     environments: mapEnvironmentNames(mockEnvs),
@@ -54,10 +54,10 @@ describe('Ci variable table', () => {
     it('passes props down correctly to the ci modal', async () => {
       createComponent();
 
-      findCiVariableTable().vm.$emit('set-selected-variable');
-      await nextTick();
+      await findCiVariableTable().vm.$emit('set-selected-variable');
 
       expect(findCiVariableModal().props()).toEqual({
+        areEnvironmentsLoading: defaultProps.areEnvironmentsLoading,
         areScopedVariablesAvailable: defaultProps.areScopedVariablesAvailable,
         environments: defaultProps.environments,
         hideEnvironmentScope: defaultProps.hideEnvironmentScope,
@@ -74,15 +74,13 @@ describe('Ci variable table', () => {
     });
 
     it('passes down ADD mode when receiving an empty variable', async () => {
-      findCiVariableTable().vm.$emit('set-selected-variable');
-      await nextTick();
+      await findCiVariableTable().vm.$emit('set-selected-variable');
 
       expect(findCiVariableModal().props('mode')).toBe(ADD_VARIABLE_ACTION);
     });
 
     it('passes down EDIT mode when receiving a variable', async () => {
-      findCiVariableTable().vm.$emit('set-selected-variable', newVariable);
-      await nextTick();
+      await findCiVariableTable().vm.$emit('set-selected-variable', newVariable);
 
       expect(findCiVariableModal().props('mode')).toBe(EDIT_VARIABLE_ACTION);
     });
@@ -98,25 +96,21 @@ describe('Ci variable table', () => {
     });
 
     it('shows modal when adding a new variable', async () => {
-      findCiVariableTable().vm.$emit('set-selected-variable');
-      await nextTick();
+      await findCiVariableTable().vm.$emit('set-selected-variable');
 
       expect(findCiVariableModal().exists()).toBe(true);
     });
 
     it('shows modal when updating a variable', async () => {
-      findCiVariableTable().vm.$emit('set-selected-variable', newVariable);
-      await nextTick();
+      await findCiVariableTable().vm.$emit('set-selected-variable', newVariable);
 
       expect(findCiVariableModal().exists()).toBe(true);
     });
 
     it('hides modal when receiving the event from the modal', async () => {
-      findCiVariableTable().vm.$emit('set-selected-variable');
-      await nextTick();
+      await findCiVariableTable().vm.$emit('set-selected-variable');
 
-      findCiVariableModal().vm.$emit('hideModal');
-      await nextTick();
+      await findCiVariableModal().vm.$emit('hideModal');
 
       expect(findCiVariableModal().exists()).toBe(false);
     });
@@ -133,11 +127,9 @@ describe('Ci variable table', () => {
       ${'update-variable'}
       ${'delete-variable'}
     `('bubbles up the $eventName event', async ({ eventName }) => {
-      findCiVariableTable().vm.$emit('set-selected-variable');
-      await nextTick();
+      await findCiVariableTable().vm.$emit('set-selected-variable');
 
-      findCiVariableModal().vm.$emit(eventName, newVariable);
-      await nextTick();
+      await findCiVariableModal().vm.$emit(eventName, newVariable);
 
       expect(wrapper.emitted(eventName)).toEqual([[newVariable]]);
     });
@@ -154,10 +146,23 @@ describe('Ci variable table', () => {
       ${'handle-next-page'} | ${undefined}
       ${'sort-changed'}     | ${{ sortDesc: true }}
     `('bubbles up the $eventName event', async ({ args, eventName }) => {
-      findCiVariableTable().vm.$emit(eventName, args);
-      await nextTick();
+      await findCiVariableTable().vm.$emit(eventName, args);
 
       expect(wrapper.emitted(eventName)).toEqual([[args]]);
+    });
+  });
+
+  describe('environment events', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('bubbles up the search event', async () => {
+      await findCiVariableTable().vm.$emit('set-selected-variable');
+
+      await findCiVariableModal().vm.$emit('search-environment-scope', 'staging');
+
+      expect(wrapper.emitted('search-environment-scope')).toEqual([['staging']]);
     });
   });
 });

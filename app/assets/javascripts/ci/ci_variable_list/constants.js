@@ -1,6 +1,7 @@
 import { __, s__ } from '~/locale';
 
 export const ADD_CI_VARIABLE_MODAL_ID = 'add-ci-variable';
+export const ENVIRONMENT_QUERY_LIMIT = 20;
 
 export const SORT_DIRECTIONS = {
   ASC: 'KEY_ASC',

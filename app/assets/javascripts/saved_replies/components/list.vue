@@ -44,7 +44,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="gl-border-t gl-pt-4">
     <gl-loading-icon v-if="loading" size="lg" />
     <template v-else>
       <h5 class="gl-font-lg" data-testid="title">

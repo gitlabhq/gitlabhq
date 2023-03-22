@@ -6,6 +6,7 @@ import { mapEnvironmentNames, reportMessageToSentry } from '../utils';
 import {
   ADD_MUTATION_ACTION,
   DELETE_MUTATION_ACTION,
+  ENVIRONMENT_QUERY_LIMIT,
   SORT_DIRECTIONS,
   UPDATE_MUTATION_ACTION,
   environmentFetchErrorText,
@@ -162,6 +163,7 @@ export default {
       variables() {
         return {
           fullPath: this.fullPath,
+          ...this.environmentQueryVariables,
         };
       },
       update(data) {
@@ -173,10 +175,26 @@ export default {
     },
   },
   computed: {
+    areEnvironmentsLoading() {
+      return this.$apollo.queries.environments.loading;
+    },
+    environmentQueryVariables() {
+      if (this.glFeatures?.ciLimitEnvironmentScope) {
+        return {
+          first: ENVIRONMENT_QUERY_LIMIT,
+          search: '',
+        };
+      }
+
+      return {};
+    },
     isLoading() {
+      // TODO: Remove areEnvironmentsLoading and show loading icon in dropdown when
+      // environment query is loading and FF is enabled
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/396990
       return (
         (this.$apollo.queries.ciVariables.loading && this.isInitialLoading) ||
-        this.$apollo.queries.environments.loading ||
+        this.areEnvironmentsLoading ||
         this.isLoadingMoreItems
       );
     },
@@ -228,6 +246,11 @@ export default {
     updateVariable(variable) {
       this.variableMutation(UPDATE_MUTATION_ACTION, variable);
     },
+    async searchEnvironmentScope(searchTerm) {
+      if (this.glFeatures?.ciLimitEnvironmentScope) {
+        this.$apollo.queries.environments.refetch({ search: searchTerm });
+      }
+    },
     async variableMutation(mutationAction, variable) {
       try {
         const currentMutation = this.mutationData[mutationAction];
@@ -264,6 +287,7 @@ export default {
 
 <template>
   <ci-variable-settings
+    :are-environments-loading="areEnvironmentsLoading"
     :are-scoped-variables-available="areScopedVariablesAvailable"
     :entity="entity"
     :environments="environments"
@@ -277,6 +301,7 @@ export default {
     @handle-prev-page="handlePrevPage"
     @handle-next-page="handleNextPage"
     @sort-changed="handleSortChanged"
+    @search-environment-scope="searchEnvironmentScope"
     @update-variable="updateVariable"
   />
 </template>

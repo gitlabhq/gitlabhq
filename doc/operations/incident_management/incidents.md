@@ -94,7 +94,7 @@ If an incident template is configured for the project, then the template content
 Comments are displayed in threads, but can be displayed chronologically
 [by toggling on the recent updates view](#recent-updates-view).
 
-When you make changes to an incident, GitLab creates system notes and
+When you make changes to an incident, GitLab creates [system notes](../../user/project/system_notes.md) and
 displays them below the summary.
 
 ### Metrics **(PREMIUM)**

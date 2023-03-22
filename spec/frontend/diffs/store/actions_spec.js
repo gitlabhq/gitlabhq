@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import Cookies from '~/lib/utils/cookies';
+import waitForPromises from 'helpers/wait_for_promises';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
@@ -24,6 +25,7 @@ import {
 } from '~/lib/utils/http_status';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import eventHub from '~/notes/event_hub';
+import diffsEventHub from '~/diffs/event_hub';
 import { diffMetadata } from '../mock_data/diff_metadata';
 
 jest.mock('~/alert');
@@ -131,6 +133,112 @@ describe('DiffsStoreActions', () => {
           },
         ],
         [],
+      );
+    });
+  });
+
+  describe('fetchFileByFile', () => {
+    beforeEach(() => {
+      window.location.hash = 'e334a2a10f036c00151a04cea7938a5d4213a818';
+    });
+
+    it('should do nothing if there is no tree entry for the file ID', () => {
+      return testAction(diffActions.fetchFileByFile, {}, { flatBlobsList: [] }, [], []);
+    });
+
+    it('should do nothing if the tree entry for the file ID has already been marked as loaded', () => {
+      return testAction(
+        diffActions.fetchFileByFile,
+        {},
+        {
+          flatBlobsList: [
+            { fileHash: 'e334a2a10f036c00151a04cea7938a5d4213a818', diffLoaded: true },
+          ],
+        },
+        [],
+        [],
+      );
+    });
+
+    describe('when a tree entry exists for the file, but it has not been marked as loaded', () => {
+      let state;
+      let commit;
+      let hubSpy;
+      const endpointDiffForPath = '/diffs/set/endpoint/path';
+      const diffForPath = mergeUrlParams(
+        {
+          old_path: 'old/123',
+          new_path: 'new/123',
+          w: '1',
+          view: 'inline',
+        },
+        endpointDiffForPath,
+      );
+      const treeEntry = {
+        fileHash: 'e334a2a10f036c00151a04cea7938a5d4213a818',
+        filePaths: { old: 'old/123', new: 'new/123' },
+      };
+      const fileResult = {
+        diff_files: [{ file_hash: 'e334a2a10f036c00151a04cea7938a5d4213a818' }],
+      };
+      const getters = {
+        flatBlobsList: [treeEntry],
+        getDiffFileByHash(hash) {
+          return state.diffFiles?.find((entry) => entry.file_hash === hash);
+        },
+      };
+
+      beforeEach(() => {
+        commit = jest.fn();
+        state = {
+          endpointDiffForPath,
+          diffFiles: [],
+        };
+        getters.flatBlobsList = [treeEntry];
+        hubSpy = jest.spyOn(diffsEventHub, '$emit');
+      });
+
+      it('does nothing if the file already exists in the loaded diff files', () => {
+        state.diffFiles = fileResult.diff_files;
+
+        return testAction(diffActions.fetchFileByFile, state, getters, [], []);
+      });
+
+      it('does some standard work every time', async () => {
+        mock.onGet(diffForPath).reply(HTTP_STATUS_OK, fileResult);
+
+        await diffActions.fetchFileByFile({ state, getters, commit });
+
+        expect(commit).toHaveBeenCalledWith(types.SET_BATCH_LOADING_STATE, 'loading');
+        expect(commit).toHaveBeenCalledWith(types.SET_RETRIEVING_BATCHES, true);
+
+        // wait for the mocked network request to return and start processing the .then
+        await waitForPromises();
+
+        expect(commit).toHaveBeenCalledWith(types.SET_DIFF_DATA_BATCH, fileResult);
+        expect(commit).toHaveBeenCalledWith(types.SET_BATCH_LOADING_STATE, 'loaded');
+
+        expect(hubSpy).toHaveBeenCalledWith('diffFilesModified');
+      });
+
+      it.each`
+        urlHash               | diffFiles                | expected
+        ${treeEntry.fileHash} | ${[]}                    | ${''}
+        ${'abcdef1234567890'} | ${fileResult.diff_files} | ${'e334a2a10f036c00151a04cea7938a5d4213a818'}
+      `(
+        "sets the current file to the first diff file ('$id') if it's not a note hash and there isn't a current ID set",
+        async ({ urlHash, diffFiles, expected }) => {
+          window.location.hash = urlHash;
+          mock.onGet(diffForPath).reply(HTTP_STATUS_OK, fileResult);
+          state.diffFiles = diffFiles;
+
+          await diffActions.fetchFileByFile({ state, getters, commit });
+
+          // wait for the mocked network request to return and start processing the .then
+          await waitForPromises();
+
+          expect(commit).toHaveBeenCalledWith(types.SET_CURRENT_DIFF_FILE, expected);
+        },
       );
     });
   });

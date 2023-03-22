@@ -74,6 +74,10 @@ export default {
     'maskableRegex',
   ],
   props: {
+    areEnvironmentsLoading: {
+      type: Boolean,
+      required: true,
+    },
     areScopedVariablesAvailable: {
       type: Boolean,
       required: false,
@@ -142,7 +146,11 @@ export default {
     isTipVisible() {
       return !this.isTipDismissed && AWS_TOKEN_CONSTANTS.includes(this.variable.key);
     },
-    joinedEnvironments() {
+    environmentsList() {
+      if (this.glFeatures?.ciLimitEnvironmentScope) {
+        return this.environments;
+      }
+
       return createJoinedEnvironments(this.variables, this.environments, this.newEnvironments);
     },
     maskedFeedback() {
@@ -368,10 +376,12 @@ export default {
             </template>
             <ci-environments-dropdown
               v-if="areScopedVariablesAvailable"
+              :are-environments-loading="areEnvironmentsLoading"
               :selected-environment-scope="variable.environmentScope"
-              :environments="joinedEnvironments"
+              :environments="environmentsList"
               @select-environment="setEnvironmentScope"
               @create-environment-scope="createEnvironmentScope"
+              @search-environment-scope="$emit('search-environment-scope', $event)"
             />
 
             <gl-form-input v-else :value="$options.i18n.defaultScope" class="gl-w-full" readonly />

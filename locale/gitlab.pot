@@ -9158,6 +9158,9 @@ msgstr ""
 msgid "CiVariable|Define a CI/CD variable in the UI"
 msgstr ""
 
+msgid "CiVariable|Maximum of 20 environments listed. For more environments, enter a search query."
+msgstr ""
+
 msgid "CiVariable|New environment"
 msgstr ""
 
@@ -15122,9 +15125,6 @@ msgstr ""
 msgid "Discover GitLab Geo"
 msgstr ""
 
-msgid "Discover projects, groups and snippets. Share your projects with others"
-msgstr ""
-
 msgid "Discover|Check your application for security vulnerabilities that may lead to unauthorized access, data leaks, and denial of services."
 msgstr ""
 
@@ -17254,9 +17254,6 @@ msgid "Explain why you're reporting the user."
 msgstr ""
 
 msgid "Explore"
-msgstr ""
-
-msgid "Explore GitLab"
 msgstr ""
 
 msgid "Explore groups"
@@ -35339,6 +35336,9 @@ msgstr ""
 msgid "ProtectedEnvironments|Number of approvals must be between 1 and 5"
 msgstr ""
 
+msgid "ProtectedEnvironments|Required approval count"
+msgstr ""
+
 msgid "ProtectedEnvironments|Save"
 msgstr ""
 
@@ -38282,6 +38282,9 @@ msgid "Saved Replies"
 msgstr ""
 
 msgid "Saved replies can be used when creating comments inside issues, merge requests, and epics."
+msgstr ""
+
+msgid "Saved reply actions"
 msgstr ""
 
 msgid "Saving"

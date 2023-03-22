@@ -8,9 +8,10 @@ require 'logger'
 module CloudProfilerAgent
   GoogleCloudProfiler = ::Google::Cloud::Profiler::V2
 
+  # We temporarily removed wall time profiling here, since it does not work properly.
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/397060
   PROFILE_TYPES = {
-    CPU: :cpu,
-    WALL: :wall
+    CPU: :cpu
   }.freeze
   # This regexp will ensure the service name is valid.
   # See https://cloud.google.com/ruby/docs/reference/google-cloud-profiler-v2/latest/Google-Cloud-Profiler-V2-Deployment#Google__Cloud__Profiler__V2__Deployment_target_instance_

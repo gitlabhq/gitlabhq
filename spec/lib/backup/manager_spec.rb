@@ -77,7 +77,9 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
     end
 
     before do
-      allow(YAML).to receive(:load_file).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
+      allow(YAML).to receive(:safe_load_file).with(
+        File.join(Gitlab.config.backup.path, 'backup_information.yml'),
+        permitted_classes: described_class::YAML_PERMITTED_CLASSES)
         .and_return(backup_information)
     end
 
@@ -603,14 +605,16 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         end
 
         expect(Kernel).not_to have_received(:system).with(*pack_tar_cmdline)
-        expect(YAML.load_file(File.join(Gitlab.config.backup.path, 'backup_information.yml'))).to include(
-          backup_created_at: backup_time.localtime,
-          db_version: be_a(String),
-          gitlab_version: Gitlab::VERSION,
-          installation_type: Gitlab::INSTALLATION_TYPE,
-          skipped: 'tar',
-          tar_version: be_a(String)
-        )
+        expect(YAML.safe_load_file(
+          File.join(Gitlab.config.backup.path, 'backup_information.yml'),
+          permitted_classes: described_class::YAML_PERMITTED_CLASSES)).to include(
+            backup_created_at: backup_time.localtime,
+            db_version: be_a(String),
+            gitlab_version: Gitlab::VERSION,
+            installation_type: Gitlab::INSTALLATION_TYPE,
+            skipped: 'tar',
+            tar_version: be_a(String)
+          )
         expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
       end
     end
@@ -629,8 +633,10 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       end
 
       before do
-        allow(YAML).to receive(:load_file).and_call_original
-        allow(YAML).to receive(:load_file).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
+        allow(YAML).to receive(:safe_load_file).and_call_original
+        allow(YAML).to receive(:safe_load_file).with(
+          File.join(Gitlab.config.backup.path, 'backup_information.yml'),
+                         permitted_classes: described_class::YAML_PERMITTED_CLASSES)
           .and_return(backup_information)
       end
 
@@ -892,12 +898,13 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
             .with(a_string_matching('Non tarred backup found '))
           expect(progress).to have_received(:puts)
             .with(a_string_matching("Backup #{backup_id} is done"))
-          expect(YAML.load_file(File.join(Gitlab.config.backup.path, 'backup_information.yml'))).to include(
-            backup_created_at: backup_time,
-            full_backup_id: full_backup_id,
-            gitlab_version: Gitlab::VERSION,
-            skipped: 'something,tar'
-          )
+          expect(YAML.safe_load_file(File.join(Gitlab.config.backup.path, 'backup_information.yml'),
+                                     permitted_classes: described_class::YAML_PERMITTED_CLASSES)).to include(
+                                       backup_created_at: backup_time,
+                                       full_backup_id: full_backup_id,
+                                       gitlab_version: Gitlab::VERSION,
+                                       skipped: 'something,tar'
+                                     )
         end
 
         context 'on version mismatch' do
@@ -943,7 +950,8 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       allow(Gitlab::BackupLogger).to receive(:info)
       allow(task1).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'task1.tar.gz'))
       allow(task2).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'task2.tar.gz'))
-      allow(YAML).to receive(:load_file).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
+      allow(YAML).to receive(:safe_load_file).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'),
+                                                   permitted_classes: described_class::YAML_PERMITTED_CLASSES)
         .and_return(backup_information)
       allow(Rake::Task['gitlab:shell:setup']).to receive(:invoke)
       allow(Rake::Task['cache:clear']).to receive(:invoke)

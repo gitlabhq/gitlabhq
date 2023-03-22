@@ -99,7 +99,7 @@ export default class IssuableForm {
     if ($issuableDueDate.length) {
       const calendar = new Pikaday({
         field: $issuableDueDate.get(0),
-        theme: 'gitlab-theme animate-picker',
+        theme: 'gl-datepicker-theme animate-picker',
         format: 'yyyy-mm-dd',
         container: $issuableDueDate.parent().get(0),
         parse: (dateString) => parsePikadayDate(dateString),

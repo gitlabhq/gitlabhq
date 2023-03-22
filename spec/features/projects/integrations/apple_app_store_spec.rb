@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Upload Dropzone Field', feature_category: :integrations do
   include_context 'project integration activation'
 
-  it 'uploads the file data to the correct form fields and updates the messaging correctly', :js, :aggregate_failures do
+  it 'uploads the file data to the correct form fields and updates the messaging correctly', :js, :aggregate_failures,
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/398636' do
     visit_project_integration('Apple App Store Connect')
 
     expect(page).to have_content('Drag your Private Key file here or click to upload.')

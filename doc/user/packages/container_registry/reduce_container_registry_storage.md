@@ -112,6 +112,43 @@ to work with all third-party registries in the same predictable way. If you use 
 Registry, this workaround is not required because we implemented a special tag delete operation. In
 this case, you can expect cleanup policies to be consistent and predictable.
 
+#### Example cleanup policy workflow
+
+The interaction between the keep and remove rules for the cleanup policy can be complex.
+For example, with a project with this cleanup policy configuration:
+
+- **Keep the most recent**: 1 tag per image name.
+- **Keep tags matching**: `production-.*`
+- **Remove tags older than**: 7 days.
+- **Remove tags matching**: `.*`.
+
+And a container repository with these tags:
+
+- `latest`, published 2 hours ago.
+- `production-v44`, published 3 days ago.
+- `production-v43`, published 6 days ago.
+- `production-v42`, published 11 days ago.
+- `dev-v44`, published 2 days ago.
+- `dev-v43`, published 5 day ago.
+- `dev-v42`, published 10 days ago.
+- `v44`, published yesterday.
+- `v43`, published 12 days ago.
+- `v42`, published 20 days ago.
+
+In this example, the tags that would be deleted in the next cleanup run are `dev-v42`, `v43`, and `v42`.
+You can interpret the rules as applying with this precedence:
+
+1. The keep rules have highest precedence. Tags must be kept when they match **any** rule.
+   - The `latest` tag must be kept, because `latest` tags are always kept.
+   - The `production-v44`, `production-v43`, and `production-v42` tags must be kept,
+     because they match the **Keep tags matching** rule.
+   - The `v44` tag must be kept because it's the most recent, matching the **Keep the most recent** rule.
+1. The remove rules have lower precedence, and tags are only deleted if **all** rules match.
+   For the tags not matching any keep rules (`dev-44`, `dev-v43`, `dev-v42`, `v43`, and `v42`):
+   - `dev-44` and `dev-43` do **not** match the **Remove tags older than**, and are kept.
+   - `dev-v42`, `v43`, and `v42` match both **Remove tags older than** and **Remove tags matching**
+     rules, so these three tags can be deleted.
+
 ### Create a cleanup policy
 
 You can create a cleanup policy in [the API](#use-the-cleanup-policy-api) or the UI.

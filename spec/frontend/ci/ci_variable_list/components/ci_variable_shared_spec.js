@@ -20,6 +20,7 @@ import getProjectVariables from '~/ci/ci_variable_list/graphql/queries/project_v
 import {
   ADD_MUTATION_ACTION,
   DELETE_MUTATION_ACTION,
+  ENVIRONMENT_QUERY_LIMIT,
   UPDATE_MUTATION_ACTION,
   environmentFetchErrorText,
   genericMutationErrorText,
@@ -111,11 +112,11 @@ describe('Ci Variable Shared Component', () => {
     ${true}                | ${'enabled'}
     ${false}               | ${'disabled'}
   `('When Pages FF is $text', ({ isVariablePagesEnabled }) => {
-    const featureFlagProvide = isVariablePagesEnabled
+    const pagesFeatureFlagProvide = isVariablePagesEnabled
       ? { glFeatures: { ciVariablesPages: true } }
       : {};
 
-    describe('while queries are being fetch', () => {
+    describe('while queries are being fetched', () => {
       beforeEach(() => {
         createComponentWithApollo({ isLoading: true });
       });
@@ -133,7 +134,7 @@ describe('Ci Variable Shared Component', () => {
           mockVariables.mockResolvedValue(mockProjectVariables);
 
           await createComponentWithApollo({
-            provide: { ...createProjectProvide(), ...featureFlagProvide },
+            provide: { ...createProjectProvide(), ...pagesFeatureFlagProvide },
           });
         });
 
@@ -163,7 +164,7 @@ describe('Ci Variable Shared Component', () => {
           mockEnvironments.mockResolvedValue(mockProjectEnvironments);
           mockVariables.mockRejectedValue();
 
-          await createComponentWithApollo({ provide: featureFlagProvide });
+          await createComponentWithApollo({ provide: pagesFeatureFlagProvide });
         });
 
         it('calls createAlert with the expected error message', () => {
@@ -176,7 +177,7 @@ describe('Ci Variable Shared Component', () => {
           mockEnvironments.mockRejectedValue();
           mockVariables.mockResolvedValue(mockProjectVariables);
 
-          await createComponentWithApollo({ provide: featureFlagProvide });
+          await createComponentWithApollo({ provide: pagesFeatureFlagProvide });
         });
 
         it('calls createAlert with the expected error message', () => {
@@ -187,33 +188,91 @@ describe('Ci Variable Shared Component', () => {
 
     describe('environment query', () => {
       describe('when there is an environment key in queryData', () => {
-        beforeEach(async () => {
-          mockEnvironments.mockResolvedValue(mockProjectEnvironments);
-          mockVariables.mockResolvedValue(mockProjectVariables);
+        beforeEach(() => {
+          mockEnvironments
+            .mockResolvedValueOnce(mockProjectEnvironments)
+            .mockResolvedValueOnce(mockProjectEnvironments);
 
+          mockVariables.mockResolvedValue(mockProjectVariables);
+        });
+
+        it('environments are fetched', async () => {
           await createComponentWithApollo({
             props: { ...createProjectProps() },
-            provide: featureFlagProvide,
+            provide: pagesFeatureFlagProvide,
+          });
+
+          expect(mockEnvironments).toHaveBeenCalled();
+        });
+
+        describe('when Limit Environment Scope FF is enabled', () => {
+          beforeEach(async () => {
+            await createComponentWithApollo({
+              props: { ...createProjectProps() },
+              provide: {
+                glFeatures: {
+                  ciLimitEnvironmentScope: true,
+                  ciVariablesPages: isVariablePagesEnabled,
+                },
+              },
+            });
+          });
+
+          it('initial query is called with the correct variables', () => {
+            expect(mockEnvironments).toHaveBeenCalledWith({
+              first: ENVIRONMENT_QUERY_LIMIT,
+              fullPath: '/namespace/project/',
+              search: '',
+            });
+          });
+
+          it(`refetches environments when search term is present`, async () => {
+            expect(mockEnvironments).toHaveBeenCalledTimes(1);
+            expect(mockEnvironments).toHaveBeenCalledWith(expect.objectContaining({ search: '' }));
+
+            await findCiSettings().vm.$emit('search-environment-scope', 'staging');
+
+            expect(mockEnvironments).toHaveBeenCalledTimes(2);
+            expect(mockEnvironments).toHaveBeenCalledWith(
+              expect.objectContaining({ search: 'staging' }),
+            );
           });
         });
 
-        it('is executed', () => {
-          expect(mockVariables).toHaveBeenCalled();
+        describe('when Limit Environment Scope FF is disabled', () => {
+          beforeEach(async () => {
+            await createComponentWithApollo({
+              props: { ...createProjectProps() },
+              provide: pagesFeatureFlagProvide,
+            });
+          });
+
+          it('initial query is called with the correct variables', async () => {
+            expect(mockEnvironments).toHaveBeenCalledWith({ fullPath: '/namespace/project/' });
+          });
+
+          it(`does not refetch environments when search term is present`, async () => {
+            expect(mockEnvironments).toHaveBeenCalledTimes(1);
+
+            await findCiSettings().vm.$emit('search-environment-scope', 'staging');
+
+            expect(mockEnvironments).toHaveBeenCalledTimes(1);
+          });
         });
       });
 
-      describe('when there isnt an environment key in queryData', () => {
+      describe("when there isn't an environment key in queryData", () => {
         beforeEach(async () => {
           mockVariables.mockResolvedValue(mockGroupVariables);
 
           await createComponentWithApollo({
             props: { ...createGroupProps() },
-            provide: featureFlagProvide,
+            provide: pagesFeatureFlagProvide,
           });
         });
 
-        it('is skipped', () => {
-          expect(mockVariables).not.toHaveBeenCalled();
+        it('fetching environments is skipped', () => {
+          expect(mockEnvironments).not.toHaveBeenCalled();
         });
       });
     });
@@ -227,7 +286,7 @@ describe('Ci Variable Shared Component', () => {
         await createComponentWithApollo({
           customHandlers: [[getGroupVariables, mockVariables]],
           props: groupProps,
-          provide: featureFlagProvide,
+          provide: pagesFeatureFlagProvide,
         });
       });
       it.each`
@@ -299,7 +358,7 @@ describe('Ci Variable Shared Component', () => {
           await createComponentWithApollo({
             customHandlers: [[getAdminVariables, mockVariables]],
             props: createInstanceProps(),
-            provide: featureFlagProvide,
+            provide: pagesFeatureFlagProvide,
           });
         });
 
@@ -359,10 +418,11 @@ describe('Ci Variable Shared Component', () => {
             await createComponentWithApollo({
               customHandlers,
               props,
-              provide: { ...provide, ...featureFlagProvide },
+              provide: { ...provide, ...pagesFeatureFlagProvide },
             });
 
             expect(findCiSettings().props()).toEqual({
+              areEnvironmentsLoading: false,
               areScopedVariablesAvailable: wrapper.props().areScopedVariablesAvailable,
               hideEnvironmentScope: defaultProps.hideEnvironmentScope,
               pageInfo: defaultProps.pageInfo,
@@ -385,7 +445,7 @@ describe('Ci Variable Shared Component', () => {
         `('when $bool it $text', async ({ bool }) => {
           await createComponentWithApollo({
             props: { ...createInstanceProps(), refetchAfterMutation: bool },
-            provide: featureFlagProvide,
+            provide: pagesFeatureFlagProvide,
           });
 
           jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({ data: {} });
@@ -418,7 +478,7 @@ describe('Ci Variable Shared Component', () => {
               await createComponentWithApollo({
                 customHandlers: [[getGroupVariables, mockVariables]],
                 props: { ...createGroupProps() },
-                provide: featureFlagProvide,
+                provide: pagesFeatureFlagProvide,
               });
             } catch (e) {
               error = e;
@@ -433,7 +493,7 @@ describe('Ci Variable Shared Component', () => {
               await createComponentWithApollo({
                 customHandlers: [[getGroupVariables, mockVariables]],
                 props: { ...createGroupProps(), queryData: { wrongKey: {} } },
-                provide: featureFlagProvide,
+                provide: pagesFeatureFlagProvide,
               });
             } catch (e) {
               error = e;
@@ -455,7 +515,7 @@ describe('Ci Variable Shared Component', () => {
             try {
               await createComponentWithApollo({
                 props: { ...createGroupProps() },
-                provide: featureFlagProvide,
+                provide: pagesFeatureFlagProvide,
               });
             } catch (e) {
               error = e;
@@ -469,7 +529,7 @@ describe('Ci Variable Shared Component', () => {
             try {
               await createComponentWithApollo({
                 props: { ...createGroupProps(), mutationData: { wrongKey: {} } },
-                provide: featureFlagProvide,
+                provide: pagesFeatureFlagProvide,
               });
             } catch (e) {
               error = e;

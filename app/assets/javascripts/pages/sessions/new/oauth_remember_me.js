@@ -14,7 +14,7 @@ export default class OAuthRememberMe {
   }
 
   bindEvents() {
-    $('#remember_me', this.container).on('click', this.toggleRememberMe);
+    $('#remember_me_omniauth', this.container).on('click', this.toggleRememberMe);
   }
 
   toggleRememberMe(event) {
