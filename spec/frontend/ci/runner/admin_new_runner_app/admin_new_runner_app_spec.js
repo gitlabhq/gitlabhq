@@ -14,9 +14,7 @@ import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_r
 import { PARAM_KEY_PLATFORM, DEFAULT_PLATFORM, WINDOWS_PLATFORM } from '~/ci/runner/constants';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
 import { redirectTo } from '~/lib/utils/url_utility';
-import { runnerCreateResult } from '../mock_data';
-
-const mockLegacyRegistrationToken = 'LEGACY_REGISTRATION_TOKEN';
+import { runnerCreateResult, mockRegistrationToken } from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -40,7 +38,7 @@ describe('AdminNewRunnerApp', () => {
   const createComponent = () => {
     wrapper = shallowMountExtended(AdminNewRunnerApp, {
       propsData: {
-        legacyRegistrationToken: mockLegacyRegistrationToken,
+        legacyRegistrationToken: mockRegistrationToken,
       },
       directives: {
         GlModal: createMockDirective('gl-modal'),
@@ -58,7 +56,7 @@ describe('AdminNewRunnerApp', () => {
   describe('Shows legacy modal', () => {
     it('passes legacy registration to modal', () => {
       expect(findRunnerInstructionsModal().props('registrationToken')).toEqual(
-        mockLegacyRegistrationToken,
+        mockRegistrationToken,
       );
     });
 

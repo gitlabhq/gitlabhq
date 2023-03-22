@@ -10,6 +10,8 @@ jest.mock('~/lib/utils/simple_poll', () =>
 describe('MRWidgetMerging', () => {
   let wrapper;
 
+  const pollMock = jest.fn().mockResolvedValue();
+
   const GlEmoji = { template: '<img />' };
   beforeEach(() => {
     wrapper = shallowMount(MrWidgetMerging, {
@@ -20,7 +22,7 @@ describe('MRWidgetMerging', () => {
           transitionStateMachine() {},
         },
         service: {
-          poll: jest.fn().mockResolvedValue(),
+          poll: pollMock,
         },
       },
       stubs: {
@@ -36,17 +38,11 @@ describe('MRWidgetMerging', () => {
 
   describe('initiateMergePolling', () => {
     it('should call simplePoll', () => {
-      wrapper.vm.initiateMergePolling();
-
       expect(simplePoll).toHaveBeenCalledWith(expect.any(Function), { timeout: 0 });
     });
 
     it('should call handleMergePolling', () => {
-      jest.spyOn(wrapper.vm, 'handleMergePolling').mockImplementation(() => {});
-
-      wrapper.vm.initiateMergePolling();
-
-      expect(wrapper.vm.handleMergePolling).toHaveBeenCalled();
+      expect(pollMock).toHaveBeenCalled();
     });
   });
 });

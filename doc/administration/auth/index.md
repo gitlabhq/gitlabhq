@@ -1,5 +1,4 @@
 ---
-comments: false
 type: index
 stage: Manage
 group: Authentication and Authorization

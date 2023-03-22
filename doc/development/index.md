@@ -1,5 +1,4 @@
 ---
-comments: false
 type: index, dev
 stage: none
 group: Development

@@ -8984,6 +8984,12 @@ msgstr ""
 msgid "Ci config already present"
 msgstr ""
 
+msgid "CiCatalog|CI/CD catalog"
+msgstr ""
+
+msgid "CiCatalog|Repositories of reusable pipeline components available in this namespace."
+msgstr ""
+
 msgid "CiCdAnalytics|Date range: %{range}"
 msgstr ""
 

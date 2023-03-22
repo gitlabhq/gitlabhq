@@ -158,10 +158,13 @@ describe('Value stream analytics utils', () => {
     describe('with features set', () => {
       const fakeFeatures = { cycleAnalyticsForGroups: true };
 
+      beforeEach(() => {
+        window.gon = { licensed_features: fakeFeatures };
+      });
+
       it('sets the feature flags', () => {
         res = buildCycleAnalyticsInitialData({
           ...rawData,
-          gon: { licensed_features: fakeFeatures },
         });
         expect(res.features).toMatchObject(fakeFeatures);
       });

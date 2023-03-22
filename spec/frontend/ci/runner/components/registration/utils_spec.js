@@ -14,8 +14,9 @@ import {
   platformArchitectures,
 } from '~/ci/runner/components/registration/utils';
 
-const REGISTRATION_TOKEN = 'REGISTRATION_TOKEN';
-const DESCRIPTION = 'RUNNER';
+import { mockRegistrationToken } from '../../mock_data';
+
+const mockRunnerDescription = 'my runner';
 
 describe('registration utils', () => {
   beforeEach(() => {
@@ -33,8 +34,8 @@ describe('registration utils', () => {
         expect(
           registerCommand({
             platform,
-            registrationToken: REGISTRATION_TOKEN,
-            description: DESCRIPTION,
+            registrationToken: mockRegistrationToken,
+            description: mockRunnerDescription,
           }),
         ).toMatchSnapshot();
 
@@ -50,7 +51,7 @@ describe('registration utils', () => {
   describe.each([LINUX_PLATFORM, MACOS_PLATFORM])('for "%s" platform', (platform) => {
     it.each`
       description       | parameter
-      ${'my runner'}    | ${"'my runner'"}
+      ${'a runner'}     | ${"'a runner'"}
       ${"bob's runner"} | ${"'bob'\\''s runner'"}
     `('registerCommand escapes description `$description`', ({ description, parameter }) => {
       expect(registerCommand({ platform, description })[2]).toBe(`  --description ${parameter}`);
@@ -78,14 +79,14 @@ describe('registration utils', () => {
     it('registerCommand uses the default', () => {
       const expected = registerCommand({
         platform: DEFAULT_PLATFORM,
-        registrationToken: REGISTRATION_TOKEN,
+        registrationToken: mockRegistrationToken,
       });
 
-      expect(registerCommand({ platform: null, registrationToken: REGISTRATION_TOKEN })).toEqual(
+      expect(registerCommand({ platform: null, registrationToken: mockRegistrationToken })).toEqual(
         expected,
       );
       expect(
-        registerCommand({ platform: undefined, registrationToken: REGISTRATION_TOKEN }),
+        registerCommand({ platform: undefined, registrationToken: mockRegistrationToken }),
       ).toEqual(expected);
     });
 

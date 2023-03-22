@@ -24,7 +24,7 @@ RSpec.describe Ci::Catalog::ResourcesHelper, feature_category: :pipeline_composi
       {}
     end
 
-    subject(:catalog_data) { helper.js_ci_catalog_data }
+    subject(:catalog_data) { helper.js_ci_catalog_data(project) }
 
     it 'returns catalog data' do
       expect(catalog_data).to eq(default_helper_data)

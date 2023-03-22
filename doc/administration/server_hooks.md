@@ -2,7 +2,6 @@
 stage: Systems
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-disqus_identifier: 'https://docs.gitlab.com/ee/administration/custom_hooks.html'
 ---
 
 # Git server hooks **(FREE SELF)**

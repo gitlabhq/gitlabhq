@@ -36,7 +36,7 @@ RSpec.describe 'Destroying a container repository tags', feature_category: :cont
     it 'destroys the container repository tags' do
       expect(Projects::ContainerRepository::DeleteTagsService)
         .to receive(:new).and_call_original
-      expect { subject }.to change { ::Packages::Event.count }.by(1)
+      subject
 
       expect(tag_names_response).to eq(tags)
       expect(errors_response).to eq([])
@@ -50,7 +50,7 @@ RSpec.describe 'Destroying a container repository tags', feature_category: :cont
       expect(Projects::ContainerRepository::DeleteTagsService)
         .not_to receive(:new)
 
-      expect { subject }.not_to change { ::Packages::Event.count }
+      subject
 
       expect(mutation_response).to be_nil
     end
@@ -89,7 +89,7 @@ RSpec.describe 'Destroying a container repository tags', feature_category: :cont
       let(:tags) { Array.new(Mutations::ContainerRepositories::DestroyTags::LIMIT + 1, 'x') }
 
       it 'returns too many tags error' do
-        expect { subject }.not_to change { ::Packages::Event.count }
+        subject
 
         explanation = graphql_errors.dig(0, 'message')
         expect(explanation).to eq(Mutations::ContainerRepositories::DestroyTags::TOO_MANY_TAGS_ERROR_MESSAGE)
@@ -113,7 +113,7 @@ RSpec.describe 'Destroying a container repository tags', feature_category: :cont
 
       it 'does not create a package event' do
         expect(::Packages::CreateEventService).not_to receive(:new)
-        expect { subject }.not_to change { ::Packages::Event.count }
+        subject
       end
     end
   end

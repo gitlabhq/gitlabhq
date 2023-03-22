@@ -2,7 +2,6 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-disqus_identifier: 'https://docs.gitlab.com/ee/development/fe_guide/style_guide_scss.html'
 ---
 
 # SCSS style guide

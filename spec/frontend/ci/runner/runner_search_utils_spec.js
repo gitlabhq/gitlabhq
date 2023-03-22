@@ -7,6 +7,7 @@ import {
   isSearchFiltered,
 } from 'ee_else_ce/ci/runner/runner_search_utils';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
+import { DEFAULT_SORT } from '~/ci/runner/constants';
 import { mockSearchExamples } from './mock_data';
 
 describe('search_params.js', () => {
@@ -68,7 +69,7 @@ describe('search_params.js', () => {
       'http://test.host/?paused[]=true',
       'http://test.host/?search=my_text',
     ])('When a filter is removed, it is removed from the URL', (initialUrl) => {
-      const search = { filters: [], sort: 'CREATED_DESC' };
+      const search = { filters: [], sort: DEFAULT_SORT };
       const expectedUrl = `http://test.host/`;
 
       expect(fromSearchToUrl(search, initialUrl)).toBe(expectedUrl);
@@ -76,7 +77,7 @@ describe('search_params.js', () => {
 
     it('When unrelated search parameter is present, it does not get removed', () => {
       const initialUrl = `http://test.host/?unrelated=UNRELATED&status[]=ACTIVE`;
-      const search = { filters: [], sort: 'CREATED_DESC' };
+      const search = { filters: [], sort: DEFAULT_SORT };
       const expectedUrl = `http://test.host/?unrelated=UNRELATED`;
 
       expect(fromSearchToUrl(search, initialUrl)).toBe(expectedUrl);

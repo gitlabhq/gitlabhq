@@ -21951,7 +21951,8 @@ CREATE TABLE scan_result_policies (
     updated_at timestamp with time zone NOT NULL,
     orchestration_policy_idx smallint NOT NULL,
     license_states text[] DEFAULT '{}'::text[],
-    match_on_inclusion boolean
+    match_on_inclusion boolean,
+    role_approvers integer[] DEFAULT '{}'::integer[]
 );
 
 CREATE SEQUENCE scan_result_policies_id_seq
@@ -23995,11 +23996,11 @@ ALTER SEQUENCE vulnerability_statistics_id_seq OWNED BY vulnerability_statistics
 CREATE TABLE vulnerability_user_mentions (
     id bigint NOT NULL,
     vulnerability_id bigint NOT NULL,
-    note_id integer,
+    note_id_convert_to_bigint integer,
     mentioned_users_ids integer[],
     mentioned_projects_ids integer[],
     mentioned_groups_ids integer[],
-    note_id_convert_to_bigint bigint
+    note_id bigint
 );
 
 CREATE SEQUENCE vulnerability_user_mentions_id_seq

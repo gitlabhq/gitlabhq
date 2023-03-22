@@ -93,6 +93,8 @@ module Gitlab
             attrs[:stage] = stage_data_attributes.to_json if stage_id.present?
             attrs[:namespace] = namespace_attributes
             attrs[:enable_tasks_by_type_chart] = 'false'
+            attrs[:enable_customizable_stages] = 'false'
+            attrs[:enable_projects_filter] = 'false'
             attrs[:default_stages] = Gitlab::Analytics::CycleAnalytics::DefaultStages.all.map do |stage_params|
               ::Analytics::CycleAnalytics::StagePresenter.new(stage_params)
             end.to_json

@@ -3,7 +3,6 @@ stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 type: reference, concepts
-disqus_identifier: 'https://docs.gitlab.com/ee/user/project/merge_requests/approvals/index.html'
 ---
 
 # Merge request approvals **(FREE)**

@@ -1,7 +1,6 @@
 ---
 stage: enablement
 group: Tenant Scale
-comments: false
 description: 'Cells: Global search'
 ---
 

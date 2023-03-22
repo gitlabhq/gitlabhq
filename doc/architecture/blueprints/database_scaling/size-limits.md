@@ -1,7 +1,6 @@
 ---
 stage: Data Stores
 group: Database
-comments: false
 description: 'Database Scalability / Limit table sizes'
 ---
 

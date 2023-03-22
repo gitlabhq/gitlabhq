@@ -18,7 +18,7 @@ jest.mock('~/ci/runner/sentry_utils');
 Vue.use(VueApollo);
 Vue.use(GlToast);
 
-const mockNewToken = 'NEW_TOKEN';
+const mockNewRegistrationToken = 'MOCK_NEW_REGISTRATION_TOKEN';
 const modalID = 'token-reset-modal';
 
 describe('RegistrationTokenResetDropdownItem', () => {
@@ -54,7 +54,7 @@ describe('RegistrationTokenResetDropdownItem', () => {
     runnersRegistrationTokenResetMutationHandler = jest.fn().mockResolvedValue({
       data: {
         runnersRegistrationTokenReset: {
-          token: mockNewToken,
+          token: mockNewRegistrationToken,
           errors: [],
         },
       },
@@ -109,7 +109,7 @@ describe('RegistrationTokenResetDropdownItem', () => {
 
       it('emits result', () => {
         expect(wrapper.emitted('tokenReset')).toHaveLength(1);
-        expect(wrapper.emitted('tokenReset')[0]).toEqual([mockNewToken]);
+        expect(wrapper.emitted('tokenReset')[0]).toEqual([mockNewRegistrationToken]);
       });
 
       it('does not show a loading state', () => {

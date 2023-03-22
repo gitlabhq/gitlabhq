@@ -161,8 +161,8 @@ A user can be deactivated from the Admin Area. To do this:
 
 For the deactivation option to be visible to an administrator, the user:
 
-- Must be currently active.
-- Must not be [dormant](#automatically-deactivate-dormant-users).
+- Must have a state of active.
+- Must be [dormant](#automatically-deactivate-dormant-users).
 
 NOTE:
 Users can also be deactivated using the [GitLab API](../../api/users.md#deactivate-user).

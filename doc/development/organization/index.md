@@ -1,5 +1,4 @@
 ---
-comments: false
 type: index, dev
 stage: Data Stores
 group: Tenant Scale

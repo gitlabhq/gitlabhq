@@ -298,7 +298,7 @@ To disable automatic issue closing:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Repository**.
-1. Expand **Default branch**.
+1. Expand **Branch defaults**.
 1. Clear the **Auto-close referenced issues on default branch** checkbox.
 1. Select **Save changes**.
 

@@ -119,9 +119,13 @@ RSpec.shared_examples 'unlicensed cycle analytics request params' do
     it { is_expected.to eq(false) }
   end
 
-  describe 'enable_tasks_by_type_chart data attribute' do
-    subject(:value) { described_class.new(params).to_data_attributes[:enable_tasks_by_type_chart] }
+  describe 'feature availablity data attributes' do
+    subject(:value) { described_class.new(params).to_data_attributes }
 
-    it { is_expected.to eq('false') }
+    it 'disables all paid features' do
+      is_expected.to match(a_hash_including(enable_tasks_by_type_chart: 'false',
+        enable_customizable_stages: 'false',
+        enable_projects_filter: 'false'))
+    end
   end
 end

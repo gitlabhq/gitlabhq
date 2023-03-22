@@ -22,16 +22,15 @@ import {
   RUNNER_REGISTRATION_POLLING_INTERVAL_MS,
   I18N_REGISTRATION_SUCCESS,
 } from '~/ci/runner/constants';
-import { runnerForRegistration } from '../../mock_data';
+import { runnerForRegistration, mockAuthenticationToken } from '../../mock_data';
 
 Vue.use(VueApollo);
 
-const MOCK_TOKEN = 'MOCK_TOKEN';
 const mockDescription = runnerForRegistration.data.runner.description;
 
 const mockRunner = {
   ...runnerForRegistration.data.runner,
-  ephemeralAuthenticationToken: MOCK_TOKEN,
+  ephemeralAuthenticationToken: mockAuthenticationToken,
 };
 const mockRunnerWithoutToken = {
   ...runnerForRegistration.data.runner,
@@ -139,13 +138,13 @@ describe('RegistrationInstructions', () => {
         command: [
           'gitlab-runner register',
           `  --url ${TEST_HOST}`,
-          `  --registration-token ${MOCK_TOKEN}`,
+          `  --registration-token ${mockAuthenticationToken}`,
           `  --description '${mockDescription}'`,
         ],
         prompt: '$',
       });
-      expect(step1.find('[data-testid="runner-token"]').text()).toBe(MOCK_TOKEN);
-      expect(step1.findComponent(ClipboardButton).props('text')).toBe(MOCK_TOKEN);
+      expect(step1.findByTestId('runner-token').text()).toBe(mockAuthenticationToken);
+      expect(step1.findComponent(ClipboardButton).props('text')).toBe(mockAuthenticationToken);
     });
 
     it('renders step 1 in loading state', () => {
@@ -171,7 +170,7 @@ describe('RegistrationInstructions', () => {
         `  --url ${TEST_HOST}`,
         `  --description '${mockDescription}'`,
       ]);
-      expect(step1.find('[data-testid="runner-token"]').exists()).toBe(false);
+      expect(step1.findByTestId('runner-token').exists()).toBe(false);
       expect(step1.findComponent(ClipboardButton).exists()).toBe(false);
     });
 
@@ -211,11 +210,11 @@ describe('RegistrationInstructions', () => {
         expect(step1.findComponent(CliCommand).props('command')).toEqual([
           'gitlab-runner register',
           `  --url ${TEST_HOST}`,
-          `  --registration-token ${MOCK_TOKEN}`,
+          `  --registration-token ${mockAuthenticationToken}`,
           `  --description '${mockDescription}'`,
         ]);
-        expect(step1.find('[data-testid="runner-token"]').text()).toBe(MOCK_TOKEN);
-        expect(step1.findComponent(ClipboardButton).props('text')).toBe(MOCK_TOKEN);
+        expect(step1.findByTestId('runner-token').text()).toBe(mockAuthenticationToken);
+        expect(step1.findComponent(ClipboardButton).props('text')).toBe(mockAuthenticationToken);
       });
 
       it('when runner is not available (e.g. deleted), the UI does not update', async () => {
@@ -226,11 +225,11 @@ describe('RegistrationInstructions', () => {
         expect(step1.findComponent(CliCommand).props('command')).toEqual([
           'gitlab-runner register',
           `  --url ${TEST_HOST}`,
-          `  --registration-token ${MOCK_TOKEN}`,
+          `  --registration-token ${mockAuthenticationToken}`,
           `  --description '${mockDescription}'`,
         ]);
-        expect(step1.find('[data-testid="runner-token"]').text()).toBe(MOCK_TOKEN);
-        expect(step1.findComponent(ClipboardButton).props('text')).toBe(MOCK_TOKEN);
+        expect(step1.findByTestId('runner-token').text()).toBe(mockAuthenticationToken);
+        expect(step1.findComponent(ClipboardButton).props('text')).toBe(mockAuthenticationToken);
       });
     });
   });

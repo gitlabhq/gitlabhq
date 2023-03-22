@@ -38,12 +38,12 @@ namespace :gitlab do
       private
 
       def event_pairs
-        Packages::Event.event_types.keys.product(Packages::Event::EVENT_SCOPES.keys)
+        Packages::Event::EVENT_TYPES.product(Packages::Event::EVENT_SCOPES.keys)
       end
 
       def generate_unique_events_list
         events = event_pairs.each_with_object([]) do |(event_type, event_scope), events|
-          Packages::Event.originator_types.keys.excluding('guest').each do |originator_type|
+          Packages::Event::ORIGINATOR_TYPES.excluding(:guest).each do |originator_type|
             events_definition = Packages::Event.unique_counters_for(event_scope, event_type, originator_type).map do |event_name|
               {
                 "name" => event_name,
@@ -60,7 +60,7 @@ namespace :gitlab do
 
       def counter_events_list
         counters = event_pairs.flat_map do |event_type, event_scope|
-          Packages::Event.originator_types.keys.flat_map do |originator_type|
+          Packages::Event::ORIGINATOR_TYPES.flat_map do |originator_type|
             Packages::Event.counters_for(event_scope, event_type, originator_type)
           end
         end

@@ -3,9 +3,7 @@ import Vue from 'vue';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RegistrationToken from '~/ci/runner/components/registration/registration_token.vue';
 import InputCopyToggleVisibility from '~/vue_shared/components/form/input_copy_toggle_visibility.vue';
-
-const mockToken = '01234567890';
-const mockMasked = '***********';
+import { mockRegistrationToken } from '../../mock_data';
 
 describe('RegistrationToken', () => {
   let wrapper;
@@ -18,7 +16,7 @@ describe('RegistrationToken', () => {
   const createComponent = ({ props = {}, mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(RegistrationToken, {
       propsData: {
-        value: mockToken,
+        value: mockRegistrationToken,
         inputId: 'token-value',
         ...props,
       },
@@ -30,7 +28,7 @@ describe('RegistrationToken', () => {
   it('Displays value and copy button', () => {
     createComponent();
 
-    expect(findInputCopyToggleVisibility().props('value')).toBe(mockToken);
+    expect(findInputCopyToggleVisibility().props('value')).toBe(mockRegistrationToken);
     expect(findInputCopyToggleVisibility().props('copyButtonTitle')).toBe(
       'Copy registration token',
     );
@@ -38,9 +36,17 @@ describe('RegistrationToken', () => {
 
   // Component integration test to ensure secure masking
   it('Displays masked value by default', () => {
-    createComponent({ mountFn: mountExtended });
+    const mockToken = '0123456789';
+    const maskToken = '**********';
 
-    expect(wrapper.find('input').element.value).toBe(mockMasked);
+    createComponent({
+      props: {
+        value: mockToken,
+      },
+      mountFn: mountExtended,
+    });
+
+    expect(wrapper.find('input').element.value).toBe(maskToken);
   });
 
   describe('When the copy to clipboard button is clicked', () => {

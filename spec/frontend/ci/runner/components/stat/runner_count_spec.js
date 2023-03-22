@@ -2,7 +2,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
 import RunnerCount from '~/ci/runner/components/stat/runner_count.vue';
-import { INSTANCE_TYPE, GROUP_TYPE } from '~/ci/runner/constants';
+import { INSTANCE_TYPE, GROUP_TYPE, STATUS_ONLINE } from '~/ci/runner/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { captureException } from '~/ci/runner/sentry_utils';
@@ -47,7 +47,7 @@ describe('RunnerCount', () => {
   });
 
   describe('in admin scope', () => {
-    const mockVariables = { status: 'ONLINE' };
+    const mockVariables = { status: STATUS_ONLINE };
 
     beforeEach(async () => {
       await createComponent({ props: { scope: INSTANCE_TYPE } });

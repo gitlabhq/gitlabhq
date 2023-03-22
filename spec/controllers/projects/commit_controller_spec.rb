@@ -459,6 +459,37 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
     end
   end
 
+  describe 'GET #diff_files' do
+    subject(:send_request) { get :diff_files, params: params }
+
+    let(:format) { :html }
+    let(:params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: commit.id,
+        format: format
+      }
+    end
+
+    it 'renders diff files' do
+      send_request
+
+      expect(assigns(:diffs)).to be_a(Gitlab::Diff::FileCollection::Commit)
+      expect(assigns(:environment)).to be_nil
+    end
+
+    context 'when format is not html' do
+      let(:format) { :json }
+
+      it 'returns 404 page' do
+        send_request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'GET diff_for_path' do
     def diff_for_path(extra_params = {})
       params = {

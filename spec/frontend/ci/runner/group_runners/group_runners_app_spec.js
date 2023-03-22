@@ -58,6 +58,7 @@ import {
   groupRunnersCountData,
   onlineContactTimeoutSecs,
   staleTimeoutSecs,
+  mockRegistrationToken,
   emptyPageInfo,
   emptyStateSvgPath,
   emptyStateFilteredSvgPath,
@@ -67,7 +68,6 @@ Vue.use(VueApollo);
 Vue.use(GlToast);
 
 const mockGroupFullPath = 'group1';
-const mockRegistrationToken = 'AABBCC';
 const mockGroupRunnersEdges = groupRunnersData.data.group.runners.edges;
 const mockGroupRunnersCount = mockGroupRunnersEdges.length;
 

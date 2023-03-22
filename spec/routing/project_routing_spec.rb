@@ -897,7 +897,7 @@ RSpec.describe 'project routing' do
   end
 
   describe Projects::MetricsDashboardController, 'routing' do
-    it 'routes to #show with no dashboard_path and no page' do
+    it 'routes to #show with no dashboard_path' do
       expect(get: "/gitlab/gitlabhq/-/metrics").to route_to(
         "projects/metrics_dashboard#show",
         **base_params
@@ -912,19 +912,17 @@ RSpec.describe 'project routing' do
       )
     end
 
-    it 'routes to #show with only page' do
+    it 'routes to #show' do
       expect(get: "/gitlab/gitlabhq/-/metrics/panel/new").to route_to(
         "projects/metrics_dashboard#show",
-        page: 'panel/new',
         **base_params
       )
     end
 
-    it 'routes to #show with dashboard_path and page' do
+    it 'routes to #show with dashboard_path' do
       expect(get: "/gitlab/gitlabhq/-/metrics/config%2Fprometheus%2Fcommon_metrics.yml/panel/new").to route_to(
         "projects/metrics_dashboard#show",
         dashboard_path: 'config/prometheus/common_metrics.yml',
-        page: 'panel/new',
         **base_params
       )
     end

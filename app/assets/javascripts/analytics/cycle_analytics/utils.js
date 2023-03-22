@@ -1,3 +1,4 @@
+import { extractVSAFeaturesFromGON } from '~/analytics/shared/utils';
 import { parseSeconds } from '~/lib/utils/datetime_utility';
 import { formatTimeAsSummary } from '~/lib/utils/datetime/date_format_utility';
 import { joinPaths } from '~/lib/utils/url_utility';
@@ -64,28 +65,6 @@ export const filterStagesByHiddenStatus = (stages = [], isHidden = true) =>
   stages.filter(({ hidden = false }) => hidden === isHidden);
 
 /**
- * @typedef {Object} MetricData
- * @property {String} title - Title of the metric measured
- * @property {String} value - String representing the decimal point value, e.g '1.5'
- * @property {String} [unit] - String representing the decimal point value, e.g '1.5'
- *
- * @typedef {Object} TransformedMetricData
- * @property {String} label - Title of the metric measured
- * @property {String} value - String representing the decimal point value, e.g '1.5'
- * @property {String} identifier - Slugified string based on the 'title' or the provided 'identifier' attribute
- * @property {String} description - String to display for a description
- * @property {String} unit - String representing the decimal point value, e.g '1.5'
- */
-
-const extractFeatures = (gon) => ({
-  // licensed feature toggles
-  cycleAnalyticsForGroups: Boolean(gon?.licensed_features?.cycleAnalyticsForGroups),
-  groupLevelAnalyticsDashboard: Boolean(gon?.licensed_features?.groupLevelAnalyticsDashboard),
-  // feature flags
-  groupAnalyticsDashboardsPage: Boolean(gon?.features?.groupAnalyticsDashboardsPage),
-});
-
-/**
  * Builds the initial data object for Value Stream Analytics with data loaded from the backend
  *
  * @param {Object} dataset - dataset object paseed to the frontend via data-* properties
@@ -99,7 +78,6 @@ export const buildCycleAnalyticsInitialData = ({
   createdBefore,
   namespaceName,
   namespaceFullPath,
-  gon,
 } = {}) => {
   return {
     projectId: parseInt(projectId, 10),
@@ -111,7 +89,7 @@ export const buildCycleAnalyticsInitialData = ({
     createdAfter: new Date(createdAfter),
     createdBefore: new Date(createdBefore),
     selectedStage: stage ? JSON.parse(stage) : null,
-    features: extractFeatures(gon),
+    features: extractVSAFeaturesFromGON(),
   };
 };
 

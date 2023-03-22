@@ -7,7 +7,7 @@ module Ci
         false
       end
 
-      def js_ci_catalog_data
+      def js_ci_catalog_data(_project)
         {}
       end
     end
