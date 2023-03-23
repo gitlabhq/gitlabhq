@@ -37,8 +37,18 @@ export default Extension.create({
 
             const { state, view } = editor;
             const { tr, selection } = state;
+            const { firstChild } = document.content;
+            const content =
+              document.content.childCount === 1 && firstChild.type.name === 'paragraph'
+                ? firstChild.content
+                : document.content;
 
-            tr.replaceWith(selection.from - 1, selection.to, document.content);
+            if (selection.to - selection.from > 0) {
+              tr.replaceWith(selection.from, selection.to, content);
+            } else {
+              tr.insert(selection.from, content);
+            }
+
             view.dispatch(tr);
           })
           .catch(() => {

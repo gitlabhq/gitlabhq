@@ -1,6 +1,9 @@
 - add_to_breadcrumbs _('Repository Settings'), project_settings_repository_path(@project)
+- add_to_breadcrumbs _('Branch rules'), project_settings_repository_path(@project, anchor: 'branch-rules')
+- breadcrumb_title _('Details')
+- @breadcrumb_link = '#'
 - page_title s_('BranchRules|Branch rules details')
 
-%h3.gl-mb-5= s_('BranchRules|Branch rules details')
+%h3.gl-mb-5= page_title
 
 #js-branch-rules{ data: branch_rules_data(@project) }

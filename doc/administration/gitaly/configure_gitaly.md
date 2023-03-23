@@ -199,6 +199,14 @@ Edit `/etc/gitlab/gitlab.rb`:
 
 #### Configure Gitaly server
 
+<!--
+Updates to example must be made at:
+
+- https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
+- https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/gitaly/index.md#gitaly-server-configuration
+- All reference architecture pages
+-->
+
 Configure Gitaly server in one of two ways:
 
 ::Tabs
@@ -206,13 +214,6 @@ Configure Gitaly server in one of two ways:
 :::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb`:
-
-<!--
-Updates to example must be made at:
-- https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
-- https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/gitaly/index.md#gitaly-server-configuration
-- all reference architecture pages
--->
 
    ```ruby
    # Avoid running unnecessary services on the Gitaly server

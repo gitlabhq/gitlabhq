@@ -595,7 +595,7 @@ module Ci
     end
 
     def exactly_one_group
-      unless runner_namespaces.one?
+      unless runner_namespaces.size == 1
         errors.add(:runner, 'needs to be assigned to exactly one group')
       end
     end

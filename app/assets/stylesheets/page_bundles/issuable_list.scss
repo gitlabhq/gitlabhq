@@ -18,6 +18,11 @@
       }
     }
 
+    .issuable-info,
+    .issuable-meta {
+      font-size: $gl-font-size-sm;
+    }
+
     .issuable-meta {
       display: flex;
       flex-direction: column;

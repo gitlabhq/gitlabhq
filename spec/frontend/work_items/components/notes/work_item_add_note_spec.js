@@ -209,6 +209,38 @@ describe('WorkItemCommentForm', () => {
 
       expect(wrapper.emitted('error')).toEqual([[error]]);
     });
+
+    it('ignores errors when mutation returns additional information as errors for quick actions', async () => {
+      await createComponent({
+        isEditing: true,
+        mutationHandler: jest.fn().mockResolvedValue({
+          data: {
+            createNote: {
+              note: {
+                id: 'gid://gitlab/Discussion/c872ba2d7d3eb780d2255138d67ca8b04f65b122',
+                discussion: {
+                  id: 'gid://gitlab/Discussion/c872ba2d7d3eb780d2255138d67ca8b04f65b122',
+                  notes: {
+                    nodes: [],
+                    __typename: 'NoteConnection',
+                  },
+                  __typename: 'Discussion',
+                },
+                __typename: 'Note',
+              },
+              __typename: 'CreateNotePayload',
+              errors: ['Commands only Removed assignee @foobar.', 'Command names ["unassign"]'],
+            },
+          },
+        }),
+      });
+
+      findCommentForm().vm.$emit('submitForm', 'updated desc');
+
+      await waitForPromises();
+
+      expect(clearDraft).toHaveBeenCalledWith('gid://gitlab/WorkItem/1-comment');
+    });
   });
 
   it('calls the global ID work item query when `fetchByIid` prop is false', async () => {

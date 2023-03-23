@@ -226,7 +226,7 @@ export default {
         </gl-link>
         <span
           v-if="taskStatus"
-          class="task-status gl-display-none gl-sm-display-inline-block! gl-ml-3"
+          class="task-status gl-display-none gl-sm-display-inline-block! gl-ml-2 gl-font-sm"
           data-testid="task-status"
         >
           {{ taskStatus }}
@@ -265,7 +265,7 @@ export default {
                   :data-avatar-url="author.avatarUrl"
                   :href="author.webUrl"
                   data-testid="issuable-author"
-                  class="author-link js-user-link"
+                  class="author-link js-user-link gl-font-sm"
                 >
                   <span class="author">{{ author.name }}</span>
                 </gl-link>
@@ -286,7 +286,7 @@ export default {
           <slot name="timeframe"></slot>
         </span>
         &nbsp;
-        <span v-if="labels.length" role="group" :aria-label="__('Labels')">
+        <p v-if="labels.length" role="group" :aria-label="__('Labels')" class="gl-mt-1 gl-mb-0">
           <gl-label
             v-for="(label, index) in labels"
             :key="index"
@@ -298,7 +298,7 @@ export default {
             :class="{ 'gl-ml-2': index }"
             size="sm"
           />
-        </span>
+        </p>
       </div>
     </div>
     <div class="issuable-meta">

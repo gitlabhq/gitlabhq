@@ -46,12 +46,11 @@
     .issuable-meta
       %ul.controls.d-flex.align-items-end
         - if merge_request.merged?
-          %li.issuable-status.d-none.d-sm-inline-block
-            = _('MERGED')
+          %li.d-none.d-sm-flex
+            = render Pajamas::BadgeComponent.new(_('Merged'), size: 'sm', variant: 'info')
         - elsif merge_request.closed?
-          %li.issuable-status.d-none.d-sm-inline-block
-            = sprite_icon('cancel', css_class: 'gl-vertical-align-text-bottom')
-            = _('CLOSED')
+          %li.d-none.d-sm-flex
+            = render Pajamas::BadgeComponent.new(_('Closed'), size: 'sm', variant: 'danger')
         = render 'shared/merge_request_pipeline_status', merge_request: merge_request
         - if merge_request.open? && merge_request.broken?
           %li.issuable-pipeline-broken.d-none.d-sm-flex

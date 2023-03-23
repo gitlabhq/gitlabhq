@@ -13,7 +13,7 @@ export default {
     FailedJobsTable,
   },
   inject: {
-    fullPath: {
+    projectPath: {
       default: '',
     },
     pipelineIid: {
@@ -31,7 +31,7 @@ export default {
       query: GetFailedJobsQuery,
       variables() {
         return {
-          fullPath: this.fullPath,
+          fullPath: this.projectPath,
           pipelineIid: this.pipelineIid,
         };
       },

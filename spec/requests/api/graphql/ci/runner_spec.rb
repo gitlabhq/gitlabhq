@@ -130,7 +130,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
       expect(runner_data['tagList']).to match_array runner.tag_list
     end
 
-    it 'does not execute more queries per runner', :aggregate_failures do
+    it 'does not execute more queries per runner', :use_sql_query_cache, :aggregate_failures do
       # warm-up license cache and so on:
       personal_access_token = create(:personal_access_token, user: user)
       args = { current_user: user, token: { personal_access_token: personal_access_token } }
@@ -139,12 +139,12 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
 
       personal_access_token = create(:personal_access_token, user: another_admin)
       args = { current_user: another_admin, token: { personal_access_token: personal_access_token } }
-      control = ActiveRecord::QueryRecorder.new { post_graphql(query, **args) }
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) { post_graphql(query, **args) }
 
       create(:ci_runner, :instance, version: '14.0.0', tag_list: %w[tag5 tag6], creator: another_admin)
       create(:ci_runner, :project, version: '14.0.1', projects: [project1], tag_list: %w[tag3 tag8], creator: another_admin)
 
-      expect { post_graphql(query, **args) }.not_to exceed_query_limit(control)
+      expect { post_graphql(query, **args) }.not_to exceed_all_query_limit(control)
     end
   end
 
@@ -777,20 +777,20 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
   end
 
   describe 'Query limits with jobs' do
-    let!(:group1) { create(:group) }
-    let!(:group2) { create(:group) }
-    let!(:project1) { create(:project, :repository, group: group1) }
-    let!(:project2) { create(:project, :repository, group: group1) }
-    let!(:project3) { create(:project, :repository, group: group2) }
+    let_it_be(:group1) { create(:group) }
+    let_it_be(:group2) { create(:group) }
+    let_it_be(:project1) { create(:project, :repository, group: group1) }
+    let_it_be(:project2) { create(:project, :repository, group: group1) }
+    let_it_be(:project3) { create(:project, :repository, group: group2) }
 
-    let!(:merge_request1) { create(:merge_request, source_project: project1) }
-    let!(:merge_request2) { create(:merge_request, source_project: project3) }
+    let_it_be(:merge_request1) { create(:merge_request, source_project: project1) }
+    let_it_be(:merge_request2) { create(:merge_request, source_project: project3) }
 
     let(:project_runner2) { create(:ci_runner, :project, projects: [project1, project2]) }
     let!(:build1) { create(:ci_build, :success, name: 'Build One', runner: project_runner2, pipeline: pipeline1) }
-    let!(:pipeline1) do
+    let_it_be(:pipeline1) do
       create(:ci_pipeline, project: project1, source: :merge_request_event, merge_request: merge_request1, ref: 'main',
-                           target_sha: 'xxx')
+             target_sha: 'xxx')
     end
 
     let(:query) do
@@ -801,24 +801,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
             jobs {
               nodes {
                 id
-                detailedStatus {
-                  id
-                  detailsPath
-                  group
-                  icon
-                  text
-                }
-                project {
-                  id
-                  name
-                  webUrl
-                }
-                shortSha
-                commitPath
-                finishedAt
-                duration
-                queuedDuration
-                tags
+                #{field}
               }
             }
           }
@@ -826,31 +809,58 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
       QUERY
     end
 
-    it 'does not execute more queries per job', :aggregate_failures do
-      # warm-up license cache and so on:
-      personal_access_token = create(:personal_access_token, user: user)
-      args = { current_user: user, token: { personal_access_token: personal_access_token } }
-      post_graphql(query, **args)
+    context 'when requesting individual fields' do
+      using RSpec::Parameterized::TableSyntax
 
-      control = ActiveRecord::QueryRecorder.new(query_recorder_debug: true) { post_graphql(query, **args) }
+      where(:field) do
+        [
+          'detailedStatus { id detailsPath group icon text }',
+          'project { id name webUrl }'
+        ] + %w[
+          shortSha
+          browseArtifactsPath
+          commitPath
+          playPath
+          refPath
+          webPath
+          finishedAt
+          duration
+          queuedDuration
+          tags
+        ]
+      end
 
-      # Add a new build to project_runner2
-      project_runner2.runner_projects << build(:ci_runner_project, runner: project_runner2, project: project3)
-      pipeline2 = create(:ci_pipeline, project: project3, source: :merge_request_event, merge_request: merge_request2,
-                                       ref: 'main', target_sha: 'xxx')
-      build2 = create(:ci_build, :success, name: 'Build Two', runner: project_runner2, pipeline: pipeline2)
+      with_them do
+        it 'does not execute more queries per job', :use_sql_query_cache, :aggregate_failures do
+          admin2 = create(:user, :admin) # do not reuse same user
 
-      args[:current_user] = create(:user, :admin) # do not reuse same user
-      expect { post_graphql(query, **args) }.not_to exceed_all_query_limit(control)
+          # warm-up license cache and so on:
+          personal_access_token = create(:personal_access_token, user: user)
+          personal_access_token2 = create(:personal_access_token, user: admin2)
+          args = { current_user: user, token: { personal_access_token: personal_access_token } }
+          args2 = { current_user: admin2, token: { personal_access_token: personal_access_token2 } }
+          post_graphql(query, **args2)
 
-      expect(graphql_data.count).to eq 1
-      expect(graphql_data).to match(
-        a_hash_including(
-          'runner' => a_graphql_entity_for(
-            project_runner2,
-            jobs: { 'nodes' => containing_exactly(a_graphql_entity_for(build1), a_graphql_entity_for(build2)) }
-          )
-        ))
+          control = ActiveRecord::QueryRecorder.new(skip_cached: false) { post_graphql(query, **args) }
+
+          # Add a new build to project_runner2
+          project_runner2.runner_projects << build(:ci_runner_project, runner: project_runner2, project: project3)
+          pipeline2 = create(:ci_pipeline, project: project3, source: :merge_request_event, merge_request: merge_request2,
+                                           ref: 'main', target_sha: 'xxx')
+          build2 = create(:ci_build, :success, name: 'Build Two', runner: project_runner2, pipeline: pipeline2)
+
+          expect { post_graphql(query, **args2) }.not_to exceed_all_query_limit(control)
+
+          expect(graphql_data.count).to eq 1
+          expect(graphql_data).to match(
+            a_hash_including(
+              'runner' => a_graphql_entity_for(
+                project_runner2,
+                jobs: { 'nodes' => containing_exactly(a_graphql_entity_for(build1), a_graphql_entity_for(build2)) }
+              )
+            ))
+        end
+      end
     end
   end
 

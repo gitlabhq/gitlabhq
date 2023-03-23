@@ -644,6 +644,14 @@ For example, suppose a project with `id: 42` has an issue with `id: 46` and
 Not all resources with the `iid` field are fetched by `iid`. For guidance
 regarding which field to use, see the documentation for the specific resource.
 
+## `null` vs `false`
+
+In API responses, some boolean fields can have `null` values.
+A `null` boolean has no default value and is neither `true` nor `false`.
+GitLab treats `null` values in boolean fields the same as `false`.
+
+In boolean arguments, you should only set `true` or `false` values (not `null`).
+
 ## Data validation and error reporting
 
 When working with the API you may encounter validation errors, in which case

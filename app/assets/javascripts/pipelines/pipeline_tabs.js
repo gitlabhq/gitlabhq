@@ -29,7 +29,7 @@ export const createAppOptions = (selector, apolloProvider, router) => {
     exposeLicenseScanningData,
     failedJobsCount,
     failedJobsSummary,
-    fullPath,
+    projectPath,
     graphqlResourceEtag,
     pipelineIid,
     pipelineProjectPath,
@@ -50,8 +50,6 @@ export const createAppOptions = (selector, apolloProvider, router) => {
     testsCount,
   } = dataset;
 
-  // TODO remove projectPath variable once https://gitlab.com/gitlab-org/gitlab/-/issues/371641 is resolved
-  const projectPath = fullPath;
   const defaultTabValue = getPipelineDefaultTab(window.location.href);
 
   return {
@@ -83,7 +81,6 @@ export const createAppOptions = (selector, apolloProvider, router) => {
       exposeLicenseScanningData: parseBoolean(exposeLicenseScanningData),
       failedJobsCount,
       failedJobsSummary: JSON.parse(failedJobsSummary),
-      fullPath,
       graphqlResourceEtag,
       pipelineIid,
       pipelineProjectPath,

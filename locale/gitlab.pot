@@ -26130,9 +26130,6 @@ msgstr ""
 msgid "MD5"
 msgstr ""
 
-msgid "MERGED"
-msgstr ""
-
 msgid "MR widget|Back to the merge request"
 msgstr ""
 

@@ -162,9 +162,9 @@ EOF
 dput --config=dput.cf --unchecked --no-upload-log gitlab <your_package>.changes
 ```
 
-## Directly upload a package
+## Upload a package with explicit distribution and component
 
-> Direct upload [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101838) in GitLab 15.9.
+> Upload with explicit distribution and component [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101838) in GitLab 15.9.
 
 When you don't have access to `.changes` file, you can directly upload a `.deb` by passing
 distribution `codename` and target `component` as parameters with
@@ -173,7 +173,8 @@ For example, to upload to component `main` of distribution `sid` using a persona
 
 ```shell
 curl --request PUT --user "<username>:<personal_access_token>" \
-  "https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian/?distribution=sid&component=main" \
+  --get --data "distribution=sid" --data "component=main" \
+  "https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian/" \
   --upload-file  /path/to/your.deb
 ```
 
