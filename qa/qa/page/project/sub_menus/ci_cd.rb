@@ -15,7 +15,7 @@ module QA
             end
           end
 
-          def click_ci_cd_pipelines
+          def go_to_pipelines
             within_sidebar do
               click_element(:sidebar_menu_link, menu_item: 'CI/CD')
             end

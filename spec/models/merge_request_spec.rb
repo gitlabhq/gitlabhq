@@ -4486,7 +4486,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         let(:expected_merge_status) { 'checking' }
 
         include_examples 'for a valid state transition'
-        it_behaves_like 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription'
+        it_behaves_like 'transition not triggering mergeRequestMergeStatusUpdated GraphQL subscription'
       end
 
       context 'when the status is checking' do
@@ -4506,7 +4506,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         let(:expected_merge_status) { 'cannot_be_merged_rechecking' }
 
         include_examples 'for a valid state transition'
-        it_behaves_like 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription'
+        it_behaves_like 'transition not triggering mergeRequestMergeStatusUpdated GraphQL subscription'
       end
 
       context 'when the status is cannot_be_merged' do

@@ -13009,7 +13009,7 @@ CREATE TABLE ci_builds (
     scheduling_type smallint,
     id bigint NOT NULL,
     stage_id bigint,
-    partition_id bigint NOT NULL,
+    partition_id bigint DEFAULT 100 NOT NULL,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 );
 
@@ -15337,6 +15337,22 @@ CREATE SEQUENCE design_management_designs_versions_id_seq
     CACHE 1;
 
 ALTER SEQUENCE design_management_designs_versions_id_seq OWNED BY design_management_designs_versions.id;
+
+CREATE TABLE design_management_repositories (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE design_management_repositories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE design_management_repositories_id_seq OWNED BY design_management_repositories.id;
 
 CREATE TABLE design_management_versions (
     id bigint NOT NULL,
@@ -24703,6 +24719,8 @@ ALTER TABLE ONLY design_management_designs ALTER COLUMN id SET DEFAULT nextval('
 
 ALTER TABLE ONLY design_management_designs_versions ALTER COLUMN id SET DEFAULT nextval('design_management_designs_versions_id_seq'::regclass);
 
+ALTER TABLE ONLY design_management_repositories ALTER COLUMN id SET DEFAULT nextval('design_management_repositories_id_seq'::regclass);
+
 ALTER TABLE ONLY design_management_versions ALTER COLUMN id SET DEFAULT nextval('design_management_versions_id_seq'::regclass);
 
 ALTER TABLE ONLY design_user_mentions ALTER COLUMN id SET DEFAULT nextval('design_user_mentions_id_seq'::regclass);
@@ -26658,6 +26676,9 @@ ALTER TABLE ONLY design_management_designs
 
 ALTER TABLE ONLY design_management_designs_versions
     ADD CONSTRAINT design_management_designs_versions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY design_management_repositories
+    ADD CONSTRAINT design_management_repositories_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY design_management_versions
     ADD CONSTRAINT design_management_versions_pkey PRIMARY KEY (id);
@@ -30139,6 +30160,8 @@ CREATE INDEX index_design_management_designs_versions_on_design_id ON design_man
 CREATE INDEX index_design_management_designs_versions_on_event ON design_management_designs_versions USING btree (event);
 
 CREATE INDEX index_design_management_designs_versions_on_version_id ON design_management_designs_versions USING btree (version_id);
+
+CREATE UNIQUE INDEX index_design_management_repositories_on_project_id ON design_management_repositories USING btree (project_id);
 
 CREATE INDEX index_design_management_versions_on_author_id ON design_management_versions USING btree (author_id) WHERE (author_id IS NOT NULL);
 
@@ -35330,6 +35353,9 @@ ALTER TABLE ONLY dast_site_validations
 
 ALTER TABLE ONLY vulnerability_findings_remediations
     ADD CONSTRAINT fk_rails_28a8d0cf93 FOREIGN KEY (vulnerability_occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY design_management_repositories
+    ADD CONSTRAINT fk_rails_2938d8dd8d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY incident_management_issuable_escalation_statuses
     ADD CONSTRAINT fk_rails_29abffe3b9 FOREIGN KEY (policy_id) REFERENCES incident_management_escalation_policies(id) ON DELETE SET NULL;

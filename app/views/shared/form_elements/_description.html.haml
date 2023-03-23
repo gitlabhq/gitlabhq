@@ -2,6 +2,7 @@
 - model = local_assigns.fetch(:model)
 - form = local_assigns.fetch(:form)
 - placeholder = model.is_a?(MergeRequest) ? _('Describe the goal of the changes and what reviewers should be aware of.') : _('Write a description or drag your files here…')
+- no_issuable_templates = issuable_templates(ref_project, model.to_ability_name).empty?
 
 - supports_quick_actions = true
 - preview_url = preview_markdown_path(project, target_type: model.class.name)
@@ -25,3 +26,5 @@
     = render 'shared/notes/hints', supports_quick_actions: supports_quick_actions
     .clearfix
     .error-alert
+  - if no_issuable_templates && can?(current_user, :push_code, model.project)
+    = render 'shared/issuable/form/default_templates'

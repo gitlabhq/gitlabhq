@@ -253,7 +253,7 @@ class MergeRequest < ApplicationRecord
       Gitlab::Timeless.timeless(merge_request, &block)
     end
 
-    after_transition any => [:unchecked, :cannot_be_merged_recheck, :checking, :cannot_be_merged_rechecking, :can_be_merged, :cannot_be_merged] do |merge_request, transition|
+    after_transition any => [:unchecked, :cannot_be_merged_recheck, :can_be_merged, :cannot_be_merged] do |merge_request, transition|
       next if merge_request.skip_merge_status_trigger
 
       merge_request.run_after_commit do

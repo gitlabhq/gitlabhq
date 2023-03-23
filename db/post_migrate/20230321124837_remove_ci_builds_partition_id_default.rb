@@ -4,10 +4,10 @@ class RemoveCiBuildsPartitionIdDefault < Gitlab::Database::Migration[2.1]
   enable_lock_retries!
 
   def up
-    change_column_default :ci_builds, :partition_id, from: 100, to: nil
+    # no-op. See https://gitlab.com/gitlab-com/gl-infra/production/-/issues/8588 for details.
   end
 
   def down
-    change_column_default :ci_builds, :partition_id, from: nil, to: 100
+    # no-op. See https://gitlab.com/gitlab-com/gl-infra/production/-/issues/8588 for details.
   end
 end

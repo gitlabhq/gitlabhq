@@ -1,0 +1,10 @@
+---
+table_name: design_management_repositories
+classes:
+- DesignManagement::Repository
+feature_categories:
+- design_management
+description: Holds information about Design Management Repositories
+introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111555'
+milestone: '15.11'
+gitlab_schema: gitlab_main

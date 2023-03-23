@@ -15,6 +15,15 @@ module QA
         include SubMenus::Settings
         include SubMenus::Packages
 
+        if Runtime::Env.super_sidebar_enabled?
+          include SubMenus::SuperSidebar::Plan
+          include SubMenus::SuperSidebar::Settings
+          include SubMenus::SuperSidebar::Repository
+          include SubMenus::SuperSidebar::CiCd
+          include SubMenus::SuperSidebar::Compliance
+          include SubMenus::SuperSidebar::Operations
+        end
+
         def click_merge_requests
           within_sidebar do
             click_element(:sidebar_menu_link, menu_item: 'Merge requests')
@@ -22,12 +31,16 @@ module QA
         end
 
         def click_wiki
+          return go_to_wiki if Runtime::Env.super_sidebar_enabled?
+
           within_sidebar do
             click_element(:sidebar_menu_link, menu_item: 'Wiki')
           end
         end
 
         def click_activity
+          return go_to_activity if Runtime::Env.super_sidebar_enabled?
+
           hover_project_information do
             within_submenu do
               click_element(:sidebar_menu_item_link, menu_item: 'Activity')
@@ -36,12 +49,16 @@ module QA
         end
 
         def click_snippets
+          return go_to_snippets if Runtime::Env.super_sidebar_enabled?
+
           within_sidebar do
             click_element(:sidebar_menu_link, menu_item: 'Snippets')
           end
         end
 
         def click_members
+          return go_to_members if Runtime::Env.super_sidebar_enabled?
+
           hover_project_information do
             within_submenu do
               click_element(:sidebar_menu_item_link, menu_item: 'Members')

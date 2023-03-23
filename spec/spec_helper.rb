@@ -392,11 +392,6 @@ RSpec.configure do |config|
       ./ee/spec/requests/api/merge_request_approvals_spec.rb
       ./ee/spec/requests/api/namespaces_spec.rb
       ./ee/spec/requests/api/notes_spec.rb
-      ./ee/spec/requests/api/project_aliases_spec.rb
-      ./ee/spec/requests/api/project_approval_rules_spec.rb
-      ./ee/spec/requests/api/project_approval_settings_spec.rb
-      ./ee/spec/requests/api/project_approvals_spec.rb
-      ./ee/spec/requests/api/projects_spec.rb
       ./ee/spec/requests/api/settings_spec.rb
       ./ee/spec/requests/api/users_spec.rb
       ./ee/spec/support/shared_examples/requests/api/project_approval_rules_api_shared_examples.rb

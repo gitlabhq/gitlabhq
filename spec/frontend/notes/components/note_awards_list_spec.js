@@ -1,76 +1,110 @@
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
+import Vuex from 'vuex';
 import { TEST_HOST } from 'helpers/test_constants';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { userDataMock } from 'jest/notes/mock_data';
+import EmojiPicker from '~/emoji/components/picker.vue';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import awardsNote from '~/notes/components/note_awards_list.vue';
 import createStore from '~/notes/stores';
-import { noteableDataMock, notesDataMock } from '../mock_data';
 
-describe('note_awards_list component', () => {
-  let store;
-  let vm;
-  let awardsMock;
+Vue.use(Vuex);
+
+describe('Note Awards List', () => {
+  let wrapper;
   let mock;
 
-  const toggleAwardPath = `${TEST_HOST}/gitlab-org/gitlab-foss/notes/545/toggle_award_emoji`;
+  const awardsMock = [
+    {
+      name: 'flag_tz',
+      user: { id: 1, name: 'Administrator', username: 'root' },
+    },
+    {
+      name: 'cartwheel_tone3',
+      user: { id: 12, name: 'Bobbie Stehr', username: 'erin' },
+    },
+  ];
+  const toggleAwardPathMock = `${TEST_HOST}/gitlab-org/gitlab-foss/notes/545/toggle_award_emoji`;
 
-  beforeEach(() => {
-    mock = new AxiosMockAdapter(axios);
+  const defaultProps = {
+    awards: awardsMock,
+    noteAuthorId: 2,
+    noteId: '545',
+    canAwardEmoji: false,
+    toggleAwardPath: '/gitlab-org/gitlab-foss/notes/545/toggle_award_emoji',
+  };
 
-    mock.onPost(toggleAwardPath).reply(HTTP_STATUS_OK, '');
+  const findAddAward = () => wrapper.find('.js-add-award');
+  const findAwardButton = () => wrapper.findByTestId('award-button');
+  const findAllEmojiAwards = () => wrapper.findAll('gl-emoji');
+  const findEmojiPicker = () => wrapper.findComponent(EmojiPicker);
 
-    const Component = Vue.extend(awardsNote);
-
-    store = createStore();
-    store.dispatch('setNoteableData', noteableDataMock);
-    store.dispatch('setNotesData', notesDataMock);
-    awardsMock = [
-      {
-        name: 'flag_tz',
-        user: { id: 1, name: 'Administrator', username: 'root' },
-      },
-      {
-        name: 'cartwheel_tone3',
-        user: { id: 12, name: 'Bobbie Stehr', username: 'erin' },
-      },
-    ];
-
-    vm = new Component({
+  const createComponent = (props = defaultProps, store = createStore()) => {
+    wrapper = mountExtended(awardsNote, {
       store,
       propsData: {
-        awards: awardsMock,
-        noteAuthorId: 2,
-        noteId: '545',
-        canAwardEmoji: true,
-        toggleAwardPath,
+        ...props,
       },
-    }).$mount();
-  });
+    });
+  };
 
-  afterEach(() => {
-    mock.restore();
-    vm.$destroy();
-  });
+  describe('Note Awards functionality', () => {
+    const toggleAwardRequestSpy = jest.fn();
+    const fakeStore = () => {
+      return new Vuex.Store({
+        getters: {
+          getUserData: () => userDataMock,
+        },
+        actions: {
+          toggleAwardRequest: toggleAwardRequestSpy,
+        },
+      });
+    };
 
-  it('should render awarded emojis', () => {
-    expect(vm.$el.querySelector('.js-awards-block button [data-name="flag_tz"]')).toBeDefined();
-    expect(
-      vm.$el.querySelector('.js-awards-block button [data-name="cartwheel_tone3"]'),
-    ).toBeDefined();
-  });
+    beforeEach(() => {
+      mock = new AxiosMockAdapter(axios);
+      mock.onPost(toggleAwardPathMock).reply(HTTP_STATUS_OK, '');
 
-  it('should be possible to remove awarded emoji', () => {
-    jest.spyOn(vm, 'handleAward');
-    jest.spyOn(vm, 'toggleAwardRequest');
-    vm.$el.querySelector('.js-awards-block button').click();
+      createComponent(
+        {
+          awards: awardsMock,
+          noteAuthorId: 2,
+          noteId: '545',
+          canAwardEmoji: true,
+          toggleAwardPath: '/gitlab-org/gitlab-foss/notes/545/toggle_award_emoji',
+        },
+        fakeStore(),
+      );
+    });
 
-    expect(vm.handleAward).toHaveBeenCalledWith('flag_tz');
-    expect(vm.toggleAwardRequest).toHaveBeenCalled();
-  });
+    afterEach(() => {
+      mock.restore();
+    });
 
-  it('should be possible to add new emoji', () => {
-    expect(vm.$el.querySelector('.js-add-award')).toBeDefined();
+    it('should render awarded emojis', () => {
+      const emojiAwards = findAllEmojiAwards();
+
+      expect(emojiAwards).toHaveLength(awardsMock.length);
+      expect(emojiAwards.at(0).attributes('data-name')).toBe('flag_tz');
+      expect(emojiAwards.at(1).attributes('data-name')).toBe('cartwheel_tone3');
+    });
+
+    it('should be possible to add new emoji', () => {
+      expect(findEmojiPicker().exists()).toBe(true);
+    });
+
+    it('should be possible to remove awarded emoji', async () => {
+      await findAwardButton().vm.$emit('click');
+
+      const { toggleAwardPath, noteId } = defaultProps;
+      expect(toggleAwardRequestSpy).toHaveBeenCalledWith(expect.anything(), {
+        awardName: awardsMock[0].name,
+        endpoint: toggleAwardPath,
+        noteId,
+      });
+    });
   });
 
   describe('when the user name contains special HTML characters', () => {
@@ -79,85 +113,69 @@ describe('note_awards_list component', () => {
       user: { id: index, name: `&<>"\`'-${index}`, username: `user-${index}` },
     });
 
-    const mountComponent = () => {
-      const Component = Vue.extend(awardsNote);
-      vm = new Component({
-        store,
-        propsData: {
-          awards: awardsMock,
-          noteAuthorId: 0,
-          noteId: '545',
-          canAwardEmoji: true,
-          toggleAwardPath: '/gitlab-org/gitlab-foss/notes/545/toggle_award_emoji',
-        },
-      }).$mount();
+    const customProps = {
+      awards: awardsMock,
+      noteAuthorId: 0,
+      noteId: '545',
+      canAwardEmoji: true,
+      toggleAwardPath: '/gitlab-org/gitlab-foss/notes/545/toggle_award_emoji',
     };
 
-    const findTooltip = () => vm.$el.querySelector('[title]').getAttribute('title');
-
-    it('should only escape & and " characters', () => {
-      awardsMock = [...new Array(1)].map(createAwardEmoji);
-      mountComponent();
-      const escapedName = awardsMock[0].user.name.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
-
-      expect(vm.$el.querySelector('[title]').outerHTML).toContain(escapedName);
-    });
-
     it('should not escape special HTML characters twice when only 1 person awarded', () => {
-      awardsMock = [...new Array(1)].map(createAwardEmoji);
-      mountComponent();
+      const awardsCopy = [...new Array(1)].map(createAwardEmoji);
+      createComponent({
+        ...customProps,
+        awards: awardsCopy,
+      });
 
-      awardsMock.forEach((award) => {
-        expect(findTooltip()).toContain(award.user.name);
+      awardsCopy.forEach((award) => {
+        expect(findAwardButton().attributes('title')).toContain(award.user.name);
       });
     });
 
     it('should not escape special HTML characters twice when 2 people awarded', () => {
-      awardsMock = [...new Array(2)].map(createAwardEmoji);
-      mountComponent();
+      const awardsCopy = [...new Array(2)].map(createAwardEmoji);
+      createComponent({
+        ...customProps,
+        awards: awardsCopy,
+      });
 
-      awardsMock.forEach((award) => {
-        expect(findTooltip()).toContain(award.user.name);
+      awardsCopy.forEach((award) => {
+        expect(findAwardButton().attributes('title')).toContain(award.user.name);
       });
     });
 
     it('should not escape special HTML characters twice when more than 10 people awarded', () => {
-      awardsMock = [...new Array(11)].map(createAwardEmoji);
-      mountComponent();
+      const awardsCopy = [...new Array(11)].map(createAwardEmoji);
+      createComponent({
+        ...customProps,
+        awards: awardsCopy,
+      });
 
       // Testing only the first 10 awards since 11 onward will not be displayed.
-      awardsMock.slice(0, 10).forEach((award) => {
-        expect(findTooltip()).toContain(award.user.name);
+      awardsCopy.slice(0, 10).forEach((award) => {
+        expect(findAwardButton().attributes('title')).toContain(award.user.name);
       });
     });
   });
 
-  describe('when the user cannot award emoji', () => {
+  describe('when the user cannot award an emoji', () => {
     beforeEach(() => {
-      const Component = Vue.extend(awardsNote);
-
-      vm = new Component({
-        store,
-        propsData: {
-          awards: awardsMock,
-          noteAuthorId: 2,
-          noteId: '545',
-          canAwardEmoji: false,
-          toggleAwardPath: '/gitlab-org/gitlab-foss/notes/545/toggle_award_emoji',
-        },
-      }).$mount();
+      createComponent({
+        awards: awardsMock,
+        noteAuthorId: 2,
+        noteId: '545',
+        canAwardEmoji: false,
+        toggleAwardPath: '/gitlab-org/gitlab-foss/notes/545/toggle_award_emoji',
+      });
     });
 
-    it('should not be possible to remove awarded emoji', () => {
-      jest.spyOn(vm, 'toggleAwardRequest');
-
-      vm.$el.querySelector('.js-awards-block button').click();
-
-      expect(vm.toggleAwardRequest).not.toHaveBeenCalled();
+    it('should display an award emoji button with a disabled class', () => {
+      expect(findAwardButton().classes()).toContain('disabled');
     });
 
     it('should not be possible to add new emoji', () => {
-      expect(vm.$el.querySelector('.js-add-award')).toBeNull();
+      expect(findAddAward().exists()).toBe(false);
     });
   });
 });

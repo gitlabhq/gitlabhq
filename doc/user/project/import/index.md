@@ -159,3 +159,17 @@ For more information, see:
   including settings that need checking afterwards and other limitations.
 
 For support, customers must enter into a paid engagement with GitLab Professional Services.
+
+## Security
+
+Only import projects from sources you trust. If you import a project from an untrusted source, it
+may be possible for an attacker to steal your sensitive data. For example, an imported project
+with a malicious `.gitlab-ci.yml` file could allow an attacker to exfiltrate group CI/CD variables.
+
+GitLab self-managed administrators can reduce their attack surface by disabling import sources they don't need:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Visibility and access controls**.
+1. Scroll to **Import sources**.
+1. Clear checkboxes for importers that are not required.

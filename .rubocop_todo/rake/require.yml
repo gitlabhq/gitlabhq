@@ -1,5 +1,0 @@
----
-Rake/Require:
-  Details: grace period
-  Exclude:
-    - 'qa/tasks/webdrivers.rake'

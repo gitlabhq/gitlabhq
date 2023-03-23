@@ -52,7 +52,7 @@ module QA
         project.visit!
 
         # Navigate to Run Pipeline page
-        Page::Project::Menu.perform(&:click_ci_cd_pipelines)
+        Page::Project::Menu.perform(&:go_to_pipelines)
         Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
       end
 

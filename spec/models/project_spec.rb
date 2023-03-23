@@ -42,6 +42,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it { is_expected.to have_many(:protected_branches) }
     it { is_expected.to have_many(:exported_protected_branches) }
     it { is_expected.to have_one(:wiki_repository).class_name('Projects::WikiRepository').inverse_of(:project) }
+    it { is_expected.to have_one(:design_management_repository).class_name('DesignManagement::Repository').inverse_of(:project) }
     it { is_expected.to have_one(:slack_integration) }
     it { is_expected.to have_one(:catalog_resource) }
     it { is_expected.to have_one(:microsoft_teams_integration) }

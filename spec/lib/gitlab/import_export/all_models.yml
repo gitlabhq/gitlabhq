@@ -780,6 +780,7 @@ project:
 - sbom_occurrences
 - analytics_dashboards_configuration_project
 - analytics_dashboards_pointer
+- design_management_repository
 award_emoji:
 - awardable
 - user

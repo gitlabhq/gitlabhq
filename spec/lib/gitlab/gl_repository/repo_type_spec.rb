@@ -136,7 +136,7 @@ RSpec.describe Gitlab::GlRepository::RepoType do
       let(:expected_identifier) { "design-#{project.id}" }
       let(:expected_id) { project.id }
       let(:expected_suffix) { '.design' }
-      let(:expected_repository) { ::DesignManagement::Repository.new(project) }
+      let(:expected_repository) { project.design_management_repository }
       let(:expected_container) { project }
     end
 

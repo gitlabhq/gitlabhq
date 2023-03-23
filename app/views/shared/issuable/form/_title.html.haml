@@ -1,6 +1,5 @@
 - issuable = local_assigns.fetch(:issuable)
 - form = local_assigns.fetch(:form)
-- no_issuable_templates = issuable_templates(ref_project, issuable.to_ability_name).empty?
 
 %div{ data: { testid: 'issue-title-input-field' } }
   = form.text_field :title, required: true, aria: { required: true }, maxlength: 255, autofocus: true,
@@ -13,6 +12,3 @@
           = s_('MergeRequests|Mark as draft')
         = c.help_text do
           = s_('MergeRequests|Drafts cannot be merged until marked ready.')
-
-  - if no_issuable_templates && can?(current_user, :push_code, issuable.project)
-    = render 'shared/issuable/form/default_templates'
