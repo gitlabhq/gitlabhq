@@ -5,7 +5,9 @@ export default {
       // We can't use this.vuexModule due to bug in vue-apollo when
       // provide is called in beforeCreate
       // See https://github.com/vuejs/vue-apollo/pull/1153 for details
-      vuexModule: this.$options.propsData.vuexModule,
+
+      // @vue-compat does not care to normalize propsData fields
+      vuexModule: this.$options.propsData.vuexModule ?? this.$options.propsData['vuex-module'],
     };
   },
   props: {

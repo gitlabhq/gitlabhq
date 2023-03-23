@@ -1,4 +1,5 @@
 import { isEmpty } from 'lodash';
+import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { sprintf, __ } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
@@ -107,13 +108,13 @@ const mixins = {
       return this.isMergeRequest && this.pipelineStatus && Object.keys(this.pipelineStatus).length;
     },
     isOpen() {
-      return this.state === 'opened' || this.state === 'reopened';
+      return this.state === STATUS_OPEN || this.state === STATUS_REOPENED;
     },
     isClosed() {
-      return this.state === 'closed';
+      return this.state === STATUS_CLOSED;
     },
     isMerged() {
-      return this.state === 'merged';
+      return this.state === STATUS_MERGED;
     },
     hasTitle() {
       return this.title.length > 0;

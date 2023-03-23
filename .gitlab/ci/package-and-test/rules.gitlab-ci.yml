@@ -57,17 +57,10 @@
 
 .rules:update-cache:
   rules:
-    - <<: *not-canonical-project
-      when: never
-    - when: always
+    - if: '$UPDATE_QA_CACHE == "true"'
 
-# This job requires project access token with api permissions to detect parallel jobs,
-# it is problematic to set for every project that would include this template
-# Because parallel jobs themselves can download knapsack report, skip for non canonical runs
 .rules:download-knapsack:
   rules:
-    - <<: *not-canonical-project
-      when: never
     - when: always
 
 # ------------------------------------------

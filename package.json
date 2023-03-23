@@ -197,6 +197,7 @@
     "vue-virtual-scroll-list": "^1.4.7",
     "vuedraggable": "^2.23.0",
     "vuex": "^3.6.2",
+    "vuex-vue3": "npm:vuex@4.0.0",
     "web-streams-polyfill": "^3.2.1",
     "web-vitals": "^0.2.4",
     "webpack": "^4.46.0",

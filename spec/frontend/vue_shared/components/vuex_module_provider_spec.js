@@ -32,6 +32,13 @@ describe('~/vue_shared/components/vuex_module_provider', () => {
     expect(findProvidedVuexModule()).toBe(TEST_VUEX_MODULE);
   });
 
+  it('provides "vuexModel" set from "vuex-module" prop when using @vue/compat', () => {
+    createComponent({
+      propsData: { 'vuex-module': TEST_VUEX_MODULE },
+    });
+    expect(findProvidedVuexModule()).toBe(TEST_VUEX_MODULE);
+  });
+
   it('does not blow up when used with vue-apollo', () => {
     // See https://github.com/vuejs/vue-apollo/pull/1153 for details
     Vue.use(VueApollo);

@@ -31,6 +31,7 @@ export default {
   i18n: {
     collapseSidebar: __('Collapse sidebar'),
     createNew: __('Create new...'),
+    homepage: __('Homepage'),
     issues: __('Issues'),
     mergeRequests: __('Merge requests'),
     search: __('Search'),
@@ -64,7 +65,11 @@ export default {
 <template>
   <div class="user-bar">
     <div class="gl-display-flex gl-align-items-center gl-px-3 gl-py-2 gl-gap-2">
-      <a :href="rootPath">
+      <a
+        v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.homepage"
+        :href="rootPath"
+        :title="$options.i18n.homepage"
+      >
         <img
           v-if="sidebarData.logo_url"
           data-testid="brand-header-custom-logo"

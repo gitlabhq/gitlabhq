@@ -1,5 +1,6 @@
 ---
 Search/NamespacedClass:
+  Details: grace period
   Exclude:
     - 'app/controllers/concerns/search_rate_limitable.rb'
     - 'app/controllers/search_controller.rb'

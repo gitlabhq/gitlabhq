@@ -108,8 +108,11 @@ However, the compliance pipeline configuration can reference the `.gitlab-ci.yml
 - Jobs and variables defined in the compliance pipeline can't be changed by variables in the labeled project's
   `.gitlab-ci.yml` file.
 
-See [example configuration](#example-configuration) for help configuring a compliance pipeline that runs jobs from
-labeled project pipeline configuration.
+For more information, see:
+
+- [Example configuration](#example-configuration) for help configuring a compliance pipeline that runs jobs from
+  labeled project pipeline configuration.
+- The [Create a compliance pipeline](../../tutorials/create_compliance_pipeline.md) tutorial.
 
 ### Effect on labeled projects
 

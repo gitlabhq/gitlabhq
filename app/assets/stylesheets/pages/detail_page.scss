@@ -1,4 +1,5 @@
 .detail-page-header {
+  padding-top: $gl-spacing-scale-4;
   color: $gl-text-color;
   line-height: 34px;
   display: flex;
@@ -59,7 +60,7 @@
 
 .detail-page-description {
   .title {
-    margin: 0 0 16px;
+    margin: 0 0 $gl-spacing-scale-4;
     color: $gl-text-color;
     padding: 0 0 0.3em;
     border-bottom: 1px solid $white-dark;

@@ -1,5 +1,6 @@
 <script>
 import { mapState } from 'vuex';
+import { __ } from '~/locale';
 import {
   getParameterByName,
   setUrlParams,
@@ -43,6 +44,10 @@ export default {
           Object.prototype.hasOwnProperty.call(token, 'requiredPermissions') &&
           !this[token.requiredPermissions]
         ) {
+          return false;
+        }
+
+        if (token.type === 'user_type' && !gon.features?.serviceAccountsCrud) {
           return false;
         }
 
@@ -94,6 +99,14 @@ export default {
             };
           }
         } else {
+          // Remove this block after this issue is closed: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2159
+          if (value.data === __('Service account')) {
+            return {
+              ...accumulator,
+              [type]: 'service_account',
+            };
+          }
+
           return {
             ...accumulator,
             [type]: value.data,

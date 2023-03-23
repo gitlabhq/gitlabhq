@@ -3,7 +3,9 @@
 require "spec_helper"
 
 RSpec.describe Admin::AbuseReportEntity, feature_category: :insider_threat do
-  let_it_be(:abuse_report) { build_stubbed(:abuse_report) }
+  include Gitlab::Routing
+
+  let(:abuse_report) { build_stubbed(:abuse_report) }
 
   let(:entity) do
     described_class.new(abuse_report)
@@ -17,7 +19,9 @@ RSpec.describe Admin::AbuseReportEntity, feature_category: :insider_threat do
         :category,
         :updated_at,
         :reported_user,
-        :reporter
+        :reporter,
+        :reported_user_path,
+        :reporter_path
       )
     end
 
@@ -27,6 +31,14 @@ RSpec.describe Admin::AbuseReportEntity, feature_category: :insider_threat do
 
     it 'correctly exposes `reporter`' do
       expect(entity_hash[:reporter].keys).to match_array([:name])
+    end
+
+    it 'correctly exposes :reported_user_path' do
+      expect(entity_hash[:reported_user_path]).to eq user_path(abuse_report.user)
+    end
+
+    it 'correctly exposes :reporter_path' do
+      expect(entity_hash[:reporter_path]).to eq user_path(abuse_report.reporter)
     end
   end
 end

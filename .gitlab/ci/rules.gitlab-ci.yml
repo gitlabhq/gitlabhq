@@ -1226,6 +1226,11 @@
       changes: *code-patterns
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
+      changes:
+        - qa/Gemfile.lock
+      variables:
+        UPDATE_QA_CACHE: "true"
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *code-patterns
       when: manual
       allow_failure: true
@@ -1242,6 +1247,7 @@
         SKIP_REPORT_IN_ISSUES: "false"
         PROCESS_TEST_RESULTS: "true"
         KNAPSACK_GENERATE_REPORT: "true"
+        UPDATE_QA_CACHE: "true"
         QA_SAVE_TEST_METRICS: "true"
         QA_EXPORT_TEST_METRICS: "false" # on main runs, metrics are exported to separate bucket via rake task for better consistency
 

@@ -7,7 +7,7 @@ $system-note-icon-size: 1.5rem;
 $system-note-svg-size: 1rem;
 $icon-size-diff: $avatar-icon-size - $system-note-icon-size;
 
-$system-note-icon-m-top: $avatar-m-top + $icon-size-diff - 0.1rem;
+$system-note-icon-m-top: $avatar-m-top + $icon-size-diff - 0.3rem;
 $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
 @mixin vertical-line($left) {
@@ -343,6 +343,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
     .note-header-info {
       padding-bottom: 0;
+      padding-top: 0;
     }
 
     &.timeline-entry::after {
@@ -459,7 +460,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   }
 
   .timeline-icon {
-    margin: 8px 0 0 14px;
+    margin: 12px 0 0 20px;
   }
 }
 

@@ -1,4 +1,4 @@
-import { GlDropdown, GlLink, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
+import { GlLink, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { shallowMount, mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
@@ -145,16 +145,11 @@ describe('SidebarDropdownWidget', () => {
         stubs: {
           SidebarEditableItem,
           GlSearchBoxByType,
-          GlDropdown,
         },
       }),
     );
 
     wrapper.vm.$refs.dropdown.show = jest.fn();
-
-    // We need to mock out `showDropdown` which
-    // invokes `show` method of BDropdown used inside GlDropdown.
-    jest.spyOn(wrapper.vm, 'showDropdown').mockImplementation();
   };
 
   describe('when not editing', () => {
@@ -166,7 +161,6 @@ describe('SidebarDropdownWidget', () => {
           },
         },
         stubs: {
-          GlDropdown,
           SidebarEditableItem,
         },
       });

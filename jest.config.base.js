@@ -40,6 +40,9 @@ module.exports = (path, options = {}) => {
     Object.assign(vueModuleNameMappers, {
       '^vue$': '@vue/compat',
       '^@vue/test-utils$': '@vue/test-utils-vue3',
+
+      // Library wrappers
+      '^vuex$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vuex.js',
     });
     Object.assign(globals, {
       'vue-jest': {

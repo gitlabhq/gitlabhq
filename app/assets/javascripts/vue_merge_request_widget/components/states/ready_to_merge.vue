@@ -16,6 +16,7 @@ import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_
 import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
 import { createAlert } from '~/alert';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
+import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import simplePoll from '~/lib/utils/simple_poll';
 import { __, s__, n__ } from '~/locale';
@@ -274,6 +275,12 @@ export default {
     hasPipelineMustSucceedConflict() {
       return !this.hasCI && this.stateData.onlyAllowMergeIfPipelineSucceeds;
     },
+    isNotClosed() {
+      return this.mr.state !== STATUS_CLOSED;
+    },
+    isNeitherClosedNorMerged() {
+      return this.mr.state !== STATUS_CLOSED && this.mr.state !== STATUS_MERGED;
+    },
     isRemoveSourceBranchButtonDisabled() {
       return this.isMergeButtonDisabled;
     },
@@ -307,7 +314,7 @@ export default {
       );
     },
     sourceBranchDeletedText() {
-      const isPreMerge = this.mr.state !== 'merged';
+      const isPreMerge = this.mr.state !== STATUS_MERGED;
 
       if (isPreMerge) {
         return this.mr.shouldRemoveSourceBranch
@@ -495,7 +502,7 @@ export default {
 
 <template>
   <div
-    :class="{ 'gl-bg-gray-10': mr.state !== 'closed' && mr.state !== 'merged' }"
+    :class="{ 'gl-bg-gray-10': isNeitherClosedNorMerged }"
     data-testid="ready_to_merge_state"
     class="gl-border-t-1 gl-border-t-solid gl-border-gray-100 gl-pl-7"
   >
@@ -702,7 +709,7 @@ export default {
                   />
                 </li>
                 <li
-                  v-if="mr.state !== 'closed'"
+                  v-if="isNotClosed"
                   class="gl-line-height-normal"
                   data-testid="source-branch-deleted-text"
                 >

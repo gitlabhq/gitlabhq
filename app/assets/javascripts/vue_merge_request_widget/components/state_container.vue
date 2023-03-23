@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import { __ } from '~/locale';
 import StatusIcon from './mr_widget_status_icon.vue';
 import Actions from './action_buttons.vue';
@@ -41,8 +42,8 @@ export default {
   },
   computed: {
     wrapperClasses() {
-      if (this.status === 'merged') return 'gl-bg-blue-50';
-      if (this.status === 'closed') return 'gl-bg-red-50';
+      if (this.status === STATUS_MERGED) return 'gl-bg-blue-50';
+      if (this.status === STATUS_CLOSED) return 'gl-bg-red-50';
       return null;
     },
     hasActionsSlot() {

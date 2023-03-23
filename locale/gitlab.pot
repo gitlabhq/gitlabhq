@@ -35224,6 +35224,9 @@ msgstr ""
 msgid "ProtectedBranch|Learn more."
 msgstr ""
 
+msgid "ProtectedBranch|Manage branch related settings in one area with branch rules."
+msgstr ""
+
 msgid "ProtectedBranch|New Protected Tag"
 msgstr ""
 
@@ -35273,6 +35276,12 @@ msgid "ProtectedBranch|Unprotect"
 msgstr ""
 
 msgid "ProtectedBranch|Unprotect branch"
+msgstr ""
+
+msgid "ProtectedBranch|View branch rule"
+msgstr ""
+
+msgid "ProtectedBranch|View protected branches as branch rules"
 msgstr ""
 
 msgid "ProtectedBranch|What are protected branches?"
@@ -40137,6 +40146,9 @@ msgid "Service Desk allows people to create issues in your GitLab instance witho
 msgstr ""
 
 msgid "Service Ping payload not found in the application cache"
+msgstr ""
+
+msgid "Service account"
 msgstr ""
 
 msgid "Service account generated successfully"

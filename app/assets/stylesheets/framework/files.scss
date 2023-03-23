@@ -2,14 +2,6 @@
  * File content holder
  *
  */
-.container-fluid.container-limited.limit-container-width {
-  .file-holder.readme-holder.limited-width-container .file-content {
-    max-width: $limited-layout-width;
-    margin-left: auto;
-    margin-right: auto;
-  }
-}
-
 .file-holder {
   border: 1px solid $border-color;
   border-top: 0;

@@ -238,7 +238,7 @@ as shown in the following table:
 | See new findings in merge request widget                          | **{dotted-circle}** | **{check-circle}** |
 | [Manage vulnerabilities](../vulnerabilities/index.md)             | **{dotted-circle}** | **{check-circle}** |
 | [Access the Security Dashboard](../security_dashboard/index.md)   | **{dotted-circle}** | **{check-circle}** |
-| [Configure SAST in the UI](#configure-sast-in-the-ui)             | **{dotted-circle}** | **{check-circle}** |
+| [Configure SAST by using the UI](#configure-sast-by-using-the-ui) | **{dotted-circle}** | **{check-circle}** |
 | [Customize SAST rulesets](customize_rulesets.md)                  | **{dotted-circle}** | **{check-circle}** |
 | [Detect False Positives](#false-positive-detection)               | **{dotted-circle}** | **{check-circle}** |
 | [Track moved vulnerabilities](#advanced-vulnerability-tracking)   | **{dotted-circle}** | **{check-circle}** |
@@ -257,7 +257,7 @@ To configure SAST for a project you can:
 - Use [Auto SAST](../../../topics/autodevops/stages.md#auto-sast), provided by
   [Auto DevOps](../../../topics/autodevops/index.md).
 - [Configure SAST in your CI/CD YAML](#configure-sast-in-your-cicd-yaml).
-- [Configure SAST using the UI](#configure-sast-in-the-ui) (introduced in GitLab 13.3).
+- [Configure SAST by using the UI](#configure-sast-by-using-the-ui).
 
 You can enable SAST across many projects by [enforcing scan execution](../index.md#enforce-scan-execution).
 
@@ -282,15 +282,12 @@ The results are saved as a
 that you can later download and analyze.
 When downloading, you always receive the most recent SAST artifact available.
 
-### Configure SAST in the UI
+### Configure SAST by using the UI
 
-You can enable and configure SAST in the UI, either with default settings, or with customizations.
+You can enable and configure SAST by using the UI, either with the default settings or with customizations.
 The method you can use depends on your GitLab license tier.
 
-- [Configure SAST in the UI with customizations](#configure-sast-in-the-ui-with-customizations). **(ULTIMATE)**
-- [Configure SAST in the UI with default settings only](#configure-sast-in-the-ui-with-default-settings-only).
-
-### Configure SAST in the UI with customizations **(ULTIMATE)**
+#### Configure SAST with customizations **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3659) in GitLab 13.3.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/232862) in GitLab 13.4.
@@ -319,7 +316,7 @@ To enable and configure SAST with customizations:
 
 Pipelines now include a SAST job.
 
-### Configure SAST in the UI with default settings only
+#### Configure SAST with default settings only
 
 > [Introduced](https://about.gitlab.com/releases/2021/02/22/gitlab-13-9-released/#security-configuration-page-for-all-users) in GitLab 13.9
 

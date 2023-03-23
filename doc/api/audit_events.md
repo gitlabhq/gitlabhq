@@ -138,7 +138,7 @@ Example response:
 ## Group Audit Events
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34078) in GitLab 12.5.
-> - [Support for keyset pagination added](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2.
+> - Support for keyset pagination [added](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2.
 
 The Group Audit Events API allows you to retrieve [group audit events](../administration/audit_events.md#group-events).
 This API cannot retrieve project audit events.
@@ -255,7 +255,7 @@ Example response:
 ## Project Audit Events
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219238) in GitLab 13.1.
-> - [Support for keyset pagination added](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.10.
+> - Support for keyset pagination [added](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.10.
 
 The Project Audit Events API allows you to retrieve [project audit events](../administration/audit_events.md#project-events).
 

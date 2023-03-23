@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlSprintf } from '@gitlab/ui';
 import { createAlert } from '~/alert';
+import { STATUS_MERGED } from '~/issues/constants';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -99,7 +100,7 @@ export default {
       return !this.userHasApproved && this.userCanApprove && this.mr.isOpen;
     },
     showUnapprove() {
-      return this.userHasApproved && !this.userCanApprove && this.mr.state !== 'merged';
+      return this.userHasApproved && !this.userCanApprove && this.mr.state !== STATUS_MERGED;
     },
     approvalText() {
       return this.isApproved && this.approvedBy.length > 0

@@ -235,7 +235,7 @@ _super-sidebar-nav:
     SKIP_REPORT_IN_ISSUES: "true"
   allow_failure: true
   rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
     - !reference [.rules:test:manual, rules]
 
 # ------------------------------------------

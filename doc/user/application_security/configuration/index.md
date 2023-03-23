@@ -51,7 +51,7 @@ You can configure the following security controls:
 
 - [Static Application Security Testing](../sast/index.md) (SAST)
   - Select **Enable SAST** to configure SAST for the current project.
-    For more details, read [Configure SAST in the UI](../sast/index.md#configure-sast-in-the-ui).
+    For more details, read [Configure SAST in the UI](../sast/index.md#configure-sast-by-using-the-ui).
 - [Dynamic Application Security Testing](../dast/index.md) (DAST)
   - Select **Enable DAST** to configure DAST for the current project.
   - Select **Manage scans** to manage the saved DAST scans, site profiles, and scanner profiles.

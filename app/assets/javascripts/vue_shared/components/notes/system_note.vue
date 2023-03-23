@@ -130,7 +130,7 @@ export default {
   >
     <div
       :class="iconBgClass"
-      class="gl-float-left gl--flex-center gl-rounded-full gl-mt-n1 gl-ml-2 gl-w-6 gl-h-6"
+      class="gl-float-left gl--flex-center gl-rounded-full gl-mt-n1 gl-ml-2 gl-w-6 gl-h-6 timeline-icon"
     >
       <gl-icon
         v-if="note.system_note_icon_name"

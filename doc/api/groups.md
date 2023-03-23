@@ -521,11 +521,6 @@ To get the details of all projects within a group, use either the [list a group'
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/4"
 ```
 
-NOTE:
-There is [a known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/345200) that can
-prevent `runners_token` from being returned when the call has the `with_projects=false`
-parameter.
-
 This endpoint returns:
 
 - All projects and shared projects in GitLab 12.5 and earlier.

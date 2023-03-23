@@ -12,12 +12,16 @@ RSpec.describe FinalizeProjectNamespacesBackfill, :migration, feature_category: 
     shared_examples 'finalizes the migration' do
       it 'finalizes the migration' do
         allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
-          expect(runner).to receive(:finalize).with('"ProjectNamespaces::BackfillProjectNamespaces"', :projects, :id, [nil, "up"])
+          expect(runner).to receive(:finalize).with(migration, :projects, :id, [nil, "up"])
         end
       end
     end
 
     context 'when project namespace backfilling migration is missing' do
+      before do
+        batched_migrations.where(job_class_name: migration).delete_all
+      end
+
       it 'warns migration not found' do
         expect(Gitlab::AppLogger)
           .to receive(:warn).with(/Could not find batched background migration for the given configuration:/)
@@ -29,7 +33,7 @@ RSpec.describe FinalizeProjectNamespacesBackfill, :migration, feature_category: 
     context 'with backfilling migration present' do
       let!(:project_namespace_backfill) do
         batched_migrations.create!(
-          job_class_name: 'ProjectNamespaces::BackfillProjectNamespaces',
+          job_class_name: migration,
           table_name: :projects,
           column_name: :id,
           job_arguments: [nil, 'up'],

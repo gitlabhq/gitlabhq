@@ -18,6 +18,8 @@ The steps below cover:
 - Configuring the Secure LDAP Client in the Google administrator console.
 - Required GitLab configuration.
 
+Secure LDAP is only available on specific Google Workspace editions. For more information, see the [Google Secure LDAP service documentation](https://support.google.com/a/answer/9048516).
+
 ## Configuring Google LDAP client
 
 1. Go to <https://admin.google.com/Dashboard> and sign in as a Google Workspace domain administrator.

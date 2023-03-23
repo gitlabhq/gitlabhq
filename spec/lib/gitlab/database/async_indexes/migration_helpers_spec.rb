@@ -143,6 +143,62 @@ RSpec.describe Gitlab::Database::AsyncIndexes::MigrationHelpers, feature_categor
     end
   end
 
+  describe '#prepare_async_index_from_sql' do
+    let(:index_definition) { "CREATE INDEX #{index_name} ON #{table_name} USING btree(id)" }
+
+    subject(:prepare_async_index_from_sql) do
+      migration.prepare_async_index_from_sql(table_name, index_name, index_definition)
+    end
+
+    before do
+      connection.create_table(table_name)
+
+      allow(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_ddl_mode!).and_call_original
+    end
+
+    it 'requires ddl mode' do
+      prepare_async_index_from_sql
+
+      expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to have_received(:require_ddl_mode!)
+    end
+
+    context 'when the async index creation is not available' do
+      before do
+        connection.drop_table(:postgres_async_indexes)
+      end
+
+      it 'does not raise an error' do
+        expect { prepare_async_index_from_sql }.not_to raise_error
+      end
+    end
+
+    context 'when the async index creation is available' do
+      context 'when there is already an index with the given name' do
+        before do
+          connection.add_index(table_name, 'id', name: index_name)
+        end
+
+        it 'does not create the async index record' do
+          expect { prepare_async_index_from_sql }.not_to change { index_model.where(name: index_name).count }
+        end
+      end
+
+      context 'when there is no index with the given name' do
+        let(:async_index) { index_model.find_by(name: index_name) }
+
+        it 'creates the async index record' do
+          expect { prepare_async_index_from_sql }.to change { index_model.where(name: index_name).count }.by(1)
+        end
+
+        it 'sets the async index attributes correctly' do
+          prepare_async_index_from_sql
+
+          expect(async_index).to have_attributes(table_name: table_name, definition: index_definition)
+        end
+      end
+    end
+  end
+
   describe '#prepare_async_index_removal' do
     before do
       connection.create_table(table_name)

@@ -12,6 +12,7 @@ import {
   GlEmptyState,
 } from '@gitlab/ui';
 import { isValidSlaDueAt } from 'ee_else_ce/vue_shared/components/incidents/utils';
+import { STATUS_CLOSED } from '~/issues/constants';
 import { visitUrl, mergeUrlParams, joinPaths } from '~/lib/utils/url_utility';
 import { s__, n__ } from '~/locale';
 import { INCIDENT_SEVERITY } from '~/sidebar/constants';
@@ -301,6 +302,9 @@ export default {
     getEscalationStatus(escalationStatus) {
       return ESCALATION_STATUSES[escalationStatus] || this.$options.i18n.noEscalationStatus;
     },
+    isClosed(item) {
+      return item.state === STATUS_CLOSED;
+    },
     showIncidentLink({ iid }) {
       return joinPaths(this.issuePath, INCIDENT_DETAILS_PATH, iid);
     },
@@ -397,7 +401,7 @@ export default {
           <template #cell(title)="{ item }">
             <div
               :class="{
-                'gl-display-flex gl-align-items-center gl-max-w-full': item.state === 'closed',
+                'gl-display-flex gl-align-items-center gl-max-w-full': isClosed(item),
               }"
             >
               <gl-link
@@ -411,7 +415,7 @@ export default {
                 </tooltip-on-truncate>
               </gl-link>
               <gl-icon
-                v-if="item.state === 'closed'"
+                v-if="isClosed(item)"
                 name="issue-close"
                 class="gl-ml-2 gl-fill-blue-500 gl-flex-shrink-0"
                 :size="16"

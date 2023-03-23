@@ -1,6 +1,7 @@
 <script>
 import { GlLink, GlTooltip, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
+import { STATUS_CLOSED } from '~/issues/constants';
 import { __ } from '~/locale';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
@@ -42,7 +43,7 @@ export default {
       ].filter(({ count }) => count);
     },
     isClosed() {
-      return this.suggestion.state === 'closed';
+      return this.suggestion.state === STATUS_CLOSED;
     },
     stateIconClass() {
       return this.isClosed ? 'gl-text-blue-500' : 'gl-text-green-500';

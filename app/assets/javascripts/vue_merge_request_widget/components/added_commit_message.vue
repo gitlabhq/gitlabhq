@@ -1,6 +1,7 @@
 <script>
 import { GlSprintf, GlLink } from '@gitlab/ui';
 import { escape } from 'lodash';
+import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { n__, s__, sprintf } from '~/locale';
 
@@ -49,7 +50,7 @@ export default {
   },
   computed: {
     isMerged() {
-      return this.state === 'merged';
+      return this.state === STATUS_MERGED;
     },
     targetBranchEscaped() {
       return escape(this.targetBranch);
@@ -67,7 +68,7 @@ export default {
       );
     },
     message() {
-      if (this.state === 'closed') {
+      if (this.state === STATUS_CLOSED) {
         return s__('mrWidgetCommitsAdded|The changes were not merged into %{targetBranch}.');
       } else if (this.isMerged) {
         return s__(

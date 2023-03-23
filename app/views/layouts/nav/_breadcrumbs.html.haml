@@ -5,7 +5,7 @@
 
 .gl-relative
   .breadcrumbs{ class: [container, @content_class] }
-    .breadcrumbs-container{ class: ("border-bottom-0" if @no_breadcrumb_border) }
+    .breadcrumbs-container
       - if show_super_sidebar?
         = render Pajamas::ButtonComponent.new(icon: 'sidebar', category: :tertiary, button_options: { class: 'js-super-sidebar-toggle super-sidebar-toggle gl-ml-n3 gl-mr-2', title: _('Expand sidebar'), aria: { label: _('Expand sidebar') }, data: {toggle: 'tooltip', placement: 'right' } })
       - elsif defined?(@left_sidebar)
