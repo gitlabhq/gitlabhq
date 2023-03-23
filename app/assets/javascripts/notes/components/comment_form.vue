@@ -364,7 +364,6 @@ export default {
                 :autosave-key="autosaveKey"
                 :disabled="isSubmitting"
                 supports-quick-actions
-                autofocus
                 @keydown.up="editCurrentUserLastNote()"
                 @keydown.meta.enter="handleEnter()"
                 @keydown.ctrl.enter="handleEnter()"
