@@ -31,6 +31,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     award_emoji: %w[awardable_id user_id],
     aws_roles: %w[role_external_id],
     boards: %w[milestone_id iteration_id],
+    broadcast_messages: %w[namespace_id],
     chat_names: %w[chat_id team_id user_id integration_id],
     chat_teams: %w[team_id],
     ci_build_needs: %w[partition_id build_id],

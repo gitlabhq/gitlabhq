@@ -26,7 +26,7 @@ For a full list of reference architectures, see
 | PostgreSQL<sup>1</sup>     | 1     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`   | `D2s v3` |
 | Redis<sup>2</sup>          | 1     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | `m5.large`   | `D2s v3` |
 | Gitaly<sup>5</sup>         | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
-| GitLab Rails               | 2     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`  | `c5.2xlarge` | `F8s v2` |
+| GitLab Rails<sup>6</sup>   | 2     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`  | `c5.2xlarge` | `F8s v2` |
 | Monitoring node            | 1     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | Object storage<sup>4</sup> | -     | -                      | -               | -            | -        |
 
@@ -45,6 +45,8 @@ For a full list of reference architectures, see
 5. Gitaly has been designed and tested with repositories of varying sizes that follow best practices. However, large
    repositories or monorepos that don't follow these practices can significantly impact Gitaly requirements. Refer to
    [Large repositories](index.md#large-repositories) for more information.
+6. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](index.md#autoscaling-of-stateful-nodes).
+   However, for GitLab Rails certain processes like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) should be run on only one node.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:
@@ -423,9 +425,7 @@ Due to Gitaly having notable input and output requirements, we strongly
 recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs
 should have a throughput of at least 8,000
 input/output operations per second (IOPS) for read operations and 2,000 IOPS
-for write operations. These IOPS values are initial recommendations, and may be
-adjusted to greater or lesser values depending on the scale of your
-environment's workload. If you're running the environment on a Cloud provider,
+for write operations. If you're running the environment on a Cloud provider,
 refer to their documentation about how to configure IOPS correctly.
 
 Be sure to note the following items:
@@ -774,11 +774,9 @@ the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html).
    sudo gitlab-rake gitlab:db:configure
    ```
 
-   If you encounter a `rake aborted!` error message stating that PgBouncer is
-   failing to connect to PostgreSQL, it may be that your PgBouncer node's IP
-   address is missing from PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb`
-   on your database nodes. Before proceeding, see
-   [PgBouncer error `ERROR:  pgbouncer cannot connect to server`](../postgresql/replication_and_failover.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server).
+   Note that this requires the Rails node to be configured to connect to the primary database
+   directly, [bypassing PgBouncer](../postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer).
+   After migrations have completed, you must configure the node to pass through PgBouncer again.
 
 1. [Configure fast lookup of authorized SSH keys in the database](../operations/fast_ssh_key_lookup.md).
 

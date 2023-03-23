@@ -59,6 +59,8 @@ describe('Work Item Note', () => {
         note,
         isFirstNote,
         workItemType: 'Task',
+        markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
+        autocompleteDataSources: {},
       },
       apolloProvider: mockApollo([[updateWorkItemNoteMutation, updateNoteMutationHandler]]),
     });

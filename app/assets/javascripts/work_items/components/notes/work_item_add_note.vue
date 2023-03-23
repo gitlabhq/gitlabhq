@@ -66,6 +66,15 @@ export default {
       required: false,
       default: ASC,
     },
+    markdownPreviewPath: {
+      type: String,
+      required: true,
+    },
+    autocompleteDataSources: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -108,11 +117,6 @@ export default {
         label: 'item_comment',
         property: `type_${this.workItemType}`,
       };
-    },
-    markdownPreviewPath() {
-      return `${gon.relative_url_root || ''}/${this.fullPath}/preview_markdown?target_type=${
-        this.workItemType
-      }`;
     },
     isLockedOutOrSignedOut() {
       return !this.signedIn || !this.canUpdate;
@@ -241,6 +245,8 @@ export default {
             :aria-label="__('Add a reply')"
             :is-submitting="isSubmitting"
             :autosave-key="autosaveKey"
+            :autocomplete-data-sources="autocompleteDataSources"
+            :markdown-preview-path="markdownPreviewPath"
             @submitForm="updateWorkItem"
             @cancelEditing="cancelEditing"
           />

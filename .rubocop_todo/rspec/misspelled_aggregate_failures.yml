@@ -1,0 +1,4 @@
+---
+# Cop supports --autocorrect.
+RSpec/MisspelledAggregateFailures:
+  Details: grace period

@@ -37,8 +37,8 @@ costly-to-operate environment by using the
 | Gitaly<sup>5 6</sup>                      | 3     | 8 vCPU, 30 GB memory    | `n1-standard-8` | `m5.2xlarge` |
 | Praefect<sup>5</sup>                      | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   |
 | Praefect PostgreSQL<sup>1</sup>           | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   |
-| Sidekiq                                   | 4     | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   |
-| GitLab Rails                              | 3     | 16 vCPU, 14.4 GB memory | `n1-highcpu-16` | `c5.4xlarge` |
+| Sidekiq<sup>7</sup>                       | 4     | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   |
+| GitLab Rails<sup>7</sup>                  | 3     | 16 vCPU, 14.4 GB memory | `n1-highcpu-16` | `c5.4xlarge` |
 | Monitoring node                           | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   |
 | Object storage<sup>4</sup>                | -     | -                       | -               | -            |
 
@@ -59,6 +59,8 @@ costly-to-operate environment by using the
 6. Gitaly has been designed and tested with repositories of varying sizes that follow best practices. However, large
    repositories or monorepos that don't follow these practices can significantly impact Gitaly requirements. Refer to
    [Large repositories](index.md#large-repositories) for more information.
+7. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](index.md#autoscaling-of-stateful-nodes).
+   However, for GitLab Rails certain processes like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) should be run on only one node.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:
@@ -637,8 +639,13 @@ are supported and can be added if needed.
 
 ## Configure Consul and Sentinel
 
-Now that the Redis servers are all set up, let's configure the Sentinel
-servers. The following IPs are used as an example:
+Now that the Redis servers are all set up, let's configure the Consul + Sentinel
+servers.
+
+NOTE:
+Consul and Redis Sentinel must be deployed in an odd number of 3 nodes or higher. This is to ensure the nodes can take votes as part of a quorum.
+
+The following IPs will be used as an example:
 
 - `10.6.0.11`: Consul/Sentinel 1
 - `10.6.0.12`: Consul/Sentinel 2
@@ -1285,6 +1292,9 @@ This is how this would work with a Omnibus GitLab PostgreSQL setup:
 Praefect is the router and transaction manager for Gitaly Cluster and all connections to Gitaly go through
 it. This section details how to configure it.
 
+NOTE:
+Praefect must be deployed in an odd number of 3 nodes or higher. This is to ensure the nodes can take votes as part of a quorum.
+
 Praefect requires several secret tokens to secure communications across the Cluster:
 
 - `<praefect_external_token>`: Used for repositories hosted on your Gitaly cluster and can only be accessed by Gitaly clients that carry this token.
@@ -1459,9 +1469,7 @@ Due to Gitaly having notable input and output requirements, we strongly
 recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs
 should have a throughput of at least 8,000
 input/output operations per second (IOPS) for read operations and 2,000 IOPS for
-write operations. These IOPS values are initial recommendations, and may be
-adjusted to greater or lesser values depending on the scale of your
-environment's workload. If you're running the environment on a Cloud provider,
+write operations. If you're running the environment on a Cloud provider,
 refer to their documentation about how to configure IOPS correctly.
 
 Gitaly servers must not be exposed to the public internet, as Gitaly's network
@@ -2068,11 +2076,9 @@ the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html).
    gitlab-rake gitlab:db:configure
    ```
 
-   If you encounter a `rake aborted!` error message stating that PgBouncer is
-   failing to connect to PostgreSQL, it may be that your PgBouncer node's IP
-   address is missing from PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb`
-   on your database nodes. Before proceeding, see
-   [PgBouncer error `ERROR:  pgbouncer cannot connect to server`](../postgresql/replication_and_failover.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server).
+   Note that this requires the Rails node to be configured to connect to the primary database
+   directly, [bypassing PgBouncer](../postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer).
+   After migrations have completed, you must configure the node to pass through PgBouncer again.
 
 1. [Configure fast lookup of authorized SSH keys in the database](../operations/fast_ssh_key_lookup.md).
 

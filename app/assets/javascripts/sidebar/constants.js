@@ -13,6 +13,7 @@ import {
   WORKSPACE_PROJECT,
 } from '~/issues/constants';
 import updateAlertAssigneesMutation from '~/vue_shared/alert_details/graphql/mutations/alert_set_assignees.mutation.graphql';
+import issuableDatesUpdatedSubscription from '../graphql_shared/subscriptions/work_item_dates.subscription.graphql';
 import updateTestCaseLabelsMutation from './components/labels/labels_select_widget/graphql/update_test_case_labels.mutation.graphql';
 import epicLabelsQuery from './components/labels/labels_select_widget/graphql/epic_labels.query.graphql';
 import updateEpicLabelsMutation from './components/labels/labels_select_widget/graphql/epic_update_labels.mutation.graphql';
@@ -218,6 +219,7 @@ export const dueDateQueries = {
   [TYPE_ISSUE]: {
     query: issueDueDateQuery,
     mutation: updateIssueDueDateMutation,
+    subscription: issuableDatesUpdatedSubscription,
   },
   [TYPE_EPIC]: {
     query: epicDueDateQuery,

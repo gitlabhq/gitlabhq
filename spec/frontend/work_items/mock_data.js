@@ -313,7 +313,7 @@ export const workItemResponseFactory = ({
     workItem: {
       __typename: 'WorkItem',
       id: 'gid://gitlab/WorkItem/1',
-      iid: 1,
+      iid: '1',
       title: 'Updated title',
       state: 'OPEN',
       description: 'description',
@@ -834,7 +834,7 @@ export const workItemHierarchyEmptyResponse = {
   data: {
     workItem: {
       id: 'gid://gitlab/WorkItem/1',
-      iid: 1,
+      iid: '1',
       state: 'OPEN',
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/1',
@@ -881,7 +881,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
   data: {
     workItem: {
       id: 'gid://gitlab/WorkItem/1',
-      iid: 1,
+      iid: '1',
       state: 'OPEN',
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/6',

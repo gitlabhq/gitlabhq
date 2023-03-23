@@ -178,7 +178,7 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
       end
     end
 
-    context 'with keyset pagination option', :aggregate_errors do
+    context 'with keyset pagination option', :aggregate_failures do
       let(:base_params) { { pagination: 'keyset' } }
 
       context 'with gitaly pagination params' do

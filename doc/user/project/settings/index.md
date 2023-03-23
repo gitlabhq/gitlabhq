@@ -162,6 +162,7 @@ Configure your project's merge request settings:
 - Configure [suggested changes commit messages](../merge_requests/reviews/suggestions.md#configure-the-commit-message-for-applied-suggestions).
 - Configure [merge and squash commit message templates](../merge_requests/commit_templates.md).
 - Configure [the default target project](../merge_requests/creating_merge_requests.md#set-the-default-target-project) for merge requests coming from forks.
+- Enable [Suggested Reviewers](../merge_requests/reviews/index.md#suggested-reviewers).
 
 ## Service Desk
 

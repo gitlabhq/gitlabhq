@@ -13,6 +13,10 @@ RSpec.describe BulkImports::Clients::Graphql, feature_category: :importers do
     let(:response_double) { double }
     let(:version) { '14.0.0' }
 
+    before do
+      stub_const('BulkImports::MINIMUM_COMPATIBLE_MAJOR_VERSION', version)
+    end
+
     describe 'source instance validation' do
       before do
         allow(graphql_client_double).to receive(:execute)
@@ -33,7 +37,7 @@ RSpec.describe BulkImports::Clients::Graphql, feature_category: :importers do
         let(:version) { '13.0.0' }
 
         it 'raises an error' do
-          expect { subject.execute('test') }.to raise_error(::BulkImports::Error, "Unsupported GitLab version. Minimum supported version is 14.")
+          expect { subject.execute('test') }.to raise_error(::BulkImports::Error, "Unsupported GitLab version. Source instance must run GitLab version #{BulkImport::MIN_MAJOR_VERSION} or later.")
         end
       end
     end

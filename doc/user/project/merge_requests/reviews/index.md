@@ -23,13 +23,13 @@ review merge requests in Visual Studio Code.
 
 ## Suggested reviewers **(ULTIMATE SAAS)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/modelops/applied-ml/review-recommender/-/epics/3) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/modelops/applied-ml/review-recommender/-/epics/3) in GitLab 15.4 as an [Open Beta](../../../../policy/alpha-beta-support.md#beta-features) feature [with a flag](../../../../administration/feature_flags.md) named `suggested_reviewers_control`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/368356) in GitLab 15.6.
+> - Beta designation [removed from the UI](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113058) in GitLab 15.10.
 
 GitLab can suggest reviewers. Using the changes in a merge request and a project's contribution graph, machine learning suggestions appear in the reviewer section of the right sidebar.
 
 ![Suggested Reviewers](img/suggested_reviewers_v15_9.png)
-
-This feature is currently in [Open Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#open-beta) behind a [feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/368356).
 
 For more information, see [Data usage in Suggested Reviewers](data_usage.md).
 

@@ -35,6 +35,8 @@ describe('Work item comment form component', () => {
         autosaveKey: mockAutosaveKey,
         isSubmitting,
         initialValue,
+        markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
+        autocompleteDataSources: {},
       },
       provide: {
         fullPath: 'test-project-path',
@@ -42,11 +44,11 @@ describe('Work item comment form component', () => {
     });
   };
 
-  it('passes correct markdown preview path to markdown editor', () => {
+  it('passes markdown preview path to markdown editor', () => {
     createComponent();
 
     expect(findMarkdownEditor().props('renderMarkdownPath')).toBe(
-      '/test-project-path/preview_markdown?target_type=Issue',
+      '/group/project/preview_markdown?target_type=WorkItem',
     );
   });
 

@@ -2,7 +2,6 @@
 import { GlButton } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
-import { joinPaths } from '~/lib/utils/url_utility';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
@@ -44,6 +43,15 @@ export default {
       required: false,
       default: __('Comment'),
     },
+    markdownPreviewPath: {
+      type: String,
+      required: true,
+    },
+    autocompleteDataSources: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -51,14 +59,6 @@ export default {
     };
   },
   computed: {
-    markdownPreviewPath() {
-      return joinPaths(
-        '/',
-        gon.relative_url_root || '',
-        this.fullPath,
-        `/preview_markdown?target_type=${this.workItemType}`,
-      );
-    },
     formFieldProps() {
       return {
         'aria-label': this.ariaLabel,
@@ -103,11 +103,13 @@ export default {
           :value="commentText"
           :render-markdown-path="markdownPreviewPath"
           :markdown-docs-path="$options.constantOptions.markdownDocsPath"
+          :autocomplete-data-sources="autocompleteDataSources"
           :form-field-props="formFieldProps"
           data-testid="work-item-add-comment"
           class="gl-mb-3"
           autofocus
           use-bottom-toolbar
+          supports-quick-actions
           @input="setCommentText"
           @keydown.meta.enter="$emit('submitForm', commentText)"
           @keydown.ctrl.enter="$emit('submitForm', commentText)"

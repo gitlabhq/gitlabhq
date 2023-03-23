@@ -93,9 +93,6 @@ RSpec.describe API::BulkImports, feature_category: :importers do
       }
     end
 
-    let(:source_entity_type) { BulkImports::CreateService::ENTITY_TYPES_MAPPING.fetch(params[:entities][0][:source_type]) }
-    let(:source_entity_identifier) { ERB::Util.url_encode(params[:entities][0][:source_full_path]) }
-
     before do
       allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
         allow(instance)
@@ -106,8 +103,6 @@ RSpec.describe API::BulkImports, feature_category: :importers do
           .to receive(:instance_enterprise)
           .and_return(false)
       end
-      stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/#{source_entity_identifier}/export_relations/status?page=1&per_page=30&private_token=access_token")
-        .to_return(status: 200, body: "", headers: {})
     end
 
     shared_examples 'starting a new migration' do
@@ -276,41 +271,12 @@ RSpec.describe API::BulkImports, feature_category: :importers do
         }
       end
 
-      it 'returns blocked url message in the error' do
-        request
-
-        expect(response).to have_gitlab_http_status(:unprocessable_entity)
-
-        expect(json_response['message']).to include("Url is blocked: Only allowed schemes are http, https")
-      end
-    end
-
-    context 'when source instance setting is disabled' do
-      let(:params) do
-        {
-          configuration: {
-            url: 'http://gitlab.example',
-            access_token: 'access_token'
-          },
-          entities: [
-            source_type: 'group_entity',
-            source_full_path: 'full_path',
-            destination_slug: 'destination_slug',
-            destination_namespace: 'destination_namespace'
-          ]
-        }
-      end
-
       it 'returns blocked url error' do
-        stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/#{source_entity_identifier}/export_relations/status?page=1&per_page=30&private_token=access_token")
-          .to_return(status: 404, body: "", headers: {})
-
         request
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
 
-        expect(json_response['message']).to include("Group import disabled on source or destination instance. " \
-                                                    "Ask an administrator to enable it on both instances and try again.")
+        expect(json_response['message']).to eq('Validation failed: Url is blocked: Only allowed schemes are http, https')
       end
     end
 

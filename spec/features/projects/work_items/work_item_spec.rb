@@ -29,7 +29,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     it_behaves_like 'work items status'
     it_behaves_like 'work items assignees'
     it_behaves_like 'work items labels'
-    it_behaves_like 'work items comments'
+    it_behaves_like 'work items comments', :issue
     it_behaves_like 'work items description'
     it_behaves_like 'work items milestone'
   end

@@ -10,16 +10,10 @@ const DEFAULT_PROPS = {
 
 describe('Chunk Line component', () => {
   let wrapper;
-  const fileLineBlame = true;
 
   const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(ChunkLine, {
       propsData: { ...DEFAULT_PROPS, ...props },
-      provide: {
-        glFeatures: {
-          fileLineBlame,
-        },
-      },
     });
   };
 

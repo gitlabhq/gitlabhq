@@ -47,9 +47,9 @@ The following Cloud Native Hybrid reference architectures, where select recommen
 
 The first choice to consider is whether a Self Managed approach is correct for you and your requirements.
 
-Running any application in production is complex, and the same applies for GitLab. While we aim to make this as smooth as possible, there are still the general complexities. This depends on the design chosen, but typically you'll need to manage all aspects such as hardware, operating systems, networking, storage, security, GitLab itself, and more.
+Running any application in production is complex, and the same applies for GitLab. While we aim to make this as smooth as possible, there are still the general complexities. This depends on the design chosen, but typically you'll need to manage all aspects such as hardware, operating systems, networking, storage, security, GitLab itself, and more. This includes both the initial setup of the environment and the longer term maintenance.
 
-As such, it's recommended that you have a working knowledge of running applications in production when deciding on going down this route. For users who want a more managed solution it's recommended to instead explore our other offerings such as [GitLab SaaS](../../subscriptions/gitlab_com/index.md) or [GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md).
+As such, it's recommended that you have a working knowledge of running and maintaining applications in production when deciding on going down this route. If you aren't in this position, our [Professional Services](https://about.gitlab.com/services/#implementation-services) team offers implementation services, but for those who want a more managed solution long term, it's recommended to instead explore our other offerings such as [GitLab SaaS](../../subscriptions/gitlab_com/index.md) or [GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md).
 
 ## Deciding which architecture to use
 
@@ -76,8 +76,6 @@ High Availability ensures every component in the GitLab setup can handle failure
 
 For environments serving 3,000 or more users we generally recommend that a HA strategy is used as at this level outages have a bigger impact against more users. All the architectures in this range have HA built in by design for this reason.
 
-For users who still need to have HA for a lower number of users this can also be achieved with an adjusted [3K architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
-
 #### Do you need High Availability (HA)?
 
 As mentioned above, achieving HA does come at a cost. The environment's required are sizable as each component needs to be multiplied, which comes with additional actual and maintenance costs.
@@ -88,6 +86,10 @@ In general then, we'd only recommend you employ HA in the following scenarios:
 
 - When you have 3,000 or more users.
 - When GitLab being down would critically impact your workflow.
+
+#### Scaled-down High Availability (HA) approaches
+
+If you still need to have HA for a lower number of users, this can be achieved with an adjusted [3K architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
 
 #### Zero Downtime Upgrades
 
@@ -163,7 +165,7 @@ Before implementing a reference architecture, refer to the following requirement
 
 These reference architectures were built and tested on Google Cloud Platform (GCP) using the
 [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
-CPU platform as a baseline ([Sysbench benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks)).
+CPU platform as a lowest common denominator baseline ([Sysbench benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks)).
 
 Newer, similarly-sized CPUs are supported and may have improved performance as a result. For Omnibus GitLab environments,
 ARM-based equivalents are also supported.
@@ -324,10 +326,12 @@ When selecting a database service, it should run a standard, performant, and [su
 - Read Replicas for [Database Load Balancing](../postgresql/database_load_balancing.md).
 - Cross Region replication for [GitLab Geo](../geo/index.md).
 
-Several cloud provider services are known not to support the above or have been found to have other issues and aren't recommended:
+#### Unsupported database services
+
+Several database cloud provider services are known not to support the above or have been found to have other issues and aren't recommended:
 
 - [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is incompatible and not supported. See [14.4.0](../../update/index.md#1440) for more details.
-- [Azure Database for PostgreSQL Single Server](https://azure.microsoft.com/en-gb/products/postgresql/#overview) (Single / Flexible) is **strongly not recommended** for use due to notable performance / stability issues or missing functionality. See [Recommendation Notes for Azure](#recommendation-notes-for-azure) for more details.
+- [Azure Database for PostgreSQL Single Server](https://azure.microsoft.com/en-gb/products/postgresql/#overview) (Single / Flexible) is not supported for use due to notable performance / stability issues or missing functionality. See [Recommendation Notes for Azure](#recommendation-notes-for-azure) for more details.
 - [Google AlloyDB](https://cloud.google.com/alloydb) and [Amazon RDS Multi-AZ DB cluster](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) have not been tested and are not recommended. Both solutions are specifically not expected to work with GitLab Geo.
   - [Amazon RDS Multi-AZ DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html) is a separate product and is supported.
 
@@ -337,9 +341,54 @@ Due to performance issues that we found with several key Azure services, we only
 
 In addition to the above, you should be aware of the additional specific guidance for Azure:
 
-- **We outright strongly do not recommend [Azure Database for PostgreSQL Single Server](https://learn.microsoft.com/en-us/azure/postgresql/single-server/overview-single-server)** specifically due to significant performance and stability issues found. **For GitLab 14.0 and higher the service is not supported** due to it only supporting up to PostgreSQL 11.
-  - A new service, [Azure Database for PostgreSQL Flexible Server](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/) has been released. [Internal testing](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/91) has shown that it does look to perform as expected, but this hasn't been validated in production, so generally isn't recommended at this time. Additionally, as it's a new service, you may find that it's missing some functionality depending on your requirements.
+- [Azure Database for PostgreSQL Single Server](https://azure.microsoft.com/en-gb/products/postgresql/#overview) (Single / Flexible) is not supported for use due to notable performance / stability issues or missing functionality.
+- A new service, [Azure Database for PostgreSQL Flexible Server](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/) has been released. [Internal testing](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/91) has shown that it does look to perform as expected, but this hasn't been validated in production, so generally isn't recommended at this time. Additionally, as it's a new service, you may find that it's missing some functionality depending on your requirements.
 - [Azure Blob Storage](https://azure.microsoft.com/en-gb/products/storage/blobs/) has been found to have [performance limits that can impact production use at certain times](https://gitlab.com/gitlab-org/gitlab/-/issues/344861). However, this has only been seen in our largest architectures (25k+) so far.
+
+## Deviating from the suggested reference architectures
+
+As a general guideline, the further away you move from the reference architectures,
+the harder it is to get support for it. With any deviation, you're introducing
+a layer of complexity that adds challenges to finding out where potential
+issues might lie.
+
+The reference architectures use the official GitLab Linux packages (Omnibus
+GitLab) or [Helm Charts](https://docs.gitlab.com/charts/) to install and configure the various components. The components are
+installed on separate machines (virtualized or bare metal), with machine hardware
+requirements listed in the "Configuration" column and equivalent VM standard sizes listed
+in GCP/AWS/Azure columns of each [available reference architecture](#available-reference-architectures).
+
+Running components on Docker (including Docker Compose) with the same specs should be fine, as Docker is well known in terms of support.
+However, it is still an additional layer and may still add some support complexities, such as not being able to run `strace` easily in containers.
+
+### Unsupported designs
+
+While we endeavour to try and have a good range of support for GitLab environment designs, there are certain approaches we know definitively not to work, and as a result are not supported. Those approaches are detailed in the following sections.
+
+#### Stateful components in Kubernetes
+
+[Running stateful components in Kubernetes, such as Gitaly Cluster, is not supported](https://docs.gitlab.com/charts/installation/#configure-the-helm-chart-to-use-external-stateful-data).
+
+Gitaly Cluster is only supported to be run on VMs as Git itself doesn't match well with the Kubernetes design and attempting to run it can lead to significant and complex issues.
+[Refer to epic 6127 for more information](https://gitlab.com/groups/gitlab-org/-/epics/6127).
+
+This also applies to other third-party stateful components such as Postgres and Redis, but you can explore other third-party solutions for those components if desired such as supported Cloud Provider services unless called out specifically as unsupported.
+
+#### Autoscaling of stateful nodes
+
+As a general guidance, only _stateless_ components of GitLab can be run in Autoscaling groups, namely GitLab Rails
+and Sidekiq.
+
+Other components that have state, such as Gitaly, are not supported in this fashion (for more information, see [issue 2997](https://gitlab.com/gitlab-org/gitaly/-/issues/2997)).
+
+This also applies to other third-party stateful components such as Postgres and Redis, but you can explore other third-party solutions for those components if desired such as supported Cloud Provider services unless called out specifically as unsupported.
+
+#### Spreading one environment over multiple data centers
+
+Deploying one GitLab environment over multiple data centers is not supported due to potential split brain edge cases
+if a data center were to go down. For example, several components of the GitLab setup, namely Consul, Redis Sentinel and Praefect require an odd number quorum to function correctly and splitting over multiple data centers can impact this notably.
+
+For deploying GitLab over multiple data centers or regions we offer [GitLab Geo](https://about.gitlab.com/solutions/geo/) as a comprehensive solution.
 
 ## Validation and test results
 
@@ -427,34 +476,34 @@ table.test-coverage th {
     <tr>
     <th scope="row">1k</th>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/1k">Weekly</a></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td style="background-color:lightgrey"></td>
+    <td style="background-color:lightgrey"></td>
+    <td style="background-color:lightgrey"></td>
+    <td style="background-color:lightgrey"></td>
   </tr>
   <tr>
     <th scope="row">2k</th>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/2k">Weekly</a></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td style="background-color:lightgrey"></td>
+    <td style="background-color:lightgrey"></td>
+    <td style="background-color:lightgrey"></td>
+    <td><i>Planned</i></td>
   </tr>
   <tr>
     <th scope="row">3k</th>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k">Weekly</a></td>
-    <td></td>
-    <td></td>
+    <td style="background-color:lightgrey"></td>
+    <td style="background-color:lightgrey"></td>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k_hybrid_aws_services">Weekly</a></td>
-    <td></td>
+    <td style="background-color:lightgrey"></td>
   </tr>
   <tr>
     <th scope="row">5k</th>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/5k">Weekly</a></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td style="background-color:lightgrey"></td>
+    <td style="background-color:lightgrey"></td>
+    <td style="background-color:lightgrey"></td>
+    <td style="background-color:lightgrey"></td>
   </tr>
   <tr>
     <th scope="row">10k</th>
@@ -462,29 +511,33 @@ table.test-coverage th {
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k_hybrid">Weekly</a></td>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k_aws">Weekly</a></td>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k_hybrid_aws_services">Weekly</a></td>
-    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/10k">Ad-Hoc</a></td>
+    <td style="background-color:lightgrey"></td>
   </tr>
   <tr>
     <th scope="row">25k</th>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/25k">Weekly</a></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/25k">Ad-Hoc</a></td>
+    <td style="background-color:lightgrey"></td>
+    <td style="background-color:lightgrey"></td>
+    <td style="background-color:lightgrey"></td>
+    <td style="background-color:lightgrey"></td>
   </tr>
   <tr>
     <th scope="row">50k</th>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/50k">Weekly</a></td>
-    <td></td>
-    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Past-Results/50k">Ad-Hoc (inc Cloud Services)</a></td>
-    <td></td>
-    <td></td>
+    <td style="background-color:lightgrey"></td>
+    <td style="background-color:lightgrey"></td>
+    <td style="background-color:lightgrey"></td>
+    <td style="background-color:lightgrey"></td>
   </tr>
 </table>
 
 ## Cost to run
 
-The following table details the cost to run the different reference architectures across GCP, AWS, and Azure. Bare-metal costs are not included here as it varies widely depending on each customer configuration.
+As a starting point, the following table details initial costs for the different reference architectures across GCP, AWS, and Azure via Omnibus.
+
+NOTE:
+Due to the nature of Cloud Native Hybrid, it's not possible to give a static cost calculation.
+Bare-metal costs are also not included here as it varies widely depending on each configuration.
 
 <table class="test-coverage">
   <col>
@@ -492,91 +545,93 @@ The following table details the cost to run the different reference architecture
   <colgroup span="2"></colgroup>
   <tr>
     <th rowspan="2">Reference<br/>Architecture</th>
-    <th style="text-align: center" colspan="2" scope="colgroup">GCP</th>
-    <th style="text-align: center" colspan="2" scope="colgroup">AWS</th>
-    <th style="text-align: center" colspan="2" scope="colgroup">Azure</th>
+    <th style="text-align: center" scope="colgroup">GCP</th>
+    <th style="text-align: center" scope="colgroup">AWS</th>
+    <th style="text-align: center" scope="colgroup">Azure</th>
   </tr>
   <tr>
     <th scope="col">Omnibus</th>
-    <th scope="col">Cloud Native Hybrid</th>
     <th scope="col">Omnibus</th>
-    <th scope="col">Cloud Native Hybrid</th>
     <th scope="col">Omnibus</th>
   </tr>
     <tr>
     <th scope="row">1k</th>
     <td><a href="https://cloud.google.com/products/calculator#id=a6d6a94a-c7dc-4c22-85c4-7c5747f272ed">Calculated cost</a></td>
-    <td></td>
     <td><a href="https://calculator.aws/#/estimate?id=b51f178f4403b69a63f6eb33ea425f82de3bf249">Calculated cost</a></td>
-    <td></td>
     <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=1adf30bef7e34ceba9efa97c4470417b">Calculated cost</a></td>
   </tr>
   <tr>
     <th scope="row">2k</th>
     <td><a href="https://cloud.google.com/products/calculator#id=0d3aff1f-ea3d-43f9-aa59-df49d27c35ca">Calculated cost</a></td>
-    <td></td>
     <td><a href="https://calculator.aws/#/estimate?id=3b3e3b81953737132789591d3a5179521943f1c0">Calculated cost</a></td>
-    <td></td>
     <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=25f66c35ba454bb98fb4034a8a50bb8c">Calculated cost</a></td>
   </tr>
   <tr>
     <th scope="row">3k</th>
     <td><a href="https://cloud.google.com/products/calculator/#id=15fc2bd9-5b1c-479d-bc46-d5ce096b8107">Calculated cost</a></td>
-    <td></td>
     <td><a href="https://calculator.aws/#/estimate?id=7e94eb8712f6845fdeb05e61f459598a91dac3cb">Calculated cost</a></td>
-    <td></td>
     <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=24ac11fd947a4985ae9c9a5142649ad3">Calculated cost</a></td>
   </tr>
   <tr>
     <th scope="row">5k</th>
     <td><a href="https://cloud.google.com/products/calculator/#id=9a798136-53f2-4c35-be43-8e1e975a6663">Calculated cost</a></td>
-    <td></td>
     <td><a href="https://calculator.aws/#/estimate?id=ad4c9db623a214c92d780cd9dff33f444d62cf02">Calculated cost</a></td>
-    <td></td>
     <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=bcf23017ddfd40649fdc885cacd08d0c">Calculated cost</a></td>
   </tr>
   <tr>
     <th scope="row">10k</th>
     <td><a href="https://cloud.google.com/products/calculator#id=cbe61840-31a1-487f-88fa-631251c2fde5">Calculated cost</a></td>
-    <td></td>
     <td><a href="https://calculator.aws/#/estimate?id=3e2970f919915a6337acea76a9f07655a1ecda4a">Calculated cost</a></td>
-    <td></td>
     <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=5748068be4864af6a34efb1cde685fa1">Calculated cost</a></td>
   </tr>
   <tr>
     <th scope="row">25k</th>
     <td><a href="https://cloud.google.com/products/calculator#id=b4b8b587-508a-4433-adc8-dc506bbe924f">Calculated cost</a></td>
-    <td></td>
     <td><a href="https://calculator.aws/#/estimate?id=32acaeaa93366110cd5fbf98a66a8a141db7adcb">Calculated cost</a></td>
-    <td></td>
     <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=24f878f20ee64b5cb64de459d34c8128">Calculate cost</a></td>
   </tr>
   <tr>
     <th scope="row">50k</th>
     <td><a href="https://cloud.google.com/products/calculator/#id=48b4d817-d6cd-44b8-b069-0ba9a5d123ea">Calculated cost</a></td>
-    <td></td>
     <td><a href="https://calculator.aws/#/estimate?id=5a0bba1338e3577d627ec97833dbc80ac9615562">Calculated cost</a></td>
-    <td></td>
     <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=4dd065eea2194d70b44d6d897e81f460">Calculated cost</a></td>
   </tr>
 </table>
 
-## Deviating from the suggested reference architectures
+## Maintaining a Reference Architecture environment
 
-As a general guideline, the further away you move from the Reference Architectures,
-the harder it is to get support for it. With any deviation, you're introducing
-a layer of complexity that adds challenges to finding out where potential
-issues might lie.
+Maintaining a Reference Architecture environment is generally the same as any other GitLab environment is generally covered in other sections of this documentation.
 
-The reference architectures use the official GitLab Linux packages (Omnibus
-GitLab) or [Helm Charts](https://docs.gitlab.com/charts/) to install and configure the various components. The components are
-installed on separate machines (virtualized or bare metal), with machine hardware
-requirements listed in the "Configuration" column and equivalent VM standard sizes listed
-in GCP/AWS/Azure columns of each [available reference architecture](#available-reference-architectures).
+In this section you'll find links to documentation for relevant areas as well as any specific Reference Architecture notes.
 
-Running components on Docker (including Compose) with the same specs should be fine, as Docker is well known in terms of support.
-However, it is still an additional layer and may still add some support complexities, such as not being able to run `strace` easily in containers.
+### Upgrades
 
-Other technologies, like [Docker swarm](https://docs.docker.com/engine/swarm/)
-are not officially supported, but can be implemented at your own risk. In that
-case, GitLab Support is not able to help you.
+Upgrades for a Reference Architecture environment is the same as any other GitLab environment.
+The main [Upgrade GitLab](../../update/index.md) section has detailed steps on how to approach this.
+
+[Zero-downtime upgrades](#zero-downtime-upgrades) are also available.
+
+NOTE:
+You should upgrade a Reference Architecture in the same order as you created it.
+
+### Scaling an environment
+
+Scaling a GitLab environment is designed to be as seamless as possible.
+
+In terms of the Reference Architectures, you would look to the next size and adjust accordingly.
+Most setups would only need vertical scaling, but there are some specific areas that can be adjusted depending on the setup:
+
+- If you're scaling from a non-HA environment to an HA environment, various components are recommended to be deployed in their HA forms:
+  - Redis to multi-node Redis w/ Redis Sentinel
+  - Postgres to multi-node Postgres w/ Consul + PgBouncer
+  - Gitaly to Gitaly Cluster w/ Praefect
+- From 10k users and higher, Redis is recommended to be split into multiple HA servers as it's single threaded.
+
+Conversely, if you have robust metrics in place that show the environment is over-provisioned you can apply the same process for
+scaling downloads. It's recommended to take an iterative approach when scaling downwards however to ensure there are no issues.
+
+### How to monitor your environment
+
+To monitor your GitLab environment, you can use the tools
+[bundled with GitLab](../monitoring/index.md), but it's also possible to use third-party
+options if desired.

@@ -39050,6 +39050,9 @@ msgstr ""
 msgid "SecurityOrchestration|Choose approver type"
 msgstr ""
 
+msgid "SecurityOrchestration|Choose specific role"
+msgstr ""
+
 msgid "SecurityOrchestration|Clear all"
 msgstr ""
 
@@ -39204,6 +39207,9 @@ msgid "SecurityOrchestration|Policy type"
 msgstr ""
 
 msgid "SecurityOrchestration|Require %{approvals} %{plural} from %{approvers} if any of the following occur:"
+msgstr ""
+
+msgid "SecurityOrchestration|Roles"
 msgstr ""
 
 msgid "SecurityOrchestration|Rule mode"

@@ -10,5 +10,9 @@ subscription issuableDatesUpdated($issuableId: IssuableID!) {
         }
       }
     }
+    ... on Issue {
+      id
+      dueDate
+    }
   }
 }

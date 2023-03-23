@@ -11,7 +11,12 @@ import SidebarInheritDate from '~/sidebar/components/date/sidebar_inherit_date.v
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import epicStartDateQuery from '~/sidebar/queries/epic_start_date.query.graphql';
 import issueDueDateQuery from '~/sidebar/queries/issue_due_date.query.graphql';
-import { issuableDueDateResponse, issuableStartDateResponse } from '../../mock_data';
+import issueDueDateSubscription from '~/graphql_shared/subscriptions/work_item_dates.subscription.graphql';
+import {
+  issuableDueDateResponse,
+  issuableStartDateResponse,
+  issueDueDateSubscriptionResponse,
+} from '../../mock_data';
 
 jest.mock('~/alert');
 
@@ -29,19 +34,25 @@ describe('Sidebar date Widget', () => {
   const createComponent = ({
     dueDateQueryHandler = jest.fn().mockResolvedValue(issuableDueDateResponse()),
     startDateQueryHandler = jest.fn().mockResolvedValue(issuableStartDateResponse()),
+    dueDateSubscriptionHandler = jest.fn().mockResolvedValue(issueDueDateSubscriptionResponse()),
     canInherit = false,
     dateType = undefined,
     issuableType = 'issue',
+    realTimeIssueDueDate = true,
   } = {}) => {
     fakeApollo = createMockApollo([
       [issueDueDateQuery, dueDateQueryHandler],
       [epicStartDateQuery, startDateQueryHandler],
+      [issueDueDateSubscription, dueDateSubscriptionHandler],
     ]);
 
     wrapper = shallowMount(SidebarDateWidget, {
       apolloProvider: fakeApollo,
       provide: {
         canUpdate: true,
+        glFeatures: {
+          realTimeIssueDueDate,
+        },
       },
       propsData: {
         fullPath: 'group/project',
@@ -133,6 +144,32 @@ describe('Sidebar date Widget', () => {
 
     it('renders GlDatePicker', async () => {
       expect(findDatePicker().exists()).toBe(true);
+    });
+  });
+
+  describe('real time issue due date feature', () => {
+    describe('when :real_time_issue_due_date feature is enabled', () => {
+      it('should call the subscription', async () => {
+        const dueDateSubscriptionHandler = jest
+          .fn()
+          .mockResolvedValue(issueDueDateSubscriptionResponse());
+        createComponent({ realTimeIssueDueDate: true, dueDateSubscriptionHandler });
+        await waitForPromises();
+
+        expect(dueDateSubscriptionHandler).toHaveBeenCalled();
+      });
+    });
+
+    describe('when :real_time_issue_due_date feature is disabled', () => {
+      it('should not call the subscription', async () => {
+        const dueDateSubscriptionHandler = jest
+          .fn()
+          .mockResolvedValue(issueDueDateSubscriptionResponse());
+        createComponent({ realTimeIssueDueDate: false, dueDateSubscriptionHandler });
+        await waitForPromises();
+
+        expect(dueDateSubscriptionHandler).not.toHaveBeenCalled();
+      });
     });
   });
 

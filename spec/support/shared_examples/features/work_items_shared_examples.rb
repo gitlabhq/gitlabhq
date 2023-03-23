@@ -30,7 +30,7 @@ RSpec.shared_examples 'work items status' do
   end
 end
 
-RSpec.shared_examples 'work items comments' do
+RSpec.shared_examples 'work items comments' do |type|
   let(:form_selector) { '[data-testid="work-item-add-comment"]' }
 
   it 'successfully creates and shows comments' do
@@ -42,6 +42,58 @@ RSpec.shared_examples 'work items comments' do
     wait_for_requests
 
     expect(page).to have_content "Test comment"
+  end
+
+  context 'when using quick actions' do
+    it 'autocompletes quick actions common to all work item types', :aggregate_failures do
+      click_reply_and_enter_slash
+
+      page.within('#at-view-commands') do
+        expect(page).to have_text("/title")
+        expect(page).to have_text("/shrug")
+        expect(page).to have_text("/tableflip")
+        expect(page).to have_text("/close")
+        expect(page).to have_text("/cc")
+      end
+    end
+
+    context 'when a widget is enabled' do
+      before do
+        WorkItems::Type.default_by_type(type).widget_definitions
+          .find_by_widget_type(:assignees).update!(disabled: false)
+      end
+
+      it 'autocompletes quick action for the enabled widget' do
+        click_reply_and_enter_slash
+
+        page.within('#at-view-commands') do
+          expect(page).to have_text("/assign")
+        end
+      end
+    end
+
+    context 'when a widget is disabled' do
+      before do
+        WorkItems::Type.default_by_type(type).widget_definitions
+          .find_by_widget_type(:assignees).update!(disabled: true)
+      end
+
+      it 'does not autocomplete quick action for the disabled widget' do
+        click_reply_and_enter_slash
+
+        page.within('#at-view-commands') do
+          expect(page).not_to have_text("/assign")
+        end
+      end
+    end
+
+    def click_reply_and_enter_slash
+      click_button 'Add a reply'
+
+      find(form_selector).fill_in(with: "/")
+
+      wait_for_all_requests
+    end
   end
 end
 
@@ -98,7 +150,7 @@ RSpec.shared_examples 'work items description' do
 
     wait_for_requests
 
-    page.within('.atwho-container') do
+    page.within('#at-view-commands') do
       expect(page).to have_text("title")
       expect(page).to have_text("shrug")
       expect(page).to have_text("tableflip")

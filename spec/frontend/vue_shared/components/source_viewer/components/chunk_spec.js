@@ -11,7 +11,6 @@ describe('Chunk component', () => {
   const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(Chunk, {
       propsData: { ...CHUNK_1, ...props },
-      provide: { glFeatures: { fileLineBlame: true } },
     });
   };
 

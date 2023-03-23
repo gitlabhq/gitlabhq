@@ -54,6 +54,15 @@ export default {
       required: false,
       default: false,
     },
+    markdownPreviewPath: {
+      type: String,
+      required: true,
+    },
+    autocompleteDataSources: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -142,6 +151,8 @@ export default {
     :has-replies="hasReplies"
     :work-item-type="workItemType"
     :is-modal="isModal"
+    :autocomplete-data-sources="autocompleteDataSources"
+    :markdown-preview-path="markdownPreviewPath"
     :class="{ 'gl-mb-4': hasReplies }"
     @startReplying="showReplyForm"
     @deleteNote="$emit('deleteNote', note)"
@@ -167,6 +178,8 @@ export default {
                   :work-item-type="workItemType"
                   :is-modal="isModal"
                   :class="{ 'gl-mb-4': hasReplies }"
+                  :autocomplete-data-sources="autocompleteDataSources"
+                  :markdown-preview-path="markdownPreviewPath"
                   @startReplying="showReplyForm"
                   @deleteNote="$emit('deleteNote', note)"
                   @error="$emit('error', $event)"
@@ -186,6 +199,8 @@ export default {
                         :note="reply"
                         :work-item-type="workItemType"
                         :is-modal="isModal"
+                        :autocomplete-data-sources="autocompleteDataSources"
+                        :markdown-preview-path="markdownPreviewPath"
                         @startReplying="showReplyForm"
                         @deleteNote="$emit('deleteNote', reply)"
                         @error="$emit('error', $event)"
@@ -204,6 +219,8 @@ export default {
                       :work-item-type="workItemType"
                       :sort-order="sortOrder"
                       :add-padding="true"
+                      :autocomplete-data-sources="autocompleteDataSources"
+                      :markdown-preview-path="markdownPreviewPath"
                       @cancelEditing="hideReplyForm"
                       @replied="onReplied"
                       @replying="onReplying"

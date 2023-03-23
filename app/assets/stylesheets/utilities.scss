@@ -71,56 +71,9 @@
 // https://gitlab.com/groups/gitlab-org/-/epics/2882
 .gl-h-200\! { height: px-to-rem($grid-size * 25) !important; }
 
-.gl-bg-purple-light { background-color: $purple-light; }
-
-// move this to GitLab UI once onboarding experiment is considered a success
-.gl-py-8 {
-  padding-top: $gl-spacing-scale-8;
-  padding-bottom: $gl-spacing-scale-8;
-}
-
-.gl-transition-property-stroke-opacity {
-  transition-property: stroke-opacity;
-}
-
-.gl-transition-property-stroke {
-  transition-property: stroke;
-}
-
-.gl-top-66vh {
-  top: 66vh;
-}
-
-.gl-shadow-x0-y0-b3-s1-blue-500 {
-  box-shadow: inset 0 0 3px $gl-border-size-1 $blue-500;
-}
-
 // This utility is used to force the z-index to match that of dropdown menu's
 .gl-z-dropdown-menu\! {
   z-index: $zindex-dropdown-menu !important;
-}
-
-.gl-flex-basis-quarter {
-  flex-basis: 25%;
-}
-
-// Will be moved to @gitlab/ui (without the !important) in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1462
-// We only need the bang (!) version until the non-bang version is added to
-// @gitlab/ui utitlities.scss. Once there, it will get loaded in the correct
-// order to properly override `.gl-mt-6` which is used for narrower screen
-// widths (currently that style gets added to the application.css stylesheet
-// after this one, so it takes precedence).
-.gl-md-mt-11\! {
-  @media (min-width: $breakpoint-md) {
-    margin-top: $gl-spacing-scale-11 !important;
-  }
-}
-
-// Same as above (also without the !important) but for overriding `.gl-pt-6`
-.gl-md-pt-11\! {
-  @media (min-width: $breakpoint-md) {
-    padding-top: $gl-spacing-scale-11 !important;
-  }
 }
 
 // This is used to help prevent issues with margin collapsing.
@@ -128,34 +81,6 @@
 .gl-force-block-formatting-context::after {
   content: '';
   display: flex;
-}
-
-.gl-sm-mr-3 {
-  @include media-breakpoint-up(sm) {
-    margin-right: $gl-spacing-scale-3;
-  }
-}
-
-.gl-xl-ml-3 {
-  @include media-breakpoint-up(lg) {
-    margin-left: $gl-spacing-scale-3;
-  }
-}
-
-.gl-mr-n2 {
-  margin-right: -$gl-spacing-scale-2;
-}
-
-.gl-w-grid-size-30 {
-  width: $grid-size * 30;
-}
-
-.gl-w-grid-size-40 {
-  width: $grid-size * 40;
-}
-
-.gl-max-w-50p {
-  max-width: 50%;
 }
 
 /**
@@ -181,59 +106,6 @@
   @include gl-focus($gl-border-size-1, $gray-900, true);
 }
 
-/*
-All of the following (up until the "End gitlab-ui#1709" comment) will be moved
-to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
-*/
-.gl-md-grid-template-columns-3 {
-  @include media-breakpoint-up(md) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.gl-lg-grid-template-columns-4 {
-  @include media-breakpoint-up(lg) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-.gl-max-w-48 {
-  max-width: $gl-spacing-scale-48;
-}
-
-.gl-max-w-75 {
-  max-width: $gl-spacing-scale-75;
-}
-
-.gl-md-pt-11 {
-  @include media-breakpoint-up(md) {
-    padding-top: $gl-spacing-scale-11 !important; // only need !important for now so that it overrides styles from @gitlab/ui which currently take precedence
-  }
-}
-
-.gl-md-mb-6 {
-  @include media-breakpoint-up(md) {
-    margin-bottom: $gl-spacing-scale-6 !important; // only need !important for now so that it overrides styles from @gitlab/ui which currently take precedence
-  }
-}
-
-.gl-md-mb-12 {
-  @include media-breakpoint-up(md) {
-    margin-bottom: $gl-spacing-scale-12 !important; // only need !important for now so that it overrides styles from @gitlab/ui which currently take precedence
-  }
-}
-
-.gl-mt-n5 {
-  margin-top: -$gl-spacing-scale-5;
-}
-
-// Utils below are very specific so cannot be part of GitLab UI
-.gl-md-mt-5 {
-  @include gl-media-breakpoint-up(md) {
-    margin-top: $gl-spacing-scale-5;
-  }
-}
-
 .gl-sm-mr-0\! {
   @include gl-media-breakpoint-down(md) {
     margin-right: 0 !important;
@@ -243,69 +115,5 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
 .gl-sm-mb-5 {
   @include gl-media-breakpoint-down(md) {
     margin-bottom: $gl-spacing-scale-5;
-  }
-}
-
-.gl-md-mb-3\! {
-  @include gl-media-breakpoint-up(md) {
-    margin-bottom: $gl-spacing-scale-3 !important;
-  }
-}
-
-.gl-font-xs {
-  font-size: px-to-rem(10px);
-}
-
-.gl-line-height-12 {
-  line-height: px-to-rem(12px);
-}
-
-.gl-letter-spacing-06em {
-  letter-spacing: 0.06em;
-}
-
-.gl-flex-flow-row-wrap {
-  flex-flow: row wrap;
-}
-
-.gl-isolate {
-  isolation: isolate;
-}
-
-.gl-text-transform-uppercase {
-  text-transform: uppercase;
-}
-
-/*
- * The below style will be moved to @gitlab/ui by
- * https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2177
- */
-.gl-gap-2 {
-  gap: $gl-spacing-scale-2;
-}
-
-.gl-bg-t-gray-a-08 {
-  background-color: $t-gray-a-08;
-}
-
-.gl-hover-bg-t-gray-a-08:hover {
-  background-color: $t-gray-a-08;
-}
-
-.gl-inset-border-1-gray-a-08 {
-  box-shadow: inset 0 0 0 $gl-border-size-1 $t-gray-a-08;
-}
-
-.gl-line-height-1 {
-  line-height: 1;
-}
-
-.gl-focus:focus {
-  @include gl-focus;
-}
-
-.gl-md-justify-content-space-between {
-  @include gl-media-breakpoint-up(md) {
-    justify-content: space-between;
   }
 }

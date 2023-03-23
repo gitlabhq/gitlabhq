@@ -35,6 +35,7 @@ import {
   IS_SEARCHING,
   IS_FOCUSED,
   IS_NOT_FOCUSED,
+  DROPDOWN_CLOSE_TIMEOUT,
 } from '../constants';
 import HeaderSearchAutocompleteItems from './header_search_autocomplete_items.vue';
 import HeaderSearchDefaultItems from './header_search_default_items.vue';
@@ -166,13 +167,17 @@ export default {
       });
     },
     collapseAndCloseSearchBar() {
-      this.isFocused = false;
-      this.$emit('collapseSearchBar');
+      // without timeout dropdown closes
+      // before click event is dispatched
+      setTimeout(() => {
+        this.isFocused = false;
+        this.$emit('collapseSearchBar');
 
-      Tracking.event(undefined, 'blur_input', {
-        label: 'global_search',
-        property: 'navigation_top',
-      });
+        Tracking.event(undefined, 'blur_input', {
+          label: 'global_search',
+          property: 'navigation_top',
+        });
+      }, DROPDOWN_CLOSE_TIMEOUT);
     },
     submitSearch() {
       if (this.search?.length <= SEARCH_SHORTCUTS_MIN_CHARACTERS && this.currentFocusIndex < 0) {

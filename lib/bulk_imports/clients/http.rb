@@ -165,8 +165,6 @@ module BulkImports
 
         raise ::BulkImports::NetworkError.new("Unsuccessful response #{response.code} from #{response.request.path.path}. Body: #{response.parsed_response}", response: response)
 
-      rescue Gitlab::HTTP::BlockedUrlError => e
-        raise e
       rescue *Gitlab::HTTP::HTTP_ERRORS => e
         raise ::BulkImports::NetworkError, e
       end

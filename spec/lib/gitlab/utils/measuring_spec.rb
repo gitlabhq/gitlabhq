@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Utils::Measuring do
       measurement.with_measuring { result }
     end
 
-    it 'measures and logs data', :aggregate_failure do
+    it 'measures and logs data', :aggregate_failures do
       expect(measurement).to receive(:with_measure_time).and_call_original
       expect(measurement).to receive(:with_count_queries).and_call_original
       expect(measurement).to receive(:with_gc_stats).and_call_original

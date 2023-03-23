@@ -121,7 +121,7 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService, feature_cate
             end.to change(work_item, :work_item_parent).from(parent_work_item).to(nil)
           end
 
-          it 'returns success status if parent not present', :aggregate_failure do
+          it 'returns success status if parent not present', :aggregate_failures do
             work_item.update!(work_item_parent: nil)
 
             expect(subject[:status]).to eq(:success)

@@ -42,6 +42,10 @@ module API
                 present []
               end
             end
+
+            def generate_metadata_service(packages)
+              ::Packages::Npm::GenerateMetadataService.new(params[:package_name], packages)
+            end
           end
 
           params do
@@ -73,7 +77,8 @@ module API
 
               not_found! if packages.empty?
 
-              present ::Packages::Npm::PackagePresenter.new(package_name, packages),
+              metadata = generate_metadata_service(packages).execute(only_dist_tags: true)
+              present ::Packages::Npm::PackagePresenter.new(metadata),
                       with: ::API::Entities::NpmPackageTag
             end
 
@@ -186,7 +191,7 @@ module API
 
               not_found!('Packages') if packages.empty?
 
-              present ::Packages::Npm::PackagePresenter.new(package_name, packages),
+              present ::Packages::Npm::PackagePresenter.new(generate_metadata_service(packages).execute),
                 with: ::API::Entities::NpmPackage
             end
           end

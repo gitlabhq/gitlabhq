@@ -70,7 +70,7 @@ export default {
       return {
         // Reset user agent styles on <button>
         'gl-appearance-none gl-border-0 gl-bg-transparent gl-text-left': this.isSection,
-        'gl-w-full gl-focus': this.isSection,
+        'gl-w-full gl-focus--focus': this.isSection,
         'gl-bg-t-gray-a-08': this.isActive,
         ...this.linkClasses,
       };

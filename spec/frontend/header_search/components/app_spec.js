@@ -20,6 +20,7 @@ import {
   IS_NOT_FOCUSED,
   IS_FOCUSED,
   SEARCH_SHORTCUTS_MIN_CHARACTERS,
+  DROPDOWN_CLOSE_TIMEOUT,
 } from '~/header_search/constants';
 import DropdownKeyboardNavigation from '~/vue_shared/components/dropdown_keyboard_navigation.vue';
 import { ENTER_KEY } from '~/lib/utils/keys';
@@ -42,6 +43,9 @@ jest.mock('~/lib/utils/url_utility', () => ({
 
 describe('HeaderSearchApp', () => {
   let wrapper;
+
+  jest.useFakeTimers();
+  jest.spyOn(global, 'setTimeout');
 
   const actionSpies = {
     setSearch: jest.fn(),
@@ -174,6 +178,7 @@ describe('HeaderSearchApp', () => {
 
         it(`should close the dropdown when press escape key`, async () => {
           findHeaderSearchInput().vm.$emit('keydown', new KeyboardEvent({ key: 27 }));
+          jest.runAllTimers();
           await nextTick();
           expect(findHeaderSearchDropdown().exists()).toBe(false);
           expect(wrapper.emitted().expandSearchBar.length).toBe(1);
@@ -349,12 +354,12 @@ describe('HeaderSearchApp', () => {
   });
 
   describe('events', () => {
-    beforeEach(() => {
-      window.gon.current_username = MOCK_USERNAME;
-      createComponent();
-    });
-
     describe('Header Search Input', () => {
+      beforeEach(() => {
+        window.gon.current_username = MOCK_USERNAME;
+        createComponent();
+      });
+
       describe('when dropdown is closed', () => {
         let trackingSpy;
 
@@ -379,6 +384,7 @@ describe('HeaderSearchApp', () => {
           expect(findHeaderSearchDropdown().exists()).toBe(false);
 
           findHeaderSearchInput().vm.$emit('focusout');
+          jest.runAllTimers();
           await nextTick();
 
           expect(findHeaderSearchDropdown().exists()).toBe(false);
@@ -425,6 +431,21 @@ describe('HeaderSearchApp', () => {
             expect(actionSpies.clearAutocomplete).toHaveBeenCalled();
           });
         });
+      });
+    });
+
+    describe('onFocusout dropdown', () => {
+      beforeEach(() => {
+        window.gon.current_username = MOCK_USERNAME;
+        createComponent({ search: 'tes' }, {});
+        findHeaderSearchInput().vm.$emit('focusin');
+      });
+
+      it('closes with timeout so click event gets emited', () => {
+        findHeaderSearchInput().vm.$emit('focusout');
+
+        expect(setTimeout).toHaveBeenCalledTimes(1);
+        expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), DROPDOWN_CLOSE_TIMEOUT);
       });
     });
   });

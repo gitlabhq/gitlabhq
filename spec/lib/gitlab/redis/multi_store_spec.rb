@@ -333,7 +333,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
               stub_feature_flags(use_primary_store_as_default_for_test_store: false)
             end
 
-            it 'executes only on secondary redis store', :aggregate_errors do
+            it 'executes only on secondary redis store', :aggregate_failures do
               expect(secondary_store).to receive(name).with(*expected_args).and_call_original
               expect(primary_store).not_to receive(name).with(*expected_args).and_call_original
 
@@ -342,7 +342,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
           end
 
           context 'when using primary store as default' do
-            it 'executes only on primary redis store', :aggregate_errors do
+            it 'executes only on primary redis store', :aggregate_failures do
               expect(primary_store).to receive(name).with(*expected_args).and_call_original
               expect(secondary_store).not_to receive(name).with(*expected_args).and_call_original
 
@@ -437,7 +437,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   end
 
   RSpec.shared_examples_for 'verify that store contains values' do |store|
-    it "#{store} redis store contains correct values", :aggregate_errors do
+    it "#{store} redis store contains correct values", :aggregate_failures do
       subject
 
       redis_store = multi_store.send(store)
@@ -530,7 +530,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
         end
 
         context 'when executing on primary instance is successful' do
-          it 'executes on both primary and secondary redis store', :aggregate_errors do
+          it 'executes on both primary and secondary redis store', :aggregate_failures do
             expect(primary_store).to receive(name).with(*expected_args).and_call_original
             expect(secondary_store).to receive(name).with(*expected_args).and_call_original
 
@@ -551,7 +551,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
               stub_feature_flags(use_primary_store_as_default_for_test_store: false)
             end
 
-            it 'executes only on secondary redis store', :aggregate_errors do
+            it 'executes only on secondary redis store', :aggregate_failures do
               expect(secondary_store).to receive(name).with(*expected_args).and_call_original
               expect(primary_store).not_to receive(name).with(*expected_args).and_call_original
 
@@ -560,7 +560,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
           end
 
           context 'when using primary store as default' do
-            it 'executes only on primary redis store', :aggregate_errors do
+            it 'executes only on primary redis store', :aggregate_failures do
               expect(primary_store).to receive(name).with(*expected_args).and_call_original
               expect(secondary_store).not_to receive(name).with(*expected_args).and_call_original
 
@@ -575,7 +575,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
             allow(Gitlab::ErrorTracking).to receive(:log_exception)
           end
 
-          it 'logs the exception and execute on secondary instance', :aggregate_errors do
+          it 'logs the exception and execute on secondary instance', :aggregate_failures do
             expect(Gitlab::ErrorTracking).to receive(:log_exception).with(an_instance_of(StandardError),
               hash_including(:multi_store_error_message, command_name: name, instance_name: instance_name))
             expect(secondary_store).to receive(name).with(*expected_args).and_call_original
@@ -593,7 +593,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
             end
           end
 
-          it 'is executed only 1 time on each instance', :aggregate_errors do
+          it 'is executed only 1 time on each instance', :aggregate_failures do
             expect(primary_store).to receive(:pipelined).and_call_original
             expect_next_instance_of(Redis::PipelinedConnection) do |pipeline|
               expect(pipeline).to receive(name).with(*expected_args).once.and_call_original
@@ -645,7 +645,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       end
 
       context 'when executing on primary instance is successful' do
-        it 'executes on both primary and secondary redis store', :aggregate_errors do
+        it 'executes on both primary and secondary redis store', :aggregate_failures do
           expect(primary_store).to receive(name).and_call_original
           expect(secondary_store).to receive(name).and_call_original
 
@@ -662,7 +662,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
           allow(Gitlab::ErrorTracking).to receive(:log_exception)
         end
 
-        it 'logs the exception and execute on secondary instance', :aggregate_errors do
+        it 'logs the exception and execute on secondary instance', :aggregate_failures do
           expect(Gitlab::ErrorTracking).to receive(:log_exception).with(an_instance_of(StandardError),
             hash_including(:multi_store_error_message, command_name: name))
           expect(secondary_store).to receive(name).and_call_original
@@ -760,7 +760,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
             stub_feature_flags(use_primary_store_as_default_for_test_store: false)
           end
 
-          it 'executes on secondary store', :aggregate_errors do
+          it 'executes on secondary store', :aggregate_failures do
             expect(primary_store).not_to receive(:send).and_call_original
             expect(secondary_store).to receive(:send).and_call_original
 
@@ -769,7 +769,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
         end
 
         context 'when using primary store as default' do
-          it 'executes on primary store', :aggregate_errors do
+          it 'executes on primary store', :aggregate_failures do
             expect(secondary_store).not_to receive(:send).and_call_original
             expect(primary_store).to receive(:send).and_call_original
 
@@ -930,7 +930,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
           subject
         end
 
-        it 'fallback and executes only on the secondary store', :aggregate_errors do
+        it 'fallback and executes only on the secondary store', :aggregate_failures do
           expect(primary_store).to receive(:command).and_call_original
           expect(secondary_store).not_to receive(:command)
 
@@ -955,7 +955,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       end
 
       context 'with feature flag :use_primary_store_as_default_for_test_store is enabled' do
-        it 'fallback and executes only on the secondary store', :aggregate_errors do
+        it 'fallback and executes only on the secondary store', :aggregate_failures do
           expect(primary_store).to receive(:command).and_call_original
           expect(secondary_store).not_to receive(:command)
 
@@ -968,7 +968,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
           stub_feature_flags(use_primary_store_as_default_for_test_store: false)
         end
 
-        it 'fallback and executes only on the secondary store', :aggregate_errors do
+        it 'fallback and executes only on the secondary store', :aggregate_failures do
           expect(secondary_store).to receive(:command).and_call_original
           expect(primary_store).not_to receive(:command)
 
@@ -981,7 +981,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
           multi_store.pipelined(&:command)
         end
 
-        it 'is executed only 1 time on each instance', :aggregate_errors do
+        it 'is executed only 1 time on each instance', :aggregate_failures do
           expect(primary_store).to receive(:pipelined).once.and_call_original
           expect(secondary_store).to receive(:pipelined).once.and_call_original
 

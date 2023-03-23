@@ -44,7 +44,7 @@ RSpec.describe CronjobQueue, feature_category: :shared do
     expect(worker.sidekiq_options['retry']).to eq(false)
   end
 
-  it 'automatically clears project, user and namespace from the context', :aggregate_failues do
+  it 'automatically clears project, user and namespace from the context', :aggregate_failures do
     worker_context = worker.get_worker_context.to_lazy_hash.transform_values { |v| v.try(:call) }
 
     expect(worker_context[:user]).to be_nil

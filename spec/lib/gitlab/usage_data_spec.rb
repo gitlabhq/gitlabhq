@@ -1067,7 +1067,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       expect(result.duration).to be_an(Float)
     end
 
-    it 'records error and returns nil', :aggregated_errors do
+    it 'records error and returns nil', :aggregate_failures do
       allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
 
       result = described_class.with_metadata { raise }

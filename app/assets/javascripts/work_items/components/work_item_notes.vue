@@ -14,7 +14,11 @@ import {
   WORK_ITEM_NOTES_FILTER_ONLY_HISTORY,
 } from '~/work_items/constants';
 import { ASC, DESC } from '~/notes/constants';
-import { getWorkItemNotesQuery } from '~/work_items/utils';
+import {
+  getWorkItemNotesQuery,
+  autocompleteDataSources,
+  markdownPreviewPath,
+} from '~/work_items/utils';
 import {
   updateCacheAfterCreatingNote,
   updateCacheAfterDeletingNote,
@@ -45,6 +49,10 @@ export default {
   },
   props: {
     workItemId: {
+      type: String,
+      required: true,
+    },
+    workItemIid: {
       type: String,
       required: true,
     },
@@ -102,6 +110,12 @@ export default {
     formAtTop() {
       return this.sortOrder === DESC;
     },
+    markdownPreviewPath() {
+      return markdownPreviewPath(this.fullPath, this.workItemIid);
+    },
+    autocompleteDataSources() {
+      return autocompleteDataSources(this.fullPath, this.workItemIid);
+    },
     workItemCommentFormProps() {
       return {
         queryVariables: this.queryVariables,
@@ -110,6 +124,8 @@ export default {
         fetchByIid: this.fetchByIid,
         workItemType: this.workItemType,
         sortOrder: this.sortOrder,
+        markdownPreviewPath: this.markdownPreviewPath,
+        autocompleteDataSources: this.autocompleteDataSources,
       };
     },
     notesArray() {
@@ -357,6 +373,8 @@ export default {
                 :fetch-by-iid="fetchByIid"
                 :work-item-type="workItemType"
                 :is-modal="isModal"
+                :autocomplete-data-sources="autocompleteDataSources"
+                :markdown-preview-path="markdownPreviewPath"
                 @deleteNote="showDeleteNoteModal($event, discussion)"
                 @error="$emit('error', $event)"
               />

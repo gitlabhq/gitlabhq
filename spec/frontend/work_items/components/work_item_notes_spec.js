@@ -18,6 +18,7 @@ import workItemNoteUpdatedSubscription from '~/work_items/graphql/notes/work_ite
 import workItemNoteDeletedSubscription from '~/work_items/graphql/notes/work_item_note_deleted.subscription.graphql';
 import { DEFAULT_PAGE_SIZE_NOTES, WIDGET_TYPE_NOTES } from '~/work_items/constants';
 import { ASC, DESC } from '~/notes/constants';
+import { autocompleteDataSources, markdownPreviewPath } from '~/work_items/utils';
 import {
   mockWorkItemNotesResponse,
   workItemQueryResponse,
@@ -30,6 +31,7 @@ import {
 } from '../mock_data';
 
 const mockWorkItemId = workItemQueryResponse.data.workItem.id;
+const mockWorkItemIid = workItemQueryResponse.data.workItem.iid;
 const mockNotesWidgetResponse = mockWorkItemNotesResponse.data.workItem.widgets.find(
   (widget) => widget.type === WIDGET_TYPE_NOTES,
 );
@@ -92,6 +94,7 @@ describe('WorkItemNotes component', () => {
   const createComponent = ({
     workItemId = mockWorkItemId,
     fetchByIid = false,
+    workItemIid = mockWorkItemIid,
     defaultWorkItemNotesQueryHandler = workItemNotesQueryHandler,
     deleteWINoteMutationHandler = deleteWorkItemNoteMutationSuccessHandler,
   } = {}) => {
@@ -106,6 +109,7 @@ describe('WorkItemNotes component', () => {
       ]),
       propsData: {
         workItemId,
+        workItemIid,
         queryVariables: {
           id: workItemId,
         },
@@ -258,9 +262,11 @@ describe('WorkItemNotes component', () => {
       const commentIndex = 0;
       const firstCommentNote = findWorkItemCommentNoteAtIndex(commentIndex);
 
-      expect(firstCommentNote.props('discussion')).toEqual(
-        mockDiscussions[commentIndex].notes.nodes,
-      );
+      expect(firstCommentNote.props()).toMatchObject({
+        discussion: mockDiscussions[commentIndex].notes.nodes,
+        autocompleteDataSources: autocompleteDataSources('test-path', mockWorkItemIid),
+        markdownPreviewPath: markdownPreviewPath('test-path', mockWorkItemIid),
+      });
     });
   });
 

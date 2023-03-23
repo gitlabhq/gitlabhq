@@ -132,7 +132,10 @@ threads. Some quick actions might not be available to all subscription tiers.
 
 ## Work items
 
-The following quick actions can be applied through the description field when editing work items.
+> Executing quick actions from comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391282) in GitLab 15.10.
+
+Work items in GitLab include [tasks](../tasks.md) and [OKRs](../okrs.md).
+The following quick actions can be applied through the description field when editing or commenting on work items.
 
 | Command                                                                                          | Task                  | Objective          | Key Result                   | Action
 |:-------------------------------------------------------------------------------------------------|:-----------------------|:-----------------------|:-----------------------|:-------|

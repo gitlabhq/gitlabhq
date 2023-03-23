@@ -41,6 +41,8 @@ describe('Work Item Discussion', () => {
         fetchByIid,
         fullPath,
         workItemType,
+        markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
+        autocompleteDataSources: {},
       },
     });
   };

@@ -5939,7 +5939,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/support_specs/helpers/stub_feature_flags_spec.rb'
     - 'spec/support_specs/helpers/stub_method_calls_spec.rb'
     - 'spec/support_specs/matchers/be_sorted_spec.rb'
-    - 'spec/support_specs/matchers/event_store_spec.rb'
     - 'spec/support_specs/matchers/exceed_query_limit_helpers_spec.rb'
     - 'spec/support_specs/time_travel_spec.rb'
     - 'spec/tasks/admin_mode_spec.rb'

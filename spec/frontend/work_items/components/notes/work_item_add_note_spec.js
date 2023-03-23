@@ -84,6 +84,8 @@ describe('WorkItemCommentForm', () => {
         queryVariables,
         fetchByIid,
         workItemType,
+        markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
+        autocompleteDataSources: {},
       },
       stubs: {
         WorkItemCommentLocked,

@@ -1723,7 +1723,7 @@ RSpec.describe API::Projects, feature_category: :projects do
       expect(json_response.map { |project| project['id'] }).to contain_exactly(private_project1.id)
     end
 
-    context 'and using an admin to search', :enable_admin_mode, :aggregate_errors do
+    context 'and using an admin to search', :enable_admin_mode, :aggregate_failures do
       it 'returns users projects when authenticated as admin' do
         private_project1 = create(:project, :private, name: 'private_project1', creator_id: user4.id, namespace: user4.namespace)
 

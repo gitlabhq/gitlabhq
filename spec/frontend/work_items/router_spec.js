@@ -13,7 +13,7 @@ import {
 } from 'jest/work_items/mock_data';
 import App from '~/work_items/components/app.vue';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
-import workItemDatesSubscription from '~/work_items/graphql/work_item_dates.subscription.graphql';
+import workItemDatesSubscription from '~/graphql_shared/subscriptions/work_item_dates.subscription.graphql';
 import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subscription.graphql';
 import workItemAssigneesSubscription from '~/work_items/graphql/work_item_assignees.subscription.graphql';
 import workItemLabelsSubscription from 'ee_else_ce/work_items/graphql/work_item_labels.subscription.graphql';

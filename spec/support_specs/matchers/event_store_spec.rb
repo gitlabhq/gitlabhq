@@ -5,7 +5,7 @@ require 'json_schemer'
 
 load File.expand_path('../../../spec/support/matchers/event_store.rb', __dir__)
 
-RSpec.describe 'event store matchers', :aggregate_errors do
+RSpec.describe 'event store matchers', feature_category: :shared do
   let(:event_type1) do
     Class.new(Gitlab::EventStore::Event) do
       def schema

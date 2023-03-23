@@ -61,6 +61,15 @@ export default {
       required: false,
       default: false,
     },
+    markdownPreviewPath: {
+      type: String,
+      required: true,
+    },
+    autocompleteDataSources: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -179,6 +188,8 @@ export default {
         :autosave-key="autosaveKey"
         :initial-value="note.body"
         :comment-button-text="__('Save comment')"
+        :autocomplete-data-sources="autocompleteDataSources"
+        :markdown-preview-path="markdownPreviewPath"
         @cancelEditing="isEditing = false"
         @submitForm="updateNote"
       />

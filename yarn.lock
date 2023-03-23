@@ -338,7 +338,7 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@babel/parser@^7.1.0", "@babel/parser@^7.14.7", "@babel/parser@^7.16.4", "@babel/parser@^7.16.8", "@babel/parser@^7.18.4", "@babel/parser@^7.18.10", "@babel/parser@^7.19.0":
+"@babel/parser@^7.1.0", "@babel/parser@^7.14.7", "@babel/parser@^7.16.4", "@babel/parser@^7.16.8", "@babel/parser@^7.18.10", "@babel/parser@^7.18.4", "@babel/parser@^7.19.0":
   version "7.21.2"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.21.2.tgz#dacafadfc6d7654c3051a66d6fe55b6cb2f2a0b3"
   integrity sha512-URpaIJQwEkEC2T9Kn+Ai6Xe/02iNaVCuT/PtoRz3GPVJVDpPd7mLo+VddTbhCRU9TXqW5mSrQfXZyi8kDKOVpQ==
@@ -1021,10 +1021,10 @@
   resolved "https://registry.yarnpkg.com/@csstools/selector-specificity/-/selector-specificity-2.0.1.tgz#b6b8d81780b9a9f6459f4bfe9226ac6aefaefe87"
   integrity sha512-aG20vknL4/YjQF9BSV7ts4EWm/yrjagAN7OWBNmlbEOUiu0llj4OGrFoOKK3g2vey4/p2omKCoHrWtPxSwV3HA==
 
-"@cubejs-client/core@^0.32.0":
-  version "0.32.0"
-  resolved "https://registry.yarnpkg.com/@cubejs-client/core/-/core-0.32.0.tgz#9018ea2e3658107adacbc188c0c1ebcc54ee9436"
-  integrity sha512-Jqpv2S/CQUN0TNgFiKzVR8JehDgQA+z19yQOM/3Z0UrE6llYXu6x5zlI7FldtuXwFaLO1gfRd4yHsjp/Mf39TA==
+"@cubejs-client/core@^0.32.12":
+  version "0.32.12"
+  resolved "https://registry.yarnpkg.com/@cubejs-client/core/-/core-0.32.12.tgz#31c124ba9c5fc5b297b649bf9bcf6c3ed971b6f8"
+  integrity sha512-jjoohWN0FDGuANHE67kV9Z+z9GJ46syvCrohSAkXkacaWooz+fYf64REbgPNxCwgHSn1TqbSWbDoPnIJ47SCXA==
   dependencies:
     "@babel/runtime" "^7.1.2"
     core-js "^3.6.5"
@@ -1034,12 +1034,12 @@
     url-search-params-polyfill "^7.0.0"
     uuid "^8.3.2"
 
-"@cubejs-client/vue@^0.32.0":
-  version "0.32.0"
-  resolved "https://registry.yarnpkg.com/@cubejs-client/vue/-/vue-0.32.0.tgz#06901d4d0fdeaf462e6374d5b973c8d5e4f26b37"
-  integrity sha512-i4Mp3zZiL+bdjdgcLj1JIKPq444pQem8ega0MUb8RBG6A4texip1HMLpXFBGcgdZ1XQ/a8MQTW8ytntMS8BE/A==
+"@cubejs-client/vue@^0.32.12":
+  version "0.32.12"
+  resolved "https://registry.yarnpkg.com/@cubejs-client/vue/-/vue-0.32.12.tgz#9fe98228f45d37c54508f461775293a00076c8a7"
+  integrity sha512-e9RULVF/eSa2CRQVz7ugbouCnsEynZjnAlMPp2+vENdhYTc7HeORTPZ8lf2uadBq9pT3evxwCWcoMAaqEQN+jQ==
   dependencies:
-    "@cubejs-client/core" "^0.32.0"
+    "@cubejs-client/core" "^0.32.12"
     core-js "^3.6.5"
     ramda "^0.27.2"
 
@@ -1122,15 +1122,15 @@
     stylelint-declaration-strict-value "1.8.0"
     stylelint-scss "4.2.0"
 
-"@gitlab/svgs@3.28.0":
-  version "3.28.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.28.0.tgz#e7f49c5d2144b3a4e8edbe366731f0a054d01ec5"
-  integrity sha512-H4m9jeZEByIp7k2U3aCgM+wNF4I681JEhpUtWsnxaa8vsX2K/maBD8/q7M2hXrTBLAeisGldN12pLfJRRZr/QQ==
+"@gitlab/svgs@3.30.0":
+  version "3.30.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.30.0.tgz#d49d7871ecebf65a71b3cc70afe1f1bd063fdb5d"
+  integrity sha512-XNXUhqpA03XlXWPTddFc+o6PfLDsc/DS7RMSwBW1WyeOwznjMVVVH1810TLbqcuk+ILcONtlUP3js3/gs/oHbQ==
 
-"@gitlab/ui@58.2.1":
-  version "58.2.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-58.2.1.tgz#5bd4889c2c6e32ba56a8766083c3d34b441e6288"
-  integrity sha512-4OmhjVZhIYL150pCZOK14dT8X9wJKkrVw8L4KlYCJ+iSoodoFt2s1h2eE0zQ4O0zZ1BMN++augb26bWnWo8cqQ==
+"@gitlab/ui@58.4.0":
+  version "58.4.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-58.4.0.tgz#103b2573b564c2c6ed6564de9c061abd5980a8aa"
+  integrity sha512-uBMo4kyda0SS9NaywdaEKFsg+ZfCE06NvP7MIuvMGVzvbNvcgjEE5tTR1flc9v/3qhVwilFJ7CGX/eqe2NEdJA==
   dependencies:
     "@popperjs/core" "^2.11.2"
     bootstrap-vue "2.23.1"
@@ -2461,6 +2461,15 @@
     "@vue/compiler-core" "3.2.47"
     "@vue/shared" "3.2.47"
 
+"@vue/compiler-sfc@2.7.14":
+  version "2.7.14"
+  resolved "https://registry.yarnpkg.com/@vue/compiler-sfc/-/compiler-sfc-2.7.14.tgz#3446fd2fbb670d709277fc3ffa88efc5e10284fd"
+  integrity sha512-aNmNHyLPsw+sVvlQFQ2/8sjNuLtK54TC6cuKnVzAY93ks4ZBrvwQSnkkIh7bsbNhum5hJBS00wSDipQ937f5DA==
+  dependencies:
+    "@babel/parser" "^7.18.4"
+    postcss "^8.4.14"
+    source-map "^0.6.1"
+
 "@vue/compiler-sfc@^3.2.47":
   version "3.2.47"
   resolved "https://registry.yarnpkg.com/@vue/compiler-sfc/-/compiler-sfc-3.2.47.tgz#1bdc36f6cdc1643f72e2c397eb1a398f5004ad3d"
@@ -2475,15 +2484,6 @@
     estree-walker "^2.0.2"
     magic-string "^0.25.7"
     postcss "^8.1.10"
-    source-map "^0.6.1"
-
-"@vue/compiler-sfc@2.7.14":
-  version "2.7.14"
-  resolved "https://registry.yarnpkg.com/@vue/compiler-sfc/-/compiler-sfc-2.7.14.tgz#3446fd2fbb670d709277fc3ffa88efc5e10284fd"
-  integrity sha512-aNmNHyLPsw+sVvlQFQ2/8sjNuLtK54TC6cuKnVzAY93ks4ZBrvwQSnkkIh7bsbNhum5hJBS00wSDipQ937f5DA==
-  dependencies:
-    "@babel/parser" "^7.18.4"
-    postcss "^8.4.14"
     source-map "^0.6.1"
 
 "@vue/compiler-ssr@3.2.47":
