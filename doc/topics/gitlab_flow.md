@@ -4,9 +4,37 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Introduction to GitLab Flow **(FREE)**
+# Introduction to Git workflows **(FREE)**
 
 With Git, you can use a variety of branching strategies and workflows.
+Having a structured workflow for collaboration in complex projects is
+crucial for several reasons:
+
+- **Code organization**: Keep the codebase organized, prevent
+  overlapping work, and ensure focused efforts towards a common goal.
+
+- **Version control**: Allow simultaneous work on different features
+  without conflicts, maintaining code stability.
+
+- **Code quality**: A code review and approval process helps maintain high
+  code quality and adherence to coding standards.
+
+- **Traceability and accountability**: Enable tracking of changes and their authors,
+  simplifying issue identification and responsibility assignment.
+
+- **Easier onboarding**: Help new team members quickly grasp the
+  development process, and start contributing effectively.
+
+- **Time and resource management**: Enable better planning, resource
+  allocation, and meeting deadlines, ensuring an efficient development
+  process.
+
+- **CI/CD**: Incorporate automated testing and deployment
+  processes, streamlining the release cycle and delivering high-quality
+  software consistently.
+
+A structured workflow promotes organization, efficiency, and code
+quality, leading to a more successful and streamlined development process.
 
 Because the default workflow is not specifically defined, many organizations
 end up with workflows that are too complicated, not clearly defined, or
@@ -14,12 +42,51 @@ not integrated with their issue tracking systems.
 
 Your organization can use GitLab with any workflow you choose.
 
-However, if you are looking for guidance on best practices, you can use
-the GitLab Flow. This workflow combines [feature-driven development](https://en.wikipedia.org/wiki/Feature-driven_development)
-and [feature branches](https://martinfowler.com/bliki/FeatureBranch.html) with issue tracking.
+## Workflow types
 
-While this workflow used at GitLab, you can choose whichever workflow
-suits your organization best.
+Here are some of the most common Git workflows.
+
+### Centralized workflow
+
+Best suited for small teams transitioning from a centralized version
+control system like SVN. All team members work on a single branch,
+usually `main`, and push their changes directly to the central
+repository.
+
+### Feature branch workflow
+
+Developers create separate branches for each feature or bugfix,
+keeping the 'main' branch stable. When a feature is complete, the
+developer submits a pull request or merge request to integrate the
+changes back into the `main` branch after a code review.
+
+### Forking workflow
+
+Commonly used in open-source projects, this workflow allows external
+contributors to work without direct access to the main repository.
+Developers create a fork (a personal copy) of the main repository,
+make changes in their fork, and then submit a pull request or merge
+request to have their changes integrated into the main repository.
+
+### Git flow workflow
+
+This workflow is best for projects with a structured release cycle.
+It introduces two long-lived branches: `main` for production-ready
+code and `develop` for integrating features. Additional branches like
+`feature`, `release`, and `hotfix` are used for specific purposes,
+ensuring a strict and organized development process.
+
+### GitLab/GitHub flow
+
+A simplified workflow primarily used for web development and
+continuous deployment. It combines aspects of the Feature branch
+workflow and the Git flow workflow. Developers create feature branches
+from `main`, and after the changes are complete, they are merged back
+into the `main` branch, which is then immediately deployed.
+
+Each of these Git workflows has its advantages and is suited to
+different project types and team structures. Below the most popular
+workflows are reviewed in more details.
 
 ## Git workflow
 
@@ -99,6 +166,16 @@ This flow is clean and straightforward, and many organizations have adopted it w
 Atlassian recommends [a similar strategy](https://www.atlassian.com/blog/git/simple-git-workflow-is-simple), although they rebase feature branches.
 Merging everything into the `main` branch and frequently deploying means you minimize the amount of unreleased code. This approach is in line with lean and continuous delivery best practices.
 However, this flow still leaves a lot of questions unanswered regarding deployments, environments, releases, and integrations with issues.
+
+## Introduction to GitLab Flow **(FREE)**
+
+However, if you are looking for guidance on best practices, you can use
+the GitLab Flow. This workflow combines [feature-driven development](https://en.wikipedia.org/wiki/Feature-driven_development)
+and [feature branches](https://martinfowler.com/bliki/FeatureBranch.html) with issue tracking.
+
+While this workflow used at GitLab, you can choose whichever workflow
+suits your organization best.
+
 With GitLab flow, we offer additional guidance for these questions.
 
 ## Production branch with GitLab flow
@@ -113,7 +190,8 @@ While this is possible in some cases, such as SaaS applications, there are some 
 
 In these cases, you can create a production branch that reflects the deployed code.
 You can deploy a new version by merging `main` into the `production` branch.
-While not shown in the graph below, the work on the `main` branch works just like in GitHub flow, i.e. with feature-branches being merged into `main`.
+While not shown in the graph below, the work on the `main` branch works just like in GitHub flow:
+with feature branches being merged into `main`.
 
 ```mermaid
 graph TD
@@ -255,7 +333,8 @@ In GitLab, each change to the codebase starts with an issue in the issue trackin
 If there is no issue yet, create the issue if the change requires more than an hour's work.
 In many organizations, raising an issue is part of the development process because they are used in sprint planning.
 The issue title should describe the desired state of the system.
-For example, the issue title "As an administrator, I want to remove users without receiving an error" is better than "Administrators can't remove users."
+For example, the issue title `As an administrator, I want to remove users without receiving an error`
+is better than "Administrators can't remove users."
 
 When you are ready to code, create a branch for the issue from the `main` branch.
 This branch is the place for any work related to this change.
@@ -267,7 +346,7 @@ When you are done or want to discuss the code, open a merge request.
 A merge request is an online place to discuss the change and review the code.
 
 If you open the merge request but do not assign it to anyone, it is a [draft merge request](../user/project/merge_requests/drafts.md).
-These are used to discuss the proposed implementation but are not ready for inclusion in the `main` branch yet.
+Drafts are used to discuss the proposed implementation but are not ready for inclusion in the `main` branch yet.
 Start the title of the merge request with `[Draft]`, `Draft:` or `(Draft)` to prevent it from being merged before it's ready.
 
 When you think the code is ready, assign the merge request to a reviewer.
@@ -356,7 +435,11 @@ Sometimes you can reuse recorded resolutions (`rerere`), but merging is better, 
 Atlassian has [a more thorough explanation of the tradeoffs between merging and rebasing](https://www.atlassian.com/blog/git/git-team-workflows-merge-or-rebase) on their blog.
 
 A good way to prevent creating many merge commits is to not frequently merge `main` into the feature branch.
-There are three reasons to merge in `main`: utilizing new code, resolving merge conflicts, and updating long-running branches.
+Three reasons to merge in `main`:
+
+1. Utilizing new code.
+1. Resolving merge conflicts.
+1. Updating long-running branches.
 
 If you need to use some code that was introduced in `main` after you created the feature branch, you can often solve this by just cherry-picking a commit.
 

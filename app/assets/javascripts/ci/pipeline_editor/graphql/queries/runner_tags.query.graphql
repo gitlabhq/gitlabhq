@@ -1,0 +1,8 @@
+query getRunnerTags {
+  runners {
+    nodes {
+      id
+      tagList
+    }
+  }
+}

@@ -1758,6 +1758,9 @@ msgstr ""
 msgid "A new personal access token has been created"
 msgstr ""
 
+msgid "A new personal access token, named %{code_start}%{token_name}%{code_end}, has been created."
+msgstr ""
+
 msgid "A new personal access token, named %{token_name}, has been created."
 msgstr ""
 

@@ -13,9 +13,9 @@ const defaultConfigHelpUrl =
 
 const provideData = {
   gitlabVersion: '14.8',
-  kasVersion: '14.8',
+  kasVersion: '14.8.0',
 };
-const propsData = {
+const defaultProps = {
   agents: clusterAgents,
 };
 
@@ -26,9 +26,6 @@ const DeleteAgentButtonStub = stubComponent(DeleteAgentButton, {
 const outdatedTitle = I18N_AGENT_TABLE.versionOutdatedTitle;
 const mismatchTitle = I18N_AGENT_TABLE.versionMismatchTitle;
 const mismatchOutdatedTitle = I18N_AGENT_TABLE.versionMismatchOutdatedTitle;
-const outdatedText = sprintf(I18N_AGENT_TABLE.versionOutdatedText, {
-  version: provideData.kasVersion,
-});
 const mismatchText = I18N_AGENT_TABLE.versionMismatchText;
 
 describe('AgentTable', () => {
@@ -43,123 +40,134 @@ describe('AgentTable', () => {
     wrapper.findAllByTestId('cluster-agent-configuration-link').at(at);
   const findDeleteAgentButton = () => wrapper.findAllComponents(DeleteAgentButton);
 
-  beforeEach(() => {
+  const createWrapper = ({ provide = provideData, propsData = defaultProps } = {}) => {
     wrapper = mountExtended(AgentTable, {
       propsData,
-      provide: provideData,
+      provide,
       stubs: {
         DeleteAgentButton: DeleteAgentButtonStub,
       },
     });
-  });
-
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
+  };
 
   describe('agent table', () => {
-    it.each`
-      agentName    | link          | lineNumber
-      ${'agent-1'} | ${'/agent-1'} | ${0}
-      ${'agent-2'} | ${'/agent-2'} | ${1}
-    `('displays agent link for $agentName', ({ agentName, link, lineNumber }) => {
-      expect(findAgentLink(lineNumber).text()).toBe(agentName);
-      expect(findAgentLink(lineNumber).attributes('href')).toBe(link);
+    describe('default', () => {
+      beforeEach(() => {
+        createWrapper();
+      });
+
+      it.each`
+        agentName    | link          | lineNumber
+        ${'agent-1'} | ${'/agent-1'} | ${0}
+        ${'agent-2'} | ${'/agent-2'} | ${1}
+      `('displays agent link for $agentName', ({ agentName, link, lineNumber }) => {
+        expect(findAgentLink(lineNumber).text()).toBe(agentName);
+        expect(findAgentLink(lineNumber).attributes('href')).toBe(link);
+      });
+
+      it.each`
+        status               | iconName            | lineNumber
+        ${'Never connected'} | ${'status-neutral'} | ${0}
+        ${'Connected'}       | ${'status-success'} | ${1}
+        ${'Not connected'}   | ${'status-alert'}   | ${2}
+      `(
+        'displays agent connection status as "$status" at line $lineNumber',
+        ({ status, iconName, lineNumber }) => {
+          expect(findStatusText(lineNumber).text()).toBe(status);
+          expect(findStatusIcon(lineNumber).props('name')).toBe(iconName);
+        },
+      );
+
+      it.each`
+        lastContact                                                  | lineNumber
+        ${'Never'}                                                   | ${0}
+        ${timeagoMixin.methods.timeFormatted(connectedTimeNow)}      | ${1}
+        ${timeagoMixin.methods.timeFormatted(connectedTimeInactive)} | ${2}
+      `(
+        'displays agent last contact time as "$lastContact" at line $lineNumber',
+        ({ lastContact, lineNumber }) => {
+          expect(findLastContactText(lineNumber).text()).toBe(lastContact);
+        },
+      );
+
+      it.each`
+        agentConfig                 | link                    | lineNumber
+        ${'.gitlab/agents/agent-1'} | ${'/agent/full/path'}   | ${0}
+        ${'Default configuration'}  | ${defaultConfigHelpUrl} | ${1}
+      `(
+        'displays config file path as "$agentPath" at line $lineNumber',
+        ({ agentConfig, link, lineNumber }) => {
+          const findLink = findConfiguration(lineNumber).findComponent(GlLink);
+
+          expect(findLink.attributes('href')).toBe(link);
+          expect(findConfiguration(lineNumber).text()).toBe(agentConfig);
+        },
+      );
+
+      it('displays actions menu for each agent', () => {
+        expect(findDeleteAgentButton()).toHaveLength(clusterAgents.length);
+      });
     });
 
-    it.each`
-      status               | iconName            | lineNumber
-      ${'Never connected'} | ${'status-neutral'} | ${0}
-      ${'Connected'}       | ${'status-success'} | ${1}
-      ${'Not connected'}   | ${'status-alert'}   | ${2}
-    `(
-      'displays agent connection status as "$status" at line $lineNumber',
-      ({ status, iconName, lineNumber }) => {
-        expect(findStatusText(lineNumber).text()).toBe(status);
-        expect(findStatusIcon(lineNumber).props('name')).toBe(iconName);
-      },
-    );
-
-    it.each`
-      lastContact                                                  | lineNumber
-      ${'Never'}                                                   | ${0}
-      ${timeagoMixin.methods.timeFormatted(connectedTimeNow)}      | ${1}
-      ${timeagoMixin.methods.timeFormatted(connectedTimeInactive)} | ${2}
-    `(
-      'displays agent last contact time as "$lastContact" at line $lineNumber',
-      ({ lastContact, lineNumber }) => {
-        expect(findLastContactText(lineNumber).text()).toBe(lastContact);
-      },
-    );
-
     describe.each`
-      agent        | version   | podsNumber | versionMismatch | versionOutdated | title                    | texts                           | lineNumber
-      ${'agent-1'} | ${''}     | ${1}       | ${false}        | ${false}        | ${''}                    | ${''}                           | ${0}
-      ${'agent-2'} | ${'14.8'} | ${2}       | ${false}        | ${false}        | ${''}                    | ${''}                           | ${1}
-      ${'agent-3'} | ${'14.5'} | ${1}       | ${false}        | ${true}         | ${outdatedTitle}         | ${[outdatedText]}               | ${2}
-      ${'agent-4'} | ${'14.7'} | ${2}       | ${true}         | ${false}        | ${mismatchTitle}         | ${[mismatchText]}               | ${3}
-      ${'agent-5'} | ${'14.3'} | ${2}       | ${true}         | ${true}         | ${mismatchOutdatedTitle} | ${[mismatchText, outdatedText]} | ${4}
+      agentMockIdx | agentVersion | kasVersion      | versionMismatch | versionOutdated | title
+      ${0}         | ${''}        | ${'14.8.0'}     | ${false}        | ${false}        | ${''}
+      ${1}         | ${'14.8.0'}  | ${'14.8.0'}     | ${false}        | ${false}        | ${''}
+      ${2}         | ${'14.6.0'}  | ${'14.8.0'}     | ${false}        | ${true}         | ${outdatedTitle}
+      ${3}         | ${'14.7.0'}  | ${'14.8.0'}     | ${true}         | ${false}        | ${mismatchTitle}
+      ${4}         | ${'14.3.0'}  | ${'14.8.0'}     | ${true}         | ${true}         | ${mismatchOutdatedTitle}
+      ${5}         | ${'14.6.0'}  | ${'14.8.0-rc1'} | ${false}        | ${false}        | ${''}
+      ${6}         | ${'14.8.0'}  | ${'15.0.0'}     | ${false}        | ${true}         | ${outdatedTitle}
+      ${7}         | ${'14.8.0'}  | ${'15.0.0-rc1'} | ${false}        | ${true}         | ${outdatedTitle}
+      ${8}         | ${'14.8.0'}  | ${'14.8.10'}    | ${false}        | ${false}        | ${''}
     `(
-      'agent version column at line $lineNumber',
-      ({
-        agent,
-        version,
-        podsNumber,
-        versionMismatch,
-        versionOutdated,
-        title,
-        texts,
-        lineNumber,
-      }) => {
-        const findIcon = () => findVersionText(lineNumber).findComponent(GlIcon);
-        const findPopover = () => wrapper.findByTestId(`popover-${agent}`);
-        const versionWarning = versionMismatch || versionOutdated;
+      'when agent version is "$agentVersion", KAS version is "$kasVersion" and version mismatch is "$versionMismatch"',
+      ({ agentMockIdx, agentVersion, kasVersion, versionMismatch, versionOutdated, title }) => {
+        const currentAgent = clusterAgents[agentMockIdx];
 
-        it('shows the correct agent version', () => {
-          expect(findVersionText(lineNumber).text()).toBe(version);
+        const findIcon = () => findVersionText(0).findComponent(GlIcon);
+        const findPopover = () => wrapper.findByTestId(`popover-${currentAgent.name}`);
+
+        const versionWarning = versionMismatch || versionOutdated;
+        const outdatedText = sprintf(I18N_AGENT_TABLE.versionOutdatedText, {
+          version: kasVersion,
+        });
+
+        beforeEach(() => {
+          createWrapper({
+            provide: { gitlabVersion: '14.8', kasVersion },
+            propsData: { agents: [currentAgent] },
+          });
+        });
+
+        it('shows the correct agent version text', () => {
+          expect(findVersionText(0).text()).toBe(agentVersion);
         });
 
         if (versionWarning) {
-          it(`shows a warning icon when agent versions mismatch is ${versionMismatch} and outdated is ${versionOutdated} and the number of pods is ${podsNumber}`, () => {
+          it('shows a warning icon', () => {
             expect(findIcon().props('name')).toBe('warning');
           });
-
           it(`renders correct title for the popover when agent versions mismatch is ${versionMismatch} and outdated is ${versionOutdated}`, () => {
             expect(findPopover().props('title')).toBe(title);
           });
-
-          it(`renders correct text for the popover when agent versions mismatch is ${versionMismatch} and outdated is ${versionOutdated}`, () => {
-            texts.forEach((text) => {
-              expect(findPopover().text()).toContain(text);
+          if (versionMismatch) {
+            it(`renders correct text for the popover when agent versions mismatch is ${versionMismatch}`, () => {
+              expect(findPopover().text()).toContain(mismatchText);
             });
-          });
+          }
+          if (versionOutdated) {
+            it(`renders correct text for the popover when agent versions outdated is ${versionOutdated}`, () => {
+              expect(findPopover().text()).toContain(outdatedText);
+            });
+          }
         } else {
-          it(`doesn't show a warning icon with a popover when agent versions mismatch is ${versionMismatch} and outdated is ${versionOutdated} and the number of pods is ${podsNumber}`, () => {
+          it(`doesn't show a warning icon with a popover when agent versions mismatch is ${versionMismatch} and outdated is ${versionOutdated}`, () => {
             expect(findIcon().exists()).toBe(false);
             expect(findPopover().exists()).toBe(false);
           });
         }
       },
     );
-
-    it.each`
-      agentConfig                 | link                    | lineNumber
-      ${'.gitlab/agents/agent-1'} | ${'/agent/full/path'}   | ${0}
-      ${'Default configuration'}  | ${defaultConfigHelpUrl} | ${1}
-    `(
-      'displays config file path as "$agentPath" at line $lineNumber',
-      ({ agentConfig, link, lineNumber }) => {
-        const findLink = findConfiguration(lineNumber).findComponent(GlLink);
-
-        expect(findLink.attributes('href')).toBe(link);
-        expect(findConfiguration(lineNumber).text()).toBe(agentConfig);
-      },
-    );
-
-    it('displays actions menu for each agent', () => {
-      expect(findDeleteAgentButton()).toHaveLength(5);
-    });
   });
 });

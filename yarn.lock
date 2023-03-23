@@ -6293,17 +6293,17 @@ get-value@^2.0.3, get-value@^2.0.6:
   resolved "https://registry.yarnpkg.com/get-value/-/get-value-2.0.6.tgz#dc15ca1c672387ca76bd37ac0a395ba2042a2c28"
   integrity sha1-3BXKHGcjh8p2vTesCjlbogQqLCg=
 
-gettext-extractor-vue@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/gettext-extractor-vue/-/gettext-extractor-vue-5.0.0.tgz#dc463868d49e14097c4545c8ed4851d8d3edd6dd"
-  integrity sha512-OSuEJlOexxkjYQL2SGf385oWIiy4weWMfUp/ZlOWzMSz0a+HB/Hlv0S4KFTz4A4GuOp3gu15qwXl61GQJ/u+1w==
+gettext-extractor-vue@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/gettext-extractor-vue/-/gettext-extractor-vue-5.1.0.tgz#faabdc2398751d9ac05bbcaa2e60d679b1634af5"
+  integrity sha512-LFzDyTJGsZO7KPEO7cZKVEMwpLiuC7AEbcZLZt/PEeujE+kRXEFGOQWWSumi1oOtTD2+hdpC6wQG2G8EQybqMg==
   dependencies:
     glob "^7.1.6"
 
-gettext-extractor@^3.5.3:
-  version "3.5.3"
-  resolved "https://registry.yarnpkg.com/gettext-extractor/-/gettext-extractor-3.5.3.tgz#6ed46931c154a7485a80fa8b91b835ff7b8d0411"
-  integrity sha512-9EgJ+hmbtAbATdMIvCj4WnrkeDWH6fv1z+IJJ1XCxdcUMGx6JQdVVFTdzJkSyIHh4td53ngoB5EQbavbKJU9Og==
+gettext-extractor@^3.7.0:
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/gettext-extractor/-/gettext-extractor-3.7.0.tgz#6dd1742dfd9cfebf5fb6dd02eea65c75cc28df09"
+  integrity sha512-rLXrJIp2XgXzfIVNaGKj9KnJeI/Gn6FfbPurBXZtkRKwd60JCyaa3l/HlMW6SW/lcO9qfRvqD6C1A5C9yoLhUQ==
   dependencies:
     "@types/glob" "5 - 7"
     "@types/parse5" "^5"

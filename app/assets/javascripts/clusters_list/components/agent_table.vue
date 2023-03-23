@@ -8,6 +8,9 @@ import {
   GlTooltipDirective,
   GlPopover,
 } from '@gitlab/ui';
+import semverLt from 'semver/functions/lt';
+import semverInc from 'semver/functions/inc';
+import semverPrerelease from 'semver/functions/prerelease';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -134,18 +137,26 @@ export default {
     isVersionMismatch(agent) {
       return agent.versions.length > 1;
     },
+    // isVersionOutdated determines if the agent version is outdated compared to the KAS / GitLab version
+    // using the following heuristics:
+    // - KAS Version is used as *server* version if available, otherwise the GitLab version is used.
+    // - returns `outdated` if the agent has a different major version than the server
+    // - returns `outdated` if the agents minor version is at least two proper versions older than the server
+    //   - *proper* -> not a prerelease version. Meaning that server prereleases (with `-rcN`) suffix are counted as the previous minor version
+    //
+    // Note that it does NOT support if the agent is newer than the server version.
     isVersionOutdated(agent) {
       if (!agent.versions.length) return false;
 
-      const [agentMajorVersion, agentMinorVersion] = this.getAgentVersionString(agent).split('.');
-      const [serverMajorVersion, serverMinorVersion] = this.serverVersion.split('.');
+      const agentVersion = this.getAgentVersionString(agent);
+      let allowableAgentVersion = semverInc(agentVersion, 'minor');
 
-      const majorVersionMismatch = agentMajorVersion !== serverMajorVersion;
+      const isServerPrerelease = Boolean(semverPrerelease(this.serverVersion));
+      if (isServerPrerelease) {
+        allowableAgentVersion = semverInc(allowableAgentVersion, 'minor');
+      }
 
-      // We should warn user if their current GitLab and agent versions are more than 1 minor version apart:
-      const minorVersionMismatch = Math.abs(agentMinorVersion - serverMinorVersion) > 1;
-
-      return majorVersionMismatch || minorVersionMismatch;
+      return semverLt(allowableAgentVersion, this.serverVersion);
     },
 
     getVersionPopoverTitle(agent) {

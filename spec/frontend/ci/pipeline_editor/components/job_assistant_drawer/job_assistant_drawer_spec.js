@@ -5,16 +5,13 @@ import { stringify } from 'yaml';
 import JobAssistantDrawer from '~/ci/pipeline_editor/components/job_assistant_drawer/job_assistant_drawer.vue';
 import JobSetupItem from '~/ci/pipeline_editor/components/job_assistant_drawer/accordion_items/job_setup_item.vue';
 import ImageItem from '~/ci/pipeline_editor/components/job_assistant_drawer/accordion_items/image_item.vue';
-import getAllRunners from '~/ci/runner/graphql/list/all_runners.query.graphql';
+import getRunnerTags from '~/ci/pipeline_editor/graphql/queries/runner_tags.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import {
-  mockAllRunnersQueryResponse,
-  mockLintResponse,
-  mockCiYml,
-} from 'jest/ci/pipeline_editor/mock_data';
+
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import eventHub, { SCROLL_EDITOR_TO_BOTTOM } from '~/ci/pipeline_editor/event_hub';
+import { mockRunnersTagsQueryResponse, mockLintResponse, mockCiYml } from '../../mock_data';
 
 Vue.use(VueApollo);
 
@@ -36,7 +33,7 @@ describe('Job assistant drawer', () => {
 
   const createComponent = () => {
     mockApollo = createMockApollo([
-      [getAllRunners, jest.fn().mockResolvedValue(mockAllRunnersQueryResponse)],
+      [getRunnerTags, jest.fn().mockResolvedValue(mockRunnersTagsQueryResponse)],
     ]);
 
     wrapper = mountExtended(JobAssistantDrawer, {
@@ -56,6 +53,15 @@ describe('Job assistant drawer', () => {
 
   it('should contain job setup accordion', () => {
     expect(findJobSetupItem().exists()).toBe(true);
+  });
+
+  it('job setup item should have tag options', () => {
+    expect(findJobSetupItem().props('tagOptions')).toEqual([
+      { id: 'tag1', name: 'tag1' },
+      { id: 'tag2', name: 'tag2' },
+      { id: 'tag3', name: 'tag3' },
+      { id: 'tag4', name: 'tag4' },
+    ]);
   });
 
   it('should contain image accordion', () => {

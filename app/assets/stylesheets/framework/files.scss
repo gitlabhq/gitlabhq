@@ -491,7 +491,7 @@ span.idiff {
     // element stretching over multiple rows we instead create a repeating background image
     // for the line
     background: repeating-linear-gradient(to right, var(--gray-100, $gray-100), var(--gray-100, $gray-100) 1px, transparent 1px, transparent 14px);
-    background-size: calc(var(--level) * 14px);
+    background-size: calc(var(--level) * 14px) 100%;
     background-repeat: no-repeat;
     background-position: 14px;
   }

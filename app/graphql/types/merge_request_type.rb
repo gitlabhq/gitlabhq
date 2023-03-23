@@ -295,6 +295,13 @@ module Types
     def detailed_merge_status
       ::MergeRequests::Mergeability::DetailedMergeStatusService.new(merge_request: object).execute
     end
+
+    # This is temporary to fix a bug where `committers` is already loaded and memoized
+    # and calling it again with a certain GraphQL query can cause the Rails to to throw
+    # a ActiveRecord::ImmutableRelation error
+    def committers
+      object.commits.committers
+    end
   end
 end
 

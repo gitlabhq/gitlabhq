@@ -4,7 +4,7 @@ import { stringify, parse } from 'yaml';
 import { set, omit, trim } from 'lodash';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import eventHub, { SCROLL_EDITOR_TO_BOTTOM } from '~/ci/pipeline_editor/event_hub';
-import getAllRunners from '~/ci/runner/graphql/list/all_runners.query.graphql';
+import getRunnerTags from '../../graphql/queries/runner_tags.query.graphql';
 import { DRAWER_CONTAINER_CLASS, JOB_TEMPLATE, i18n } from './constants';
 import { removeEmptyObj, trimFields } from './utils';
 import JobSetupItem from './accordion_items/job_setup_item.vue';
@@ -48,7 +48,7 @@ export default {
   },
   apollo: {
     runners: {
-      query: getAllRunners,
+      query: getRunnerTags,
       update(data) {
         return data?.runners?.nodes || [];
       },

@@ -37,10 +37,10 @@ export const clusterAgents = [
     connections: {
       nodes: [
         {
-          metadata: { version: 'v14.8' },
+          metadata: { version: 'v14.8.0' },
         },
         {
-          metadata: { version: 'v14.8' },
+          metadata: { version: 'v14.8.0' },
         },
       ],
     },
@@ -61,7 +61,7 @@ export const clusterAgents = [
     connections: {
       nodes: [
         {
-          metadata: { version: 'v14.5' },
+          metadata: { version: 'v14.6.0' },
         },
       ],
     },
@@ -82,10 +82,10 @@ export const clusterAgents = [
     connections: {
       nodes: [
         {
-          metadata: { version: 'v14.7' },
+          metadata: { version: 'v14.7.0' },
         },
         {
-          metadata: { version: 'v14.8' },
+          metadata: { version: 'v14.8.0' },
         },
       ],
     },
@@ -106,10 +106,94 @@ export const clusterAgents = [
     connections: {
       nodes: [
         {
-          metadata: { version: 'v14.5' },
+          metadata: { version: 'v14.5.0' },
         },
         {
-          metadata: { version: 'v14.3' },
+          metadata: { version: 'v14.3.0' },
+        },
+      ],
+    },
+    tokens: {
+      nodes: [
+        {
+          lastUsedAt: connectedTimeInactive,
+        },
+      ],
+    },
+  },
+  {
+    name: 'agent-6',
+    id: 'agent-6-id',
+    webPath: '/agent-6',
+    status: 'inactive',
+    lastContact: connectedTimeInactive.getTime(),
+    connections: {
+      nodes: [
+        {
+          metadata: { version: 'v14.6.0' },
+        },
+      ],
+    },
+    tokens: {
+      nodes: [
+        {
+          lastUsedAt: connectedTimeInactive,
+        },
+      ],
+    },
+  },
+  {
+    name: 'agent-7',
+    id: 'agent-7-id',
+    webPath: '/agent-7',
+    status: 'inactive',
+    lastContact: connectedTimeInactive.getTime(),
+    connections: {
+      nodes: [
+        {
+          metadata: { version: 'v14.8.0' },
+        },
+      ],
+    },
+    tokens: {
+      nodes: [
+        {
+          lastUsedAt: connectedTimeInactive,
+        },
+      ],
+    },
+  },
+  {
+    name: 'agent-8',
+    id: 'agent-8-id',
+    webPath: '/agent-8',
+    status: 'inactive',
+    lastContact: connectedTimeInactive.getTime(),
+    connections: {
+      nodes: [
+        {
+          metadata: { version: 'v14.8.0' },
+        },
+      ],
+    },
+    tokens: {
+      nodes: [
+        {
+          lastUsedAt: connectedTimeInactive,
+        },
+      ],
+    },
+  },
+  {
+    name: 'agent-9',
+    id: 'agent-9-id',
+    webPath: '/agent-9',
+    status: 'inactive',
+    lastContact: connectedTimeInactive.getTime(),
+    connections: {
+      nodes: [
+        {
+          metadata: { version: 'v14.8.0' },
         },
       ],
     },
