@@ -93,7 +93,6 @@ FactoryBot.define do
     trait :with_all_applications do
       application_helm factory: %i(clusters_applications_helm installed)
       application_ingress factory: %i(clusters_applications_ingress installed)
-      application_runner factory: %i(clusters_applications_runner installed)
     end
 
     trait :with_domain do

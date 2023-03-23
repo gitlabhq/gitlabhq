@@ -110,7 +110,7 @@ module Tooling
         gitlab
           .api
           .pipeline_bridges(helper.mr_target_project_id, mr_head_pipeline_id)
-          &.find { |bridge| bridge['name'] == 'e2e:package-and-test' }
+          &.find { |bridge| bridge['name'].include?('package-and-test') }
       end
 
       def stable_target_branch

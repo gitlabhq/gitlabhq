@@ -25,7 +25,6 @@ feature_category: :kubernetes_management do
   it { is_expected.to have_one(:integration_prometheus) }
   it { is_expected.to have_one(:application_helm) }
   it { is_expected.to have_one(:application_ingress) }
-  it { is_expected.to have_one(:application_runner) }
   it { is_expected.to have_many(:kubernetes_namespaces) }
   it { is_expected.to have_one(:cluster_project) }
   it { is_expected.to have_many(:deployment_clusters) }
@@ -710,17 +709,7 @@ feature_category: :kubernetes_management do
 
     subject { cluster.persisted_applications }
 
-    context 'when all applications are created' do
-      let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
-      let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
-      let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
-
-      it 'returns a list of created applications' do
-        is_expected.to contain_exactly(helm, ingress, runner)
-      end
-    end
-
-    context 'when not all were created' do
+    context 'when applications are created' do
       let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
       let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
 

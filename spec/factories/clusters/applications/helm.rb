@@ -97,9 +97,5 @@ FactoryBot.define do
     factory :clusters_applications_ingress, class: 'Clusters::Applications::Ingress' do
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
     end
-
-    factory :clusters_applications_runner, class: 'Clusters::Applications::Runner' do
-      cluster factory: %i(cluster with_installed_helm provided_by_gcp)
-    end
   end
 end

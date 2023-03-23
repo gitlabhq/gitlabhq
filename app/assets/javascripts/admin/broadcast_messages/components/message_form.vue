@@ -3,6 +3,7 @@ import {
   GlButton,
   GlBroadcastMessage,
   GlForm,
+  GlFormGroup,
   GlFormCheckbox,
   GlFormCheckboxGroup,
   GlFormInput,
@@ -24,7 +25,6 @@ import {
   TYPES,
   TYPE_BANNER,
 } from '../constants';
-import MessageFormGroup from './message_form_group.vue';
 import DatetimePicker from './datetime_picker.vue';
 
 const FORM_HEADERS = { headers: { 'Content-Type': 'application/json; charset=utf-8' } };
@@ -37,13 +37,13 @@ export default {
     GlButton,
     GlBroadcastMessage,
     GlForm,
+    GlFormGroup,
     GlFormCheckbox,
     GlFormCheckboxGroup,
     GlFormInput,
     GlFormSelect,
     GlFormText,
     GlFormTextarea,
-    MessageFormGroup,
   },
   directives: {
     SafeHtml,
@@ -179,7 +179,7 @@ export default {
       <div v-safe-html:[$options.safeHtmlConfig]="messagePreview"></div>
     </gl-broadcast-message>
 
-    <message-form-group :label="$options.i18n.message" label-for="message-textarea">
+    <gl-form-group :label="$options.i18n.message" label-for="message-textarea">
       <gl-form-textarea
         id="message-textarea"
         v-model="message"
@@ -187,23 +187,23 @@ export default {
         :debounce="$options.DEFAULT_DEBOUNCE_AND_THROTTLE_MS"
         :placeholder="$options.i18n.messagePlaceholder"
       />
-    </message-form-group>
+    </gl-form-group>
 
-    <message-form-group :label="$options.i18n.type" label-for="type-select">
+    <gl-form-group :label="$options.i18n.type" label-for="type-select">
       <gl-form-select id="type-select" v-model="type" :options="$options.messageTypes" />
-    </message-form-group>
+    </gl-form-group>
 
     <template v-if="isBanner">
-      <message-form-group :label="$options.i18n.theme" label-for="theme-select">
+      <gl-form-group :label="$options.i18n.theme" label-for="theme-select">
         <gl-form-select
           id="theme-select"
           v-model="theme"
           :options="$options.messageThemes"
           data-testid="theme-select"
         />
-      </message-form-group>
+      </gl-form-group>
 
-      <message-form-group :label="$options.i18n.dismissable" label-for="dismissable-checkbox">
+      <gl-form-group :label="$options.i18n.dismissable" label-for="dismissable-checkbox">
         <gl-form-checkbox
           id="dismissable-checkbox"
           v-model="dismissable"
@@ -212,10 +212,10 @@ export default {
         >
           <span>{{ $options.i18n.dismissableDescription }}</span>
         </gl-form-checkbox>
-      </message-form-group>
+      </gl-form-group>
     </template>
 
-    <message-form-group
+    <gl-form-group
       v-if="glFeatures.roleTargetedBroadcastMessages"
       :label="$options.i18n.targetRoles"
       data-testid="target-roles-checkboxes"
@@ -224,24 +224,24 @@ export default {
       <gl-form-text>
         {{ $options.i18n.targetRolesDescription }}
       </gl-form-text>
-    </message-form-group>
+    </gl-form-group>
 
-    <message-form-group :label="$options.i18n.targetPath" label-for="target-path-input">
+    <gl-form-group :label="$options.i18n.targetPath" label-for="target-path-input">
       <gl-form-input id="target-path-input" v-model="targetPath" />
       <gl-form-text>
         {{ $options.i18n.targetPathDescription }}
       </gl-form-text>
-    </message-form-group>
+    </gl-form-group>
 
-    <message-form-group :label="$options.i18n.startsAt">
+    <gl-form-group :label="$options.i18n.startsAt">
       <datetime-picker v-model="startsAt" />
-    </message-form-group>
+    </gl-form-group>
 
-    <message-form-group :label="$options.i18n.endsAt">
+    <gl-form-group :label="$options.i18n.endsAt">
       <datetime-picker v-model="endsAt" />
-    </message-form-group>
+    </gl-form-group>
 
-    <div class="form-actions gl-mb-3">
+    <div class="gl-mt-5">
       <gl-button
         type="submit"
         variant="confirm"

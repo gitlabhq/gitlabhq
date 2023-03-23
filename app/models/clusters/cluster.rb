@@ -13,8 +13,7 @@ module Clusters
 
     APPLICATIONS = {
       Clusters::Applications::Helm.application_name => Clusters::Applications::Helm,
-      Clusters::Applications::Ingress.application_name => Clusters::Applications::Ingress,
-      Clusters::Applications::Runner.application_name => Clusters::Applications::Runner
+      Clusters::Applications::Ingress.application_name => Clusters::Applications::Ingress
     }.freeze
     DEFAULT_ENVIRONMENT = '*'
     KUBE_INGRESS_BASE_DOMAIN = 'KUBE_INGRESS_BASE_DOMAIN'
@@ -52,7 +51,6 @@ module Clusters
 
     has_one_cluster_application :helm
     has_one_cluster_application :ingress
-    has_one_cluster_application :runner
 
     has_many :kubernetes_namespaces
     has_many :metrics_dashboard_annotations, class_name: 'Metrics::Dashboard::Annotation', inverse_of: :cluster

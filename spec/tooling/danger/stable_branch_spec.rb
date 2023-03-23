@@ -93,7 +93,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
       let(:pipeline_bridges_response) do
         [
           {
-            'name' => 'e2e:package-and-test',
+            'name' => 'e2e:package-and-test-ee',
             'status' => pipeline_bridge_state,
             'downstream_pipeline' => {
               'id' => '123',

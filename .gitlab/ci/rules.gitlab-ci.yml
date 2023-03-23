@@ -424,7 +424,7 @@
   - ".stylelintrc"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
-  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{eslintrc.yml,eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
   - "Rakefile"

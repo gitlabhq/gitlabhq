@@ -289,6 +289,11 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   You can find repositories with invalid metadata records prior in GitLab 15.0 and later by searching for the log records outputted by the verifier. [Read more about repository verification, and to see an example log entry](../administration/gitaly/praefect.md#repository-verification).
 - Praefect configuration changes significantly in Omnibus GitLab 16.0. You can begin migrating to the new structure in Omnibus GitLab 15.9 while backwards compatibility is
   maintained in the lead up to Omnibus GitLab 16.0. [Read more about this change](#praefect-omnibus-gitlab-configuration-structure-change).
+- For **self-compiled (source) installations**, with the addition of `gitlab-sshd` the Kerberos headers are needed to build GitLab Shell.
+
+  ```shell
+  sudo apt install libkrb5-dev
+  ```
 
 ### 15.8.2
 
@@ -733,6 +738,36 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 - The `FF_GITLAB_REGISTRY_HELPER_IMAGE` [feature flag](../administration/feature_flags.md#enable-or-disable-the-feature) is removed and helper images are always pulled from GitLab Registry.
 - The `AES256-GCM-SHA384` SSL cipher is no longer allowed by NGINX.
   See how you can [add the cipher back](https://docs.gitlab.com/omnibus/update/gitlab_15_changes.html#aes256-gcm-sha384-ssl-cipher-no-longer-allowed-by-default-by-nginx) to the allow list.
+- Support for more than one database has been added to GitLab. For **self-compiled (source) installations**,
+  `config/database.yml` must include a database name in the database configuration.
+  The `main: database` must be first. If an invalid or deprecated syntax is used, an error is generated
+  during application start:
+
+  ```plaintext
+  ERROR: This installation of GitLab uses unsupported 'config/database.yml'.
+  The main: database needs to be defined as a first configuration item instead of primary. (RuntimeError)
+  ```
+
+  Previously, the `config/database.yml` file looked like the following:
+
+  ```yaml
+  production:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_production
+    ...
+  ```
+
+  Starting with GitLab 15.0, it must define a `main` database first:
+
+  ```yaml
+  production:
+    main:
+      adapter: postgresql
+      encoding: unicode
+      database: gitlabhq_production
+      ...
+  ```
 
 ### 14.10.0
 
@@ -924,6 +959,19 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
   ```
 
   [There is a workaround to complete the data change and the upgrade manually](package/index.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s)
+
+- As part of [enabling real-time issue assignees](https://gitlab.com/gitlab-org/gitlab/-/issues/330117), Action Cable is now enabled by default.
+  For **self-compiled (source) installations**, `config/cable.yml` is required to be present.
+
+  Configure this by running:
+
+  ```shell
+  cd /home/git/gitlab
+  sudo -u git -H cp config/cable.yml.example config/cable.yml
+
+  # Change the Redis socket path if you are not using the default Debian / Ubuntu configuration
+  sudo -u git -H editor config/cable.yml
+  ```
 
 ### 14.4.4
 
@@ -1390,11 +1438,22 @@ all servers must first be upgraded to 13.1.Z before upgrading to 13.2.0 or later
 
 #### Custom Rack Attack initializers
 
-From GitLab 13.0.1, custom Rack Attack initializers (`config/initializers/rack_attack.rb`) are replaced with initializers
-supplied with GitLab during upgrades. We recommend you use these GitLab-supplied initializers.
+From GitLab 13.1, custom Rack Attack initializers (`config/initializers/rack_attack.rb`) are replaced with initializers
+supplied with GitLab during upgrades. You should use these GitLab-supplied initializers.
 
 If you persist your own Rack Attack initializers between upgrades, you might
 [get `500` errors](https://gitlab.com/gitlab-org/gitlab/-/issues/334681) when [upgrading to GitLab 14.0 and later](#1400).
+
+For **self-compiled (source) installations**, the Rack Attack initializer on GitLab
+was renamed from [`config/initializers/rack_attack_new.rb` to `config/initializers/rack_attack.rb`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33072).
+The rename was part of [deprecating Rack Attack throttles on Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4750).
+
+If `rack_attack.rb` has been created on your installation, consider creating a backup before updating:
+
+```shell
+cd /home/git/gitlab
+cp config/initializers/rack_attack.rb config/initializers/rack_attack_backup.rb
+```
 
 ### 12.10.0
 

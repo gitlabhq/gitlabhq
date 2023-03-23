@@ -11,7 +11,7 @@ GitLab provides Rake tasks for general maintenance.
 ## Gather GitLab and system information
 
 This command gathers information about your GitLab installation and the system it runs on.
-These may be useful when asking for help or reporting issues.
+These may be useful when asking for help or reporting issues. In a multi-node environment, run this command on nodes running GitLab Rails to avoid PostgreSQL socket errors.
 
 **Omnibus Installation**
 
