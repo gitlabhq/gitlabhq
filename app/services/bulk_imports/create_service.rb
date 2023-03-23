@@ -27,6 +27,11 @@
 #
 module BulkImports
   class CreateService
+    ENTITY_TYPES_MAPPING = {
+      'group_entity' => 'groups',
+      'project_entity' => 'projects'
+    }.freeze
+
     attr_reader :current_user, :params, :credentials
 
     def initialize(current_user, params, credentials)
@@ -57,6 +62,7 @@ module BulkImports
 
     def validate!
       client.validate_instance_version!
+      validate_setting_enabled!
       client.validate_import_scopes!
     end
 
@@ -86,6 +92,28 @@ module BulkImports
         end
         bulk_import
       end
+    end
+
+    def validate_setting_enabled!
+      source_full_path, source_type = Array.wrap(params)[0].values_at(:source_full_path, :source_type)
+      entity_type = ENTITY_TYPES_MAPPING.fetch(source_type)
+      if source_full_path =~ /^[0-9]+$/
+        query = query_type(entity_type)
+        response = graphql_client.execute(
+          graphql_client.parse(query.to_s),
+          { full_path: source_full_path }
+        ).original_hash
+
+        source_entity_identifier = ::GlobalID.parse(response.dig(*query.data_path, 'id')).model_id
+      else
+        source_entity_identifier = ERB::Util.url_encode(source_full_path)
+      end
+
+      client.get("/#{entity_type}/#{source_entity_identifier}/export_relations/status")
+      # the source instance will return a 404 if the feature is disabled as the endpoint won't be available
+    rescue Gitlab::HTTP::BlockedUrlError
+    rescue BulkImports::NetworkError
+      raise ::BulkImports::Error.setting_not_enabled
     end
 
     def track_access_level(entity_params)
@@ -139,6 +167,21 @@ module BulkImports
         url: @credentials[:url],
         token: @credentials[:access_token]
       )
+    end
+
+    def graphql_client
+      @graphql_client ||= BulkImports::Clients::Graphql.new(
+        url: @credentials[:url],
+        token: @credentials[:access_token]
+      )
+    end
+
+    def query_type(entity_type)
+      if entity_type == 'groups'
+        BulkImports::Groups::Graphql::GetGroupQuery.new(context: nil)
+      else
+        BulkImports::Projects::Graphql::GetProjectQuery.new(context: nil)
+      end
     end
   end
 end

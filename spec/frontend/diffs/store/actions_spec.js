@@ -30,6 +30,11 @@ import { diffMetadata } from '../mock_data/diff_metadata';
 
 jest.mock('~/alert');
 
+jest.mock('~/lib/utils/secret_detection', () => ({
+  confirmSensitiveAction: jest.fn(() => Promise.resolve(false)),
+  containsSensitiveToken: jest.requireActual('~/lib/utils/secret_detection').containsSensitiveToken,
+}));
+
 describe('DiffsStoreActions', () => {
   let mock;
 
@@ -926,31 +931,32 @@ describe('DiffsStoreActions', () => {
   });
 
   describe('saveDiffDiscussion', () => {
-    it('dispatches actions', () => {
-      const commitId = 'something';
-      const formData = {
-        diffFile: getDiffFileMock(),
-        noteableData: {},
-      };
-      const note = {};
-      const state = {
-        commit: {
-          id: commitId,
-        },
-      };
-      const dispatch = jest.fn((name) => {
-        switch (name) {
-          case 'saveNote':
-            return Promise.resolve({
-              discussion: 'test',
-            });
-          case 'updateDiscussion':
-            return Promise.resolve('discussion');
-          default:
-            return Promise.resolve({});
-        }
-      });
+    const dispatch = jest.fn((name) => {
+      switch (name) {
+        case 'saveNote':
+          return Promise.resolve({
+            discussion: 'test',
+          });
+        case 'updateDiscussion':
+          return Promise.resolve('discussion');
+        default:
+          return Promise.resolve({});
+      }
+    });
 
+    const commitId = 'something';
+    const formData = {
+      diffFile: getDiffFileMock(),
+      noteableData: {},
+    };
+    const note = {};
+    const state = {
+      commit: {
+        id: commitId,
+      },
+    };
+
+    it('dispatches actions', () => {
       return diffActions.saveDiffDiscussion({ state, dispatch }, { note, formData }).then(() => {
         expect(dispatch).toHaveBeenCalledTimes(5);
         expect(dispatch).toHaveBeenNthCalledWith(1, 'saveNote', expect.any(Object), {
@@ -963,6 +969,16 @@ describe('DiffsStoreActions', () => {
         expect(dispatch).toHaveBeenNthCalledWith(2, 'updateDiscussion', 'test', { root: true });
         expect(dispatch).toHaveBeenNthCalledWith(3, 'assignDiscussionsToDiff', ['discussion']);
       });
+    });
+
+    it('should not add note with sensitive token', async () => {
+      const sensitiveMessage = 'token: glpat-1234567890abcdefghij';
+
+      await diffActions.saveDiffDiscussion(
+        { state, dispatch },
+        { note: sensitiveMessage, formData },
+      );
+      expect(dispatch).not.toHaveBeenCalled();
     });
   });
 

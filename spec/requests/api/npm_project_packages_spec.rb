@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
+  include ExclusiveLeaseHelpers
+
   include_context 'npm api setup'
 
   shared_examples 'accept get request on private project with access to package registry for everyone' do
@@ -365,6 +367,25 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
               .and not_change { Packages::Dependency.count }
               .and change { Packages::DependencyLink.count }.by(6)
           end
+        end
+      end
+
+      context 'when the lease to create a package is already taken' do
+        let(:params) { upload_params(package_name: package_name) }
+        let(:lease_key) { "packages:npm:create_package_service:packages:#{project.id}_#{package_name}" }
+
+        before do
+          stub_exclusive_lease_taken(lease_key, timeout: Packages::Npm::CreatePackageService::DEFAULT_LEASE_TIMEOUT)
+        end
+
+        it_behaves_like 'not a package tracking event'
+
+        it 'returns an error' do
+          expect { upload_package_with_token }
+            .not_to change { project.packages.count }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(response.body).to include('Could not obtain package lease.')
         end
       end
 

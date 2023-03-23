@@ -16,6 +16,7 @@ import { __, s__ } from '~/locale';
 import notesEventHub from '~/notes/event_hub';
 import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
 import { sortTree } from '~/ide/stores/utils';
+import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secret_detection';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
   INLINE_DIFF_VIEW_TYPE,
@@ -555,12 +556,19 @@ export const toggleFileDiscussionWrappers = ({ commit }, diff) => {
   }
 };
 
-export const saveDiffDiscussion = ({ state, dispatch }, { note, formData }) => {
+export const saveDiffDiscussion = async ({ state, dispatch }, { note, formData }) => {
   const postData = getNoteFormData({
     commit: state.commit,
     note,
     ...formData,
   });
+
+  if (containsSensitiveToken(note)) {
+    const confirmed = await confirmSensitiveAction();
+    if (!confirmed) {
+      return null;
+    }
+  }
 
   return dispatch('saveNote', postData, { root: true })
     .then((result) => dispatch('updateDiscussion', result.discussion, { root: true }))
@@ -822,13 +830,11 @@ export const setSuggestPopoverDismissed = ({ commit, state }) =>
     });
 
 export function changeCurrentCommit({ dispatch, commit, state }, { commitId }) {
-  /* eslint-disable @gitlab/require-i18n-strings */
   if (!commitId) {
     return Promise.reject(new Error('`commitId` is a required argument'));
   } else if (!state.commit) {
-    return Promise.reject(new Error('`state` must already contain a valid `commit`'));
+    return Promise.reject(new Error('`state` must already contain a valid `commit`')); // eslint-disable-line @gitlab/require-i18n-strings
   }
-  /* eslint-enable @gitlab/require-i18n-strings */
 
   // this is less than ideal, see: https://gitlab.com/gitlab-org/gitlab/-/issues/215421
   const commitRE = new RegExp(state.commit.id, 'g');

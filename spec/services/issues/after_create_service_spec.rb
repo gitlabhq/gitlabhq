@@ -28,13 +28,6 @@ RSpec.describe Issues::AfterCreateService, feature_category: :team_planning do
       expect { after_create_service.execute(issue) }.to change { Todo.where(attributes).count }.by(1)
     end
 
-    it 'deletes milestone issues count cache' do
-      expect_next(Milestones::IssuesCountService, milestone)
-        .to receive(:delete_cache).and_call_original
-
-      after_create_service.execute(issue)
-    end
-
     context 'with a regular issue' do
       it_behaves_like 'does not track incident management event', :incident_management_incident_created do
         subject { after_create_service.execute(issue) }

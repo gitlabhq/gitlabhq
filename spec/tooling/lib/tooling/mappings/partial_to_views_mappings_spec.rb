@@ -52,8 +52,8 @@ RSpec.describe Tooling::Mappings::PartialToViewsMappings, feature_category: :too
     end
 
     context 'when no partials were modified' do
-      it 'empties the output file' do
-        expect { subject }.to change { File.read(output_file) }.from(output_file_content).to('')
+      it 'does not change the output file' do
+        expect { subject }.not_to change { File.read(output_file) }
       end
     end
 
@@ -76,8 +76,8 @@ RSpec.describe Tooling::Mappings::PartialToViewsMappings, feature_category: :too
           File.write("#{view_base_folder}/my_view.html.haml", "render 'another_partial'")
         end
 
-        it 'empties the output file' do
-          expect { subject }.to change { File.read(output_file) }.from(output_file_content).to('')
+        it 'does not change the output file' do
+          expect { subject }.not_to change { File.read(output_file) }
         end
       end
 
@@ -89,7 +89,7 @@ RSpec.describe Tooling::Mappings::PartialToViewsMappings, feature_category: :too
         it 'writes the view including the partial to the output' do
           expect { subject }.to change { File.read(output_file) }
                             .from(output_file_content)
-                            .to("#{view_base_folder}/my_view.html.haml")
+                            .to(output_file_content + " #{view_base_folder}/my_view.html.haml")
         end
       end
     end

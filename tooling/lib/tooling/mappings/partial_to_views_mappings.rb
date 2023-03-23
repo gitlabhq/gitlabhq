@@ -9,7 +9,7 @@ module Tooling
     class PartialToViewsMappings < Base
       def initialize(changes_file, output_file, view_base_folder: 'app/views')
         @output_file       = output_file
-        @changed_files     = File.read(changes_file).split(' ')
+        @changed_files     = read_array_from_file(changes_file)
         @view_base_folders = folders_for_available_editions(view_base_folder)
       end
 
@@ -28,7 +28,7 @@ module Tooling
           end
         end
 
-        File.write(output_file, views_including_modified_partials.join(' '))
+        write_array_to_file(output_file, views_including_modified_partials)
       end
 
       def filter_files

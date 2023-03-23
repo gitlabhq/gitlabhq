@@ -504,7 +504,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
       end
 
       describe 'when user has made changes' do
-        it 'shows a warning and can stay on page' do
+        it 'shows a warning and can stay on page', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/397683' do
           content = 'new issue content'
 
           find('body').send_keys('e')

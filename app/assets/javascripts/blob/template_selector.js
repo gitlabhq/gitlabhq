@@ -1,5 +1,3 @@
-/* eslint-disable class-methods-use-this */
-
 import $ from 'jquery';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
@@ -70,6 +68,7 @@ export default class TemplateSelector {
     return this.requestFile(item);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   requestFile() {
     // This `requestFile` method is an abstract method that should
     // be added by all subclasses.

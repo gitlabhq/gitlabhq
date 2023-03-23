@@ -333,6 +333,7 @@ RSpec.describe GitlabSchema.types['Project'] do
                                             :target_branches,
                                             :state,
                                             :draft,
+                                            :approved,
                                             :labels,
                                             :before,
                                             :after,

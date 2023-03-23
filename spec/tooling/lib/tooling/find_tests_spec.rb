@@ -50,15 +50,17 @@ RSpec.describe Tooling::FindTests, feature_category: :tooling do
     subject { instance.execute }
 
     context 'when the matching_tests_paths file does not exist' do
-      before do
-        allow(File).to receive(:exist?).and_return(false)
-        allow(File).to receive(:write).with(matching_tests_paths, any_args)
+      let(:instance)                 { described_class.new(non_existing_output_file, matching_tests_paths) }
+      let(:non_existing_output_file) { 'tmp/another_file.out' }
+
+      around do |example|
+        example.run
+      ensure
+        FileUtils.rm_rf(non_existing_output_file)
       end
 
-      it 'creates an empty file' do
-        expect(File).to receive(:write).with(matching_tests_paths, '')
-
-        subject
+      it 'creates the file' do
+        expect { subject }.to change { File.exist?(non_existing_output_file) }.from(false).to(true)
       end
     end
 

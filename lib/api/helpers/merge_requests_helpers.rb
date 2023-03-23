@@ -105,6 +105,9 @@ module API
                                   documentation: { example: '2019-03-15T08:00:00Z' }
         optional :environment, desc: 'Returns merge requests deployed to the given environment',
                                documentation: { example: '2019-03-15T08:00:00Z' }
+        optional :approved, type: String,
+                            values: %w[yes no],
+                            desc: 'Filters merge requests by their `approved` status. `yes` returns only approved merge requests. `no` returns only non-approved merge requests.'
       end
 
       params :optional_scope_param do

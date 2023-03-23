@@ -4,7 +4,7 @@ module Issues
   class BuildService < Issues::BaseService
     include ResolveDiscussions
 
-    def execute
+    def execute(initialize_callbacks: true)
       filter_resolve_discussion_params
 
       container_param = case container
@@ -17,7 +17,7 @@ module Issues
                         end
 
       @issue = model_klass.new(issue_params.merge(container_param)).tap do |issue|
-        ensure_milestone_available(issue)
+        initialize_callbacks!(issue) if initialize_callbacks
       end
     end
 
@@ -100,7 +100,6 @@ module Issues
 
       params[:work_item_type] = WorkItems::Type.find_by(id: params[:work_item_type_id]) if params[:work_item_type_id].present? # rubocop: disable CodeReuse/ActiveRecord
 
-      public_issue_params << :milestone_id if can?(current_user, :admin_issue, container)
       public_issue_params << :issue_type if create_issue_type_allowed?(container, params[:issue_type])
       base_type = params[:work_item_type]&.base_type
       public_issue_params << :work_item_type if create_issue_type_allowed?(container, base_type)

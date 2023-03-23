@@ -24,7 +24,10 @@ module Issues
     def execute(skip_system_notes: false)
       return error(_('Operation not allowed'), 403) unless @current_user.can?(authorization_action, container)
 
-      @issue = @build_service.execute
+      # We should not initialize the callback classes during the build service execution because these will be
+      # initialized when we call #create below
+      @issue = @build_service.execute(initialize_callbacks: false)
+
       # issue_type is set in BuildService, so we can delete it from params, in later phase
       # it can be set also from quick actions - in that case work_item_id is synced later again
       params.delete(:issue_type)

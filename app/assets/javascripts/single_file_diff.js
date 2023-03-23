@@ -1,5 +1,3 @@
-/* eslint-disable consistent-return */
-
 import $ from 'jquery';
 import { createAlert } from '~/alert';
 import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
@@ -66,7 +64,7 @@ export default class SingleFileDiff {
     } else {
       this.$chevronDownIcon.removeClass('gl-display-none');
       this.$chevronRightIcon.addClass('gl-display-none');
-      return this.getContentHTML(cb);
+      return this.getContentHTML(cb); // eslint-disable-line consistent-return
     }
   }
 

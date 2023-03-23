@@ -1,4 +1,3 @@
-/* eslint-disable @gitlab/require-i18n-strings */
 import {
   DEFAULT_PLATFORM,
   LINUX_PLATFORM,
@@ -60,7 +59,7 @@ export const registerCommand = ({
   registrationToken,
   description,
 }) => {
-  const lines = [`${executable({ platform })} register`];
+  const lines = [`${executable({ platform })} register`]; // eslint-disable-line @gitlab/require-i18n-strings
   if (url) {
     lines.push(`  --url ${url}`);
   }
@@ -75,7 +74,7 @@ export const registerCommand = ({
 };
 
 export const runCommand = ({ platform }) => {
-  return `${executable({ platform })} run`;
+  return `${executable({ platform })} run`; // eslint-disable-line @gitlab/require-i18n-strings
 };
 
 const importInstallScript = ({ platform = DEFAULT_PLATFORM }) => {

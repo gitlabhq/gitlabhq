@@ -126,8 +126,7 @@ export default {
       this.isExpanded = !this.isExpanded;
     },
     threadKey(note) {
-      /* eslint-disable @gitlab/require-i18n-strings */
-      return `${note.id}-thread`;
+      return `${note.id}-thread`; // eslint-disable-line @gitlab/require-i18n-strings
     },
     onReplied() {
       this.isExpanded = true;

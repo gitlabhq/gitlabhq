@@ -21,6 +21,7 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
         'can-use-new-web-ide' => 'false',
         'use-new-web-ide' => 'false',
         'user-preferences-path' => profile_preferences_path,
+        'sign-in-path' => 'test-sign-in-path',
         'project' => nil,
         'preview-markdown-path' => nil
       }
@@ -29,6 +30,7 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
     before do
       allow(helper).to receive(:current_user).and_return(user)
       allow(helper).to receive(:content_security_policy_nonce).and_return('test-csp-nonce')
+      allow(helper).to receive(:new_session_path).and_return('test-sign-in-path')
     end
 
     it 'returns hash' do
@@ -99,6 +101,7 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
           'can-use-new-web-ide' => 'true',
           'use-new-web-ide' => 'true',
           'user-preferences-path' => profile_preferences_path,
+          'sign-in-path' => 'test-sign-in-path',
           'new-web-ide-help-page-path' =>
             help_page_path('user/project/web_ide/index.md', anchor: 'vscode-reimplementation'),
           'csp-nonce' => 'test-csp-nonce',

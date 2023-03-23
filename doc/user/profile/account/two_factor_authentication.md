@@ -273,7 +273,7 @@ feature flag after WebAuthn devices have been registered, these devices are not 
 On GitLab.com, WebAuthn devices are available.
 
 FLAG:
-On self-managed GitLab, by default, optional one-time password authentication for WebAuthn devices is available. To hide the feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `webauthn_without_topt`.
+On self-managed GitLab, by default, optional one-time password authentication for WebAuthn devices is not available. To enable the feature, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `webauthn_without_totp`.
 On GitLab.com, this feature is available.
 
 WebAuthn is [supported by](https://caniuse.com/#search=webauthn) the following:

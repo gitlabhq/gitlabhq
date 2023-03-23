@@ -3,8 +3,7 @@
 module BulkImports
   class Error < StandardError
     def self.unsupported_gitlab_version
-      self.new("Unsupported GitLab version. Source instance must run GitLab version #{BulkImport::MIN_MAJOR_VERSION} " \
-               "or later.")
+      self.new("Unsupported GitLab version. Minimum supported version is #{BulkImport::MIN_MAJOR_VERSION}.")
     end
 
     def self.scope_validation_failure
@@ -18,6 +17,12 @@ module BulkImports
 
     def self.destination_full_path_validation_failure(full_path)
       self.new("Import aborted as '#{full_path}' already exists. Change the destination and try again.")
+    end
+
+    def self.setting_not_enabled
+      self.new("Group import disabled on source or destination instance. " \
+               "Ask an administrator to enable it on both instances and try again."
+              )
     end
   end
 end

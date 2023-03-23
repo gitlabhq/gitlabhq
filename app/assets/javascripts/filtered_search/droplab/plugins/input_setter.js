@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 const InputSetter = {
   init(hook) {
     this.hook = hook;
@@ -33,11 +31,15 @@ const InputSetter = {
   setInput(config, selectedItem) {
     const input = config.input || this.hook.trigger;
     const newValue = selectedItem.getAttribute(config.valueAttribute);
-    const inputAttribute = config.inputAttribute;
+    const { inputAttribute } = config;
 
-    if (input.hasAttribute(inputAttribute)) return input.setAttribute(inputAttribute, newValue);
-    if (input.tagName === 'INPUT') return (input.value = newValue);
-    return (input.textContent = newValue);
+    if (input.hasAttribute(inputAttribute)) {
+      input.setAttribute(inputAttribute, newValue);
+    } else if (input.tagName === 'INPUT') {
+      input.value = newValue;
+    } else {
+      input.textContent = newValue;
+    }
   },
 
   destroy() {

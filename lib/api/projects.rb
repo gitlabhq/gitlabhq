@@ -40,6 +40,23 @@ module API
         attrs.delete(:repository_storage) unless can?(current_user, :use_project_statistics_filters)
       end
 
+      def validate_updated_at_order_and_filter!
+        return unless filter_by_updated_at? && provided_order_is_not_updated_at?
+
+        # This is necessary as not pairing this filter and ordering will produce an inneficient query
+        bad_request!('`updated_at` filter and `updated_at` sorting must be paired')
+      end
+
+      def provided_order_is_not_updated_at?
+        order_by_param = declared_params[:order_by]
+
+        order_by_param.present? && order_by_param.to_s != 'updated_at'
+      end
+
+      def filter_by_updated_at?
+        declared_params[:updated_before].present? || declared_params[:updated_after].present?
+      end
+
       def verify_statistics_order_by_projects!
         return unless Helpers::ProjectsHelpers::STATISTICS_SORT_PARAMS.include?(params[:order_by])
 
@@ -144,6 +161,8 @@ module API
         optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
         optional :topic, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of topics. Limit results to projects having all topics'
         optional :topic_id, type: Integer, desc: 'Limit results to projects with the assigned topic given by the topic ID'
+        optional :updated_before, type: DateTime, desc: 'Return projects updated before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        optional :updated_after, type: DateTime, desc: 'Return projects updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
 
         use :optional_filter_params_ee
       end
@@ -261,6 +280,9 @@ module API
 
       desc 'Get a list of visible projects for authenticated user' do
         success code: 200, model: Entities::BasicProjectDetails
+        failure [
+          { code: 400, message: 'Bad request' }
+        ]
         tags %w[projects]
         is_array true
       end
@@ -272,6 +294,7 @@ module API
       # TODO: Set higher urgency https://gitlab.com/gitlab-org/gitlab/-/issues/211495
       get feature_category: :projects, urgency: :low do
         validate_projects_api_rate_limit_for_unauthenticated_users!
+        validate_updated_at_order_and_filter!
 
         present_projects load_projects
       end

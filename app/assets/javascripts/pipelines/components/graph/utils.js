@@ -35,7 +35,6 @@ const calculatePipelineLayersInfo = (pipeline, componentName, metricsPath) => {
   return layers;
 };
 
-/* eslint-disable @gitlab/require-i18n-strings */
 const getQueryHeaders = (etagResource) => {
   return {
     fetchOptions: {
@@ -52,6 +51,7 @@ const getQueryHeaders = (etagResource) => {
 const serializeGqlErr = (gqlError) => {
   const { locations = [], message = '', path = [] } = gqlError;
 
+  // eslint-disable-next-line @gitlab/require-i18n-strings
   return `
     ${message}.
     Locations: ${locations
@@ -74,13 +74,11 @@ const serializeLoadErrors = (errors) => {
   }
 
   if (!isEmpty(networkError)) {
-    return `Network error: ${networkError.message}`;
+    return `Network error: ${networkError.message}`; // eslint-disable-line @gitlab/require-i18n-strings
   }
 
   return message;
 };
-
-/* eslint-enable @gitlab/require-i18n-strings */
 
 const toggleQueryPollingByVisibility = (queryRef, interval = 10000) => {
   const stopStartQuery = (query) => {

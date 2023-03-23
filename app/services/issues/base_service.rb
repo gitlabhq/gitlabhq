@@ -121,18 +121,6 @@ module Issues
       super || issue.confidential_changed?
     end
 
-    def delete_milestone_closed_issue_counter_cache(milestone)
-      return unless milestone
-
-      Milestones::ClosedIssuesCountService.new(milestone).delete_cache
-    end
-
-    def delete_milestone_total_issue_counter_cache(milestone)
-      return unless milestone
-
-      Milestones::IssuesCountService.new(milestone).delete_cache
-    end
-
     override :allowed_create_params
     def allowed_create_params(params)
       super(params).except(:work_item_type_id, :work_item_type)

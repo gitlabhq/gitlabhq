@@ -42,6 +42,7 @@ class Project < ApplicationRecord
   include BlocksUnsafeSerialization
   include Subquery
   include IssueParent
+  include UpdatedAtFilterable
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override

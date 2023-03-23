@@ -55,8 +55,8 @@ RSpec.describe API::Projects, feature_category: :projects do
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
   let_it_be(:admin) { create(:admin) }
-  let_it_be(:project, reload: true) { create(:project, :repository, create_branch: 'something_else', namespace: user.namespace) }
-  let_it_be(:project2, reload: true) { create(:project, namespace: user.namespace) }
+  let_it_be(:project, reload: true) { create(:project, :repository, create_branch: 'something_else', namespace: user.namespace, updated_at: 5.days.ago) }
+  let_it_be(:project2, reload: true) { create(:project, namespace: user.namespace, updated_at: 4.days.ago) }
   let_it_be(:project_member) { create(:project_member, :developer, user: user3, project: project) }
   let_it_be(:user4) { create(:user, username: 'user.withdot') }
   let_it_be(:project3, reload: true) do
@@ -507,6 +507,35 @@ RSpec.describe API::Projects, feature_category: :projects do
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.map { |project| project['id'] }).to contain_exactly(*Project.public_or_visible_to_user(user).pluck(:id))
+        end
+      end
+
+      context 'filter by updated_at' do
+        let(:filter) { { updated_before: 2.days.ago.iso8601, updated_after: 6.days.ago, order_by: :updated_at } }
+
+        it_behaves_like 'projects response' do
+          let(:current_user) { user }
+          let(:projects) { [project2, project] }
+        end
+
+        it 'returns projects sorted by updated_at' do
+          get api('/projects', user), params: filter
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.map { |p| p['id'] }).to match([project2, project].map(&:id))
+        end
+
+        context 'when filtering by updated_at and sorting by a different column' do
+          let(:filter) { { updated_before: 2.days.ago.iso8601, updated_after: 6.days.ago, order_by: 'id' } }
+
+          it 'returns an error' do
+            get api('/projects', user), params: filter
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to eq(
+              '400 Bad request - `updated_at` filter and `updated_at` sorting must be paired'
+            )
+          end
         end
       end
 
@@ -1643,6 +1672,16 @@ RSpec.describe API::Projects, feature_category: :projects do
       expect(json_response.first.keys).to include('container_registry_access_level')
     end
 
+    context 'filter by updated_at' do
+      it 'returns only projects updated on the given timeframe' do
+        get api("/users/#{user.id}/projects", user),
+          params: { updated_before: 2.days.ago.iso8601, updated_after: 6.days.ago }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.map { |project| project['id'] }).to contain_exactly(project2.id, project.id)
+      end
+    end
+
     context 'and using id_after' do
       let!(:another_public_project) { create(:project, :public, name: 'another_public_project', creator_id: user4.id, namespace: user4.namespace) }
 
@@ -1773,6 +1812,16 @@ RSpec.describe API::Projects, feature_category: :projects do
         expect(json_response).to be_an Array
         expect(json_response.map { |project| project['id'] })
           .to contain_exactly(project.id, project2.id, project3.id)
+      end
+
+      context 'filter by updated_at' do
+        it 'returns only projects updated on the given timeframe' do
+          get api("/users/#{user3.id}/starred_projects/", user),
+            params: { updated_before: 2.days.ago.iso8601, updated_after: 6.days.ago }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.map { |project| project['id'] }).to contain_exactly(project2.id, project.id)
+        end
       end
     end
 
@@ -3073,9 +3122,9 @@ RSpec.describe API::Projects, feature_category: :projects do
   end
 
   describe 'fork management' do
-    let(:project_fork_target) { create(:project) }
-    let(:project_fork_source) { create(:project, :public) }
-    let(:private_project_fork_source) { create(:project, :private) }
+    let_it_be_with_refind(:project_fork_target) { create(:project) }
+    let_it_be_with_refind(:project_fork_source) { create(:project, :public) }
+    let_it_be_with_refind(:private_project_fork_source) { create(:project, :private) }
 
     describe 'POST /projects/:id/fork/:forked_from_id' do
       context 'user is a developer' do
@@ -3221,11 +3270,11 @@ RSpec.describe API::Projects, feature_category: :projects do
     end
 
     describe 'GET /projects/:id/forks' do
-      let(:private_fork) { create(:project, :private, :empty_repo) }
-      let(:member) { create(:user) }
-      let(:non_member) { create(:user) }
+      let_it_be_with_refind(:private_fork) { create(:project, :private, :empty_repo) }
+      let_it_be(:member) { create(:user) }
+      let_it_be(:non_member) { create(:user) }
 
-      before do
+      before_all do
         private_fork.add_developer(member)
       end
 
@@ -3248,6 +3297,20 @@ RSpec.describe API::Projects, feature_category: :projects do
             expect(response).to include_pagination_headers
             expect(json_response.length).to eq(1)
             expect(json_response[0]['name']).to eq(private_fork.name)
+          end
+
+          context 'filter by updated_at' do
+            before do
+              private_fork.update!(updated_at: 4.days.ago)
+            end
+
+            it 'returns only forks updated on the given timeframe' do
+              get api("/projects/#{project_fork_source.id}/forks", member),
+                params: { updated_before: 2.days.ago.iso8601, updated_after: 6.days.ago }
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response.map { |project| project['id'] }).to contain_exactly(private_fork.id)
+            end
           end
         end
 

@@ -161,8 +161,8 @@ RSpec.describe Issues::BuildService, feature_category: :team_planning do
         end
       end
 
-      context 'when guest' do
-        let(:user) { guest }
+      context 'when user is not a project member' do
+        let(:user) { create(:user) }
 
         it 'cannot set milestone' do
           milestone = create(:milestone, project: project)

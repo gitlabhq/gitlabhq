@@ -255,7 +255,7 @@ export default {
       this.canRefetchHeaderPipeline = true;
       this.$apollo.queries.headerPipeline.refetch();
     },
-    /* eslint-disable @gitlab/require-i18n-strings */
+    // eslint-disable-next-line @gitlab/require-i18n-strings
     reportFailure({ type, err = 'No error string passed.', skipSentry = false }) {
       this.showAlert = true;
       this.alertType = type;
@@ -263,7 +263,6 @@ export default {
         reportToSentry(this.$options.name, `type: ${type}, info: ${err}`);
       }
     },
-    /* eslint-enable @gitlab/require-i18n-strings */
     updateShowLinksState(val) {
       this.showLinks = val;
     },

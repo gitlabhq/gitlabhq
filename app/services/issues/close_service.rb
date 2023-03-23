@@ -43,7 +43,7 @@ module Issues
           Onboarding::ProgressService.new(project.namespace).execute(action: :issue_auto_closed)
         end
 
-        delete_milestone_closed_issue_counter_cache(issue.milestone)
+        Milestones::ClosedIssuesCountService.new(issue.milestone).delete_cache if issue.milestone
       end
 
       issue

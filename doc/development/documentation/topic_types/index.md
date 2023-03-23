@@ -19,8 +19,11 @@ includes a task or reference topic.
 The tech writing team sometimes uses the acronym `CTRT` to refer to our topic types.
 The acronym refers to the first letter of each topic type.
 
-In addition to the four primary topic types, we also have a page type for
-[Tutorials](tutorial.md) and [Get started](#get-started).
+In addition to the four primary topic types, we also have:
+
+- [Tutorials](tutorial.md) (a page type)
+- [Get started](#get-started) (a page type)
+- [Glossaries](glossary.md) (a topic or page type)
 
 ## Related topics
 

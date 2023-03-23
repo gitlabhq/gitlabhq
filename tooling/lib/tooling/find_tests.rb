@@ -1,16 +1,15 @@
 # frozen_string_literal: true
 
 require 'test_file_finder'
+require_relative 'helpers/file_handler'
 
 module Tooling
   class FindTests
+    include Helpers::FileHandler
+
     def initialize(changes_file, matching_tests_paths)
       @matching_tests_paths = matching_tests_paths
-      @changed_files        = File.read(changes_file).split(' ')
-
-      File.write(matching_tests_paths, '') unless File.exist?(matching_tests_paths)
-
-      @matching_tests = File.read(matching_tests_paths).split(' ')
+      @changed_files        = read_array_from_file(changes_file)
     end
 
     def execute
@@ -22,8 +21,7 @@ module Tooling
         end
       end
 
-      new_matching_tests = tff.test_files.uniq
-      File.write(matching_tests_paths, (matching_tests + new_matching_tests).join(' '))
+      write_array_to_file(matching_tests_paths, tff.test_files.uniq)
     end
 
     private

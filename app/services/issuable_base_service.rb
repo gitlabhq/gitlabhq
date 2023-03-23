@@ -3,6 +3,31 @@
 class IssuableBaseService < ::BaseContainerService
   private
 
+  def available_callbacks
+    [
+      Issuable::Callbacks::Milestone
+    ].freeze
+  end
+
+  def initialize_callbacks!(issuable)
+    @callbacks = available_callbacks.filter_map do |callback_class|
+      callback_params = params.slice(*callback_class::ALLOWED_PARAMS)
+
+      next if callback_params.empty?
+
+      callback_class.new(issuable: issuable, current_user: current_user, params: callback_params)
+    end
+
+    remove_callback_params
+    @callbacks.each(&:after_initialize)
+  end
+
+  def remove_callback_params
+    available_callbacks.each do |callback_class|
+      callback_class::ALLOWED_PARAMS.each { |p| params.delete(p) }
+    end
+  end
+
   def self.constructor_container_arg(value)
     # TODO: Dynamically determining the type of a constructor arg based on the class is an antipattern,
     # but the root cause is that Epics::BaseService has some issues that inheritance may not be the
@@ -13,14 +38,12 @@ class IssuableBaseService < ::BaseContainerService
     { container: value }
   end
 
-  attr_accessor :params, :skip_milestone_email
+  attr_accessor :params
 
   def initialize(container:, current_user: nil, params: {})
     # we need to exclude project params since they may come from external requests. project should always
     # be passed as part of the service's initializer
     super(container: container, current_user: current_user, params: params.except(:project, :project_id))
-
-    @skip_milestone_email = @params.delete(:skip_milestone_email)
   end
 
   def can_admin_issuable?(issuable)
@@ -36,10 +59,7 @@ class IssuableBaseService < ::BaseContainerService
   end
 
   def filter_params(issuable)
-    params.delete(:milestone)
-
     unless can_set_issuable_metadata?(issuable)
-      params.delete(:milestone_id)
       params.delete(:labels)
       params.delete(:add_label_ids)
       params.delete(:add_labels)
@@ -63,7 +83,6 @@ class IssuableBaseService < ::BaseContainerService
     params.delete(:remove_contacts) unless can?(current_user, :set_issue_crm_contacts, issuable)
 
     filter_assignees(issuable)
-    filter_milestone
     filter_labels
     filter_severity(issuable)
     filter_escalation_status(issuable)
@@ -102,19 +121,6 @@ class IssuableBaseService < ::BaseContainerService
     resource     = issuable.persisted? ? issuable : project
 
     can?(user, ability_name, resource)
-  end
-
-  def filter_milestone
-    milestone_id = params[:milestone_id]
-    return unless milestone_id
-
-    params[:milestone_id] = '' if milestone_id == IssuableFinder::Params::NONE
-    groups = project.group&.self_and_ancestors&.select(:id)
-
-    milestone =
-      Milestone.for_projects_and_groups([project.id], groups).find_by_id(milestone_id)
-
-    params[:milestone_id] = '' unless milestone
   end
 
   def filter_labels
@@ -208,6 +214,8 @@ class IssuableBaseService < ::BaseContainerService
   end
 
   def create(issuable, skip_system_notes: false)
+    initialize_callbacks!(issuable)
+
     handle_quick_actions(issuable)
     filter_params(issuable)
 
@@ -231,6 +239,8 @@ class IssuableBaseService < ::BaseContainerService
     end
 
     if issuable_saved
+      @callbacks.each(&:after_save_commit)
+
       create_system_notes(issuable, is_update: false) unless skip_system_notes
       handle_changes(issuable, { params: params })
 
@@ -280,6 +290,8 @@ class IssuableBaseService < ::BaseContainerService
   end
 
   def update(issuable)
+    initialize_callbacks!(issuable)
+
     prepare_update_params(issuable)
     handle_quick_actions(issuable)
     filter_params(issuable)
@@ -292,7 +304,7 @@ class IssuableBaseService < ::BaseContainerService
     assign_requested_crm_contacts(issuable)
     widget_params = filter_widget_params
 
-    if issuable.changed? || params.present? || widget_params.present?
+    if issuable.changed? || params.present? || widget_params.present? || @callbacks.present?
       issuable.assign_attributes(allowed_update_params(params))
 
       if issuable.description_changed?
@@ -309,13 +321,15 @@ class IssuableBaseService < ::BaseContainerService
       # We have to perform this check before saving the issuable as Rails resets
       # the changed fields upon calling #save.
       update_project_counters = issuable.project && update_project_counter_caches?(issuable)
-      ensure_milestone_available(issuable)
 
       issuable_saved = issuable.with_transaction_returning_status do
         transaction_update(issuable, { save_with_touch: should_touch })
       end
 
       if issuable_saved
+        @callbacks.each(&:after_update_commit)
+        @callbacks.each(&:after_save_commit)
+
         create_system_notes(
           issuable, old_labels: old_associations[:labels], old_milestone: old_associations[:milestone]
         )
@@ -584,14 +598,6 @@ class IssuableBaseService < ::BaseContainerService
 
   def parent
     project
-  end
-
-  # we need to check this because milestone from milestone_id param is displayed on "new" page
-  # where private project milestone could leak without this check
-  def ensure_milestone_available(issuable)
-    return unless issuable.supports_milestone? && issuable.milestone_id.present?
-
-    issuable.milestone_id = nil unless issuable.milestone_available?
   end
 
   def update_timestamp?(issuable)

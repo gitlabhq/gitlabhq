@@ -36,7 +36,6 @@ module MergeRequests
       end
 
       handle_target_branch_change(merge_request)
-      handle_milestone_change(merge_request)
       handle_draft_status_change(merge_request, changed_fields)
 
       track_title_and_desc_edits(changed_fields)
@@ -202,25 +201,6 @@ module MergeRequests
         merge_request,
         current_user
       )
-    end
-
-    def handle_milestone_change(merge_request)
-      return if skip_milestone_email
-
-      return unless merge_request.previous_changes.include?('milestone_id')
-
-      merge_request_activity_counter.track_milestone_changed_action(user: current_user)
-
-      previous_milestone = Milestone.find_by_id(merge_request.previous_changes['milestone_id'].first)
-      delete_milestone_total_merge_requests_counter_cache(previous_milestone)
-
-      if merge_request.milestone.nil?
-        notification_service.async.removed_milestone(merge_request, current_user)
-      else
-        notification_service.async.changed_milestone(merge_request, merge_request.milestone, current_user)
-
-        delete_milestone_total_merge_requests_counter_cache(merge_request.milestone)
-      end
     end
 
     def create_branch_change_note(issuable, branch_type, event_type, old_branch, new_branch)

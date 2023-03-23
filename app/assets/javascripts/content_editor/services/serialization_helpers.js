@@ -638,9 +638,8 @@ const generateStrikeTag = (wrapTagName = openTag) => {
     switch (type) {
       case '~~':
         return type;
-      /* eslint-disable @gitlab/require-i18n-strings */
-      case '<del':
-      case '<strike':
+      case '<del': // eslint-disable-line @gitlab/require-i18n-strings
+      case '<strike': // eslint-disable-line @gitlab/require-i18n-strings
       case '<s':
         return wrapTagName(type.substring(1));
       default:

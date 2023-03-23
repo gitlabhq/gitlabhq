@@ -1,5 +1,3 @@
-/* eslint-disable consistent-return */
-
 // Zen Mode (full screen) textarea
 //
 /*= provides zen_mode:enter */
@@ -55,6 +53,7 @@ export default class ZenMode {
     $(document).on('zen_mode:leave', () => {
       this.exit();
     });
+    // eslint-disable-next-line consistent-return
     $(document).on('keydown', (e) => {
       // Esc
       if (e.keyCode === 27) {

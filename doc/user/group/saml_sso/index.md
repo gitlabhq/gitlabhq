@@ -44,6 +44,9 @@ for additional guidance on information your identity provider may require.
 GitLab provides the following information for guidance only.
 If you have any questions on configuring the SAML app, contact your provider's support.
 
+If you are having issues setting up your identity provider, see the
+[troubleshooting documentation](#troubleshooting).
+
 ### Set up Azure
 
 To set up SSO with Azure as your identity provider:
@@ -214,18 +217,7 @@ After you set up your identity provider to work with GitLab, you must configure 
 NOTE:
 The certificate [fingerprint algorithm](../../../integration/saml.md#configure-saml-on-your-idp) must be in SHA1. When configuring the identity provider (such as [Google Workspace](#set-up-google-workspace)), use a secure signature algorithm.
 
-### Additional configuration information
-
-Many SAML terms can vary between providers. It is possible that the information you are looking for is listed under another name.
-
-For more information, start with your identity provider's documentation. Look for their options and examples to see how they configure SAML. This can provide hints on what you need to configure GitLab to work with these providers.
-
-It can also help to look at our [more detailed docs for self-managed GitLab](../../../integration/saml.md).
-SAML configuration for GitLab.com is mostly the same as for self-managed instances.
-However, self-managed GitLab instances use a configuration file that supports more options as described in the external [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml/).
-Internally that uses the [`ruby-saml` library](https://github.com/onelogin/ruby-saml), so we sometimes check there to verify low level details of less commonly used options.
-
-It can also help to compare the XML response from your provider with our [example XML used for internal testing](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/fixtures/saml/response.xml).
+If you are having issues configuring GitLab, see the [troubleshooting documentation](#troubleshooting).
 
 ### SSO enforcement
 
@@ -534,4 +526,18 @@ For more information on:
 
 ## Troubleshooting
 
-See our [troubleshooting SAML guide](troubleshooting.md).
+If you find it difficult to match the different SAML terms between GitLab and the
+identity provider:
+
+1. Check your identity provider's documentation. Look at their example SAML
+   configurations for information on the terms they use.
+1. Check the [SAML SSO for self-managed GitLab instances documentation](../../../integration/saml.md).
+   The self-managed GitLab instance SAML configuration file supports more options
+   than the GitLab.com file. You can find information on the self-managed instance
+   file in the:
+   - External [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml/).
+   - [`ruby-saml` library](https://github.com/onelogin/ruby-saml).
+1. Compare the XML response from your provider with our
+   [example XML used for internal testing](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/fixtures/saml/response.xml).
+
+For other troubleshooting information, see the [troubleshooting SAML guide](troubleshooting.md).

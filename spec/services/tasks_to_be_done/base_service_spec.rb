@@ -33,9 +33,9 @@ RSpec.describe TasksToBeDone::BaseService, feature_category: :team_planning do
         add_labels: label.title
       }
 
-      expect(Issues::BuildService)
+      expect(Issues::CreateService)
         .to receive(:new)
-        .with(container: project, current_user: current_user, params: params)
+        .with(container: project, current_user: current_user, params: params, spam_params: nil)
         .and_call_original
 
       expect { service.execute }.to change(Issue, :count).by(1)

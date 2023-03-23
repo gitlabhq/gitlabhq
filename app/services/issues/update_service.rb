@@ -64,7 +64,6 @@ module Issues
       handle_assignee_changes(issue, old_assignees)
       handle_confidential_change(issue)
       handle_added_labels(issue, old_labels)
-      handle_milestone_change(issue)
       handle_added_mentions(issue, old_mentioned_users)
       handle_severity_change(issue, old_severity)
       handle_escalation_status_change(issue)
@@ -163,35 +162,6 @@ module Issues
 
       if added_labels.present?
         notification_service.async.relabeled_issue(issue, added_labels, current_user)
-      end
-    end
-
-    def handle_milestone_change(issue)
-      return unless issue.previous_changes.include?('milestone_id')
-
-      invalidate_milestone_issue_counters(issue)
-      send_milestone_change_notification(issue)
-      GraphqlTriggers.issuable_milestone_updated(issue)
-    end
-
-    def invalidate_milestone_issue_counters(issue)
-      issue.previous_changes['milestone_id'].each do |milestone_id|
-        next unless milestone_id
-
-        milestone = Milestone.find_by_id(milestone_id)
-
-        delete_milestone_closed_issue_counter_cache(milestone)
-        delete_milestone_total_issue_counter_cache(milestone)
-      end
-    end
-
-    def send_milestone_change_notification(issue)
-      return if skip_milestone_email
-
-      if issue.milestone.nil?
-        notification_service.async.removed_milestone(issue, current_user)
-      else
-        notification_service.async.changed_milestone(issue, issue.milestone, current_user)
       end
     end
 

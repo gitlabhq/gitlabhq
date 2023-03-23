@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, feature_category: :code_review_workflow do
   include ProjectForksHelper
+  include AfterNextHelpers
 
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
@@ -333,6 +334,19 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
             end
             expect(merge_request.valid?).to be false
           end
+        end
+      end
+
+      context 'with a milestone' do
+        let(:milestone) { create(:milestone, project: project) }
+
+        let(:opts) { { title: 'Awesome merge_request', source_branch: 'feature', target_branch: 'master', milestone_id: milestone.id } }
+
+        it 'deletes the cache key for milestone merge request counter' do
+          expect_next(Milestones::MergeRequestsCountService, milestone)
+            .to receive(:delete_cache).and_call_original
+
+          expect(merge_request).to be_persisted
         end
       end
 

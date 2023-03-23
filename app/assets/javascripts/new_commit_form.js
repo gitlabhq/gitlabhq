@@ -1,4 +1,3 @@
-/* eslint-disable no-return-assign */
 export default class NewCommitForm {
   constructor(form) {
     this.form = form;
@@ -21,6 +20,6 @@ export default class NewCommitForm {
       this.createMergeRequestContainer.hide();
       this.createMergeRequest.prop('checked', false);
     }
-    return (this.wasDifferent = different);
+    this.wasDifferent = different;
   }
 }

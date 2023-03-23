@@ -2,6 +2,8 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_registry do
+  include ExclusiveLeaseHelpers
+
   let(:namespace) { create(:namespace) }
   let(:project) { create(:project, namespace: namespace) }
   let(:user) { create(:user) }
@@ -15,8 +17,10 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
 
   let(:package_name) { "@#{namespace.path}/my-app" }
   let(:version_data) { params.dig('versions', '1.0.1') }
+  let(:lease_key) { "packages:npm:create_package_service:packages:#{project.id}_#{package_name}" }
+  let(:service) { described_class.new(project, user, params) }
 
-  subject { described_class.new(project, user, params).execute }
+  subject { service.execute }
 
   shared_examples 'valid package' do
     it 'creates a package' do
@@ -215,6 +219,66 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       with_them do
         it { expect { subject }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Version is invalid') }
       end
+    end
+
+    it 'obtains a lease to create a new package' do
+      expect_to_obtain_exclusive_lease(lease_key, timeout: described_class::DEFAULT_LEASE_TIMEOUT)
+
+      subject
+    end
+
+    context 'with npm_obtain_lease_to_create_package disabled' do
+      before do
+        stub_feature_flags(npm_obtain_lease_to_create_package: false)
+      end
+
+      it 'does not obtain a lease' do
+        lease = stub_exclusive_lease(lease_key, 'uuid', timeout: described_class::DEFAULT_LEASE_TIMEOUT)
+
+        expect(lease).not_to receive(:try_obtain)
+
+        subject
+      end
+    end
+
+    context 'when the lease is already taken' do
+      before do
+        stub_exclusive_lease_taken(lease_key, timeout: described_class::DEFAULT_LEASE_TIMEOUT)
+      end
+
+      it { expect(subject[:http_status]).to eq 400 }
+      it { expect(subject[:message]).to eq 'Could not obtain package lease.' }
+    end
+
+    context 'when many of the same packages are created at the same time', :delete do
+      it 'only creates one package' do
+        expect { package_creation_race(project, user, params) }.to change { Packages::Package.count }.by(1)
+      end
+    end
+
+    def package_creation_race(project, user, params)
+      # create a race condition - structure from https://blog.arkency.com/2015/09/testing-race-conditions/
+      wait_for_it = true
+
+      threads = Array.new(5) do |_|
+        Thread.new do
+          # A loop to make threads busy until we `join` them
+          true while wait_for_it
+
+          described_class.new(project, user, params).execute
+        end
+      end
+
+      wait_for_it = false
+      threads.each(&:join)
+    end
+  end
+
+  describe '#lease_key' do
+    subject { service.send(:lease_key) }
+
+    it 'returns an unique key' do
+      is_expected.to eq lease_key
     end
   end
 end

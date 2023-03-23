@@ -124,6 +124,15 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
         expect(issue.issue_customer_relations_contacts).to be_empty
       end
 
+      context 'with milestone' do
+        it 'deletes milestone issues count cache' do
+          expect_next(Milestones::IssuesCountService, milestone)
+            .to receive(:delete_cache).and_call_original
+
+          expect(result).to be_success
+        end
+      end
+
       context 'when the work item type is not allowed to create' do
         before do
           allow_next_instance_of(::Issues::BuildService) do |instance|

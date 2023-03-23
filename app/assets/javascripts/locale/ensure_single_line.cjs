@@ -1,5 +1,3 @@
-/* eslint-disable import/no-commonjs */
-
 const SPLIT_REGEX = /\s*[\r\n]+\s*/;
 
 /**

@@ -375,6 +375,17 @@ describe('issue_note', () => {
       expect(wrapper.emitted('handleUpdateNote')).toHaveLength(1);
     });
 
+    it('should not update note with sensitive token', () => {
+      const sensitiveMessage = 'token: glpat-1234567890abcdefghij';
+
+      createWrapper();
+      updateActions();
+      wrapper
+        .findComponent(NoteBody)
+        .vm.$emit('handleFormUpdate', { ...params, noteText: sensitiveMessage });
+      expect(updateNote).not.toHaveBeenCalled();
+    });
+
     it('does not stringify empty position', () => {
       createWrapper();
       updateActions();
