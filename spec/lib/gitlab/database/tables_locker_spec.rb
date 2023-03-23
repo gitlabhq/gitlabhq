@@ -5,7 +5,11 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate_connection, :silence_stdout,
   feature_category: :pods do
   let(:default_lock_writes_manager) do
-    instance_double(Gitlab::Database::LockWritesManager, lock_writes: nil, unlock_writes: nil)
+    instance_double(
+      Gitlab::Database::LockWritesManager,
+      lock_writes: { action: 'any action' },
+      unlock_writes: { action: 'unlocked' }
+    )
   end
 
   before do
@@ -81,6 +85,10 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
 
       subject
     end
+
+    it 'returns list of actions' do
+      expect(subject).to include({ action: 'any action' })
+    end
   end
 
   shared_examples "unlock tables" do |gitlab_schema, database_name|
@@ -109,6 +117,10 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
       end
 
       subject
+    end
+
+    it 'returns list of actions' do
+      expect(subject).to include({ action: 'unlocked' })
     end
   end
 

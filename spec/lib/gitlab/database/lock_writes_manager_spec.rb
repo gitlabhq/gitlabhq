@@ -122,6 +122,13 @@ RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :
       }
     end
 
+    it 'returns result hash with action skipped' do
+      subject.lock_writes
+
+      expect(subject.lock_writes).to eq({ action: "skipped", database: "main", dry_run: false,
+table: test_table })
+    end
+
     context 'when running in dry_run mode' do
       let(:dry_run) { true }
 
@@ -145,6 +152,11 @@ RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :
           connection.execute("delete from #{test_table}")
           connection.execute("truncate #{test_table}")
         end.not_to raise_error
+      end
+
+      it 'returns result hash with action locked' do
+        expect(subject.lock_writes).to eq({ action: "locked", database: "main", dry_run: dry_run,
+table: test_table })
       end
     end
   end
@@ -186,6 +198,11 @@ RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :
       subject.unlock_writes
     end
 
+    it 'returns result hash with action unlocked' do
+      expect(subject.unlock_writes).to eq({ action: "unlocked", database: "main", dry_run: dry_run,
+table: test_table })
+    end
+
     context 'when running in dry_run mode' do
       let(:dry_run) { true }
 
@@ -205,6 +222,11 @@ RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :
         expect do
           connection.execute("delete from #{test_table}")
         end.to raise_error(ActiveRecord::StatementInvalid, /Table: "#{test_table}" is write protected/)
+      end
+
+      it 'returns result hash with dry_run true' do
+        expect(subject.unlock_writes).to eq({ action: "unlocked", database: "main", dry_run: dry_run,
+table: test_table })
       end
     end
   end

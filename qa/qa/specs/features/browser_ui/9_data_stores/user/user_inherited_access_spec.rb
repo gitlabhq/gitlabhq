@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage' do
-    describe 'User', :requires_admin, product_group: :organization do
+  RSpec.describe 'Data Stores' do
+    describe 'User', :requires_admin, product_group: :tenant_scale do
       let(:admin_api_client) { Runtime::API::Client.as_admin }
 
       let!(:parent_group) do
@@ -41,6 +41,10 @@ module QA
           parent_group.add_member(parent_group_user)
         end
 
+        after do
+          parent_group_user.remove_via_api!
+        end
+
         it(
           'is allowed to edit the sub-group project files',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363467'
@@ -57,10 +61,6 @@ module QA
           Page::File::Form.perform do |file_form|
             expect(file_form).to have_element(:commit_button)
           end
-        end
-
-        after do
-          parent_group_user.remove_via_api!
         end
       end
 
@@ -87,6 +87,10 @@ module QA
           sub_group.add_member(sub_group_user)
         end
 
+        after do
+          sub_group_user.remove_via_api!
+        end
+
         it(
           'is not allowed to edit the parent group project files',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363466'
@@ -101,10 +105,6 @@ module QA
           Page::File::Show.perform(&:click_edit)
 
           expect(page).to have_text("You can’t edit files directly in this project.")
-        end
-
-        after do
-          sub_group_user.remove_via_api!
         end
       end
     end

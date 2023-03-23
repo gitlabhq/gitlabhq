@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage' do
-    describe 'User', :requires_admin, :reliable, product_group: :organization do
+  RSpec.describe 'Data Stores' do
+    describe 'User', :requires_admin, :reliable, product_group: :tenant_scale do
       let(:admin_api_client) { Runtime::API::Client.as_admin }
 
       let!(:user) do
@@ -41,7 +41,7 @@ module QA
         end
 
         it 'is not allowed to edit the project files',
-           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347866' do
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347866' do
           Flow::Login.sign_in(as: user)
           project.visit!
 

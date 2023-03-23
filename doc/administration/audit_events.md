@@ -355,6 +355,7 @@ The following user actions on a GitLab instance generate instance audit events:
 - A user's two-factor authentication was disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238177) in
   GitLab 15.1.
 - Enabled Admin Mode. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362101) in GitLab 15.7.
+- All [group events](#group-events) and [project events](#project-events).
 
 Instance events can also be accessed using the [Instance Audit Events API](../api/audit_events.md#instance-audit-events).
 

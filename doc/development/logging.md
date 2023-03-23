@@ -202,7 +202,7 @@ suffix and `duration` within its name (for example, `view_duration_s`).
 
 ## Multi-destination Logging
 
-GitLab is transitioning from unstructured/plaintext logs to structured/JSON logs. During this transition period some logs are recorded in multiple formats through multi-destination logging.
+GitLab transitioned from structured to JSON logs. However, through multi-destination logging, the logs can be recorded in multiple formats.
 
 ### How to use multi-destination logging
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database do
+RSpec.describe Gitlab::Database, feature_category: :database do
   before do
     stub_const('MigrationTest', Class.new { include Gitlab::Database })
   end
@@ -62,6 +62,25 @@ RSpec.describe Gitlab::Database do
 
       it 'returns false for non-existent' do
         expect(described_class.has_config?(:nonexistent)).to eq(false)
+      end
+    end
+  end
+
+  describe '.has_database?' do
+    context 'three tier database config' do
+      it 'returns true for main' do
+        expect(described_class.has_database?(:main)).to eq(true)
+      end
+
+      it 'returns false for shared database' do
+        skip_if_multiple_databases_not_setup(:ci)
+        skip_if_database_exists(:ci)
+
+        expect(described_class.has_database?(:ci)).to eq(false)
+      end
+
+      it 'returns false for non-existent' do
+        expect(described_class.has_database?(:nonexistent)).to eq(false)
       end
     end
   end

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage' do
-    describe 'Invite group', :reliable, product_group: :organization do
+  RSpec.describe 'Data Stores' do
+    describe 'Invite group', :reliable, product_group: :tenant_scale do
       shared_examples 'invites group to project' do
         it 'verifies group is added and members can access project with correct access level' do
           Page::Project::Menu.perform(&:click_members)
@@ -28,7 +28,9 @@ module QA
         end
       end
 
-      let(:user) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1) }
+      let(:user) do
+        Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
+      end
 
       before do
         Flow::Login.sign_in
@@ -36,7 +38,8 @@ module QA
         project.visit!
       end
 
-      context 'to personal namespace project', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349223' do
+      context 'with a personal namespace project',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349223' do
         let(:group) do
           Resource::Group.fabricate_via_api! do |group|
             group.path = "group-for-personal-project-#{SecureRandom.hex(8)}"
@@ -55,7 +58,7 @@ module QA
         it_behaves_like 'invites group to project'
       end
 
-      context 'to group project', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349340' do
+      context 'with a group project', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349340' do
         let(:group) do
           Resource::Group.fabricate_via_api! do |group|
             group.path = "group-for-group-project-#{SecureRandom.hex(8)}"

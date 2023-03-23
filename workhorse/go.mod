@@ -15,7 +15,7 @@ require (
 	github.com/golang/protobuf v1.5.3
 	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/gorilla/websocket v1.5.0
-	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
+	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/johannesboyne/gofakes3 v0.0.0-20230310080033-c0edf658332b
 	github.com/jpillora/backoff v1.0.0

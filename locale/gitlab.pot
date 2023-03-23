@@ -14038,6 +14038,9 @@ msgstr ""
 msgid "Dependency Scanning"
 msgstr ""
 
+msgid "Dependency chains are not supported"
+msgstr ""
+
 msgid "Dependency list"
 msgstr ""
 
@@ -51001,16 +51004,10 @@ msgstr ""
 msgid "cannot be used for user namespace"
 msgstr ""
 
-msgid "cannot block others"
-msgstr ""
-
 msgid "cannot contain HTML/XML tags, including any word between angle brackets (&lt;,&gt;)."
 msgstr ""
 
 msgid "cannot include leading slash or directory traversal."
-msgstr ""
-
-msgid "cannot itself be blocked"
 msgstr ""
 
 msgid "cannot merge"

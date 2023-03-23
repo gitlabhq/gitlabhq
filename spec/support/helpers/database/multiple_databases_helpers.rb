@@ -4,6 +4,18 @@ module Database
   module MultipleDatabasesHelpers
     EXTRA_DBS = ::Gitlab::Database::DATABASE_NAMES.map(&:to_sym) - [:main]
 
+    def database_exists?(database_name)
+      ::Gitlab::Database.has_database?(database_name)
+    end
+
+    def skip_if_shared_database(database_name)
+      skip "Skipping because #{database_name} is shared or doesn't not exist" unless database_exists?(database_name)
+    end
+
+    def skip_if_database_exists(database_name)
+      skip "Skipping because database #{database_name} exists" if database_exists?(database_name)
+    end
+
     def skip_if_multiple_databases_not_setup(*databases)
       unless (databases - EXTRA_DBS).empty?
         raise "Unsupported database in #{databases}. It must be one of #{EXTRA_DBS}."

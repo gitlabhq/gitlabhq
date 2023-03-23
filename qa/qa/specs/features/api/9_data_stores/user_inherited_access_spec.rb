@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage' do
-    describe 'User', :requires_admin, product_group: :organization do
+  RSpec.describe 'Data Stores' do
+    describe 'User', :requires_admin, product_group: :tenant_scale do
       let(:admin_api_client) { Runtime::API::Client.as_admin }
 
       let!(:parent_group) do
@@ -39,6 +39,10 @@ module QA
 
         before do
           parent_group.add_member(parent_group_user)
+        end
+
+        after do
+          parent_group_user.remove_via_api!
         end
 
         it(
@@ -98,10 +102,6 @@ module QA
             end.not_to raise_error
           end
         end
-
-        after do
-          parent_group_user.remove_via_api!
-        end
       end
 
       context 'when added to sub-group' do
@@ -125,6 +125,10 @@ module QA
 
         before do
           sub_group.add_member(sub_group_user)
+        end
+
+        after do
+          sub_group_user.remove_via_api!
         end
 
         it(
@@ -176,10 +180,6 @@ module QA
             end
           end.to raise_error(Resource::ApiFabricator::ResourceFabricationFailedError,
             /403 Forbidden - You are not allowed to push into this branch/)
-        end
-
-        after do
-          sub_group_user.remove_via_api!
         end
       end
     end

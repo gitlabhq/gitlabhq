@@ -27,7 +27,7 @@ module Backup
     def dump(destination_dir, backup_id)
       FileUtils.mkdir_p(destination_dir)
 
-      snapshot_ids.each do |database_name, snapshot_id|
+      each_database_snapshot_id do |database_name, snapshot_id|
         base_model = base_models_for_backup[database_name]
 
         config = base_model.connection_db_config.configuration_hash
@@ -41,7 +41,7 @@ module Backup
         pg_env(config)
         pgsql_args = ["--clean"] # Pass '--clean' to include 'DROP TABLE' statements in the DB dump.
         pgsql_args << '--if-exists'
-        pgsql_args << "--snapshot=#{snapshot_ids[database_name]}"
+        pgsql_args << "--snapshot=#{snapshot_id}"
 
         if Gitlab.config.backup.pg_schema
           pgsql_args << '-n'
@@ -63,8 +63,10 @@ module Backup
         progress.flush
       end
     ensure
-      base_models_for_backup.each do |_database_name, base_model|
-        Gitlab::Database::TransactionTimeoutSettings.new(base_model.connection).restore_timeouts
+      ::Gitlab::Database::EachDatabase.each_database_connection(
+        only: base_models_for_backup.keys, include_shared: false
+      ) do |connection, _|
+        Gitlab::Database::TransactionTimeoutSettings.new(connection).restore_timeouts
       end
     end
 
@@ -237,31 +239,38 @@ module Backup
     private
 
     def drop_tables(database_name)
+      puts_time 'Cleaning the database ... '.color(:blue)
+
       if Rake::Task.task_defined? "gitlab:db:drop_tables:#{database_name}"
-        puts_time 'Cleaning the database ... '.color(:blue)
         Rake::Task["gitlab:db:drop_tables:#{database_name}"].invoke
-        puts_time 'done'.color(:green)
-      elsif Gitlab::Database.database_base_models.one?
-        # In single database, we do not have rake tasks per database
-        puts_time 'Cleaning the database ... '.color(:blue)
+      else
+        # In single database (single or two connections)
         Rake::Task["gitlab:db:drop_tables"].invoke
-        puts_time 'done'.color(:green)
       end
+
+      puts_time 'done'.color(:green)
     end
 
     def pg_restore_cmd(database)
       ['psql', database]
     end
 
-    def snapshot_ids
-      @snapshot_ids ||= base_models_for_backup.each_with_object({}) do |(database_name, base_model), snapshot_ids|
-        Gitlab::Database::TransactionTimeoutSettings.new(base_model.connection).disable_timeouts
+    def each_database_snapshot_id(&block)
+      @database_to_snapshot_id = {}
 
-        base_model.connection.begin_transaction(isolation: :repeatable_read)
+      if @database_to_snapshot_id.empty?
+        ::Gitlab::Database::EachDatabase.each_database_connection(
+          only: base_models_for_backup.keys, include_shared: false
+        ) do |connection, database_name|
+          Gitlab::Database::TransactionTimeoutSettings.new(connection).disable_timeouts
 
-        snapshot_ids[database_name] =
-          base_model.connection.execute("SELECT pg_export_snapshot() as snapshot_id;").first['snapshot_id']
+          connection.begin_transaction(isolation: :repeatable_read)
+
+          @database_to_snapshot_id[database_name] = connection.select_value("SELECT pg_export_snapshot()")
+        end
       end
+
+      @database_to_snapshot_id.each(&block)
     end
   end
 end

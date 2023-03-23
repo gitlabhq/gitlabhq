@@ -134,6 +134,12 @@ module Gitlab
         .present?
     end
 
+    # Database configured. Returns false if the database is shared
+    def self.has_database?(database_name)
+      db_config = ::Gitlab::Database.database_base_models[database_name]&.connection_db_config
+      db_config.present? && ::Gitlab::Database.db_config_share_with(db_config).nil?
+    end
+
     class PgUser < ApplicationRecord
       self.table_name = 'pg_user'
       self.primary_key = :usename

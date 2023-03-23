@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage' do
-    describe 'Project transfer between groups', :reliable, product_group: :organization do
+  RSpec.describe 'Data Stores' do
+    describe 'Project transfer between groups', :reliable, product_group: :tenant_scale do
       let(:source_group) do
         Resource::Group.fabricate_via_api! do |group|
           group.path = "source-group-#{SecureRandom.hex(8)}"
@@ -36,7 +36,7 @@ module QA
       end
 
       it 'user transfers a project between groups',
-         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347878' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347878' do
         Page::File::Show.perform(&:go_to_general_settings)
 
         Page::Project::Settings::Main.perform(&:expand_advanced_settings)

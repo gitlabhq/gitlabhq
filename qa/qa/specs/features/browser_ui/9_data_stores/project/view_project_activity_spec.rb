@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage' do
-    describe 'Project activity', :reliable, product_group: :organization do
+  RSpec.describe 'Data Stores' do
+    describe 'Project activity', :reliable, product_group: :tenant_scale do
       it 'user creates an event in the activity page upon Git push',
-         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347879' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347879' do
         Flow::Login.sign_in
 
         project = Resource::Repository::ProjectPush.fabricate! do |push|

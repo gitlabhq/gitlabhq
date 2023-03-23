@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :requires_admin, product_group: :organization do
+  RSpec.describe 'Data Stores', :requires_admin, product_group: :tenant_scale do
     describe 'Group member access request' do
       let!(:admin_api_client) { Runtime::API::Client.as_admin }
 
@@ -40,7 +40,7 @@ module QA
       end
 
       it 'generates a todo item for the group owner',
-         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370132' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370132' do
         Page::Dashboard::Todos.perform do |todos|
           expect(todos).to have_latest_todo_with_author(
             author: user.name,
@@ -64,7 +64,7 @@ module QA
           end
 
           it 'adds user to the group',
-             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386792' do
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386792' do
             found_member = group.reload!.find_member(user.username)
 
             expect(found_member).not_to be_nil
@@ -81,7 +81,7 @@ module QA
           end
 
           it 'does not add user to the group',
-             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386793' do
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386793' do
             found_member = group.reload!.find_member(user.username)
 
             expect(found_member).to be_nil

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage' do
-    describe 'User', :requires_admin, product_group: :organization do
+  RSpec.describe 'Data Stores' do
+    describe 'User', :requires_admin, product_group: :tenant_scale do
       let(:admin_api_client) { Runtime::API::Client.as_admin }
 
       let(:followed_user_api_client) { Runtime::API::Client.new(:gitlab, user: followed_user) }
@@ -68,7 +68,15 @@ module QA
         followed_user_api_client.personal_access_token
       end
 
-      it 'can be followed and their activity seen', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347678' do
+      after do
+        project&.api_client = admin_api_client
+        project&.remove_via_api!
+        followed_user&.remove_via_api!
+        following_user&.remove_via_api!
+      end
+
+      it 'can be followed and their activity seen',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347678' do
         Flow::Login.sign_in(as: following_user)
         page.visit Runtime::Scenario.gitlab_address + "/#{followed_user.username}"
         Page::User::Show.perform(&:click_follow_user_link)
@@ -92,13 +100,6 @@ module QA
             expect(show).to have_activity('commented on issue')
           end
         end
-      end
-
-      after do
-        project&.api_client = admin_api_client
-        project&.remove_via_api!
-        followed_user&.remove_via_api!
-        following_user&.remove_via_api!
       end
     end
   end

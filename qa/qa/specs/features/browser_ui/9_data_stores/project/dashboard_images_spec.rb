@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', product_group: :organization do
+  RSpec.describe 'Data Stores', product_group: :tenant_scale do
     shared_examples 'loads all images' do |admin|
       let(:api_client) { Runtime::API::Client.as_admin }
 
@@ -21,7 +21,7 @@ module QA
 
         Page::Dashboard::Welcome.perform do |welcome|
           Support::Waiter.wait_until(sleep_interval: 2, max_duration: 60, reload_page: page,
-                                     retry_on_exception: true) do
+            retry_on_exception: true) do
             expect(welcome).to have_welcome_title("Welcome to GitLab")
           end
           # This would be better if it were a visual validation test
