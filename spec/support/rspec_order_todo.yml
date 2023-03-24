@@ -2812,7 +2812,6 @@
 - './ee/spec/services/gitlab_subscriptions/create_hand_raise_lead_service_spec.rb'
 - './ee/spec/services/gitlab_subscriptions/create_service_spec.rb'
 - './ee/spec/services/gitlab_subscriptions/create_trial_or_lead_service_spec.rb'
-- './ee/spec/services/gitlab_subscriptions/extend_reactivate_trial_service_spec.rb'
 - './ee/spec/services/gitlab_subscriptions/fetch_purchase_eligible_namespaces_service_spec.rb'
 - './ee/spec/services/gitlab_subscriptions/fetch_subscription_plans_service_spec.rb'
 - './ee/spec/services/gitlab_subscriptions/notify_seats_exceeded_service_spec.rb'

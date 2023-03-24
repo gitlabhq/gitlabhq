@@ -1,4 +1,4 @@
-import { GlButton, GlModal, GlFormInput, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlFormInput, GlModal, GlSprintf } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
@@ -10,11 +10,17 @@ import { formPath, propsDataMock } from '../mock_data';
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
 let wrapper;
+const modalShowSpy = jest.fn();
+const modalHideSpy = jest.fn();
 
 const stubsData = {
   GlModal: stubComponent(GlModal, {
     template:
       '<div><slot name="modal-title"></slot><slot></slot><slot name="modal-footer"></slot></div>',
+    methods: {
+      show: modalShowSpy,
+      hide: modalHideSpy,
+    },
   }),
   GlButton,
   GlFormInput,
@@ -65,11 +71,10 @@ describe('Delete merged branches component', () => {
     });
 
     it('opens modal when clicked', () => {
-      createComponent(mount);
-      jest.spyOn(wrapper.vm.$refs.modal, 'show');
+      createComponent(mount, stubsData);
       findDeleteButton().trigger('click');
 
-      expect(wrapper.vm.$refs.modal.show).toHaveBeenCalled();
+      expect(modalShowSpy).toHaveBeenCalled();
     });
   });
 
@@ -131,9 +136,8 @@ describe('Delete merged branches component', () => {
     });
 
     it('calls hide on the modal when cancel button is clicked', () => {
-      const closeModalSpy = jest.spyOn(wrapper.vm.$refs.modal, 'hide');
       findCancelButton().trigger('click');
-      expect(closeModalSpy).toHaveBeenCalled();
+      expect(modalHideSpy).toHaveBeenCalled();
     });
   });
 });

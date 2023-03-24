@@ -367,15 +367,6 @@ RSpec.configure do |config|
       ./spec/requests/api/project_snapshots_spec.rb
       ./spec/requests/api/project_snippets_spec.rb
       ./spec/requests/api/projects_spec.rb
-      ./spec/support/shared_examples/requests/api/custom_attributes_shared_examples.rb
-      ./spec/support/shared_examples/requests/api/hooks_shared_examples.rb
-      ./spec/support/shared_examples/requests/api/notes_shared_examples.rb
-      ./spec/support/shared_examples/requests/api/pipelines/visibility_table_shared_examples.rb
-      ./spec/support/shared_examples/requests/api/repository_storage_moves_shared_examples.rb
-      ./spec/support/shared_examples/requests/api/snippets_shared_examples.rb
-      ./spec/support/shared_examples/requests/api/status_shared_examples.rb
-      ./spec/support/shared_examples/requests/clusters/certificate_based_clusters_feature_flag_shared_examples.rb
-      ./spec/support/shared_examples/requests/snippet_shared_examples.rb
       ./ee/spec/requests/api/audit_events_spec.rb
       ./ee/spec/requests/api/ci/minutes_spec.rb
       ./ee/spec/requests/api/elasticsearch_indexed_namespaces_spec.rb
@@ -394,7 +385,6 @@ RSpec.configure do |config|
       ./ee/spec/requests/api/notes_spec.rb
       ./ee/spec/requests/api/settings_spec.rb
       ./ee/spec/requests/api/users_spec.rb
-      ./ee/spec/support/shared_examples/requests/api/project_approval_rules_api_shared_examples.rb
     ]
 
     if example.metadata[:file_path].start_with?(*admin_mode_for_api_feature_flag_paths)
