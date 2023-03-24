@@ -8,7 +8,7 @@ export const LEARN_MORE_LABEL = __('Learn more.');
 export const USAGE_QUOTAS_LABEL = s__('UsageQuota|Usage Quotas');
 export const TOTAL_USAGE_TITLE = s__('UsageQuota|Usage breakdown');
 export const TOTAL_USAGE_SUBTITLE = s__(
-  'UsageQuota|Includes artifacts, repositories, wiki, uploads, and other items.',
+  'UsageQuota|Includes artifacts, repositories, wiki, and other items.',
 );
 export const TOTAL_USAGE_DEFAULT_TEXT = __('Not applicable.');
 export const HELP_LINK_ARIA_LABEL = s__('UsageQuota|%{linkTitle} help link');
@@ -20,11 +20,6 @@ export const projectContainerRegistryPopoverContent = s__(
 
 export const containerRegistryId = 'containerRegistrySize';
 export const containerRegistryPopoverId = 'container-registry-popover';
-export const uploadsId = 'uploadsSize';
-export const uploadsPopoverId = 'uploads-popover';
-export const uploadsPopoverContent = s__(
-  'NamespaceStorage|Uploads are not counted in namespace storage quotas.',
-);
 
 export const PROJECT_TABLE_LABEL_STORAGE_TYPE = s__('UsageQuota|Storage type');
 export const PROJECT_TABLE_LABEL_USAGE = s__('UsageQuota|Usage');
@@ -62,11 +57,6 @@ export const PROJECT_STORAGE_TYPES = [
     id: 'snippetsSize',
     name: s__('UsageQuota|Snippets'),
     description: s__('UsageQuota|Shared bits of code and text.'),
-  },
-  {
-    id: 'uploadsSize',
-    name: s__('UsageQuota|Uploads'),
-    description: s__('UsageQuota|File attachments and smaller design graphics.'),
   },
   {
     id: 'wikiSize',

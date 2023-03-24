@@ -18400,14 +18400,15 @@ CREATE TABLE ml_candidates (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    iid uuid NOT NULL,
     experiment_id bigint NOT NULL,
     user_id bigint,
     start_time bigint,
     end_time bigint,
     status smallint DEFAULT 0 NOT NULL,
     name text,
-    CONSTRAINT check_25e6c65051 CHECK ((char_length(name) <= 255))
+    eid uuid,
+    CONSTRAINT check_25e6c65051 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_cd160587d4 CHECK ((eid IS NOT NULL))
 );
 
 CREATE SEQUENCE ml_candidates_id_seq
@@ -31060,7 +31061,7 @@ CREATE INDEX index_ml_candidate_params_on_candidate_id ON ml_candidate_params US
 
 CREATE UNIQUE INDEX index_ml_candidate_params_on_candidate_id_on_name ON ml_candidate_params USING btree (candidate_id, name);
 
-CREATE UNIQUE INDEX index_ml_candidates_on_experiment_id_and_iid ON ml_candidates USING btree (experiment_id, iid);
+CREATE UNIQUE INDEX index_ml_candidates_on_experiment_id_and_eid ON ml_candidates USING btree (experiment_id, eid);
 
 CREATE INDEX index_ml_candidates_on_user_id ON ml_candidates USING btree (user_id);
 

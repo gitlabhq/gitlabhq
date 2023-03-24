@@ -2,12 +2,7 @@ import { GlTableLite, GlPopover } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import ProjectStorageDetail from '~/usage_quotas/storage/components/project_storage_detail.vue';
-import {
-  containerRegistryPopoverId,
-  containerRegistryId,
-  uploadsPopoverId,
-  uploadsId,
-} from '~/usage_quotas/storage/constants';
+import { containerRegistryPopoverId, containerRegistryId } from '~/usage_quotas/storage/constants';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { projectData, projectHelpLinks } from '../mock_data';
 
@@ -47,9 +42,7 @@ describe('ProjectStorageDetail', () => {
   const findPopoverById = (id) =>
     wrapper.findAllComponents(GlPopover).filter((p) => p.attributes('data-testid') === id);
   const findContainerRegistryPopover = () => findPopoverById(containerRegistryPopoverId);
-  const findUploadsPopover = () => findPopoverById(uploadsPopoverId);
   const findContainerRegistryWarningIcon = () => wrapper.find(`#${containerRegistryPopoverId}`);
-  const findUploadsWarningIcon = () => wrapper.find(`#${uploadsPopoverId}`);
 
   beforeEach(() => {
     createComponent();
@@ -96,31 +89,19 @@ describe('ProjectStorageDetail', () => {
   });
 
   describe.each`
-    description                                            | mockStorageTypes                                                              | rendersContainerRegistryPopover | rendersUploadsPopover
-    ${'without any storage type that has popover'}         | ${[generateStorageType()]}                                                    | ${false}                        | ${false}
-    ${'with container registry storage type'}              | ${[generateStorageType(containerRegistryId)]}                                 | ${true}                         | ${false}
-    ${'with uploads storage type'}                         | ${[generateStorageType(uploadsId)]}                                           | ${false}                        | ${true}
-    ${'with container registry and uploads storage types'} | ${[generateStorageType(containerRegistryId), generateStorageType(uploadsId)]} | ${true}                         | ${true}
-  `(
-    '$description',
-    ({ mockStorageTypes, rendersContainerRegistryPopover, rendersUploadsPopover }) => {
-      beforeEach(() => {
-        createComponent({ storageTypes: mockStorageTypes });
-      });
+    description                                    | mockStorageTypes                              | rendersContainerRegistryPopover
+    ${'without any storage type that has popover'} | ${[generateStorageType()]}                    | ${false}
+    ${'with container registry storage type'}      | ${[generateStorageType(containerRegistryId)]} | ${true}
+  `('$description', ({ mockStorageTypes, rendersContainerRegistryPopover }) => {
+    beforeEach(() => {
+      createComponent({ storageTypes: mockStorageTypes });
+    });
 
-      it(`does ${
-        rendersContainerRegistryPopover ? '' : ' not'
-      } render container registry warning icon and popover`, () => {
-        expect(findContainerRegistryWarningIcon().exists()).toBe(rendersContainerRegistryPopover);
-        expect(findContainerRegistryPopover().exists()).toBe(rendersContainerRegistryPopover);
-      });
-
-      it(`does ${
-        rendersUploadsPopover ? '' : ' not'
-      } render container registry warning icon and popover`, () => {
-        expect(findUploadsWarningIcon().exists()).toBe(rendersUploadsPopover);
-        expect(findUploadsPopover().exists()).toBe(rendersUploadsPopover);
-      });
-    },
-  );
+    it(`does ${
+      rendersContainerRegistryPopover ? '' : ' not'
+    } render container registry warning icon and popover`, () => {
+      expect(findContainerRegistryWarningIcon().exists()).toBe(rendersContainerRegistryPopover);
+      expect(findContainerRegistryPopover().exists()).toBe(rendersContainerRegistryPopover);
+    });
+  });
 });

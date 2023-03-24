@@ -47,6 +47,18 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
     it { is_expected.to eq('-') }
   end
 
+  describe '.iid' do
+    let_it_be(:eid) { SecureRandom.uuid }
+
+    let_it_be(:candidate3) do
+      build(:ml_candidates, :with_metrics_and_params, name: 'candidate0', eid: eid)
+    end
+
+    subject { candidate3.iid }
+
+    it { is_expected.to eq(eid) }
+  end
+
   describe '.artifact' do
     let(:tested_candidate) { candidate }
 

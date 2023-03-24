@@ -296,7 +296,7 @@ Do not use **click**. Instead, use **select** with buttons, links, menu items, a
 ## cloud native
 
 When you're talking about using a Kubernetes cluster to host GitLab, you're talking about a **cloud-native version of GitLab**.
-This version is different than the larger, more monolithic **Omnibus package** that is used to deploy GitLab.
+This version is different than the larger, more monolithic **Linux package** that is used to deploy GitLab.
 
 You can also use **cloud-native GitLab** for short. It should be hyphenated and lowercase.
 
@@ -570,6 +570,10 @@ Do not use **the `gitlab` chart**, **the GitLab Chart**, or **the cloud-native c
 
 You use the **GitLab Helm chart** to deploy **cloud-native GitLab** in a Kubernetes cluster.
 
+If you use it in a context of describing the
+[different installation methods](index.md#how-to-document-different-installation-methods).
+use `Helm chart (Kubernetes)`.
+
 ## GitLab Pages
 
 For consistency and branding, use **GitLab Pages** rather than **Pages**.
@@ -660,6 +664,22 @@ Do not use Latin abbreviations. Use **that is** instead. ([Vale](../testing.md#v
 ## in order to
 
 Do not use **in order to**. Use **to** instead. ([Vale](../testing.md#vale) rule: [`Wordy.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Wordy.yml))
+
+## Installation from source
+
+When referring to the installation method using the self-compiled code, refer to it
+as **self-compiled**.
+
+Use:
+
+- For self-compiled installations...
+
+Instead of:
+
+- For installations from source...
+
+For more information, see the
+[different installation methods](index.md#how-to-document-different-installation-methods).
 
 ## -ing words
 
@@ -893,6 +913,22 @@ Use:
 Instead of:
 
 - Note that you can change the settings.
+
+## Omnibus GitLab
+
+When referring to the installation method that uses the Linux package, refer to it
+as **Linux package**.
+
+Use:
+
+- For installations that use the Linux package...
+
+Instead of:
+
+- For installations that use Omnibus GitLab...
+
+For more information, see the
+[different installation methods](index.md#how-to-document-different-installation-methods).
 
 ## on
 

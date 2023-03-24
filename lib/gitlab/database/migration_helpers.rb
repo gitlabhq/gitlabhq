@@ -316,6 +316,13 @@ module Gitlab
           end
         end
 
+        # Since we may be migrating in one go from a previous version without
+        # `constrained_table_name` then we may see that this column exists
+        # (as above) but the schema cache is still outdated for the model.
+        unless Gitlab::Database::PostgresForeignKey.column_names.include?('constrained_table_name')
+          Gitlab::Database::PostgresForeignKey.reset_column_information
+        end
+
         fks = Gitlab::Database::PostgresForeignKey.by_constrained_table_name_or_identifier(source)
 
         fks = fks.by_referenced_table_name(target) if target

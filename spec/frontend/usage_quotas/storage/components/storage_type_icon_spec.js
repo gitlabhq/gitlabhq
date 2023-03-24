@@ -22,7 +22,6 @@ describe('StorageTypeIcon', () => {
       ${'snippet'}                 | ${'snippetsSize'}
       ${'infrastructure-registry'} | ${'repositorySize'}
       ${'package'}                 | ${'packagesSize'}
-      ${'upload'}                  | ${'uploadsSize'}
       ${'disk'}                    | ${'wikiSize'}
       ${'disk'}                    | ${'anything-else'}
     `(

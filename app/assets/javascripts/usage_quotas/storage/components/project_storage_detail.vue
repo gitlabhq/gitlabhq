@@ -9,9 +9,6 @@ import {
   PROJECT_TABLE_LABEL_USAGE,
   containerRegistryId,
   containerRegistryPopoverId,
-  uploadsId,
-  uploadsPopoverId,
-  uploadsPopoverContent,
 } from '../constants';
 import { descendingStorageUsageSort } from '../utils';
 import StorageTypeIcon from './storage_type_icon.vue';
@@ -39,10 +36,6 @@ export default {
         [containerRegistryId]: {
           popoverId: containerRegistryPopoverId,
           popoverContent: this.containerRegistryPopoverContent,
-        },
-        [uploadsId]: {
-          popoverId: uploadsPopoverId,
-          popoverContent: this.$options.i18n.uploadsPopoverContent,
         },
       };
 
@@ -77,9 +70,6 @@ export default {
       thClass: thWidthPercent(10),
     },
   ],
-  i18n: {
-    uploadsPopoverContent,
-  },
 };
 </script>
 <template>

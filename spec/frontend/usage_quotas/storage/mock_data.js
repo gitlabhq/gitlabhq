@@ -63,15 +63,6 @@ export const projectData = {
       },
       {
         storageType: {
-          id: 'uploadsSize',
-          name: 'Uploads',
-          description: 'File attachments and smaller design graphics.',
-          helpPath: '/uploads',
-        },
-        value: 900000,
-      },
-      {
-        storageType: {
           id: 'wikiSize',
           name: 'Wiki',
           description: 'Wiki content.',
@@ -91,7 +82,6 @@ export const projectHelpLinks = {
   packages: '/packages',
   repository: '/repository',
   snippets: '/snippets',
-  uploads: '/uploads',
   wiki: '/wiki',
 };
 

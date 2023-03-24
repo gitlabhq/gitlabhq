@@ -3,6 +3,8 @@
 module Ml
   class Candidate < ApplicationRecord
     include Sortable
+    include IgnorableColumns
+    ignore_column :iid, remove_with: '16.0', remove_after: '2023-05-01'
 
     PACKAGE_PREFIX = 'ml_candidate_'
 
@@ -18,7 +20,7 @@ module Ml
     has_many :metadata, class_name: 'Ml::CandidateMetadata'
     has_many :latest_metrics, -> { latest }, class_name: 'Ml::CandidateMetric', inverse_of: :candidate
 
-    attribute :iid, default: -> { SecureRandom.uuid }
+    attribute :eid, default: -> { SecureRandom.uuid }
 
     scope :including_relationships, -> { includes(:latest_metrics, :params, :user) }
     scope :by_name, ->(name) { where("ml_candidates.name LIKE ?", "%#{sanitize_sql_like(name)}%") } # rubocop:disable GitlabSecurity/SqlInjection
@@ -47,6 +49,9 @@ module Ml
     end
 
     delegate :project_id, :project, to: :experiment
+
+    # Remove alias after https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115401
+    alias_attribute :iid, :eid
 
     def artifact_root
       "/#{package_name}/#{package_version}/"
@@ -79,7 +84,7 @@ module Ml
       def with_project_id_and_iid(project_id, iid)
         return unless project_id.present? && iid.present?
 
-        joins(:experiment).find_by(experiment: { project_id: project_id }, iid: iid)
+        joins(:experiment).find_by(experiment: { project_id: project_id }, eid: iid)
       end
     end
   end

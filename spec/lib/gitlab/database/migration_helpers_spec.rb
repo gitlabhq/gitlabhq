@@ -1048,6 +1048,38 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
       it_behaves_like 'foreign key checks'
     end
 
+    context 'if the schema cache does not include the constrained_columns column' do
+      let(:target_table) { nil }
+
+      around do |ex|
+        model.transaction do
+          require_migration!('add_columns_to_postgres_foreign_keys')
+          AddColumnsToPostgresForeignKeys.new.down
+          Gitlab::Database::PostgresForeignKey.reset_column_information
+          Gitlab::Database::PostgresForeignKey.columns_hash # Force populate the column hash in the old schema
+          AddColumnsToPostgresForeignKeys.new.up
+
+          # Rolling back reverts the schema cache information, so we need to run the example here before the rollback.
+          ex.run
+
+          raise ActiveRecord::Rollback
+        end
+
+        # make sure that we're resetting the schema cache here so that we don't leak the change to other tests.
+        Gitlab::Database::PostgresForeignKey.reset_column_information
+        # Double-check that the column information is back to normal
+        expect(Gitlab::Database::PostgresForeignKey.columns_hash.keys).to include('constrained_columns')
+      end
+
+      # This test verifies that the situation we're trying to set up for the shared examples is actually being
+      # set up correctly
+      it 'correctly sets up the test without the column in the columns_hash' do
+        expect(Gitlab::Database::PostgresForeignKey.columns_hash.keys).not_to include('constrained_columns')
+      end
+
+      it_behaves_like 'foreign key checks'
+    end
+
     it 'compares by target table if no column given' do
       expect(model.foreign_key_exists?(:projects, :other_table)).to be_falsey
     end

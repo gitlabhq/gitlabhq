@@ -28360,9 +28360,6 @@ msgstr ""
 msgid "NamespaceStorage|Buy more storage"
 msgstr ""
 
-msgid "NamespaceStorage|Uploads are not counted in namespace storage quotas."
-msgstr ""
-
 msgid "NamespaceStorage|We recommend that you buy additional storage to ensure your service is not interrupted."
 msgstr ""
 
@@ -46709,9 +46706,6 @@ msgstr ""
 msgid "Uploading..."
 msgstr ""
 
-msgid "Uploads"
-msgstr ""
-
 msgid "Upstream"
 msgstr ""
 
@@ -46784,9 +46778,6 @@ msgstr ""
 msgid "UsageQuota|Dependency proxy"
 msgstr ""
 
-msgid "UsageQuota|File attachments and smaller design graphics."
-msgstr ""
-
 msgid "UsageQuota|For more information about storage limits, see our %{faq_link_start}FAQ%{link_end}."
 msgstr ""
 
@@ -46802,7 +46793,7 @@ msgstr ""
 msgid "UsageQuota|Group settings &gt; Usage quotas"
 msgstr ""
 
-msgid "UsageQuota|Includes artifacts, repositories, wiki, uploads, and other items."
+msgid "UsageQuota|Includes artifacts, repositories, wiki, and other items."
 msgstr ""
 
 msgid "UsageQuota|LFS storage"
@@ -46911,9 +46902,6 @@ msgid "UsageQuota|Transfer"
 msgstr ""
 
 msgid "UsageQuota|Transfer data used by month"
-msgstr ""
-
-msgid "UsageQuota|Uploads"
 msgstr ""
 
 msgid "UsageQuota|Usage"

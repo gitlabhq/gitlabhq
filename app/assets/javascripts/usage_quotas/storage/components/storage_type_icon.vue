@@ -16,7 +16,6 @@ export default {
       const storageTypeIconMap = {
         lfsObjectsSize: 'doc-image',
         snippetsSize: 'snippet',
-        uploadsSize: 'upload',
         repositorySize: 'infrastructure-registry',
         packagesSize: 'package',
       };

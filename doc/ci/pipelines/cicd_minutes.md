@@ -112,6 +112,10 @@ subgroups, sorted in descending order of CI/CD minute usage.
 
 > Displaying shared runners duration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345795) in GitLab 15.0.
 
+Prerequisite:
+
+- The namespace must be your personal namespace.
+
 You can view the number of CI/CD minutes being used by a personal namespace:
 
 1. On the top bar, in the upper-right corner, select your avatar.
@@ -147,6 +151,10 @@ You can find pricing for additional CI/CD minutes on the
 
 ### Purchase CI/CD minutes for a group **(FREE SAAS)**
 
+Prerequisite:
+
+- You must have the Owner role for the group.
+
 You can purchase additional CI/CD minutes for your group.
 You cannot transfer purchased CI/CD minutes from one group to another,
 so be sure to select the correct group.
@@ -161,6 +169,10 @@ After your payment is processed, the additional CI/CD minutes are added to your 
 namespace.
 
 ### Purchase CI/CD minutes for a personal namespace **(FREE SAAS)**
+
+Prerequisite:
+
+- The namespace must be your personal namespace.
 
 To purchase additional minutes for your personal namespace:
 
