@@ -80,7 +80,7 @@ RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
                     'source_full_path' => entity.source_full_path,
                     'exception.backtrace' => anything,
                     'exception.class' => 'NoMethodError',
-                    'exception.message' => "undefined method `model_id' for nil:NilClass",
+                    'exception.message' => /^undefined method `model_id' for nil:NilClass/,
                     'message' => 'Failed to fetch source entity id',
                     'importer' => 'gitlab_migration',
                     'source_version' => entity.bulk_import.source_version_info.to_s
