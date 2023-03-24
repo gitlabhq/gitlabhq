@@ -52,7 +52,7 @@
             = link_to avatar_icon_for_user(@user, 400, current_user: current_user), target: '_blank', rel: 'noopener noreferrer' do
               = render Pajamas::AvatarComponent.new(@user, alt: "", size: 96, avatar_options: { itemprop: "image" })
           #js-user-achievements{ data: { root_url: root_url, user_id: @user.id } }
-        .gl-display-inline-block.gl-vertical-align-top.gl-text-left
+        .gl-display-inline-block.gl-vertical-align-top.gl-text-left.gl-max-w-80
           - if @user.blocked? || !@user.confirmed?
             .user-info
               %h1.cover-title.gl-my-0
@@ -70,7 +70,7 @@
 
               - if @user.pronunciation.present?
                 .gl-align-items-center
-                  %p.gl-mb-4.gl-text-gray-500.gl-max-w-80.gl-mx-auto= s_("UserProfile|Pronounced as: %{pronunciation}") % { pronunciation: @user.pronunciation }
+                  %p.gl-mb-4.gl-text-gray-500= s_("UserProfile|Pronounced as: %{pronunciation}") % { pronunciation: @user.pronunciation }
 
               - if @user.status&.customized?
                 .cover-status.gl-display-inline-flex.gl-align-items-center.gl-mb-3

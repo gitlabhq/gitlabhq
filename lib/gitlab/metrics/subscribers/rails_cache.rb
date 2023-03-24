@@ -84,7 +84,7 @@ module Gitlab
             :gitlab_cache_operation_duration_seconds,
             'Cache access time',
             {},
-            [0.00001, 0.0001, 0.001, 0.01, 0.1, 1.0]
+            Gitlab::Instrumentation::Redis::QUERY_TIME_BUCKETS
           )
         end
       end

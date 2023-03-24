@@ -268,6 +268,19 @@ comment -->
     ).toBe('![GitLab][gitlab-url]');
   });
 
+  it('omits image data urls when serializing', () => {
+    expect(
+      serialize(
+        paragraph(
+          image({
+            src: 'data:image/png;base64,iVBORw0KGgoAAAAN',
+            alt: 'image',
+          }),
+        ),
+      ),
+    ).toBe('![image]()');
+  });
+
   it('correctly serializes strikethrough', () => {
     expect(serialize(paragraph(strike('deleted content')))).toBe('~~deleted content~~');
   });
