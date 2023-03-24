@@ -90,7 +90,7 @@ values obtained during the LDAP client configuration earlier:
        encryption: 'simple_tls'
        verify_certificates: true
        retry_empty_result_with_codes: [80]
-
+       base: "DC=example,DC=com"
        tls_options:
          cert: |
            -----BEGIN CERTIFICATE-----
@@ -154,7 +154,7 @@ values obtained during the LDAP client configuration earlier:
      servers:
        main: # 'main' is the GitLab 'provider ID' of this LDAP server
          label: 'Google Secure LDAP'
-
+         base: "DC=example,DC=com"
          host: 'ldap.google.com'
          port: 636
          uid: 'uid'

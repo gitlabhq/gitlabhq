@@ -34,9 +34,67 @@ RSpec.shared_examples 'diff file entity' do
                                :context_lines_path)
   end
 
-  it 'includes viewer' do
-    expect(subject[:viewer].with_indifferent_access)
+  context 'when a viewer' do
+    let(:collapsed) { false }
+    let(:added_lines) { 1 }
+    let(:removed_lines) { 0 }
+    let(:highlighted_lines) { nil }
+
+    before do
+      allow(diff_file).to receive(:diff_lines_for_serializer)
+        .and_return(highlighted_lines)
+
+      allow(diff_file).to receive(:added_lines)
+        .and_return(added_lines)
+
+      allow(diff_file).to receive(:removed_lines)
+        .and_return(removed_lines)
+
+      allow(diff_file).to receive(:collapsed?)
+        .and_return(collapsed)
+    end
+
+    it 'matches the schema' do
+      expect(subject[:viewer].with_indifferent_access)
         .to match_schema('entities/diff_viewer')
+    end
+
+    context 'when it is a whitespace only change' do
+      it 'has whitespace_only true' do
+        expect(subject[:viewer][:whitespace_only])
+          .to eq(true)
+      end
+    end
+
+    context 'when the highlighted lines arent shown' do
+      before do
+        allow(diff_file).to receive(:text?)
+          .and_return(false)
+      end
+
+      it 'has whitespace_only nil' do
+        expect(subject[:viewer][:whitespace_only])
+          .to eq(nil)
+      end
+    end
+
+    context 'when it is a new file' do
+      let(:added_lines) { 0 }
+
+      it 'has whitespace_only false' do
+        expect(subject[:viewer][:whitespace_only])
+          .to eq(false)
+      end
+    end
+
+    context 'when it is a collapsed file' do
+      let(:collapsed) { true }
+
+      it 'has whitespace_only false' do
+        expect(subject[:viewer][:whitespace_only])
+          .to eq(false)
+      end
+    end
   end
 
   context 'diff files' do

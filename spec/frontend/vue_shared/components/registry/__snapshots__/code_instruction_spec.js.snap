@@ -46,31 +46,15 @@ exports[`Package code instruction single line to match the default snapshot 1`] 
         class="input-group-append"
         data-testid="instruction-button"
       >
-        <button
-          aria-label="Copy npm install command"
-          aria-live="polite"
-          class="btn input-group-text btn-default btn-md gl-button btn-default-secondary btn-icon"
-          data-clipboard-handle-tooltip="false"
-          data-clipboard-text="npm i @my-package"
-          id="clipboard-button-1"
+        <clipboard-button-stub
+          category="secondary"
+          class="input-group-text"
+          size="medium"
+          text="npm i @my-package"
           title="Copy npm install command"
-          type="button"
-        >
-          <!---->
-           
-          <svg
-            aria-hidden="true"
-            class="gl-button-icon gl-icon s16"
-            data-testid="copy-to-clipboard-icon"
-            role="img"
-          >
-            <use
-              href="#copy-to-clipboard"
-            />
-          </svg>
-            
-          <!---->
-        </button>
+          tooltipplacement="top"
+          variant="default"
+        />
       </span>
     </div>
   </div>

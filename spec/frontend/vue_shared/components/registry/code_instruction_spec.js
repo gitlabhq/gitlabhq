@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import Tracking from '~/tracking';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
@@ -14,7 +14,7 @@ describe('Package code instruction', () => {
   };
 
   function createComponent(props = {}) {
-    wrapper = mount(CodeInstruction, {
+    wrapper = shallowMount(CodeInstruction, {
       propsData: {
         ...defaultProps,
         ...props,
