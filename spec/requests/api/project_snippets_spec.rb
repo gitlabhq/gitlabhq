@@ -38,7 +38,7 @@ RSpec.describe API::ProjectSnippets, feature_category: :source_code_management d
 
     context 'with snippets disabled' do
       it_behaves_like '403 response' do
-        let(:request) { get api("/projects/#{project_no_snippets.id}/snippets/#{non_existing_record_id}/user_agent_detail", admin, admin_mode: true) }
+        let(:request) { get api("/projects/#{project_no_snippets.id}/snippets/#{non_existing_record_id}/user_agent_detail", admin) }
       end
     end
   end
@@ -127,7 +127,7 @@ RSpec.describe API::ProjectSnippets, feature_category: :source_code_management d
     let(:file_params) { { files: [{ file_path: file_path, content: file_content }] } }
     let(:params) { base_params.merge(file_params) }
 
-    subject { post api("/projects/#{project.id}/snippets/", actor, admin_mode: actor.admin?), params: params }
+    subject { post api("/projects/#{project.id}/snippets/", actor), params: params }
 
     shared_examples 'project snippet repository actions' do
       let(:snippet) { ProjectSnippet.find(json_response['id']) }
@@ -356,7 +356,7 @@ RSpec.describe API::ProjectSnippets, feature_category: :source_code_management d
 
     context 'with snippets disabled' do
       it_behaves_like '403 response' do
-        let(:request) { put api("/projects/#{project_no_snippets.id}/snippets/#{non_existing_record_id}", admin, admin_mode: true), params: { description: 'foo' } }
+        let(:request) { put api("/projects/#{project_no_snippets.id}/snippets/#{non_existing_record_id}", admin), params: { description: 'foo' } }
       end
     end
 
@@ -382,12 +382,12 @@ RSpec.describe API::ProjectSnippets, feature_category: :source_code_management d
     end
 
     it_behaves_like '412 response' do
-      let(:request) { api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin, admin_mode: true) }
+      let(:request) { api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin) }
     end
 
     context 'with snippets disabled' do
       it_behaves_like '403 response' do
-        let(:request) { delete api("/projects/#{project_no_snippets.id}/snippets/#{non_existing_record_id}", admin, admin_mode: true) }
+        let(:request) { delete api("/projects/#{project_no_snippets.id}/snippets/#{non_existing_record_id}", admin) }
       end
     end
   end
@@ -416,15 +416,14 @@ RSpec.describe API::ProjectSnippets, feature_category: :source_code_management d
 
     context 'with snippets disabled' do
       it_behaves_like '403 response' do
-        let(:request) { get api("/projects/#{project_no_snippets.id}/snippets/#{non_existing_record_id}/raw", admin, admin_mode: true) }
+        let(:request) { get api("/projects/#{project_no_snippets.id}/snippets/#{non_existing_record_id}/raw", admin) }
       end
     end
 
     it_behaves_like 'snippet blob content' do
       let_it_be(:snippet_with_empty_repo) { create(:project_snippet, :empty_repo, author: admin, project: project) }
-      let_it_be(:admin_mode) { snippet.author.admin? }
 
-      subject { get api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/raw", snippet.author, admin_mode: admin_mode) }
+      subject { get api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/raw", snippet.author) }
     end
   end
 

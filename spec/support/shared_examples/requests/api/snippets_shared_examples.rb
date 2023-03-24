@@ -1,18 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'raw snippet files' do
+  let_it_be(:user_token) { create(:personal_access_token, user: snippet.author) }
   let(:snippet_id) { snippet.id }
-  let_it_be(:user) { snippet.author }
+  let(:user)       { snippet.author }
   let(:file_path)  { '%2Egitattributes' }
   let(:ref)        { 'master' }
-
-  let_it_be(:user_token) do
-    if user.admin?
-      create(:personal_access_token, :admin_mode, user: user)
-    else
-      create(:personal_access_token, user: user)
-    end
-  end
 
   subject { get api(api_path, personal_access_token: user_token) }
 
@@ -22,10 +15,8 @@ RSpec.shared_examples 'raw snippet files' do
     it 'returns 404' do
       subject
 
-      aggregate_failures do
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response['message']).to eq('404 Snippet Not Found')
-      end
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 Snippet Not Found')
     end
   end
 
@@ -194,7 +185,7 @@ RSpec.shared_examples 'snippet individual non-file updates' do
 end
 
 RSpec.shared_examples 'invalid snippet updates' do
-  it 'returns 404 for invalid snippet id', :aggregate_failures do
+  it 'returns 404 for invalid snippet id' do
     update_snippet(snippet_id: non_existing_record_id, params: { title: 'foo' })
 
     expect(response).to have_gitlab_http_status(:not_found)
@@ -213,7 +204,7 @@ RSpec.shared_examples 'invalid snippet updates' do
     expect(response).to have_gitlab_http_status(:bad_request)
   end
 
-  it 'returns 400 if title is blank', :aggregate_failures do
+  it 'returns 400 if title is blank' do
     update_snippet(params: { title: '' })
 
     expect(response).to have_gitlab_http_status(:bad_request)
@@ -245,9 +236,7 @@ RSpec.shared_examples 'snippet access with different users' do
     it 'returns the correct response' do
       request_user = user_for(requester)
 
-      admin_mode = requester == :admin
-
-      get api(path, request_user, admin_mode: admin_mode)
+      get api(path, request_user)
 
       expect(response).to have_gitlab_http_status(status)
     end
