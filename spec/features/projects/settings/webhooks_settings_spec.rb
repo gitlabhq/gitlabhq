@@ -83,7 +83,7 @@ RSpec.describe 'Projects > Settings > Webhook Settings', feature_category: :proj
         visit webhooks_path
 
         click_button 'Test'
-        click_button 'Push events'
+        click_link 'Push events'
 
         expect(page).to have_current_path(webhooks_path, ignore_query: true)
       end
