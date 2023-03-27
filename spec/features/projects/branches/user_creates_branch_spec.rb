@@ -81,7 +81,9 @@ RSpec.describe 'User creates branch', :js, feature_category: :projects do
           it 'does not create new branch' do
             invalid_branch_name = '1.0 stable'
 
-            create_branch(invalid_branch_name)
+            fill_in("branch_name", with: invalid_branch_name)
+            find('body').click
+            click_button("Create branch")
 
             expect(page).to have_content('Branch name is invalid')
             expect(page).to have_content("can't contain spaces")

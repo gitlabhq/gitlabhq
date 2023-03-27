@@ -11,7 +11,7 @@ describe('Branch', () => {
   describe('create a new branch', () => {
     function fillNameWith(value) {
       document.querySelector('.js-branch-name').value = value;
-      const event = new CustomEvent('blur');
+      const event = new CustomEvent('change');
       document.querySelector('.js-branch-name').dispatchEvent(event);
     }
 
