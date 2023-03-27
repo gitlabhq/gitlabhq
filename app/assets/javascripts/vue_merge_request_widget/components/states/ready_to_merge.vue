@@ -508,11 +508,13 @@ export default {
   >
     <div v-if="loading" class="mr-widget-body">
       <div class="gl-w-full mr-ready-to-merge-loader">
-        <gl-skeleton-loader :width="418" :height="30">
-          <rect x="0" y="3" width="24" height="24" rx="4" />
-          <rect x="32" y="0" width="70" height="30" rx="4" />
-          <rect x="110" y="7" width="150" height="16" rx="4" />
-          <rect x="268" y="7" width="150" height="16" rx="4" />
+        <gl-skeleton-loader :width="418" :height="86">
+          <rect x="0" y="0" width="144" height="20" rx="4" />
+          <rect x="0" y="26" width="100" height="16" rx="4" />
+          <rect x="108" y="26" width="100" height="16" rx="4" />
+          <rect x="0" y="48" width="130" height="16" rx="4" />
+          <rect x="0" y="70" width="80" height="16" rx="4" />
+          <rect x="88" y="70" width="90" height="16" rx="4" />
         </gl-skeleton-loader>
       </div>
     </div>

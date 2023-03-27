@@ -12,8 +12,14 @@ const language = {
       // comment
       [/^#.*$/, 'comment'],
 
+      // optional approval
+      [/^\^/, 'constant.numeric'],
+
+      // number of approvers
+      [/\[\d+\]$/, 'constant.numeric'],
+
       // section
-      [/^\^\[[\s\S]+\]$/, 'namespace'],
+      [/\[(?!\d+\])[^\]]+\]/, 'namespace'],
 
       // pattern
       [/^\s*(\S+)/, 'regexp'],

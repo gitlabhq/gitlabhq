@@ -138,6 +138,8 @@ class RegistrationsController < Devise::RegistrationsController
 
     if identity_verification_enabled?
       session[:verification_user_id] = resource.id # This is needed to find the user on the identity verification page
+      User.sticking.stick_or_unstick_request(request.env, :user, resource.id)
+
       return identity_verification_redirect_path
     end
 

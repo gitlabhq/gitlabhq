@@ -197,9 +197,9 @@ export default {
   <div>
     <state-container :mr="mr" :status="status" :is-loading="isLoading">
       <template #loading>
-        <gl-skeleton-loader :width="334" :height="30">
-          <rect x="0" y="3" width="24" height="24" rx="4" />
-          <rect x="32" y="5" width="302" height="20" rx="4" />
+        <gl-skeleton-loader :width="334" :height="24">
+          <rect x="0" y="0" width="24" height="24" rx="4" />
+          <rect x="32" y="2" width="302" height="20" rx="4" />
         </gl-skeleton-loader>
       </template>
       <template v-if="!isLoading">

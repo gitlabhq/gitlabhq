@@ -19503,25 +19503,6 @@ CREATE SEQUENCE packages_dependency_links_id_seq
 
 ALTER SEQUENCE packages_dependency_links_id_seq OWNED BY packages_dependency_links.id;
 
-CREATE TABLE packages_events (
-    id bigint NOT NULL,
-    event_type smallint NOT NULL,
-    event_scope smallint NOT NULL,
-    originator_type smallint NOT NULL,
-    originator bigint,
-    created_at timestamp with time zone NOT NULL,
-    package_id bigint
-);
-
-CREATE SEQUENCE packages_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE packages_events_id_seq OWNED BY packages_events.id;
-
 CREATE TABLE packages_helm_file_metadata (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -22426,11 +22407,11 @@ CREATE TABLE snippet_statistics (
 CREATE TABLE snippet_user_mentions (
     id bigint NOT NULL,
     snippet_id integer NOT NULL,
-    note_id integer,
+    note_id_convert_to_bigint integer,
     mentioned_users_ids integer[],
     mentioned_projects_ids integer[],
     mentioned_groups_ids integer[],
-    note_id_convert_to_bigint bigint
+    note_id bigint
 );
 
 CREATE SEQUENCE snippet_user_mentions_id_seq
@@ -25125,8 +25106,6 @@ ALTER TABLE ONLY packages_dependencies ALTER COLUMN id SET DEFAULT nextval('pack
 
 ALTER TABLE ONLY packages_dependency_links ALTER COLUMN id SET DEFAULT nextval('packages_dependency_links_id_seq'::regclass);
 
-ALTER TABLE ONLY packages_events ALTER COLUMN id SET DEFAULT nextval('packages_events_id_seq'::regclass);
-
 ALTER TABLE ONLY packages_maven_metadata ALTER COLUMN id SET DEFAULT nextval('packages_maven_metadata_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_package_file_build_infos ALTER COLUMN id SET DEFAULT nextval('packages_package_file_build_infos_id_seq'::regclass);
@@ -27349,9 +27328,6 @@ ALTER TABLE ONLY packages_dependencies
 
 ALTER TABLE ONLY packages_dependency_links
     ADD CONSTRAINT packages_dependency_links_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY packages_events
-    ADD CONSTRAINT packages_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY packages_helm_file_metadata
     ADD CONSTRAINT packages_helm_file_metadata_pkey PRIMARY KEY (package_file_id);
@@ -31329,8 +31305,6 @@ CREATE UNIQUE INDEX index_packages_dependencies_on_name_and_version_pattern ON p
 
 CREATE INDEX index_packages_dependency_links_on_dependency_id ON packages_dependency_links USING btree (dependency_id);
 
-CREATE INDEX index_packages_events_on_package_id ON packages_events USING btree (package_id);
-
 CREATE INDEX index_packages_helm_file_metadata_on_channel ON packages_helm_file_metadata USING btree (channel);
 
 CREATE INDEX index_packages_helm_file_metadata_on_pf_id_and_channel ON packages_helm_file_metadata USING btree (package_file_id, channel);
@@ -34089,6 +34063,10 @@ CREATE TRIGGER nullify_merge_request_metrics_build_data_on_update BEFORE UPDATE 
 
 CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
+CREATE TRIGGER push_rules_loose_fk_trigger AFTER DELETE ON push_rules REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
+CREATE TRIGGER tags_loose_fk_trigger AFTER DELETE ON tags REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
 CREATE TRIGGER trigger_080e73845bfd BEFORE INSERT OR UPDATE ON notes FOR EACH ROW EXECUTE FUNCTION trigger_080e73845bfd();
 
 CREATE TRIGGER trigger_0e214b8a14f2 BEFORE INSERT OR UPDATE ON vulnerability_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_0e214b8a14f2();
@@ -36480,9 +36458,6 @@ ALTER TABLE ONLY boards_epic_board_recent_visits
 
 ALTER TABLE ONLY ci_job_artifacts
     ADD CONSTRAINT fk_rails_c5137cb2c1_p FOREIGN KEY (partition_id, job_id) REFERENCES ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY packages_events
-    ADD CONSTRAINT fk_rails_c6c20d0094 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY project_settings
     ADD CONSTRAINT fk_rails_c6df6e6328 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

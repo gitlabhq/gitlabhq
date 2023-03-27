@@ -72,13 +72,13 @@ With standalone setups, especially single node environments, there are [various 
 
 ### High Availability (HA)
 
-High Availability ensures every component in the GitLab setup can handle failures through various mechanisms. To achieve this however is complex, and the environments required can be sizable.
+High Availability ensures every component in the GitLab setup can handle failures through various mechanisms. However, to achieve this is complex and the environments required can be sizable.
 
 For environments serving 3,000 or more users we generally recommend that a HA strategy is used as at this level outages have a bigger impact against more users. All the architectures in this range have HA built in by design for this reason.
 
 #### Do you need High Availability (HA)?
 
-As mentioned above, achieving HA does come at a cost. The environment's required are sizable as each component needs to be multiplied, which comes with additional actual and maintenance costs.
+As mentioned above, achieving HA does come at a cost. The environment requirements are sizable as each component needs to be multiplied, which comes with additional actual and maintenance costs.
 
 For a lot of our customers with fewer than 3,000 users, we've found a backup strategy is sufficient and even preferable. While this does have a slower recovery time, it also means you have a much smaller architecture and less maintenance costs as a result.
 
@@ -95,9 +95,9 @@ If you still need to have HA for a lower number of users, this can be achieved w
 
 [Zero Downtime Upgrades](../../update/zero_downtime.md) are available for standard Reference Architecture environments with HA (Cloud Native Hybrid is not supported at this time). This allows for an environment to stay up during an upgrade, but the process is more complex as a result and has some limitations as detailed in the documentation.
 
-When going through this process it's worth noting that there may still be brief moments of downtime when the HA mechanisms tale effect.
+When going through this process it's worth noting that there may still be brief moments of downtime when the HA mechanisms take effect.
 
-In most cases the downtime required for doing an upgrade in general shouldn't be substantial, so this is only recommended if it's a key requirement for you.
+In most cases the downtime required for doing an upgrade shouldn't be substantial, so this is only recommended if it's a key requirement for you.
 
 ### Cloud Native Hybrid (Kubernetes HA)
 
@@ -239,8 +239,8 @@ for more information and guidance.
 [Praefect requires its own database server](../gitaly/praefect.md#postgresql) and
 that to achieve full High Availability, a third-party PostgreSQL database solution is required.
 
-We hope to offer a built in solutions for these restrictions in the future but, in the meantime, a non HA PostgreSQL server
-can be set up using Omnibus GitLab, the specifications reflect. Refer to the following issues for more information:
+We hope to offer a built-in solution for these restrictions in the future. In the meantime, a non-HA PostgreSQL server
+can be set up using Omnibus GitLab as the specifications reflect. Refer to the following issues for more information:
 
 - [`omnibus-gitlab#5919`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5919).
 - [`gitaly#3398`](https://gitlab.com/gitlab-org/gitaly/-/issues/3398).

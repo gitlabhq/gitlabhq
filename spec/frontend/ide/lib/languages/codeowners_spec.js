@@ -19,7 +19,66 @@ describe('tokenization for CODEOWNERS files', () => {
         ],
       ],
     ],
-    ['^[Section name]', [[{ language: 'codeowners', offset: 0, type: 'namespace.codeowners' }]]],
+    [
+      '^[Section name]',
+      [
+        [
+          { language: 'codeowners', offset: 0, type: 'constant.numeric.codeowners' },
+          { language: 'codeowners', offset: 1, type: 'namespace.codeowners' },
+        ],
+      ],
+    ],
+    [
+      '[Section name][3]',
+      [
+        [
+          { language: 'codeowners', offset: 0, type: 'namespace.codeowners' },
+          { language: 'codeowners', offset: 14, type: 'constant.numeric.codeowners' },
+        ],
+      ],
+    ],
+    [
+      '[Section name][30]',
+      [
+        [
+          { language: 'codeowners', offset: 0, type: 'namespace.codeowners' },
+          { language: 'codeowners', offset: 14, type: 'constant.numeric.codeowners' },
+        ],
+      ],
+    ],
+    [
+      '^[Section name][3]',
+      [
+        [
+          { language: 'codeowners', offset: 0, type: 'constant.numeric.codeowners' },
+          { language: 'codeowners', offset: 1, type: 'namespace.codeowners' },
+          { language: 'codeowners', offset: 15, type: 'constant.numeric.codeowners' },
+        ],
+      ],
+    ],
+    [
+      '^[Section-name-test][3]',
+      [
+        [
+          { language: 'codeowners', offset: 0, type: 'constant.numeric.codeowners' },
+          { language: 'codeowners', offset: 1, type: 'namespace.codeowners' },
+          { language: 'codeowners', offset: 20, type: 'constant.numeric.codeowners' },
+        ],
+      ],
+    ],
+    [
+      '[Section-name_test]',
+      [[{ language: 'codeowners', offset: 0, type: 'namespace.codeowners' }]],
+    ],
+    [
+      '[2 Be or not 2 be][3]',
+      [
+        [
+          { language: 'codeowners', offset: 0, type: 'namespace.codeowners' },
+          { language: 'codeowners', offset: 18, type: 'constant.numeric.codeowners' },
+        ],
+      ],
+    ],
   ])('%s', (string, tokens) => {
     expect(editor.tokenize(string, 'codeowners')).toEqual(tokens);
   });

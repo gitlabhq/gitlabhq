@@ -2868,6 +2868,9 @@ msgstr ""
 msgid "AdminSettings|Clickhouse URL"
 msgstr ""
 
+msgid "AdminSettings|Collector host"
+msgstr ""
+
 msgid "AdminSettings|Configure Let's Encrypt"
 msgstr ""
 
@@ -3157,6 +3160,9 @@ msgid "AdminSettings|The default domain to use for Auto Review Apps and Auto Dep
 msgstr ""
 
 msgid "AdminSettings|The host of your Jitsu instance."
+msgstr ""
+
+msgid "AdminSettings|The host of your data collector instance."
 msgstr ""
 
 msgid "AdminSettings|The latest artifacts for all jobs in the most recent successful pipelines in each project are stored and do not expire."

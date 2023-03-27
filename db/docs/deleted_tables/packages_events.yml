@@ -8,3 +8,5 @@ description: Package tracking events (deprecated)
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41846
 milestone: '13.5'
 gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114947
+removed_in_milestone: '15.11'

@@ -59,7 +59,7 @@ export default {
     :class="wrapperClasses"
     v-on="$listeners"
   >
-    <div v-if="isLoading" class="gl-w-full mr-conflict-loader">
+    <div v-if="isLoading" class="gl-w-full mr-state-loader">
       <slot name="loading">
         <div class="gl-display-flex">
           <status-icon status="loading" />

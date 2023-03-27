@@ -353,9 +353,17 @@ to create an incremental backup from:
 
 To create an incremental backup, run:
 
-```shell
-sudo gitlab-backup create INCREMENTAL=yes PREVIOUS_BACKUP=<timestamp_of_backup>
-```
+- In GitLab 15.0 or later:
+
+  ```shell
+  sudo gitlab-backup create INCREMENTAL=yes PREVIOUS_BACKUP=<timestamp_of_backup>
+  ```
+
+- In GitLab 14.9 and 14.10:
+
+  ```shell
+  sudo gitlab-backup create INCREMENTAL=yes BACKUP=<timestamp_of_backup>
+  ```
 
 To create an [untarred](#skipping-tar-creation) incremental backup from a tarred backup, use `SKIP=tar`:
 
