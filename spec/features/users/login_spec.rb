@@ -321,7 +321,8 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
       end
 
       context 'using one-time code' do
-        it 'allows login with valid code' do
+        it 'allows login with valid code',
+          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/402322' do
           expect(authentication_metrics)
             .to increment(:user_authenticated_counter)
             .and increment(:user_two_factor_authenticated_counter)
@@ -361,7 +362,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
           expect(page).to have_current_path root_path, ignore_query: true
         end
 
-        it 'triggers ActiveSession.cleanup for the user' do
+        it 'triggers ActiveSession.cleanup for the user', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/402322' do
           expect(authentication_metrics)
             .to increment(:user_authenticated_counter)
             .and increment(:user_two_factor_authenticated_counter)

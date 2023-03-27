@@ -148,13 +148,15 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
       end
 
       it 'can successfully transfer the group' do
+        selected_group_path = selected_group.path
+
         visit edit_group_path(selected_group)
 
         page.within('[data-testid="transfer-locations-dropdown"]') do
           click_button _('Select parent group')
-          fill_in _('Search'), with: target_group_name
+          fill_in _('Search'), with: target_group&.name || ''
           wait_for_requests
-          click_button(target_group_name || 'No parent group')
+          click_button(target_group&.name || 'No parent group')
         end
 
         click_button s_('GroupSettings|Transfer group')
@@ -167,10 +169,15 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
         end
 
         within('[data-testid="breadcrumb-links"]') do
-          expect(page).to have_content(target_group_name) if target_group_name
+          expect(page).to have_content(target_group.name) if target_group
           expect(page).to have_content(selected_group.name)
         end
-        expect(current_url).to include(selected_group.reload.full_path)
+
+        if target_group
+          expect(current_url).to include("#{target_group.path}/#{selected_group_path}")
+        else
+          expect(current_url).to include(selected_group_path)
+        end
       end
     end
 
@@ -178,14 +185,13 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
       let(:selected_group) { create(:group, path: 'foo-subgroup', parent: group) }
 
       context 'when transfering to no parent group' do
-        let(:target_group_name) { nil }
+        let(:target_group) { nil }
 
         it_behaves_like 'can transfer the group'
       end
 
       context 'when transfering to a parent group' do
         let(:target_group) { create(:group, path: 'foo-parentgroup') }
-        let(:target_group_name) { target_group.name }
 
         before do
           target_group.add_owner(user)
@@ -197,7 +203,7 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
 
     context 'when transfering from a root group to a parent group' do
       let(:selected_group) { create(:group, path: 'foo-rootgroup') }
-      let(:target_group_name) { group.name }
+      let(:target_group) { group }
 
       it_behaves_like 'can transfer the group'
     end

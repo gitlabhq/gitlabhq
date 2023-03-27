@@ -1085,10 +1085,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/at.js/-/at.js-1.5.7.tgz#1ee6f838cc4410a1d797770934df91d90df8179e"
   integrity sha512-c6ySRK/Ma7lxwpIVbSAF3P+xiTLrNTGTLRx4/pHK111AdFxwgUwrYF6aVZFXvmG65jHOJHoa0eQQ21RW6rm0Rg==
 
-"@gitlab/eslint-plugin@18.2.1":
-  version "18.2.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-18.2.1.tgz#aa7dccb9812bf2b3424cdd841fc4dfc1c9800c73"
-  integrity sha512-AJKXFuu+87jrkoD4iguFn5/Zxq+u6JqRgE6G1R4A04KRMLXiwP/pweD5Gy4yCW1c6TbBI6NRJ1Q1GOvmYNkTiQ==
+"@gitlab/eslint-plugin@18.3.0":
+  version "18.3.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-18.3.0.tgz#1bb7bdfc39ccd4a6b2826608cede2d348cc76c48"
+  integrity sha512-cPWPDty+7KPyBeYaJZ/EJ9oAWQVj4onea7mHPdZnGtqtL3NcPU8VT0kIXPCk2bcYG2KhA58J+t6nF7NJ/MVPfg==
   dependencies:
     "@babel/core" "^7.17.0"
     "@babel/eslint-parser" "^7.17.0"

@@ -18576,12 +18576,12 @@ msgid "Geo sites"
 msgstr ""
 
 msgid "Geo|%d group selected"
-msgid_plural "%d groups selected"
+msgid_plural "Geo|%d groups selected"
 msgstr[0] ""
 msgstr[1] ""
 
 msgid "Geo|%d shard selected"
-msgid_plural "%d shards selected"
+msgid_plural "Geo|%d shards selected"
 msgstr[0] ""
 msgstr[1] ""
 
