@@ -386,6 +386,16 @@ module IssuablesHelper
     end
   end
 
+  def issuable_type_selector_data(issuable)
+    {
+      selected_type: issuable.issue_type,
+      is_issue_allowed: create_issue_type_allowed?(@project, :issue).to_s,
+      is_incident_allowed: create_issue_type_allowed?(@project, :incident).to_s,
+      issue_path: new_project_issue_path(@project),
+      incident_path: new_project_issue_path(@project, { issuable_template: 'incident', issue: { issue_type: 'incident' } })
+    }
+  end
+
   private
 
   def sidebar_gutter_collapsed?

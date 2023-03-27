@@ -328,6 +328,7 @@ export default {
         v-if="!isLoading"
         ref="datePicker"
         class="gl-relative"
+        :value="parsedDate"
         :min-date="minDate"
         :max-date="maxDate"
         :default-date="parsedDate"

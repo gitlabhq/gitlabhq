@@ -33,7 +33,7 @@ describe('Source Editor Toolbar button', () => {
 
     it('does not render the button if the props have not been passed', () => {
       createComponent({});
-      expect(findButton().vm).toBeUndefined();
+      expect(findButton().exists()).toBe(false);
     });
 
     it('renders a default button without props', async () => {
@@ -107,34 +107,31 @@ describe('Source Editor Toolbar button', () => {
   });
 
   describe('click handler', () => {
-    let clickEvent;
-
-    beforeEach(() => {
-      clickEvent = new Event('click');
-    });
-
     it('fires the click handler on the button when available', async () => {
-      const spy = jest.fn();
+      const clickSpy = jest.fn();
+      const clickEvent = new Event('click');
       createComponent({
         button: {
-          onClick: spy,
+          onClick: clickSpy,
         },
       });
-      expect(spy).not.toHaveBeenCalled();
+      expect(wrapper.emitted('click')).toEqual(undefined);
       findButton().vm.$emit('click', clickEvent);
 
       await nextTick();
-      expect(spy).toHaveBeenCalledWith(clickEvent);
+
+      expect(wrapper.emitted('click')).toEqual([[clickEvent]]);
+      expect(clickSpy).toHaveBeenCalledWith(clickEvent);
     });
+
     it('emits the "click" event, passing the event itself', async () => {
       createComponent();
-      jest.spyOn(wrapper.vm, '$emit');
-      expect(wrapper.vm.$emit).not.toHaveBeenCalled();
+      expect(wrapper.emitted('click')).toEqual(undefined);
 
-      findButton().vm.$emit('click', clickEvent);
+      findButton().vm.$emit('click');
       await nextTick();
 
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('click', clickEvent);
+      expect(wrapper.emitted('click')).toHaveLength(1);
     });
   });
 });

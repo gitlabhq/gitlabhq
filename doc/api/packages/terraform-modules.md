@@ -10,7 +10,7 @@ This is the API documentation for [Terraform Modules](../../user/packages/terraf
 
 WARNING:
 This API is used by the [Terraform CLI](https://www.terraform.io/)
-and is generally not meant for manual consumption.
+and is generally not meant for manual consumption. Undocumented authentication methods might be removed in the future.
 
 For instructions on how to upload and install Terraform modules from the GitLab
 infrastructure registry, see the [Terraform modules registry documentation](../../user/packages/terraform_module_registry/index.md).

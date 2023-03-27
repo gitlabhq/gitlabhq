@@ -135,11 +135,13 @@ To add links to other accounts:
 
 1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the **Main settings** section, add your information from:
-   - Discord ([User ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-))
-   - LinkedIn
-   - Skype
-   - Twitter
+1. In the **Main settings** section, add your:
+   - Discord [user ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-).
+   - LinkedIn profile name.
+   - Skype username.
+   - Twitter @username.
+
+   Your user ID or username must be 500 characters or less.
 1. Select **Update profile settings**.
 
 ## Show private contributions on your user profile page
@@ -164,7 +166,7 @@ To specify your pronouns:
 
 1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the **Pronouns** text box, enter your pronouns.
+1. In the **Pronouns** text box, enter your pronouns. The text must be 50 characters or less.
 1. Select **Update profile settings**.
 
 ## Add your name pronunciation
@@ -178,7 +180,7 @@ To add your name pronunciation:
 
 1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the **Pronunciation** text box, enter how your name is pronounced.
+1. In the **Pronunciation** text box, enter how your name is pronounced. The pronunciation must be plain text and 255 characters or less.
 1. Select **Update profile settings**.
 
 ## Set your current status

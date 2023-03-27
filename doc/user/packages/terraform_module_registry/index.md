@@ -18,6 +18,8 @@ To authenticate to the Terraform module registry, you need either:
 - A [personal access token](../../../api/rest/index.md#personalprojectgroup-access-tokens) with at least `read_api` rights.
 - A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
 
+Do not use authentication methods other than the methods documented here. Undocumented authentication methods might be removed in the future.
+
 ## Publish a Terraform Module
 
 When you publish a Terraform Module, if it does not exist, it is created.

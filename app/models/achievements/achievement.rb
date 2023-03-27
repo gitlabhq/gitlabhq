@@ -4,9 +4,6 @@ module Achievements
   class Achievement < ApplicationRecord
     include Avatarable
     include StripAttribute
-    include IgnorableColumns
-
-    ignore_column :revokable, remove_with: '15.11', remove_after: '2023-04-22'
 
     belongs_to :namespace, inverse_of: :achievements, optional: false
 

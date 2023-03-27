@@ -75,7 +75,12 @@ export default {
       if (this.hasMultipleCommits) {
         if (this.graphql) {
           const { lastDeployment } = this.environment;
-          return this.commitData(lastDeployment, 'commitPath');
+          return (
+            // data shape comming from REST and GraphQL is unfortunately different
+            // once we fully migrate to GraphQL it could be streamlined
+            this.commitData(lastDeployment, 'commitPath') ||
+            this.commitData(lastDeployment, 'webUrl')
+          );
         }
 
         const { last_deployment } = this.environment;
@@ -135,7 +140,6 @@ export default {
   csrf,
   cancelProps: {
     text: __('Cancel'),
-    attributes: { variant: 'danger' },
   },
   docsPath: helpPagePath('ci/environments/index.md', { anchor: 'retry-or-roll-back-a-deployment' }),
 };
@@ -157,7 +161,7 @@ export default {
         }}</gl-link>
       </template>
       <template #docs="{ content }">
-        <gl-link :href="$options.docsLink" target="_blank">{{ content }}</gl-link>
+        <gl-link :href="$options.docsPath" target="_blank">{{ content }}</gl-link>
       </template>
     </gl-sprintf>
   </gl-modal>

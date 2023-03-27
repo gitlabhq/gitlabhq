@@ -24,7 +24,7 @@ package registry, see the [Debian registry documentation](../../user/packages/de
 NOTE:
 These endpoints do not adhere to the standard API authentication methods.
 See the [Debian registry documentation](../../user/packages/debian_repository/index.md)
-for details on which headers and token types are supported.
+for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
 ## Enable the Debian API
 

@@ -8,7 +8,7 @@
 - page = local_assigns.fetch(:page, nil)
 - diff_files = conditionally_paginate_diff_files(diffs, paginate: paginate_diffs, page: page, per: paginate_diffs_per_page)
 
-.content-block.oneline-block.files-changed.diff-files-changed.js-diff-files-changed
+.files-changed.diff-files-changed.js-diff-files-changed.gl-py-3
   .files-changed-inner
     .inline-parallel-buttons.gl-display-none.gl-md-display-flex
       - if !diffs_expanded? && diff_files.any?(&:collapsed?)

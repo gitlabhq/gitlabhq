@@ -94,6 +94,36 @@ RSpec.describe 'Environment', feature_category: :projects do
           expect(page).to have_link("#{build.name} (##{build.id})")
         end
       end
+
+      context 'with related deployable present' do
+        let_it_be(:previous_pipeline) { create(:ci_pipeline, project: project) }
+
+        let_it_be(:previous_build) do
+          create(:ci_build, :success, pipeline: previous_pipeline, environment: environment.name)
+        end
+
+        let_it_be(:previous_deployment) do
+          create(:deployment, :success, environment: environment, deployable: previous_build)
+        end
+
+        let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+        let_it_be(:build) { create(:ci_build, pipeline: pipeline, environment: environment.name) }
+
+        let_it_be(:deployment) do
+          create(:deployment, :success, environment: environment, deployable: build)
+        end
+
+        before do
+          visit_environment(environment)
+        end
+
+        it 'shows deployment information and buttons', :js do
+          wait_for_requests
+          expect(page).to have_button('Re-deploy to environment')
+          expect(page).to have_button('Rollback environment')
+          expect(page).to have_link("#{build.name} (##{build.id})")
+        end
+      end
     end
   end
 

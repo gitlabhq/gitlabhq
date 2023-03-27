@@ -184,7 +184,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       end
 
       it 'pre-fills the issue type dropdown with issue type' do
-        expect(find('.js-issuable-type-filter-dropdown-wrap .dropdown-toggle-text')).to have_content('Issue')
+        expect(find('.js-issuable-type-filter-dropdown-wrap .gl-button-text')).to have_content('Issue')
       end
 
       it 'does not hide the milestone select' do
@@ -200,7 +200,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       end
 
       it 'does not pre-fill the issue type dropdown with incident type' do
-        expect(find('.js-issuable-type-filter-dropdown-wrap .dropdown-toggle-text')).not_to have_content('Incident')
+        expect(find('.js-issuable-type-filter-dropdown-wrap .gl-button-text')).not_to have_content('Incident')
       end
 
       it 'shows the milestone select' do
@@ -257,7 +257,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       end
 
       it 'pre-fills the issue type dropdown with incident type' do
-        expect(find('.js-issuable-type-filter-dropdown-wrap .dropdown-toggle-text')).to have_content('Incident')
+        expect(find('.js-issuable-type-filter-dropdown-wrap .gl-button-text')).to have_content('Incident')
       end
 
       it 'hides the epic select' do

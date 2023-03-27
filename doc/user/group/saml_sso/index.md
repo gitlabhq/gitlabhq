@@ -21,7 +21,7 @@ You can configure SAML SSO for the top-level group only.
 ## Configure your identity provider
 
 1. [Configure your SAML identity provider](#set-up-identity-provider).
-1. Configure the SAML response to include a [NameID](#nameid) that uniquely identifies each user.
+1. Configure the SAML response to include a [**NameID**](#nameid) that uniquely identifies each user.
 1. Configure the required [user attributes](#user-attributes), ensuring you include the user's email address.
 1. While the default is enabled for most SAML providers, ensure the app is set to have service provider
    initiated calls to link existing GitLab accounts.
@@ -66,7 +66,7 @@ To set up SSO with Azure as your identity provider:
 
 1. You should set the following attributes:
    - **Unique User Identifier (Name identifier)** to `user.objectID`.
-   - **nameid-format** to `persistent`. For more information, see the [NameID documentation](#nameid).
+   - **nameid-format** to `persistent`. For more information, see [**NameID**](#nameid).
    - **Additional claims** to [supported attributes](#user-attributes).
 
 1. Optional. If you use [Group Sync](#group-sync), customize the name of the
@@ -106,8 +106,8 @@ To set up Google Workspace as your identity provider:
    - For **Primary email**: `email`.
    - For **First name**: `first_name`.
    - For **Last name**: `last_name`.
-   - For **Name ID format**: `EMAIL`. For more information, see the [NameID format documentation](#nameid-format).
-   - For **NameID**: `Basic Information > Primary email`. For more information, see the [NameID documentation](#nameid).
+   - For **Name ID format**: `EMAIL`. For more information, see the [**NameID** format documentation](#nameid-format).
+   - For **NameID**: `Basic Information > Primary email`. For more information, see [**NameID**](#nameid).
 
 On the GitLab SAML SSO page, when you select **Verify SAML Configuration**, disregard
 the warning that recommends setting the **NameID** format to `persistent`.
@@ -136,7 +136,7 @@ To set up SSO with Okta as your identity provider:
 
 1. Set these values:
    - For **Application username (NameID)**: **Custom** `user.getInternalProperty("id")`.
-   - For **Name ID Format**: `Persistent`. For more information, see the [NameID documentation](#nameid).
+   - For **Name ID Format**: `Persistent`. For more information, see [**NameID**](#nameid).
 
 The Okta GitLab application available in the App Catalog only supports [SCIM](scim_setup.md). Support
 for SAML is proposed in [issue 216173](https://gitlab.com/gitlab-org/gitlab/-/issues/216173).
@@ -169,7 +169,7 @@ To set up OneLogin as your identity provider:
    | **GitLab single sign-on URL**                        | **Login URL**                    |
    | **Identity provider single sign-on URL**             | **SAML 2.0 Endpoint**            |
 
-1. For **NameID**, use `OneLogin ID`. For more information, see the [NameID documentation](#nameid).
+1. For **NameID**, use `OneLogin ID`. For more information, see [**NameID**](#nameid).
 
 ### Set up identity provider using metadata
 
@@ -306,8 +306,8 @@ After you have configured your identity provider, you can:
 
 To change the identity provider:
 
-- If the `NameID` is not identical in the existing and new identity providers, [change the NameID for users](#change-nameid-for-one-or-more-users).
-- If the `NameID` is identical, users do not have to make any changes.
+- If the **NameID** value is not identical in the existing and new identity providers, [change the **NameID** for users](#change-nameid-for-one-or-more-users).
+- If the **NameID** value is identical, users do not have to make any changes.
 
 #### Migrate to a different identity provider
 
@@ -318,7 +318,7 @@ users cannot access any of the SAML groups. To mitigate this, you can disable
 To migrate identity providers:
 
 1. [Configure](#configure-your-identity-provider) the group with the new identity provider.
-1. [Change the NameID for users](#change-nameid-for-one-or-more-users).
+1. [Change the **NameID** for users](#change-nameid-for-one-or-more-users).
 
 #### Change email domains
 
@@ -327,7 +327,7 @@ To migrate users to a new email domain, tell users to:
 1. Add their new email as the primary email to their accounts and verify it.
 1. Optional. Remove their old email from the account.
 
-If the NameID is configured with the email address, [change the NameID for users](#change-nameid-for-one-or-more-users).
+If the **NameID** is configured with the email address, [change the **NameID** for users](#change-nameid-for-one-or-more-users).
 
 ## User access and management
 
@@ -367,7 +367,7 @@ On subsequent visits, you should be able to go [sign in to GitLab.com with SAML]
 1. From the list of apps, select the "GitLab.com" app. (The name is set by the administrator of the identity provider.)
 1. You are then signed in to GitLab.com and redirected to the group.
 
-### Change NameID for one or more users
+### Change **NameID** for one or more users
 
 > Update of SAML identities using the SAML API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
 
@@ -466,7 +466,7 @@ To rescind a user's access to the group when also using SCIM, refer to [Remove a
 Users can unlink SAML for a group from their profile page. This can be helpful if:
 
 - You no longer want a group to be able to sign you in to GitLab.com.
-- Your SAML NameID has changed and so GitLab can no longer find your user.
+- Your SAML **NameID** has changed and so GitLab can no longer find your user.
 
 WARNING:
 Unlinking an account removes all roles assigned to that user in the group.
@@ -493,25 +493,38 @@ The [Generated passwords for users created through integrated authentication](..
 
 ## NameID
 
-GitLab.com uses the SAML NameID to identify users. The NameID element:
+GitLab.com uses the SAML **NameID** to identify users. The **NameID** is:
 
-- Is a required field in the SAML response.
-- Must be unique to each user.
-- Must be a persistent value that never changes, such as a randomly generated unique user ID.
-- Is case sensitive. The NameID must match exactly on subsequent login attempts, so should not rely on user input that could change between upper and lower case.
-- Should not be an email address or username. We strongly recommend against these as it's hard to
-  guarantee it doesn't ever change, for example, when a person's name changes. Email addresses are
-  also case-insensitive, which can result in users being unable to sign in.
+- A required field in the SAML response.
+- Case sensitive.
 
-The relevant field name and recommended value for supported providers are in the [provider specific notes](#set-up-identity-provider).
+The **NameID** must:
+
+- Be unique to each user.
+- Be a persistent value that never changes, such as a randomly generated unique user ID.
+- Match exactly on subsequent sign-in attempts, so it should not rely on user input
+  that could change between upper and lower case.
+
+The **NameID** should not be an email address or username because:
+
+- Email addresses and usernames are more likely to change over time. For example,
+  when a person's name changes.
+- Email addresses are case-insensitive, which can result in users being unable to
+  sign in.
+
+For more information on the recommended value and format for specific identity
+providers, see the [set up identity provider documentation](#set-up-identity-provider).
 
 WARNING:
-Once users have signed into GitLab using the SSO SAML setup, changing the `NameID` breaks the configuration and potentially locks users out of the GitLab group.
+After users have signed into GitLab using SSO SAML, changing the **NameID** value
+breaks the configuration and could lock users out of the GitLab group.
 
-### NameID Format
+### **NameID** format
 
-We recommend setting the NameID format to `Persistent` unless using a field (such as email) that requires a different format.
-Most NameID formats can be used, except `Transient` due to the temporary nature of this format.
+Set the **NameID** format to `Persistent`, unless you are using a field, like email, that
+requires a different format.
+
+You can use any format except `Transient`.
 
 ## Related topics
 

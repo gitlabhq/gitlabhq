@@ -15,7 +15,8 @@ module Users
       storage_enforcement_banner_first_enforcement_threshold: 4, # EE-only
       storage_enforcement_banner_second_enforcement_threshold: 5, # EE-only
       storage_enforcement_banner_third_enforcement_threshold: 6, # EE-only
-      storage_enforcement_banner_fourth_enforcement_threshold: 7 # EE-only
+      storage_enforcement_banner_fourth_enforcement_threshold: 7, # EE-only
+      license_check_deprecation_alert: 8 # EE-only
     }
 
     validates :project, presence: true

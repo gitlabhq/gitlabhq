@@ -135,7 +135,7 @@ describe('Sidebar date Widget', () => {
 
     it('uses a correct prop to set the initial date and first day of the week for GlDatePicker', () => {
       expect(findDatePicker().props()).toMatchObject({
-        value: null,
+        value: new Date(date),
         autocomplete: 'off',
         defaultDate: expect.any(Object),
         firstDay: window.gon.first_day_of_week,

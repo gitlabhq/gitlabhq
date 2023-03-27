@@ -6,18 +6,6 @@ RSpec.describe IssuesHelper do
   let_it_be(:project) { create(:project) }
   let_it_be_with_reload(:issue) { create(:issue, project: project) }
 
-  describe '#work_item_type_icon' do
-    it 'returns icon of all standard base types' do
-      WorkItems::Type.base_types.each do |type|
-        expect(work_item_type_icon(type[0])).to eq "issue-type-#{type[0].to_s.dasherize}"
-      end
-    end
-
-    it 'defaults to issue icon if type is unknown' do
-      expect(work_item_type_icon('invalid')).to eq 'issue-type-issue'
-    end
-  end
-
   describe '#award_user_list' do
     it 'returns a comma-separated list of the first X users' do
       user = build_stubbed(:user, name: 'Joe')

@@ -8,7 +8,7 @@ import { initIssuableHeaderWarnings, initIssuableSidebar } from '~/issuable';
 import IssuableTemplateSelectors from '~/issuable/issuable_template_selectors';
 import { TYPE_INCIDENT } from '~/issues/constants';
 import Issue from '~/issues/issue';
-import { initTitleSuggestions, initTypePopover } from '~/issues/new';
+import { initTitleSuggestions, initTypePopover, initTypeSelect } from '~/issues/new';
 import { initRelatedMergeRequests } from '~/issues/related_merge_requests';
 import { initRelatedIssues } from '~/related_issues';
 import {
@@ -47,6 +47,7 @@ export function initForm() {
 
   initTitleSuggestions();
   initTypePopover();
+  initTypeSelect();
   mountMilestoneDropdown();
 }
 

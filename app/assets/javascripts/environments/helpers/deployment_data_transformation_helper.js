@@ -62,6 +62,25 @@ export const getActionsFromDeploymentNode = (deploymentNode, lastDeploymentName)
   );
 };
 
+export const getRollbackActionFromDeploymentNode = (deploymentNode, environment) => {
+  const { job, id } = deploymentNode;
+
+  if (!job) {
+    return null;
+  }
+  const isLastDeployment = id === environment.lastDeployment?.id;
+  const { webPath } = job;
+  return {
+    id,
+    name: environment.name,
+    lastDeployment: {
+      commit: deploymentNode.commit,
+      isLast: isLastDeployment,
+    },
+    retryUrl: `${webPath}/retry`,
+  };
+};
+
 /**
  * This function transforms deploymentNode object coming from GraphQL to object compatible with app/assets/javascripts/environments/environment_details/page.vue table
  * @param {Object} deploymentNode
@@ -82,5 +101,6 @@ export const convertToDeploymentTableRow = (deploymentNode, environment) => {
     created: deploymentNode.createdAt || '',
     deployed: deploymentNode.finishedAt || '',
     actions: getActionsFromDeploymentNode(deploymentNode, lastDeployment?.job?.name),
+    rollback: getRollbackActionFromDeploymentNode(deploymentNode, environment),
   };
 };

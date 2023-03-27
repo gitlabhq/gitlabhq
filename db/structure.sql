@@ -23415,7 +23415,7 @@ CREATE TABLE users (
     last_name character varying(255),
     static_object_token character varying(255),
     role smallint,
-    user_type smallint,
+    user_type smallint DEFAULT 0,
     static_object_token_encrypted text,
     otp_secret_expires_at timestamp with time zone,
     onboarding_in_progress boolean DEFAULT false NOT NULL,

@@ -15,14 +15,31 @@ describe('~/environments/environment_details/page.vue', () => {
 
   let wrapper;
 
-  const defaultWrapperParameters = {
-    resolvedData: resolvedEnvironmentDetails,
+  const emptyEnvironmentToRollbackData = { id: '', name: '', lastDeployment: null, retryUrl: '' };
+  const environmentToRollbackMock = jest.fn();
+
+  const mockResolvers = {
+    Query: {
+      environmentToRollback: environmentToRollbackMock,
+    },
   };
 
-  const createWrapper = ({ resolvedData } = defaultWrapperParameters) => {
-    const mockApollo = createMockApollo([
-      [getEnvironmentDetails, jest.fn().mockResolvedValue(resolvedData)],
-    ]);
+  const defaultWrapperParameters = {
+    resolvedData: resolvedEnvironmentDetails,
+    environmentToRollbackData: emptyEnvironmentToRollbackData,
+  };
+
+  const createWrapper = ({
+    resolvedData,
+    environmentToRollbackData,
+  } = defaultWrapperParameters) => {
+    const mockApollo = createMockApollo(
+      [[getEnvironmentDetails, jest.fn().mockResolvedValue(resolvedData)]],
+      mockResolvers,
+    );
+    environmentToRollbackMock.mockReturnValue(
+      environmentToRollbackData || emptyEnvironmentToRollbackData,
+    );
 
     return mountExtended(EnvironmentsDetailPage, {
       apolloProvider: mockApollo,

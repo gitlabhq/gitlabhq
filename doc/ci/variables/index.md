@@ -212,9 +212,6 @@ To add an instance variable:
    - **Mask variable** Optional. If selected, the variable's **Value** is not shown
      in job logs. The variable is not saved if the value does not meet the [masking requirements](#mask-a-cicd-variable).
 
-The instance variables that are available in a project are listed in the project's
-**Settings > CI/CD > Variables** section.
-
 ## CI/CD variable security
 
 Code pushed to the `.gitlab-ci.yml` file could compromise your variables. Variables could

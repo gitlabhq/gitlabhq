@@ -213,6 +213,20 @@ artifacts:
     - "*.txt"
 ```
 
+## View all job artifacts
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254938) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `artifacts_management_page`. Disabled by default.
+
+You can view all artifacts stored in a project from the **CI/CD > Artifacts** page.
+This list displays all jobs and their associated artifacts. Expand an entry to access
+all artifacts associated with a job, including:
+
+- Artifacts created with the `artifacts:` keyword.
+- [Report artifacts](../yaml/artifacts_reports.md)
+- Job logs and metadata, which are stored internally as separate artifacts.
+
+You can download or delete individual artifacts from this list.
+
 ## Download job artifacts
 
 You can download job artifacts or view the job archive:

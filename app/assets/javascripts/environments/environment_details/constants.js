@@ -61,6 +61,8 @@ export const translations = {
   ),
   nextPageButtonLabel: __('Next'),
   previousPageButtonLabel: __('Prev'),
+  redeployButtonTitle: s__('Environments|Re-deploy to environment'),
+  rollbackButtonTitle: s__('Environments|Rollback environment'),
 };
 
 export const codeBlockPlaceholders = { code: ['code_open', 'code_close'] };

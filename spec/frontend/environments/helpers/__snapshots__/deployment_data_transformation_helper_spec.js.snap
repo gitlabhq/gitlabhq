@@ -31,6 +31,29 @@ Object {
     "label": "deploy-prod (#860)",
     "webPath": "/gitlab-org/pipelinestest/-/jobs/860",
   },
+  "rollback": Object {
+    "id": "gid://gitlab/Deployment/76",
+    "lastDeployment": Object {
+      "commit": Object {
+        "author": Object {
+          "avatarUrl": "/uploads/-/system/user/avatar/1/avatar.png",
+          "id": "gid://gitlab/User/1",
+          "name": "Administrator",
+          "webUrl": "http://gdk.test:3000/root",
+        },
+        "authorEmail": "admin@example.com",
+        "authorGravatar": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+        "authorName": "Administrator",
+        "id": "gid://gitlab/CommitPresenter/0cb48dd5deddb7632fd7c3defb16075fc6c3ca74",
+        "message": "Update .gitlab-ci.yml file",
+        "shortId": "0cb48dd5",
+        "webUrl": "http://gdk.test:3000/gitlab-org/pipelinestest/-/commit/0cb48dd5deddb7632fd7c3defb16075fc6c3ca74",
+      },
+      "isLast": false,
+    },
+    "name": undefined,
+    "retryUrl": "/gitlab-org/pipelinestest/-/jobs/860/retry",
+  },
   "status": "success",
   "triggerer": Object {
     "avatarUrl": "/uploads/-/system/user/avatar/1/avatar.png",
@@ -62,6 +85,7 @@ Object {
   "deployed": "2022-10-17T07:44:43Z",
   "id": "31",
   "job": undefined,
+  "rollback": null,
   "status": "success",
   "triggerer": Object {
     "avatarUrl": "/uploads/-/system/user/avatar/1/avatar.png",
@@ -93,6 +117,7 @@ Object {
   "deployed": "",
   "id": "31",
   "job": null,
+  "rollback": null,
   "status": "success",
   "triggerer": Object {
     "avatarUrl": "/uploads/-/system/user/avatar/1/avatar.png",

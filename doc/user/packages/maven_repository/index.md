@@ -22,6 +22,8 @@ You need an token to publish a package. There are different tokens available dep
 
 Create a token and save it to use later in the process.
 
+Do not use authentication methods other than the methods documented here. Undocumented authentication methods might be removed in the future.
+
 ### Edit the `settings.xml`
 
 Add the following section to your

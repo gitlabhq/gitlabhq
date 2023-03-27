@@ -1,7 +1,9 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import { logError } from '~/lib/logger';
+import ConfirmRollbackModal from '~/environments/components/confirm_rollback_modal.vue';
 import environmentDetailsQuery from '../graphql/queries/environment_details.query.graphql';
+import environmentToRollbackQuery from '../graphql/queries/environment_to_rollback.query.graphql';
 import { convertToDeploymentTableRow } from '../helpers/deployment_data_transformation_helper';
 import EmptyState from './empty_state.vue';
 import DeploymentsTable from './deployments_table.vue';
@@ -10,6 +12,7 @@ import { ENVIRONMENT_DETAILS_PAGE_SIZE } from './constants';
 
 export default {
   components: {
+    ConfirmRollbackModal,
     Pagination,
     DeploymentsTable,
     EmptyState,
@@ -49,10 +52,14 @@ export default {
         };
       },
     },
+    environmentToRollback: {
+      query: environmentToRollbackQuery,
+    },
   },
   data() {
     return {
       project: {},
+      environmentToRollback: {},
       isInitialPageDataReceived: false,
       isPrefetchingPages: false,
     };
@@ -143,5 +150,6 @@ export default {
       <pagination :page-info="pageInfo" :disabled="isPaginationDisabled" />
     </div>
     <empty-state v-if="!isDeploymentTableShown && !isLoading" />
+    <confirm-rollback-modal :environment="environmentToRollback" graphql />
   </div>
 </template>
