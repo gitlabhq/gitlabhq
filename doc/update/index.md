@@ -617,6 +617,12 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   migration might take multiple hours or days to complete on larger GitLab instances. Make sure the migration
   has completed successfully before upgrading to 15.7.0 or later.
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
+- A redesigned sign-in page is enabled by default in GitLab 15.4 and later, with improvements shipping in later releases. For more information, see [epic 8557](https://gitlab.com/groups/gitlab-org/-/epics/8557).
+  It can be disabled with a feature flag. Start [a Rails console](../administration/operations/rails_console.md) and run:
+
+  ```ruby
+  Feature.disable(:restyle_login_page)
+  ```
 
 ### 15.3.4
 

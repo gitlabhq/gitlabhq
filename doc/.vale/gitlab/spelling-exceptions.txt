@@ -327,6 +327,7 @@ ETag
 ETags
 Etsy
 Excon
+exfiltrate
 exfiltration
 ExifTool
 expirable

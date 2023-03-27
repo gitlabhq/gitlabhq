@@ -39,6 +39,20 @@ Keep in mind the limitations of [migrating using file exports](../settings/impor
 When migrating from self-managed to GitLab.com, user associations (such as comment author)
 are changed to the user who is importing the projects.
 
+## Security
+
+Only import projects from sources you trust. If you import a project from an untrusted source,
+an attacker could steal your sensitive data. For example, an imported project
+with a malicious `.gitlab-ci.yml` file could allow an attacker to exfiltrate group CI/CD variables.
+
+GitLab self-managed administrators can reduce their attack surface by disabling import sources they don't need:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Visibility and access controls**.
+1. Scroll to **Import sources**.
+1. Clear checkboxes for importers that are not required.
+
 ## Available project importers
 
 You can import projects from:
@@ -65,7 +79,7 @@ You can then [connect your external repository to get CI/CD benefits](../../../c
 
 GitLab can not automatically migrate Subversion repositories to Git. Converting Subversion repositories to Git can be difficult, but several tools exist including:
 
-- [`git svn`](https://git-scm.com/book/en/v2/Git-and-Other-Systems-Migrating-to-Git), for very small and simple repositories.
+- [`git svn`](https://git-scm.com/book/en/v2/Git-and-Other-Systems-Migrating-to-Git), for very small and basic repositories.
 - [`reposurgeon`](http://www.catb.org/~esr/reposurgeon/repository-editing.html), for larger and more complex repositories.
 
 ## Migrate using the API
@@ -82,10 +96,9 @@ over a series of Docker pulls and pushes. Re-run any CI pipelines to retrieve an
 
 ## Migrate between two self-managed GitLab instances
 
-To migrate from an existing self-managed GitLab instance to a new self-managed GitLab instance, it's
-best to [back up](../../../raketasks/backup_restore.md)
-the existing instance and restore it on the new instance. For example, this is useful when migrating
-a self-managed instance from an old server to a new server.
+To migrate from an existing self-managed GitLab instance to a new self-managed GitLab instance,
+you should [back up](../../../raketasks/backup_restore.md)
+the existing instance and restore it on the new instance. For example, you could use this method to migrate a self-managed instance from an old server to a new server.
 
 The backups produced don't depend on the operating system running GitLab. You can therefore use
 the restore method to switch between different operating system distributions or versions, as long
@@ -159,17 +172,3 @@ For more information, see:
   including settings that need checking afterwards and other limitations.
 
 For support, customers must enter into a paid engagement with GitLab Professional Services.
-
-## Security
-
-Only import projects from sources you trust. If you import a project from an untrusted source, it
-may be possible for an attacker to steal your sensitive data. For example, an imported project
-with a malicious `.gitlab-ci.yml` file could allow an attacker to exfiltrate group CI/CD variables.
-
-GitLab self-managed administrators can reduce their attack surface by disabling import sources they don't need:
-
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Visibility and access controls**.
-1. Scroll to **Import sources**.
-1. Clear checkboxes for importers that are not required.

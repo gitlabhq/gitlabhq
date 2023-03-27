@@ -425,7 +425,8 @@ For more information, see
 
 ## Users with minimal access **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in GitLab 13.4.
+> - Support for inviting users with minimal access role [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106438) in GitLab 15.9.
 
 Owners can add members with a "minimal access" role to a root group. Such users do not:
 

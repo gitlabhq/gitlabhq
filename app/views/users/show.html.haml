@@ -51,7 +51,8 @@
           .avatar-holder
             = link_to avatar_icon_for_user(@user, 400, current_user: current_user), target: '_blank', rel: 'noopener noreferrer' do
               = render Pajamas::AvatarComponent.new(@user, alt: "", size: 96, avatar_options: { itemprop: "image" })
-          #js-user-achievements{ data: { root_url: root_url, user_id: @user.id } }
+          - if Ability.allowed?(current_user, :read_user_profile, @user)
+            #js-user-achievements{ data: { root_url: root_url, user_id: @user.id } }
         .gl-display-inline-block.gl-vertical-align-top.gl-text-left.gl-max-w-80
           - if @user.blocked? || !@user.confirmed?
             .user-info

@@ -1,4 +1,4 @@
-import { GlEmptyState, GlTabs, GlTab, GlSprintf } from '@gitlab/ui';
+import { GlEmptyState, GlModal, GlTabs, GlTab, GlSprintf } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 
 import VueApollo from 'vue-apollo';
@@ -7,7 +7,7 @@ import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-
+import { stubComponent } from 'helpers/stub_component';
 import AdditionalMetadata from '~/packages_and_registries/package_registry/components/details/additional_metadata.vue';
 import PackagesApp from '~/packages_and_registries/package_registry/pages/details.vue';
 import DependencyRow from '~/packages_and_registries/package_registry/components/details/dependency_row.vue';
@@ -66,6 +66,7 @@ describe('PackagesApp', () => {
   };
 
   const { __typename, ...packageWithoutTypename } = packageData();
+  const showMock = jest.fn();
 
   function createComponent({
     resolver = jest.fn().mockResolvedValue(packageDetailsQuery()),
@@ -86,17 +87,11 @@ describe('PackagesApp', () => {
       stubs: {
         PackageTitle,
         DeletePackages,
-        GlModal: {
-          template: `
-            <div>
-              <slot name="modal-title"></slot>
-              <p><slot></slot></p>
-            </div>
-          `,
+        GlModal: stubComponent(GlModal, {
           methods: {
-            show: jest.fn(),
+            show: showMock,
           },
-        },
+        }),
         GlSprintf,
         GlTabs,
         GlTab,
@@ -251,7 +246,7 @@ describe('PackagesApp', () => {
 
       await findDeleteButton().trigger('click');
 
-      expect(findDeleteModal().find('p').text()).toBe(
+      expect(findDeleteModal().text()).toBe(
         'You are about to delete version 1.0.0 of @gitlab-org/package-15. Are you sure?',
       );
     });
@@ -331,13 +326,15 @@ describe('PackagesApp', () => {
 
         await waitForPromises();
 
-        const showDeleteFileSpy = jest.spyOn(wrapper.vm.$refs.deleteFileModal, 'show');
-        const showDeletePackageSpy = jest.spyOn(wrapper.vm.$refs.deleteModal, 'show');
-
         findPackageFiles().vm.$emit('delete-files', [fileToDelete]);
 
-        expect(showDeletePackageSpy).not.toHaveBeenCalled();
-        expect(showDeleteFileSpy).toHaveBeenCalled();
+        expect(showMock).toHaveBeenCalledTimes(1);
+
+        await waitForPromises();
+
+        expect(findDeleteFileModal().text()).toBe(
+          'You are about to delete foo-1.0.1.tgz. This is a destructive action that may render your package unusable. Are you sure?',
+        );
       });
 
       it('when its the only file opens delete package confirmation modal', async () => {
@@ -360,17 +357,13 @@ describe('PackagesApp', () => {
 
         await waitForPromises();
 
-        const showDeleteFileSpy = jest.spyOn(wrapper.vm.$refs.deleteFileModal, 'show');
-        const showDeletePackageSpy = jest.spyOn(wrapper.vm.$refs.deleteModal, 'show');
-
         findPackageFiles().vm.$emit('delete-files', [fileToDelete]);
 
-        expect(showDeletePackageSpy).toHaveBeenCalled();
-        expect(showDeleteFileSpy).not.toHaveBeenCalled();
+        expect(showMock).toHaveBeenCalledTimes(1);
 
         await waitForPromises();
 
-        expect(findDeleteModal().find('p').text()).toBe(
+        expect(findDeleteModal().text()).toBe(
           'Deleting the last package asset will remove version 1.0.0 of @gitlab-org/package-15. Are you sure?',
         );
       });
@@ -542,15 +535,13 @@ describe('PackagesApp', () => {
 
         await waitForPromises();
 
-        const showDeletePackageSpy = jest.spyOn(wrapper.vm.$refs.deleteModal, 'show');
-
         findPackageFiles().vm.$emit('delete-files', packageFiles());
 
-        expect(showDeletePackageSpy).toHaveBeenCalled();
+        expect(showMock).toHaveBeenCalledTimes(1);
 
         await waitForPromises();
 
-        expect(findDeleteModal().find('p').text()).toBe(
+        expect(findDeleteModal().text()).toBe(
           'Deleting all package assets will remove version 1.0.0 of @gitlab-org/package-15. Are you sure?',
         );
       });
