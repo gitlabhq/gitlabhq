@@ -20,19 +20,16 @@ RSpec.describe 'gitlab:db:truncate_legacy_tables', :silence_stdout, :reestablish
   end
 
   before do
-    skip_if_multiple_databases_not_setup(:ci)
+    skip_if_shared_database(:ci)
 
-    # Filling the table on both databases main and ci
-    Gitlab::Database.database_base_models.each_value do |base_model|
-      base_model.connection.execute(<<~SQL)
-         CREATE TABLE #{test_gitlab_main_table} (id integer NOT NULL);
-         INSERT INTO #{test_gitlab_main_table} VALUES(generate_series(1, 50));
-      SQL
-      base_model.connection.execute(<<~SQL)
-         CREATE TABLE #{test_gitlab_ci_table} (id integer NOT NULL);
-         INSERT INTO #{test_gitlab_ci_table} VALUES(generate_series(1, 50));
-      SQL
-    end
+    execute_on_each_database(<<~SQL)
+       CREATE TABLE #{test_gitlab_main_table} (id integer NOT NULL);
+       INSERT INTO #{test_gitlab_main_table} VALUES(generate_series(1, 50));
+    SQL
+    execute_on_each_database(<<~SQL)
+       CREATE TABLE #{test_gitlab_ci_table} (id integer NOT NULL);
+       INSERT INTO #{test_gitlab_ci_table} VALUES(generate_series(1, 50));
+    SQL
 
     allow(Gitlab::Database::GitlabSchema).to receive(:tables_to_schema).and_return(
       {

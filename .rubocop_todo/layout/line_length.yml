@@ -5532,7 +5532,6 @@ Layout/LineLength:
     - 'spec/workers/authorized_project_update/project_recalculate_per_user_worker_spec.rb'
     - 'spec/workers/authorized_project_update/user_refresh_from_replica_worker_spec.rb'
     - 'spec/workers/auto_devops/disable_worker_spec.rb'
-    - 'spec/workers/background_migration/ci_database_worker_spec.rb'
     - 'spec/workers/build_success_worker_spec.rb'
     - 'spec/workers/bulk_import_worker_spec.rb'
     - 'spec/workers/bulk_imports/export_request_worker_spec.rb'

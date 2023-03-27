@@ -16,6 +16,16 @@ module Database
       skip "Skipping because database #{database_name} exists" if database_exists?(database_name)
     end
 
+    def execute_on_each_database(query, databases: %I[main ci])
+      databases = databases.select { |database_name| database_exists?(database_name) }
+
+      Gitlab::Database::EachDatabase.each_database_connection(only: databases, include_shared: false) do |connection, _|
+        next unless Gitlab::Database.gitlab_schemas_for_connection(connection).include?(:gitlab_shared)
+
+        connection.execute(query)
+      end
+    end
+
     def skip_if_multiple_databases_not_setup(*databases)
       unless (databases - EXTRA_DBS).empty?
         raise "Unsupported database in #{databases}. It must be one of #{EXTRA_DBS}."

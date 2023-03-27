@@ -605,7 +605,7 @@ See example [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_request
 ### Remove the trigger and old `integer` columns (release N + 2)
 
 Using post-deployment migration and the provided `cleanup_conversion_of_integer_to_bigint` helper,
-drop the database trigger and the old `integer` columns ([see an example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69714)).
+drop the database trigger and the old `integer` columns ([see an example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70351)).
 
 ### Remove ignore rules (release N + 3)
 

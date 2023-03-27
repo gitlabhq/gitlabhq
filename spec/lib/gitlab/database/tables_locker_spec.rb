@@ -166,7 +166,7 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
 
   context 'when running on single database' do
     before do
-      skip_if_multiple_databases_are_setup(:ci)
+      skip_if_database_exists(:ci)
     end
 
     describe '#lock_writes' do
@@ -203,7 +203,7 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
 
   context 'when running on multiple databases' do
     before do
-      skip_if_multiple_databases_not_setup(:ci)
+      skip_if_shared_database(:ci)
     end
 
     describe '#lock_writes' do

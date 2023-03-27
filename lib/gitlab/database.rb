@@ -128,6 +128,7 @@ module Gitlab
       Gitlab::Runtime.max_threads + headroom
     end
 
+    # Database configured. Returns true even if the database is shared
     def self.has_config?(database_name)
       ActiveRecord::Base.configurations
         .configs_for(env_name: Rails.env, name: database_name.to_s, include_replicas: true)

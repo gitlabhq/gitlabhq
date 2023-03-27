@@ -506,7 +506,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
             def down; end
           end,
           query_matcher: /FROM ci_builds/,
-          setup: -> (_) { skip_if_multiple_databases_not_setup },
+          setup: -> (_) { skip_if_shared_database(:ci) },
           expected: {
             no_gitlab_schema: {
               main: :cross_schema_error,

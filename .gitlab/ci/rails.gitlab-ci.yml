@@ -147,6 +147,12 @@ rspec unit pg12 single-db:
     - .single-db-rspec
     - .rails:rules:single-db
 
+rspec unit pg12 single-db-ci-connection:
+  extends:
+    - rspec unit pg12
+    - .single-db-ci-connection-rspec
+    - .rails:rules:single-db-ci-connection
+
 rspec unit pg12 praefect:
   extends:
     - rspec unit pg12
@@ -170,6 +176,12 @@ rspec integration pg12 single-db:
     - rspec integration pg12
     - .single-db-rspec
     - .rails:rules:single-db
+
+rspec integration pg12 single-db-ci-connection:
+  extends:
+    - rspec integration pg12
+    - .single-db-ci-connection-rspec
+    - .rails:rules:single-db-ci-connection
 
 rspec integration pg12 praefect:
   extends:
@@ -196,6 +208,12 @@ rspec system pg12 single-db:
     - rspec system pg12
     - .single-db-rspec
     - .rails:rules:single-db
+
+rspec system pg12 single-db-ci-connection:
+  extends:
+    - rspec system pg12
+    - .single-db-ci-connection-rspec
+    - .rails:rules:single-db-ci-connection
 
 rspec system pg12 praefect:
   extends:
@@ -289,6 +307,12 @@ rspec:coverage:
     - rspec unit pg12 single-db
     - rspec integration pg12 single-db
     - rspec system pg12 single-db
+    # FOSS/EE single-db-ci-connection jobs
+    - rspec migration pg12 single-db-ci-connection
+    - rspec background_migration pg12 single-db-ci-connection
+    - rspec unit pg12 single-db-ci-connection
+    - rspec integration pg12 single-db-ci-connection
+    - rspec system pg12 single-db-ci-connection
     # EE jobs
     - rspec-ee migration pg12
     - rspec-ee background_migration pg12
@@ -307,24 +331,35 @@ rspec:coverage:
     - rspec-ee unit pg12 single-db
     - rspec-ee integration pg12 single-db
     - rspec-ee system pg12 single-db
+    # EE single-db-ci-connection jobs
+    - rspec-ee migration pg12 single-db-ci-connection
+    - rspec-ee background_migration pg12 single-db-ci-connection
+    - rspec-ee unit pg12 single-db-ci-connection
+    - rspec-ee integration pg12 single-db-ci-connection
+    - rspec-ee system pg12 single-db-ci-connection
     # Memory jobs
     - memory-on-boot
     # As-if-FOSS jobs
     - rspec migration pg12-as-if-foss
     - rspec migration pg12-as-if-foss predictive
     - rspec migration pg12-as-if-foss single-db
+    - rspec migration pg12-as-if-foss single-db-ci-connection
     - rspec background_migration pg12-as-if-foss
     - rspec background_migration pg12-as-if-foss predictive
     - rspec background_migration pg12-as-if-foss single-db
+    - rspec background_migration pg12-as-if-foss single-db-ci-connection
     - rspec unit pg12-as-if-foss
     - rspec unit pg12-as-if-foss predictive
     - rspec unit pg12-as-if-foss single-db
+    - rspec unit pg12-as-if-foss single-db-ci-connection
     - rspec integration pg12-as-if-foss
     - rspec integration pg12-as-if-foss predictive
     - rspec integration pg12-as-if-foss single-db
+    - rspec integration pg12-as-if-foss single-db-ci-connection
     - rspec system pg12-as-if-foss
     - rspec system pg12-as-if-foss predictive
     - rspec system pg12-as-if-foss single-db
+    - rspec system pg12-as-if-foss single-db-ci-connection
   script:
     - run_timed_command "bundle exec scripts/merge-simplecov"
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
@@ -470,6 +505,12 @@ rspec unit pg12-as-if-foss single-db:
     - .single-db-rspec
     - .rails:rules:single-db
 
+rspec unit pg12-as-if-foss single-db-ci-connection:
+  extends:
+    - rspec unit pg12-as-if-foss
+    - .single-db-ci-connection-rspec
+    - .rails:rules:single-db-ci-connection
+
 rspec integration pg12-as-if-foss:
   extends:
     - .rspec-base-pg12-as-if-foss
@@ -488,6 +529,12 @@ rspec integration pg12-as-if-foss single-db:
     - .single-db-rspec
     - .rails:rules:single-db
 
+rspec integration pg12-as-if-foss single-db-ci-connection:
+  extends:
+    - rspec integration pg12-as-if-foss
+    - .single-db-ci-connection-rspec
+    - .rails:rules:single-db-ci-connection
+
 rspec system pg12-as-if-foss:
   extends:
     - .rspec-base-pg12-as-if-foss
@@ -505,6 +552,12 @@ rspec system pg12-as-if-foss single-db:
     - rspec system pg12-as-if-foss
     - .single-db-rspec
     - .rails:rules:single-db
+
+rspec system pg12-as-if-foss single-db-ci-connection:
+  extends:
+    - rspec system pg12-as-if-foss
+    - .single-db-ci-connection-rspec
+    - .rails:rules:single-db-ci-connection
 
 rspec-ee migration pg12:
   extends:
@@ -591,6 +644,12 @@ rspec-ee unit pg12 single-db:
     - .single-db-rspec
     - .rails:rules:single-db
 
+rspec-ee unit pg12 single-db-ci-connection:
+  extends:
+    - rspec-ee unit pg12
+    - .single-db-ci-connection-rspec
+    - .rails:rules:single-db-ci-connection
+
 rspec-ee integration pg12:
   extends:
     - .rspec-ee-base-pg12
@@ -614,6 +673,12 @@ rspec-ee integration pg12 single-db:
     - .single-db-rspec
     - .rails:rules:single-db
 
+rspec-ee integration pg12 single-db-ci-connection:
+  extends:
+    - rspec-ee integration pg12
+    - .single-db-ci-connection-rspec
+    - .rails:rules:single-db-ci-connection
+
 rspec-ee system pg12:
   extends:
     - .rspec-ee-base-pg12
@@ -636,6 +701,12 @@ rspec-ee system pg12 single-db:
     - rspec-ee system pg12
     - .single-db-rspec
     - .rails:rules:single-db
+
+rspec-ee system pg12 single-db-ci-connection:
+  extends:
+    - rspec-ee system pg12
+    - .single-db-ci-connection-rspec
+    - .rails:rules:single-db-ci-connection
 # EE: default refs (MRs, default branch, schedules) jobs #
 ##################################################
 
