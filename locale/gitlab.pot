@@ -1478,6 +1478,9 @@ msgstr ""
 msgid "."
 msgstr ""
 
+msgid ".gitlab-ci.yml with aliases/anchors is not supported. Please change the CI configuration manually."
+msgstr ""
+
 msgid "/"
 msgstr ""
 
@@ -8999,7 +9002,16 @@ msgstr ""
 msgid "CiCatalog|CI/CD catalog"
 msgstr ""
 
-msgid "CiCatalog|Repositories of reusable pipeline components available in this namespace."
+msgid "CiCatalog|Create a pipeline component repository and make reusing pipeline configurations faster and easier."
+msgstr ""
+
+msgid "CiCatalog|Get started with the CI/CD catalog"
+msgstr ""
+
+msgid "CiCatalog|Learn more"
+msgstr ""
+
+msgid "CiCatalog|Repositories of pipeline components available in this namespace."
 msgstr ""
 
 msgid "CiCdAnalytics|Date range: %{range}"
@@ -10560,6 +10572,12 @@ msgid "Commits|No related merge requests found"
 msgstr ""
 
 msgid "Committed by"
+msgstr ""
+
+msgid "Committed-after"
+msgstr ""
+
+msgid "Committed-before"
 msgstr ""
 
 msgid "CommonJS module"
@@ -35450,6 +35468,9 @@ msgstr ""
 msgid "ProtectedEnvironment|Unprotect"
 msgstr ""
 
+msgid "ProtectedEnvironment|Users with at least the Developer role can write to unprotected environments. Are you sure you want to unprotect %{environment_name}?"
+msgstr ""
+
 msgid "ProtectedEnvironment|Your environment can't be unprotected"
 msgstr ""
 
@@ -38551,9 +38572,6 @@ msgstr ""
 msgid "Search by author"
 msgstr ""
 
-msgid "Search by commit title or SHA"
-msgstr ""
-
 msgid "Search by message"
 msgstr ""
 
@@ -38597,6 +38615,9 @@ msgid "Search milestones"
 msgstr ""
 
 msgid "Search or create tag"
+msgstr ""
+
+msgid "Search or filter commits"
 msgstr ""
 
 msgid "Search or filter results..."
@@ -40613,6 +40634,9 @@ msgid "Show labels"
 msgstr ""
 
 msgid "Show latest version"
+msgstr ""
+
+msgid "Show less"
 msgstr ""
 
 msgid "Show list"
@@ -52385,6 +52409,9 @@ msgstr ""
 msgid "must be associated with a Group or a Project"
 msgstr ""
 
+msgid "must be at least 1 day"
+msgstr ""
+
 msgid "must be greater than start date"
 msgstr ""
 
@@ -52989,6 +53016,9 @@ msgid "your group (%{group_name})"
 msgstr ""
 
 msgid "your settings"
+msgstr ""
+
+msgid "yyyy-mm-dd"
 msgstr ""
 
 msgid "{group}"

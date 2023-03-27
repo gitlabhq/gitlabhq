@@ -1,6 +1,7 @@
 <script>
 import { GlCollapsibleListbox, GlIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import { updateText } from '~/lib/utils/text_markdown';
 import savedRepliesQuery from './saved_replies.query.graphql';
 
 export default {
@@ -51,6 +52,24 @@ export default {
     setSavedRepliesSearch(search) {
       this.savedRepliesSearch = search;
     },
+    onSelect(id) {
+      const savedReply = this.savedReplies.find((r) => r.id === id);
+      const textArea = this.$el.closest('.md-area')?.querySelector('textarea');
+
+      if (savedReply && textArea) {
+        updateText({
+          textArea,
+          tag: savedReply.content,
+          cursorOffset: 0,
+          wrap: false,
+        });
+
+        // Wait for text to be added into textarea
+        requestAnimationFrame(() => {
+          textArea.focus();
+        });
+      }
+    },
   },
 };
 </script>
@@ -65,6 +84,7 @@ export default {
     :searching="$apollo.queries.savedReplies.loading"
     @shown="fetchSavedReplies"
     @search="setSavedRepliesSearch"
+    @select="onSelect"
   >
     <template #toggle>
       <gl-button
@@ -74,19 +94,14 @@ export default {
         category="tertiary"
         class="gl-px-3!"
         data-testid="saved-replies-dropdown-toggle"
+        @keydown.prevent
       >
         <gl-icon name="symlink" class="gl-mr-0!" />
         <gl-icon name="chevron-down" />
       </gl-button>
     </template>
     <template #list-item="{ item }">
-      <div
-        class="gl-display-flex js-saved-reply-content"
-        :data-md-tag="item.content"
-        data-md-cursor-offset="0"
-        data-md-prepend="true"
-        data-testid="saved-reply-dropdown-item"
-      >
+      <div class="gl-display-flex js-saved-reply-content">
         <div class="gl-text-truncate">
           <strong>{{ item.text }}</strong
           ><span class="gl-ml-2">{{ item.content }}</span>

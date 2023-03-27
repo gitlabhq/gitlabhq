@@ -114,7 +114,8 @@ RSpec.shared_examples_for 'services security ci configuration create service' do
         it 'fails with error' do
           expect(project).to receive(:ci_config_for).and_return(unsupported_yaml)
 
-          expect { result }.to raise_error(Gitlab::Graphql::Errors::MutationError, '.gitlab-ci.yml with aliases/anchors is not supported. Please change the CI configuration manually.')
+          expect { result }.to raise_error(Gitlab::Graphql::Errors::MutationError, Gitlab::Utils::ErrorMessage.to_user_facing(
+            _(".gitlab-ci.yml with aliases/anchors is not supported. Please change the CI configuration manually.")))
         end
       end
 

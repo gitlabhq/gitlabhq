@@ -534,6 +534,13 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         .is_less_than(65536)
     end
 
+    specify do
+      is_expected.to validate_numericality_of(:archive_builds_in_seconds)
+        .only_integer
+        .is_greater_than_or_equal_to(1.day.seconds.to_i)
+        .with_message('must be at least 1 day')
+    end
+
     describe 'usage_ping_enabled setting' do
       shared_examples 'usage ping enabled' do
         it do

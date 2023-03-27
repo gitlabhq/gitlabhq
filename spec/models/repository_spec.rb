@@ -597,6 +597,15 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#list_commits_by' do
+    it 'returns commits when no filter is applied' do
+      commit_ids = repository.list_commits_by(nil, 'master', limit: 2).map(&:id)
+
+      expect(commit_ids).to include(
+        'b83d6e391c22777fca1ed3012fce84f633d7fed0',
+        '498214de67004b1da3d820901307bed2a68a8ef6'
+      )
+    end
+
     it 'returns commits with messages containing a given string' do
       commit_ids = repository.list_commits_by('test text', 'master').map(&:id)
 

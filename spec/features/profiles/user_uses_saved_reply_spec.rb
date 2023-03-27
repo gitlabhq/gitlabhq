@@ -22,7 +22,7 @@ RSpec.describe 'User uses saved reply', :js,
 
     wait_for_requests
 
-    find('[data-testid="saved-reply-dropdown-item"]').click
+    find('.gl-new-dropdown-item').click
 
     expect(find('.note-textarea').value).to eq(saved_reply.content)
   end

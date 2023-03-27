@@ -1,8 +1,11 @@
 import _ from 'lodash';
+import * as Sentry from '@sentry/browser';
 import Api from '~/api';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
+import { joinPaths } from '~/lib/utils/url_utility';
+import { ACTIVE_AND_BLOCKED_USER_STATES } from '~/users_select/constants';
 import * as types from './mutation_types';
 
 export const setBaseConfig = ({ commit }, options) => {
@@ -11,14 +14,14 @@ export const setBaseConfig = ({ commit }, options) => {
 
 export const setTabIndex = ({ commit }, tabIndex) => commit(types.SET_TABINDEX, tabIndex);
 
-export const searchCommits = ({ dispatch, commit, state }, searchText) => {
+export const searchCommits = ({ dispatch, commit, state }, search = {}) => {
   commit(types.FETCH_COMMITS);
 
   let params = {};
-  if (searchText) {
+  if (search) {
     params = {
       params: {
-        search: searchText,
+        ...search,
         per_page: 40,
       },
     };
@@ -37,7 +40,7 @@ export const searchCommits = ({ dispatch, commit, state }, searchText) => {
         }
         return c;
       });
-      if (!searchText) {
+      if (!search) {
         dispatch('setCommits', { commits: [...commits, ...state.contextCommits] });
       } else {
         dispatch('setCommits', { commits });
@@ -129,6 +132,23 @@ export const setSelectedCommits = ({ commit }, selected) => {
     ['desc'],
   );
   commit(types.SET_SELECTED_COMMITS, selectedCommits);
+};
+
+export const fetchAuthors = ({ dispatch, state }, author = null) => {
+  const { projectId } = state;
+  return axios
+    .get(joinPaths(gon.relative_url_root || '', '/-/autocomplete/users.json'), {
+      params: {
+        project_id: projectId,
+        states: ACTIVE_AND_BLOCKED_USER_STATES,
+        search: author,
+      },
+    })
+    .then(({ data }) => data)
+    .catch((error) => {
+      Sentry.captureException(error);
+      dispatch('receiveAuthorsError');
+    });
 };
 
 export const setSearchText = ({ commit }, searchText) => commit(types.SET_SEARCH_TEXT, searchText);

@@ -26,6 +26,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   # rather than the persisted value.
   ADDRESSABLE_URL_VALIDATION_OPTIONS = { deny_all_requests_except_allowed: ->(settings) { settings.deny_all_requests_except_allowed } }.freeze
 
+  HUMANIZED_ATTRIBUTES = {
+    archive_builds_in_seconds: 'Archive job value'
+  }.freeze
+
   enum whats_new_variant: { all_tiers: 0, current_tier: 1, disabled: 2 }, _prefix: true
   enum email_confirmation_setting: { off: 0, soft: 1, hard: 2 }, _prefix: true
 
@@ -336,7 +340,11 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   validates :archive_builds_in_seconds,
             allow_nil: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 1.day.seconds }
+            numericality: {
+              only_integer: true,
+              greater_than_or_equal_to: 1.day.seconds,
+              message: N_('must be at least 1 day')
+            }
 
   validates :local_markdown_version,
             allow_nil: true,
@@ -872,6 +880,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   end
 
   private
+
+  def self.human_attribute_name(attribute, *options)
+    HUMANIZED_ATTRIBUTES[attribute.to_sym] || super
+  end
 
   def parsed_grafana_url
     @parsed_grafana_url ||= Gitlab::Utils.parse_url(grafana_url)
