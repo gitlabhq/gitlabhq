@@ -65,7 +65,7 @@ Dark theme only works with the **Dark** syntax highlighting theme.
 
 > Changing the default syntax highlighting theme for new users and users who are not signed in [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25129) in GitLab 15.10.
 
-GitLab uses the [rouge Ruby library](http://rouge.jneen.net/ "Rouge website")
+GitLab uses the [Rouge Ruby library](https://github.com/rouge-ruby/rouge)
 for syntax highlighting outside of any Editor context. The WebIDE (like Snippets)
 uses [Monaco Editor](https://microsoft.github.io/monaco-editor/) and it's provided
 [Monarch](https://microsoft.github.io/monaco-editor/monarch.html) library for

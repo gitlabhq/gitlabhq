@@ -225,7 +225,7 @@ end
 1. Check if the user avatar *does not* appear in the top navigation.
 
 Behind the scenes, `be_signed_in` is a
-[predicate matcher](https://relishapp.com/rspec/rspec-expectations/v/3-8/docs/built-in-matchers/predicate-matchers)
+[predicate matcher](https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/predicates/)
 that [implements checking the user avatar](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/page/main/menu.rb#L92).
 
 ## De-duplicate your code

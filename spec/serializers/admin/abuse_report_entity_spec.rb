@@ -21,7 +21,11 @@ RSpec.describe Admin::AbuseReportEntity, feature_category: :insider_threat do
         :reported_user,
         :reporter,
         :reported_user_path,
-        :reporter_path
+        :reporter_path,
+        :user_blocked,
+        :block_user_path,
+        :remove_report_path,
+        :remove_user_and_report_path
       )
     end
 
@@ -39,6 +43,38 @@ RSpec.describe Admin::AbuseReportEntity, feature_category: :insider_threat do
 
     it 'correctly exposes :reporter_path' do
       expect(entity_hash[:reporter_path]).to eq user_path(abuse_report.reporter)
+    end
+
+    describe 'user_blocked' do
+      subject(:user_blocked) { entity_hash[:user_blocked] }
+
+      context 'when user is blocked' do
+        before do
+          allow(abuse_report.user).to receive(:blocked?).and_return(true)
+        end
+
+        it { is_expected.to be true }
+      end
+
+      context 'when user is not blocked' do
+        before do
+          allow(abuse_report.user).to receive(:blocked?).and_return(false)
+        end
+
+        it { is_expected.to be false }
+      end
+    end
+
+    it 'correctly exposes :block_user_path' do
+      expect(entity_hash[:block_user_path]).to eq block_admin_user_path(abuse_report.user)
+    end
+
+    it 'correctly exposes :remove_report_path' do
+      expect(entity_hash[:remove_report_path]).to eq admin_abuse_report_path(abuse_report)
+    end
+
+    it 'correctly exposes :remove_user_and_report_path' do
+      expect(entity_hash[:remove_user_and_report_path]).to eq admin_abuse_report_path(abuse_report, remove_user: true)
     end
   end
 end

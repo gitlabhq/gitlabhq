@@ -18,7 +18,7 @@ What is described in the following sections can be found in these examples:
 
 ## Vue architecture
 
-All new features built with Vue.js must follow a [Flux architecture](https://facebook.github.io/flux/).
+All new features built with Vue.js must follow a [Flux architecture](https://facebookarchive.github.io/flux/).
 The main goal we are trying to achieve is to have only one data flow, and only one data entry.
 To achieve this goal we use [Vuex](#vuex).
 

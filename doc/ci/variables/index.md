@@ -25,12 +25,7 @@ so quoted and unquoted variables might be parsed differently. For example, `VAR1
 is interpreted as an octal value, so the value becomes `5349`, but `VAR1: "012345"` is parsed
 as a string with a value of `012345`.
 
-> For more information about advanced use of GitLab CI/CD:
->
-> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Get to productivity faster with these [7 advanced GitLab CI workflow hacks](https://about.gitlab.com/webcast/7cicd-hacks/)
->   shared by GitLab engineers.
-> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Learn how the Cloud Native Computing Foundation (CNCF) [eliminates the complexity](https://about.gitlab.com/customers/cncf/)
->   of managing projects across many cloud providers with GitLab CI/CD.
+For more information about advanced use of GitLab CI/CD, see [7 advanced GitLab CI workflow hacks](https://about.gitlab.com/webcast/7cicd-hacks/) shared by GitLab engineers.
 
 ## Predefined CI/CD variables
 

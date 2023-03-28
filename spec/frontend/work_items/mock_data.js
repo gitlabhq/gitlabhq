@@ -1258,6 +1258,67 @@ export const workItemHierarchyTreeFailureResponse = {
   ],
 };
 
+export const changeIndirectWorkItemParentMutationResponse = {
+  data: {
+    workItemUpdate: {
+      workItem: {
+        __typename: 'WorkItem',
+        workItemType: {
+          id: 'gid://gitlab/WorkItems::Type/2411',
+          name: 'Objective',
+          iconName: 'issue-type-objective',
+          __typename: 'WorkItemType',
+        },
+        userPermissions: {
+          deleteWorkItem: true,
+          updateWorkItem: true,
+          __typename: 'WorkItemPermissions',
+        },
+        description: null,
+        id: 'gid://gitlab/WorkItem/13',
+        iid: '13',
+        state: 'OPEN',
+        title: 'Objective 2',
+        confidential: false,
+        createdAt: '2022-08-03T12:41:54Z',
+        updatedAt: null,
+        closedAt: null,
+        author: {
+          ...mockAssignees[0],
+        },
+        project: {
+          __typename: 'Project',
+          id: '1',
+          fullPath: 'test-project-path',
+          archived: false,
+        },
+        widgets: [
+          {
+            __typename: 'WorkItemWidgetHierarchy',
+            type: 'HIERARCHY',
+            parent: null,
+            hasChildren: false,
+            children: {
+              nodes: [],
+            },
+          },
+        ],
+      },
+      errors: [],
+      __typename: 'WorkItemUpdatePayload',
+    },
+  },
+};
+
+export const workItemUpdateFailureResponse = {
+  data: {},
+  errors: [
+    {
+      message: 'Something went wrong',
+    },
+  ],
+};
+
 export const changeWorkItemParentMutationResponse = {
   data: {
     workItemUpdate: {

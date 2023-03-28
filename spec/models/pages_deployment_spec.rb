@@ -59,6 +59,66 @@ RSpec.describe PagesDeployment, feature_category: :pages do
     end
   end
 
+  context 'when uploading the file' do
+    before do
+      stub_pages_object_storage(::Pages::DeploymentUploader)
+    end
+
+    describe '#store_after_commit?' do
+      context 'when feature flag pages_deploy_upload_file_outside_transaction is disabled' do
+        it 'returns false' do
+          Feature.disable(:pages_deploy_upload_file_outside_transaction)
+
+          deployment = create(:pages_deployment, project: project)
+          expect(deployment.store_after_commit?).to eq(false)
+        end
+      end
+
+      context 'when feature flag pages_deploy_upload_file_outside_transaction is enabled' do
+        it 'returns true' do
+          deployment = create(:pages_deployment, project: project)
+          expect(deployment.store_after_commit?).to eq(true)
+        end
+      end
+    end
+
+    context 'when feature flag pages_deploy_upload_file_outside_transaction is disabled' do
+      before do
+        Feature.disable(:pages_deploy_upload_file_outside_transaction)
+      end
+
+      it 'stores the file within the transaction' do
+        expect_next_instance_of(PagesDeployment) do |deployment|
+          expect(deployment).not_to receive(:store_file_now!)
+        end
+
+        create(:pages_deployment, project: project)
+      end
+    end
+
+    context 'when feature flag pages_deploy_upload_file_outside_transaction is enabled' do
+      before do
+        Feature.enable(:pages_deploy_upload_file_outside_transaction)
+      end
+
+      it 'stores the file outsize of the transaction' do
+        expect_next_instance_of(PagesDeployment) do |deployment|
+          expect(deployment).to receive(:store_file_now!)
+        end
+
+        create(:pages_deployment, project: project)
+      end
+
+      it 'does nothing when the file did not change' do
+        deployment = create(:pages_deployment, project: project)
+
+        expect(deployment).not_to receive(:store_file_now!)
+
+        deployment.touch
+      end
+    end
+  end
+
   describe '#migrated?' do
     it 'returns false for normal deployment' do
       deployment = create(:pages_deployment)

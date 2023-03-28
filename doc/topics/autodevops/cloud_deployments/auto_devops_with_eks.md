@@ -29,7 +29,7 @@ To deploy a project to EKS:
 ## Configure your Amazon account
 
 Before you create and connect your Kubernetes cluster to your GitLab project,
-you need an [Amazon Web Services account](https://https://aws.amazon.com/).
+you need an [Amazon Web Services account](https://aws.amazon.com/).
 Sign in with an existing Amazon account or create a new one.
 
 ## Create a Kubernetes cluster

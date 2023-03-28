@@ -551,7 +551,7 @@ class Group < Namespace
   # rubocop: enable CodeReuse/ServiceClass
 
   def users_ids_of_direct_members
-    direct_members.pluck(:user_id)
+    direct_members.pluck_user_ids
   end
 
   def user_ids_for_project_authorizations

@@ -1,6 +1,7 @@
 import { GlSprintf, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import AbuseReportRow from '~/admin/abuse_reports/components/abuse_report_row.vue';
+import AbuseReportActions from '~/admin/abuse_reports/components/abuse_report_actions.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import { getTimeago } from '~/lib/utils/datetime_utility';
 import { mockAbuseReports } from '../mock_data';
@@ -10,6 +11,7 @@ describe('AbuseReportRow', () => {
   const mockAbuseReport = mockAbuseReports[0];
 
   const findLinks = () => wrapper.findAllComponents(GlLink);
+  const findAbuseReportActions = () => wrapper.findComponent(AbuseReportActions);
   const findListItem = () => wrapper.findComponent(ListItem);
   const findTitle = () => wrapper.findByTestId('title');
   const findUpdatedAt = () => wrapper.findByTestId('updated-at');
@@ -50,5 +52,12 @@ describe('AbuseReportRow', () => {
     expect(findUpdatedAt().text()).toMatchInterpolatedText(
       `Updated ${getTimeago().format(mockAbuseReport.updatedAt)}`,
     );
+  });
+
+  it('renders AbuseReportRowActions with the correct props', () => {
+    const actions = findAbuseReportActions();
+
+    expect(actions.exists()).toBe(true);
+    expect(actions.props('report')).toMatchObject(mockAbuseReport);
   });
 });

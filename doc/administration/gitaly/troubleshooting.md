@@ -85,7 +85,7 @@ check for an SSL or TLS problem:
 ```
 
 Check whether `Verify return code` field indicates a
-[known Omnibus GitLab configuration problem](https://docs.gitlab.com/omnibus/settings/ssl.html).
+[known Omnibus GitLab configuration problem](https://docs.gitlab.com/omnibus/settings/ssl/index.html).
 
 If `openssl` succeeds but `gitlab-rake gitlab:gitaly:check` fails,
 check [certificate requirements](configure_gitaly.md#certificate-requirements) for Gitaly.
@@ -492,7 +492,7 @@ in sync so the token check succeeds.
 This check helps identify the root cause of `permission denied`
 [errors being logged by Praefect](#permission-denied-errors-appearing-in-gitaly-or-praefect-logs-when-accessing-repositories).
 
-For offline environments where access to public [`pool.ntp.org`](https://pool.ntp.org) servers is not possible, the Praefect `check` sub-command fails this
+For offline environments where access to public `pool.ntp.org` servers is not possible, the Praefect `check` sub-command fails this
 check with an error message similar to:
 
 ```plaintext

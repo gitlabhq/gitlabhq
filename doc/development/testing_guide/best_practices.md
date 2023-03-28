@@ -313,7 +313,7 @@ NOTE:
 `stub_method` does not support method existence and method arity checks.
 
 WARNING:
-`stub_method` is supposed to be used in factories only. It's strongly discouraged to be used elsewhere. Please consider using [RSpec's mocks](https://relishapp.com/rspec/rspec-mocks/v/3-10/docs/basics) if available.
+`stub_method` is supposed to be used in factories only. It's strongly discouraged to be used elsewhere. Please consider using [RSpec mocks](https://rspec.info/features/3-12/rspec-mocks/) if available.
 
 #### Identify slow tests
 
@@ -434,7 +434,7 @@ results are available, and not just the first failure.
 - When using `evaluate_script("$('.js-foo').testSomething()")` (or `execute_script`) which acts on a given element,
   use a Capybara matcher beforehand (such as `find('.js-foo')`) to ensure the element actually exists.
 - Use `focus: true` to isolate parts of the specs you want to run.
-- Use [`:aggregate_failures`](https://relishapp.com/rspec/rspec-core/docs/expectation-framework-integration/aggregating-failures) when there is more than one expectation in a test.
+- Use [`:aggregate_failures`](https://rspec.info/features/3-12/rspec-core/expectation-framework-integration/aggregating-failures/) when there is more than one expectation in a test.
 - For [empty test description blocks](https://github.com/rubocop-hq/rspec-style-guide#it-and-specify), use `specify` rather than `it do` if the test is self-explanatory.
 - Use `non_existing_record_id`/`non_existing_record_iid`/`non_existing_record_access_level`
   when you need an ID/IID/access level that doesn't actually exists. Using 123, 1234,
@@ -1017,7 +1017,7 @@ a single test triggers the rate limit, the `:disable_rate_limit` can be used ins
 #### Stubbing File methods
 
 In the situations where you need to
-[stub](https://relishapp.com/rspec/rspec-mocks/v/3-9/docs/basics/allowing-messages)
+[stub](https://rspec.info/features/3-12/rspec-mocks/basics/allowing-messages/)
 methods such as `File.read`, make sure to:
 
 1. Stub `File.read` for only the file path you are interested in.

@@ -413,7 +413,7 @@ except(page).to have_no_text('hidden')
 ```
 
 Unfortunately, that's not automatically the case for the predicate methods that we add to our
-[page objects](page_objects.md). We need to [create our own negatable matchers](https://relishapp.com/rspec/rspec-expectations/v/3-9/docs/custom-matchers/define-a-custom-matcher#matcher-with-separate-logic-for-expect().to-and-expect().not-to).
+[page objects](page_objects.md). We need to [create our own negatable matchers](https://rspec.info/features/3-12/rspec-expectations/custom-matchers/define-matcher/).
 
 The initial example uses the `have_job` matcher which is derived from the
 [`has_job?` predicate method of the `Page::Project::Pipeline::Show` page object](https://gitlab.com/gitlab-org/gitlab/-/blob/87864b3047c23b4308f59c27a3757045944af447/qa/qa/page/project/pipeline/show.rb#L53).

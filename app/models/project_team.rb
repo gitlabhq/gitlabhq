@@ -121,7 +121,7 @@ class ProjectTeam
     target_project = project
 
     source_members = source_project.project_members.to_a
-    target_user_ids = target_project.project_members.pluck(:user_id)
+    target_user_ids = target_project.project_members.pluck_user_ids
 
     source_members.reject! do |member|
       # Skip if user already present in team

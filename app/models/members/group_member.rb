@@ -38,10 +38,6 @@ class GroupMember < Member
     Gitlab::Access.options_with_owner
   end
 
-  def self.pluck_user_ids
-    pluck(:user_id)
-  end
-
   def group
     source
   end

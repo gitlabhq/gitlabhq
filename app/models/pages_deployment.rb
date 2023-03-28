@@ -4,6 +4,7 @@
 class PagesDeployment < ApplicationRecord
   include EachBatch
   include FileStoreMounter
+  include Gitlab::Utils::StrongMemoize
 
   MIGRATED_FILE_NAME = "_migrated.zip"
 
@@ -28,14 +29,28 @@ class PagesDeployment < ApplicationRecord
 
   mount_file_store_uploader ::Pages::DeploymentUploader
 
+  skip_callback :save, :after, :store_file!, if: :store_after_commit?
+  after_commit :store_file_after_commit!, on: [:create, :update], if: :store_after_commit?
+
   def migrated?
     file.filename == MIGRATED_FILE_NAME
   end
+
+  def store_after_commit?
+    Feature.enabled?(:pages_deploy_upload_file_outside_transaction)
+  end
+  strong_memoize_attr :store_after_commit?
 
   private
 
   def set_size
     self.size = file.size
+  end
+
+  def store_file_after_commit!
+    return unless previous_changes.key?(:file)
+
+    store_file_now!
   end
 end
 

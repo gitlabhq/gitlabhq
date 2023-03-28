@@ -258,8 +258,8 @@ table.supported-languages ul {
       <td><a href="https://pipenv.pypa.io/en/latest/">Pipenv</a></td>
       <td>
         <ul>
-            <li><a href="https://pipenv.pypa.io/en/latest/basics/#example-pipfile-pipfile-lock"><code>Pipfile</code></a></li>
-            <li><a href="https://pipenv.pypa.io/en/latest/basics/#example-pipfile-pipfile-lock"><code>Pipfile.lock</code></a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-4">4</a></b></sup></li>
+            <li><a href="https://pipenv.pypa.io/en/latest/pipfile/#example-pipfile"><code>Pipfile</code></a></li>
+            <li><a href="https://pipenv.pypa.io/en/latest/pipfile/#example-pipfile-lock"><code>Pipfile.lock</code></a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-4">4</a></b></sup></li>
         </ul>
       </td>
       <td>N</td>

@@ -546,7 +546,9 @@ people who add commits to an MR are not authorized to approve or merge the MR an
 must seek a maintainer who has not contributed to the MR to approve and merge it.
 
 This policy is in place to satisfy the CHG-04 control of the GitLab
-[Change Management Controls](https://about.gitlab.com/handbook/security/security-assurance/security-compliance/guidance/change-management.html).
+[Change Management Controls](https://about.gitlab.com/handbook/security/change-management-policy.html).
+
+<!-- Or should it link to: https://about.gitlab.com/handbook/engineering/infrastructure/change-management/ ? -->
 
 To implement this policy in `gitlab-org/gitlab`, we have enabled the following
 settings to ensure MRs get an approval from a top-level CODEOWNERS maintainer:

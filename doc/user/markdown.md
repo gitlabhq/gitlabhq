@@ -807,7 +807,7 @@ Tildes are OK too.
 If this section isn't rendered correctly,
 [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#colored-code-and-syntax-highlighting).
 
-GitLab uses the [Rouge Ruby library](http://rouge.jneen.net/) for more colorful syntax
+GitLab uses the [Rouge Ruby library](https://github.com/rouge-ruby/rouge) for more colorful syntax
 highlighting in code blocks. For a list of supported languages visit the
 [Rouge project wiki](https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers).
 Syntax highlighting is supported only in code blocks, so you can't highlight inline code.

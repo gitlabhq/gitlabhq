@@ -6,6 +6,10 @@ export const mockAbuseReports = [
     reportedUser: { name: 'Mr. Abuser' },
     reportedUserPath: '/mr_abuser',
     reporterPath: '/admin',
+    userBlocked: false,
+    blockUserPath: '/block/user/mr_abuser/path',
+    removeUserAndReportPath: '/remove/user/mr_abuser/and/report/path',
+    removeReportPath: '/remove/report/path',
   },
   {
     category: 'phishing',
@@ -14,5 +18,9 @@ export const mockAbuseReports = [
     reportedUser: { name: 'Mr. Phisher' },
     reportedUserPath: '/mr_phisher',
     reporterPath: '/admin',
+    userBlocked: false,
+    blockUserPath: '/block/user/mr_phisher/path',
+    removeUserAndReportPath: '/remove/user/mr_phisher/and/report/path',
+    removeReportPath: '/remove/report/path',
   },
 ];

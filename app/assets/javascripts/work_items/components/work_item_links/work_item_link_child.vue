@@ -1,12 +1,13 @@
 <script>
 import { GlButton, GlLabel, GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
-
+import { cloneDeep } from 'lodash';
+import * as Sentry from '@sentry/browser';
 import { __, s__ } from '~/locale';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { createAlert } from '~/alert';
 import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip.vue';
 import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/work_item_links/work_item_link_child_metadata.vue';
-
+import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 import {
   STATE_OPEN,
   TASK_TYPE_NAME,
@@ -70,6 +71,9 @@ export default {
       isExpanded: false,
       children: [],
       isLoadingChildren: false,
+      activeToast: null,
+      childrenBeforeRemoval: [],
+      hasChildren: false,
     };
   },
   computed: {
@@ -121,9 +125,6 @@ export default {
         this.childItem.iid
       }?iid_path=true`;
     },
-    hasChildren() {
-      return this.getWidgetByType(this.childItem, WIDGET_TYPE_HIERARCHY)?.hasChildren;
-    },
     chevronType() {
       return this.isExpanded ? 'chevron-down' : 'chevron-right';
     },
@@ -141,6 +142,17 @@ export default {
         );
       }
       return false;
+    },
+  },
+  watch: {
+    childItem: {
+      handler(val) {
+        this.hasChildren = this.getWidgetByType(val, WIDGET_TYPE_HIERARCHY)?.hasChildren;
+      },
+      immediate: true,
+    },
+    children(val) {
+      this.hasChildren = val?.length > 0;
     },
   },
   methods: {
@@ -176,6 +188,69 @@ export default {
     },
     showScopedLabel(label) {
       return isScopedLabel(label) && this.allowsScopedLabels;
+    },
+    async removeChild(childId) {
+      this.cloneChildren();
+      this.isLoadingChildren = true;
+
+      try {
+        const { data } = await this.updateWorkItem(childId, null);
+        if (!data?.workItemUpdate?.errors?.length) {
+          this.filterRemovedChild(childId);
+
+          this.activeToast = this.$toast.show(s__('WorkItem|Child removed'), {
+            action: {
+              text: s__('WorkItem|Undo'),
+              onClick: this.undoChildRemoval.bind(this, childId),
+            },
+          });
+        }
+      } catch (error) {
+        this.showAlert(s__('WorkItem|Something went wrong while removing child.'), error);
+        Sentry.captureException(error);
+        this.restoreChildren();
+      } finally {
+        this.isLoadingChildren = false;
+      }
+    },
+    async undoChildRemoval(childId) {
+      this.isLoadingChildren = true;
+      try {
+        const { data } = await this.updateWorkItem(childId, this.childItem.id);
+        if (!data?.workItemUpdate?.errors?.length) {
+          this.activeToast?.hide();
+          this.restoreChildren();
+        }
+      } catch (error) {
+        this.showAlert(s__('WorkItem|Something went wrong while undoing child removal.'), error);
+        Sentry.captureException(error);
+      } finally {
+        this.activeToast?.hide();
+        this.childrenBeforeRemoval = [];
+        this.isLoadingChildren = false;
+      }
+    },
+    async updateWorkItem(childId, parentId) {
+      return this.$apollo.mutate({
+        mutation: updateWorkItemMutation,
+        variables: { input: { id: childId, hierarchyWidget: { parentId } } },
+      });
+    },
+    cloneChildren() {
+      this.childrenBeforeRemoval = cloneDeep(this.children);
+    },
+    filterRemovedChild(childId) {
+      this.children = this.children.filter(({ id }) => id !== childId);
+    },
+    restoreChildren() {
+      this.children = [...this.childrenBeforeRemoval];
+    },
+    showAlert(message, error) {
+      createAlert({
+        message,
+        captureError: true,
+        error,
+      });
     },
   },
 };
@@ -283,7 +358,7 @@ export default {
       :work-item-id="issuableGid"
       :work-item-type="workItemType"
       :children="children"
-      @removeChild="fetchChildren"
+      @removeChild="removeChild"
       @click="$emit('click', $event)"
     />
   </div>

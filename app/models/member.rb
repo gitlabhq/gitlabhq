@@ -359,6 +359,10 @@ class Member < ApplicationRecord
     def valid_email?(email)
       Devise.email_regexp.match?(email)
     end
+
+    def pluck_user_ids
+      pluck(:user_id)
+    end
   end
 
   def real_source_type

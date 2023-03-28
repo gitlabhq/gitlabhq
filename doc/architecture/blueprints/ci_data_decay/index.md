@@ -13,7 +13,7 @@ participating-stages: []
 ## Summary
 
 GitLab CI/CD is one of the most data and compute intensive components of GitLab.
-Since its [initial release in November 2012](https://about.gitlab.com/blog/2012/11/13/continuous-integration-server-from-gitlab/),
+Since its initial release in 2012,
 the CI/CD subsystem has evolved significantly. It was [integrated into GitLab in September 2015](https://about.gitlab.com/releases/2015/09/22/gitlab-8-0-released/)
 and has become [one of the most beloved CI/CD solutions](https://about.gitlab.com/blog/2017/09/27/gitlab-leader-continuous-integration-forrester-wave/).
 
@@ -231,7 +231,7 @@ In progress.
 - 2022-02-08: Pipeline partitioning PoC [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80186) started.
 - 2022-02-23: Pipeline partitioning PoC [successful](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80186#note_852704724)
 - 2022-03-07: A way to attach an existing table as a partition [found and proven](https://gitlab.com/gitlab-org/gitlab/-/issues/353380#note_865237214).
-- 2022-03-23: Pipeline partitioning design [Google Doc](https://docs.google.com/document/d/1ARdoTZDy4qLGf6Z1GIHh83-stG_ZLpqsibjKr_OXMgc) started.
+- 2022-03-23: Pipeline partitioning design Google Doc (GitLab internal) started: `https://docs.google.com/document/d/1ARdoTZDy4qLGf6Z1GIHh83-stG_ZLpqsibjKr_OXMgc`.
 - 2022-03-29: Pipeline partitioning PoC [concluded](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80186#note_892674358).
 - 2022-04-15: Partitioned pipeline data associations PoC [shipped](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84071).
 - 2022-04-30: Additional [benchmarking started](https://gitlab.com/gitlab-org/gitlab/-/issues/361019) to evaluate impact.

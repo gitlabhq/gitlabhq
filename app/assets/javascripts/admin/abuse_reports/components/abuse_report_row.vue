@@ -3,12 +3,14 @@ import { GlSprintf, GlLink } from '@gitlab/ui';
 import { getTimeago } from '~/lib/utils/datetime_utility';
 import { __, sprintf } from '~/locale';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
+import AbuseReportActions from './abuse_report_actions.vue';
 
 export default {
   name: 'AbuseReportRow',
   components: {
     GlLink,
     GlSprintf,
+    AbuseReportActions,
     ListItem,
   },
   props: {
@@ -60,6 +62,8 @@ export default {
 
     <template #right-secondary>
       <div data-testid="updated-at">{{ updatedAt }}</div>
+
+      <abuse-report-actions :report="report" />
     </template>
   </list-item>
 </template>

@@ -79,3 +79,12 @@ export const FILTERED_SEARCH_TOKENS = [
   FILTERED_SEARCH_TOKEN_REPORTER,
   FILTERED_SEARCH_TOKEN_STATUS,
 ];
+
+export const ACTIONS_I18N = {
+  blockUserConfirm: __('USER WILL BE BLOCKED! Are you sure?'),
+  blockUser: __('Block user'),
+  alreadyBlocked: __('Already blocked'),
+  removeUserAndReportConfirm: __('USER %{user} WILL BE REMOVED! Are you sure?'),
+  removeUserAndReport: __('Remove user & report'),
+  removeReport: __('Remove report'),
+};

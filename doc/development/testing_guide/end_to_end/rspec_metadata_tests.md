@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # RSpec metadata for end-to-end tests
 
-This is a partial list of the [RSpec metadata](https://relishapp.com/rspec/rspec-core/docs/metadata/user-defined-metadata)
+This is a partial list of the [RSpec metadata](https://rspec.info/features/3-12/rspec-core/metadata/user-defined/)
 (a.k.a. tags) that are used in our end-to-end tests.
 
 <!-- Please keep the tags in alphabetical order -->

@@ -545,7 +545,7 @@ end
 ```
 
 Don't hesitate to reach out to the
-[pods group](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/pods/)
+[Pods group](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/tenant-scale/)
 for advice.
 
 ##### Avoid `dependent: :nullify` and `dependent: :destroy` across databases
