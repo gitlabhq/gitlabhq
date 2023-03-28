@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe UpdateApplicationSettingsProtectedPaths, :aggregate_failures,
-feature_category: :system_access do
+  feature_category: :system_access do
   subject(:migration) { described_class.new }
 
   let!(:application_settings) { table(:application_settings) }

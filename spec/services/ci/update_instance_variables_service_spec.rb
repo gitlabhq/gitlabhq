@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :pipeline_composition do
+RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :secrets_management do
   let(:params) { { variables_attributes: variables_attributes } }
 
   subject { described_class.new(params) }

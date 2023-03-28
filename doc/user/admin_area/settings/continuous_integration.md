@@ -227,6 +227,7 @@ from the Admin Area:
    - **Maximum number of DAG dependencies that a job can have**
    - **Maximum number of runners registered per group**
    - **Maximum number of runners registered per project**
+   - **Maximum number of downstream pipelines in a pipeline's hierarchy tree**
 
 ## Enable or disable the pipeline suggestion banner
 

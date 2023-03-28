@@ -1,0 +1,8 @@
+---
+name: packages_registry_maven_uploads_force_primary
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115053
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/397028
+milestone: '15.11'
+type: development
+group: group::package registry
+default_enabled: false

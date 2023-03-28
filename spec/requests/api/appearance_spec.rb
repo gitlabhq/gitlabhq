@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
+RSpec.describe API::Appearance, 'Appearance', :aggregate_failures, feature_category: :navigation do
   let_it_be(:user) { create(:user) }
   let_it_be(:admin) { create(:admin) }
   let_it_be(:path) { "/application/appearance" }
@@ -12,7 +12,7 @@ RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
 
     context 'as an admin user' do
       it "returns appearance" do
-        get api("/application/appearance", admin, admin_mode: true)
+        get api(path, admin, admin_mode: true)
 
         expect(json_response).to be_an Hash
         expect(json_response['description']).to eq('')
@@ -43,7 +43,7 @@ RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
     context 'as an admin user' do
       context "instance basics" do
         it "allows updating the settings" do
-          put api("/application/appearance", admin, admin_mode: true), params: {
+          put api(path, admin, admin_mode: true), params: {
             title: "GitLab Test Instance",
             description: "gitlab-test.example.com",
             pwa_name: "GitLab PWA Test",
@@ -83,7 +83,7 @@ RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
             email_header_and_footer_enabled: true
           }
 
-          put api("/application/appearance", admin, admin_mode: true), params: settings
+          put api(path, admin, admin_mode: true), params: settings
 
           expect(response).to have_gitlab_http_status(:ok)
           settings.each do |attribute, value|
@@ -93,14 +93,14 @@ RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
 
         context "fails on invalid color values" do
           it "with message_font_color" do
-            put api("/application/appearance", admin, admin_mode: true), params: { message_font_color: "No Color" }
+            put api(path, admin, admin_mode: true), params: { message_font_color: "No Color" }
 
             expect(response).to have_gitlab_http_status(:bad_request)
             expect(json_response['message']['message_font_color']).to contain_exactly('must be a valid color code')
           end
 
           it "with message_background_color" do
-            put api("/application/appearance", admin, admin_mode: true), params: { message_background_color: "#1" }
+            put api(path, admin, admin_mode: true), params: { message_background_color: "#1" }
 
             expect(response).to have_gitlab_http_status(:bad_request)
             expect(json_response['message']['message_background_color']).to contain_exactly('must be a valid color code')
@@ -112,7 +112,7 @@ RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
         let_it_be(:appearance) { create(:appearance) }
 
         it "allows updating the image files" do
-          put api("/application/appearance", admin, admin_mode: true), params: {
+          put api(path, admin, admin_mode: true), params: {
             logo: fixture_file_upload("spec/fixtures/dk.png", "image/png"),
             header_logo: fixture_file_upload("spec/fixtures/dk.png", "image/png"),
             pwa_icon: fixture_file_upload("spec/fixtures/dk.png", "image/png"),
@@ -128,14 +128,14 @@ RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
 
         context "fails on invalid color images" do
           it "with string instead of file" do
-            put api("/application/appearance", admin, admin_mode: true), params: { logo: 'not-a-file.png' }
+            put api(path, admin, admin_mode: true), params: { logo: 'not-a-file.png' }
 
             expect(response).to have_gitlab_http_status(:bad_request)
             expect(json_response['error']).to eq("logo is invalid")
           end
 
           it "with .svg file instead of .png" do
-            put api("/application/appearance", admin, admin_mode: true), params: { favicon: fixture_file_upload("spec/fixtures/logo_sample.svg", "image/svg") }
+            put api(path, admin, admin_mode: true), params: { favicon: fixture_file_upload("spec/fixtures/logo_sample.svg", "image/svg") }
 
             expect(response).to have_gitlab_http_status(:bad_request)
             expect(json_response['message']['favicon']).to contain_exactly("You are not allowed to upload \"svg\" files, allowed types: png, ico")

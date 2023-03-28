@@ -45,6 +45,7 @@ import {
 import diffsEventHub from '../event_hub';
 import { reviewStatuses } from '../utils/file_reviews';
 import { diffsApp } from '../utils/performance';
+import { updateChangesTabCount } from '../utils/merge_request';
 import { queueRedisHllEvents } from '../utils/queue_events';
 import CollapsedFilesWarning from './collapsed_files_warning.vue';
 import CommitWidget from './commit_widget.vue';
@@ -337,8 +338,6 @@ export default {
       mrReviews: this.rehydratedMrReviews,
     });
 
-    this.interfaceWithDOM();
-
     if (this.endpointCodequality) {
       this.setCodequalityEndpoint(this.endpointCodequality);
     }
@@ -446,16 +445,6 @@ export default {
       notesEventHub.$off('refetchDiffData', this.refetchDiffData);
       notesEventHub.$off('fetchDiffData', this.fetchData);
     },
-    interfaceWithDOM() {
-      this.diffsTab = document.querySelector('.js-diffs-tab');
-    },
-    updateChangesTabCount() {
-      const badge = this.diffsTab.querySelector('.gl-badge');
-
-      if (this.diffsTab && badge) {
-        badge.textContent = this.diffFilesLength;
-      }
-    },
     navigateToDiffFileNumber(number) {
       this.navigateToDiffFileIndex(number - 1);
     },
@@ -482,7 +471,9 @@ export default {
             this.setTreeDisplay();
           }
 
-          this.updateChangesTabCount();
+          updateChangesTabCount({
+            count: this.diffFilesLength,
+          });
         })
         .catch(() => {
           createAlert({

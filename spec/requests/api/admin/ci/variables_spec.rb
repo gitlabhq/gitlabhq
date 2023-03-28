@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::API::Admin::Ci::Variables do
+RSpec.describe ::API::Admin::Ci::Variables, :aggregate_failures, feature_category: :pipeline_composition do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user) { create(:user) }
   let_it_be(:variable) { create(:ci_instance_variable) }
@@ -11,7 +11,7 @@ RSpec.describe ::API::Admin::Ci::Variables do
   describe 'GET /admin/ci/variables' do
     it_behaves_like 'GET request permissions for admin mode'
 
-    it 'returns instance-level variables for admins', :aggregate_failures do
+    it 'returns instance-level variables for admins' do
       get api(path, admin, admin_mode: true)
 
       expect(json_response).to be_a(Array)
@@ -29,7 +29,7 @@ RSpec.describe ::API::Admin::Ci::Variables do
 
     it_behaves_like 'GET request permissions for admin mode'
 
-    it 'returns instance-level variable details for admins', :aggregate_failures do
+    it 'returns instance-level variable details for admins' do
       get api(path, admin, admin_mode: true)
 
       expect(json_response['value']).to eq(variable.value)
@@ -56,7 +56,7 @@ RSpec.describe ::API::Admin::Ci::Variables do
     end
 
     context 'authorized user with proper permissions' do
-      it 'creates variable for admins', :aggregate_failures do
+      it 'creates variable for admins' do
         expect do
           post api(path, admin, admin_mode: true),
             params: {
@@ -85,7 +85,7 @@ RSpec.describe ::API::Admin::Ci::Variables do
           params: { key: 'VAR_KEY', value: 'SENSITIVE', protected: true, masked: true }
       end
 
-      it 'creates variable with optional attributes', :aggregate_failures do
+      it 'creates variable with optional attributes' do
         expect do
           post api(path, admin, admin_mode: true),
             params: {
@@ -112,7 +112,7 @@ RSpec.describe ::API::Admin::Ci::Variables do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
-      it 'does not allow values above 10,000 characters', :aggregate_failures do
+      it 'does not allow values above 10,000 characters' do
         too_long_message = <<~MESSAGE.strip
           The value of the provided variable exceeds the 10000 character limit
         MESSAGE
@@ -152,7 +152,7 @@ RSpec.describe ::API::Admin::Ci::Variables do
     it_behaves_like 'PUT request permissions for admin mode'
 
     context 'authorized user with proper permissions' do
-      it 'updates variable data', :aggregate_failures do
+      it 'updates variable data' do
         put api(path, admin, admin_mode: true), params: params
 
         expect(variable.reload.value).to eq('VALUE_1_UP')

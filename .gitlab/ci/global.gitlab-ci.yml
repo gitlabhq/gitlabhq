@@ -2,11 +2,13 @@
   retry:
     max: 2  # This is confusing but this means "3 runs at max".
     when:
-      - unknown_failure
       - api_failure
-      - runner_system_failure
+      - data_integrity_failure
       - job_execution_timeout
+      - runner_system_failure
+      - scheduler_failure
       - stuck_or_timeout_failure
+      - unknown_failure
 
 .default-utils-before_script:
   before_script:

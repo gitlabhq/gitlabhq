@@ -1,3 +1,5 @@
+import { ZERO_CHANGES_ALT_DISPLAY } from '../constants';
+
 const endpointRE = /^(\/?(.+?)\/(.+?)\/-\/merge_requests\/(\d+)).*$/i;
 
 function getVersionInfo({ endpoint } = {}) {
@@ -11,6 +13,17 @@ function getVersionInfo({ endpoint } = {}) {
     diffId,
     startSha,
   };
+}
+
+export function updateChangesTabCount({
+  count,
+  badge = document.querySelector('.js-diffs-tab .gl-badge'),
+} = {}) {
+  if (badge) {
+    // The purpose of this function is to assign to this parameter
+    /* eslint-disable-next-line no-param-reassign */
+    badge.textContent = count || ZERO_CHANGES_ALT_DISPLAY;
+  }
 }
 
 export function getDerivedMergeRequestInformation({ endpoint } = {}) {

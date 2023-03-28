@@ -357,11 +357,6 @@ RSpec.configure do |config|
     # All API specs will be adapted continuously. The following list contains the specs that have not yet been adapted.
     # The feature flag is disabled for these specs as long as they are not yet adapted.
     admin_mode_for_api_feature_flag_paths = %w[
-      ./spec/requests/api/broadcast_messages_spec.rb
-      ./spec/requests/api/deploy_keys_spec.rb
-      ./spec/requests/api/deploy_tokens_spec.rb
-      ./spec/requests/api/keys_spec.rb
-      ./spec/requests/api/namespaces_spec.rb
       ./spec/requests/api/project_export_spec.rb
       ./spec/requests/api/project_repository_storage_moves_spec.rb
       ./spec/requests/api/project_snapshots_spec.rb
@@ -376,13 +371,6 @@ RSpec.configure do |config|
       ./spec/support/shared_examples/requests/api/status_shared_examples.rb
       ./spec/support/shared_examples/requests/clusters/certificate_based_clusters_feature_flag_shared_examples.rb
       ./spec/support/shared_examples/requests/snippet_shared_examples.rb
-      ./ee/spec/requests/api/audit_events_spec.rb
-      ./ee/spec/requests/api/ci/minutes_spec.rb
-      ./ee/spec/requests/api/elasticsearch_indexed_namespaces_spec.rb
-      ./ee/spec/requests/api/epics_spec.rb
-      ./ee/spec/requests/api/geo_nodes_spec.rb
-      ./ee/spec/requests/api/geo_replication_spec.rb
-      ./ee/spec/requests/api/geo_spec.rb
       ./ee/spec/requests/api/group_push_rule_spec.rb
       ./ee/spec/requests/api/group_repository_storage_moves_spec.rb
       ./ee/spec/requests/api/groups_spec.rb

@@ -1446,6 +1446,24 @@ describe('when query times out', () => {
 });
 ```
 
+Previously, we've used `{ mocks: { $apollo ...}}` on `mount` to test Apollo functionality. This approach is discouraged - proper `$apollo` mocking leaks a lot of implementation details to the tests. Consider replacing it with mocked Apollo provider
+
+```javascript
+wrapper = mount(SomeComponent, {
+  mocks: {
+    // avoid! Mock real graphql queries and mutations instead
+    $apollo: {
+      mutate: jest.fn(),
+      queries: {
+        groups: {
+          loading,
+        },
+      },
+    },
+  },
+});
+```
+
 #### Testing `@client` queries
 
 ##### Using mock resolvers

@@ -146,6 +146,43 @@ module API
           end
         end
       end
+
+      # TODO Remove me with packages_registry_maven_uploads_force_primary
+      #      and put my body where the last handle_upload call is.
+      #      See https://gitlab.com/gitlab-org/gitlab/-/issues/397028.
+      def handle_upload(file_name, format)
+        result = ::Packages::Maven::FindOrCreatePackageService
+          .new(user_project, current_user, params.merge(build: current_authenticated_job)).execute
+
+        bad_request!(result.errors.first) if result.error?
+
+        package = result.payload[:package]
+
+        case format
+        when 'sha1'
+          # After uploading a file, Maven tries to upload a sha1 and md5 version of it.
+          # Since we store md5/sha1 in database we simply need to validate our hash
+          # against one uploaded by Maven. We do this for `sha1` format.
+          package_file = ::Packages::PackageFileFinder
+            .new(package, file_name).execute!
+
+          verify_package_file(package_file, params[:file])
+        when 'md5'
+          ''
+        else
+          file_params = {
+            file: params[:file],
+            size: params['file.size'],
+            file_name: file_name,
+            file_type: params['file.type'],
+            file_sha1: params['file.sha1'],
+            file_md5: params['file.md5']
+          }
+
+          ::Packages::CreatePackageFileService.new(package, file_params.merge(build: current_authenticated_job)).execute
+          track_package_event('push_package', :maven, project: user_project, namespace: user_project.namespace) if jar_file?(format)
+        end
+      end
     end
 
     desc 'Download the maven package file at instance level' do
@@ -325,36 +362,12 @@ module API
 
         file_name, format = extract_format(params[:file_name])
 
-        result = ::Packages::Maven::FindOrCreatePackageService
-          .new(user_project, current_user, params.merge(build: current_authenticated_job)).execute
-
-        bad_request!(result.errors.first) if result.error?
-
-        package = result.payload[:package]
-
-        case format
-        when 'sha1'
-          # After uploading a file, Maven tries to upload a sha1 and md5 version of it.
-          # Since we store md5/sha1 in database we simply need to validate our hash
-          # against one uploaded by Maven. We do this for `sha1` format.
-          package_file = ::Packages::PackageFileFinder
-            .new(package, file_name).execute!
-
-          verify_package_file(package_file, params[:file])
-        when 'md5'
-          ''
+        if Feature.enabled?(:packages_registry_maven_uploads_force_primary, user_project)
+          ::Gitlab::Database::LoadBalancing::Session.current.use_primary do
+            handle_upload(file_name, format)
+          end
         else
-          file_params = {
-            file: params[:file],
-            size: params['file.size'],
-            file_name: file_name,
-            file_type: params['file.type'],
-            file_sha1: params['file.sha1'],
-            file_md5: params['file.md5']
-          }
-
-          ::Packages::CreatePackageFileService.new(package, file_params.merge(build: current_authenticated_job)).execute
-          track_package_event('push_package', :maven, project: user_project, namespace: user_project.namespace) if jar_file?(format)
+          handle_upload(file_name, format)
         end
       end
     end

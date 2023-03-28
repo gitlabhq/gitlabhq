@@ -56,7 +56,7 @@ export default {
 
 <template>
   <div
-    class="gl-display-flex gl-justify-content-space-between gl-flex-wrap gl-pb-3 gl-align-items-center"
+    class="gl-display-flex gl-justify-content-space-between gl-flex-wrap-wrap gl-pb-3 gl-align-items-center"
   >
     <h3 class="gl-font-base gl-m-0">{{ $options.i18n.activityLabel }}</h3>
     <div class="gl-display-flex gl-gap-3">

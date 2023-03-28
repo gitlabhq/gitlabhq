@@ -28,10 +28,12 @@ RSpec.describe AddObjectiveAndKeyresultToWorkItemTypes, :migration, feature_cate
 
   it 'skips creating both objective & keyresult type record if it already exists' do
     reset_db_state_prior_to_migration
-    work_item_types.find_or_create_by!(name: 'Key Result', namespace_id: nil, base_type: base_types[:key_result],
-                                       icon_name: 'issue-type-keyresult')
-    work_item_types.find_or_create_by!(name: 'Objective', namespace_id: nil, base_type: base_types[:objective],
-                                       icon_name: 'issue-type-objective')
+    work_item_types.find_or_create_by!(
+      name: 'Key Result', namespace_id: nil, base_type: base_types[:key_result], icon_name: 'issue-type-keyresult'
+    )
+    work_item_types.find_or_create_by!(
+      name: 'Objective', namespace_id: nil, base_type: base_types[:objective], icon_name: 'issue-type-objective'
+    )
 
     expect do
       migrate!
@@ -52,15 +54,20 @@ RSpec.describe AddObjectiveAndKeyresultToWorkItemTypes, :migration, feature_cate
   def reset_db_state_prior_to_migration
     # Database needs to be in a similar state as when this migration was created
     work_item_types.delete_all
-    work_item_types.find_or_create_by!(name: 'Issue', namespace_id: nil, base_type: base_types[:issue],
-                                       icon_name: 'issue-type-issue')
-    work_item_types.find_or_create_by!(name: 'Incident', namespace_id: nil, base_type: base_types[:incident],
-                                       icon_name: 'issue-type-incident')
-    work_item_types.find_or_create_by!(name: 'Test Case', namespace_id: nil, base_type: base_types[:test_case],
-                                       icon_name: 'issue-type-test-case')
-    work_item_types.find_or_create_by!(name: 'Requirement', namespace_id: nil, base_type: base_types[:requirement],
-                                       icon_name: 'issue-type-requirements')
-    work_item_types.find_or_create_by!(name: 'Task', namespace_id: nil, base_type: base_types[:task],
-                                       icon_name: 'issue-type-task')
+    work_item_types.find_or_create_by!(
+      name: 'Issue', namespace_id: nil, base_type: base_types[:issue], icon_name: 'issue-type-issue'
+    )
+    work_item_types.find_or_create_by!(
+      name: 'Incident', namespace_id: nil, base_type: base_types[:incident], icon_name: 'issue-type-incident'
+    )
+    work_item_types.find_or_create_by!(
+      name: 'Test Case', namespace_id: nil, base_type: base_types[:test_case], icon_name: 'issue-type-test-case'
+    )
+    work_item_types.find_or_create_by!(
+      name: 'Requirement', namespace_id: nil, base_type: base_types[:requirement], icon_name: 'issue-type-requirements'
+    )
+    work_item_types.find_or_create_by!(
+      name: 'Task', namespace_id: nil, base_type: base_types[:task], icon_name: 'issue-type-task'
+    )
   end
 end

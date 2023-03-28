@@ -3,7 +3,7 @@
 module Admin
   module Ci
     class VariablesController < ApplicationController
-      feature_category :pipeline_composition
+      feature_category :secrets_management
 
       def show
         respond_to do |format|

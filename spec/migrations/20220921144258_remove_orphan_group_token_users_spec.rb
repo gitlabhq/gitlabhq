@@ -5,7 +5,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe RemoveOrphanGroupTokenUsers, :migration, :sidekiq_inline,
-feature_category: :system_access do
+  feature_category: :system_access do
   subject(:migration) { described_class.new }
 
   let(:users) { table(:users) }
@@ -18,12 +18,14 @@ feature_category: :system_access do
   let!(:valid_used_bot) do
     create_bot(username: 'used_bot', email: 'used_bot@bot.com').tap do |bot|
       group = namespaces.create!(type: 'Group', path: 'used_bot_group', name: 'used_bot_group')
-      members.create!(user_id: bot.id,
-                      source_id: group.id,
-                      member_namespace_id: group.id,
-                      source_type: 'Group',
-                      access_level: 10,
-                      notification_level: 0)
+      members.create!(
+        user_id: bot.id,
+        source_id: group.id,
+        member_namespace_id: group.id,
+        source_type: 'Group',
+        access_level: 10,
+        notification_level: 0
+      )
     end
   end
 

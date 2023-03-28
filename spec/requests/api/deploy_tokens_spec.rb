@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::DeployTokens, feature_category: :continuous_delivery do
+RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :continuous_delivery do
   let_it_be(:user)          { create(:user) }
   let_it_be(:creator)       { create(:user) }
   let_it_be(:project)       { create(:project, creator_id: creator.id) }
@@ -17,8 +17,14 @@ RSpec.describe API::DeployTokens, feature_category: :continuous_delivery do
 
   describe 'GET /deploy_tokens' do
     subject do
-      get api('/deploy_tokens', user)
+      get api('/deploy_tokens', user, admin_mode: admin_mode)
       response
+    end
+
+    let_it_be(:admin_mode) { false }
+
+    it_behaves_like 'GET request permissions for admin mode' do
+      let(:path) { '/deploy_tokens' }
     end
 
     context 'when unauthenticated' do
@@ -27,16 +33,9 @@ RSpec.describe API::DeployTokens, feature_category: :continuous_delivery do
       it { is_expected.to have_gitlab_http_status(:unauthorized) }
     end
 
-    context 'when authenticated as non-admin user' do
-      let(:user) { creator }
-
-      it { is_expected.to have_gitlab_http_status(:forbidden) }
-    end
-
     context 'when authenticated as admin' do
       let(:user) { create(:admin) }
-
-      it { is_expected.to have_gitlab_http_status(:ok) }
+      let_it_be(:admin_mode) { true }
 
       it 'returns all deploy tokens' do
         subject
@@ -57,7 +56,7 @@ RSpec.describe API::DeployTokens, feature_category: :continuous_delivery do
 
       context 'and active=true' do
         it 'only returns active deploy tokens' do
-          get api('/deploy_tokens?active=true', user)
+          get api('/deploy_tokens?active=true', user, admin_mode: true)
 
           token_ids = json_response.map { |token| token['id'] }
           expect(response).to have_gitlab_http_status(:ok)
@@ -73,8 +72,10 @@ RSpec.describe API::DeployTokens, feature_category: :continuous_delivery do
   end
 
   describe 'GET /projects/:id/deploy_tokens' do
+    let(:path) { "/projects/#{project.id}/deploy_tokens" }
+
     subject do
-      get api("/projects/#{project.id}/deploy_tokens", user)
+      get api(path, user)
       response
     end
 
@@ -89,7 +90,9 @@ RSpec.describe API::DeployTokens, feature_category: :continuous_delivery do
         project.add_developer(user)
       end
 
-      it { is_expected.to have_gitlab_http_status(:forbidden) }
+      it_behaves_like 'GET request permissions for admin mode when user' do
+        let(:current_user) { user }
+      end
     end
 
     context 'when authenticated as maintainer' do
@@ -134,8 +137,10 @@ RSpec.describe API::DeployTokens, feature_category: :continuous_delivery do
   end
 
   describe 'GET /projects/:id/deploy_tokens/:token_id' do
+    let(:path) { "/projects/#{project.id}/deploy_tokens/#{deploy_token.id}" }
+
     subject do
-      get api("/projects/#{project.id}/deploy_tokens/#{deploy_token.id}", user)
+      get api(path, user)
       response
     end
 
@@ -150,7 +155,9 @@ RSpec.describe API::DeployTokens, feature_category: :continuous_delivery do
         project.add_developer(user)
       end
 
-      it { is_expected.to have_gitlab_http_status(:forbidden) }
+      it_behaves_like 'GET request permissions for admin mode when user' do
+        let(:current_user) { user }
+      end
     end
 
     context 'when authenticated as maintainer' do
@@ -183,8 +190,10 @@ RSpec.describe API::DeployTokens, feature_category: :continuous_delivery do
   end
 
   describe 'GET /groups/:id/deploy_tokens' do
+    let(:path) { "/groups/#{group.id}/deploy_tokens" }
+
     subject do
-      get api("/groups/#{group.id}/deploy_tokens", user)
+      get api(path, user)
       response
     end
 
@@ -199,7 +208,9 @@ RSpec.describe API::DeployTokens, feature_category: :continuous_delivery do
         group.add_developer(user)
       end
 
-      it { is_expected.to have_gitlab_http_status(:forbidden) }
+      it_behaves_like 'GET request permissions for admin mode when user' do
+        let(:current_user) { user }
+      end
     end
 
     context 'when authenticated as maintainer' do
@@ -241,8 +252,10 @@ RSpec.describe API::DeployTokens, feature_category: :continuous_delivery do
   end
 
   describe 'GET /groups/:id/deploy_tokens/:token_id' do
+    let(:path) { "/groups/#{group.id}/deploy_tokens/#{group_deploy_token.id}" }
+
     subject do
-      get api("/groups/#{group.id}/deploy_tokens/#{group_deploy_token.id}", user)
+      get api(path, user)
       response
     end
 
@@ -257,7 +270,9 @@ RSpec.describe API::DeployTokens, feature_category: :continuous_delivery do
         group.add_developer(user)
       end
 
-      it { is_expected.to have_gitlab_http_status(:forbidden) }
+      it_behaves_like 'GET request permissions for admin mode when user' do
+        let(:current_user) { user }
+      end
     end
 
     context 'when authenticated as maintainer' do
@@ -290,8 +305,10 @@ RSpec.describe API::DeployTokens, feature_category: :continuous_delivery do
   end
 
   describe 'DELETE /projects/:id/deploy_tokens/:token_id' do
+    let(:path) { "/projects/#{project.id}/deploy_tokens/#{deploy_token.id}" }
+
     subject do
-      delete api("/projects/#{project.id}/deploy_tokens/#{deploy_token.id}", user)
+      delete api(path, user)
       response
     end
 
@@ -306,7 +323,9 @@ RSpec.describe API::DeployTokens, feature_category: :continuous_delivery do
         project.add_developer(user)
       end
 
-      it { is_expected.to have_gitlab_http_status(:forbidden) }
+      it_behaves_like 'GET request permissions for admin mode when user' do
+        let(:current_user) { user }
+      end
     end
 
     context 'when authenticated as maintainer' do
@@ -455,8 +474,10 @@ RSpec.describe API::DeployTokens, feature_category: :continuous_delivery do
   end
 
   describe 'DELETE /groups/:id/deploy_tokens/:token_id' do
+    let(:path) { "/groups/#{group.id}/deploy_tokens/#{group_deploy_token.id}" }
+
     subject do
-      delete api("/groups/#{group.id}/deploy_tokens/#{group_deploy_token.id}", user)
+      delete api(path, user)
       response
     end
 
@@ -471,7 +492,9 @@ RSpec.describe API::DeployTokens, feature_category: :continuous_delivery do
         group.add_developer(user)
       end
 
-      it { is_expected.to have_gitlab_http_status(:forbidden) }
+      it_behaves_like 'GET request permissions for admin mode when user' do
+        let(:current_user) { user }
+      end
     end
 
     context 'when authenticated as maintainer' do

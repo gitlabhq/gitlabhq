@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ChangeVariablesService, feature_category: :pipeline_composition do
+RSpec.describe Ci::ChangeVariablesService, feature_category: :secrets_management do
   let(:service) { described_class.new(container: group, current_user: user, params: params) }
 
   let_it_be(:user) { create(:user) }

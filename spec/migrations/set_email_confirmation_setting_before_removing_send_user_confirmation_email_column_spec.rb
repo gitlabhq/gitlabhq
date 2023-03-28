@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe SetEmailConfirmationSettingBeforeRemovingSendUserConfirmationEmailColumn,
-               feature_category: :user_profile do
+  feature_category: :user_profile do
   let(:migration) { described_class.new }
   let(:application_settings_table) { table(:application_settings) }
 

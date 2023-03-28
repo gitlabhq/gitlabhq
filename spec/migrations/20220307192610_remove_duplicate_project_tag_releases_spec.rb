@@ -14,9 +14,7 @@ RSpec.describe RemoveDuplicateProjectTagReleases, feature_category: :release_orc
 
   let(:dup_releases) do
     Array.new(4).fill do |i|
-      rel = releases.new(project_id: project.id,
-                         tag: "duplicate tag",
-                         released_at: (DateTime.now + i.days))
+      rel = releases.new(project_id: project.id, tag: "duplicate tag", released_at: (DateTime.now + i.days))
       rel.save!(validate: false)
       rel
     end

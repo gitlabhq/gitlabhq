@@ -13,14 +13,10 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
   - i_testing_test_case_parsed
-  - i_testing_metrics_report_widget_total
   - i_testing_group_code_coverage_visit_total
   - i_testing_full_code_quality_report_total
-  - i_testing_web_performance_widget_total
   - i_testing_group_code_coverage_project_click_total
-  - i_testing_load_performance_widget_total
   - i_testing_metrics_report_artifact_uploaders
-  - i_testing_summary_widget_total
   - users_expanding_testing_code_quality_report
   - users_expanding_testing_accessibility_report
 distribution:

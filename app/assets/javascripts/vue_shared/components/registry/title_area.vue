@@ -89,7 +89,7 @@ export default {
 
         <div
           v-if="metadataSlots.length > 0"
-          class="gl-display-flex gl-flex-wrap gl-align-items-center gl-mt-3"
+          class="gl-display-flex gl-flex-wrap-wrap gl-align-items-center gl-mt-3"
         >
           <template v-if="!metadataLoading">
             <div

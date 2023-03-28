@@ -422,7 +422,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
       end
 
       context 'when two factor authentication is required' do
-        it 'shows 2FA prompt after OAuth login' do
+        it 'shows 2FA prompt after OAuth login', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/402615' do
           expect(authentication_metrics)
             .to increment(:user_authenticated_counter)
             .and increment(:user_two_factor_authenticated_counter)

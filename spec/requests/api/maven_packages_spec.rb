@@ -921,6 +921,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       end
 
       it 'creates package and stores package file' do
+        expect_use_primary(true)
+
         expect { upload_file_with_token(params: params) }.to change { project.packages.count }.by(1)
           .and change { Packages::Maven::Metadatum.count }.by(1)
           .and change { Packages::PackageFile.count }.by(1)
@@ -1062,6 +1064,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         end
 
         it 'returns no content' do
+          expect_use_primary(true)
+
           upload
 
           expect(response).to have_gitlab_http_status(:no_content)
@@ -1091,6 +1095,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         subject { upload_file_with_token(params: params, file_extension: 'jar.md5') }
 
         it 'returns an empty body' do
+          expect_use_primary(true)
+
           subject
 
           expect(response.body).to eq('')
@@ -1104,6 +1110,33 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
             expect(response).to have_gitlab_http_status(:unprocessable_entity)
           end
         end
+      end
+
+      context 'with packages_registry_maven_uploads_force_primary disabled' do
+        before do
+          stub_feature_flags(packages_registry_maven_uploads_force_primary: false)
+        end
+
+        it 'does not use primary' do
+          expect_use_primary(false)
+
+          expect { upload_file_with_token(params: params) }.to change { project.packages.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(jar_file.file_name).to eq(file_upload.original_filename)
+        end
+      end
+
+      def expect_use_primary(enabled)
+        lb_session = ::Gitlab::Database::LoadBalancing::Session.current
+
+        if enabled
+          expect(lb_session).to receive(:use_primary).and_call_original
+        else
+          expect(lb_session).not_to receive(:use_primary)
+        end
+
+        allow(::Gitlab::Database::LoadBalancing::Session).to receive(:current).and_return(lb_session)
       end
     end
 

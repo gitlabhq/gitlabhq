@@ -62,8 +62,6 @@
 # Testing category
 - name: i_testing_test_case_parsed
   aggregation: weekly
-- name: i_testing_summary_widget_total
-  aggregation: weekly
 - name: i_testing_test_report_uploaded
   aggregation: weekly
 - name: i_testing_coverage_report_uploaded

@@ -10,21 +10,27 @@ RSpec.describe ScheduleBackfillReleasesAuthorId, feature_category: :release_orch
     let(:date_time) { DateTime.now }
     let!(:batched_migration) { described_class::MIGRATION }
     let!(:test_user) do
-      user_table.create!(name: 'test',
-                         email: 'test@example.com',
-                         username: 'test',
-                         projects_limit: 10)
+      user_table.create!(
+        name: 'test',
+        email: 'test@example.com',
+        username: 'test',
+        projects_limit: 10
+      )
     end
 
     before do
-      releases_table.create!(tag: 'tag1', name: 'tag1',
-                             released_at: (date_time - 1.minute), author_id: test_user.id)
-      releases_table.create!(tag: 'tag2', name: 'tag2',
-                             released_at: (date_time - 2.minutes), author_id: test_user.id)
-      releases_table.new(tag: 'tag3', name: 'tag3',
-                         released_at: (date_time - 3.minutes), author_id: nil).save!(validate: false)
-      releases_table.new(tag: 'tag4', name: 'tag4',
-                         released_at: (date_time - 4.minutes), author_id: nil).save!(validate: false)
+      releases_table.create!(
+        tag: 'tag1', name: 'tag1', released_at: (date_time - 1.minute), author_id: test_user.id
+      )
+      releases_table.create!(
+        tag: 'tag2', name: 'tag2', released_at: (date_time - 2.minutes), author_id: test_user.id
+      )
+      releases_table.new(
+        tag: 'tag3', name: 'tag3', released_at: (date_time - 3.minutes), author_id: nil
+      ).save!(validate: false)
+      releases_table.new(
+        tag: 'tag4', name: 'tag4', released_at: (date_time - 4.minutes), author_id: nil
+      ).save!(validate: false)
     end
 
     it 'schedules a new batched migration' do

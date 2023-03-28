@@ -50,7 +50,7 @@ export default {
     @click="onClick"
   >
     <div
-      class="gl-display-flex gl-align-items-center gl-flex-wrap project-namespace-name-container"
+      class="gl-display-flex gl-align-items-center gl-flex-wrap-wrap project-namespace-name-container"
     >
       <gl-icon v-if="selected" data-testid="selected-icon" name="mobile-issue-close" />
       <project-avatar
