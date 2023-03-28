@@ -91,13 +91,6 @@ class ActiveSession
             active_user_session.dump
           )
 
-          # Deprecated legacy format - temporary to support mixed deployments
-          pipeline.setex(
-            key_name_v1(user.id, session_private_id),
-            expiry,
-            Marshal.dump(active_user_session)
-          )
-
           pipeline.sadd?(
             lookup_key_name(user.id),
             session_private_id

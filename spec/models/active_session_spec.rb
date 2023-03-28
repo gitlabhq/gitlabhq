@@ -190,8 +190,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
 
       Gitlab::Redis::Sessions.with do |redis|
         expect(redis.scan_each.to_a).to include(
-          described_class.key_name(user.id, session_id),    # current session
-          described_class.key_name_v1(user.id, session_id), # support for mixed deployment
+          described_class.key_name(user.id, session_id), # current session
           lookup_key
         )
       end
@@ -215,19 +214,6 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
           updated_at: eq(time)
         )
       end
-    end
-
-    it 'is possible to log in only using the old session key' do
-      session_id = "2::418729c72310bbf349a032f0bb6e3fce9f5a69df8f000d8ae0ac5d159d8f21ae"
-      ActiveSession.set(user, request)
-
-      Gitlab::Redis::SharedState.with do |redis|
-        redis.del(described_class.key_name(user.id, session_id))
-      end
-
-      sessions = ActiveSession.list(user)
-
-      expect(sessions).to be_present
     end
 
     it 'keeps the created_at from the login on consecutive requests' do
@@ -593,7 +579,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
       let(:active_count) { 3 }
 
       before do
-        Gitlab::Redis::SharedState.with do |redis|
+        Gitlab::Redis::Sessions.with do |redis|
           active_count.times do |number|
             redis.set(
               key_name(user.id, number),
@@ -608,13 +594,13 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
       end
 
       it 'removes obsolete lookup entries' do
-        active = Gitlab::Redis::SharedState.with do |redis|
+        active = Gitlab::Redis::Sessions.with do |redis|
           ActiveSession.cleaned_up_lookup_entries(redis, user)
         end
 
         expect(active.count).to eq(active_count)
 
-        Gitlab::Redis::SharedState.with do |redis|
+        Gitlab::Redis::Sessions.with do |redis|
           lookup_entries = redis.smembers(lookup_key)
 
           expect(lookup_entries.count).to eq(active_count)
@@ -627,7 +613,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
 
       it 'reports the removed entries' do
         removed = []
-        Gitlab::Redis::SharedState.with do |redis|
+        Gitlab::Redis::Sessions.with do |redis|
           ActiveSession.cleaned_up_lookup_entries(redis, user, removed)
         end
 

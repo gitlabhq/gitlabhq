@@ -71,6 +71,14 @@ RSpec.describe Resolvers::BlobsResolver do
           end
         end
 
+        context 'when specifying HEAD ref' do
+          let(:ref) { 'HEAD' }
+
+          it 'returns the specified blobs for HEAD' do
+            is_expected.to contain_exactly(have_attributes(path: 'README.md'))
+          end
+        end
+
         context 'when specifying an invalid ref' do
           let(:ref) { 'ma:in' }
 

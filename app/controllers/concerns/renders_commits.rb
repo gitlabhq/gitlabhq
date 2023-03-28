@@ -33,6 +33,6 @@ module RendersCommits
   def valid_ref?(ref_name)
     return true unless ref_name.present?
 
-    Gitlab::GitRefValidator.validate(ref_name)
+    Gitlab::GitRefValidator.validate(ref_name, skip_head_ref_check: true)
   end
 end

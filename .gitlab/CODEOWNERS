@@ -320,6 +320,8 @@ Dangerfile @gl-quality/eng-prod
 /ee/spec/lib/ee/api/entities/experiment_spec.rb @gitlab-org/growth/experiment-devs
 
 ^[Growth]
+/ee/app/workers/onboarding/ @gitlab-org/growth/engineers
+/ee/spec/workers/onboarding/ @gitlab-org/growth/engineers
 /app/models/onboarding/ @gitlab-org/growth/engineers
 /spec/models/onboarding/ @gitlab-org/growth/engineers
 /app/services/onboarding/ @gitlab-org/growth/engineers

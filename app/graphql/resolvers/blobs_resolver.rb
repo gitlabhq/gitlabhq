@@ -38,7 +38,7 @@ module Resolvers
     private
 
     def validate_ref(ref)
-      unless Gitlab::GitRefValidator.validate(ref)
+      unless Gitlab::GitRefValidator.validate(ref, skip_head_ref_check: true)
         raise Gitlab::Graphql::Errors::ArgumentError, 'Ref is not valid'
       end
     end

@@ -380,6 +380,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'ObjectPool::JoinWorker' => 3,
         'ObjectPool::ScheduleJoinWorker' => 3,
         'ObjectStorage::MigrateUploadsWorker' => 3,
+        'Onboarding::CreateLearnGitlabWorker' => 3,
         'Packages::CleanupPackageFileWorker' => 0,
         'Packages::Cleanup::ExecutePolicyWorker' => 0,
         'Packages::Composer::CacheUpdateWorker' => false,

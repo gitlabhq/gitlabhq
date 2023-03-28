@@ -915,15 +915,6 @@ $tabs-holder-z-index: 250;
   &:not(:first-child) {
     margin-top: $gl-padding;
   }
-
-  &:not(:last-child)::before {
-    content: '';
-    border-left: 2px solid var(--border-color, $border-color);
-    position: absolute;
-    bottom: -17px;
-    left: 26px;
-    height: 16px;
-  }
 }
 
 .mr-version-controls {
