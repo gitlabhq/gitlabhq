@@ -1,0 +1,30 @@
+---
+description: State of projects imported from GitHub
+category: Import::GithubService
+action: create
+label_description: github_import_project_state
+property_description:
+value_description:
+extra_properties:
+  import_type:
+    type: string
+    description: Type of project import
+  state:
+    type: string
+    description: Import state
+identifiers:
+- project
+product_section: dev
+product_stage: manage
+product_group: import
+product_category: importers
+milestone: "15.10"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112062
+distributions:
+- ce
+- ee
+tiers: 
+- free
+- premium
+- ultimate
+

@@ -467,6 +467,8 @@ function UsersSelect(currentUser, els, options = {}) {
           // display:block overrides the hide-collapse rule
           $value.css('display', '');
         }
+
+        $('.dropdown-input-field', $block).val('');
       },
       multiSelect: $dropdown.hasClass('js-multiselect'),
       inputMeta: $dropdown.data('inputMeta'),

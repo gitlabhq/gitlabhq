@@ -42,11 +42,11 @@ RSpec.describe Gitlab::Import::Metrics, :aggregate_failures do
       it 'does not emit importer metrics' do
         expect(subject).not_to receive(:track_usage_event)
         expect_no_snowplow_event(
-          category: :test_importer,
+          category: 'Import::GithubService',
           action: 'create',
           label: 'github_import_project_state',
           project: project,
-          extra: { import_type: 'github', state: 'failed' }
+          import_type: 'github', state: 'failed'
         )
 
         subject.track_failed_import
@@ -65,11 +65,11 @@ RSpec.describe Gitlab::Import::Metrics, :aggregate_failures do
         subject.track_failed_import
 
         expect_snowplow_event(
-          category: :test_importer,
+          category: 'Import::GithubService',
           action: 'create',
           label: 'github_import_project_state',
           project: project,
-          extra: { import_type: 'github', state: 'failed' }
+          import_type: 'github', state: 'failed'
         )
       end
     end
@@ -102,11 +102,11 @@ RSpec.describe Gitlab::Import::Metrics, :aggregate_failures do
         subject.track_finished_import
 
         expect_snowplow_event(
-          category: :test_importer,
+          category: 'Import::GithubService',
           action: 'create',
           label: 'github_import_project_state',
           project: project,
-          extra: { import_type: 'github', state: 'completed' }
+          import_type: 'github', state: 'completed'
         )
 
         expect(subject.duration).not_to be_nil
@@ -123,11 +123,11 @@ RSpec.describe Gitlab::Import::Metrics, :aggregate_failures do
           subject.track_finished_import
 
           expect_snowplow_event(
-            category: :test_importer,
+            category: 'Import::GithubService',
             action: 'create',
             label: 'github_import_project_state',
             project: project,
-            extra: { import_type: 'github', state: 'partially completed' }
+            import_type: 'github', state: 'partially completed'
           )
         end
       end
@@ -140,11 +140,11 @@ RSpec.describe Gitlab::Import::Metrics, :aggregate_failures do
         subject.track_finished_import
 
         expect_no_snowplow_event(
-          category: :test_importer,
+          category: 'Import::GithubService',
           action: 'create',
           label: 'github_import_project_state',
           project: project,
-          extra: { import_type: 'github', state: 'completed' }
+          import_type: 'github', state: 'completed'
         )
       end
     end
@@ -155,11 +155,11 @@ RSpec.describe Gitlab::Import::Metrics, :aggregate_failures do
       it 'does not emit importer metrics' do
         expect(subject).not_to receive(:track_usage_event)
         expect_no_snowplow_event(
-          category: :test_importer,
+          category: 'Import::GithubService',
           action: 'create',
           label: 'github_import_project_state',
           project: project,
-          extra: { import_type: 'github', state: 'canceled' }
+          import_type: 'github', state: 'canceled'
         )
 
         subject.track_canceled_import
@@ -178,11 +178,11 @@ RSpec.describe Gitlab::Import::Metrics, :aggregate_failures do
         subject.track_canceled_import
 
         expect_snowplow_event(
-          category: :test_importer,
+          category: 'Import::GithubService',
           action: 'create',
           label: 'github_import_project_state',
           project: project,
-          extra: { import_type: 'github', state: 'canceled' }
+          import_type: 'github', state: 'canceled'
         )
       end
     end

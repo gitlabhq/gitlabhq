@@ -477,6 +477,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'WebHooks::DestroyWorker' => 3,
         'WebHooks::LogExecutionWorker' => 3,
         'Wikis::GitGarbageCollectWorker' => false,
+        'WorkItems::ImportWorkItemsCsvWorker' => 3,
         'X509CertificateRevokeWorker' => 3,
         'ComplianceManagement::MergeRequests::ComplianceViolationsWorker' => 3
       }

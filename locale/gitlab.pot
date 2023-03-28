@@ -14056,9 +14056,6 @@ msgstr ""
 msgid "Dependencies|Vulnerable components"
 msgstr ""
 
-msgid "Dependency List"
-msgstr ""
-
 msgid "Dependency List has no entries"
 msgstr ""
 
@@ -31032,6 +31029,15 @@ msgstr ""
 msgid "PackageRegistry|There are no packages yet"
 msgstr ""
 
+msgid "PackageRegistry|There are security risks if packages are deleted while request forwarding is enabled."
+msgstr ""
+
+msgid "PackageRegistry|There are security risks if packages are deleted while request forwarding is enabled. %{docLinkStart}What are the risks?%{docLinkEnd}"
+msgstr ""
+
+msgid "PackageRegistry|There are security risks if packages are deleted while request forwarding is enabled. %{docs_link_start}What are the risks?%{docs_link_end}"
+msgstr ""
+
 msgid "PackageRegistry|There was a problem fetching the details for this package."
 msgstr ""
 
@@ -39710,7 +39716,7 @@ msgstr ""
 msgid "SecurityReports|Scan details"
 msgstr ""
 
-msgid "SecurityReports|Security Dashboard"
+msgid "SecurityReports|Security dashboard"
 msgstr ""
 
 msgid "SecurityReports|Security reports can only be accessed by authorized users."
@@ -39815,7 +39821,7 @@ msgstr ""
 msgid "SecurityReports|Upgrade to manage vulnerabilities"
 msgstr ""
 
-msgid "SecurityReports|Vulnerability Report"
+msgid "SecurityReports|Vulnerability report"
 msgstr ""
 
 msgid "SecurityReports|Warning parsing security reports"
@@ -50768,6 +50774,9 @@ msgid "Your username is %{username}."
 msgstr ""
 
 msgid "Your work"
+msgstr ""
+
+msgid "Your work items are being imported. Once finished, you'll receive a confirmation email."
 msgstr ""
 
 msgid "You’re about to permanently delete the %{issuableType} ‘%{strongOpen}%{issuableTitle}%{strongClose}’. To avoid data loss, consider %{strongOpen}closing this %{issuableType}%{strongClose} instead. Once deleted, it cannot be undone or recovered."

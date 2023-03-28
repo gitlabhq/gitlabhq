@@ -150,7 +150,7 @@ usually a good idea.
 
 ## Quarantined tests
 
-When a test frequently fails in `master`,
+When a test fails in `master`,
 create [a ~"failure::flaky-test" issue](https://about.gitlab.com/handbook/engineering/workflow/#broken-master).
 
 If the test cannot be fixed in a timely fashion, there is an impact on the
@@ -158,6 +158,7 @@ productivity of all the developers, so it should be quarantined. There are two w
 
 ### RSpec
 
+Add the corresponding category and group labels to issue using [`feature_category` metadata](../feature_categorization/index.md#rspec-examples).
 For RSpec tests, you can use the `:quarantine` metadata with the issue URL.
 
 ```ruby
@@ -299,6 +300,12 @@ If a spec hangs, it might be caused by a [bug in Rails](https://github.com/rails
 
 - <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81112>
 - <https://gitlab.com/gitlab-org/gitlab/-/issues/337039>
+
+## Suggestions
+
+### Split the test file
+
+It could help to split the large RSpec files in multiple files in order to narrow down the context and identify the problematic tests.
 
 ## Resources
 

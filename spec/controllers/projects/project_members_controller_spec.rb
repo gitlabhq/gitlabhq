@@ -560,12 +560,4 @@ RSpec.describe Projects::ProjectMembersController do
   end
 
   it_behaves_like 'controller actions'
-
-  context 'when project_members_index_by_project_namespace feature flag is disabled' do
-    before do
-      stub_feature_flags(project_members_index_by_project_namespace: false)
-    end
-
-    it_behaves_like 'controller actions'
-  end
 end

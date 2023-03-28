@@ -69,8 +69,9 @@ module Emails
 
     def inject_service_desk_custom_email(mail)
       return mail unless service_desk_custom_email_enabled?
+      return mail unless @service_desk_setting.custom_email_credential.present?
 
-      mail.delivery_method(::Mail::SMTP, @service_desk_setting.custom_email_delivery_options)
+      mail.delivery_method(::Mail::SMTP, @service_desk_setting.custom_email_credential.delivery_options)
     end
 
     def service_desk_custom_email_enabled?

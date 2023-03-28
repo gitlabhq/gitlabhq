@@ -699,7 +699,7 @@ When configuring the Google Workspace SAML application, record the following inf
 |             | Value        | Description                                                                       |
 |-------------|--------------|-----------------------------------------------------------------------------------|
 | SSO URL     | Depends      | Google Identity Provider details. Set to the GitLab `idp_sso_target_url` setting. |
-| Certificate | Downloadable | Run `openssl x509 -in <your_certificate.crt> -noout -fingerprint` to generate the SHA1 fingerprint that can be used in the `idp_cert_fingerprint` setting.                         |
+| Certificate | Downloadable | Run `openssl x509 -in <your_certificate.crt> -noout -fingerprint -sha1` to generate the SHA1 fingerprint that can be used in the `idp_cert_fingerprint` setting.                         |
 
 Google Workspace Administrator also provides the IdP metadata, Entity ID, and SHA-256
 fingerprint. However, GitLab does not need this information to connect to the

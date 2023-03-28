@@ -190,6 +190,10 @@ module Gitlab
             original_data['assets'] || []
           end
 
+          def raw_source_code_extract
+            original_data['raw_source_code_extract']
+          end
+
           # Returns either the max priority signature hex
           # or the location fingerprint
           def location_fingerprint

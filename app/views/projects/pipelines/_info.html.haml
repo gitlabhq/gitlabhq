@@ -21,10 +21,7 @@
       - duration = time_interval_in_words(@pipeline.duration)
       - queued_duration = time_interval_in_words(@pipeline.queued_duration)
       %span.gl-pl-7{ 'data-testid': 'pipeline-stats-text' }
-        - if Feature.enabled?(:refactor_ci_minutes_consumption, @project)
-          = render_if_exists 'projects/pipelines/pipeline_stats_text', duration: duration, pipeline: @pipeline, queued_duration: queued_duration
-        - else
-          = s_("in %{duration} and was queued for %{queued_duration}").html_safe % { duration: duration, queued_duration: queued_duration }
+        = render_if_exists 'projects/pipelines/pipeline_stats_text', duration: duration, pipeline: @pipeline, queued_duration: queued_duration
 
   - if has_pipeline_badges?(@pipeline)
     .well-segment

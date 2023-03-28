@@ -45,7 +45,7 @@ static-verification-with-database:
     - .static-analysis-base
     - .rubocop-job-cache
     - .static-analysis:rules:static-verification-with-database
-    - .use-pg12
+    - .use-pg13
   script:
     - bundle exec rake lint:static_verification_with_database
   variables:

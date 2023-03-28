@@ -725,6 +725,7 @@ project:
 - downstream_project_subscriptions
 - service_desk_setting
 - service_desk_custom_email_verification
+- service_desk_custom_email_credential
 - security_setting
 - import_failures
 - container_expiration_policy

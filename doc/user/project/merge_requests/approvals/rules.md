@@ -106,6 +106,9 @@ reduces the number of approvals left (the **Approvals** column) for all rules th
 
 ![Approvals premium merge request widget](img/approvals_premium_mr_widget_v13_3.png)
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Multiple Approvers](https://www.youtube.com/watch?v=8JQJ5821FrA).
+
 ## Eligible approvers
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10294) in GitLab 13.3, when an eligible approver comments on a merge request, it appears in the **Commented by** column of the Approvals widget.

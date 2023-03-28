@@ -1424,7 +1424,7 @@ RSpec.describe Notify do
         issue.issue_email_participants.create!(email: 'service.desk@example.com')
       end
 
-      describe 'thank you email' do
+      describe 'thank you email', feature_category: :service_desk do
         subject { described_class.service_desk_thank_you_email(issue.id) }
 
         it_behaves_like 'an unsubscribeable thread'
@@ -1477,16 +1477,19 @@ RSpec.describe Notify do
           end
 
           context 'when custom email is enabled' do
+            let_it_be(:credentials) do
+              create(
+                :service_desk_custom_email_credential,
+                project: project
+              )
+            end
+
             let_it_be(:settings) do
               create(
                 :service_desk_setting,
                 project: project,
                 custom_email_enabled: true,
-                custom_email: 'supersupport@example.com',
-                custom_email_smtp_address: 'smtp.example.com',
-                custom_email_smtp_port: 587,
-                custom_email_smtp_username: 'supersupport@example.com',
-                custom_email_smtp_password: 'supersecret'
+                custom_email: 'supersupport@example.com'
               )
             end
 
@@ -1501,7 +1504,7 @@ RSpec.describe Notify do
         end
       end
 
-      describe 'new note email' do
+      describe 'new note email', feature_category: :service_desk do
         let_it_be(:first_note) { create(:discussion_note_on_issue, note: 'Hello world') }
 
         subject { described_class.service_desk_new_note_email(issue.id, first_note.id, 'service.desk@example.com') }
@@ -1538,16 +1541,19 @@ RSpec.describe Notify do
           end
 
           context 'when custom email is enabled' do
+            let_it_be(:credentials) do
+              create(
+                :service_desk_custom_email_credential,
+                project: project
+              )
+            end
+
             let_it_be(:settings) do
               create(
                 :service_desk_setting,
                 project: project,
                 custom_email_enabled: true,
-                custom_email: 'supersupport@example.com',
-                custom_email_smtp_address: 'smtp.example.com',
-                custom_email_smtp_port: 587,
-                custom_email_smtp_username: 'supersupport@example.com',
-                custom_email_smtp_password: 'supersecret'
+                custom_email: 'supersupport@example.com'
               )
             end
 
@@ -2360,22 +2366,5 @@ RSpec.describe Notify do
       expect(mail.subject).to eq('Go farther with GitLab')
       expect(mail.body.parts.first.to_s).to include('Start a GitLab Ultimate trial today in less than one minute, no credit card required.')
     end
-  end
-
-  def expect_sender(user, sender_email: nil)
-    sender = subject.header[:from].addrs[0]
-    expect(sender.display_name).to eq("#{user.name} (@#{user.username})")
-    expect(sender.address).to eq(sender_email.presence || gitlab_sender)
-  end
-
-  def expect_service_desk_custom_email_delivery_options(service_desk_setting)
-    expect(subject.delivery_method).to be_a Mail::SMTP
-    expect(subject.delivery_method.settings).to include(
-      address: service_desk_setting.custom_email_smtp_address,
-      port: service_desk_setting.custom_email_smtp_port,
-      user_name: service_desk_setting.custom_email_smtp_username,
-      password: service_desk_setting.custom_email_smtp_password,
-      domain: service_desk_setting.custom_email.split('@').last
-    )
   end
 end

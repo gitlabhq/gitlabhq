@@ -57,7 +57,11 @@ module QA
         end
 
         it 'shows successfully but not able to be committed',
-testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386761' do
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386761',
+          quarantine: {
+            type: :stale,
+            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/399544'
+          } do
           Page::Project::WebIDE::VSCode.perform do |ide|
             ide.wait_for_ide_to_load
             ide.create_new_folder(directory_name)

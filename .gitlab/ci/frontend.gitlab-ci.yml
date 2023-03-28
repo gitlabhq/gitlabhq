@@ -122,7 +122,7 @@ retrieve-frontend-fixtures:
     - .default-retry
     - .default-before_script
     - .rails-cache
-    - .use-pg12
+    - .use-pg13
   stage: fixtures
   needs: ["setup-test-env", "retrieve-tests-metadata"]
   variables:

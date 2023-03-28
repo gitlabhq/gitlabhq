@@ -90,8 +90,8 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
               find('.block.assignee .edit-link').click
             end
 
-            expect(page.all('.dropdown-menu-user li').length).to eq(1)
-            expect(find('.dropdown-input-field').value).to eq(user2.name)
+            expect(page.all('.dropdown-menu-user li').length).to eq(6)
+            expect(find('.dropdown-input-field').value).to eq('')
           end
 
           it 'shows label text as "Apply" when assignees are changed' do

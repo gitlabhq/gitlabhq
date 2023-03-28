@@ -183,6 +183,33 @@ To find this URL:
 
 Check your identity provider's documentation to see if it supports the GitLab metadata URL.
 
+### Manage the identity provider
+
+After you have set up your identity provider, you can:
+
+- Change the identity provider.
+- Change email domains.
+
+#### Change the identity provider
+
+You can change to a different identity provider. During the change process,
+users cannot access any of the SAML groups. To mitigate this, you can disable
+[SSO enforcement](#sso-enforcement).
+
+To change identity providers:
+
+1. [Configure](#configure-your-identity-provider) the group with the new identity provider.
+1. Optional. If the **NameID** is not identical, [change the **NameID** for users](#change-nameid-for-one-or-more-users).
+
+#### Change email domains
+
+To migrate users to a new email domain, tell users to:
+
+1. Add their new email as the primary email to their accounts and verify it.
+1. Optional. Remove their old email from the account.
+
+If the **NameID** is configured with the email address, [change the **NameID** for users](#change-nameid-for-one-or-more-users).
+
 ### User attributes
 
 To create users with the correct information for improved [user access and management](#user-access-and-management),
@@ -293,41 +320,6 @@ immediately. If the user:
   hours until the identity provider session times out.
 - Is signed out, they cannot access the group after being removed from the
   identity provider.
-
-### Change the SAML app
-
-After you have configured your identity provider, you can:
-
-- Change the identity provider users sign in with.
-- Migrate to a different identity provider.
-- Change email domains.
-
-#### Change the identity provider
-
-To change the identity provider:
-
-- If the **NameID** value is not identical in the existing and new identity providers, [change the **NameID** for users](#change-nameid-for-one-or-more-users).
-- If the **NameID** value is identical, users do not have to make any changes.
-
-#### Migrate to a different identity provider
-
-You can migrate to a different identity provider. During the migration process,
-users cannot access any of the SAML groups. To mitigate this, you can disable
-[SSO enforcement](#sso-enforcement).
-
-To migrate identity providers:
-
-1. [Configure](#configure-your-identity-provider) the group with the new identity provider.
-1. [Change the **NameID** for users](#change-nameid-for-one-or-more-users).
-
-#### Change email domains
-
-To migrate users to a new email domain, tell users to:
-
-1. Add their new email as the primary email to their accounts and verify it.
-1. Optional. Remove their old email from the account.
-
-If the **NameID** is configured with the email address, [change the **NameID** for users](#change-nameid-for-one-or-more-users).
 
 ## User access and management
 

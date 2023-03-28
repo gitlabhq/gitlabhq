@@ -3513,6 +3513,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: work_items_import_work_items_csv
+  :worker_name: WorkItems::ImportWorkItemsCsvWorker
+  :feature_category: :team_planning
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: x509_certificate_revoke
   :worker_name: X509CertificateRevokeWorker
   :feature_category: :source_code_management

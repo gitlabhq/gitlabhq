@@ -23,7 +23,7 @@ rails-production-server-boot:
     - .production
     - .ruby-cache
     - .setup:rules:rails-production-server-boot
-    - .use-pg12
+    - .use-pg13
   variables:
     BUNDLE_WITHOUT: "development:test"
     BUNDLE_WITH: "production"

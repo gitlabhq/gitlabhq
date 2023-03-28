@@ -22270,6 +22270,19 @@ CREATE TABLE serverless_domain_cluster (
     certificate text
 );
 
+CREATE TABLE service_desk_custom_email_credentials (
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    smtp_port integer,
+    smtp_address text,
+    encrypted_smtp_username bytea,
+    encrypted_smtp_username_iv bytea,
+    encrypted_smtp_password bytea,
+    encrypted_smtp_password_iv bytea,
+    CONSTRAINT check_6dd11e956a CHECK ((char_length(smtp_address) <= 255))
+);
+
 CREATE TABLE service_desk_custom_email_verifications (
     project_id bigint NOT NULL,
     triggerer_id bigint,
@@ -27733,6 +27746,9 @@ ALTER TABLE ONLY sprints
 
 ALTER TABLE ONLY serverless_domain_cluster
     ADD CONSTRAINT serverless_domain_cluster_pkey PRIMARY KEY (uuid);
+
+ALTER TABLE ONLY service_desk_custom_email_credentials
+    ADD CONSTRAINT service_desk_custom_email_credentials_pkey PRIMARY KEY (project_id);
 
 ALTER TABLE ONLY service_desk_custom_email_verifications
     ADD CONSTRAINT service_desk_custom_email_verifications_pkey PRIMARY KEY (project_id);
@@ -36074,6 +36090,9 @@ ALTER TABLE ONLY boards_epic_boards
 
 ALTER TABLE ONLY ci_runner_namespaces
     ADD CONSTRAINT fk_rails_8767676b7a FOREIGN KEY (runner_id) REFERENCES ci_runners(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY service_desk_custom_email_credentials
+    ADD CONSTRAINT fk_rails_878b562d12 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY software_license_policies
     ADD CONSTRAINT fk_rails_87b2247ce5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

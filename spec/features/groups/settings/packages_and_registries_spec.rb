@@ -61,7 +61,8 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
 
       wait_for_requests
 
-      expect(page).to be_axe_clean.within '[data-testid="packages-and-registries-group-settings"]'
+      expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-group-settings"]')
+                                  .skipping :'link-in-text-block'
     end
 
     it 'has a Duplicate packages section', :js do

@@ -28,9 +28,10 @@ Assumptions:
 1. GitLab CI runs a new pipeline for that branch.
 1. Pipeline status transitions to any of [`::Ci::Pipeline.completed_statuses`](https://gitlab.com/gitlab-org/gitlab/-/blob/354261b2fe4fc5b86d1408467beadd90e466ce0a/app/models/concerns/ci/has_status.rb#L12).
 1. `Security::StoreScansWorker` is called and it schedules `Security::StoreScansService`.
-1. `Security::StoreScansService` calls `Security::StoreGroupedScansService`.
+1. `Security::StoreScansService` calls `Security::StoreGroupedScansService` and schedules `ScanSecurityReportSecretsWorker`.
 1. `Security::StoreGroupedScansService` calls `Security::StoreScanService`.
 1. `Security::StoreScanService` calls `Security::StoreFindingsService`.
+1. `ScanSecurityReportSecretsWorker` calls `Security::TokenRevocationService` to revoke any leaked keys.
 1. At this point we have `Security::Finding` objects **only**.
 
 At this point, the following things can happen to the `Security::Finding`:
@@ -41,8 +42,8 @@ At this point, the following things can happen to the `Security::Finding`:
 
 If the pipeline ran on the default branch then the following, additional steps are done:
 
-1. `Security::StoreScansService` gets called and schedules `Security::StoreSecurityReportsWorker`.
-1. `Security::StoreSecurityReportsWorker` executes `Security::Ingestion::IngestReportsService`.
+1. `Security::StoreScansService` gets called and schedules `StoreSecurityReportsWorker`.
+1. `StoreSecurityReportsWorker` executes `Security::Ingestion::IngestReportsService`.
 1. `Security::Ingestion::IngestReportsService` takes all reports from a given Pipeline and calls `Security::Ingestion::IngestReportService` and then calls `Security::Ingestion::MarkAsResolvedService`.
 1. `Security::Ingestion::IngestReportService` calls `Security::Ingestion::IngestReportSliceService` which executes a number of tasks for a report slice.
 

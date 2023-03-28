@@ -81,13 +81,13 @@ tests = [
     source: 'db/migrate/20221014034338_populate_releases_access_level_from_repository.rb',
     expected: ['spec/migrations/populate_releases_access_level_from_repository_spec.rb']
   },
-
+  # rubocop:disable Layout/LineLength
   {
     explanation: 'Migration should map to its timestamped spec',
-    source: 'db/post_migrate/20210915022415_cleanup_bigint_conversion_for_ci_builds.rb',
-    expected: ['spec/migrations/20210915022415_cleanup_bigint_conversion_for_ci_builds_spec.rb']
+    source: 'db/post_migrate/20230105172120_sync_new_amount_used_with_amount_used_on_ci_namespace_monthly_usages_table.rb',
+    expected: ['spec/migrations/20230105172120_sync_new_amount_used_with_amount_used_on_ci_namespace_monthly_usages_table_spec.rb']
   },
-
+  # rubocop:enable Layout/LineLength
   {
     explanation: 'FOSS views should map to respective spec',
     source: 'app/views/admin/dashboard/index.html.haml',

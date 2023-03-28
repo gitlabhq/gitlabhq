@@ -42,6 +42,7 @@ module ImportCsv
 
     def validate_structure!
       header_line = csv_data.lines.first
+      raise CSV::MalformedCSVError.new('File is empty, no headers found', 1) if header_line.blank?
 
       validate_headers_presence!(header_line)
       detect_col_sep

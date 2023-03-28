@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MigrationsHelpers do
+RSpec.describe MigrationsHelpers, feature_category: :database do
   let(:helper_class) do
     Class.new.tap do |klass|
       klass.include described_class
@@ -68,6 +68,42 @@ RSpec.describe MigrationsHelpers do
       it 'creates a class based on main base model' do
         klass = helper.table(:ci_builds, database: :ci)
         expect(klass.connection_specification_name).to eq('ActiveRecord::Base')
+      end
+    end
+  end
+
+  describe '#reset_column_information' do
+    context 'with a regular ActiveRecord model class' do
+      let(:klass) { Project }
+
+      it 'calls reset_column_information' do
+        expect(klass).to receive(:reset_column_information)
+
+        helper.reset_column_information(klass)
+      end
+    end
+
+    context 'with an anonymous class with table name defined' do
+      let(:klass) do
+        Class.new(ActiveRecord::Base) do
+          self.table_name = :projects
+        end
+      end
+
+      it 'calls reset_column_information' do
+        expect(klass).to receive(:reset_column_information)
+
+        helper.reset_column_information(klass)
+      end
+    end
+
+    context 'with an anonymous class with no table name defined' do
+      let(:klass) { Class.new(ActiveRecord::Base) }
+
+      it 'does not call reset_column_information' do
+        expect(klass).not_to receive(:reset_column_information)
+
+        helper.reset_column_information(klass)
       end
     end
   end

@@ -325,6 +325,9 @@ func configureRoutes(u *upstream) {
 		// Requirements Import via UI upload acceleration
 		u.route("POST", projectPattern+`requirements_management/requirements/import_csv`, mimeMultipartUploader),
 
+		// Work items Import via UI upload acceleration
+		u.route("POST", projectPattern+`work_items/import_csv`, mimeMultipartUploader),
+
 		// Uploads via API
 		u.route("POST", apiProjectPattern+`/uploads\z`, mimeMultipartUploader),
 

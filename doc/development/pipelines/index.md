@@ -150,8 +150,8 @@ This number can be overridden by setting a CI/CD variable named `RSPEC_FAIL_FAST
 
 ## Re-run previously failed tests in merge request pipelines
 
-In order to reduce the feedback time after resolving failed tests for a merge request, the `rspec rspec-pg12-rerun-previous-failed-tests`
-and `rspec rspec-ee-pg12-rerun-previous-failed-tests` jobs run the failed tests from the previous MR pipeline.
+In order to reduce the feedback time after resolving failed tests for a merge request, the `rspec rspec-pg13-rerun-previous-failed-tests`
+and `rspec rspec-ee-pg13-rerun-previous-failed-tests` jobs run the failed tests from the previous MR pipeline.
 
 This was introduced on August 25th 2021, with <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69053>.
 
@@ -159,7 +159,7 @@ This was introduced on August 25th 2021, with <https://gitlab.com/gitlab-org/git
 
 1. The `detect-previous-failed-tests` job (`prepare` stage) detects the test files associated with failed RSpec
    jobs from the previous MR pipeline.
-1. The `rspec rspec-pg12-rerun-previous-failed-tests` and `rspec rspec-ee-pg12-rerun-previous-failed-tests` jobs
+1. The `rspec rspec-pg13-rerun-previous-failed-tests` and `rspec rspec-ee-pg13-rerun-previous-failed-tests` jobs
    will run the test files gathered by the `detect-previous-failed-tests` job.
 
 ```mermaid
@@ -169,8 +169,8 @@ graph LR
     end
 
     subgraph "test stage";
-        B["rspec rspec-pg12-rerun-previous-failed-tests"];
-        C["rspec rspec-ee-pg12-rerun-previous-failed-tests"];
+        B["rspec rspec-pg13-rerun-previous-failed-tests"];
+        C["rspec rspec-ee-pg13-rerun-previous-failed-tests"];
     end
 
     A --"artifact: list of test files"--> B & C
@@ -483,20 +483,22 @@ This should let us:
 
 ### PostgreSQL versions testing
 
-Our test suite runs against PG12 as GitLab.com runs on PG12 and
-[Omnibus defaults to PG12 for new installs and upgrades](../../administration/package_information/postgresql_versions.md).
+Our test suite runs against PG13 as GitLab.com runs on PG13 and
+[Omnibus defaults to PG13 for new installs and upgrades](../../administration/package_information/postgresql_versions.md).
 
 We do run our test suite against PG13 on nightly scheduled pipelines.
 
+We also run our test suite against PG13 upon specific database library changes in MRs and `main` pipelines (with the `rspec db-library-code pg13` job).
+
 #### Current versions testing
 
-| Where?                                                                                         | PostgreSQL version       | Ruby version          |
-|------------------------------------------------------------------------------------------------|--------------------------|-----------------------|
-| Merge requests                                                                                 | 12 (default version)     | 3.0 (default version) |
-| `master` branch commits                                                                        | 12 (default version)     | 3.0 (default version) |
-| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)           | 12 (default version)     | 3.0 (default version) |
-| `maintenance` scheduled pipelines for the `ruby2` branch (every odd-numbered hour), see below. | 12 (default version)     | 2.7                   |
-| `nightly` scheduled pipelines for the `master` branch                                          | 12 (default version), 13 | 3.0 (default version) |
+| Where?                                                                                         | PostgreSQL version                              | Ruby version          |
+|------------------------------------------------------------------------------------------------|-------------------------------------------------|-----------------------|
+| Merge requests                                                                                 | 13 (default version), 12 for DB library changes | 3.0 (default version) |
+| `master` branch commits                                                                        | 13 (default version), 12 for DB library changes | 3.0 (default version) |
+| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)           | 13 (default version), 12 for DB library changes | 3.0 (default version) |
+| `maintenance` scheduled pipelines for the `ruby2` branch (every odd-numbered hour), see below. | 13 (default version), 12 for DB library changes | 2.7                   |
+| `nightly` scheduled pipelines for the `master` branch                                          | 13 (default version), 12, 14 | 3.0 (default version) |
 
 There are 2 pipeline schedules used for testing Ruby 2.7. One is triggering a
 pipeline in `ruby2-sync` branch, which updates the `ruby2` branch with latest
@@ -510,15 +512,6 @@ The `ruby2` branch must not have any changes. The branch is only there to set
 The `gitlab` job in the `ruby2-sync` branch uses a `gitlab-org/gitlab` project
 token with `write_repository` scope and `Maintainer` role with no expiration.
 The token is stored in the `RUBY2_SYNC_TOKEN` variable in `gitlab-org/gitlab`.
-
-#### Long-term plan
-
-We follow the [PostgreSQL versions shipped with Omnibus GitLab](../../administration/package_information/postgresql_versions.md):
-
-| PostgreSQL version | 14.1 (July 2021)       | 14.2 (August 2021)     | 14.3 (September 2021)  | 14.4 (October 2021)    | 14.5 (November 2021)   | 14.6 (December 2021)   |
-| -------------------| ---------------------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- |
-| PG12               | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` |
-| PG13               | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              |
 
 ### Redis versions testing
 

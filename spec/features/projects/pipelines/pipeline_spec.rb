@@ -133,17 +133,6 @@ RSpec.describe 'Pipeline', :js, feature_category: :projects do
             expect(page).to have_content("and was queued for #{finished_pipeline.queued_duration} seconds")
           end
         end
-
-        it 'shows pipeline stats with flag off' do
-          stub_feature_flags(refactor_ci_minutes_consumption: false)
-
-          visit project_pipeline_path(project, finished_pipeline)
-
-          within '.pipeline-info' do
-            expect(page).to have_content("in #{finished_pipeline.duration} seconds " \
-                                          "and was queued for #{finished_pipeline.queued_duration} seconds")
-          end
-        end
       end
 
       context 'pipeline has not finished' do

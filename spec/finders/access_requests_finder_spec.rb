@@ -96,13 +96,4 @@ RSpec.describe AccessRequestsFinder do
 
   it_behaves_like '#execute'
   it_behaves_like '#execute!'
-
-  context 'when project_members_index_by_project_namespace feature flag is disabled' do
-    before do
-      stub_feature_flags(project_members_index_by_project_namespace: false)
-    end
-
-    it_behaves_like '#execute'
-    it_behaves_like '#execute!'
-  end
 end

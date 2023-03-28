@@ -561,6 +561,8 @@
   - 1
 - - wikis_git_garbage_collect
   - 1
+- - work_items_import_work_items_csv
+  - 1
 - - work_items_update_parent_objectives_progress
   - 1
 - - x509_certificate_revoke

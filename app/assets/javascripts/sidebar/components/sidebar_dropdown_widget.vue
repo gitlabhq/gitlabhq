@@ -191,11 +191,7 @@ export default {
         : false;
     },
     shouldSkipRealTimeEpicLinkUpdates() {
-      return (
-        !this.issuableId ||
-        this.issuableAttribute !== IssuableAttributeType.Epic ||
-        !this.glFeatures?.realTimeIssueEpicLinks
-      );
+      return !this.issuableId || this.issuableAttribute !== IssuableAttributeType.Epic;
     },
   },
   methods: {

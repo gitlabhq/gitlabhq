@@ -428,6 +428,8 @@ For instructions on how to run these tests using the `gitlab-qa` gem, please ref
 
 Tests that are tagged with `:mobile` can be run against specified mobile devices using cloud emulator/simulator services.
 
+These tests run in the [nightly pipeline](https://gitlab.com/gitlab-org/quality/nightly/-/pipelines) in the `ce:remote_mobile_safari` job.
+
 ### How to run mobile tests with Sauce Labs
 
 Running directly against an environment like staging is not recommended because Sauce Labs test logs expose credentials. Therefore, it is best practice and the default to use a tunnel.
