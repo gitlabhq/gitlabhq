@@ -32,7 +32,7 @@ module Projects
                         .execute
                         .keyset_paginate(cursor: params[:cursor], per_page: MAX_CANDIDATES_PER_PAGE)
 
-        @candidates = paginator.records.each(&:artifact_lazy)
+        @candidates = paginator.records
         @page_info = page_info(paginator)
       end
 

@@ -38,9 +38,9 @@ export default {
 </script>
 <template>
   <div
-    class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-gap-3 gl-flex-wrap gl-py-5 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
+    class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-gap-3 gl-flex-wrap-wrap gl-py-5 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
   >
-    <div class="gl-display-flex gl-align-items-flex-start gl-gap-3 gl-flex-wrap">
+    <div class="gl-display-flex gl-align-items-flex-start gl-gap-3 gl-flex-wrap-wrap">
       <runner-status-badge :runner="runner" />
       <runner-type-badge v-if="runner" :type="runner.runnerType" />
       <span>
@@ -65,6 +65,6 @@ export default {
         </template>
       </span>
     </div>
-    <div class="gl-display-flex gl-gap-3 gl-flex-wrap"><slot name="actions"></slot></div>
+    <div class="gl-display-flex gl-gap-3 gl-flex-wrap-wrap"><slot name="actions"></slot></div>
   </div>
 </template>

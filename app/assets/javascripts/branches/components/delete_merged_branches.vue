@@ -150,7 +150,7 @@ export default {
 
       <template #modal-footer>
         <div
-          class="gl-display-flex gl-flex-direction-row gl-justify-content-end gl-flex-wrap gl-m-0 gl-mr-3"
+          class="gl-display-flex gl-flex-direction-row gl-justify-content-end gl-flex-wrap-wrap gl-m-0 gl-mr-3"
         >
           <gl-button data-testid="delete-merged-branches-cancel-button" @click="closeModal">
             {{ $options.i18n.cancelButtonText }}

@@ -461,7 +461,7 @@ export default {
         @dismiss="dismissTip"
       >
         <div
-          class="gl-display-flex gl-flex-direction-row gl-flex-wrap gl-md-flex-wrap-nowrap gl-gap-3"
+          class="gl-display-flex gl-flex-direction-row gl-flex-wrap-wrap gl-md-flex-wrap-nowrap gl-gap-3"
         >
           <div>
             <p>

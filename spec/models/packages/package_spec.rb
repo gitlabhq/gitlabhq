@@ -1402,4 +1402,36 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
         .to change(package, :last_downloaded_at).from(nil).to(instance_of(ActiveSupport::TimeWithZone))
     end
   end
+
+  describe "#publish_creation_event" do
+    let_it_be(:project) { create(:project) }
+
+    let(:version) { '-' }
+    let(:package_type) { :generic }
+
+    subject { described_class.create!(project: project, name: 'incoming', version: version, package_type: package_type) }
+
+    context 'when package is generic' do
+      it 'publishes an event' do
+        expect { subject }
+          .to publish_event(::Packages::PackageCreatedEvent)
+                .with({
+                  project_id: project.id,
+                  id: kind_of(Numeric),
+                  name: "incoming",
+                  version: "-",
+                  package_type: 'generic'
+                })
+      end
+    end
+
+    context 'when package is not generic' do
+      let(:package_type) { :debian }
+      let(:version) { 1 }
+
+      it 'does not create event' do
+        expect { subject }.not_to publish_event(::Packages::PackageCreatedEvent)
+      end
+    end
+  end
 end

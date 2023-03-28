@@ -127,7 +127,7 @@ export default {
           data-testid="vsa-metrics-group"
         >
           <h4 class="gl-my-0">{{ group.title }}</h4>
-          <div class="gl-display-flex gl-flex-wrap">
+          <div class="gl-display-flex gl-flex-wrap-wrap">
             <metric-tile
               v-for="metric in group.data"
               :key="metric.identifier"
@@ -142,7 +142,7 @@ export default {
           </div>
         </div>
       </div>
-      <div v-else class="gl-display-flex gl-flex-wrap gl-mb-7">
+      <div v-else class="gl-display-flex gl-flex-wrap-wrap gl-mb-7">
         <metric-tile
           v-for="metric in metrics"
           :key="metric.identifier"

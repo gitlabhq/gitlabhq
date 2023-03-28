@@ -425,7 +425,58 @@ export const mockIssue4 = {
   epic: null,
 };
 
+export const mockIssue5 = {
+  id: 'gid://gitlab/Issue/440',
+  iid: 40,
+  title: 'Issue 5',
+  referencePath: '#40',
+  dueDate: null,
+  timeEstimate: 0,
+  confidential: false,
+  path: '/gitlab-org/gitlab-test/-/issues/40',
+  assignees,
+  labels,
+  epic: null,
+};
+
+export const mockIssue6 = {
+  id: 'gid://gitlab/Issue/441',
+  iid: 41,
+  title: 'Issue  6',
+  referencePath: '#41',
+  dueDate: null,
+  timeEstimate: 0,
+  confidential: false,
+  path: '/gitlab-org/gitlab-test/-/issues/41',
+  assignees,
+  labels,
+  epic: null,
+};
+
+export const mockIssue7 = {
+  id: 'gid://gitlab/Issue/442',
+  iid: 42,
+  title: 'Issue  6',
+  referencePath: '#42',
+  dueDate: null,
+  timeEstimate: 0,
+  confidential: false,
+  path: '/gitlab-org/gitlab-test/-/issues/42',
+  assignees,
+  labels,
+  epic: null,
+};
+
 export const mockIssues = [mockIssue, mockIssue2];
+export const mockIssuesMore = [
+  mockIssue,
+  mockIssue2,
+  mockIssue3,
+  mockIssue4,
+  mockIssue5,
+  mockIssue6,
+  mockIssue7,
+];
 
 export const BoardsMockData = {
   GET: {

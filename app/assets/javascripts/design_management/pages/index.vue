@@ -368,7 +368,7 @@ export default {
       data-testid="design-toolbar-wrapper"
     >
       <div
-        class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-w-full gl-flex-wrap gl-gap-3"
+        class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-w-full gl-flex-wrap-wrap gl-gap-3"
       >
         <div class="gl-display-flex gl-align-items-center">
           <span class="gl-font-weight-bold gl-mr-3">{{ s__('DesignManagement|Designs') }}</span>

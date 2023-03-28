@@ -97,7 +97,7 @@ export default {
       </blob-filepath>
     </div>
 
-    <div class="gl-display-flex gl-flex-wrap file-actions">
+    <div class="gl-display-flex gl-flex-wrap-wrap file-actions">
       <viewer-switcher v-if="showViewerSwitcher" v-model="viewer" :doc-icon="blobSwitcherDocIcon" />
 
       <slot name="actions"></slot>

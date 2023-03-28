@@ -2919,6 +2919,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: ml_experiment_tracking_associate_ml_candidate_to_package
+  :worker_name: Ml::ExperimentTracking::AssociateMlCandidateToPackageWorker
+  :feature_category: :mlops
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: namespaces_process_sync_events
   :worker_name: Namespaces::ProcessSyncEventsWorker
   :feature_category: :pods

@@ -30,7 +30,7 @@ export default {
   <gl-tabs content-class="gl-display-none">
     <gl-tab title-link-class="gl-py-4 gl-px-3" :title="__('Write')" />
     <template #tabs-end>
-      <div class="gl-ml-auto gl-py-2 gl-display-flex gl-flex-wrap gl-align-items-end">
+      <div class="gl-ml-auto gl-py-2 gl-display-flex gl-flex-wrap-wrap gl-align-items-end">
         <toolbar-text-style-dropdown
           data-testid="text-styles"
           @execute="trackToolbarControlExecution"

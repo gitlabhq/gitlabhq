@@ -31,6 +31,8 @@ class Packages::Package < ApplicationRecord
   belongs_to :project
   belongs_to :creator, class_name: 'User'
 
+  after_create_commit :publish_creation_event, if: :generic?
+
   # package_files must be destroyed by ruby code in order to properly remove carrierwave uploads and update project statistics
   has_many :package_files, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   # TODO: put the installable default scope on the :package_files association once the dependent: :destroy is removed
@@ -351,6 +353,18 @@ class Packages::Package < ApplicationRecord
     ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
       update_column(:last_downloaded_at, Time.zone.now)
     end
+  end
+
+  def publish_creation_event
+    ::Gitlab::EventStore.publish(
+      ::Packages::PackageCreatedEvent.new(data: {
+        project_id: project_id,
+        id: id,
+        name: name,
+        version: version,
+        package_type: package_type
+      })
+    )
   end
 
   private

@@ -173,7 +173,9 @@ export default {
     </form>
 
     <template #modal-footer>
-      <div class="gl-display-flex gl-flex-direction-row gl-justify-content-end gl-flex-wrap gl-m-0">
+      <div
+        class="gl-display-flex gl-flex-direction-row gl-justify-content-end gl-flex-wrap-wrap gl-m-0"
+      >
         <gl-button data-testid="delete-branch-cancel-button" @click="closeModal">
           {{ $options.i18n.cancelButtonText }}
         </gl-button>

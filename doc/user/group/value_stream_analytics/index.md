@@ -210,30 +210,11 @@ The table shows a list of related workflow items for the selected stage. Based o
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210315) in GitLab 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323982) in GitLab 13.12.
 
-The **Overview** page in value stream analytics shows key metrics and DORA metrics of group performance. Based on the filter you select,
-the dashboard automatically aggregates DORA metrics and displays the current status of the value stream. Select a DORA metric to view its chart.
-
-Prerequisite:
-
-- To view deployment metrics, you must have a
-[production environment configured](#how-value-stream-analytics-identifies-the-production-environment).
-
-To view the DORA metrics and key metrics:
-
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Analytics > Value stream**.
-1. Optional. Filter the results:
-   1. Select the **Filter results** text box.
-   1. Select a parameter.
-   1. Select a value or enter text to refine the results.
-   1. To adjust the date range:
-      - In the **From** field, select a start date.
-      - In the **To** field, select an end date.
-Key metrics and DORA metrics display below the **Filter results** text box.
+The **Overview** page in value stream analytics dispays key metrics and DORA metrics of group performance.
 
 ### Key metrics
 
-The **Overview** page shows the following key metrics that measure team performance:
+Value stream analytics includes the following key metrics that measure team performance:
 
 - **Lead time**: Median time from when the issue was created to when it was closed.
 - **Cycle time**: Median time from first commit to issue closed. GitLab measures cycle time from the earliest commit of a
@@ -249,12 +230,12 @@ The **Overview** page shows the following key metrics that measure team performa
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355304) time to restore service tile in GitLab 15.0.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357071) change failure rate tile in GitLab 15.0.
 
-The value stream analytics **Overview** dashboard displays the following [DORA](../../../user/analytics/dora_metrics.md) metrics:
+Value stream analytics includes the following [DORA](../../../user/analytics/dora_metrics.md) metrics:
 
-- Deployment Frequency.
-- Lead time for changes.
-- Time to restore service.
-- Change failure rate.
+- Deployment frequency
+- Lead time for changes
+- Time to restore service
+- Change failure rate
 
 DORA metrics are calculated based on data from the
 [DORA API](../../../api/dora/metrics.md#devops-research-and-assessment-dora-key-metrics-api).
@@ -262,6 +243,28 @@ DORA metrics are calculated based on data from the
 NOTE:
 In GitLab 13.9 and later, deployment frequency metrics are calculated based on when the deployment was finished.
 In GitLab 13.8 and earlier, deployment frequency metrics are calculated based on when the deployment was created.
+
+## View key and DORA metrics
+
+Prerequisite:
+
+- To view deployment metrics, you must have a
+[production environment configured](#how-value-stream-analytics-identifies-the-production-environment).
+
+To view the DORA metrics and key metrics:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Analytics > Value stream**.
+   Key metrics and DORA metrics display below the **Filter results** text box.
+1. Optional. Filter the results:
+   1. Select the **Filter results** text box.
+      Based on the filter you select, the dashboard automatically aggregates DORA metrics and displays the status of the value stream.
+   1. Select a parameter.
+   1. Select a value or enter text to refine the results.
+   1. To adjust the date range:
+      - In the **From** field, select a start date.
+      - In the **To** field, select an end date.
+1. Select a DORA metric to view its chart.
 
 ## View metrics for each development stage
 
@@ -286,6 +289,23 @@ To view the median time spent in each stage by a group:
 NOTE:
 The date range selector filters items by the event time. The event time is when the
 selected stage finished for the given item.
+
+## View tasks by type
+
+The **Tasks by type** chart displays the cumulative number of issues and merge requests per day for your group.
+
+The chart uses the global page filters to display data based on the selected
+group, projects, and time frame.
+
+To view tasks by type:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Analytics > Value stream**.
+1. Below the **Filter results** text box, select **Overview**. The **Tasks by type** chart displays below the **Total time** chart.
+1. To switch between the task type, select the **Settings** (**{settings}**) dropdown list
+   and select **Issues** or **Merge Requests**.
+1. To add or remove labels, select the **Settings** (**{settings}**) dropdown list
+   and select or search for a label. By default the top group-level labels (maximum 10) are selected. You can select a maximum of 15 labels.
 
 ## Create a value stream
 
@@ -401,23 +421,6 @@ The chart shows data for the last 500 workflow items.
    1. To adjust the date range:
       - In the **From** field, select a start date.
       - In the **To** field, select an end date.
-
-## View tasks by type
-
-The **Tasks by type** chart displays the cumulative number of issues and merge requests per day for your group.
-
-The chart uses the global page filters to display data based on the selected
-group, projects, and time frame.
-
-To view tasks by type:
-
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Analytics > Value stream**.
-1. Below the **Filter results** text box, select **Overview**. The **Tasks by type** chart displays below the **Total time** chart.
-1. To switch between the task type, select the **Settings** (**{settings}**) dropdown list
-   and select **Issues** or **Merge Requests**.
-1. To add or remove labels, select the **Settings** (**{settings}**) dropdown list
-   and select or search for a label. By default the top group-level labels (maximum 10) are selected. You can select a maximum of 15 labels.
 
 ## Troubleshooting
 

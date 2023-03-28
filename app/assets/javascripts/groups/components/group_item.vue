@@ -190,7 +190,7 @@ export default {
       <div class="group-text-container d-flex flex-fill align-items-center">
         <div class="group-text flex-grow-1 flex-shrink-1">
           <div
-            class="gl-display-flex gl-align-items-center gl-flex-wrap title namespace-title gl-font-weight-bold gl-mr-3"
+            class="gl-display-flex gl-align-items-center gl-flex-wrap-wrap title namespace-title gl-font-weight-bold gl-mr-3"
           >
             <a
               v-gl-tooltip.bottom
@@ -259,7 +259,7 @@ export default {
           <gl-badge variant="warning">{{ __('pending deletion') }}</gl-badge>
         </div>
         <div
-          class="metadata gl-display-flex gl-flex-grow-1 gl-flex-shrink-0 gl-flex-wrap justify-content-md-between"
+          class="metadata gl-display-flex gl-flex-grow-1 gl-flex-shrink-0 gl-flex-wrap-wrap justify-content-md-between"
         >
           <item-stats
             :item="group"

@@ -15,6 +15,7 @@ module Ml
 
     belongs_to :experiment, class_name: 'Ml::Experiment'
     belongs_to :user
+    belongs_to :package, class_name: 'Packages::Package'
     has_many :metrics, class_name: 'Ml::CandidateMetric'
     has_many :params, class_name: 'Ml::CandidateParam'
     has_many :metadata, class_name: 'Ml::CandidateMetadata'
@@ -22,7 +23,7 @@ module Ml
 
     attribute :eid, default: -> { SecureRandom.uuid }
 
-    scope :including_relationships, -> { includes(:latest_metrics, :params, :user) }
+    scope :including_relationships, -> { includes(:latest_metrics, :params, :user, :package) }
     scope :by_name, ->(name) { where("ml_candidates.name LIKE ?", "%#{sanitize_sql_like(name)}%") } # rubocop:disable GitlabSecurity/SqlInjection
     scope :order_by_metric, ->(metric, direction) do
       subquery = Ml::CandidateMetric.latest.where(name: metric)
@@ -50,26 +51,13 @@ module Ml
 
     delegate :project_id, :project, to: :experiment
 
+    alias_attribute :artifact, :package
+
     # Remove alias after https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115401
     alias_attribute :iid, :eid
 
     def artifact_root
       "/#{package_name}/#{package_version}/"
-    end
-
-    def artifact
-      artifact_lazy&.itself
-    end
-
-    def artifact_lazy
-      BatchLoader.for(id).batch do |candidate_ids, loader|
-        Packages::Package
-          .joins("INNER JOIN ml_candidates ON packages_packages.name=(concat('#{PACKAGE_PREFIX}', ml_candidates.id))")
-          .where(ml_candidates: { id: candidate_ids })
-          .find_each do |package|
-            loader.call(package.name.delete_prefix(PACKAGE_PREFIX).to_i, package)
-          end
-      end
     end
 
     def package_name
@@ -85,6 +73,26 @@ module Ml
         return unless project_id.present? && iid.present?
 
         joins(:experiment).find_by(experiment: { project_id: project_id }, eid: iid)
+      end
+
+      def candidate_id_for_package(package_name)
+        return unless package_name.starts_with?(PACKAGE_PREFIX)
+
+        id = package_name.delete_prefix(PACKAGE_PREFIX)
+
+        return unless numeric?(id)
+
+        id.to_i
+      end
+
+      def find_from_package_name(package_name)
+        find_by_id(candidate_id_for_package(package_name))
+      end
+
+      private
+
+      def numeric?(value)
+        value.match?(/\A\d+\z/)
       end
     end
   end

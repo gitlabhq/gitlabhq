@@ -18,7 +18,7 @@ exports[`Blob Header Default Actions rendering matches the snapshot 1`] = `
   </div>
    
   <div
-    class="gl-display-flex gl-flex-wrap file-actions"
+    class="gl-display-flex gl-flex-wrap-wrap file-actions"
   >
     <viewer-switcher-stub
       docicon="document"

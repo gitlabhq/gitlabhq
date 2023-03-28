@@ -419,7 +419,6 @@ export default {
             v-if="loadingMore"
             size="sm"
             :label="$options.i18n.loadingMoreboardItems"
-            data-testid="count-loading-icon"
           />
           <span v-if="showingAllItems">{{ showingAllItemsText }}</span>
           <span v-else>{{ paginatedIssueText }}</span>

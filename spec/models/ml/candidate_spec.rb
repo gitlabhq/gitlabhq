@@ -3,16 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops do
-  let_it_be(:candidate) { create(:ml_candidates, :with_metrics_and_params, name: 'candidate0') }
+  let_it_be(:candidate) { create(:ml_candidates, :with_metrics_and_params, :with_artifact, name: 'candidate0') }
   let_it_be(:candidate2) do
     create(:ml_candidates, experiment: candidate.experiment, user: create(:user), name: 'candidate2')
-  end
-
-  let_it_be(:candidate_artifact) do
-    FactoryBot.create(:generic_package,
-                      name: candidate.package_name,
-                      version: candidate.package_version,
-                      project: candidate.project)
   end
 
   let(:project) { candidate.experiment.project }
@@ -20,6 +13,7 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
   describe 'associations' do
     it { is_expected.to belong_to(:experiment) }
     it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:package) }
     it { is_expected.to have_many(:params) }
     it { is_expected.to have_many(:metrics) }
     it { is_expected.to have_many(:metadata) }
@@ -64,10 +58,6 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
 
     subject { tested_candidate.artifact }
 
-    before do
-      candidate_artifact
-    end
-
     context 'when has logged artifacts' do
       it 'returns the package' do
         expect(subject.name).to eq(tested_candidate.package_name)
@@ -78,24 +68,6 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
       let(:tested_candidate) { candidate2 }
 
       it { is_expected.to be_nil }
-    end
-  end
-
-  describe '.artifact_lazy' do
-    context 'when candidates have same the same iid' do
-      before do
-        BatchLoader::Executor.clear_current
-      end
-
-      it 'loads the correct artifacts', :aggregate_failures do
-        candidate.artifact_lazy
-        candidate2.artifact_lazy
-
-        expect(Packages::Package).to receive(:joins).once.and_call_original # Only one database call
-
-        expect(candidate.artifact.name).to eq(candidate.package_name)
-        expect(candidate2.artifact).to be_nil
-      end
     end
   end
 
@@ -193,6 +165,47 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
       it 'orders correctly' do
         expect(subject).to eq([candidate, candidate2])
       end
+    end
+  end
+
+  describe '#candidate_id_for_package' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { described_class.candidate_id_for_package(package_name) }
+
+    where(:package_name, :id) do
+      'ml_candidate_1234' | 1234
+      'ml_candidate_1234abc' | nil
+      'ml_candidate_abc' | nil
+      'ml_candidate_' | nil
+      'blah' | nil
+      '1234' | nil
+    end
+
+    with_them do
+      it { is_expected.to be(id) }
+    end
+  end
+
+  describe '#find_from_package_name' do
+    let(:package_name) { candidate.package_name }
+
+    subject { described_class.find_from_package_name(package_name) }
+
+    context 'when package_name is ml_candidates_{id} and the candidate exists' do
+      it { is_expected.to eq(candidate) }
+    end
+
+    context 'when package_name is ml_candidates_{id} and candidate does not exist' do
+      let(:package_name) { "ml_candidate_#{non_existing_record_id}" }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when package_name is not in the format ml_candidates_{id}' do
+      let(:package_name) { "ml_candidate#{candidate.id}" }
+
+      it { is_expected.to be_nil }
     end
   end
 end
