@@ -1107,19 +1107,37 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
     end
 
     context 'updating asssignee_id' do
+      it 'changes assignee' do
+        expect_next_instance_of(NotificationService::Async) do |service|
+          expect(service).to receive(:reassigned_issue).with(issue, user, [user3])
+        end
+
+        update_issue(assignee_ids: [user2.id])
+
+        expect(issue.reload.assignees).to eq([user2])
+      end
+
       it 'does not update assignee when assignee_id is invalid' do
+        expect(NotificationService).not_to receive(:new)
+
         update_issue(assignee_ids: [-1])
 
         expect(issue.reload.assignees).to eq([user3])
       end
 
       it 'unassigns assignee when user id is 0' do
+        expect_next_instance_of(NotificationService::Async) do |service|
+          expect(service).to receive(:reassigned_issue).with(issue, user, [user3])
+        end
+
         update_issue(assignee_ids: [0])
 
         expect(issue.reload.assignees).to be_empty
       end
 
       it 'does not update assignee_id when user cannot read issue' do
+        expect(NotificationService).not_to receive(:new)
+
         update_issue(assignee_ids: [create(:user).id])
 
         expect(issue.reload.assignees).to eq([user3])
@@ -1130,6 +1148,8 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
 
         levels.each do |level|
           it "does not update with unauthorized assignee when project is #{Gitlab::VisibilityLevel.level_name(level)}" do
+            expect(NotificationService).not_to receive(:new)
+
             assignee = create(:user)
             project.update!(visibility_level: level)
             feature_visibility_attr = :"#{issue.model_name.plural}_access_level"

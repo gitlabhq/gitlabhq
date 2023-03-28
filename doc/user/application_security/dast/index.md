@@ -15,6 +15,9 @@ visible from the source code.
 Dynamic Application Security Testing (DAST) examines applications for
 vulnerabilities like these in deployed environments.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Dynamic Application Security Testing (DAST)](https://www.youtube.com/watch?v=nbeDUoLZJTo).
+
 NOTE:
 To learn how four of the top six attacks were application-based and how
 to protect your organization, download our

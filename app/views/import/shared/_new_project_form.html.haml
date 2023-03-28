@@ -4,7 +4,7 @@
     = text_field_tag :name, @name, placeholder: "My awesome project", class: "js-project-name form-control gl-form-input input-lg", autofocus: true, required: true, aria: { required: true }, data: { qa_selector: 'project_name_field' }
   .form-group.col-12.col-sm-6.gl-pr-0
     = label_tag :namespace_id, _('Project URL'), class: 'label-bold'
-    .input-group.gl-flex-nowrap
+    .input-group.gl-flex-wrap-nowrap
       - if current_user.can_select_namespace?
         - namespace_id = namespace_id_from(params)
         .js-vue-new-project-url-select{ data: { namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id)&.full_path || current_user.namespace.full_path,

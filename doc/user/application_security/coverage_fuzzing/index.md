@@ -15,6 +15,9 @@ We recommend that you use fuzz testing in addition to the other security scanner
 and your own test processes. If you're using [GitLab CI/CD](../../../ci/index.md),
 you can run your coverage-guided fuzz testing as part your CI/CD workflow.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Coverage Fuzzing](https://www.youtube.com/watch?v=bbIenVVcjW0).
+
 ## Coverage-guided fuzz testing process
 
 The fuzz testing process:

@@ -82,7 +82,7 @@ export default {
         <status-icon :icon-name="data.icon.name" :size="12" class="gl-m-auto" />
       </div>
       <div class="gl-w-full">
-        <div class="gl-display-flex gl-flex-nowrap">
+        <div class="gl-display-flex gl-flex-wrap-nowrap">
           <div class="gl-flex-wrap gl-display-flex gl-w-full">
             <div class="gl-display-flex gl-align-items-center">
               <p v-safe-html="generateText(data.text)" class="gl-m-0"></p>

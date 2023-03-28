@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: ongoing
 creation-date: "2022-11-25"
 authors: [ "@theoretick" ]
 coach: "@DylanGriffith"
@@ -123,6 +123,23 @@ Given our existing familiarity with the tool and its extensibility, it should
 remain our engine of choice. Changes to the detection engine are out of scope
 unless benchmarking unveils performance concerns.
 
+Notable alternatives include high-performance regex engines such as [hyperscan](https://github.com/intel/hyperscan) or it's portable fork [vectorscan](https://github.com/VectorCamp/vectorscan).
+
+### High-level architecture
+
+The implementation of the secret scanning service is highly dependent on the outcomes of our benchmarking
+and capacity planning against both GitLab.com and our
+[Reference Architectures](../../../administration/reference_architectures/index.md).
+As the scanning capability must be an on-by-default component of both our SaaS and self-managed
+instances [the PoC](#iterations), the deployment characteristics must be considered to determine whether
+this is a standalone component or executed as a subprocess of the existing Sidekiq worker fleet
+(similar to the implementation of our Elasticsearch indexing service).
+
+Similarly, the scan target volume will require a robust and scalable enqueueing system to limit resource consumption.
+
+See [this thread](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105142#note_1194863310)
+for past discussion around scaling approaches.
+
 ### Push event detection flow
 
 ```mermaid
@@ -151,17 +168,20 @@ sequenceDiagram
 
 ## Iterations
 
-1. Requirements definition for detection coverage and actions
-1. PoC of secret scanning service
-    1. gRPC commit retrieval from Gitaly
-    1. blob scanning
-    1. benchmarking of issuables, comments, job logs and blobs to gain confidence that the total costs will be viable
-1. Implementation of secret scanning service MVC (targeting individual commits)
-1. Security and readiness review
-1. Deployment and monitoring
-1. Implementation of secret scanning service MVC (targeting arbitrary text blobs)
-1. Deployment and monitoring
-1. High priority domain object rollout (priority `TBD`)
-    1. Issuable comments
-    1. Issuable bodies
-    1. Job logs
+- [x] Define [requirements for detection coverage and actions](https://gitlab.com/gitlab-org/gitlab/-/issues/376716)
+- [x] Implement [Clientside detection of GitLab tokens within comments/issues](https://gitlab.com/gitlab-org/gitlab/-/issues/368434)
+- [ ] PoC of secret scanning service
+      - [ ] Benchmarking of issuables, comments, job logs and blobs to gain confidence that the total costs will be viable
+      - [ ] Capacity planning for addition of service component to Reference Architectures headroom
+      - [ ] Service capabilities
+          - [ ] gRPC commit retrieval from Gitaly
+          - [ ] blob scanning
+- [ ] Implementation of secret scanning service MVC (targeting individual commits)
+- [ ] Security and readiness review
+- [ ] Deployment and monitoring
+- [ ] Implementation of secret scanning service MVC (targeting arbitrary text blobs)
+- [ ] Deployment and monitoring
+- [ ] High priority domain object rollout (priority `TBD`)
+      - [ ] Issuable comments
+      - [ ] Issuable bodies
+      - [ ] Job logs

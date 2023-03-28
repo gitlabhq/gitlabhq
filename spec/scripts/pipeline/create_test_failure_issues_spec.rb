@@ -102,7 +102,7 @@ RSpec.describe CreateTestFailureIssues, feature_category: :tooling do
 
           ### Test file path
 
-          [`#{failed_test['file']}`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/#{failed_test['file']})
+          [`#{failed_test['file']}`](https://gitlab.com/example/gitlab/-/blob/master/#{failed_test['file']})
 
           <!-- Don't add anything after the report list since it's updated automatically -->
           ### Reports (1)
@@ -131,8 +131,11 @@ RSpec.describe CreateTestFailureIssues, feature_category: :tooling do
         end
 
         it 'calls CreateIssue#execute(payload)' do
+          stub_const("#{described_class}::FILE_BASE_URL", 'https://gitlab.com/example/gitlab/-/blob/master/')
+
           expect(CreateIssue).to receive(:new).with(project: project, api_token: api_token)
             .and_return(create_issue_stub)
+
           expect(create_issue_stub).to receive(:execute).with(expected_create_payload).and_return(issue_stub)
 
           creator.upsert(failed_test)
@@ -152,7 +155,7 @@ RSpec.describe CreateTestFailureIssues, feature_category: :tooling do
 
           ### Test file path
 
-          [`#{failed_test['file']}`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/#{failed_test['file']})
+          [`#{failed_test['file']}`](https://gitlab.com/example/gitlab/-/blob/master/#{failed_test['file']})
 
           <!-- Don't add anything after the report list since it's updated automatically -->
           ### Reports (1)
@@ -165,7 +168,9 @@ RSpec.describe CreateTestFailureIssues, feature_category: :tooling do
           double('Issue', iid: 42, title: issue_title, description: issue_description, web_url: 'issue_web_url')
         end
 
-        let(:update_issue_stub) { double('UpdateIssue') }
+        let(:update_issue_stub) do
+          double('UpdateIssue', description: latest_format_issue_description)
+        end
 
         let(:expected_update_payload) do
           {

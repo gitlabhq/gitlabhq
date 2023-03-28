@@ -272,7 +272,7 @@ export default {
 </script>
 
 <template>
-  <div class="form-row gl-mb-5 work-item-labels gl-relative gl-flex-nowrap">
+  <div class="form-row gl-mb-5 work-item-labels gl-relative gl-flex-wrap-nowrap">
     <span
       :id="labelsTitleId"
       class="gl-font-weight-bold gl-mt-2 col-lg-2 col-3 gl-pt-2 min-w-fit-content gl-overflow-wrap-break"

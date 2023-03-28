@@ -302,7 +302,7 @@ export default {
 
     <div :class="newSubgroup && 'row gl-mb-3'">
       <gl-form-group v-if="newSubgroup" class="col-sm-6 gl-pr-0" :label="inputLabels.subgroupPath">
-        <div class="input-group gl-flex-nowrap">
+        <div class="input-group gl-flex-wrap-nowrap">
           <gl-button-group class="gl-w-full">
             <gl-button class="js-group-namespace-button gl-text-truncate gl-flex-grow-0!" label>
               {{ basePath }}

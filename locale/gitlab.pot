@@ -3822,9 +3822,6 @@ msgstr ""
 msgid "AlertManagement|Metrics"
 msgstr ""
 
-msgid "AlertManagement|Metrics weren't available in the alerts payload."
-msgstr ""
-
 msgid "AlertManagement|More information"
 msgstr ""
 
@@ -25468,6 +25465,9 @@ msgstr ""
 msgid "Learn more."
 msgstr ""
 
+msgid "Learn more: %{url}"
+msgstr ""
+
 msgid "LearnGitLab|%{percentage}%{percentSymbol} completed"
 msgstr ""
 
@@ -28369,19 +28369,10 @@ msgstr ""
 msgid "NamespaceStorageSize|push to your repository, create pipelines, create issues or add comments. To reduce storage capacity, delete unused repositories, artifacts, wikis, issues, and pipelines."
 msgstr ""
 
-msgid "NamespaceStorage|%{name_with_link} namespace has approximately %{percent} (%{size}) namespace storage space remaining."
+msgid "NamespaceStorage|%{name_with_link} is now read-only. Projects under this namespace are locked and actions are restricted."
 msgstr ""
 
-msgid "NamespaceStorage|%{name_with_link} namespace has exceeded its namespace storage limit."
-msgstr ""
-
-msgid "NamespaceStorage|%{name}(%{url}) namespace has approximately %{percent} (%{size}) namespace storage space remaining."
-msgstr ""
-
-msgid "NamespaceStorage|%{name}(%{url}) namespace has exceeded its namespace storage limit."
-msgstr ""
-
-msgid "NamespaceStorage|Action required: Approximately %{percentage_of_available_storage}%% of namespace storage remains for %{namespace_name}"
+msgid "NamespaceStorage|%{name} is now read-only. Projects under this namespace are locked and actions are restricted."
 msgstr ""
 
 msgid "NamespaceStorage|Action required: Storage has been exceeded for %{namespace_name}"
@@ -28390,10 +28381,37 @@ msgstr ""
 msgid "NamespaceStorage|Buy more storage"
 msgstr ""
 
-msgid "NamespaceStorage|We recommend that you buy additional storage to ensure your service is not interrupted."
+msgid "NamespaceStorage|If %{name_with_link} exceeds the storage quota, all projects in the namespace will be locked and actions will be restricted."
 msgstr ""
 
-msgid "NamespaceStorage|We recommend that you buy additional storage to resume normal service."
+msgid "NamespaceStorage|If %{name} exceeds the storage quota, all projects in the namespace will be locked and actions will be restricted."
+msgstr ""
+
+msgid "NamespaceStorage|Learn about which actions are restricted: %{url}"
+msgstr ""
+
+msgid "NamespaceStorage|Learn about which actions become restricted: %{url}"
+msgstr ""
+
+msgid "NamespaceStorage|Manage your storage usage or purchase additional storage."
+msgstr ""
+
+msgid "NamespaceStorage|See storage usage statistics: %{url}"
+msgstr ""
+
+msgid "NamespaceStorage|Which actions are restricted?"
+msgstr ""
+
+msgid "NamespaceStorage|Which actions become restricted?"
+msgstr ""
+
+msgid "NamespaceStorage|You have used %{used_storage_percentage} of the storage quota for %{name_with_link} (%{current_size} of %{limit})."
+msgstr ""
+
+msgid "NamespaceStorage|You have used %{used_storage_percentage} of the storage quota for %{name} (%{current_size} of %{limit})."
+msgstr ""
+
+msgid "NamespaceStorage|You have used %{used_storage_percentage}%% of the storage quota for %{namespace_name}"
 msgstr ""
 
 msgid "NamespaceUserCap|Pending users must be reviewed and approved by a group owner. Learn more about %{user_caps_link_start}user caps%{link_end} and %{users_pending_approval_link_start}users pending approval%{link_end}."

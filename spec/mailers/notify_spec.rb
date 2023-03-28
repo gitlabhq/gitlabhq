@@ -151,9 +151,27 @@ RSpec.describe Notify do
         it 'has the correct subject and body' do
           aggregate_failures do
             is_expected.to have_referable_subject(issue, reply: true)
-            is_expected.to have_body_text(previous_assignee.name)
-            is_expected.to have_body_text(assignee.name)
-            is_expected.to have_body_text(project_issue_path(project, issue))
+            is_expected.to have_body_text("Assignee changed from <strong>#{previous_assignee.name}</strong> to <strong>#{assignee.name}</strong>")
+            is_expected.to have_body_text(%(<a href="#{project_issue_url(project, issue)}">view it on GitLab</a>))
+            is_expected.to have_body_text("You're receiving this email because of your account")
+          end
+        end
+
+        context 'without new assignee' do
+          before do
+            issue.update!(assignees: [])
+          end
+
+          it 'uses "Unassigned" placeholder' do
+            is_expected.to have_body_text("Assignee changed from <strong>#{previous_assignee.name}</strong> to <strong>Unassigned</strong>")
+          end
+        end
+
+        context 'without previous assignees' do
+          subject { described_class.reassigned_issue_email(recipient.id, issue.id, [], current_user.id) }
+
+          it 'uses short text' do
+            is_expected.to have_body_text("Assignee changed to <strong>#{assignee.name}</strong>")
           end
         end
 

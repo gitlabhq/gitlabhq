@@ -350,5 +350,17 @@ a minimum of the Guest role in the specified Dependency Proxy group:
 ```plaintext
 ERROR: gitlab.example.com:443/group1/dependency_proxy/containers/alpine:latest: not found
 
-failed to solve with frontend dockerfile.v0: failed to create LLB definition: gitlab.example.com:443/group1/dependency_proxy/containers/alpine:latest: not found
+failed to solve with frontend dockerfile.v0: failed to create LLB definition: 
+gitlab.example.com:443/group1/dependency_proxy/containers/alpine:latest: not found
 ```
+
+```plaintext
+ERROR: Job failed: failed to pull image
+"gitlab.example.com:443/group1/dependency_proxy/containers/alpine:latest" with specified policies [always]:
+Error response from daemon: error parsing HTTP 404 response body:
+unexpected end of JSON input: "" (manager.go:237:1s)
+```
+
+NOTE:
+The work to correctly display `Access denied` errors in such cases is being tracked in the following issue:
+[Dependency proxy error reporting confusing - "404/not found" should be "access denied" when not group member](https://gitlab.com/gitlab-org/gitlab/-/issues/354826).

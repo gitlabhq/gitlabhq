@@ -3,14 +3,17 @@ stage: Manage
 group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
+<!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
 
-# Slack notifications **(FREE)**
+# Slack notifications (deprecated) **(FREE)**
 
 WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/372411) on GitLab.com
-in GitLab 15.9 and is [planned for removal](https://gitlab.com/groups/gitlab-org/-/epics/8673).
-For GitLab.com, use the [GitLab for Slack app](gitlab_slack_application.md) instead.
-For self-managed GitLab instances, you can continue to use this feature.
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/372411) in GitLab 15.9
+and is planned for removal in 17.0. Use the [GitLab for Slack app](gitlab_slack_application.md) instead.
+This change is a breaking change.
+
+For the planned support of the GitLab for Slack app for self-managed instances,
+see [epic 1211](https://gitlab.com/groups/gitlab-org/-/epics/1211).
 
 The Slack notifications integration enables your GitLab project to send events
 (such as issue creation) to your existing Slack team as notifications. Setting up
@@ -150,3 +153,5 @@ p.each do |project|
   project.slack_integration.update!(:active, false)
 end
 ```
+
+<!--- end_remove -->
