@@ -1,6 +1,7 @@
 <script>
 import { kebabCase } from 'lodash';
 import { GlCollapse, GlIcon, GlBadge } from '@gitlab/ui';
+import { CLICK_MENU_ITEM_ACTION, TRACKING_UNKNOWN_ID } from '~/super_sidebar/constants';
 
 export default {
   name: 'NavItem',
@@ -53,6 +54,19 @@ export default {
       }
       return this.item.is_active;
     },
+    trackingProps() {
+      if (!this.item.id) {
+        return {
+          'data-track-label': TRACKING_UNKNOWN_ID,
+          'data-track-extra': JSON.stringify({
+            title: this.item.title,
+          }),
+        };
+      }
+      return {
+        'data-track-label': this.item.id,
+      };
+    },
     linkProps() {
       if (this.isSection) {
         return {
@@ -62,6 +76,8 @@ export default {
       }
       return {
         ...this.$attrs,
+        'data-track-action': CLICK_MENU_ITEM_ACTION,
+        ...this.trackingProps,
         href: this.item.link,
         'aria-current': this.isActive ? 'page' : null,
       };

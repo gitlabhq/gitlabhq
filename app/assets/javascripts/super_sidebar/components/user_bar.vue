@@ -64,7 +64,7 @@ export default {
 
 <template>
   <div class="user-bar">
-    <div class="gl-display-flex gl-align-items-center gl-px-3 gl-py-2 gl-gap-2">
+    <div class="gl-display-flex gl-align-items-center gl-px-3 gl-py-2">
       <a
         v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.homepage"
         :href="rootPath"
@@ -83,6 +83,7 @@ export default {
         variant="success"
         :href="sidebarData.canary_toggle_com_url"
         size="sm"
+        class="gl-ml-2"
         >{{ $options.NEXT_LABEL }}</gl-badge
       >
       <div class="gl-flex-grow-1"></div>

@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Config::Loader::MultiDocYaml, feature_category: :pipeline_composition do
-  let(:loader) { described_class.new(yml, max_documents: 2) }
+  let(:loader) { described_class.new(yml, max_documents: 2, reject_empty: reject_empty) }
+  let(:reject_empty) { false }
 
   describe '#load!' do
     context 'when a simple single delimiter is being used' do
@@ -139,6 +140,27 @@ RSpec.describe Gitlab::Config::Loader::MultiDocYaml, feature_category: :pipeline
 
       it 'stops splitting documents after the maximum number' do
         expect(loader.load!).to contain_exactly({ a: 1 }, { b: 2 })
+      end
+    end
+
+    context 'when the YAML contains empty documents' do
+      let(:yml) do
+        <<~YAML
+        a: 1
+        ---
+        YAML
+      end
+
+      it 'raises an error' do
+        expect { loader.load! }.to raise_error(::Gitlab::Config::Loader::Yaml::NotHashError)
+      end
+
+      context 'when reject_empty: true' do
+        let(:reject_empty) { true }
+
+        it 'loads only non empty documents' do
+          expect(loader.load!).to contain_exactly({ a: 1 })
+        end
       end
     end
   end

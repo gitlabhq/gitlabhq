@@ -83,7 +83,7 @@ export default {
       </div>
       <div class="gl-w-full">
         <div class="gl-display-flex gl-flex-wrap-nowrap">
-          <div class="gl-flex-wrap gl-display-flex gl-w-full">
+          <div class="gl-flex-wrap-wrap gl-display-flex gl-w-full">
             <div class="gl-display-flex gl-align-items-center">
               <p v-safe-html="generateText(data.text)" class="gl-m-0"></p>
             </div>

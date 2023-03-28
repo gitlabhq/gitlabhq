@@ -43,11 +43,13 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
       let_it_be(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
 
       let_it_be_with_refind(:processable) do
-        create(:ci_build, :failed, :picked, :expired, :erased, :queued, :coverage, :tags,
-              :allowed_to_fail, :on_tag, :triggered, :teardown_environment, :resource_group,
-              description: 'my-job', stage: 'test', stage_id: stage.id,
-              pipeline: pipeline, auto_canceled_by: another_pipeline,
-              scheduled_at: 10.seconds.since)
+        create(
+          :ci_build, :failed, :picked, :expired, :erased, :queued, :coverage, :tags,
+          :allowed_to_fail, :on_tag, :triggered, :teardown_environment, :resource_group,
+          description: 'my-job', stage: 'test', stage_id: stage.id,
+          pipeline: pipeline, auto_canceled_by: another_pipeline,
+          scheduled_at: 10.seconds.since
+        )
       end
 
       let_it_be(:internal_job_variable) { create(:ci_job_variable, job: processable) }
@@ -95,8 +97,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
       before_all do
         # Create artifacts to check that the associations are rejected when cloning
         Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS.each do |file_type, file_format|
-          create(:ci_job_artifact, file_format,
-                file_type: file_type, job: processable, expire_at: processable.artifacts_expire_at)
+          create(:ci_job_artifact, file_format, file_type: file_type, job: processable, expire_at: processable.artifacts_expire_at)
         end
 
         create(:ci_job_variable, :dotenv_source, job: processable)
@@ -193,8 +194,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
 
       context 'when it has a deployment' do
         let!(:processable) do
-          create(:ci_build, :with_deployment, :deploy_to_production,
-                  pipeline: pipeline, stage_id: stage.id, project: project)
+          create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline, stage_id: stage.id, project: project)
         end
 
         it 'persists the expanded environment name' do

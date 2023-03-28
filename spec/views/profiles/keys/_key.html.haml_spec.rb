@@ -12,10 +12,12 @@ RSpec.describe 'profiles/keys/_key.html.haml', feature_category: :system_access 
 
   context 'when the key partial is used' do
     let_it_be(:key) do
-      create(:personal_key,
-             user: user,
-             last_used_at: 7.days.ago,
-             expires_at: 2.days.from_now)
+      create(
+        :personal_key,
+        user: user,
+        last_used_at: 7.days.ago,
+        expires_at: 2.days.from_now
+      )
     end
 
     it 'displays the correct values', :aggregate_failures do
@@ -54,9 +56,7 @@ RSpec.describe 'profiles/keys/_key.html.haml', feature_category: :system_access 
 
       context 'when the key has not been used' do
         let_it_be(:key) do
-          create(:personal_key,
-                 user: user,
-                 last_used_at: nil)
+          create(:personal_key, user: user, last_used_at: nil)
         end
 
         it 'renders "Never" for last used' do
@@ -97,9 +97,7 @@ RSpec.describe 'profiles/keys/_key.html.haml', feature_category: :system_access 
 
     context 'when the key does not have an expiration date' do
       let_it_be(:key) do
-        create(:personal_key,
-               user: user,
-               expires_at: nil)
+        create(:personal_key, user: user, expires_at: nil)
       end
 
       it 'renders "Never" for expires' do

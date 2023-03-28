@@ -829,7 +829,7 @@ subdirectories of `binaries/`.
 
 **Related topics**:
 
-- [Exclude files from job artifacts](../pipelines/job_artifacts.md#exclude-files-from-job-artifacts).
+- [Exclude files from job artifacts](../pipelines/job_artifacts.md#without-excluded-files).
 
 #### `artifacts:expire_in`
 
@@ -842,9 +842,9 @@ subdirectories of `binaries/`.
 Use `expire_in` to specify how long [job artifacts](../pipelines/job_artifacts.md) are stored before
 they expire and are deleted. The `expire_in` setting does not affect:
 
-- Artifacts from the latest job, unless keeping the latest job artifacts is:
-  - [Disabled at the project level](../pipelines/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
-  - [Disabled instance-wide](../../user/admin_area/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
+- Artifacts from the latest job, unless keeping the latest job artifacts is disabled
+  [at the project level](../pipelines/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
+  or [instance-wide](../../user/admin_area/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
 - [Pipeline artifacts](../pipelines/pipeline_artifacts.md). You can't specify an expiration date for
   pipeline artifacts. See [When pipeline artifacts are deleted](../pipelines/pipeline_artifacts.md#when-pipeline-artifacts-are-deleted)
   for more information.
@@ -890,7 +890,7 @@ job:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15018) in GitLab 12.5.
 
 Use the `artifacts:expose_as` keyword to
-[expose job artifacts in the merge request UI](../pipelines/job_artifacts.md#expose-job-artifacts-in-the-merge-request-ui).
+[expose job artifacts in the merge request UI](../pipelines/job_artifacts.md#link-to-job-artifacts-in-the-merge-request-ui).
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -927,7 +927,7 @@ test:
 
 **Related topics**:
 
-- [Expose job artifacts in the merge request UI](../pipelines/job_artifacts.md#expose-job-artifacts-in-the-merge-request-ui).
+- [Expose job artifacts in the merge request UI](../pipelines/job_artifacts.md#link-to-job-artifacts-in-the-merge-request-ui).
 
 #### `artifacts:name`
 
@@ -958,7 +958,7 @@ job:
 
 **Related topics**:
 
-- [Use CI/CD variables to define the artifacts name](../pipelines/job_artifacts.md#use-cicd-variables-to-define-the-artifacts-name).
+- [Use CI/CD variables to define the artifacts name](../pipelines/job_artifacts.md#with-cicd-variables-to-define-the-artifacts-name).
 
 #### `artifacts:public`
 
@@ -1053,7 +1053,7 @@ job:
 
 **Related topics**:
 
-- [Add untracked files to artifacts](../pipelines/job_artifacts.md#add-untracked-files-to-artifacts).
+- [Add untracked files to artifacts](../pipelines/job_artifacts.md#with-untracked-files).
 
 #### `artifacts:when`
 
@@ -1626,7 +1626,7 @@ the [stage](#stages) precedence.
 
 - The job status does not matter. If a job fails or it's a manual job that isn't triggered, no error occurs.
 - If the artifacts of a dependent job are [expired](#artifactsexpire_in) or
-  [deleted](../pipelines/job_artifacts.md#delete-job-artifacts), then the job fails.
+  [deleted](../pipelines/job_artifacts.md#delete-job-log-and-artifacts), then the job fails.
 
 ### `environment`
 

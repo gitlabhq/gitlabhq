@@ -687,7 +687,7 @@ Remove **-ing** words whenever possible. They can be difficult to translate,
 and more precise terms are usually available. For example:
 
 - Instead of **The files using storage are deleted**, use **The files that use storage are deleted**.
-- Instead of **Delete files using the Edit button**, use **Delete files by using the Edit button**.
+- Instead of **Delete files using the Edit button**, use **Use the Edit button to delete files**.
 - Instead of **Replicating your server is required**, use **You must replicate your server**.
 
 ## issue

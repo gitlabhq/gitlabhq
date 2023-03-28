@@ -25,6 +25,61 @@ Branches are the foundation of development in a project:
 1. Preview changes in a branch with a [review app](../../../../ci/review_apps/index.md).
 1. After the contents of your branch are merged, [delete the merged branch](#delete-merged-branches).
 
+## Create branch
+
+To create a new branch from the GitLab UI:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Repository > Branches**.
+1. On the top right, select **New branch**.
+1. Enter a **Branch name**.
+1. In **Create from**, select the base of your branch: an existing branch, an existing
+   tag, or a commit SHA.
+1. Select **Create branch**.
+
+### In a blank project
+
+A [blank project](../../index.md#create-a-blank-project) does not contain a branch, but
+you can add one.
+
+Prerequisites:
+
+- You must have at least the Developer role in the project.
+- Unless you have the Maintainer or Owner roles, the
+  [default branch protection](../../../group/manage.md#change-the-default-branch-protection-of-a-group)
+  must be set to `Partially protected` or `Not protected` for you to push a commit
+  to the default branch.
+
+To add a [default branch](default.md) to an empty project:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. Scroll to **The repository for this project is empty** and select the type of
+   file you want to add.
+1. In the Web IDE, make any desired changes to this file, then select **Create commit**.
+1. Enter a commit message, and select **Commit**.
+
+GitLab creates a default branch and adds your file to it.
+
+### From an issue
+
+When viewing an issue, you can create an associated branch directly from that page.
+
+Prerequisites:
+
+- You must have the Developer or higher role in the project.
+
+To create a branch from an issue:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Issues** (**{issues}**) and find your issue.
+1. Below the issue description, find the **Create merge request** dropdown list, and select
+   **{chevron-down}** to display the dropdown list.
+1. Select **Create branch**. A default **Branch name** is provided, based on the
+   [default pattern](#configure-default-pattern-for-branch-names-from-issues) for
+   this project. If desired, enter a different **Branch name**.
+1. Select **Create branch** to create the branch based on your project's
+   [default branch](default.md).
+
 ## Manage and protect branches
 
 GitLab provides you multiple methods to protect individual branches. These methods
@@ -99,7 +154,35 @@ To view the **Branch rules overview** list:
         - [Approval rules](../../merge_requests/approvals/rules.md).
         - [Status checks](../../merge_requests/status_checks.md).
 
-## Prefix branch names with issue numbers
+## Name your branch
+
+If you follow GitLab standards for [naming branches](#prefix-branch-names-with-issue-numbers),
+and configure branch names that follow these standards, GitLab can streamline your workflow:
+
+- Connect a merge request to its parent issue.
+- Connect a branch to an issue.
+- [Close the issue](../../issues/managing_issues.md#closing-issues-automatically)
+  when the connected merge request closes, and the connected branch merges.
+
+### Configure default pattern for branch names from issues
+
+By default, GitLab uses the pattern `%{id}-%{title}` when creating a branch from
+an issue, but you can change this pattern.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+
+To change the default pattern for branches created from issues:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Repository** and expand **Branch defaults**.
+1. Scroll to **Branch name template** and enter a value. The field supports these variables:
+   - `%{id}`: The numeric ID of the issue.
+   - `%{title}`: The title of the issue, modified to use only characters acceptable in Git branch names.
+1. Select **Save changes**.
+
+### Prefix branch names with issue numbers
 
 To streamline the creation of merge requests, start your branch name with an
 issue number. GitLab uses the issue number to import data into the merge request:

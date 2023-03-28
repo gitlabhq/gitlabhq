@@ -78,14 +78,14 @@ export default {
     :title="testCase.classname"
     :action-primary="$options.modalCloseButton"
   >
-    <div class="gl-display-flex gl-flex-wrap gl-mx-n4 gl-my-3">
+    <div class="gl-display-flex gl-flex-wrap-wrap gl-mx-n4 gl-my-3">
       <strong class="gl-text-right col-sm-3">{{ $options.text.name }}</strong>
       <div class="col-sm-9" data-testid="test-case-name">
         {{ testCase.name }}
       </div>
     </div>
 
-    <div v-if="testCase.file" class="gl-display-flex gl-flex-wrap gl-mx-n4 gl-my-3">
+    <div v-if="testCase.file" class="gl-display-flex gl-flex-wrap-wrap gl-mx-n4 gl-my-3">
       <strong class="gl-text-right col-sm-3">{{ $options.text.file }}</strong>
       <div class="col-sm-9" data-testid="test-case-file">
         <gl-link v-if="testCase.filePath" :href="testCase.filePath">
@@ -102,7 +102,7 @@ export default {
       </div>
     </div>
 
-    <div class="gl-display-flex gl-flex-wrap gl-mx-n4 gl-my-3">
+    <div class="gl-display-flex gl-flex-wrap-wrap gl-mx-n4 gl-my-3">
       <strong class="gl-text-right col-sm-3">{{ $options.text.duration }}</strong>
       <div v-if="testCase.formattedTime" class="col-sm-9" data-testid="test-case-duration">
         {{ testCase.formattedTime }}
@@ -112,14 +112,14 @@ export default {
       </div>
     </div>
 
-    <div v-if="testCase.recent_failures" class="gl-display-flex gl-flex-wrap gl-mx-n4 gl-my-3">
+    <div v-if="testCase.recent_failures" class="gl-display-flex gl-flex-wrap-wrap gl-mx-n4 gl-my-3">
       <strong class="gl-text-right col-sm-3">{{ $options.text.history }}</strong>
       <div class="col-sm-9" data-testid="test-case-recent-failures">
         <gl-badge variant="warning">{{ failureHistoryMessage }}</gl-badge>
       </div>
     </div>
 
-    <div v-if="testCase.attachment_url" class="gl-display-flex gl-flex-wrap gl-mx-n4 gl-my-3">
+    <div v-if="testCase.attachment_url" class="gl-display-flex gl-flex-wrap-wrap gl-mx-n4 gl-my-3">
       <strong class="gl-text-right col-sm-3">{{ $options.text.attachment }}</strong>
       <gl-link
         class="col-sm-9"
@@ -133,7 +133,7 @@ export default {
 
     <div
       v-if="testCase.system_output"
-      class="gl-display-flex gl-flex-wrap gl-mx-n4 gl-my-3"
+      class="gl-display-flex gl-flex-wrap-wrap gl-mx-n4 gl-my-3"
       data-testid="test-case-trace"
     >
       <strong class="gl-text-right col-sm-3">{{ $options.text.trace }}</strong>

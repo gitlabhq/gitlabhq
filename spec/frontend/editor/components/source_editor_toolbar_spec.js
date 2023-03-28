@@ -104,19 +104,16 @@ describe('Source Editor Toolbar', () => {
         group: EDITOR_TOOLBAR_BUTTON_GROUPS.settings,
       });
       createComponentWithApollo([item1, item2, item3]);
-      jest.spyOn(wrapper.vm, '$emit');
-      expect(wrapper.vm.$emit).not.toHaveBeenCalled();
+      expect(wrapper.emitted('click')).toEqual(undefined);
 
       findButtons().at(0).vm.$emit('click');
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('click', item1);
+      expect(wrapper.emitted('click')).toEqual([[item1]]);
 
       findButtons().at(1).vm.$emit('click');
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('click', item2);
+      expect(wrapper.emitted('click')).toEqual([[item1], [item2]]);
 
       findButtons().at(2).vm.$emit('click');
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('click', item3);
-
-      expect(wrapper.vm.$emit.mock.calls).toHaveLength(3);
+      expect(wrapper.emitted('click')).toEqual([[item1], [item2], [item3]]);
     });
   });
 });

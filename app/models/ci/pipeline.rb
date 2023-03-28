@@ -52,15 +52,15 @@ module Ci
     belongs_to :ci_ref, class_name: 'Ci::Ref', foreign_key: :ci_ref_id, inverse_of: :pipelines
 
     has_internal_id :iid, scope: :project, presence: false,
-                          track_if: -> { !importing? },
-                          ensure_if: -> { !importing? },
-                          init: ->(pipeline, scope) do
-                                  if pipeline
-                                    pipeline.project&.all_pipelines&.maximum(:iid) || pipeline.project&.all_pipelines&.count
-                                  elsif scope
-                                    ::Ci::Pipeline.where(**scope).maximum(:iid)
-                                  end
-                                end
+      track_if: -> { !importing? },
+      ensure_if: -> { !importing? },
+      init: ->(pipeline, scope) do
+        if pipeline
+          pipeline.project&.all_pipelines&.maximum(:iid) || pipeline.project&.all_pipelines&.count
+        elsif scope
+          ::Ci::Pipeline.where(**scope).maximum(:iid)
+        end
+      end
 
     has_many :stages, -> { order(position: :asc) }, inverse_of: :pipeline
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
@@ -407,9 +407,11 @@ module Ci
     # In general, please use `Ci::PipelinesForMergeRequestFinder` instead,
     # for checking permission of the actor.
     scope :triggered_by_merge_request, -> (merge_request) do
-      where(source: :merge_request_event,
-            merge_request: merge_request,
-            project: [merge_request.source_project, merge_request.target_project])
+      where(
+        source: :merge_request_event,
+        merge_request: merge_request,
+        project: [merge_request.source_project, merge_request.target_project]
+      )
     end
 
     # Returns the pipelines in descending order (= newest first), optionally
@@ -843,8 +845,7 @@ module Ci
         when 'manual' then block
         when 'scheduled' then delay
         else
-          raise Ci::HasStatus::UnknownStatusError,
-                "Unknown status `#{new_status}`"
+          raise Ci::HasStatus::UnknownStatusError, "Unknown status `#{new_status}`"
         end
       end
     end

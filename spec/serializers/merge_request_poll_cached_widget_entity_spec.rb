@@ -49,8 +49,9 @@ RSpec.describe MergeRequestPollCachedWidgetEntity do
   describe 'diverged_commits_count' do
     context 'when MR open and its diverging' do
       it 'returns diverged commits count' do
-        allow(resource).to receive_messages(open?: true, diverged_from_target_branch?: true,
-                                            diverged_commits_count: 10)
+        allow(resource).to receive_messages(
+          open?: true, diverged_from_target_branch?: true, diverged_commits_count: 10
+        )
 
         expect(subject[:diverged_commits_count]).to eq(10)
       end

@@ -16,13 +16,17 @@ RSpec.describe IssueBoardEntity do
   subject { described_class.new(resource, request: request).as_json }
 
   it 'has basic attributes' do
-    expect(subject).to include(:id, :iid, :title, :confidential, :due_date, :project_id, :relative_position,
-                               :labels, :assignees, project: hash_including(:id, :path, :path_with_namespace))
+    expect(subject).to include(
+      :id, :iid, :title, :confidential, :due_date, :project_id, :relative_position,
+      :labels, :assignees, project: hash_including(:id, :path, :path_with_namespace)
+    )
   end
 
   it 'has path and endpoints' do
-    expect(subject).to include(:reference_path, :real_path, :issue_sidebar_endpoint,
-                               :toggle_subscription_endpoint, :assignable_labels_endpoint)
+    expect(subject).to include(
+      :reference_path, :real_path, :issue_sidebar_endpoint,
+      :toggle_subscription_endpoint, :assignable_labels_endpoint
+    )
   end
 
   it 'has milestone attributes' do

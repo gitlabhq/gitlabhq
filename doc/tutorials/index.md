@@ -16,7 +16,7 @@ and running quickly.
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Introduction to GitLab](https://youtu.be/_4SmIyQ5eis?t=90) (59m 51s) | Walk through recommended processes and example workflows for using GitLab. | **{star}** |
-| [GitLab 101](https://levelup.gitlab.com/learn/course/gitlab101)  |  Learn the basics of GitLab in this certification course. | **{star}** |
+| [GitLab with Git Essentials](https://levelup.gitlab.com/courses/gitlab-with-git-essentials)  |  Learn the basics of Git and GitLab in this self-paced course. | **{star}** |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Use GitLab for DevOps](https://www.youtube.com/watch?v=7q9Y1Cv-ib0) (12m 34s) | Use GitLab through the entire DevOps lifecycle, from planning to monitoring. | **{star}** |
 | [Use Markdown at GitLab](../user/markdown.md) |  GitLab Flavored Markdown (GLFM) is used in many areas of GitLab, for example, in merge requests. | **{star}** |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Learn GitLab project walkthrough](https://www.youtube.com/watch?v=-oaI2WEKdI4&list=PL05JrBw4t0KofkHq4GZJ05FnNGa11PQ4d) (59m 2s) | Step through the tutorial-style issues in the **Learn GitLab** project. If you don't have this project, download [the export file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/project_templates/learn_gitlab_ultimate.tar.gz) and [import it to a new project](../user/project/settings/import_export.md#import-a-project-and-its-data). | |
@@ -113,7 +113,7 @@ enabling you to work with those services directly from GitLab.
 If you're learning about GitLab, here are some ways you can find more tutorial
 content:
 
-- Find learning tracks and certification options at [GitLab Learn](https://about.gitlab.com/learn/).
+- Find learning tracks and certification options at [Level Up](https://levelup.gitlab.com/).
   GitLab learning platform login required (email and password for non-GitLab team members).
 
 - Find recent tutorials on the GitLab blog by [searching by the `tutorial` tag](https://about.gitlab.com/blog/tags.html#tutorial).

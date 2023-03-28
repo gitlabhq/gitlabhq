@@ -2,13 +2,15 @@
 
 RSpec.shared_examples 'diff file base entity' do
   it 'exposes essential attributes' do
-    expect(subject).to include(:content_sha, :submodule, :submodule_link,
-                               :submodule_tree_url, :old_path_html,
-                               :new_path_html, :blob, :can_modify_blob,
-                               :file_hash, :file_path, :old_path, :new_path,
-                               :viewer, :diff_refs, :stored_externally,
-                               :external_storage, :renamed_file, :deleted_file,
-                               :a_mode, :b_mode, :new_file, :file_identifier_hash)
+    expect(subject).to include(
+      :content_sha, :submodule, :submodule_link,
+      :submodule_tree_url, :old_path_html,
+      :new_path_html, :blob, :can_modify_blob,
+      :file_hash, :file_path, :old_path, :new_path,
+      :viewer, :diff_refs, :stored_externally,
+      :external_storage, :renamed_file, :deleted_file,
+      :a_mode, :b_mode, :new_file, :file_identifier_hash
+    )
   end
 
   # Converted diff files from GitHub import does not contain blob file
@@ -30,8 +32,7 @@ RSpec.shared_examples 'diff file entity' do
   it_behaves_like 'diff file base entity'
 
   it 'exposes correct attributes' do
-    expect(subject).to include(:added_lines, :removed_lines,
-                               :context_lines_path)
+    expect(subject).to include(:added_lines, :removed_lines, :context_lines_path)
   end
 
   context 'when a viewer' do

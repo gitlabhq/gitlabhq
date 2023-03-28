@@ -60,8 +60,9 @@ RSpec.describe 'admin/application_settings/_ci_cd' do
       expect(rendered).to have_field('Maximum number of runners registered per project', type: 'number')
       expect(page.find_field('Maximum number of runners registered per project').value).to eq('70')
 
-      expect(rendered).to have_field("Maximum number of downstream pipelines in a pipeline's hierarchy tree",
-type: 'number')
+      expect(rendered).to have_field(
+        "Maximum number of downstream pipelines in a pipeline's hierarchy tree", type: 'number'
+      )
       expect(page.find_field("Maximum number of downstream pipelines in a pipeline's hierarchy tree").value)
       .to eq('300')
     end

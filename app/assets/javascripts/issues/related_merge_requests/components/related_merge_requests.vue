@@ -68,7 +68,7 @@ export default {
     <div class="card card-slim gl-mt-5 gl-mb-0 gl-bg-gray-10">
       <div class="card-header gl-px-5 gl-py-4 gl-bg-white">
         <div
-          class="card-title gl-relative gl-display-flex gl-flex-wrap gl-align-items-center gl-line-height-20 gl-font-weight-bold gl-m-0"
+          class="card-title gl-relative gl-display-flex gl-flex-wrap-wrap gl-align-items-center gl-line-height-20 gl-font-weight-bold gl-m-0"
         >
           <gl-link
             class="anchor gl-absolute gl-text-decoration-none"

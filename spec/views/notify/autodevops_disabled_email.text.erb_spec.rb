@@ -9,12 +9,14 @@ RSpec.describe 'notify/autodevops_disabled_email.text.erb' do
   let(:project) { create(:project, :repository) }
 
   let(:pipeline) do
-    create(:ci_pipeline,
-           :failed,
-           project: project,
-           user: user,
-           ref: project.default_branch,
-           sha: project.commit.sha)
+    create(
+      :ci_pipeline,
+      :failed,
+      project: project,
+      user: user,
+      ref: project.default_branch,
+      sha: project.commit.sha
+    )
   end
 
   before do

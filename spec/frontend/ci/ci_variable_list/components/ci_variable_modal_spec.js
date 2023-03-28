@@ -114,7 +114,6 @@ describe('Ci variable modal', () => {
 
       beforeEach(() => {
         createComponent({ props: { selectedVariable: currentVariable } });
-        jest.spyOn(wrapper.vm, '$emit');
       });
 
       it('Dispatches `add-variable` action on submit', () => {
@@ -240,7 +239,6 @@ describe('Ci variable modal', () => {
 
       it('defaults to expanded and raw:false when adding a variable', () => {
         createComponent({ props: { selectedVariable: variable } });
-        jest.spyOn(wrapper.vm, '$emit');
 
         findModal().vm.$emit('shown');
 
@@ -265,7 +263,6 @@ describe('Ci variable modal', () => {
             mode: EDIT_VARIABLE_ACTION,
           },
         });
-        jest.spyOn(wrapper.vm, '$emit');
 
         findModal().vm.$emit('shown');
         await findExpandedVariableCheckbox().vm.$emit('change');
@@ -304,7 +301,6 @@ describe('Ci variable modal', () => {
 
     beforeEach(() => {
       createComponent({ props: { selectedVariable: variable, mode: EDIT_VARIABLE_ACTION } });
-      jest.spyOn(wrapper.vm, '$emit');
     });
 
     it('button text is Update variable when updating', () => {

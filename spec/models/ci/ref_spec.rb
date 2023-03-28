@@ -105,8 +105,11 @@ RSpec.describe Ci::Ref do
 
     context 'when pipeline is a detached merge request pipeline' do
       let(:merge_request) do
-        create(:merge_request, target_project: project, target_branch: 'master',
-                               source_project: project, source_branch: 'feature')
+        create(
+          :merge_request,
+          target_project: project, target_branch: 'master',
+          source_project: project, source_branch: 'feature'
+        )
       end
 
       let!(:pipeline) do

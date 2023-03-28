@@ -497,11 +497,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     let!(:other_pipeline) { create(:ci_pipeline, project: project) }
 
     before do
-      create(:ci_sources_pipeline,
-             source_job: create(:ci_build, pipeline: upstream_pipeline),
-             source_project: project,
-             pipeline: child_pipeline,
-             project: project)
+      create(
+        :ci_sources_pipeline,
+        source_job: create(:ci_build, pipeline: upstream_pipeline),
+        source_project: project,
+        pipeline: child_pipeline,
+        project: project
+      )
     end
 
     it 'only returns pipelines outside pipeline family' do
@@ -520,11 +522,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     let!(:other_pipeline) { create(:ci_pipeline, project: project) }
 
     before do
-      create(:ci_sources_pipeline,
-             source_job: create(:ci_build, pipeline: upstream_pipeline),
-             source_project: project,
-             pipeline: child_pipeline,
-             project: project)
+      create(
+        :ci_sources_pipeline,
+        source_job: create(:ci_build, pipeline: upstream_pipeline),
+        source_project: project,
+        pipeline: child_pipeline,
+        project: project
+      )
     end
 
     it 'only returns older pipelines outside pipeline family' do
@@ -1186,29 +1190,41 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     describe 'legacy stages' do
       before do
-        create(:commit_status, pipeline: pipeline,
-                               stage: 'build',
-                               name: 'linux',
-                               stage_idx: 0,
-                               status: 'success')
+        create(
+          :commit_status,
+          pipeline: pipeline,
+          stage: 'build',
+          name: 'linux',
+          stage_idx: 0,
+          status: 'success'
+        )
 
-        create(:commit_status, pipeline: pipeline,
-                               stage: 'build',
-                               name: 'mac',
-                               stage_idx: 0,
-                               status: 'failed')
+        create(
+          :commit_status,
+          pipeline: pipeline,
+          stage: 'build',
+          name: 'mac',
+          stage_idx: 0,
+          status: 'failed'
+        )
 
-        create(:commit_status, pipeline: pipeline,
-                               stage: 'deploy',
-                               name: 'staging',
-                               stage_idx: 2,
-                               status: 'running')
+        create(
+          :commit_status,
+          pipeline: pipeline,
+          stage: 'deploy',
+          name: 'staging',
+          stage_idx: 2,
+          status: 'running'
+        )
 
-        create(:commit_status, pipeline: pipeline,
-                               stage: 'test',
-                               name: 'rspec',
-                               stage_idx: 1,
-                               status: 'success')
+        create(
+          :commit_status,
+          pipeline: pipeline,
+          stage: 'test',
+          name: 'rspec',
+          stage_idx: 1,
+          status: 'success'
+        )
       end
 
       describe '#stages_count' do
@@ -1659,8 +1675,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
             before do
               upstream_bridge = create(:ci_bridge, :strategy_depend, pipeline: upstream_of_upstream_pipeline)
-              create(:ci_sources_pipeline, pipeline: upstream_pipeline,
-                                           source_job: upstream_bridge)
+              create(:ci_sources_pipeline, pipeline: upstream_pipeline, source_job: upstream_bridge)
             end
 
             context 'when the downstream pipeline first fails then retries and succeeds' do
@@ -1865,12 +1880,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     def create_build(name, *traits, queued_at: current, started_from: 0, **opts)
-      create(:ci_build, *traits,
-             name: name,
-             pipeline: pipeline,
-             queued_at: queued_at,
-             started_at: queued_at + started_from,
-             **opts)
+      create(
+        :ci_build, *traits,
+        name: name,
+        pipeline: pipeline,
+        queued_at: queued_at,
+        started_at: queued_at + started_from,
+        **opts
+      )
     end
   end
 
@@ -1918,9 +1935,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         let(:pipeline) { build(:ci_pipeline, merge_request: merge_request) }
 
         let(:merge_request) do
-          create(:merge_request, :simple,
-                 source_project: project,
-                 target_project: project)
+          create(:merge_request, :simple, source_project: project, target_project: project)
         end
 
         it 'returns false' do
@@ -1961,17 +1976,17 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     context 'when ref is merge request' do
       let(:pipeline) do
-        create(:ci_pipeline,
-               source: :merge_request_event,
-               merge_request: merge_request)
+        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request)
       end
 
       let(:merge_request) do
-        create(:merge_request,
-               source_project: project,
-               source_branch: 'feature',
-               target_project: project,
-               target_branch: 'master')
+        create(
+          :merge_request,
+          source_project: project,
+          source_branch: 'feature',
+          target_project: project,
+          target_branch: 'master'
+        )
       end
 
       it 'returns branch ref' do
@@ -2015,32 +2030,40 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
   context 'with non-empty project' do
     let(:pipeline) do
-      create(:ci_pipeline,
-             project: project,
-             ref: project.default_branch,
-             sha: project.commit.sha)
+      create(
+        :ci_pipeline,
+        project: project,
+        ref: project.default_branch,
+        sha: project.commit.sha
+      )
     end
 
     describe '#lazy_ref_commit' do
       let(:another) do
-        create(:ci_pipeline,
-               project: project,
-               ref: 'feature',
-               sha: project.commit('feature').sha)
+        create(
+          :ci_pipeline,
+          project: project,
+          ref: 'feature',
+          sha: project.commit('feature').sha
+        )
       end
 
       let(:unicode) do
-        create(:ci_pipeline,
-               project: project,
-               ref: 'ü/unicode/multi-byte')
+        create(
+          :ci_pipeline,
+          project: project,
+          ref: 'ü/unicode/multi-byte'
+        )
       end
 
       let(:in_another_project) do
         other_project = create(:project, :repository)
-        create(:ci_pipeline,
-               project: other_project,
-               ref: other_project.default_branch,
-               sha: other_project.commit.sha)
+        create(
+          :ci_pipeline,
+          project: other_project,
+          ref: other_project.default_branch,
+          sha: other_project.commit.sha
+        )
       end
 
       it 'returns the latest commit for a ref lazily', :aggregate_failures do
@@ -2192,9 +2215,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
 
       let(:merge_request) do
-        create(:merge_request, :simple,
-               source_project: project,
-               target_project: project)
+        create(:merge_request, :simple, source_project: project, target_project: project)
       end
 
       it 'returns merge request modified paths' do
@@ -2219,8 +2240,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
   describe '#modified_paths_since' do
     let(:project) do
-      create(:project, :custom_repo,
-             files: { 'file1.txt' => 'file 1' })
+      create(:project, :custom_repo, files: { 'file1.txt' => 'file 1' })
     end
 
     let(:user) { project.owner }
@@ -3493,19 +3513,23 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         let(:target_branch) { 'master' }
 
         let!(:pipeline) do
-          create(:ci_pipeline,
-                 source: :merge_request_event,
-                 project: pipeline_project,
-                 ref: source_branch,
-                 merge_request: merge_request)
+          create(
+            :ci_pipeline,
+            source: :merge_request_event,
+            project: pipeline_project,
+            ref: source_branch,
+            merge_request: merge_request
+          )
         end
 
         let(:merge_request) do
-          create(:merge_request,
-                 source_project: pipeline_project,
-                 source_branch: source_branch,
-                 target_project: project,
-                 target_branch: target_branch)
+          create(
+            :merge_request,
+            source_project: pipeline_project,
+            source_branch: source_branch,
+            target_project: project,
+            target_branch: target_branch
+          )
         end
 
         it 'returns an associated merge request' do
@@ -3516,19 +3540,23 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           let(:target_branch_2) { 'merge-test' }
 
           let!(:pipeline_2) do
-            create(:ci_pipeline,
-                   source: :merge_request_event,
-                   project: pipeline_project,
-                   ref: source_branch,
-                   merge_request: merge_request_2)
+            create(
+              :ci_pipeline,
+              source: :merge_request_event,
+              project: pipeline_project,
+              ref: source_branch,
+              merge_request: merge_request_2
+            )
           end
 
           let(:merge_request_2) do
-            create(:merge_request,
-                   source_project: pipeline_project,
-                   source_branch: source_branch,
-                   target_project: project,
-                   target_branch: target_branch_2)
+            create(
+              :merge_request,
+              source_project: pipeline_project,
+              source_branch: source_branch,
+              target_project: project,
+              target_branch: target_branch_2
+            )
           end
 
           it 'does not return an associated merge request' do
@@ -3924,10 +3952,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     let(:project) { create(:project, :repository, namespace: namespace) }
 
     let(:pipeline) do
-      create(:ci_pipeline,
-             project: project,
-             sha: project.commit('master').sha,
-             user: project.first_owner)
+      create(
+        :ci_pipeline,
+        project: project,
+        sha: project.commit('master').sha,
+        user: project.first_owner
+      )
     end
 
     before do
@@ -4711,10 +4741,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     let(:stage_name) { 'test' }
 
     let(:stage) do
-      create(:ci_stage,
-             pipeline: pipeline,
-             project: pipeline.project,
-             name: 'test')
+      create(:ci_stage, pipeline: pipeline, project: pipeline.project, name: 'test')
     end
 
     before do

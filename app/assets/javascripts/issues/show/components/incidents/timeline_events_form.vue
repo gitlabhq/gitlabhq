@@ -255,7 +255,7 @@ export default {
       </gl-form-group>
     </div>
     <gl-form-group class="gl-mb-0">
-      <div class="gl-display-flex gl-flex-wrap gl-gap-3">
+      <div class="gl-display-flex gl-flex-wrap-wrap gl-gap-3">
         <gl-button
           variant="confirm"
           category="primary"

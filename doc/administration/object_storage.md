@@ -11,24 +11,24 @@ It's recommended over NFS and
 in general it's better in larger setups as object storage is
 typically much more performant, reliable, and scalable.
 
-There are two ways of specifying the object storage:
+To configure the object storage, you have two options:
 
-- [Consolidated configuration](#consolidated-object-storage-configuration) (recommended): A single credential is
-  shared by all supported object types.
-- [Storage-specific configuration](#storage-specific-configuration): Every object defines its
-  own object storage [connection and configuration](#connection-settings).
+- Recommended. [Consolidated configuration](#consolidated-object-storage-configuration):
+  A single credential is shared by all supported object types.
+- [Storage-specific configuration](#storage-specific-configuration): Every
+  object defines its own object storage connection and configuration.
 
-For more information on the differences and to transition from one form to another, see
-[Transition to consolidated form](#transition-to-consolidated-form).
+  If you already use the storage-specific form, see how to
+  [transition to the consolidated form](#transition-to-consolidated-form).
 
-If you are currently storing data locally, see
-[Migrate to object storage](#migrate-to-object-storage) for migration details.
+If you store data locally, see how to
+[migrate to object storage](#migrate-to-object-storage).
 
 ## Supported object storage providers
 
-GitLab is tightly integrated with `Fog`, so you can refer to its
-[documentation](https://fog.io/about/provider_documentation.html) to check
-which storage services can be integrated with GitLab.
+GitLab is tightly integrated with the Fog library, so you can see which
+[providers](https://fog.io/about/provider_documentation.html) can be used
+with GitLab.
 
 Specifically, GitLab has been tested by vendors and customers on a number of object storage providers:
 
@@ -36,12 +36,12 @@ Specifically, GitLab has been tested by vendors and customers on a number of obj
   is not supported, see [issue #335775](https://gitlab.com/gitlab-org/gitlab/-/issues/335775)
   for more information)
 - [Google Cloud Storage](https://cloud.google.com/storage)
-- [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces)
+- [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces) (S3 compatible)
 - [Oracle Cloud Infrastructure](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
 - [OpenStack Swift (S3 compatible mode)](https://docs.openstack.org/swift/latest/s3_compat.html)
 - [Azure Blob storage](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
+- [MinIO](https://min.io/) (S3 compatible)
 - On-premises hardware and appliances from various storage vendors, whose list is not officially established.
-- MinIO. We have [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.
 
 ## Consolidated object storage configuration
 

@@ -132,7 +132,7 @@ export default {
 };
 </script>
 <template>
-  <div class="release-block-milestone-info gl-display-flex gl-flex-wrap">
+  <div class="release-block-milestone-info gl-display-flex gl-flex-wrap-wrap">
     <div
       v-gl-tooltip
       class="milestone-progress-bar-container js-milestone-progress-bar-container gl-display-flex gl-flex-direction-column gl-mr-6 gl-mb-5"
@@ -147,7 +147,7 @@ export default {
       class="gl-display-flex gl-flex-direction-column gl-mr-6 gl-mb-5 js-milestone-list-container"
     >
       <span class="gl-mb-2">{{ milestoneLabelText }}</span>
-      <div class="gl-display-flex gl-flex-wrap gl-align-items-flex-end">
+      <div class="gl-display-flex gl-flex-wrap-wrap gl-align-items-flex-end">
         <template v-for="(milestone, index) in milestonesToDisplay">
           <gl-link
             :key="milestone.id"

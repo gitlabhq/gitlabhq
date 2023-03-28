@@ -9,8 +9,10 @@ RSpec.describe Sidebars::StaticMenu, feature_category: :navigation do
 
   describe '#serialize_for_super_sidebar' do
     it 'returns flat list of all menu items' do
-      subject.add_item(Sidebars::MenuItem.new(title: 'Is active', link: 'foo2', active_routes: { controller: 'fooc' }))
-      subject.add_item(Sidebars::MenuItem.new(title: 'Not active', link: 'foo3', active_routes: { controller: 'barc' }))
+      subject.add_item(Sidebars::MenuItem.new(item_id: 'id1', title: 'Is active', link: 'foo2',
+        active_routes: { controller: 'fooc' }))
+      subject.add_item(Sidebars::MenuItem.new(item_id: 'id2', title: 'Not active', link: 'foo3',
+        active_routes: { controller: 'barc' }))
       subject.add_item(Sidebars::NilMenuItem.new(item_id: 'nil_item'))
 
       allow(context).to receive(:route_is_active).and_return(->(x) { x[:controller] == 'fooc' })
@@ -18,6 +20,7 @@ RSpec.describe Sidebars::StaticMenu, feature_category: :navigation do
       expect(subject.serialize_for_super_sidebar).to eq(
         [
           {
+            id: 'id1',
             title: "Is active",
             icon: nil,
             link: "foo2",
@@ -25,6 +28,7 @@ RSpec.describe Sidebars::StaticMenu, feature_category: :navigation do
             pill_count: nil
           },
           {
+            id: 'id2',
             title: "Not active",
             icon: nil,
             link: "foo3",

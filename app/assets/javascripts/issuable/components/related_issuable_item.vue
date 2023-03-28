@@ -105,7 +105,7 @@ export default {
     class="item-body gl-display-flex gl-align-items-center gl-gap-3 gl-mx-n2"
   >
     <div
-      class="item-contents gl-display-flex gl-align-items-center gl-flex-wrap gl-flex-grow-1 gl-gap-2 gl-px-3 gl-py-2 py-xl-0 flex-xl-nowrap gl-min-h-7"
+      class="item-contents gl-display-flex gl-align-items-center gl-flex-wrap-wrap gl-flex-grow-1 gl-gap-2 gl-px-3 gl-py-2 py-xl-0 flex-xl-nowrap gl-min-h-7"
     >
       <!-- Title area: Status icon (XL) and title -->
       <div class="item-title gl-display-flex gl-gap-3 gl-min-w-0">
@@ -146,7 +146,7 @@ export default {
         >
           <!-- Path area: status icon (<XL), path, issue # -->
           <div
-            class="item-path-area item-path-id gl-display-flex gl-align-items-center gl-flex-wrap gl-gap-3"
+            class="item-path-area item-path-id gl-display-flex gl-align-items-center gl-flex-wrap-wrap gl-gap-3"
           >
             <gl-tooltip :target="() => $refs.iconElement">
               <span v-safe-html="stateTitle"></span>
@@ -164,7 +164,7 @@ export default {
           <!-- Attributes area: CI, epic count, weight, milestone -->
           <!-- They have a different order on large screen sizes -->
           <div
-            class="item-attributes-area gl-display-flex gl-align-items-center gl-flex-wrap gl-gap-3"
+            class="item-attributes-area gl-display-flex gl-align-items-center gl-flex-wrap-wrap gl-gap-3"
           >
             <span v-if="hasPipeline" class="mr-ci-status order-md-last">
               <a :href="pipelineStatus.details_path">

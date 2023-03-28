@@ -180,7 +180,7 @@ export default {
   <div class="top-bar gl-display-flex gl-justify-content-space-between">
     <!-- truncate information -->
     <div
-      class="truncated-info gl-display-none gl-sm-display-flex gl-flex-wrap gl-align-items-center"
+      class="truncated-info gl-display-none gl-sm-display-flex gl-flex-wrap-wrap gl-align-items-center"
       data-testid="log-truncated-info"
     >
       <template v-if="isJobLogSizeVisible">

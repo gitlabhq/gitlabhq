@@ -34,6 +34,7 @@ module Sidebars
 
     def serialize_for_super_sidebar
       {
+        id: item_id,
         title: title,
         icon: sprite_icon,
         link: link,
@@ -46,8 +47,6 @@ module Sidebars
         # container_html_options
         # hint_html_options
         # nav_link_html_options
-        #
-        # item_id
       }
     end
 

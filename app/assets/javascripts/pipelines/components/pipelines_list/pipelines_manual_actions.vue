@@ -99,7 +99,7 @@ export default {
       :disabled="isActionDisabled(action)"
       @click="onClickAction(action)"
     >
-      <div class="gl-display-flex gl-justify-content-space-between gl-flex-wrap">
+      <div class="gl-display-flex gl-justify-content-space-between gl-flex-wrap-wrap">
         {{ action.name }}
         <span v-if="action.scheduled_at">
           <gl-icon name="clock" />

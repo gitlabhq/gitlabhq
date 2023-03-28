@@ -9,12 +9,14 @@ RSpec.describe 'notify/pipeline_failed_email.text.erb' do
   let(:merge_request) { create(:merge_request, :simple, source_project: project) }
 
   let(:pipeline) do
-    create(:ci_pipeline,
-           :failed,
-           project: project,
-           user: user,
-           ref: project.default_branch,
-           sha: project.commit.sha)
+    create(
+      :ci_pipeline,
+      :failed,
+      project: project,
+      user: user,
+      ref: project.default_branch,
+      sha: project.commit.sha
+    )
   end
 
   before do

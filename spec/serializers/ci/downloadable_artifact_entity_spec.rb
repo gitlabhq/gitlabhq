@@ -18,8 +18,7 @@ RSpec.describe Ci::DownloadableArtifactEntity do
 
     context 'when user cannot read job artifact' do
       let!(:build) do
-        create(:ci_build, :success, :private_artifacts,
-        pipeline: pipeline)
+        create(:ci_build, :success, :private_artifacts, pipeline: pipeline)
       end
 
       it 'returns only artifacts readable by user', :aggregate_failures do

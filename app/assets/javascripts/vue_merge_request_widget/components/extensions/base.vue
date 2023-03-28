@@ -323,7 +323,7 @@ export default {
         data-testid="widget-extension-top-level"
       >
         <div
-          class="gl-flex-grow-1 gl-display-flex gl-align-items-center gl-flex-wrap"
+          class="gl-flex-grow-1 gl-display-flex gl-align-items-center gl-flex-wrap-wrap"
           data-testid="widget-extension-top-level-summary"
         >
           <div v-if="isLoadingSummary" class="gl-w-full gl-line-height-normal">

@@ -17,9 +17,7 @@ RSpec.describe BuildDetailsEntity do
     let(:request) { double('request', project: project) }
 
     let(:entity) do
-      described_class.new(build, request: request,
-                                 current_user: user,
-                                 project: project)
+      described_class.new(build, request: request, current_user: user, project: project)
     end
 
     subject { entity.as_json }
@@ -69,9 +67,7 @@ RSpec.describe BuildDetailsEntity do
         end
 
         let(:merge_request) do
-          create(:merge_request, source_project: forked_project,
-                                 target_project: project,
-                                 source_branch: build.ref)
+          create(:merge_request, source_project: forked_project, target_project: project, source_branch: build.ref)
         end
 
         it 'contains the needed key value pairs' do

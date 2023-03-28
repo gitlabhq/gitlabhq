@@ -97,8 +97,7 @@ RSpec.describe Ci::JobEntity do
       before do
         project.add_developer(user)
 
-        create(:protected_branch, :developers_can_merge,
-               name: job.ref, project: job.project)
+        create(:protected_branch, :developers_can_merge, name: job.ref, project: job.project)
       end
 
       it 'contains path to play action' do
@@ -114,8 +113,7 @@ RSpec.describe Ci::JobEntity do
       before do
         allow(job.project).to receive(:empty_repo?).and_return(false)
 
-        create(:protected_branch, :no_one_can_push,
-               name: job.ref, project: job.project)
+        create(:protected_branch, :no_one_can_push, name: job.ref, project: job.project)
       end
 
       it 'does not contain path to play action' do

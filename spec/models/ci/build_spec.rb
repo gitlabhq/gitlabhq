@@ -11,10 +11,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   let_it_be(:project, reload: true) { create_default(:project, :repository, group: group) }
 
   let_it_be(:pipeline, reload: true) do
-    create_default(:ci_pipeline, project: project,
-                         sha: project.commit.id,
-                         ref: project.default_branch,
-                         status: 'success')
+    create_default(
+      :ci_pipeline,
+      project: project,
+      sha: project.commit.id,
+      ref: project.default_branch,
+      status: 'success'
+    )
   end
 
   let_it_be(:build, refind: true) { create(:ci_build, pipeline: pipeline) }
@@ -1699,10 +1702,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       context 'when environment uses $CI_COMMIT_REF_NAME' do
         let(:build) do
-          create(:ci_build,
-                 ref: 'master',
-                 environment: 'review/$CI_COMMIT_REF_NAME',
-                 pipeline: pipeline)
+          create(
+            :ci_build,
+            ref: 'master',
+            environment: 'review/$CI_COMMIT_REF_NAME',
+            pipeline: pipeline
+          )
         end
 
         it { is_expected.to eq('review/master') }
@@ -1710,10 +1715,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       context 'when environment uses yaml_variables containing symbol keys' do
         let(:build) do
-          create(:ci_build,
-                 yaml_variables: [{ key: :APP_HOST, value: 'host' }],
-                 environment: 'review/$APP_HOST',
-                 pipeline: pipeline)
+          create(
+            :ci_build,
+            yaml_variables: [{ key: :APP_HOST, value: 'host' }],
+            environment: 'review/$APP_HOST',
+            pipeline: pipeline
+          )
         end
 
         it 'returns an expanded environment name with a list of variables' do
@@ -1749,11 +1756,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         let(:build) do
-          create(:ci_build,
-                 ref: 'master',
-                 yaml_variables: yaml_variables,
-                 environment: 'review/$ENVIRONMENT_NAME',
-                 pipeline: pipeline)
+          create(
+            :ci_build,
+            ref: 'master',
+            yaml_variables: yaml_variables,
+            environment: 'review/$ENVIRONMENT_NAME',
+            pipeline: pipeline
+          )
         end
 
         it { is_expected.to eq('review/master') }
@@ -2085,8 +2094,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe 'build auto retry feature' do
     context 'with deployment job' do
       let(:build) do
-        create(:ci_build, :deploy_to_production, :with_deployment,
-               user: user, pipeline: pipeline, project: project)
+        create(
+          :ci_build,
+          :deploy_to_production,
+          :with_deployment,
+          user: user,
+          pipeline: pipeline,
+          project: project
+        )
       end
 
       before do
@@ -2896,12 +2911,9 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           end
 
           before do
-            create(:environment, project: build.project,
-                                 name: 'staging')
+            create(:environment, project: build.project, name: 'staging')
 
-            build.yaml_variables = [{ key: 'YAML_VARIABLE',
-                                      value: 'var',
-                                      public: true }]
+            build.yaml_variables = [{ key: 'YAML_VARIABLE', value: 'var', public: true }]
             build.environment = 'staging'
 
             # CI_ENVIRONMENT_NAME is set in predefined_variables when job environment is provided
@@ -3001,12 +3013,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       let!(:environment) do
-        create(:environment,
-               project: build.project,
-               name: 'production',
-               slug: 'prod-slug',
-               tier: 'production',
-               external_url: '')
+        create(
+          :environment,
+          project: build.project,
+          name: 'production',
+          slug: 'prod-slug',
+          tier: 'production',
+          external_url: ''
+        )
       end
 
       before do
@@ -3139,10 +3153,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let(:tag_message) { project.repository.tags.first.message }
 
       let!(:pipeline) do
-        create(:ci_pipeline, project: project,
-                             sha: project.commit.id,
-                             ref: tag_name,
-                             status: 'success')
+        create(
+          :ci_pipeline,
+          project: project,
+          sha: project.commit.id,
+          ref: tag_name,
+          status: 'success'
+        )
       end
 
       let!(:build) { create(:ci_build, pipeline: pipeline, ref: tag_name) }
@@ -3173,8 +3190,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       before do
-        create(:ci_variable,
-               ci_variable.slice(:key, :value).merge(project: project))
+        create(:ci_variable, ci_variable.slice(:key, :value).merge(project: project))
       end
 
       it { is_expected.to include(ci_variable) }
@@ -3188,9 +3204,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       before do
-        create(:ci_variable,
-               :protected,
-               protected_variable.slice(:key, :value).merge(project: project))
+        create(:ci_variable, :protected, protected_variable.slice(:key, :value).merge(project: project))
       end
 
       context 'when the branch is protected' do
@@ -3220,8 +3234,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       before do
-        create(:ci_group_variable,
-               ci_variable.slice(:key, :value).merge(group: group))
+        create(:ci_group_variable, ci_variable.slice(:key, :value).merge(group: group))
       end
 
       it { is_expected.to include(ci_variable) }
@@ -3235,9 +3248,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       before do
-        create(:ci_group_variable,
-               :protected,
-               protected_variable.slice(:key, :value).merge(group: group))
+        create(:ci_group_variable, :protected, protected_variable.slice(:key, :value).merge(group: group))
       end
 
       context 'when the branch is protected' do
@@ -3290,9 +3301,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
 
       let!(:pipeline_schedule_variable) do
-        create(:ci_pipeline_schedule_variable,
-               key: 'SCHEDULE_VARIABLE_KEY',
-               pipeline_schedule: pipeline_schedule)
+        create(:ci_pipeline_schedule_variable, key: 'SCHEDULE_VARIABLE_KEY', pipeline_schedule: pipeline_schedule)
       end
 
       before do
@@ -3307,10 +3316,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let_it_be_with_reload(:project) { create(:project, :public, :repository, group: group) }
 
       let_it_be_with_reload(:pipeline) do
-        create(:ci_pipeline, project: project,
-                             sha: project.commit.id,
-                             ref: project.default_branch,
-                             status: 'success')
+        create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch, status: 'success')
       end
 
       let_it_be_with_refind(:build) { create(:ci_build, pipeline: pipeline) }
@@ -5715,9 +5721,11 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   describe '#runtime_hooks' do
     let(:build1) do
-      FactoryBot.build(:ci_build,
-                       options: { hooks: { pre_get_sources_script: ["echo 'hello pre_get_sources_script'"] } },
-                       pipeline: pipeline)
+      FactoryBot.build(
+        :ci_build,
+        options: { hooks: { pre_get_sources_script: ["echo 'hello pre_get_sources_script'"] } },
+        pipeline: pipeline
+      )
     end
 
     subject(:runtime_hooks) { build1.runtime_hooks }

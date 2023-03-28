@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:refresh_project_statistics_build_artifacts_size rake task', :silence_stdout do
+RSpec.describe 'gitlab:refresh_project_statistics_build_artifacts_size rake task', :silence_stdout, feature_category: :build_artifacts do
   let(:rake_task) { 'gitlab:refresh_project_statistics_build_artifacts_size' }
 
   describe 'enqueuing build artifacts size statistics refresh for given list of project IDs' do
@@ -10,8 +10,6 @@ RSpec.describe 'gitlab:refresh_project_statistics_build_artifacts_size rake task
     let_it_be(:project_2) { create(:project) }
     let_it_be(:project_3) { create(:project) }
 
-    let(:string_of_ids) { "#{project_1.id} #{project_2.id} #{project_3.id} 999999" }
-    let(:csv_url) { 'https://www.example.com/foo.csv' }
     let(:csv_body) do
       <<~BODY
         PROJECT_ID
@@ -26,13 +24,12 @@ RSpec.describe 'gitlab:refresh_project_statistics_build_artifacts_size rake task
 
       stub_const("BUILD_ARTIFACTS_SIZE_REFRESH_ENQUEUE_BATCH_SIZE", 2)
 
-      stub_request(:get, csv_url).to_return(status: 200, body: csv_body)
       allow(Kernel).to receive(:sleep).with(1)
     end
 
-    context 'when given a list of space-separated IDs through rake argument' do
+    shared_examples_for 'recalculates project statistics successfully' do
       it 'enqueues the projects for refresh' do
-        expect { run_rake_task(rake_task, csv_url) }.to output(/Done/).to_stdout
+        expect { run_rake_task(rake_task, csv_path) }.to output(/Done/).to_stdout
 
         expect(Projects::BuildArtifactsSizeRefresh.all.map(&:project)).to match_array([project_1, project_2, project_3])
       end
@@ -42,11 +39,11 @@ RSpec.describe 'gitlab:refresh_project_statistics_build_artifacts_size rake task
         expect(Kernel).to receive(:sleep).with(1)
         expect(Projects::BuildArtifactsSizeRefresh).to receive(:enqueue_refresh).with([project_3]).ordered
 
-        run_rake_task(rake_task, csv_url)
+        run_rake_task(rake_task, csv_path)
       end
     end
 
-    context 'when CSV has invalid header' do
+    shared_examples_for 'raises error for invalid header' do
       let(:csv_body) do
         <<~BODY
           projectid
@@ -57,8 +54,34 @@ RSpec.describe 'gitlab:refresh_project_statistics_build_artifacts_size rake task
       end
 
       it 'returns an error message' do
-        expect { run_rake_task(rake_task, csv_url) }.to output(/Project IDs must be listed in the CSV under the header PROJECT_ID/).to_stdout
+        expect { run_rake_task(rake_task, csv_path) }.to output(/Project IDs must be listed in the CSV under the header PROJECT_ID/).to_stdout
       end
+    end
+
+    context 'when given a remote CSV file' do
+      let(:csv_path) { 'https://www.example.com/foo.csv' }
+
+      before do
+        stub_request(:get, csv_path).to_return(status: 200, body: csv_body)
+      end
+
+      it_behaves_like 'recalculates project statistics successfully'
+      it_behaves_like 'raises error for invalid header'
+    end
+
+    context 'when given a local CSV file' do
+      before do
+        File.write(csv_path, csv_body, mode: 'w')
+      end
+
+      after do
+        FileUtils.rm_f(csv_path)
+      end
+
+      let(:csv_path) { 'foo.csv' }
+
+      it_behaves_like 'recalculates project statistics successfully'
+      it_behaves_like 'raises error for invalid header'
     end
   end
 end

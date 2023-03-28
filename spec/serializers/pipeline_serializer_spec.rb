@@ -99,21 +99,25 @@ RSpec.describe PipelineSerializer do
       let(:resource) { Ci::Pipeline.all }
 
       let!(:merge_request_1) do
-        create(:merge_request,
-               :with_detached_merge_request_pipeline,
-               target_project: project,
-               target_branch: 'master',
-               source_project: project,
-               source_branch: 'feature')
+        create(
+          :merge_request,
+          :with_detached_merge_request_pipeline,
+          target_project: project,
+          target_branch: 'master',
+          source_project: project,
+          source_branch: 'feature'
+        )
       end
 
       let!(:merge_request_2) do
-        create(:merge_request,
-               :with_detached_merge_request_pipeline,
-               target_project: project,
-               target_branch: 'master',
-               source_project: project,
-               source_branch: '2-mb-file')
+        create(
+          :merge_request,
+          :with_detached_merge_request_pipeline,
+          target_project: project,
+          target_branch: 'master',
+          source_project: project,
+          source_branch: '2-mb-file'
+        )
       end
 
       before_all do
@@ -235,11 +239,13 @@ RSpec.describe PipelineSerializer do
       end
 
       def create_pipeline(status)
-        create(:ci_empty_pipeline,
-               project: project,
-               status: status,
-               name: 'Build pipeline',
-               ref: 'feature').tap do |pipeline|
+        create(
+          :ci_empty_pipeline,
+          project: project,
+          status: status,
+          name: 'Build pipeline',
+          ref: 'feature'
+        ).tap do |pipeline|
           Ci::Build::AVAILABLE_STATUSES.each do |build_status|
             create_build(pipeline, status, build_status)
           end
@@ -247,9 +253,11 @@ RSpec.describe PipelineSerializer do
       end
 
       def create_build(pipeline, stage, status)
-        create(:ci_build, :tags, :triggered, :artifacts,
-               pipeline: pipeline, stage: stage,
-               name: stage, status: status, ref: pipeline.ref)
+        create(
+          :ci_build, :tags, :triggered, :artifacts,
+          pipeline: pipeline, stage: stage,
+          name: stage, status: status, ref: pipeline.ref
+        )
       end
     end
   end

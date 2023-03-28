@@ -639,8 +639,7 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
               build_trace_chunk.checksum = '12345'
 
               expect { build_trace_chunk.persist_data! }
-                .to raise_error(described_class::FailedToPersistDataError,
-                                /Modifed build trace chunk detected/)
+                .to raise_error(described_class::FailedToPersistDataError, /Modifed build trace chunk detected/)
             end
           end
 

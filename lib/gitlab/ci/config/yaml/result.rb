@@ -17,7 +17,7 @@ module Gitlab
           end
 
           def has_header?
-            @config.size > 1
+            @config.size > 1 && @config.first.key?(:spec)
           end
 
           def header
@@ -27,7 +27,9 @@ module Gitlab
           end
 
           def content
-            @config.last
+            return @config.last if has_header?
+
+            @config.first
           end
         end
       end

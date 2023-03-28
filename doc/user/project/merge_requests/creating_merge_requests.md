@@ -33,7 +33,8 @@ be associated with a given target branch at a time.
 If your development workflow requires an issue for every merge
 request, you can create a branch directly from the issue to speed the process up.
 The new branch, and later its merge request, are marked as related to this issue.
-After merging the merge request, the issue is closed automatically, unless [automatic issue closing is disabled](../issues/managing_issues.md#disable-automatic-issue-closing).
+After merging the merge request, the issue is closed automatically, unless
+[automatic issue closing is disabled](../issues/managing_issues.md#disable-automatic-issue-closing).
 You can see a **Create merge request** dropdown list below the issue description.
 
 NOTE:
@@ -57,8 +58,8 @@ The dropdown list contains the options **Create merge request and branch** and *
 
 After selecting one of these options, a new branch or branch and merge request
 is created based on your project's [default branch](../repository/branches/default.md).
-The branch name is based on your project's branch name template. The default template
-is `%{id}-%{title}`. Supported variables for branch name templates are `%{id}` and `%{title}`.
+The branch name is based on your project's [branch name template](../repository/branches/index.md),
+but this value can be changed.
 
 When you select **Create branch** in an empty
 repository project, GitLab performs these actions:

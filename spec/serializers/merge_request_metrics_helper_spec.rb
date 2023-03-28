@@ -55,12 +55,12 @@ RSpec.describe MergeRequestMetricsHelper do
         closed_event = merge_request.closed_event
         merge_event = merge_request.merge_event
 
-        expect(MergeRequest::Metrics).to receive(:new)
-            .with(latest_closed_at: closed_event&.updated_at,
-                  latest_closed_by: closed_event&.author,
-                  merged_at: merge_event&.updated_at,
-                  merged_by: merge_event&.author)
-            .and_call_original
+        expect(MergeRequest::Metrics).to receive(:new).with(
+          latest_closed_at: closed_event&.updated_at,
+          latest_closed_by: closed_event&.author,
+          merged_at: merge_event&.updated_at,
+          merged_by: merge_event&.author
+        ).and_call_original
 
         subject
       end

@@ -29,8 +29,14 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
     end
 
     it 'returns a tree-like structure of itself and all menu items' do
-      menu.add_item(Sidebars::MenuItem.new(title: 'Is active', link: 'foo2', active_routes: { controller: 'fooc' }))
       menu.add_item(Sidebars::MenuItem.new(
+        item_id: 'id1',
+        title: 'Is active',
+        link: 'foo2',
+        active_routes: { controller: 'fooc' }
+      ))
+      menu.add_item(Sidebars::MenuItem.new(
+        item_id: 'id2',
         title: 'Not active',
         link: 'foo3',
         active_routes: { controller: 'barc' },
@@ -50,6 +56,7 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
           pill_count: nil,
           items: [
             {
+              id: 'id1',
               title: "Is active",
               icon: nil,
               link: "foo2",
@@ -57,6 +64,7 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
               pill_count: nil
             },
             {
+              id: 'id2',
               title: "Not active",
               icon: nil,
               link: "foo3",

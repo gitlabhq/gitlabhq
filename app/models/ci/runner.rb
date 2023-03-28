@@ -18,9 +18,9 @@ module Ci
     extend ::Gitlab::Utils::Override
 
     add_authentication_token_field :token,
-                                   encrypted: :optional,
-                                   expires_at: :compute_token_expiration,
-                                   format_with_prefix: :prefix_for_new_and_legacy_runner
+      encrypted: :optional,
+      expires_at: :compute_token_expiration,
+      format_with_prefix: :prefix_for_new_and_legacy_runner
 
     enum access_level: {
       not_protected: 0,
@@ -215,16 +215,14 @@ module Ci
     cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at, :executor_type
 
     chronic_duration_attr :maximum_timeout_human_readable, :maximum_timeout,
-        error_message: 'Maximum job timeout has a value which could not be accepted'
+      error_message: 'Maximum job timeout has a value which could not be accepted'
 
     validates :maximum_timeout, allow_nil: true,
-                                numericality: { greater_than_or_equal_to: 600,
-                                                message: 'needs to be at least 10 minutes' }
+      numericality: { greater_than_or_equal_to: 600, message: 'needs to be at least 10 minutes' }
 
     validates :public_projects_minutes_cost_factor, :private_projects_minutes_cost_factor,
       allow_nil: false,
-      numericality: { greater_than_or_equal_to: 0.0,
-                      message: 'needs to be non-negative' }
+      numericality: { greater_than_or_equal_to: 0.0, message: 'needs to be non-negative' }
 
     validates :config, json_schema: { filename: 'ci_runner_config' }
 

@@ -110,7 +110,7 @@ export default {
       <gl-loading-icon v-if="loading" size="sm" :inline="true" />
       {{ participantLabel }}
     </div>
-    <div class="hide-collapsed gl-display-flex gl-flex-wrap">
+    <div class="hide-collapsed gl-display-flex gl-flex-wrap-wrap">
       <div
         v-for="participant in visibleParticipants"
         :key="participant.id"

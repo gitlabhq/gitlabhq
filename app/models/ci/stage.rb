@@ -112,8 +112,7 @@ module Ci
         when 'scheduled' then delay
         when 'skipped', nil then skip
         else
-          raise Ci::HasStatus::UnknownStatusError,
-                "Unknown status `#{new_status}`"
+          raise Ci::HasStatus::UnknownStatusError, "Unknown status `#{new_status}`"
         end
       end
     end
