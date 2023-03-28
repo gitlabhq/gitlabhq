@@ -665,7 +665,7 @@
 {"name":"webauthn","version":"3.0.0","platform":"ruby","checksum":"3f77d422c2a8a4b31e56cf42f83414bd066e0506e9896936e1730262dc4a20e6"},
 {"name":"webfinger","version":"1.2.0","platform":"ruby","checksum":"7814ef1c85da47514f65c6e5ca14205fa9ce41ea2a70785e0c872842162852a2"},
 {"name":"webmock","version":"3.9.1","platform":"ruby","checksum":"bcf6822456b234fb1bed2b0a89bff31fe0641214b44f6ba4ced2b824cf31337d"},
-{"name":"webrick","version":"1.6.1","platform":"ruby","checksum":"0b4d1eab918f5f53333c690ad470825e51844ce9851e403a3fd47d6a84d9d67c"},
+{"name":"webrick","version":"1.8.1","platform":"ruby","checksum":"19411ec6912911fd3df13559110127ea2badd0c035f7762873f58afc803e158f"},
 {"name":"websocket-driver","version":"0.7.5","platform":"java","checksum":"fffa83aa188e9ac90e32a385832ec9d26acdf019538e1c7d703f2c8a323b39c8"},
 {"name":"websocket-driver","version":"0.7.5","platform":"ruby","checksum":"a280c3f44dcbb0323d58bc78dc49350c05d589ab7d13267fcff08d9d5ae76b28"},
 {"name":"websocket-extensions","version":"0.1.5","platform":"ruby","checksum":"1c6ba63092cda343eb53fc657110c71c754c56484aad42578495227d717a8241"},

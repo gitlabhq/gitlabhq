@@ -21,10 +21,9 @@ module Integrations
 
     field :service_account_key_file_name,
       section: SECTION_TYPE_CONNECTION,
-      required: true,
-      is_secret: false
+      required: true
 
-    field :service_account_key, api_only: true, is_secret: false
+    field :service_account_key, api_only: true
 
     def title
       s_('GooglePlay|Google Play')

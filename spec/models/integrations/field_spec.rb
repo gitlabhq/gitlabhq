@@ -15,8 +15,8 @@ RSpec.describe ::Integrations::Field do
   end
 
   describe '#initialize' do
-    it 'sets type password for secret names' do
-      attrs[:name] = 'token'
+    it 'sets type password for secret fields' do
+      attrs[:is_secret] = true
       attrs[:type] = 'text'
 
       expect(field[:type]).to eq('password')
@@ -84,7 +84,7 @@ RSpec.describe ::Integrations::Field do
           when :type
             eq 'text'
           when :is_secret
-            eq true
+            eq false
           else
             be_nil
           end
@@ -173,16 +173,6 @@ RSpec.describe ::Integrations::Field do
       end
 
       it { is_expected.to be_secret }
-    end
-
-    %w[token api_token api_key secret_key secret_sauce password passphrase].each do |name|
-      context "when named #{name}" do
-        before do
-          attrs[:name] = name
-        end
-
-        it { is_expected.to be_secret }
-      end
     end
 
     context "when named url" do

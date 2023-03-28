@@ -72,7 +72,8 @@ module Integrations
           title: -> { s_('JiraService|Password or API token') },
           non_empty_password_title: -> { s_('JiraService|Enter new password or API token') },
           non_empty_password_help: -> { s_('JiraService|Leave blank to use your current password or API token.') },
-          help: -> { s_('JiraService|Password for the server version or an API token for the cloud version') }
+          help: -> { s_('JiraService|Password for the server version or an API token for the cloud version') },
+          is_secret: true
 
     field :jira_issue_regex,
            section: SECTION_TYPE_CONFIGURATION,

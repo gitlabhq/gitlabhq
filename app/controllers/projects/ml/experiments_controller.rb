@@ -6,6 +6,7 @@ module Projects
       include Projects::Ml::ExperimentsHelper
 
       before_action :check_feature_flag
+      before_action :set_experiment, only: [:show, :destroy]
 
       feature_category :mlops
 
@@ -22,10 +23,6 @@ module Projects
       end
 
       def show
-        @experiment = ::Ml::Experiment.by_project_id_and_iid(@project.id, params[:id])
-
-        return redirect_to project_ml_experiments_path(@project) unless @experiment.present?
-
         find_params = params
                         .transform_keys(&:underscore)
                         .permit(:name, :order_by, :sort, :order_by_type)
@@ -39,10 +36,24 @@ module Projects
         @page_info = page_info(paginator)
       end
 
+      def destroy
+        @experiment.destroy
+
+        redirect_to project_ml_experiments_path(@project),
+          status: :found,
+          notice: s_("MlExperimentTracking|Experiment removed")
+      end
+
       private
 
       def check_feature_flag
         render_404 unless Feature.enabled?(:ml_experiment_tracking, @project)
+      end
+
+      def set_experiment
+        @experiment = ::Ml::Experiment.by_project_id_and_iid(@project.id, params[:iid])
+
+        render_404 unless @experiment
       end
     end
   end

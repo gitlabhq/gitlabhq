@@ -4,7 +4,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import mockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { updateDraft } from '~/lib/utils/autosave';
+import { updateDraft, clearDraft } from '~/lib/utils/autosave';
 import EditedAt from '~/issues/show/components/edited.vue';
 import WorkItemNote from '~/work_items/components/notes/work_item_note.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
@@ -126,6 +126,7 @@ describe('Work Item Note', () => {
       await waitForPromises();
 
       expect(findCommentForm().exists()).toBe(false);
+      expect(clearDraft).toHaveBeenCalledWith(`${mockWorkItemCommentNote.id}-comment`);
     });
 
     describe('when mutation fails', () => {

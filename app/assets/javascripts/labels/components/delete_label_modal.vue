@@ -81,14 +81,9 @@ export default {
     </gl-sprintf>
     <template #modal-footer>
       <gl-button category="secondary" @click="closeModal">{{ __('Cancel') }}</gl-button>
-      <gl-button
-        category="primary"
-        variant="danger"
-        :href="destroyPath"
-        data-method="delete"
-        data-testid="delete-button"
-        >{{ __('Delete label') }}</gl-button
-      >
+      <gl-button category="primary" variant="danger" :href="destroyPath" data-method="delete">{{
+        __('Delete label')
+      }}</gl-button>
     </template>
   </gl-modal>
 </template>

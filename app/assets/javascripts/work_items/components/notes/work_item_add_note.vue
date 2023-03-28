@@ -1,9 +1,9 @@
 <script>
 import { GlAvatar, GlButton } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
-import { clearDraft } from '~/lib/utils/autosave';
 import Tracking from '~/tracking';
 import { ASC } from '~/notes/constants';
+import { clearDraft } from '~/lib/utils/autosave';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getWorkItemQuery } from '../../utils';
 import createNoteMutation from '../../graphql/notes/create_work_item_note.mutation.graphql';
@@ -170,7 +170,6 @@ export default {
     async updateWorkItem(commentText) {
       this.isSubmitting = true;
       this.$emit('replying', commentText);
-
       try {
         this.track('add_work_item_comment');
 
@@ -207,15 +206,24 @@ export default {
             }
           },
         });
-        clearDraft(this.autosaveKey);
+        /**
+         * https://gitlab.com/gitlab-org/gitlab/-/issues/388314
+         *
+         * Once form is successfully submitted, emit replied event,
+         * mark isSubmitting to false and clear storage before hiding the form.
+         * This will restrict comment form to restore the value while textarea
+         * input triggered due to keyboard event meta+enter.
+         *
+         */
         this.$emit('replied');
+        clearDraft(this.autosaveKey);
         this.cancelEditing();
       } catch (error) {
         this.$emit('error', error.message);
         Sentry.captureException(error);
+      } finally {
+        this.isSubmitting = false;
       }
-
-      this.isSubmitting = false;
     },
     cancelEditing() {
       this.isEditing = false;

@@ -19,6 +19,7 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
   let(:ff_value) { true }
   let(:project) { project_with_feature }
   let(:basic_params) { { namespace_id: project.namespace.to_param, project_id: project } }
+  let(:experiment_iid) { experiment.iid }
 
   before do
     stub_feature_flags(ml_experiment_tracking: false)
@@ -27,13 +28,25 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
     sign_in(user)
   end
 
+  shared_examples 'renders 404' do
+    it 'renders 404' do
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+
+  shared_examples '404 if experiment does not exist' do
+    context 'when experiment does not exist' do
+      let(:experiment_iid) { non_existing_record_id }
+
+      it_behaves_like 'renders 404'
+    end
+  end
+
   shared_examples '404 if feature flag disabled' do
     context 'when :ml_experiment_tracking disabled' do
       let(:ff_value) { false }
 
-      it 'is 404' do
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
+      it_behaves_like 'renders 404'
     end
   end
 
@@ -109,8 +122,6 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
   end
 
   describe 'GET show' do
-    let(:params) { basic_params.merge(id: experiment.iid) }
-
     it 'renders the template' do
       show_experiment
 
@@ -177,7 +188,6 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
     describe 'search' do
       let(:params) do
         basic_params.merge(
-          id: experiment.iid,
           name: 'some_name',
           orderBy: 'name',
           orderByType: 'metric',
@@ -208,20 +218,50 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
       expect { show_experiment }.not_to exceed_all_query_limit(control_count)
     end
 
-    it_behaves_like '404 if feature flag disabled' do
+    describe '404' do
       before do
         show_experiment
       end
+
+      it_behaves_like '404 if experiment does not exist'
+      it_behaves_like '404 if feature flag disabled'
     end
+  end
+
+  describe 'DELETE #destroy' do
+    let_it_be(:experiment_for_deletion) do
+      create(:ml_experiments, project: project_with_feature, user: user).tap do |e|
+        create(:ml_candidates, experiment: e, user: user)
+      end
+    end
+
+    let_it_be(:candidate_for_deletion) { experiment_for_deletion.candidates.first }
+
+    let(:params) { basic_params.merge(id: experiment.iid) }
+
+    before do
+      destroy_experiment
+    end
+
+    it 'deletes the experiment' do
+      expect { experiment.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it_behaves_like '404 if experiment does not exist'
+    it_behaves_like '404 if feature flag disabled'
   end
 
   private
 
   def show_experiment(new_params = nil)
-    get project_ml_experiment_path(project, experiment.iid), params: new_params || params
+    get project_ml_experiment_path(project, experiment_iid), params: new_params || params
   end
 
   def list_experiments(new_params = nil)
     get project_ml_experiments_path(project), params: new_params || params
+  end
+
+  def destroy_experiment
+    delete project_ml_experiment_path(project, experiment_iid), params: params
   end
 end

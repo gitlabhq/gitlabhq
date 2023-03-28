@@ -32,16 +32,43 @@ end
 
 RSpec.shared_examples 'work items comments' do |type|
   let(:form_selector) { '[data-testid="work-item-add-comment"]' }
+  let(:textarea_selector) { '[data-testid="work-item-add-comment"] #work-item-add-or-edit-comment' }
+  let(:is_mac) { page.evaluate_script('navigator.platform').include?('Mac') }
+  let(:modifier_key) { is_mac ? :command : :control }
+  let(:comment) { 'Test comment' }
 
-  it 'successfully creates and shows comments' do
+  def set_comment
     click_button 'Add a reply'
 
-    find(form_selector).fill_in(with: "Test comment")
+    find(form_selector).fill_in(with: comment)
+  end
+
+  it 'successfully creates and shows comments' do
+    set_comment
+
     click_button "Comment"
 
     wait_for_requests
 
-    expect(page).to have_content "Test comment"
+    page.within(".main-notes-list") do
+      expect(page).to have_content comment
+    end
+  end
+
+  it 'successfully posts comments using shortcut and checks if textarea is blank when reinitiated' do
+    set_comment
+
+    send_keys([modifier_key, :enter])
+
+    wait_for_requests
+
+    page.within(".main-notes-list") do
+      expect(page).to have_content comment
+    end
+
+    click_button 'Add a reply'
+
+    expect(find(textarea_selector)).to have_content ""
   end
 
   context 'when using quick actions' do

@@ -469,7 +469,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
 
         namespace :ml do
-          resources :experiments, only: [:index, :show], controller: 'experiments'
+          resources :experiments, only: [:index, :show, :destroy], controller: 'experiments', param: :iid
           resources :candidates, only: [:show], controller: 'candidates', param: :iid
         end
       end

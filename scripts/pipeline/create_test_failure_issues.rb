@@ -24,7 +24,7 @@ class CreateTestFailureIssues
     puts "[CreateTestFailureIssues] No failed tests!" if failed_tests.empty?
 
     failed_tests.each_with_object([]) do |failed_test, existing_issues|
-      CreateTestFailureIssue.new(options.dup).upsert(failed_test, existing_issues).tap do |issue|
+      CreateTestFailureIssue.new(options.dup).comment_or_create(failed_test, existing_issues).tap do |issue|
         existing_issues << issue
         File.write(File.join(options[:issue_json_folder], "issue-#{issue.iid}.json"), JSON.pretty_generate(issue.to_h))
       end
@@ -52,18 +52,14 @@ class CreateTestFailureIssue
   WWW_GITLAB_COM_GROUPS_JSON = "#{WWW_GITLAB_COM_SITE}/groups.json".freeze
   WWW_GITLAB_COM_CATEGORIES_JSON = "#{WWW_GITLAB_COM_SITE}/categories.json".freeze
   FEATURE_CATEGORY_METADATA_REGEX = /(?<=feature_category: :)\w+/
-  DEFAULT_LABELS = ['type::maintenance', 'test'].freeze
-  PROJECT_PATH = ENV.fetch('CI_PROJECT_PATH', 'gitlab-org/gitlab')
-  JOB_BASE_URL = "https://gitlab.com/#{PROJECT_PATH}/-/jobs/".freeze
-  FILE_BASE_URL = "https://gitlab.com/#{PROJECT_PATH}/-/blob/master/".freeze
-  REPORT_ITEM_REGEX = %r{^1\. \d{4}-\d{2}-\d{2}: #{JOB_BASE_URL}.+$}
+  DEFAULT_LABELS = ['type::maintenance', 'failure::flaky-test'].freeze
 
   def initialize(options)
     @project = options.delete(:project)
     @api_token = options.delete(:api_token)
   end
 
-  def upsert(failed_test, existing_issues = [])
+  def comment_or_create(failed_test, existing_issues = [])
     existing_issue = find(failed_test, existing_issues)
 
     if existing_issue
@@ -74,16 +70,12 @@ class CreateTestFailureIssue
     end
   end
 
-  private
-
-  attr_reader :project, :api_token
-
   def find(failed_test, existing_issues = [])
-    test_id = failed_test_id(failed_test)
-    issue_from_existing_issues = existing_issues.find { |issue| issue.title.include?(test_id) }
+    failed_test_issue_title = failed_test_issue_title(failed_test)
+    issue_from_existing_issues = existing_issues.find { |issue| issue.title == failed_test_issue_title }
     issue_from_issue_tracker = FindIssues
       .new(project: project, api_token: api_token)
-      .execute(state: :opened, search: test_id, in: :title, per_page: 1)
+      .execute(state: 'opened', search: failed_test_issue_title)
       .first
 
     existing_issue = issue_from_existing_issues || issue_from_issue_tracker
@@ -96,24 +88,10 @@ class CreateTestFailureIssue
   end
 
   def update_reports(existing_issue, failed_test)
-    # We count the number of existing reports.
-    reports_count = existing_issue.description
-      .scan(REPORT_ITEM_REGEX)
-      .size.to_i + 1
-
-    # We include the number of reports in the header, for visibility.
-    issue_description = existing_issue.description.sub(/^### Reports.*$/, "### Reports (#{reports_count})")
-
-    # We add the current failure to the list of reports.
-    issue_description = "#{issue_description}\n#{report_list_item(failed_test)}"
-
+    new_issue_description = "#{existing_issue.description}\n- #{failed_test['job_url']} (#{ENV['CI_PIPELINE_URL']})"
     UpdateIssue
       .new(project: project, api_token: api_token)
-      .execute(
-        existing_issue.iid,
-        description: issue_description,
-        weight: reports_count
-      )
+      .execute(existing_issue.iid, description: new_issue_description)
     puts "[CreateTestFailureIssue] Added a report in '#{existing_issue.title}': #{existing_issue.web_url}!"
   end
 
@@ -121,8 +99,7 @@ class CreateTestFailureIssue
     payload = {
       title: failed_test_issue_title(failed_test),
       description: failed_test_issue_description(failed_test),
-      labels: failed_test_issue_labels(failed_test),
-      weight: 1
+      labels: failed_test_issue_labels(failed_test)
     }
 
     CreateIssue.new(project: project, api_token: api_token).execute(payload).tap do |issue|
@@ -130,40 +107,36 @@ class CreateTestFailureIssue
     end
   end
 
+  private
+
+  attr_reader :project, :api_token
+
   def failed_test_id(failed_test)
-    Digest::SHA256.hexdigest(failed_test['file'] + failed_test['name'])[0...12]
+    Digest::SHA256.hexdigest(search_safe(failed_test['name']))[0...12]
   end
 
   def failed_test_issue_title(failed_test)
-    title = "#{failed_test['file']} [test-hash:#{failed_test_id(failed_test)}]"
+    title = "#{failed_test['file']} - ID: #{failed_test_id(failed_test)}"
 
     raise "Title is too long!" if title.size > MAX_TITLE_LENGTH
 
     title
   end
 
-  def test_file_link(failed_test)
-    "[`#{failed_test['file']}`](#{FILE_BASE_URL}#{failed_test['file']})"
-  end
-
-  def report_list_item(failed_test)
-    "1. #{Time.new.utc.strftime('%F')}: #{failed_test['job_url']} (#{ENV['CI_PIPELINE_URL']})"
-  end
-
   def failed_test_issue_description(failed_test)
     <<~DESCRIPTION
-    ### Test description
+    ### Full description
 
     `#{search_safe(failed_test['name'])}`
 
-    ### Test file path
+    ### File path
 
-    #{test_file_link(failed_test)}
+    `#{failed_test['file']}`
 
     <!-- Don't add anything after the report list since it's updated automatically -->
-    ### Reports (1)
+    ### Reports
 
-    #{report_list_item(failed_test)}
+    - #{failed_test['job_url']} (#{ENV['CI_PIPELINE_URL']})
     DESCRIPTION
   end
 

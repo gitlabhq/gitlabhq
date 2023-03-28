@@ -70,8 +70,16 @@ export default {
   },
   methods: {
     setCommentText(newText) {
-      this.commentText = newText;
-      updateDraft(this.autosaveKey, this.commentText);
+      /**
+       * https://gitlab.com/gitlab-org/gitlab/-/issues/388314
+       *
+       * While the form is saving using meta+enter,
+       * avoid updating the data which is cleared after form submission.
+       */
+      if (!this.isSubmitting) {
+        this.commentText = newText;
+        updateDraft(this.autosaveKey, this.commentText);
+      }
     },
     async cancelEditing() {
       if (this.commentText && this.commentText !== this.initialValue) {

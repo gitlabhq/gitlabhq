@@ -24,14 +24,12 @@ module Integrations
     field :app_store_key_id,
           section: SECTION_TYPE_CONNECTION,
           required: true,
-          title: -> { s_('AppleAppStore|The Apple App Store Connect Key ID.') },
-          is_secret: false
+          title: -> { s_('AppleAppStore|The Apple App Store Connect Key ID.') }
 
     field :app_store_private_key_file_name,
-          section: SECTION_TYPE_CONNECTION,
-          is_secret: false
+          section: SECTION_TYPE_CONNECTION
 
-    field :app_store_private_key, api_only: true, is_secret: false
+    field :app_store_private_key, api_only: true
 
     def title
       'Apple App Store Connect'
