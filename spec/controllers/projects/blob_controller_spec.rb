@@ -2,15 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::BlobController do
+RSpec.describe Projects::BlobController, feature_category: :source_code_management do
   include ProjectForksHelper
 
   let(:project) { create(:project, :public, :repository, previous_default_branch: previous_default_branch) }
   let(:previous_default_branch) { nil }
 
   describe "GET show" do
-    def request
-      get(:show, params: { namespace_id: project.namespace, project_id: project, id: id })
+    let(:params) { { namespace_id: project.namespace, project_id: project, id: id } }
+    let(:request) do
+      get(:show, params: params)
     end
 
     render_views
@@ -18,8 +19,32 @@ RSpec.describe Projects::BlobController do
     context 'with file path' do
       before do
         expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
-
+        project.repository.add_tag(project.creator, 'ambiguous_ref', RepoHelpers.sample_commit.id)
+        project.repository.add_branch(project.creator, 'ambiguous_ref', RepoHelpers.another_sample_commit.id)
         request
+      end
+
+      context 'when the ref is ambiguous' do
+        let(:ref) { 'ambiguous_ref' }
+        let(:path) { 'README.md' }
+        let(:id) { "#{ref}/#{path}" }
+        let(:params) { { namespace_id: project.namespace, project_id: project, id: id, ref_type: ref_type } }
+
+        context 'and explicitly requesting a branch' do
+          let(:ref_type) { 'heads' }
+
+          it 'redirects to blob#show with sha for the branch' do
+            expect(response).to redirect_to(project_blob_path(project, "#{RepoHelpers.another_sample_commit.id}/#{path}"))
+          end
+        end
+
+        context 'and explicitly requesting a tag' do
+          let(:ref_type) { 'tags' }
+
+          it 'responds with success' do
+            expect(response).to be_ok
+          end
+        end
       end
 
       context "valid branch, valid file" do

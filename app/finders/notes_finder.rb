@@ -30,6 +30,7 @@ class NotesFinder
     notes = init_collection
     notes = since_fetch_at(notes)
     notes = notes.with_notes_filter(@params[:notes_filter]) if notes_filter?
+    notes = redact_internal(notes)
     sort(notes)
   end
 
@@ -180,6 +181,13 @@ class NotesFinder
     return notes.fresh unless sort
 
     notes.order_by(sort)
+  end
+
+  def redact_internal(notes)
+    subject = @project || target
+    return notes if Ability.allowed?(@current_user, :reporter_access, subject)
+
+    notes.not_internal
   end
 end
 

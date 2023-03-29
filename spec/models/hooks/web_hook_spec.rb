@@ -242,12 +242,40 @@ RSpec.describe WebHook, feature_category: :integrations do
         expect(hook.url_variables).to eq({})
       end
 
+      it 'resets url variables if url is changed and url variables are appended' do
+        hook.url = 'http://suspicious.example.com/{abc}/{foo}'
+        hook.url_variables = hook.url_variables.merge('foo' => 'bar')
+
+        expect(hook).not_to be_valid
+        expect(hook.url_variables).to eq({})
+      end
+
+      it 'resets url variables if url is changed and url variables are removed' do
+        hook.url = 'http://suspicious.example.com/{abc}'
+        hook.url_variables = hook.url_variables.except("def")
+
+        expect(hook).not_to be_valid
+        expect(hook.url_variables).to eq({})
+      end
+
       it 'does not reset url variables if both url and url variables are changed' do
         hook.url = 'http://example.com/{one}/{two}'
         hook.url_variables = { 'one' => 'foo', 'two' => 'bar' }
 
         expect(hook).to be_valid
         expect(hook.url_variables).to eq({ 'one' => 'foo', 'two' => 'bar' })
+      end
+
+      context 'without url variables' do
+        subject(:hook) { build_stubbed(:project_hook, project: project, url: 'http://example.com') }
+
+        it 'does not reset url variables' do
+          hook.url = 'http://example.com/{one}/{two}'
+          hook.url_variables = { 'one' => 'foo', 'two' => 'bar' }
+
+          expect(hook).to be_valid
+          expect(hook.url_variables).to eq({ 'one' => 'foo', 'two' => 'bar' })
+        end
       end
     end
 

@@ -26,7 +26,7 @@ RSpec.describe HooksHelper do
       it 'returns proper data' do
         expect(subject).to match(
           url: project_hook.url,
-          url_variables: Gitlab::Json.dump([{ key: 'abc' }])
+          url_variables: Gitlab::Json.dump([{ key: 'abc' }, { key: 'def' }])
         )
       end
     end
