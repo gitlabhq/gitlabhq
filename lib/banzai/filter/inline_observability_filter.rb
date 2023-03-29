@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'uri'
+
 module Banzai
   module Filter
     class InlineObservabilityFilter < ::Banzai::Filter::InlineEmbedsFilter
@@ -15,7 +17,8 @@ module Banzai
         doc.document.create_element(
           'div',
           class: 'js-render-observability',
-          'data-frame-url': url
+          'data-frame-url': url,
+          'data-observability-url': Gitlab::Observability.observability_url
         )
       end
 
@@ -28,8 +31,15 @@ module Banzai
       # obtained from the target link
       def element_to_embed(node)
         url = node['href']
+        uri = URI.parse(url)
+        observability_uri = URI.parse(Gitlab::Observability.observability_url)
 
-        create_element(url)
+        if uri.scheme == observability_uri.scheme &&
+            uri.port == observability_uri.port &&
+            uri.host.casecmp?(observability_uri.host) &&
+            uri.path.downcase.exclude?("auth/start")
+          create_element(url)
+        end
       end
 
       private
