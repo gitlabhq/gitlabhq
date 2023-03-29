@@ -270,6 +270,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="queryissuesiid"></a>`iid` | [`String`](#string) | IID of the issue. For example, "1". |
 | <a id="queryissuesiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of issues. For example, `["1", "2"]`. |
 | <a id="queryissuesin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
+| <a id="queryissuesincludearchived"></a>`includeArchived` | [`Boolean`](#boolean) | Whether to include issues from archived projects. Defaults to `false`. |
 | <a id="queryissuesincludesubepics"></a>`includeSubepics` | [`Boolean`](#boolean) | Whether to include subepics when filtering issues by epicId. |
 | <a id="queryissuesiterationid"></a>`iterationId` | [`[ID]`](#id) | List of iteration Global IDs applied to the issue. |
 | <a id="queryissuesiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by iteration ID wildcard. |
