@@ -2016,7 +2016,7 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
       :public   | ProjectFeature::ENABLED   | :anonymous  | true
       :public   | ProjectFeature::PRIVATE   | :maintainer | true
       :public   | ProjectFeature::PRIVATE   | :developer  | true
-      :public   | ProjectFeature::PRIVATE   | :guest      | true
+      :public   | ProjectFeature::PRIVATE   | :guest      | false
       :public   | ProjectFeature::PRIVATE   | :anonymous  | false
       :public   | ProjectFeature::DISABLED  | :maintainer | false
       :public   | ProjectFeature::DISABLED  | :developer  | false
@@ -2028,7 +2028,7 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
       :internal | ProjectFeature::ENABLED   | :anonymous  | false
       :internal | ProjectFeature::PRIVATE   | :maintainer | true
       :internal | ProjectFeature::PRIVATE   | :developer  | true
-      :internal | ProjectFeature::PRIVATE   | :guest      | true
+      :internal | ProjectFeature::PRIVATE   | :guest      | false
       :internal | ProjectFeature::PRIVATE   | :anonymous  | false
       :internal | ProjectFeature::DISABLED  | :maintainer | false
       :internal | ProjectFeature::DISABLED  | :developer  | false
