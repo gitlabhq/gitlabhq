@@ -361,7 +361,7 @@ RSpec.describe API::ProjectExport, :clean_gitlab_redis_cache, feature_category: 
       context 'with upload strategy' do
         context 'when params invalid' do
           it_behaves_like '400 response' do
-            let(:request) { post(api(path, user), params: { 'upload[url]' => 'whatever' }) }
+            let(:request) { post(api(path, user, admin_mode: user.admin?), params: { 'upload[url]' => 'whatever' }) }
           end
         end
 

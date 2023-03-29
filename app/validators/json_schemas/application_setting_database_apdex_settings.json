@@ -1,0 +1,34 @@
+{
+  "description": "Database Apdex Settings",
+  "type": "object",
+  "properties": {
+    "prometheus_api_url": {
+      "type": "string"
+    },
+    "apdex_sli_query": {
+      "type": "object",
+      "properties": {
+        "main": {
+          "type": "string"
+        },
+        "ci": {
+          "type": "string"
+        }
+      }
+    },
+    "apdex_slo": {
+      "type": "object",
+      "properties": {
+        "main": {
+          "type": "number",
+          "format": "float"
+        },
+        "ci": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

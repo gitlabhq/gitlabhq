@@ -251,7 +251,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
         context 'as an admin' do
           context 'accesses their own profile' do
             it 'contains the note of the user' do
-              get api("/user", admin)
+              get api("/user", admin, admin_mode: true)
 
               expect(json_response).to have_key('note')
               expect(json_response['note']).to eq(admin.note)
@@ -477,7 +477,6 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
       context 'exclude_internal param' do
         let_it_be(:internal_user) { User.alert_bot }
 
-        # why is this working without admin_mode?
         it 'returns all users when it is not set' do
           get api("/users?exclude_internal=false", admin)
 
@@ -2741,7 +2740,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
       end
 
       context 'with admin' do
-        let(:admin_personal_access_token) { create(:personal_access_token, user: admin).token }
+        let(:admin_personal_access_token) { create(:personal_access_token, :admin_mode, user: admin).token }
 
         context 'with personal access token' do
           it 'returns 403 without private token when sudo defined' do
@@ -2750,7 +2749,6 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
             expect(response).to have_gitlab_http_status(:forbidden)
           end
 
-          # why does this work without admin_mode?
           it 'returns initial current user without private token but with is_admin when sudo not defined' do
             get api("/user?private_token=#{admin_personal_access_token}", version: version)
 
@@ -4010,8 +4008,10 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
     context 'requested by admin user' do
       let(:requesting_user) { create(:user, :admin) }
 
+      subject { get api("/users/#{user.id}/memberships", requesting_user, admin_mode: true) }
+
       it "responses successfully" do
-        get api("/users/#{user.id}/memberships", requesting_user, admin_mode: true)
+        subject
 
         aggregate_failures 'expect successful response including groups and projects' do
           expect(response).to have_gitlab_http_status(:ok)
@@ -4024,19 +4024,19 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
         end
       end
 
-      # why does this work without admin_mode?
       it 'does not submit N+1 DB queries' do
         # Avoid setup queries
-        get api("/users/#{user.id}/memberships", requesting_user)
+        subject
+        expect(response).to have_gitlab_http_status(:ok)
 
         control = ActiveRecord::QueryRecorder.new do
-          get api("/users/#{user.id}/memberships", requesting_user)
+          subject
         end
 
         create_list(:project, 5).map { |project| project.add_guest(user) }
 
         expect do
-          get api("/users/#{user.id}/memberships", requesting_user)
+          subject
         end.not_to exceed_query_limit(control)
       end
 

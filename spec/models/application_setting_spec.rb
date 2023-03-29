@@ -45,6 +45,20 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     let(:ftp)   { 'ftp://example.com' }
     let(:javascript) { 'javascript:alert(window.opener.document.location)' }
 
+    let_it_be(:valid_database_apdex_settings) do
+      {
+        prometheus_api_url: 'Prometheus URL',
+        apdex_sli_query: {
+          main: 'Apdex SLI query main',
+          ci: 'Apdex SLI query ci'
+        },
+        apdex_slo: {
+          main: 0.99,
+          ci: 0.98
+        }
+      }
+    end
+
     it { is_expected.to allow_value(nil).for(:home_page_url) }
     it { is_expected.to allow_value(http).for(:home_page_url) }
     it { is_expected.to allow_value(https).for(:home_page_url) }
@@ -255,6 +269,10 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_value(true).for(:gitlab_dedicated_instance) }
     it { is_expected.to allow_value(false).for(:gitlab_dedicated_instance) }
     it { is_expected.not_to allow_value(nil).for(:gitlab_dedicated_instance) }
+
+    it { is_expected.not_to allow_value(random: :value).for(:database_apdex_settings) }
+    it { is_expected.to allow_value(nil).for(:database_apdex_settings) }
+    it { is_expected.to allow_value(valid_database_apdex_settings).for(:database_apdex_settings) }
 
     context 'when deactivate_dormant_users is enabled' do
       before do

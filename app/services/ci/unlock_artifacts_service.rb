@@ -4,6 +4,11 @@ module Ci
   class UnlockArtifactsService < ::BaseService
     BATCH_SIZE = 100
 
+    # This service performs either one of the following,
+    # depending on whether `before_pipeline` is given.
+    # 1. Without `before_pipeline`, it unlocks all the pipelines belonging to the given `ci_ref`
+    # 2. With `before_pipeline`, it unlocks all the pipelines in the `ci_ref` that was created
+    #    before the given `before_pipeline`, with the exception of the last successful pipeline.
     def execute(ci_ref, before_pipeline = nil)
       results = {
         unlocked_pipelines: 0,
@@ -51,21 +56,37 @@ module Ci
     def unlock_pipelines_query(ci_ref, before_pipeline)
       ci_pipelines = ::Ci::Pipeline.arel_table
 
-      pipelines_scope = ci_ref.pipelines.artifacts_locked
-      pipelines_scope = pipelines_scope.before_pipeline(before_pipeline) if before_pipeline
-      pipelines_scope = pipelines_scope.select(:id).limit(BATCH_SIZE).lock('FOR UPDATE SKIP LOCKED')
+      pipelines_to_unlock = ci_ref.pipelines.artifacts_locked
+      pipelines_to_unlock = exclude_last_successful_pipeline(pipelines_to_unlock, ci_ref, before_pipeline)
+      pipelines_to_unlock = pipelines_to_unlock.select(:id).limit(BATCH_SIZE).lock('FOR UPDATE SKIP LOCKED')
 
       returning = Arel::Nodes::Grouping.new(ci_pipelines[:id])
 
       Arel::UpdateManager.new
         .table(ci_pipelines)
-        .where(ci_pipelines[:id].in(Arel.sql(pipelines_scope.to_sql)))
+        .where(ci_pipelines[:id].in(Arel.sql(pipelines_to_unlock.to_sql)))
         .set([[ci_pipelines[:locked], ::Ci::Pipeline.lockeds[:unlocked]]])
         .to_sql + " RETURNING #{returning.to_sql}"
     end
     # rubocop:enable CodeReuse/ActiveRecord
 
     private
+
+    # rubocop:disable CodeReuse/ActiveRecord
+    def exclude_last_successful_pipeline(pipelines_to_unlock, ci_ref, before_pipeline)
+      return pipelines_to_unlock if before_pipeline.nil?
+
+      pipelines_to_unlock = pipelines_to_unlock.before_pipeline(before_pipeline)
+
+      last_successful_pipeline = ci_ref.last_successful_pipeline
+
+      if last_successful_pipeline.present?
+        pipelines_to_unlock = pipelines_to_unlock.outside_pipeline_family(last_successful_pipeline)
+      end
+
+      pipelines_to_unlock
+    end
+    # rubocop:enable CodeReuse/ActiveRecord
 
     def unlock_job_artifacts(pipelines)
       return if pipelines.empty?

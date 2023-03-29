@@ -662,6 +662,8 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :inactive_projects_send_warning_email_after_months,
             numericality: { only_integer: true, greater_than: 0, less_than: :inactive_projects_delete_after_months }
 
+  validates :database_apdex_settings, json_schema: { filename: 'application_setting_database_apdex_settings' }, allow_nil: true
+
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_truncated,

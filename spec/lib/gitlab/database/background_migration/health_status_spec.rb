@@ -19,8 +19,10 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus do
     let(:health_status) { Gitlab::Database::BackgroundMigration::HealthStatus }
     let(:autovacuum_indicator_class) { health_status::Indicators::AutovacuumActiveOnTable }
     let(:wal_indicator_class) { health_status::Indicators::WriteAheadLog }
+    let(:patroni_apdex_indicator_class) { health_status::Indicators::PatroniApdex }
     let(:autovacuum_indicator) { instance_double(autovacuum_indicator_class) }
     let(:wal_indicator) { instance_double(wal_indicator_class) }
+    let(:patroni_apdex_indicator) { instance_double(patroni_apdex_indicator_class) }
 
     before do
       allow(autovacuum_indicator_class).to receive(:new).with(migration.health_context).and_return(autovacuum_indicator)
@@ -36,8 +38,11 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus do
         expect(autovacuum_indicator).to receive(:evaluate).and_return(normal_signal)
         expect(wal_indicator_class).to receive(:new).with(migration.health_context).and_return(wal_indicator)
         expect(wal_indicator).to receive(:evaluate).and_return(not_available_signal)
+        expect(patroni_apdex_indicator_class).to receive(:new).with(migration.health_context)
+          .and_return(patroni_apdex_indicator)
+        expect(patroni_apdex_indicator).to receive(:evaluate).and_return(not_available_signal)
 
-        expect(evaluate).to contain_exactly(normal_signal, not_available_signal)
+        expect(evaluate).to contain_exactly(normal_signal, not_available_signal, not_available_signal)
       end
     end
 

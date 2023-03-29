@@ -3235,14 +3235,14 @@ RSpec.describe API::Projects, feature_category: :projects do
 
         context 'for a forked project' do
           before do
-            post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
+            post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin, admin_mode: true)
             project_fork_target.reload
             expect(project_fork_target.forked_from_project).to be_present
             expect(project_fork_target).to be_forked
           end
 
           it 'makes forked project unforked' do
-            delete api("/projects/#{project_fork_target.id}/fork", admin)
+            delete api("/projects/#{project_fork_target.id}/fork", admin, admin_mode: true)
 
             expect(response).to have_gitlab_http_status(:no_content)
             project_fork_target.reload
@@ -3251,7 +3251,7 @@ RSpec.describe API::Projects, feature_category: :projects do
           end
 
           it_behaves_like '412 response' do
-            let(:request) { api("/projects/#{project_fork_target.id}/fork", admin) }
+            let(:request) { api("/projects/#{project_fork_target.id}/fork", admin, admin_mode: true) }
           end
         end
 
@@ -4526,7 +4526,7 @@ RSpec.describe API::Projects, feature_category: :projects do
 
       it_behaves_like '412 response' do
         let(:success_status) { 202 }
-        let(:request) { api("/projects/#{project.id}", admin) }
+        let(:request) { api("/projects/#{project.id}", admin, admin_mode: true) }
       end
     end
   end

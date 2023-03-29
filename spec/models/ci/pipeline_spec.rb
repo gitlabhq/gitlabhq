@@ -153,6 +153,38 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         pipeline.succeed!
       end
     end
+
+    describe 'unlocking artifacts on after a running pipeline succeeds, skipped, canceled, failed or blocked' do
+      shared_examples 'scheduling Ci::UnlockRefArtifactsOnPipelineStopWorker' do |event:|
+        let(:pipeline) { create(:ci_pipeline, :running) }
+
+        it 'schedules Ci::UnlockRefArtifactsOnPipelineStopWorker' do
+          expect(Ci::UnlockRefArtifactsOnPipelineStopWorker).to receive(:perform_async).with(pipeline.id)
+
+          pipeline.fire_status_event(event)
+        end
+      end
+
+      context 'when running pipeline is successful' do
+        it_behaves_like 'scheduling Ci::UnlockRefArtifactsOnPipelineStopWorker', event: :succeed
+      end
+
+      context 'when running pipeline is skipped' do
+        it_behaves_like 'scheduling Ci::UnlockRefArtifactsOnPipelineStopWorker', event: :skip
+      end
+
+      context 'when running pipeline is canceled' do
+        it_behaves_like 'scheduling Ci::UnlockRefArtifactsOnPipelineStopWorker', event: :cancel
+      end
+
+      context 'when running pipeline failed' do
+        it_behaves_like 'scheduling Ci::UnlockRefArtifactsOnPipelineStopWorker', event: :drop
+      end
+
+      context 'when running pipeline is blocked' do
+        it_behaves_like 'scheduling Ci::UnlockRefArtifactsOnPipelineStopWorker', event: :block
+      end
+    end
   end
 
   describe 'pipeline age metric' do

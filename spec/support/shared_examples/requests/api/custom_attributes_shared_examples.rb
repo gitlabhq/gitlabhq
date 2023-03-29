@@ -4,7 +4,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
   let!(:custom_attribute1) { attributable.custom_attributes.create! key: 'foo', value: 'foo' }
   let!(:custom_attribute2) { attributable.custom_attributes.create! key: 'bar', value: 'bar' }
 
-  describe "GET /#{attributable_name} with custom attributes filter" do
+  describe "GET /#{attributable_name} with custom attributes filter", :aggregate_failures do
     before do
       other_attributable
     end
@@ -20,7 +20,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
 
     context 'with an authorized user' do
       it 'filters by custom attributes' do
-        get api("/#{attributable_name}", admin), params: { custom_attributes: { foo: 'foo', bar: 'bar' } }
+        get api("/#{attributable_name}", admin, admin_mode: true), params: { custom_attributes: { foo: 'foo', bar: 'bar' } }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.size).to be 1
@@ -29,7 +29,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
     end
   end
 
-  describe "GET /#{attributable_name} with custom attributes" do
+  describe "GET /#{attributable_name} with custom attributes", :aggregate_failures do
     before do
       other_attributable
     end
@@ -46,7 +46,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
 
     context 'with an authorized user' do
       it 'does not include custom attributes by default' do
-        get api("/#{attributable_name}", admin)
+        get api("/#{attributable_name}", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).not_to be_empty
@@ -54,7 +54,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
       end
 
       it 'includes custom attributes if requested' do
-        get api("/#{attributable_name}", admin), params: { with_custom_attributes: true }
+        get api("/#{attributable_name}", admin, admin_mode: true), params: { with_custom_attributes: true }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).not_to be_empty
@@ -72,7 +72,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
     end
   end
 
-  describe "GET /#{attributable_name}/:id with custom attributes" do
+  describe "GET /#{attributable_name}/:id with custom attributes", :aggregate_failures do
     context 'with an unauthorized user' do
       it 'does not include custom attributes' do
         get api("/#{attributable_name}/#{attributable.id}", user), params: { with_custom_attributes: true }
@@ -84,14 +84,14 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
 
     context 'with an authorized user' do
       it 'does not include custom attributes by default' do
-        get api("/#{attributable_name}/#{attributable.id}", admin)
+        get api("/#{attributable_name}/#{attributable.id}", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).not_to include 'custom_attributes'
       end
 
       it 'includes custom attributes if requested' do
-        get api("/#{attributable_name}/#{attributable.id}", admin), params: { with_custom_attributes: true }
+        get api("/#{attributable_name}/#{attributable.id}", admin, admin_mode: true), params: { with_custom_attributes: true }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['custom_attributes']).to contain_exactly(
@@ -102,7 +102,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
     end
   end
 
-  describe "GET /#{attributable_name}/:id/custom_attributes" do
+  describe "GET /#{attributable_name}/:id/custom_attributes", :aggregate_failures do
     context 'with an unauthorized user' do
       subject { get api("/#{attributable_name}/#{attributable.id}/custom_attributes", user) }
 
@@ -111,7 +111,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
 
     context 'with an authorized user' do
       it 'returns all custom attributes' do
-        get api("/#{attributable_name}/#{attributable.id}/custom_attributes", admin)
+        get api("/#{attributable_name}/#{attributable.id}/custom_attributes", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to contain_exactly(
@@ -122,7 +122,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
     end
   end
 
-  describe "GET /#{attributable_name}/:id/custom_attributes/:key" do
+  describe "GET /#{attributable_name}/:id/custom_attributes/:key", :aggregate_failures do
     context 'with an unauthorized user' do
       subject { get api("/#{attributable_name}/#{attributable.id}/custom_attributes/foo", user) }
 
@@ -131,7 +131,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
 
     context 'with an authorized user' do
       it 'returns a single custom attribute' do
-        get api("/#{attributable_name}/#{attributable.id}/custom_attributes/foo", admin)
+        get api("/#{attributable_name}/#{attributable.id}/custom_attributes/foo", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to eq({ 'key' => 'foo', 'value' => 'foo' })
@@ -139,7 +139,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
     end
   end
 
-  describe "PUT /#{attributable_name}/:id/custom_attributes/:key" do
+  describe "PUT /#{attributable_name}/:id/custom_attributes/:key", :aggregate_failures do
     context 'with an unauthorized user' do
       subject { put api("/#{attributable_name}/#{attributable.id}/custom_attributes/foo", user), params: { value: 'new' } }
 
@@ -149,7 +149,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
     context 'with an authorized user' do
       it 'creates a new custom attribute' do
         expect do
-          put api("/#{attributable_name}/#{attributable.id}/custom_attributes/new", admin), params: { value: 'new' }
+          put api("/#{attributable_name}/#{attributable.id}/custom_attributes/new", admin, admin_mode: true), params: { value: 'new' }
         end.to change { attributable.custom_attributes.count }.by(1)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -159,7 +159,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
 
       it 'updates an existing custom attribute' do
         expect do
-          put api("/#{attributable_name}/#{attributable.id}/custom_attributes/foo", admin), params: { value: 'new' }
+          put api("/#{attributable_name}/#{attributable.id}/custom_attributes/foo", admin, admin_mode: true), params: { value: 'new' }
         end.not_to change { attributable.custom_attributes.count }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -169,7 +169,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
     end
   end
 
-  describe "DELETE /#{attributable_name}/:id/custom_attributes/:key" do
+  describe "DELETE /#{attributable_name}/:id/custom_attributes/:key", :aggregate_failures do
     context 'with an unauthorized user' do
       subject { delete api("/#{attributable_name}/#{attributable.id}/custom_attributes/foo", user) }
 
@@ -179,7 +179,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
     context 'with an authorized user' do
       it 'deletes an existing custom attribute' do
         expect do
-          delete api("/#{attributable_name}/#{attributable.id}/custom_attributes/foo", admin)
+          delete api("/#{attributable_name}/#{attributable.id}/custom_attributes/foo", admin, admin_mode: true)
         end.to change { attributable.custom_attributes.count }.by(-1)
 
         expect(response).to have_gitlab_http_status(:no_content)

@@ -238,7 +238,7 @@ RSpec.describe API::BroadcastMessages, :aggregate_failures, feature_category: :o
     end
 
     it_behaves_like '412 response' do
-      let(:request) { api(path, admin, admin_mode: true) }
+      let(:request) { api("/broadcast_messages/#{message.id}", admin, admin_mode: true) }
     end
 
     it 'deletes the broadcast message for admins' do

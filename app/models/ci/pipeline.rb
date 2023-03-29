@@ -325,6 +325,12 @@ module Ci
         end
       end
 
+      after_transition running: ::Ci::Pipeline.completed_statuses + [:manual] do |pipeline|
+        pipeline.run_after_commit do
+          ::Ci::UnlockRefArtifactsOnPipelineStopWorker.perform_async(pipeline.id)
+        end
+      end
+
       after_transition any => [:success, :failed] do |pipeline|
         ref_status = pipeline.ci_ref&.update_status_by!(pipeline)
 

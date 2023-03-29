@@ -118,14 +118,15 @@ module WorkhorseHelpers
     end
   end
 
-  def fog_to_uploaded_file(file, sha256: nil)
-    filename = File.basename(file.key)
+  def fog_to_uploaded_file(file, filename: nil, sha256: nil, remote_id: nil)
+    filename ||= File.basename(file.key)
 
-    UploadedFile.new(nil,
-                     filename: filename,
-                     remote_id: filename,
-                     size: file.content_length,
-                     sha256: sha256
-                    )
+    UploadedFile.new(
+      nil,
+      filename: filename,
+      remote_id: remote_id || filename,
+      size: file.content_length,
+      sha256: sha256
+    )
   end
 end

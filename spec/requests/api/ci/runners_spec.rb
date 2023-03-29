@@ -556,7 +556,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
         end
 
         it_behaves_like '412 response' do
-          let(:request) { api("/runners/#{shared_runner.id}", admin) }
+          let(:request) { api("/runners/#{shared_runner.id}", admin, admin_mode: true) }
         end
       end
 
