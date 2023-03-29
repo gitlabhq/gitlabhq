@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::TreeController do
+RSpec.describe Projects::TreeController, feature_category: :source_code_management do
   let(:project) { create(:project, :repository, previous_default_branch: previous_default_branch) }
   let(:previous_default_branch) { nil }
   let(:user) { create(:user) }
@@ -15,15 +15,41 @@ RSpec.describe Projects::TreeController do
   end
 
   describe "GET show" do
+    let(:params) do
+      {
+        namespace_id: project.namespace.to_param, project_id: project, id: id
+      }
+    end
+
     # Make sure any errors accessing the tree in our views bubble up to this spec
     render_views
 
     before do
       expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
+      project.repository.add_tag(project.creator, 'ambiguous_ref', RepoHelpers.sample_commit.id)
+      project.repository.add_branch(project.creator, 'ambiguous_ref', RepoHelpers.another_sample_commit.id)
+      get :show, params: params
+    end
 
-      get :show, params: {
-        namespace_id: project.namespace.to_param, project_id: project, id: id
-      }
+    context 'when the ref is ambiguous' do
+      let(:id) { 'ambiguous_ref' }
+      let(:params) { { namespace_id: project.namespace, project_id: project, id: id, ref_type: ref_type } }
+
+      context 'and explicitly requesting a branch' do
+        let(:ref_type) { 'heads' }
+
+        it 'redirects to blob#show with sha for the branch' do
+          expect(response).to redirect_to(project_tree_path(project, RepoHelpers.another_sample_commit.id))
+        end
+      end
+
+      context 'and explicitly requesting a tag' do
+        let(:ref_type) { 'tags' }
+
+        it 'responds with success' do
+          expect(response).to be_ok
+        end
+      end
     end
 
     context "valid branch, no path" do

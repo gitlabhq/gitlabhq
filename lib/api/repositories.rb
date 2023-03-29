@@ -203,6 +203,10 @@ module API
           render_api_error!("Target project id:#{params[:from_project_id]} is not a fork of project id:#{params[:id]}", 400)
         end
 
+        unless can?(current_user, :read_code, target_project)
+          forbidden!("You don't have access to this fork's parent project")
+        end
+
         cache_key = compare_cache_key(current_user, user_project, target_project, declared_params)
 
         cache_action(cache_key, expires_in: 1.minute) do
