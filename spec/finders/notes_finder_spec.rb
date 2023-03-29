@@ -106,6 +106,26 @@ RSpec.describe NotesFinder do
       end
     end
 
+    context 'for notes on public issue in public project' do
+      let_it_be(:public_project) { create(:project, :public) }
+      let_it_be(:guest_member) { create(:user) }
+      let_it_be(:reporter_member) { create(:user) }
+      let_it_be(:guest_project_member) { create(:project_member, :guest, user: guest_member, project: public_project) }
+      let_it_be(:reporter_project_member) { create(:project_member, :reporter, user: reporter_member, project: public_project) }
+      let_it_be(:internal_note) { create(:note_on_issue, project: public_project, internal: true) }
+      let_it_be(:public_note) { create(:note_on_issue, project: public_project) }
+
+      it 'shows all notes when the current_user has reporter access' do
+        notes = described_class.new(reporter_member, project: public_project).execute
+        expect(notes).to contain_exactly internal_note, public_note
+      end
+
+      it 'shows only public notes when the current_user has guest access' do
+        notes = described_class.new(guest_member, project: public_project).execute
+        expect(notes).to contain_exactly public_note
+      end
+    end
+
     context 'for target type' do
       let(:project) { create(:project, :repository) }
       let!(:note1) { create :note_on_issue, project: project }
