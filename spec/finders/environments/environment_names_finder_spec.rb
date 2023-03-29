@@ -6,6 +6,7 @@ RSpec.describe Environments::EnvironmentNamesFinder do
   describe '#execute' do
     let!(:group) { create(:group) }
     let!(:public_project) { create(:project, :public, namespace: group) }
+    let_it_be_with_reload(:public_project_with_private_environments) { create(:project, :public) }
     let!(:private_project) { create(:project, :private, namespace: group) }
     let!(:user) { create(:user) }
 
@@ -14,6 +15,11 @@ RSpec.describe Environments::EnvironmentNamesFinder do
       create(:environment, name: 'gprd', project: public_project)
       create(:environment, name: 'gprd', project: private_project)
       create(:environment, name: 'gcny', project: private_project)
+      create(:environment, name: 'gprivprd', project: public_project_with_private_environments)
+      create(:environment, name: 'gprivstg', project: public_project_with_private_environments)
+
+      public_project_with_private_environments.update!(namespace: group)
+      public_project_with_private_environments.project_feature.update!(environments_access_level: Featurable::PRIVATE)
     end
 
     context 'using a group' do
@@ -23,7 +29,7 @@ RSpec.describe Environments::EnvironmentNamesFinder do
 
           names = described_class.new(group, user).execute
 
-          expect(names).to eq(%w[gcny gprd gstg])
+          expect(names).to eq(%w[gcny gprd gprivprd gprivstg gstg])
         end
       end
 
@@ -33,7 +39,7 @@ RSpec.describe Environments::EnvironmentNamesFinder do
 
           names = described_class.new(group, user).execute
 
-          expect(names).to eq(%w[gcny gprd gstg])
+          expect(names).to eq(%w[gcny gprd gprivprd gprivstg gstg])
         end
       end
 
@@ -57,8 +63,18 @@ RSpec.describe Environments::EnvironmentNamesFinder do
         end
       end
 
+      context 'with a public project reporter which has private environments' do
+        it 'returns environment names for public projects' do
+          public_project_with_private_environments.add_reporter(user)
+
+          names = described_class.new(group, user).execute
+
+          expect(names).to eq(%w[gprd gprivprd gprivstg gstg])
+        end
+      end
+
       context 'with a group guest' do
-        it 'returns environment names for all public projects' do
+        it 'returns environment names for public projects' do
           group.add_guest(user)
 
           names = described_class.new(group, user).execute
@@ -68,7 +84,7 @@ RSpec.describe Environments::EnvironmentNamesFinder do
       end
 
       context 'with a non-member' do
-        it 'returns environment names for all public projects' do
+        it 'returns environment names for only public projects with public environments' do
           names = described_class.new(group, user).execute
 
           expect(names).to eq(%w[gprd gstg])
@@ -76,7 +92,7 @@ RSpec.describe Environments::EnvironmentNamesFinder do
       end
 
       context 'without a user' do
-        it 'returns environment names for all public projects' do
+        it 'returns environment names for only public projects with public environments' do
           names = described_class.new(group).execute
 
           expect(names).to eq(%w[gprd gstg])
