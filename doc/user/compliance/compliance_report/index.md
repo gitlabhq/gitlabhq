@@ -170,7 +170,8 @@ passing in an optional value to the `commit_sha` query parameter.
 
 ## Compliance frameworks report
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387910) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387910) in GitLab 15.10.
+> - Support for applying/removing compliance framework [added](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11
 
 With compliance frameworks report, you can see the compliance frameworks that are applied to projects in a group. Each row of the report shows:
 
@@ -191,3 +192,34 @@ To view the compliance frameworks report:
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Security & Compliance > Compliance report**.
 1. On the page, select the **Frameworks** tab.
+
+### Apply a compliance framework to projects in a group
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To apply a compliance framework to projects in a group:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Security and Compliance > Compliance report**.
+1. On the page, select the **Frameworks** tab.
+1. Select one or more projects.
+1. From the **Choose one bulk action** dropdown list, select **Apply framework to selected projects**.
+1. Select framework to apply.
+1. Select **Apply**.
+
+### Remove a compliance framework from projects in a group
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To remove a compliance framework from projects in a group:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Security and Compliance > Compliance report**.
+1. On the page, select the **Frameworks** tab.
+1. Select one or more projects.
+1. From the **Choose one bulk action** dropdown list, select **Remove framework from selected projects**.
+1. Select **Remove**.

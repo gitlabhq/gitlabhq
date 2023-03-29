@@ -91,6 +91,13 @@ PATH
       nokogiri (>= 1.4.4)
       omniauth (~> 2.0)
 
+PATH
+  remote: vendor/gems/sidekiq-reliable-fetch
+  specs:
+    gitlab-sidekiq-fetcher (0.9.0)
+      json (>= 2.5)
+      sidekiq (~> 6.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -612,9 +619,6 @@ GEM
     gitlab-mail_room (0.0.9)
     gitlab-markup (1.9.0)
     gitlab-net-dns (0.9.1)
-    gitlab-sidekiq-fetcher (0.9.0)
-      json (>= 2.5)
-      sidekiq (~> 6.1)
     gitlab-styles (10.0.0)
       rubocop (~> 1.43.0)
       rubocop-graphql (~> 0.18)
@@ -1725,7 +1729,7 @@ DEPENDENCIES
   gitlab-mail_room (~> 0.0.9)
   gitlab-markup (~> 1.9.0)
   gitlab-net-dns (~> 0.9.1)
-  gitlab-sidekiq-fetcher (= 0.9.0)
+  gitlab-sidekiq-fetcher!
   gitlab-styles (~> 10.0.0)
   gitlab_chronic_duration (~> 0.10.6.2)
   gitlab_omniauth-ldap (~> 2.2.0)

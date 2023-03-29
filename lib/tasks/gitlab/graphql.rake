@@ -71,6 +71,12 @@ namespace :gitlab do
 
     desc 'GitLab | GraphQL | Validate queries'
     task validate: [:environment, :enable_feature_flags] do |t, args|
+      class GenerousTimeoutSchema < GitlabSchema # rubocop:disable Gitlab/NamespacedClass
+        validate_timeout 1.second
+      end
+
+      puts "Validating GraphQL queries. Validation timeout set to #{GenerousTimeoutSchema.validate_timeout} second(s)"
+
       queries = if args.to_a.present?
                   args.to_a.flat_map { |path| Gitlab::Graphql::Queries.find(path) }
                 else
@@ -78,7 +84,7 @@ namespace :gitlab do
                 end
 
       failed = queries.flat_map do |defn|
-        summary, errs = defn.validate(GitlabSchema)
+        summary, errs = defn.validate(GenerousTimeoutSchema)
 
         case summary
         when :client_query

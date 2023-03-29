@@ -1,0 +1,77 @@
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+
+default:
+  image: ruby:3.0
+
+before_script:
+  - cd vendor/gems/sidekiq-reliable-fetch
+  - ruby -v
+  - which ruby
+  - gem install bundler
+  - bundle config set --local path 'vendor'      # Install dependencies into ./vendor/ruby
+  - bundle config set with 'development'         # This is set to 'deployment' otherwise
+  - bundle config set --local frozen 'true'      # Disallow Gemfile.lock changes on CI
+  - bundle config                                # Show bundler configuration
+  - bundle install --jobs $(nproc) "${FLAGS[@]}"
+
+variables:
+  REDIS_URL: "redis://redis"
+
+rspec:
+  stage: test
+  coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
+  script:
+    - bundle exec rspec
+  services:
+    - redis:alpine
+  artifacts:
+    expire_in: 31d
+    when: always
+    paths:
+      - coverage/
+
+.integration:
+  stage: test
+  script:
+    - cd tests/reliability
+    - bundle exec ruby reliability_test.rb
+  services:
+    - redis:alpine
+
+integration_semi:
+  extends: .integration
+  variables:
+    JOB_FETCHER: semi
+
+integration_reliable:
+  extends: .integration
+  variables:
+    JOB_FETCHER: reliable
+
+integration_basic:
+  extends: .integration
+  allow_failure: yes
+  variables:
+    JOB_FETCHER: basic
+
+kill_interruption:
+  stage: test
+  script:
+    - cd tests/interruption
+    - bundle exec ruby test_kill_signal.rb
+  services:
+    - redis:alpine
+
+term_interruption:
+  stage: test
+  script:
+    - cd tests/interruption
+    - bundle exec ruby test_term_signal.rb
+  services:
+    - redis:alpine
+
+# rubocop:
+#   script:
+#     - bundle exec rubocop

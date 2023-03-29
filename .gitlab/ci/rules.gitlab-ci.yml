@@ -1964,6 +1964,12 @@
       changes: ["vendor/gems/cloud_profiler_agent/**/*"]
     - <<: *if-merge-request-labels-run-all-rspec
 
+.vendor:rules:sidekiq-reliable-fetch:
+  rules:
+    - <<: *if-merge-request
+      changes: ["vendor/gems/sidekiq-reliable-fetch/**/*"]
+    - <<: *if-merge-request-labels-run-all-rspec
+
 ##################
 # Releases rules #
 ##################

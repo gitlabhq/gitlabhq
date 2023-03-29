@@ -119,6 +119,11 @@ To enable or disable Service Ping and version check:
 1. Select or clear the **Enable version check** and **Enable Service Ping** checkboxes.
 1. Select **Save changes**.
 
+NOTE:
+Service Ping settings only control whether the data is being shared with GitLab, or used only internally.
+Even if you disable Service Ping, the `gitlab_service_ping_worker` background job still periodically generates a Service Ping payload for your instance.
+The payload is available in the [Service Usage data](#manually-upload-service-ping-payload) admin section.
+
 ## Disable usage statistics with the configuration file
 
 NOTE:

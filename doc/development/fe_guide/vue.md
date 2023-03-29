@@ -121,7 +121,7 @@ export default {
 ```javascript
 //index.js
 import MyComponent from './my_component.vue'
-import initSimpleApp from '~/helpers/init_simple_app_helper'
+import { initSimpleApp } from '~/helpers/init_simple_app_helper'
 
 initSimpleApp('#js-my-element', MyComponent)
 ```

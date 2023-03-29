@@ -13,35 +13,39 @@ module Tooling
       # Search for Rails partials included in an HTML file
       RAILS_PARTIAL_INVOCATION_REGEXP = %r{(?:render|render_if_exists)(?: |\()(?:partial: ?)?['"]([\w/-]+)['"]}.freeze
 
-      def initialize(view_base_folder: 'app/views', js_base_folder: 'app/assets/javascripts')
-        @view_base_folders = folders_for_available_editions(view_base_folder)
-        @js_base_folders   = folders_for_available_editions(js_base_folder)
+      def initialize(
+        changes_file, matching_tests_paths,
+        view_base_folder: 'app/views', js_base_folder: 'app/assets/javascripts')
+        @changed_files        = read_array_from_file(changes_file)
+        @matching_tests_paths = matching_tests_paths
+        @view_base_folders    = folders_for_available_editions(view_base_folder)
+        @js_base_folders      = folders_for_available_editions(js_base_folder)
       end
 
-      def execute(changed_files)
-        changed_view_files = filter_files(changed_files)
-
-        partials = changed_view_files.flat_map do |file|
+      def execute
+        partials = filter_files.flat_map do |file|
           find_partials(file)
         end
 
-        files_to_scan = changed_view_files + partials
+        files_to_scan = filter_files + partials
         js_tags = files_to_scan.flat_map do |file|
           find_pattern_in_file(file, HTML_ATTRIBUTE_VALUE_REGEXP)
         end
         js_tags_regexp = Regexp.union(js_tags)
 
-        @js_base_folders.flat_map do |js_base_folder|
+        matching_js_files = @js_base_folders.flat_map do |js_base_folder|
           Dir["#{js_base_folder}/**/*.{js,vue}"].select do |js_file|
             file_content = File.read(js_file)
             js_tags_regexp.match?(file_content)
           end
         end
+
+        write_array_to_file(matching_tests_paths, matching_js_files)
       end
 
       # Keep the files that are in the @view_base_folders folder
-      def filter_files(changed_files)
-        changed_files.select do |filename|
+      def filter_files
+        @_filter_files ||= changed_files.select do |filename|
           filename.start_with?(*@view_base_folders) &&
             File.exist?(filename)
         end
@@ -69,6 +73,10 @@ module Tooling
       def find_pattern_in_file(file, pattern)
         File.read(file).scan(pattern).flatten.uniq
       end
+
+      private
+
+      attr_reader :changed_files, :matching_tests_paths
     end
   end
 end

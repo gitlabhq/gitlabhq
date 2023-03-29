@@ -34,9 +34,8 @@ For more information, see [End-to-end testing Best Practices](best_practices.md)
 
 ## Determine if end-to-end tests are needed
 
-Check the code coverage of a specific feature before writing end-to-end tests,
-for both [GitLab Community Edition](https://gitlab-org.gitlab.io/gitlab-foss/coverage-ruby/#_AllFiles)
-and [GitLab Enterprise Edition](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/#_AllFiles) projects.
+Check the code coverage of a specific feature before writing end-to-end tests
+for the [GitLab](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/#_AllFiles) project.
 Does sufficient test coverage exist at the unit, feature, or integration levels?
 If you answered *yes*, then you *don't* need an end-to-end test.
 
@@ -53,9 +52,8 @@ For information about the distribution of tests per level in GitLab, see
   the feature and the lower-level tests.
 
 WARNING:
-Check both [GitLab Community Edition](https://gitlab-org.gitlab.io/gitlab-foss/coverage-ruby/#_AllFiles) and
-[GitLab Enterprise Edition](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/#_AllFiles) coverage projects
-for previously-written tests for this feature. For analyzing the code coverage,
+Check the [GitLab](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/#_AllFiles) coverage project
+for previously written tests for this feature. To analyze code coverage,
 you must understand which application files implement specific features.
 
 In this tutorial we're writing a login end-to-end test, even though it has been

@@ -101,3 +101,11 @@ vendor cloud_profiler_agent:
   trigger:
     include: vendor/gems/cloud_profiler_agent/.gitlab-ci.yml
     strategy: depend
+
+vendor sidekiq-reliable-fetch:
+  extends:
+    - .vendor:rules:sidekiq-reliable-fetch
+  needs: []
+  trigger:
+    include: vendor/gems/sidekiq-reliable-fetch/.gitlab-ci.yml
+    strategy: depend

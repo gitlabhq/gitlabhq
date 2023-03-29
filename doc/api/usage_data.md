@@ -35,7 +35,6 @@ Example response:
   product_section: enablement
   product_stage: enablement
   product_group: global_search
-  product_category: global_search
   value_type: number
   status: active
   time_frame: 28d

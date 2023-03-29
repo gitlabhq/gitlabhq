@@ -6,37 +6,65 @@ require_relative '../../../../../tooling/lib/tooling/mappings/view_to_js_mapping
 RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling do
   # We set temporary folders, and those readers give access to those folder paths
   attr_accessor :view_base_folder, :js_base_folder
+  attr_accessor :changes_file, :matching_tests_paths
+
+  let(:instance) do
+    described_class.new(
+      changes_file,
+      matching_tests_paths,
+      view_base_folder: view_base_folder,
+      js_base_folder: js_base_folder
+    )
+  end
+
+  let(:changes_file_content)         { "changed_file1 changed_file2" }
+  let(:matching_tests_paths_content) { "previously_matching_spec.rb" }
 
   around do |example|
+    self.changes_file         = Tempfile.new('changes')
+    self.matching_tests_paths = Tempfile.new('matching_tests')
+
     Dir.mktmpdir do |tmp_js_base_folder|
       Dir.mktmpdir do |tmp_views_base_folder|
         self.js_base_folder   = tmp_js_base_folder
         self.view_base_folder = tmp_views_base_folder
 
-        example.run
+        # See https://ruby-doc.org/stdlib-1.9.3/libdoc/tempfile/rdoc/
+        #     Tempfile.html#class-Tempfile-label-Explicit+close
+        begin
+          example.run
+        ensure
+          changes_file.close
+          matching_tests_paths.close
+          changes_file.unlink
+          matching_tests_paths.unlink
+        end
       end
     end
   end
 
-  describe '#execute' do
-    let(:instance) do
-      described_class.new(
-        view_base_folder: view_base_folder,
-        js_base_folder: js_base_folder
-      )
-    end
+  before do
+    # We write into the temp files initially, to later check how the code modified those files
+    File.write(changes_file, changes_file_content)
+    File.write(matching_tests_paths, matching_tests_paths_content)
+  end
 
+  describe '#execute' do
     let(:changed_files) { %W[#{view_base_folder}/index.html] }
 
-    subject { instance.execute(changed_files) }
+    subject { instance.execute }
+
+    before do
+      File.write(changes_file, changed_files.join(' '))
+    end
 
     context 'when no view files have been changed' do
       before do
         allow(instance).to receive(:filter_files).and_return([])
       end
 
-      it 'returns nothing' do
-        expect(subject).to match_array([])
+      it 'does not change the output file' do
+        expect { subject }.not_to change { File.read(matching_tests_paths) }
       end
     end
 
@@ -53,8 +81,8 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
           FILE
         end
 
-        it 'returns nothing' do
-          expect(subject).to match_array([])
+        it 'does not change the output file' do
+          expect { subject }.not_to change { File.read(matching_tests_paths) }
         end
       end
 
@@ -70,8 +98,8 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
         end
 
         context 'when no matching JS files are found' do
-          it 'returns nothing' do
-            expect(subject).to match_array([])
+          it 'does not change the output file' do
+            expect { subject }.not_to change { File.read(matching_tests_paths) }
           end
         end
 
@@ -90,8 +118,10 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
             File.write("#{js_base_folder}/index.js", index_js_content)
           end
 
-          it 'returns the matching JS files' do
-            expect(subject).to match_array(["#{js_base_folder}/index.js"])
+          it 'adds the matching JS files to the output' do
+            expect { subject }.to change { File.read(matching_tests_paths) }
+              .from(matching_tests_paths_content)
+              .to("#{matching_tests_paths_content} #{js_base_folder}/index.js")
           end
         end
       end
@@ -135,17 +165,20 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
       end
 
       it 'scans those partials for the HTML attribute value' do
-        expect(subject).to match_array(["#{js_base_folder}/index.js"])
+        expect { subject }.to change { File.read(matching_tests_paths) }
+        .from(matching_tests_paths_content)
+        .to("#{matching_tests_paths_content} #{js_base_folder}/index.js")
       end
     end
   end
 
   describe '#filter_files' do
-    subject { described_class.new(view_base_folder: view_base_folder).filter_files(changed_files) }
+    subject { instance.filter_files }
 
     before do
       File.write("#{js_base_folder}/index.js", "index.js")
       File.write("#{view_base_folder}/index.html", "index.html")
+      File.write(changes_file, changed_files.join(' '))
     end
 
     context 'when no files were changed' do
@@ -182,7 +215,7 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
   end
 
   describe '#find_partials' do
-    subject { described_class.new(view_base_folder: view_base_folder).find_partials(file_path) }
+    subject { instance.find_partials(file_path) }
 
     let(:file_path) { "#{view_base_folder}/my_html_file.html" }
 
@@ -275,7 +308,7 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
   end
 
   describe '#find_pattern_in_file' do
-    let(:subject) { described_class.new.find_pattern_in_file(file.path, /pattern/) }
+    let(:subject) { instance.find_pattern_in_file(file.path, /pattern/) }
     let(:file)    { Tempfile.new('find_pattern_in_file') }
 
     before do

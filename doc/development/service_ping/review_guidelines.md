@@ -44,7 +44,7 @@ are regular backend changes.
 - Assign an
   [engineer](https://gitlab.com/groups/gitlab-org/analytics-section/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) from the Product Intelligence team for a review.
 - Set the correct attributes in the metric's YAML definition:
-  - `product_section`, `product_stage`, `product_group`, `product_category`
+  - `product_section`, `product_stage`, `product_group`
   - Provide a clear description of the metric.
 - Add a changelog [according to guidelines](../changelog.md).
 
@@ -64,7 +64,7 @@ are regular backend changes.
 - For a metric's YAML definition:
   - Check the metric's `description`.
   - Check the metric's `key_path`.
-  - Check the `product_section`, `product_stage`, `product_group`, and `product_category` fields.
+  - Check the `product_section`, `product_stage`, and `product_group` fields.
     Read the [stages file](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml).
   - Check the file location. Consider the time frame, and if the file should be under `ee`.
   - Check the tiers.

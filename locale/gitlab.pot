@@ -10805,10 +10805,28 @@ msgstr ""
 msgid "ComplianceFramework|No compliance frameworks are set up yet"
 msgstr ""
 
+msgid "ComplianceReport|Apply framework to selected projects"
+msgstr ""
+
 msgid "ComplianceReport|Approved by author"
 msgstr ""
 
 msgid "ComplianceReport|Approved by committer"
+msgstr ""
+
+msgid "ComplianceReport|Choose one bulk action"
+msgstr ""
+
+msgid "ComplianceReport|Choose one framework"
+msgstr ""
+
+msgid "ComplianceReport|Create a new framework"
+msgstr ""
+
+msgid "ComplianceReport|Framework successfully applied"
+msgstr ""
+
+msgid "ComplianceReport|Framework successfully removed"
 msgstr ""
 
 msgid "ComplianceReport|Less than 2 approvers"
@@ -10823,7 +10841,13 @@ msgstr ""
 msgid "ComplianceReport|No violations found"
 msgstr ""
 
+msgid "ComplianceReport|Remove framework from selected projects"
+msgstr ""
+
 msgid "ComplianceReport|Retrieving the compliance framework report failed. Refresh the page and try again."
+msgstr ""
+
+msgid "ComplianceReport|Select at least one project to apply the bulk action"
 msgstr ""
 
 msgid "ComplianceReport|Unable to load the compliance framework report. Refresh the page and try again."

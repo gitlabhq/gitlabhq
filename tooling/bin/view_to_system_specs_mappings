@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../lib/tooling/mappings/view_to_system_specs_mappings'
+
+changes_file = ARGV.shift
+output_file  = ARGV.shift
+
+Tooling::Mappings::ViewToSystemSpecsMappings.new(changes_file, output_file).execute
