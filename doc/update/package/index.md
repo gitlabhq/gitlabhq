@@ -294,7 +294,7 @@ To fix this issue:
 
 ### Error `Failed to connect to the internal GitLab API` on a separate GitLab Pages server
 
-See [GitLab Pages troubleshooting](../../administration/pages/index.md#failed-to-connect-to-the-internal-gitlab-api).
+See [GitLab Pages administration troubleshooting](../../administration/pages/troubleshooting.md#failed-to-connect-to-the-internal-gitlab-api).
 
 ### Error `An error occurred during the signature verification` when running `apt-get update`
 

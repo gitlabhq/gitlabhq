@@ -19,7 +19,7 @@ export const connectedTimeInactive = new Date(connectedTimeNow.getTime() - ACTIV
 export const clusterAgents = [
   {
     name: 'agent-1',
-    id: 'agent-1-id',
+    id: 'gid://gitlab/Clusters::Agent/1',
     configFolder: {
       webPath: '/agent/full/path',
     },
@@ -30,7 +30,7 @@ export const clusterAgents = [
   },
   {
     name: 'agent-2',
-    id: 'agent-2-id',
+    id: 'gid://gitlab/Clusters::Agent/2',
     webPath: '/agent-2',
     status: 'active',
     lastContact: connectedTimeNow.getTime(),
@@ -54,7 +54,7 @@ export const clusterAgents = [
   },
   {
     name: 'agent-3',
-    id: 'agent-3-id',
+    id: 'gid://gitlab/Clusters::Agent/3',
     webPath: '/agent-3',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
@@ -75,7 +75,7 @@ export const clusterAgents = [
   },
   {
     name: 'agent-4',
-    id: 'agent-4-id',
+    id: 'gid://gitlab/Clusters::Agent/4',
     webPath: '/agent-4',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
@@ -99,7 +99,7 @@ export const clusterAgents = [
   },
   {
     name: 'agent-5',
-    id: 'agent-5-id',
+    id: 'gid://gitlab/Clusters::Agent/5',
     webPath: '/agent-5',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
@@ -123,7 +123,7 @@ export const clusterAgents = [
   },
   {
     name: 'agent-6',
-    id: 'agent-6-id',
+    id: 'gid://gitlab/Clusters::Agent/6',
     webPath: '/agent-6',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
@@ -144,7 +144,7 @@ export const clusterAgents = [
   },
   {
     name: 'agent-7',
-    id: 'agent-7-id',
+    id: 'gid://gitlab/Clusters::Agent/7',
     webPath: '/agent-7',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
@@ -165,7 +165,7 @@ export const clusterAgents = [
   },
   {
     name: 'agent-8',
-    id: 'agent-8-id',
+    id: 'gid://gitlab/Clusters::Agent/8',
     webPath: '/agent-8',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
@@ -186,7 +186,7 @@ export const clusterAgents = [
   },
   {
     name: 'agent-9',
-    id: 'agent-9-id',
+    id: 'gid://gitlab/Clusters::Agent/9',
     webPath: '/agent-9',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),

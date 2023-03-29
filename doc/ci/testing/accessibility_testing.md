@@ -4,9 +4,14 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Accessibility testing **(FREE)**
+<!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
+# Accessibility testing (deprecated) **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25144) in GitLab 12.8.
+
+WARNING:
+This feature was deprecated in GitLab 15.9
+and is planned for removal in 17.0. This change is a breaking change.
 
 If your application offers a web interface, you can use
 [GitLab CI/CD](../index.md) to determine the accessibility
@@ -74,3 +79,5 @@ The job definition provided by the template does not support Kubernetes.
 
 You cannot pass configurations into Pa11y via CI configuration.
 To change the configuration, edit a copy of the template in your CI file.
+
+<!--- end_remove -->

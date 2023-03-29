@@ -36,6 +36,7 @@ describe('AgentTable', () => {
   const findStatusIcon = (at) => findStatusText(at).findComponent(GlIcon);
   const findLastContactText = (at) => wrapper.findAllByTestId('cluster-agent-last-contact').at(at);
   const findVersionText = (at) => wrapper.findAllByTestId('cluster-agent-version').at(at);
+  const findAgentId = (at) => wrapper.findAllByTestId('cluster-agent-id').at(at);
   const findConfiguration = (at) =>
     wrapper.findAllByTestId('cluster-agent-configuration-link').at(at);
   const findDeleteAgentButton = () => wrapper.findAllComponents(DeleteAgentButton);
@@ -64,6 +65,17 @@ describe('AgentTable', () => {
         expect(findAgentLink(lineNumber).text()).toBe(agentName);
         expect(findAgentLink(lineNumber).attributes('href')).toBe(link);
       });
+
+      it.each`
+        agentGraphQLId                      | agentId | lineNumber
+        ${'gid://gitlab/Clusters::Agent/1'} | ${'1'}  | ${0}
+        ${'gid://gitlab/Clusters::Agent/2'} | ${'2'}  | ${1}
+      `(
+        'displays agent id as "$agentId" for "$agentGraphQLId" at line $lineNumber',
+        ({ agentId, lineNumber }) => {
+          expect(findAgentId(lineNumber).text()).toBe(agentId);
+        },
+      );
 
       it.each`
         status               | iconName            | lineNumber

@@ -5341,6 +5341,25 @@ Input type: `SecurityFindingCreateIssueInput`
 | <a id="mutationsecurityfindingcreateissueerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationsecurityfindingcreateissueissue"></a>`issue` | [`Issue`](#issue) | Issue created after mutation. |
 
+### `Mutation.securityFindingCreateMergeRequest`
+
+Input type: `SecurityFindingCreateMergeRequestInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityfindingcreatemergerequestclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityfindingcreatemergerequestuuid"></a>`uuid` | [`String!`](#string) | UUID of the security finding to be used to create a merge request. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityfindingcreatemergerequestclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityfindingcreatemergerequesterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationsecurityfindingcreatemergerequestmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge Request created after mutation. |
+
 ### `Mutation.securityFindingDismiss`
 
 Input type: `SecurityFindingDismissInput`

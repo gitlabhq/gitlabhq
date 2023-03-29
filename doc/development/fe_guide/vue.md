@@ -391,6 +391,87 @@ You can read more about components in Vue.js site, [Component System](https://v2
 
 Check this [page](vuex.md) for more details.
 
+### Vue Router
+
+To add [Vue Router](https://router.vuejs.org/) to a page:
+
+1. Add a catch-all route to the Rails route file using a wildcard named `*vueroute`:
+
+   ```ruby
+   # example from ee/config/routes/project.rb
+
+   resources :iteration_cadences, path: 'cadences(/*vueroute)', action: :index
+   ```
+
+   The above example serves the `index` page from `iteration_cadences` controller to any route
+   matching the start of the `path`, for example `groupname/projectname/-/cadences/123/456/`.
+1. Pass the base route (everything before `*vueroute`) to the frontend to use as the `base` parameter to initialize Vue Router:
+
+   ```haml
+   .js-my-app{ data: { base_path: project_iteration_cadences_path(project) } }
+   ```
+
+1. Initialize the router:
+
+   ```javascript
+   Vue.use(VueRouter);
+
+   export function createRouter(basePath) {
+     return new VueRouter({
+       routes: createRoutes(),
+       mode: 'history',
+       base: basePath,
+     });
+   }
+   ```
+
+1. Add a fallback for unrecognised routes with `path: '*'`. Either:
+   - Add a redirect to the end of your routes array:
+
+     ```javascript
+     const routes = [
+       {
+         path: '/',
+         name: 'list-page',
+         component: ListPage,
+       },
+       {
+         path: '*',
+         redirect: '/',
+       },
+     ];
+     ```
+
+   - Add a fallback component to the end of your routes array:
+
+     ```javascript
+     const routes = [
+       {
+         path: '/',
+         name: 'list-page',
+         component: ListPage,
+       },
+       {
+         path: '*',
+         component: NotFound,
+       },
+     ];
+     ```
+
+1. Optional. To also allow using the path helper for child routes, add `controller` and `action`
+   parameters to use the parent controller.
+
+   ```ruby
+   resources :iteration_cadences, path: 'cadences(/*vueroute)', action: :index do
+     resources :iterations, only: [:index, :new, :edit, :show], constraints: { id: /\d+/ }, controller: :iteration_cadences, action: :index
+   end
+   ```
+
+   This means routes like `/cadences/123/iterations/456/edit` can be validated on the backend,
+   for example to check group or project membership.
+   It also means we can use the `_path` helper, which means we can load the page in feature specs
+   without manually building the `*vueroute` part of the path..
+
 ### Mixing Vue and jQuery
 
 - Mixing Vue and jQuery is not recommended.

@@ -117,6 +117,15 @@ module Sidebars
       insert_element_after(@items, after_item, new_item)
     end
 
+    def replace_placeholder(item)
+      idx = @items.index { |e| e.item_id == item.item_id && e.is_a?(::Sidebars::NilMenuItem) }
+      if idx.nil?
+        add_item(item)
+      else
+        replace_element(@items, item.item_id, item)
+      end
+    end
+
     override :container_html_options
     def container_html_options
       super.tap do |html_options|

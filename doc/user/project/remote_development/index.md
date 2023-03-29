@@ -154,7 +154,3 @@ Alternatively, you can pass the parameters from a URL and connect directly to th
    ```
 
 1. Go to that URL and enter the [token you fetched](#fetch-a-token).
-
-## Related topics
-
-- [Web IDE Beta](../web_ide_beta/index.md)

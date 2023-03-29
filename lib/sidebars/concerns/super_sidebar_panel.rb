@@ -50,7 +50,7 @@ module Sidebars
         if menu_item.super_sidebar_before
           menus[idx].insert_item_before(menu_item.super_sidebar_before, menu_item)
         else
-          menus[idx].add_item(menu_item)
+          menus[idx].replace_placeholder(menu_item)
         end
       end
     end

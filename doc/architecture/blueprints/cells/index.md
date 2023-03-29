@@ -164,11 +164,16 @@ self-managed instances.
 
 A number of technical issues need to be resolved to implement Cells (in no particular order). This section will be expanded.
 
-1. How are users of an organization routed to the correct Cell?
-1. How do users authenticate?
+1. How are Cells provisioned? - [Design discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/396641)
+1. What is a Cells topology? - [Design discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/396641)
+1. How are users of an organization routed to the correct Cell? -
+1. How do users authenticate with Cells and Organizations? - [Design discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/395736)
 1. How are Cells rebalanced?
-1. How are Cells provisioned?
 1. How can Cells implement disaster recovery capabilities?
+
+## Decision log
+
+- 2022-03-15: Google Cloud as the cloud service. [Reference](https://gitlab.com/gitlab-org/gitlab/-/issues/396641#note_1314932272)
 
 ## Cross-section impact
 

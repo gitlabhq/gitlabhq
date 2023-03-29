@@ -14,6 +14,7 @@ import semverPrerelease from 'semver/functions/prerelease';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { AGENT_STATUSES, I18N_AGENT_TABLE } from '../constants';
 import { getAgentConfigPath } from '../clusters_util';
 import DeleteAgentButton from './delete_agent_button.vue';
@@ -84,6 +85,11 @@ export default {
           tdClass,
         },
         {
+          key: 'agentID',
+          label: this.$options.i18n.agentIdLabel,
+          tdClass,
+        },
+        {
           key: 'configuration',
           label: this.$options.i18n.configurationLabel,
           tdClass,
@@ -118,6 +124,9 @@ export default {
     },
     getPopoverTestId(item) {
       return `popover-${item.name}`;
+    },
+    getAgentId(item) {
+      return getIdFromGraphQLId(item.id);
     },
     getAgentConfigPath,
     getAgentVersions(agent) {
@@ -274,6 +283,12 @@ export default {
           >
         </p>
       </gl-popover>
+    </template>
+
+    <template #cell(agentID)="{ item }">
+      <span data-testid="cluster-agent-id">
+        {{ getAgentId(item) }}
+      </span>
     </template>
 
     <template #cell(configuration)="{ item }">

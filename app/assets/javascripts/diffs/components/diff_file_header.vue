@@ -50,6 +50,7 @@ export default {
   i18n: {
     ...DIFF_FILE_HEADER,
     compareButtonLabel: __('Compare submodule commit revisions'),
+    fileModeTooltip: __('File permissions'),
   },
   props: {
     discussionPath: {
@@ -342,7 +343,13 @@ export default {
         data-track-property="diff_copy_file"
       />
 
-      <small v-if="isModeChanged" ref="fileMode" class="mr-1">
+      <small
+        v-if="isModeChanged"
+        ref="fileMode"
+        v-gl-tooltip.hover
+        class="mr-1"
+        :title="$options.i18n.fileModeTooltip"
+      >
         {{ diffFile.a_mode }} → {{ diffFile.b_mode }}
       </small>
 

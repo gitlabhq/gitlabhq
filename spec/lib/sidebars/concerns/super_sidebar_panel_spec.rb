@@ -83,6 +83,16 @@ RSpec.describe Sidebars::Concerns::SuperSidebarPanel, feature_category: :navigat
         expect(uncategorized_menu.renderable_items).to eq([])
       end
 
+      it 'replaces placeholder Menu Items in the defined super_sidebar_parent' do
+        menu_foo.insert_item_before(:exists, nil_menu_item)
+        allow(menu_item).to receive(:item_id).and_return(:nil_item)
+
+        subject.transform_old_menus(current_menus, menu_bar)
+
+        expect(menu_foo.renderable_items).to eq([menu_item, existing_item])
+        expect(uncategorized_menu.renderable_items).to eq([])
+      end
+
       it 'adds Menu Items to defined super_sidebar_parent, before super_sidebar_before' do
         allow(menu_item).to receive(:super_sidebar_before).and_return(:exists)
         subject.transform_old_menus(current_menus, menu_bar)

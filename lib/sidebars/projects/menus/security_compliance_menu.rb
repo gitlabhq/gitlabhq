@@ -25,9 +25,9 @@ module Sidebars
           'shield'
         end
 
-        override :pick_into_super_sidebar?
-        def pick_into_super_sidebar?
-          true
+        override :serialize_as_menu_item_args
+        def serialize_as_menu_item_args
+          nil
         end
 
         private
@@ -40,6 +40,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Security configuration'),
             link: project_security_configuration_path(context.project),
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::SecureMenu,
             active_routes: { path: configuration_menu_item_paths },
             item_id: :configuration
           )

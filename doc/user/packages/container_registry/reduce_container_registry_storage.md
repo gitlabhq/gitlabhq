@@ -21,7 +21,7 @@ The Usage Quotas page (**Settings > Usage Quotas > Storage**) displays storage u
 This page includes the Container Registry usage, which is only available on GitLab.com.
 Measuring usage is only possible on the new version of the GitLab Container Registry backed by a
 metadata database. Support for improvements is proposed in epic [5523](https://gitlab.com/groups/gitlab-org/-/epics/5523).
-You cannot use the Container Registry in self-managed instances, but epic [5521](https://gitlab.com/groups/gitlab-org/-/epics/5521) proposes to change this behavior.
+On self-managed instances, you cannot use the Container Registry with a metadata database. For the plan to change this behavior, see [epic 5521](https://gitlab.com/groups/gitlab-org/-/epics/5521).
 
 Image layers stored in the Container Registry are deduplicated at the root namespace level.
 
