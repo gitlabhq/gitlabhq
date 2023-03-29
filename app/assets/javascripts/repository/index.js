@@ -2,7 +2,7 @@ import { GlButton } from '@gitlab/ui';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import { joinPaths, escapeFileUrl, visitUrl } from '~/lib/utils/url_utility';
+import { escapeFileUrl, visitUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
 import PerformancePlugin from '~/performance/vue_performance_plugin';
@@ -119,7 +119,7 @@ export default function setupVueRepositoryList() {
 
     if (!refSwitcherEl) return false;
 
-    const { projectId, projectRootPath, refType } = refSwitcherEl.dataset;
+    const { projectId, projectRootPath } = refSwitcherEl.dataset;
 
     return new Vue({
       el: refSwitcherEl,
@@ -127,12 +127,11 @@ export default function setupVueRepositoryList() {
         return createElement(RefSelector, {
           props: {
             projectId,
-            value: refType ? joinPaths('refs', refType, ref) : ref,
-            useSymbolicRefNames: true,
+            value: ref,
           },
           on: {
             input(selectedRef) {
-              visitUrl(generateRefDestinationPath(projectRootPath, ref, selectedRef));
+              visitUrl(generateRefDestinationPath(projectRootPath, selectedRef));
             },
           },
         });

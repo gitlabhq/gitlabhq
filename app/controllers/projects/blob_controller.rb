@@ -31,7 +31,6 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :authorize_edit_tree!, only: [:new, :create, :update, :destroy]
 
   before_action :commit, except: [:new, :create]
-  before_action :check_for_ambiguous_ref, only: [:show]
   before_action :blob, except: [:new, :create]
   before_action :require_branch_head, only: [:edit, :update]
   before_action :editor_variables, except: [:show, :preview, :diff]
@@ -143,15 +142,6 @@ class Projects::BlobController < Projects::ApplicationController
       end
 
       redirect_to_tree_root_for_missing_path(@project, @ref, @path)
-    end
-  end
-
-  def check_for_ambiguous_ref
-    @ref_type = ref_type
-
-    if @ref_type == ExtractsRef::BRANCH_REF_TYPE && ambiguous_ref?(@project, @ref)
-      branch = @project.repository.find_branch(@ref)
-      redirect_to project_blob_path(@project, File.join(branch.target, @path))
     end
   end
 

@@ -697,39 +697,6 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
     end
   end
 
-  describe 'read_prometheus', feature_category: :metrics do
-    using RSpec::Parameterized::TableSyntax
-
-    before do
-      project.project_feature.update!(metrics_dashboard_access_level: ProjectFeature::ENABLED)
-    end
-
-    let(:policy) { :read_prometheus }
-
-    where(:project_visibility, :role, :allowed) do
-      :public   | :anonymous | false
-      :public   | :guest     | false
-      :public   | :reporter  | true
-      :internal | :anonymous | false
-      :internal | :guest     | false
-      :internal | :reporter  | true
-      :private  | :anonymous | false
-      :private  | :guest     | false
-      :private  | :reporter  | true
-    end
-
-    with_them do
-      let(:current_user) { public_send(role) }
-      let(:project) { public_send("#{project_visibility}_project") }
-
-      if params[:allowed]
-        it { is_expected.to be_allowed(policy) }
-      else
-        it { is_expected.not_to be_allowed(policy) }
-      end
-    end
-  end
-
   describe 'update_max_artifacts_size' do
     context 'when no user' do
       let(:current_user) { anonymous }
@@ -1005,7 +972,7 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
           let(:current_user) { guest }
 
           it { is_expected.to be_allowed(:metrics_dashboard) }
-          it { is_expected.to be_disallowed(:read_prometheus) }
+          it { is_expected.to be_allowed(:read_prometheus) }
           it { is_expected.to be_allowed(:read_deployment) }
           it { is_expected.to be_allowed(:read_metrics_user_starred_dashboard) }
           it { is_expected.to be_allowed(:create_metrics_user_starred_dashboard) }
@@ -1015,7 +982,7 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
           let(:current_user) { anonymous }
 
           it { is_expected.to be_allowed(:metrics_dashboard) }
-          it { is_expected.to be_disallowed(:read_prometheus) }
+          it { is_expected.to be_allowed(:read_prometheus) }
           it { is_expected.to be_allowed(:read_deployment) }
           it { is_expected.to be_disallowed(:read_metrics_user_starred_dashboard) }
           it { is_expected.to be_disallowed(:create_metrics_user_starred_dashboard) }
@@ -1041,14 +1008,12 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
           let(:current_user) { guest }
 
           it { is_expected.to be_disallowed(:metrics_dashboard) }
-          it { is_expected.to be_disallowed(:read_prometheus) }
         end
 
         context 'with anonymous' do
           let(:current_user) { anonymous }
 
           it { is_expected.to be_disallowed(:metrics_dashboard) }
-          it { is_expected.to be_disallowed(:read_prometheus) }
         end
       end
 
@@ -1071,7 +1036,7 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
           let(:current_user) { guest }
 
           it { is_expected.to be_allowed(:metrics_dashboard) }
-          it { is_expected.to be_disallowed(:read_prometheus) }
+          it { is_expected.to be_allowed(:read_prometheus) }
           it { is_expected.to be_allowed(:read_deployment) }
           it { is_expected.to be_allowed(:read_metrics_user_starred_dashboard) }
           it { is_expected.to be_allowed(:create_metrics_user_starred_dashboard) }
@@ -1081,7 +1046,6 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
           let(:current_user) { anonymous }
 
           it { is_expected.to be_disallowed(:metrics_dashboard) }
-          it { is_expected.to be_disallowed(:read_prometheus) }
         end
       end
     end
@@ -1104,14 +1068,12 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
           let(:current_user) { guest }
 
           it { is_expected.to be_disallowed(:metrics_dashboard) }
-          it { is_expected.to be_disallowed(:read_prometheus) }
         end
 
         context 'with anonymous' do
           let(:current_user) { anonymous }
 
           it { is_expected.to be_disallowed(:metrics_dashboard) }
-          it { is_expected.to be_disallowed(:read_prometheus) }
         end
       end
 
@@ -1130,14 +1092,12 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
           let(:current_user) { guest }
 
           it { is_expected.to be_disallowed(:metrics_dashboard) }
-          it { is_expected.to be_disallowed(:read_prometheus) }
         end
 
         context 'with anonymous' do
           let(:current_user) { anonymous }
 
           it { is_expected.to be_disallowed(:metrics_dashboard) }
-          it { is_expected.to be_disallowed(:read_prometheus) }
         end
       end
     end

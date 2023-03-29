@@ -42005,9 +42005,6 @@ msgstr ""
 msgid "The default branch for this project has been changed. Please update your bookmarks."
 msgstr ""
 
-msgid "The default branch of this project clashes with another ref"
-msgstr ""
-
 msgid "The dependency list details information about the components used within your project."
 msgstr ""
 

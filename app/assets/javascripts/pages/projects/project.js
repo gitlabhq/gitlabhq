@@ -118,10 +118,9 @@ export default class Project {
             const urlParams = { [fieldName]: ref };
             if (params.group === BRANCH_GROUP_NAME) {
               urlParams.ref_type = BRANCH_REF_TYPE;
-            } else if (params.group === TAG_GROUP_NAME) {
+            } else {
               urlParams.ref_type = TAG_REF_TYPE;
             }
-
             link.href = mergeUrlParams(urlParams, linkTarget);
           }
 

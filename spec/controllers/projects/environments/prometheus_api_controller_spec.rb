@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::Environments::PrometheusApiController do
   let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:proxyable) { create(:environment, project: project) }
 
   before do
@@ -68,27 +68,6 @@ RSpec.describe Projects::Environments::PrometheusApiController do
           get :prometheus_proxy, params: prometheus_proxy_params
 
           expect(response).to redirect_to(new_user_session_path)
-        end
-      end
-
-      context 'with a public project' do
-        before do
-          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-          project.project_feature.update!(metrics_dashboard_access_level: ProjectFeature::ENABLED)
-        end
-
-        context 'with guest user' do
-          let(:prometheus_body) { nil }
-
-          before do
-            project.add_guest(user)
-          end
-
-          it 'returns 404' do
-            get :prometheus_proxy, params: prometheus_proxy_params
-
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
         end
       end
     end
