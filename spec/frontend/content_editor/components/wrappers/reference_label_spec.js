@@ -1,12 +1,12 @@
 import { GlLabel } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import LabelWrapper from '~/content_editor/components/wrappers/label.vue';
+import ReferenceLabelWrapper from '~/content_editor/components/wrappers/reference_label.vue';
 
-describe('content/components/wrappers/label', () => {
+describe('content/components/wrappers/reference_label', () => {
   let wrapper;
 
   const createWrapper = async (node = {}) => {
-    wrapper = shallowMountExtended(LabelWrapper, {
+    wrapper = shallowMountExtended(ReferenceLabelWrapper, {
       propsData: { node },
     });
   };

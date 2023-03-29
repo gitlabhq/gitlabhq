@@ -1290,6 +1290,7 @@ This sensitive data must be handled carefully to avoid leaks which could lead to
 - Credentials must be encrypted while at rest (database or file) with `attr_encrypted`. See [issue #26243](https://gitlab.com/gitlab-org/gitlab/-/issues/26243) before using `attr_encrypted`.
   - Store the encryption keys separately from the encrypted credentials with proper access control. For instance, store the keys in a vault, KMS, or file. Here is an [example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/user.rb#L70-74) use of `attr_encrypted` for encryption with keys stored in separate access controlled file.
   - When the intention is to only compare secrets, store only the salted hash of the secret instead of the encrypted value.
+- Salted hashes should be used to store any sensitive value where the plaintext value itself does not need to be retrieved.
 - Never commit credentials to repositories.
   - The [Gitleaks Git hook](https://gitlab.com/gitlab-com/gl-security/security-research/gitleaks-endpoint-installer) is recommended for preventing credentials from being committed.
 - Never log credentials under any circumstance. Issue [#353857](https://gitlab.com/gitlab-org/gitlab/-/issues/353857) is an example of credential leaks through log file.
@@ -1305,6 +1306,32 @@ This sensitive data must be handled carefully to avoid leaks which could lead to
 - Avoid sending credentials in URL parameters, as these can be more easily logged inadvertently during transit.
 
 In the event of credential leak through an MR, issue, or any other medium, [reach out to SIRT team](https://about.gitlab.com/handbook/security/security-operations/sirt/#-engaging-sirt).
+
+### Examples
+
+Encrypting a token with `attr_encrypted` so that the plaintext can be retrieved and used later:
+
+```ruby
+module AlertManagement
+  class HttpIntegration < ApplicationRecord
+
+    attr_encrypted :token,
+      mode: :per_attribute_iv,
+      key: Settings.attr_encrypted_db_key_base_32,
+      algorithm: 'aes-256-gcm'
+```
+
+Hashing a sensitive value with `CryptoHelper` so that it can be compared in future, but the plaintext is irretrievable:
+
+```ruby
+class WebHookLog < ApplicationRecord
+  before_save :set_url_hash, if: -> { interpolated_url.present? }
+
+  def set_url_hash
+    self.url_hash = Gitlab::CryptoHelper.sha256(interpolated_url)
+  end
+end
+```
 
 ## Serialization
 

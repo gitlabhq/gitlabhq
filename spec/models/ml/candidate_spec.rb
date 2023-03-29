@@ -12,6 +12,7 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
 
   describe 'associations' do
     it { is_expected.to belong_to(:experiment) }
+    it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:package) }
     it { is_expected.to have_many(:params) }

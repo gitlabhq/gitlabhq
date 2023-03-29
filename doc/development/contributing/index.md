@@ -136,9 +136,9 @@ This [documentation](merge_request_workflow.md) outlines the current merge reque
 ## Getting an Enterprise Edition License
 
 If you need a license for contributing to an EE-feature, see
-[relevant information](https://about.gitlab.com/handbook/marketing/community-relations/code-contributor-program/operations/#contributing-to-the-gitlab-enterprise-edition-ee).
+[relevant information](https://about.gitlab.com/handbook/marketing/community-relations/contributor-success/community-contributors-workflows.html#contributing-to-the-gitlab-enterprise-edition-ee).
 
 ## Finding help
 
 - [Get help](https://about.gitlab.com/get-help/).
-- Join the community-run [Discord server](https://discord.com/invite/gitlab) and find other contributors in the `#contribute` channel.
+- Join the community-run [Discord server](https://discord.gg/gitlab) and find other contributors in the `#contribute` channel.

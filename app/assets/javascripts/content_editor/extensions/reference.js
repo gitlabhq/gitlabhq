@@ -1,4 +1,6 @@
 import { Node } from '@tiptap/core';
+import { VueNodeViewRenderer } from '@tiptap/vue-2';
+import ReferenceWrapper from '../components/wrappers/reference.vue';
 import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
 
 const getAnchor = (element) => {
@@ -49,7 +51,7 @@ export default Node.create({
     ];
   },
 
-  renderHTML({ node }) {
-    return ['a', { href: '#' }, node.attrs.text];
+  addNodeView() {
+    return new VueNodeViewRenderer(ReferenceWrapper);
   },
 });

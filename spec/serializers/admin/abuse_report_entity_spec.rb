@@ -11,12 +11,19 @@ RSpec.describe Admin::AbuseReportEntity, feature_category: :insider_threat do
     described_class.new(abuse_report)
   end
 
+  before do
+    allow_next_instance_of(described_class) do |instance|
+      allow(instance).to receive(:markdown_field).with(abuse_report, :message).and_return(abuse_report.message)
+    end
+  end
+
   describe '#as_json' do
     subject(:entity_hash) { entity.as_json }
 
     it 'exposes correct attributes' do
       expect(entity_hash.keys).to include(
         :category,
+        :created_at,
         :updated_at,
         :reported_user,
         :reporter,
@@ -25,12 +32,13 @@ RSpec.describe Admin::AbuseReportEntity, feature_category: :insider_threat do
         :user_blocked,
         :block_user_path,
         :remove_report_path,
-        :remove_user_and_report_path
+        :remove_user_and_report_path,
+        :message
       )
     end
 
     it 'correctly exposes `reported user`' do
-      expect(entity_hash[:reported_user].keys).to match_array([:name])
+      expect(entity_hash[:reported_user].keys).to match_array([:name, :created_at])
     end
 
     it 'correctly exposes `reporter`' do
@@ -75,6 +83,10 @@ RSpec.describe Admin::AbuseReportEntity, feature_category: :insider_threat do
 
     it 'correctly exposes :remove_user_and_report_path' do
       expect(entity_hash[:remove_user_and_report_path]).to eq admin_abuse_report_path(abuse_report, remove_user: true)
+    end
+
+    it 'correctly exposes :message' do
+      expect(entity_hash[:message]).to eq(abuse_report.message)
     end
   end
 end

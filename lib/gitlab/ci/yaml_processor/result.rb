@@ -123,7 +123,8 @@ module Gitlab
               start_in: job[:start_in],
               trigger: job[:trigger],
               bridge_needs: job.dig(:needs, :bridge)&.first,
-              release: job[:release]
+              release: job[:release],
+              publish: job[:publish]
             }.compact }.compact
         end
 

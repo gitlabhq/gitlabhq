@@ -44,7 +44,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Activity'),
             link: activity_project_path(context.project),
-            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu,
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::ManageMenu,
             active_routes: { path: 'projects#activity' },
             item_id: :activity,
             container_html_options: { class: 'shortcuts-project-activity' }
@@ -59,8 +59,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Labels'),
             link: project_labels_path(context.project),
-            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu,
-            super_sidebar_before: :activity,
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::ManageMenu,
             active_routes: { controller: :labels },
             item_id: :labels
           )
@@ -74,8 +73,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Members'),
             link: project_project_members_path(context.project),
-            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu,
-            super_sidebar_before: :labels,
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::ManageMenu,
             active_routes: { controller: :project_members },
             item_id: :members,
             container_html_options: {

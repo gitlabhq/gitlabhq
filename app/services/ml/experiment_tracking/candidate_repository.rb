@@ -18,6 +18,7 @@ module Ml
         candidate = experiment.candidates.create!(
           user: user,
           name: candidate_name(name, tags),
+          project: project,
           start_time: start_time || 0
         )
 

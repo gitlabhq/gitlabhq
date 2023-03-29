@@ -18420,6 +18420,8 @@ CREATE TABLE ml_candidates (
     name text,
     package_id bigint,
     eid uuid,
+    project_id bigint,
+    internal_id bigint,
     CONSTRAINT check_25e6c65051 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_cd160587d4 CHECK ((eid IS NOT NULL))
 );
@@ -31085,6 +31087,10 @@ CREATE UNIQUE INDEX index_ml_candidates_on_experiment_id_and_eid ON ml_candidate
 
 CREATE INDEX index_ml_candidates_on_package_id ON ml_candidates USING btree (package_id);
 
+CREATE INDEX index_ml_candidates_on_project_id ON ml_candidates USING btree (project_id);
+
+CREATE INDEX index_ml_candidates_on_project_id_on_internal_id ON ml_candidates USING btree (project_id, internal_id);
+
 CREATE INDEX index_ml_candidates_on_user_id ON ml_candidates USING btree (user_id);
 
 CREATE UNIQUE INDEX index_ml_experiment_metadata_on_experiment_id_and_name ON ml_experiment_metadata USING btree (experiment_id, name);
@@ -34347,6 +34353,9 @@ ALTER TABLE ONLY merge_requests_compliance_violations
 
 ALTER TABLE ONLY coverage_fuzzing_corpuses
     ADD CONSTRAINT fk_29f6f15f82 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ml_candidates
+    ADD CONSTRAINT fk_2a0421d824 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY agent_group_authorizations
     ADD CONSTRAINT fk_2c9f941965 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

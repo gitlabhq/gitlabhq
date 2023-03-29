@@ -210,17 +210,6 @@ To migrate users to a new email domain, tell users to:
 
 If the **NameID** is configured with the email address, [change the **NameID** for users](#change-nameid-for-one-or-more-users).
 
-### User attributes
-
-To create users with the correct information for improved [user access and management](#user-access-and-management),
-the user's details must be passed to GitLab as attributes in the SAML assertion. At a minimum, the user's email address
-must be specified as an attribute named `email` or `mail`.
-
-You can configure the following attributes with GitLab.com Group SAML:
-
-- `username` or `nickname`. We recommend you configure only one of these.
-- The [attributes available](../../../integration/saml.md#configure-assertions) to self-managed GitLab instances.
-
 ## Configure GitLab
 
 After you set up your identity provider to work with GitLab, you must configure GitLab to use it for authentication:
@@ -336,6 +325,16 @@ When a user tries to sign in with Group SSO, GitLab attempts to find or create a
 - If there is a conflicting user with the same email address, redirect the user to the sign-in page to:
   - Create a new account with another email address.
   - Sign-in to their existing account to link the SAML identity.
+
+### User attributes
+
+You can pass user information to GitLab as attributes in the SAML assertion.
+
+- The user's email address can be an **email** or **mail** attribute.
+- The username can be either a **username** or **nickname** attribute. You should specify only
+  one of these.
+
+For more information, see the [attributes available for self-managed GitLab instances](../../../integration/saml.md#configure-assertions).
 
 ### Linking SAML to your existing GitLab.com account
 

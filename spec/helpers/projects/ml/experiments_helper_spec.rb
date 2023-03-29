@@ -9,7 +9,7 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:experiment) { create(:ml_experiments, user_id: project.creator, project: project) }
   let_it_be(:candidate0) do
-    create(:ml_candidates, :with_artifact, experiment: experiment, user: project.creator).tap do |c|
+    create(:ml_candidates, :with_artifact, experiment: experiment, user: project.creator, project: project).tap do |c|
       c.params.build([{ name: 'param1', value: 'p1' }, { name: 'param2', value: 'p2' }])
       c.metrics.create!(
         [{ name: 'metric1', value: 0.1 }, { name: 'metric2', value: 0.2 }, { name: 'metric3', value: 0.3 }]
@@ -18,7 +18,8 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
   end
 
   let_it_be(:candidate1) do
-    create(:ml_candidates, experiment: experiment, user: project.creator, name: 'candidate1').tap do |c|
+    create(:ml_candidates, experiment: experiment, user: project.creator, name: 'candidate1',
+      project: project).tap do |c|
       c.params.build([{ name: 'param2', value: 'p3' }, { name: 'param3', value: 'p4' }])
       c.metrics.create!(name: 'metric3', value: 0.4)
     end

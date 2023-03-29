@@ -595,6 +595,39 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
         end
       end
     end
+
+    context 'when job is not a pages job' do
+      let(:name) { :rspec }
+
+      context 'if the config contains a publish entry' do
+        let(:entry) { described_class.new({ script: 'echo', publish: 'foo' }, name: name) }
+
+        it 'is invalid' do
+          expect(entry).not_to be_valid
+          expect(entry.errors).to include /job publish can only be used within a `pages` job/
+        end
+      end
+    end
+
+    context 'when job is a pages job' do
+      let(:name) { :pages }
+
+      context 'when it does not have a publish entry' do
+        let(:entry) { described_class.new({ script: 'echo' }, name: name) }
+
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+      end
+
+      context 'when it has a publish entry' do
+        let(:entry) { described_class.new({ script: 'echo', publish: 'foo' }, name: name) }
+
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+      end
+    end
   end
 
   describe '#relevant?' do

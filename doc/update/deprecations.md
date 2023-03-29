@@ -3415,6 +3415,9 @@ The certificate-based integration with Kubernetes will be [deprecated and remove
 For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend you use the
 [agent for Kubernetes](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab. [How do I migrate?](https://docs.gitlab.com/ee/user/infrastructure/clusters/migrate_to_gitlab_agent.html)
 
+Although an explicit removal date is set, we don't plan to remove this feature until the new solution has feature parity.
+For more information about the blockers to removal, see [this issue](https://gitlab.com/gitlab-org/configure/general/-/issues/199).
+
 For updates and details about this deprecation, follow [this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
 
 GitLab self-managed customers can still use the feature [with a feature flag](https://docs.gitlab.com/ee/update/deprecations.html#self-managed-certificate-based-integration-with-kubernetes).
@@ -3439,6 +3442,9 @@ In GitLab 17.0 we will remove both the feature and its related code. Until the f
 
 For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend you use the
 [agent for Kubernetes](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab. [How do I migrate?](https://docs.gitlab.com/ee/user/infrastructure/clusters/migrate_to_gitlab_agent.html)
+
+Although an explicit removal date is set, we don't plan to remove this feature until the new solution has feature parity.
+For more information about the blockers to removal, see [this issue](https://gitlab.com/gitlab-org/configure/general/-/issues/199).
 
 For updates and details about this deprecation, follow [this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
 

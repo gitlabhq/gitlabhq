@@ -1894,6 +1894,10 @@
             }
           },
           "additionalProperties": false
+        },
+        "publish": {
+          "description": "A path to a directory that contains the files to be published with Pages",
+          "type": "string"
         }
       },
       "oneOf": [

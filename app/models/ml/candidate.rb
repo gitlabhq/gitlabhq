@@ -3,7 +3,9 @@
 module Ml
   class Candidate < ApplicationRecord
     include Sortable
+    include AtomicInternalId
     include IgnorableColumns
+
     ignore_column :iid, remove_with: '16.0', remove_after: '2023-05-01'
 
     PACKAGE_PREFIX = 'ml_candidate_'
@@ -16,12 +18,17 @@ module Ml
     belongs_to :experiment, class_name: 'Ml::Experiment'
     belongs_to :user
     belongs_to :package, class_name: 'Packages::Package'
+    belongs_to :project
     has_many :metrics, class_name: 'Ml::CandidateMetric'
     has_many :params, class_name: 'Ml::CandidateParam'
     has_many :metadata, class_name: 'Ml::CandidateMetadata'
     has_many :latest_metrics, -> { latest }, class_name: 'Ml::CandidateMetric', inverse_of: :candidate
 
     attribute :eid, default: -> { SecureRandom.uuid }
+
+    has_internal_id :internal_id,
+      scope: :project,
+      init: AtomicInternalId.project_init(self, :internal_id)
 
     scope :including_relationships, -> { includes(:latest_metrics, :params, :user, :package) }
     scope :by_name, ->(name) { where("ml_candidates.name LIKE ?", "%#{sanitize_sql_like(name)}%") } # rubocop:disable GitlabSecurity/SqlInjection
@@ -48,8 +55,6 @@ module Ml
             ])
         )
     end
-
-    delegate :project_id, :project, to: :experiment
 
     alias_attribute :artifact, :package
 

@@ -7,6 +7,61 @@ RSpec.describe Ci::Ref do
 
   it { is_expected.to belong_to(:project) }
 
+  describe 'state machine transitions' do
+    context 'unlock artifacts transition' do
+      let(:ci_ref) { create(:ci_ref) }
+      let(:unlock_artifacts_worker_spy) { class_spy(::Ci::PipelineSuccessUnlockArtifactsWorker) }
+
+      before do
+        stub_const('Ci::PipelineSuccessUnlockArtifactsWorker', unlock_artifacts_worker_spy)
+      end
+
+      context 'pipline is locked' do
+        let!(:pipeline) { create(:ci_pipeline, ci_ref_id: ci_ref.id, locked: :artifacts_locked) }
+
+        where(:initial_state, :action, :count) do
+          :unknown | :succeed! | 1
+          :unknown | :do_fail! | 0
+          :success | :succeed! | 1
+          :success | :do_fail! | 0
+          :failed | :succeed! | 1
+          :failed | :do_fail! | 0
+          :fixed | :succeed! | 1
+          :fixed | :do_fail! | 0
+          :broken | :succeed! | 1
+          :broken | :do_fail! | 0
+          :still_failing | :succeed | 1
+          :still_failing | :do_fail | 0
+        end
+
+        with_them do
+          context "when transitioning states" do
+            before do
+              status_value = Ci::Ref.state_machines[:status].states[initial_state].value
+              ci_ref.update!(status: status_value)
+            end
+
+            it 'calls unlock artifacts service' do
+              ci_ref.send(action)
+
+              expect(unlock_artifacts_worker_spy).to have_received(:perform_async).exactly(count).times
+            end
+          end
+        end
+      end
+
+      context 'pipeline is unlocked' do
+        let!(:pipeline) { create(:ci_pipeline, ci_ref_id: ci_ref.id, locked: :unlocked) }
+
+        it 'does not call unlock artifacts service' do
+          ci_ref.succeed!
+
+          expect(unlock_artifacts_worker_spy).not_to have_received(:perform_async)
+        end
+      end
+    end
+  end
+
   describe '.ensure_for' do
     let_it_be(:project) { create(:project, :repository) }
 
@@ -86,53 +141,12 @@ RSpec.describe Ci::Ref do
         expect(ci_ref.last_finished_pipeline_id).to eq(pipeline.id)
       end
 
-      context 'when the pipeline is a dangling pipeline' do
+      context 'when the pipeline a dangling pipeline' do
         let(:pipeline_source) { Enums::Ci::Pipeline.sources[:ondemand_dast_scan] }
 
         it 'returns nil' do
           expect(ci_ref.last_finished_pipeline_id).to be_nil
         end
-      end
-    end
-  end
-
-  describe '#last_successful_pipeline' do
-    let_it_be(:ci_ref) { create(:ci_ref) }
-
-    let(:pipeline_source) { Enums::Ci::Pipeline.sources[:push] }
-
-    context 'when there are no successful pipelines' do
-      let!(:pipeline) { create(:ci_pipeline, :running, ci_ref: ci_ref, source: pipeline_source) }
-
-      it 'returns nil' do
-        expect(ci_ref.last_successful_pipeline).to be_nil
-      end
-    end
-
-    context 'when there are successful pipelines' do
-      let!(:successful_pipeline) { create(:ci_pipeline, :success, ci_ref: ci_ref, source: pipeline_source) }
-      let!(:last_successful_pipeline) { create(:ci_pipeline, :success, ci_ref: ci_ref, source: pipeline_source) }
-
-      it 'returns the latest successful pipeline id' do
-        expect(ci_ref.last_successful_pipeline).to eq(last_successful_pipeline)
-      end
-    end
-
-    context 'when there are non-successful pipelines' do
-      let!(:last_successful_pipeline) { create(:ci_pipeline, :success, ci_ref: ci_ref, source: pipeline_source) }
-      let!(:failed_pipeline) { create(:ci_pipeline, :failed, ci_ref: ci_ref, source: pipeline_source) }
-
-      it 'returns the latest successful pipeline id' do
-        expect(ci_ref.last_successful_pipeline).to eq(last_successful_pipeline)
-      end
-    end
-
-    context 'when the pipeline is a dangling pipeline' do
-      let(:pipeline_source) { Enums::Ci::Pipeline.sources[:ondemand_dast_scan] }
-      let!(:pipeline) { create(:ci_pipeline, :running, ci_ref: ci_ref, source: pipeline_source) }
-
-      it 'returns nil' do
-        expect(ci_ref.last_finished_pipeline_id).to be_nil
       end
     end
   end

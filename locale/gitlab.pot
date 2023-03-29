@@ -47380,6 +47380,9 @@ msgstr ""
 msgid "User is not allowed to resolve thread"
 msgstr ""
 
+msgid "User joined %{timeAgo}"
+msgstr ""
+
 msgid "User key"
 msgstr ""
 

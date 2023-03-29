@@ -121,7 +121,9 @@ RSpec.describe 'Database schema', feature_category: :database do
     vulnerability_reads: %w[cluster_agent_id],
     # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87584
     # Fixes performance issues with the deletion of web-hooks with many log entries
-    web_hook_logs: %w[web_hook_id]
+    web_hook_logs: %w[web_hook_id],
+    ml_candidates: %w[internal_id]
+
   }.with_indifferent_access.freeze
 
   context 'for table' do

@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
 module Ci
-  # TODO: Clean up this worker in a subsequent release.
-  # The process to unlock job artifacts have been moved to
-  # be triggered by the pipeline state transitions and
-  # to use UnlockRefArtifactsOnPipelineStopWorker.
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/397491
   class PipelineSuccessUnlockArtifactsWorker
     include ApplicationWorker
 
