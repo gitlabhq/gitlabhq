@@ -861,6 +861,21 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
     end
   end
 
+  describe 'when user does not have access to target project' do
+    let(:push_options) { { create: true, target: 'my-branch' } }
+    let(:changes) { default_branch_changes }
+
+    before do
+      allow(user1).to receive(:can?).with(:read_code, project).and_return(false)
+    end
+
+    it 'records an error', :sidekiq_inline do
+      service.execute
+
+      expect(service.errors).to eq(["User access was denied"])
+    end
+  end
+
   describe 'when MRs are not enabled' do
     let(:project) { create(:project, :public, :repository).tap { |pr| pr.add_developer(user1) } }
     let(:push_options) { { create: true } }
