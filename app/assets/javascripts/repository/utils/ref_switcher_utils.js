@@ -16,29 +16,22 @@ const getNamespaceTargetRegex = (ref) => new RegExp(`(/-/(blob|tree))/${ref}/(.*
  * @param {string} selectedRef - The selected ref from the ref dropdown.
  */
 export function generateRefDestinationPath(projectRootPath, ref, selectedRef) {
-  const url = new URL(window.location.href);
-  const currentPath = url.pathname;
-  let refType = null;
+  const currentPath = window.location.pathname;
+  const encodedHash = '%23';
   let namespace = '/-/tree';
   let target;
-  let actualRef = selectedRef;
-
-  const matches = selectedRef.match(/^refs\/(heads|tags)\/(.+)/);
-  if (matches) {
-    [, refType, actualRef] = matches;
-  }
-  if (refType) {
-    url.searchParams.set('ref_type', refType);
-  } else {
-    url.searchParams.delete('ref_type');
-  }
-
   const NAMESPACE_TARGET_REGEX = getNamespaceTargetRegex(ref);
   const match = NAMESPACE_TARGET_REGEX.exec(currentPath);
   if (match) {
     [, namespace, , target] = match;
   }
-  url.pathname = joinPaths(projectRootPath, namespace, actualRef, target);
 
-  return url.toString();
+  const destinationPath = joinPaths(
+    projectRootPath,
+    namespace,
+    encodeURI(selectedRef).replace(/#/g, encodedHash),
+    target,
+  );
+
+  return `${destinationPath}${window.location.hash}`;
 }
