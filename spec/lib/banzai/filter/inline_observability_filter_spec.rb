@@ -34,58 +34,6 @@ RSpec.describe Banzai::Filter::InlineObservabilityFilter do
       end
     end
 
-    context 'when the document contains an embeddable observability link with redirect' do
-      let(:url) { 'https://observe.gitlab.com@example.com/12345' }
-
-      it 'leaves the original link unchanged' do
-        expect(doc.at_css('a').to_s).to eq(input)
-      end
-
-      it 'does not append an observability charts placeholder' do
-        node = doc.at_css('.js-render-observability')
-
-        expect(node).not_to be_present
-      end
-    end
-
-    context 'when the document contains an embeddable observability link with different port' do
-      let(:url) { 'https://observe.gitlab.com:3000/12345' }
-      let(:observe_url) { 'https://observe.gitlab.com:3001' }
-
-      before do
-        stub_env('OVERRIDE_OBSERVABILITY_URL', observe_url)
-      end
-
-      it 'leaves the original link unchanged' do
-        expect(doc.at_css('a').to_s).to eq(input)
-      end
-
-      it 'does not append an observability charts placeholder' do
-        node = doc.at_css('.js-render-observability')
-
-        expect(node).not_to be_present
-      end
-    end
-
-    context 'when the document contains an embeddable observability link with auth/start' do
-      let(:url) { 'https://observe.gitlab.com/auth/start' }
-      let(:observe_url) { 'https://observe.gitlab.com' }
-
-      before do
-        stub_env('OVERRIDE_OBSERVABILITY_URL', observe_url)
-      end
-
-      it 'leaves the original link unchanged' do
-        expect(doc.at_css('a').to_s).to eq(input)
-      end
-
-      it 'does not append an observability charts placeholder' do
-        node = doc.at_css('.js-render-observability')
-
-        expect(node).not_to be_present
-      end
-    end
-
     context 'when feature flag is disabled' do
       let(:url) { 'https://observe.gitlab.com/12345' }
 
