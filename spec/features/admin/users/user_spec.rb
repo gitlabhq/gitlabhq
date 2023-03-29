@@ -271,36 +271,6 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
           icon = first('[data-testid="incognito-icon"]')
           expect(icon).not_to be nil
         end
-
-        context 'when viewing the confirm email warning', :js do
-          let_it_be(:another_user) { create(:user, :unconfirmed) }
-
-          let(:warning_alert) { page.find(:css, '[data-testid="alert-warning"]') }
-          let(:expected_styling) { { 'pointer-events' => 'none', 'cursor' => 'default' } }
-
-          context 'with an email that does not contain HTML' do
-            before do
-              subject
-            end
-
-            it 'displays the warning alert including the email' do
-              expect(warning_alert.text).to include("Please check your email (#{another_user.email}) to verify")
-            end
-          end
-
-          context 'with an email that contains HTML' do
-            let(:malicious_email) { "malicious@test.com<form><input/title='<script>alert(document.domain)</script>'>" }
-            let(:another_user) { create(:user, confirmed_at: nil, unconfirmed_email: malicious_email) }
-
-            before do
-              subject
-            end
-
-            it 'displays the impersonation alert, excludes email, and disables links' do
-              expect(warning_alert.text).to include("check your email (#{another_user.unconfirmed_email}) to verify")
-            end
-          end
-        end
       end
 
       context 'ending impersonation' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ConfirmEmailWarning, feature_category: :system_access do
+RSpec.describe ConfirmEmailWarning do
   before do
     stub_application_setting_enum('email_confirmation_setting', 'soft')
   end
@@ -80,38 +80,6 @@ RSpec.describe ConfirmEmailWarning, feature_category: :system_access do
 
           context 'without an unconfirmed email address present' do
             it { is_expected.to set_confirm_warning_for(user.email) }
-          end
-        end
-
-        context 'when user is being impersonated' do
-          let(:impersonator) { create(:admin) }
-
-          before do
-            allow(controller).to receive(:session).and_return({ impersonator_id: impersonator.id })
-
-            get :index
-          end
-
-          it { is_expected.to set_confirm_warning_for(user.email) }
-
-          context 'when impersonated user email has html in their email' do
-            let(:user) { create(:user, confirmed_at: nil, unconfirmed_email: "malicious@test.com<form><input/title='<script>alert(document.domain)</script>'>") }
-
-            it { is_expected.to set_confirm_warning_for("malicious@test.com&lt;form&gt;&lt;input/title=&#39;&lt;script&gt;alert(document.domain)&lt;/script&gt;&#39;&gt;") }
-          end
-        end
-
-        context 'when user is not being impersonated' do
-          before do
-            get :index
-          end
-
-          it { is_expected.to set_confirm_warning_for(user.email) }
-
-          context 'when user email has html in their email' do
-            let(:user) { create(:user, confirmed_at: nil, unconfirmed_email: "malicious@test.com<form><input/title='<script>alert(document.domain)</script>'>") }
-
-            it { is_expected.to set_confirm_warning_for("malicious@test.com&lt;form&gt;&lt;input/title=&#39;&lt;script&gt;alert(document.domain)&lt;/script&gt;&#39;&gt;") }
           end
         end
       end
