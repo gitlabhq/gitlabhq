@@ -59,7 +59,7 @@ The process of configuring review apps is as follows:
 1. Set up a job in `.gitlab-ci.yml` that uses the [predefined CI/CD variable](../variables/index.md) `${CI_COMMIT_REF_SLUG}`
    to create dynamic environments and restrict it to run only on branches.
    Alternatively, you can get a YAML template for this job by [enabling review apps](#enable-review-app-button) for your project.
-1. Optionally, set a job that [manually stops](../environments/index.md#stop-an-environment) the review apps.
+1. Optionally, set a job that [manually stops](../environments/index.md#stopping-an-environment) the review apps.
 
 ### Enable review app button
 

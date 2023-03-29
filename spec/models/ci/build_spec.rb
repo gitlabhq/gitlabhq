@@ -2788,6 +2788,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             public: true,
             masked: false },
           { key: 'CI_API_V4_URL', value: 'http://localhost/api/v4', public: true, masked: false },
+          { key: 'CI_API_GRAPHQL_URL', value: 'http://localhost/api/graphql', public: true, masked: false },
           { key: 'CI_TEMPLATE_REGISTRY_HOST', value: template_registry_host, public: true, masked: false },
           { key: 'CI_PIPELINE_IID', value: pipeline.iid.to_s, public: true, masked: false },
           { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true, masked: false },

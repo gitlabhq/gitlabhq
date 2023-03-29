@@ -219,6 +219,8 @@ export default {
           this.fetchExpandedContent();
         }
       }
+
+      this.$emit('toggle', { expanded: !this.isCollapsed });
     },
     async fetchExpandedContent() {
       this.isLoadingExpandedContent = true;

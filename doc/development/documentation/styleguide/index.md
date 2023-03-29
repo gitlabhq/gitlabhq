@@ -718,6 +718,15 @@ This is overridden by the [documentation-specific punctuation rules](#punctuatio
 Links help the docs adhere to the
 [single source of truth](#documentation-is-the-single-source-of-truth-ssot) principle.
 
+However, you should avoid putting too many links on any page. Too many links can hinder readability.
+
+- Do not duplicate links on the same page. For example, on **Page A**, do not link to **Page B** multiple times.
+- Avoid multiple links in a single paragraph.
+- Avoid multiple links in a single task.
+- On any one page, try not to use more than 15 links to other pages.
+- Consider using [Related topics](../topic_types/index.md#related-topics) to reduce links that interrupt the flow of a task.
+- Try to avoid anchor links to sections on the same page. Let users rely on the right navigation instead.
+
 ### Links within the same repository
 
 To link to another page in the same repository,

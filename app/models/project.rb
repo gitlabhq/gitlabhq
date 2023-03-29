@@ -2423,6 +2423,7 @@ class Project < ApplicationRecord
   def api_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
       variables.append(key: 'CI_API_V4_URL', value: API::Helpers::Version.new('v4').root_url)
+      variables.append(key: 'CI_API_GRAPHQL_URL', value: Gitlab::Routing.url_helpers.api_graphql_url)
     end
   end
 

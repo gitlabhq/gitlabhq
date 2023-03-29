@@ -124,7 +124,7 @@ access to a protected environment through any of these methods:
 If the user also has push or merge access to the branch deployed on production,
 they have the following privileges:
 
-- [Stop an environment](index.md#stop-an-environment).
+- [Stop an environment](index.md#stopping-an-environment).
 - [Delete an environment](index.md#delete-an-environment).
 - [Create an environment terminal](index.md#web-terminals-deprecated).
 

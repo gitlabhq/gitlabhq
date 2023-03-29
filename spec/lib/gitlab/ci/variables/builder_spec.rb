@@ -101,6 +101,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
           value: project.pages_url },
         { key: 'CI_API_V4_URL',
           value: API::Helpers::Version.new('v4').root_url },
+        { key: 'CI_API_GRAPHQL_URL',
+          value: Gitlab::Routing.url_helpers.api_graphql_url },
         { key: 'CI_TEMPLATE_REGISTRY_HOST',
           value: template_registry_host },
         { key: 'CI_PIPELINE_IID',

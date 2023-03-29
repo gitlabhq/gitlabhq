@@ -183,7 +183,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         persist_accepted_terms_if_required(user) if new_user
 
         store_after_sign_up_path_for_user if intent_to_register?
-        sign_in_and_redirect_or_confirm_identity(user, auth_user, new_user)
+        sign_in_and_redirect_or_verify_identity(user, auth_user, new_user)
       end
     else
       fail_login(user)
@@ -315,7 +315,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   # overridden in EE
-  def sign_in_and_redirect_or_confirm_identity(user, _, _)
+  def sign_in_and_redirect_or_verify_identity(user, _, _)
     sign_in_and_redirect(user, event: :authentication)
   end
 end

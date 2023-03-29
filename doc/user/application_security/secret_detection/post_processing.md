@@ -32,10 +32,11 @@ GitLab supports post-processing for the following vendors and secrets:
 
 ## Feature availability
 
+> [Enabled for non-default branches](https://gitlab.com/gitlab-org/gitlab/-/issues/299212) in GitLab 15.11.
+
 Credentials are only post-processed when Secret Detection finds them:
 
 - In public projects, because publicly exposed credentials pose an increased threat. Expansion to private projects is considered in [issue 391379](https://gitlab.com/gitlab-org/gitlab/-/issues/391379).
-- On the project [default branch](../../project/repository/branches/default.md), for technical reasons. Expansion to all branches is tracked in [issue 299212](https://gitlab.com/gitlab-org/gitlab/-/issues/299212).
 - In projects with GitLab Ultimate, for technical reasons. Expansion to all tiers is tracked in [issue 391763](https://gitlab.com/gitlab-org/gitlab/-/issues/391763).
 
 ## High-level architecture
@@ -45,8 +46,9 @@ This diagram describes how a post-processing hook revokes a secret within the Gi
 ```mermaid
 sequenceDiagram
     autonumber
-    GitLab Rails->>+Sidekiq: gl-secret-detection-report.json
-    Sidekiq-->+Sidekiq: StoreSecurityReportsWorker
+    GitLab Rails-->+GitLab Rails: gl-secret-detection-report.json
+    GitLab Rails->>+Sidekiq: StoreScansService
+    Sidekiq-->+Sidekiq: ScanSecurityReportSecretsWorker
     Sidekiq-->+Token Revocation API: GET revocable keys types
     Token Revocation API-->>-Sidekiq: OK
     Sidekiq->>+Token Revocation API: POST revoke revocable keys
@@ -55,14 +57,13 @@ sequenceDiagram
     Receiver Service-->>+Token Revocation API: ACCEPTED
 ```
 
-1. A pipeline with a Secret Detection job completes on the project's default branch, producing a scan
-   report (**1**).
-1. The report is processed (**2**) by an asynchronous worker, which communicates with an externally
-   deployed HTTP service (**3** and **4**) to determine which kinds of secrets can be automatically
-   revoked.
-1. The worker sends (**5** and **6**) the list of detected secrets which the Token Revocation API is able to
+1. A pipeline with a Secret Detection job completes, producing a scan report (**1**).
+1. The report is processed (**2**) by a service class, which schedules an asychronous worker if token revocation is possible.
+1. The asynchronous worker (**3**) communicates with an externally deployed HTTP service
+   (**4** and **5**) to determine which kinds of secrets can be automatically revoked.
+1. The worker sends (**6** and **7**) the list of detected secrets which the Token Revocation API is able to
    revoke.
-1. The Token Revocation API sends (**7** and **8**) each revocable token to their respective vendor's [receiver service](#integrate-your-cloud-provider-service-with-gitlabcom).
+1. The Token Revocation API sends (**8** and **9**) each revocable token to their respective vendor's [receiver service](#integrate-your-cloud-provider-service-with-gitlabcom).
 
 See the [Token Revocation API](../../../development/sec/token_revocation_api.md) documentation for more
 information.

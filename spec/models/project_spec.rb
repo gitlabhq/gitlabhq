@@ -5807,8 +5807,19 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     let_it_be(:project) { create(:project) }
 
     it 'exposes API v4 URL' do
-      expect(project.api_variables.first[:key]).to eq 'CI_API_V4_URL'
-      expect(project.api_variables.first[:value]).to include '/api/v4'
+      v4_variable = project.api_variables.find { |variable| variable[:key] == "CI_API_V4_URL" }
+
+      expect(v4_variable).not_to be_nil
+      expect(v4_variable[:key]).to eq 'CI_API_V4_URL'
+      expect(v4_variable[:value]).to end_with '/api/v4'
+    end
+
+    it 'exposes API GraphQL URL' do
+      graphql_variable = project.api_variables.find { |variable| variable[:key] == "CI_API_GRAPHQL_URL" }
+
+      expect(graphql_variable).not_to be_nil
+      expect(graphql_variable[:key]).to eq 'CI_API_GRAPHQL_URL'
+      expect(graphql_variable[:value]).to end_with '/api/graphql'
     end
 
     it 'contains a URL variable for every supported API version' do
@@ -5823,7 +5834,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       end
 
       expect(project.api_variables.map { |variable| variable[:key] })
-        .to contain_exactly(*required_variables)
+        .to include(*required_variables)
     end
   end
 

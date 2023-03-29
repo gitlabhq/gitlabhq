@@ -287,6 +287,21 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       expect(findExpandedSection().text()).toBe('More complex content');
     });
 
+    it('emits a toggle even when button is toggled', async () => {
+      createComponent({
+        propsData: {
+          isCollapsible: true,
+        },
+        slots: {
+          content: '<b>More complex content</b>',
+        },
+      });
+
+      expect(findExpandedSection().exists()).toBe(false);
+      findToggleButton().vm.$emit('click');
+      expect(wrapper.emitted('toggle')).toEqual([[{ expanded: true }]]);
+    });
+
     it('does not display the toggle button if isCollapsible is false', () => {
       createComponent({
         propsData: {

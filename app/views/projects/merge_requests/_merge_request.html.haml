@@ -39,9 +39,9 @@
               = sprite_icon('branch', size: 12, css_class: 'fork-sprite')
               = merge_request.target_branch
         - if merge_request.labels.any?
-          &nbsp;
-          - presented_labels_sorted_by_title(merge_request.labels, merge_request.project).each do |label|
-            = link_to_label(label, type: :merge_request, small: true)
+          .gl-mt-1{ role: 'group', 'aria-label': _('Labels') }
+            - presented_labels_sorted_by_title(merge_request.labels, merge_request.project).each do |label|
+              = link_to_label(label, type: :merge_request, small: true)
 
     .issuable-meta
       %ul.controls.d-flex.align-items-end
@@ -66,6 +66,6 @@
 
         = render 'shared/issuable_meta_data', issuable: merge_request
 
-      .float-right.issuable-updated-at.d-none.d-sm-inline-block
+      .float-right.issuable-updated-at.d-none.d-sm-inline-block.gl-text-gray-500
         %span
           = _('updated %{time_ago}').html_safe % { time_ago: time_ago_with_tooltip(merge_request.updated_at, placement: 'bottom', html_class: 'merge_request_updated_ago') }

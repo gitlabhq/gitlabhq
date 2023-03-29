@@ -27,6 +27,7 @@ as it can cause the pipeline to behave unexpectedly.
 | `CHAT_USER_ID`                           | 14.4   | all    | The chat service's user ID of the user who triggered the [ChatOps](../chatops/index.md) command. |
 | `CI`                                     | all    | 0.4    | Available for all jobs executed in CI/CD. `true` when available. |
 | `CI_API_V4_URL`                          | 11.7   | all    | The GitLab API v4 root URL. |
+| `CI_API_GRAPHQL_URL`                     | 15.11  | all    | The GitLab API GraphQL root URL. |
 | `CI_BUILDS_DIR`                          | all    | 11.10  | The top-level directory where builds are executed. |
 | `CI_COMMIT_AUTHOR`                       | 13.11  | all    | The author of the commit in `Name <email>` format. |
 | `CI_COMMIT_BEFORE_SHA`                   | 11.2   | all    | The previous latest commit present on a branch or tag. Is always `0000000000000000000000000000000000000000` in merge request pipelines and for the first commit in pipelines for branches or tags. |
