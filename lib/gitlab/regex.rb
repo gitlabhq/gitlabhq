@@ -448,6 +448,17 @@ module Gitlab
       )
     }mx.freeze
 
+    # Code blocks:
+    # ```
+    # Anything, including `>>>` blocks which are ignored by this filter
+    # ```
+    MARKDOWN_CODE_BLOCK_REGEX_UNTRUSTED =
+      '(?P<code>' \
+        '^```\n' \
+        '(?:\n|.)*?' \
+        '\n```\ *$' \
+      ')'.freeze
+
     MARKDOWN_HTML_BLOCK_REGEX = %r{
       (?<html>
         # HTML block:
@@ -461,27 +472,19 @@ module Gitlab
       )
     }mx.freeze
 
-    MARKDOWN_HTML_COMMENT_LINE_REGEX = %r{
-      (?<html_comment_line>
-        # HTML comment line:
-        # <!-- some commented text -->
+    # HTML comment line:
+    # <!-- some commented text -->
+    MARKDOWN_HTML_COMMENT_LINE_REGEX_UNTRUSTED =
+      '(?P<html_comment_line>' \
+        '^<!--\ .*?\ -->\ *$' \
+      ')'.freeze
 
-        ^<!--\ .*?\ -->\ *$
-      )
-    }mx.freeze
-
-    MARKDOWN_HTML_COMMENT_BLOCK_REGEX = %r{
-      (?<html_comment_block>
-        # HTML comment block:
-        # <!-- some commented text
-        # additional text
-        # -->
-
-        ^<!--.*\n
-        .+?
-        \n-->\ *$
-      )
-    }mx.freeze
+    MARKDOWN_HTML_COMMENT_BLOCK_REGEX_UNTRUSTED =
+      '(?P<html_comment_block>' \
+        '^<!--.*?\n' \
+        '(?:\n|.)*?' \
+        '\n.*?-->\ *$' \
+      ')'.freeze
 
     def markdown_code_or_html_blocks
       @markdown_code_or_html_blocks ||= %r{
@@ -491,14 +494,13 @@ module Gitlab
       }mx.freeze
     end
 
-    def markdown_code_or_html_comments
-      @markdown_code_or_html_comments ||= %r{
-          #{MARKDOWN_CODE_BLOCK_REGEX}
-        |
-          #{MARKDOWN_HTML_COMMENT_LINE_REGEX}
-        |
-          #{MARKDOWN_HTML_COMMENT_BLOCK_REGEX}
-      }mx.freeze
+    def markdown_code_or_html_comments_untrusted
+      @markdown_code_or_html_comments_untrusted ||=
+        "#{MARKDOWN_CODE_BLOCK_REGEX_UNTRUSTED}" \
+        "|" \
+        "#{MARKDOWN_HTML_COMMENT_LINE_REGEX_UNTRUSTED}" \
+        "|" \
+        "#{MARKDOWN_HTML_COMMENT_BLOCK_REGEX_UNTRUSTED}"
     end
 
     # Based on Jira's project key format
