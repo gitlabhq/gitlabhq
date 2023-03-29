@@ -241,7 +241,7 @@ module Types
 
     field :data_transfer, Types::DataTransfer::GroupDataTransferType,
           null: true,
-          resolver: Resolvers::DataTransferResolver.group,
+          resolver: Resolvers::DataTransfer::GroupDataTransferResolver,
           description: 'Data transfer data point for a specific period. This is mocked data under a development feature flag.'
 
     def label(title:)

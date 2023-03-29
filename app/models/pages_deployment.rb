@@ -37,7 +37,7 @@ class PagesDeployment < ApplicationRecord
   end
 
   def store_after_commit?
-    Feature.enabled?(:pages_deploy_upload_file_outside_transaction)
+    Feature.enabled?(:pages_deploy_upload_file_outside_transaction, project)
   end
   strong_memoize_attr :store_after_commit?
 

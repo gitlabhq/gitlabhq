@@ -3,8 +3,6 @@
 module Mutations
   module AwardEmojis
     class Base < BaseMutation
-      include ::Mutations::FindsByGid
-
       NOT_EMOJI_AWARDABLE = 'You cannot award emoji to this resource.'
 
       authorize :award_emoji

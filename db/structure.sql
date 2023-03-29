@@ -10745,7 +10745,9 @@ CREATE TABLE abuse_reports (
     links_to_spam text[] DEFAULT '{}'::text[] NOT NULL,
     status smallint DEFAULT 1 NOT NULL,
     resolved_at timestamp with time zone,
+    screenshot text,
     CONSTRAINT abuse_reports_links_to_spam_length_check CHECK ((cardinality(links_to_spam) <= 20)),
+    CONSTRAINT check_4b0a5120e0 CHECK ((char_length(screenshot) <= 255)),
     CONSTRAINT check_ab1260fa6c CHECK ((char_length(reported_from_url) <= 512))
 );
 
@@ -14462,12 +14464,12 @@ ALTER SEQUENCE clusters_kubernetes_namespaces_id_seq OWNED BY clusters_kubernete
 
 CREATE TABLE commit_user_mentions (
     id bigint NOT NULL,
-    note_id integer NOT NULL,
+    note_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     mentioned_users_ids integer[],
     mentioned_projects_ids integer[],
     mentioned_groups_ids integer[],
     commit_id character varying NOT NULL,
-    note_id_convert_to_bigint bigint DEFAULT 0 NOT NULL
+    note_id bigint NOT NULL
 );
 
 CREATE SEQUENCE commit_user_mentions_id_seq
@@ -17824,7 +17826,6 @@ CREATE TABLE member_roles (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     base_access_level integer NOT NULL,
-    download_code boolean DEFAULT false,
     read_code boolean DEFAULT false
 );
 
@@ -19987,7 +19988,8 @@ CREATE TABLE plan_limits (
     enforcement_limit integer DEFAULT 0 NOT NULL,
     notification_limit integer DEFAULT 0 NOT NULL,
     dashboard_limit_enabled_at timestamp with time zone,
-    web_hook_calls integer DEFAULT 0 NOT NULL
+    web_hook_calls integer DEFAULT 0 NOT NULL,
+    project_access_token_limit integer DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq

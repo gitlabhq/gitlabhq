@@ -25,6 +25,7 @@ module Gitlab
 
         scope :queue_order, -> { order(id: :asc) }
         scope :queued, -> { with_statuses(:active, :paused) }
+        scope :finalizing, -> { with_status(:finalizing) }
         scope :ordered_by_created_at_desc, -> { order(created_at: :desc) }
 
         # on_hold_until is a temporary runtime status which puts execution "on hold"

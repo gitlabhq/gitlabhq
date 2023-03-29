@@ -190,26 +190,21 @@ This issue can occur when the request exceeds the
 [webhook timeout](../user/project/integrations/webhooks.md#webhook-fails-or-multiple-webhook-requests-are-triggered),
 which is set to 10 seconds by default.
 
-Check the [service hook logs](../user/project/integrations/index.md#troubleshooting-integrations)
-for request failures or check the `/var/log/gitlab/gitlab-rails/production.log`
-file for messages like:
+For this issue, check:
 
-```plaintext
-WebHook Error => Net::ReadTimeout
-```
+- [Integration webhook logs](../user/project/integrations/index.md#troubleshooting)
+for request failures.
+- `/var/log/gitlab/gitlab-rails/production.log` for messages like:
 
-or
+  ```plaintext
+  WebHook Error => Net::ReadTimeout
+  ```
 
-```plaintext
-WebHook Error => execution expired
-```
+  or
 
-Or check for duplicate messages in `/var/log/gitlab/gitlab-rail`, like:
-
-```plaintext
-2019-10-25_04:22:41.25630 2019-10-25T04:22:41.256Z 1584 TID-ovowh4tek WebHookWorker JID-941fb7f40b69dff3d833c99b INFO: start
-2019-10-25_04:22:41.25630 2019-10-25T04:22:41.256Z 1584 TID-ovowh4tek WebHookWorker JID-941fb7f40b69dff3d833c99b INFO: start
-```
+  ```plaintext
+  WebHook Error => execution expired
+  ```
 
 On self-managed GitLab instances, you can fix this issue by [increasing the webhook timeout value](../administration/instance_limits.md#webhook-timeout).
 

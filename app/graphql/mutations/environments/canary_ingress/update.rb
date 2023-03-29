@@ -35,10 +35,6 @@ module Mutations
           { errors: Array.wrap(result[:message]) }
         end
 
-        def find_object(id:)
-          GitlabSchema.find_by_gid(id)
-        end
-
         private
 
         def certificate_based_clusters_enabled?

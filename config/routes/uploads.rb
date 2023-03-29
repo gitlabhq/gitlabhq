@@ -37,6 +37,12 @@ scope path: :uploads do
       to: "uploads#show",
       constraints: { model: /alert_management_metric_image/, mounted_as: /file/, filename: %r{[^/]+} },
       as: 'alert_metric_image_upload'
+
+  # Abuse Reports Images
+  get "-/system/:model/:mounted_as/:id/:filename",
+      to: "uploads#show",
+      constraints: { model: /abuse_report/, mounted_as: /screenshot/, filename: %r{[^/]+} },
+      as: 'abuse_report_upload'
 end
 
 # Redirect old note attachments path to new uploads path.

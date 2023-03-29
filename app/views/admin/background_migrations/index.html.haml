@@ -17,6 +17,9 @@
   = gl_tab_link_to admin_background_migrations_path({ tab: nil, database: params[:database] }), item_active: @current_tab == 'queued' do
     = _('Queued')
     = gl_tab_counter_badge limited_counter_with_delimiter(@relations_by_tab['queued'])
+  = gl_tab_link_to admin_background_migrations_path({ tab: 'finalizing', database: params[:database] }), item_active: @current_tab == 'finalizing' do
+    = _('Finalizing')
+    = gl_tab_counter_badge limited_counter_with_delimiter(@relations_by_tab['finalizing'])
   = gl_tab_link_to admin_background_migrations_path({ tab: 'failed', database: params[:database] }), item_active: @current_tab == 'failed' do
     = _('Failed')
     = gl_tab_counter_badge limited_counter_with_delimiter(@relations_by_tab['failed'])

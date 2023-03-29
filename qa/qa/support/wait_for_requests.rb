@@ -16,7 +16,7 @@ module QA
       end
 
       def finished_all_ajax_requests?
-        requests = %w[window.pendingRequests window.pendingRailsUJSRequests 0]
+        requests = %w[window.pendingRequests window.pendingApolloRequests window.pendingRailsUJSRequests 0]
 
         if Runtime::Env.can_intercept?
           requests.unshift('(window.Interceptor && window.Interceptor.activeFetchRequests)')

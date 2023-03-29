@@ -976,8 +976,8 @@ This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_g
 Review the details carefully before upgrading.
 
 Cookie authentication in the GitLab for Jira Cloud app is now deprecated in favor of OAuth authentication.
-You must [set up OAuth authentication](https://docs.gitlab.com/ee/integration/jira/connect-app.html#set-up-oauth-authentication)
-to continue to use the GitLab for Jira Cloud app. Without OAuth, you will not be able to manage linked namespaces.
+On self-managed, you must [set up OAuth authentication](https://docs.gitlab.com/ee/integration/jira/connect-app.html#set-up-oauth-authentication-for-self-managed-instances)
+to continue to use the GitLab for Jira Cloud app. Without OAuth, you can't manage linked namespaces.
 
 </div>
 

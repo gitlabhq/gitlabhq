@@ -106,7 +106,7 @@ export default {
         v-if="userPermissions.canMerge"
         size="small"
         variant="confirm"
-        category="secondary"
+        category="tertiary"
         data-testid="merge-locally-button"
         class="js-check-out-modal-trigger gl-align-self-start"
       >

@@ -16,6 +16,7 @@ class UploadsController < ApplicationController
     "projects/topic" => Projects::Topic,
     'alert_management_metric_image' => ::AlertManagement::MetricImage,
     "achievements/achievement" => Achievements::Achievement,
+    "abuse_report" => AbuseReport,
     nil => PersonalSnippet
   }.freeze
 

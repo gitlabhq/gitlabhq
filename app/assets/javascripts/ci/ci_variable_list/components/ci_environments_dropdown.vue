@@ -1,16 +1,18 @@
 <script>
 import { debounce, uniq } from 'lodash';
-import { GlDropdownDivider, GlDropdownItem, GlCollapsibleListbox } from '@gitlab/ui';
+import { GlDropdownDivider, GlDropdownItem, GlCollapsibleListbox, GlSprintf } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, s__, sprintf } from '~/locale';
 import { convertEnvironmentScope } from '../utils';
+import { ENVIRONMENT_QUERY_LIMIT } from '../constants';
 
 export default {
   name: 'CiEnvironmentsDropdown',
   components: {
+    GlCollapsibleListbox,
     GlDropdownDivider,
     GlDropdownItem,
-    GlCollapsibleListbox,
+    GlSprintf,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -95,9 +97,10 @@ export default {
       this.selectEnvironment(this.searchTerm);
     },
   },
+  ENVIRONMENT_QUERY_LIMIT,
   i18n: {
     maxEnvsNote: s__(
-      'CiVariable|Maximum of 20 environments listed. For more environments, enter a search query.',
+      'CiVariable|Maximum of %{limit} environments listed. For more environments, enter a search query.',
     ),
   },
 };
@@ -117,9 +120,11 @@ export default {
       <gl-dropdown-divider v-if="shouldRenderDivider" />
       <div v-if="isEnvScopeLimited" data-testid="max-envs-notice">
         <gl-dropdown-item class="gl-list-style-none" disabled>
-          <span class="gl-font-sm">
-            {{ $options.i18n.maxEnvsNote }}
-          </span>
+          <gl-sprintf :message="$options.i18n.maxEnvsNote" class="gl-font-sm">
+            <template #limit>
+              {{ $options.ENVIRONMENT_QUERY_LIMIT }}
+            </template>
+          </gl-sprintf>
         </gl-dropdown-item>
       </div>
       <div v-if="shouldRenderCreateButton">

@@ -129,18 +129,17 @@ FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `auto_disabling_web_hooks`.
 On GitLab.com, this feature is available.
 
-Webhooks that fail four consecutive times are automatically disabled.
+Project or group webhooks that fail four consecutive times are automatically disabled.
 
-Webhooks that return response codes in the `5xx` range are understood to be failing
+Project or group webhooks that return response codes in the `5xx` range are understood to be failing
 intermittently and are temporarily disabled. These webhooks are initially disabled
 for one minute, which is extended on each subsequent failure up to a maximum of 24 hours.
 
-Webhooks that return response codes in the `4xx` range are understood to be
+Project or group webhooks that return response codes in the `4xx` range are understood to be
 misconfigured and are permanently disabled until you manually re-enable
 them yourself.
 
-See [Troubleshooting](#troubleshoot-webhooks) for more information on
-disabled webhooks and how to re-enable them.
+For more information about disabled webhooks, see [troubleshooting](#troubleshooting).
 
 ## Test a webhook
 
@@ -151,7 +150,7 @@ For example, to test `push events`, your project should have at least one commit
 
 NOTE:
 Testing is not supported for some types of events for project and groups webhooks.
-Read more in [issue 379201](https://gitlab.com/gitlab-org/gitlab/-/issues/379201).
+For more information, see [issue 379201](https://gitlab.com/gitlab-org/gitlab/-/issues/379201).
 
 Prerequisites:
 
@@ -259,7 +258,7 @@ Image URLs are not rewritten if:
 
 ## Events
 
-For more information about supported events for Webhooks, go to [Webhook events](webhook_events.md).
+For more information about supported events for webhooks, see [webhook events](webhook_events.md).
 
 ## Delivery headers
 
@@ -275,7 +274,7 @@ Webhook requests to your endpoint include the following headers:
 | `X-Gitlab-Event` | Name of the webhook type. Corresponds to [event types](webhook_events.md) but in the format `"<EVENT> Hook"`. | `"Push Hook"` |
 | `X-Gitlab-Event-UUID` | Unique ID per webhook that is not recursive. A hook is recursive if triggered by an earlier webhook that hit the GitLab instance. Recursive webhooks have the same value for this header. | `"13792a34-cac6-4fda-95a8-c58e00a3954e"` |
 
-## Troubleshoot webhooks
+## Troubleshooting
 
 > **Recent events** for group webhooks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325642) in GitLab 15.3.
 

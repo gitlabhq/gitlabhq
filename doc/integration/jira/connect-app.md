@@ -6,9 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab for Jira Cloud app **(FREE)**
 
-You can integrate GitLab and Jira Cloud using the
-[GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud)
-app in the Atlassian Marketplace.
+With the [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud) app,
+you can integrate GitLab and Jira Cloud.
 
 Only Jira users with administrator access can install or configure
 the GitLab for Jira Cloud app.
@@ -18,7 +17,7 @@ the GitLab for Jira Cloud app.
 If you use GitLab.com and Jira Cloud, you can install the GitLab for Jira Cloud app.
 If you do not use both of these environments, use the [Jira DVCS Connector](dvcs/index.md) or
 [install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually).
-We recommend the GitLab for Jira Cloud app, because data is
+You should use the GitLab for Jira Cloud app because data is
 synchronized in real time. The DVCS connector updates data only once per hour.
 
 To configure the GitLab for Jira Cloud app, you must have
@@ -61,9 +60,9 @@ After a namespace is added:
 
 - All future commits, branches, and merge requests of all projects under that namespace
   are synced to Jira.
-- From GitLab 13.8, past merge request data is synced to Jira.
+- In GitLab 13.8 and later, past merge request data is synced to Jira.
 
-Support for syncing past branch and commit data is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/263240).
+For more information about syncing past branch and commit data, see [issue 263240](https://gitlab.com/gitlab-org/gitlab/-/issues/263240).
 
 ## Update the GitLab for Jira Cloud app
 
@@ -73,15 +72,15 @@ for details.
 
 If the app requires additional permissions, [the update must first be manually approved in Jira](https://developer.atlassian.com/platform/marketplace/upgrading-and-versioning-cloud-apps/#changes-that-require-manual-customer-approval).
 
-## Set up OAuth authentication
+## Set up OAuth authentication for self-managed instances **(FREE SELF)**
 
 The GitLab for Jira Cloud app is [switching to OAuth authentication](https://gitlab.com/gitlab-org/gitlab/-/issues/387299).
 To enable OAuth authentication, you must create an OAuth application on the GitLab instance.
 
-Enabling OAuth authentication is:
+You must enable OAuth authentication to:
 
-- Required to [connect the GitLab for Jira Cloud app for self-managed instances](#connect-the-gitlab-for-jira-cloud-app-for-self-managed-instances).
-- Recommended to [install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually).
+- [Connect the GitLab for Jira Cloud app for self-managed instances](#connect-the-gitlab-for-jira-cloud-app-for-self-managed-instances).
+- [Install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually).
 
 To create an OAuth application:
 
@@ -110,6 +109,7 @@ Prerequisites:
 - GitLab.com must serve as a proxy for the instance.
 - The instance must be publicly available.
 - The instance must be on version 15.7 or later.
+- You must set up [OAuth authentication](#set-up-oauth-authentication-for-self-managed-instances).
 
 You can link self-managed instances after installing the GitLab for Jira Cloud app from the marketplace.
 Jira apps can only link to one URL per marketplace listing. The official listing links to GitLab.com.
@@ -123,7 +123,7 @@ It's not possible to create branches from Jira for self-managed instances. For m
 
 To set up your self-managed instance for the GitLab for Jira Cloud app in GitLab 15.7 and later:
 
-1. [Set up OAuth authentication](#set-up-oauth-authentication).
+1. [Set up OAuth authentication](#set-up-oauth-authentication-for-self-managed-instances).
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).
 1. Expand the **GitLab for Jira App** section.
@@ -147,7 +147,7 @@ you can install the app manually.
 Prerequisites:
 
 - The instance must be publicly available.
-- You must set up [OAuth authentication](#set-up-oauth-authentication).
+- You must set up [OAuth authentication](#set-up-oauth-authentication-for-self-managed-instances).
 
 ### Set up your Jira app
 
@@ -202,9 +202,9 @@ For full instructions, review the Atlassian [guide to creating a marketplace lis
 To create a Marketplace listing:
 
 1. Register as a Marketplace vendor.
-1. List your application using the application descriptor URL.
+1. List your application with the application descriptor URL.
    - Your manifest file is located at: `https://your.domain/your-path/-/jira_connect/app_descriptor.json`
-   - We recommend you list your application as `private`, because public
+   - You should list your application as `private` because public
      applications can be viewed and installed by any user.
 1. Generate test license tokens for your application.
 
@@ -212,11 +212,11 @@ NOTE:
 This method uses [automated updates](#update-the-gitlab-for-jira-cloud-app)
 the same way as our GitLab.com Marketplace listing.
 
-## Configure your GitLab instance to serve as a proxy for the GitLab for Jira Cloud app
+## Configure your GitLab instance to serve as a proxy for the GitLab for Jira Cloud app **(FREE SELF)**
 
-A GitLab instance can serve as a proxy for other GitLab instances using the GitLab for Jira Cloud app.
-This can be useful if you are managing multiple GitLab instance but only want to [manually install](#install-the-gitlab-for-jira-cloud-app-manually)
-the GitLab for Jira app once.
+A GitLab instance can serve as a proxy for other GitLab instances through the GitLab for Jira Cloud app.
+You might want to use a proxy if you're managing multiple GitLab instances but only want to
+[manually install](#install-the-gitlab-for-jira-cloud-app-manually) the GitLab for Jira Cloud app once.
 
 To configure your GitLab instance to serve as a proxy:
 
@@ -225,9 +225,36 @@ To configure your GitLab instance to serve as a proxy:
 1. Expand the **GitLab for Jira App** section.
 1. Select **Enable public key storage**.
 1. Select **Save changes**.
-1. [Install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually)
+1. [Install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually).
 
-Other GitLab instances using the proxy must configure the **Jira Connect Proxy URL** setting and the [OAuth application](#set-up-oauth-authentication) **Redirect URI** to point to the proxy instance.
+Other GitLab instances that use the proxy must configure the **Jira Connect Proxy URL** and the [OAuth application](#set-up-oauth-authentication-for-self-managed-instances) **Redirect URI** settings to point to the proxy instance.
+
+## Security considerations
+
+The GitLab for Jira Cloud app connects GitLab and Jira. Data must be shared between the two applications, and access must be granted in both directions.
+
+### Access to GitLab through OAuth **(FREE SELF)**
+
+GitLab does not share an access token with Jira. However, users must authenticate through OAuth to configure the app.
+
+An access token is retrieved through a [PKCE](https://www.rfc-editor.org/rfc/rfc7636) OAuth flow and stored only on the client side.
+The app frontend that initializes the OAuth flow is a JavaScript application that's loaded from GitLab through an iframe on Jira.
+
+The OAuth application must have the `api` scope, which grants complete read and write access to the API.
+This access includes all groups and projects, the container registry, and the package registry.
+However, the GitLab for Jira Cloud app only uses this access to:
+
+- Display namespaces to be linked.
+- Link namespaces.
+
+Access through OAuth is only needed for the time a user configures the GitLab for Jira Cloud app. For more information, see [Access token expiration](../oauth_provider.md#access-token-expiration).
+
+### Access to Jira through access token
+
+Jira shares an access token with GitLab to authenticate and authorize data pushes to Jira.
+As part of the app installation process, Jira sends a handshake request to GitLab containing the access token.
+The handshake is signed with an [asymmetric JWT](https://developer.atlassian.com/cloud/jira/platform/understanding-jwt-for-connect-apps/),
+and the access token is stored encrypted with `AES256-GCM` on GitLab.
 
 ## Troubleshooting
 
@@ -243,7 +270,7 @@ You need to sign in or sign up before continuing.
 The GitLab for Jira Cloud app uses an iframe to add namespaces on the
 settings page. Some browsers block cross-site cookies, which can lead to this issue.
 
-To resolve this issue, set up [OAuth authentication](#set-up-oauth-authentication) and enable the `jira_connect_oauth` [feature flag](../../administration/feature_flags.md).
+To resolve this issue, set up [OAuth authentication](#set-up-oauth-authentication-for-self-managed-instances) and enable the `jira_connect_oauth` [feature flag](../../administration/feature_flags.md).
 
 ### Manual installation fails
 
@@ -285,29 +312,3 @@ To resolve this issue on GitLab self-managed, follow one of the solutions below,
     - Contact the [Jira Software Cloud support](https://support.atlassian.com/jira-software-cloud/) and ask to trigger a new installed lifecycle event for the GitLab for Jira Cloud app in your namespace.
   - In all GitLab versions:
     - Re-install the GitLab for Jira Cloud app. This might remove all already synced development panel data.
-
-## Security considerations
-
-The GitLab for Jira Cloud app connects GitLab and Jira, as data must be shared between the two applications and access must be granted in both directions.
-
-## Access to GitLab through OAuth
-
-GitLab does not share an access token with Jira. However, users must authenticate via OAuth to configure the app.
-
-An access token is retrieved via [PKCE](https://www.rfc-editor.org/rfc/rfc7636) OAuth flow, and stored only on the client side.
-The app-frontend that initializes the OAuth flow is a JavaScript application, which is loaded from GitLab through an iframe on Jira.
-
-The OAuth application requires the `api` scope that grants complete read/write access to the API, including to all groups and projects, the container registry, and the package registry.
-However, the GitLab for Jira Cloud app only uses this access to:
-
-- Display namespaces to be linked.
-- Link namespaces.
-
-Access through OAuth is only needed for the time a user configures the GitLab for Jira Cloud app. For more information, see [Access token expiration](../oauth_provider.md#access-token-expiration).
-
-## Access to Jira through access token
-
-Jira shares an access token with GitLab to authenticate and authorize data pushes to Jira.
-As part of the app installation process, Jira sends a handshake request to GitLab containing the access token.
-The handshake is signed with an [asymmetric JWT](https://developer.atlassian.com/cloud/jira/platform/understanding-jwt-for-connect-apps/)
-and the access token is stored encrypted with `AES256-GCM` on GitLab.

@@ -27,7 +27,7 @@ module Mutations
               description: 'Runner after mutation.'
 
         def resolve(id:, **runner_attrs)
-          runner = authorized_find!(id)
+          runner = authorized_find!(id: id)
 
           associated_projects_ids = runner_attrs.delete(:associated_projects)
 
@@ -38,10 +38,6 @@ module Mutations
           end
 
           response
-        end
-
-        def find_object(id)
-          GitlabSchema.find_by_gid(id)
         end
 
         private

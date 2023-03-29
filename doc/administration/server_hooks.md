@@ -27,7 +27,43 @@ alternatives to server hooks include:
 
 [Geo](geo/index.md) doesn't replicate server hooks to secondary nodes.
 
-## Create server hooks for a repository
+## Set server hooks for a repository
+
+::Tabs
+
+:::TabTitle GitLab 15.11 and later
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access.
+
+Prerequisites:
+
+- The [storage name and relative path](repository_storage_types.md#from-project-name-to-hashed-path) for the repository.
+
+To set server hooks for a repository:
+
+1. Create tarball containing custom hooks:
+   1. Write the code to make the server hook function as expected. Git server hooks can be in any programming language.
+      Ensure the [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) at the top reflects the language type. For
+      example, if the script is in Ruby the shebang is probably `#!/usr/bin/env ruby`.
+
+      - To create a single server hook, create a file with a name that matches the hook type. For example, for a
+        `pre-receive` server hook, the filename should be `pre-receive` with no extension.
+      - To create many server hooks, create a directory for the hooks that matches the hook type. For example, for a
+        `pre-receive` server hook, the directory name should be `pre-receive.d`. Put the files for the hook in that
+        directory.
+
+   1. Ensure the server hook files are executable and do not match the backup file pattern (`*~`). The server hooks be
+      in a `custom_hooks` directory that is at the root of the tarball.
+   1. Create the custom hooks archive with the tar command. For example, `tar -cf custom_hooks.tar custom_hooks`.
+1. Run the `hooks set` command with required options to set the Git hooks for the repository. For example,
+   `cat hooks.tar | gitaly hooks set --storage <storage> --repository <relative path> --config <config path>`.
+
+   - A path to a valid Gitaly configuration for the node is required to connect to the node and provided to the `--config` flag.
+   - Custom hooks tarball must be passed via `stdin`. For example, `cat hooks.tar | gitaly hooks set --storage <storage> --repository <relative path> --config <config path>`.
+
+If you implemented the server hook code correctly, it should execute when the Git hook is next triggered.
+
+:::TabTitle GitLab 15.10 and earlier
 
 To create server hooks for a repository:
 
@@ -54,6 +90,8 @@ To create server hooks for a repository:
    pattern (`*~`).
 
 If the server hook code is properly implemented, it should execute when the Git hook is next triggered.
+
+::EndTabs
 
 ### Gitaly Cluster
 
@@ -111,6 +149,16 @@ To create a global server hook for all repositories:
 
 If the server hook code is properly implemented, it should execute when the Git hook is next triggered. Hooks are executed in alphabetical order by filename in the hook type
 subdirectories.
+
+## Remove server hooks for a repository using Gitaly CLI
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access.
+
+To remove hooks using the Gitaly CLI, pass an empty tarball to `hook set` to indicate that the repository should contain no hooks. For example:
+
+```shell
+cat empty_hooks.tar | gitaly hooks set --storage <storage> --repository <relative path> --config <config path>`.
+```
 
 ## Chained server hooks
 

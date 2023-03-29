@@ -221,6 +221,7 @@ RSpec.describe PlanLimits do
         security_policy_scan_execution_schedules
         enforcement_limit
         notification_limit
+        project_access_token_limit
       ] + disabled_max_artifact_size_columns
     end
 

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
+  include EverySidekiqWorkerTestHelper
+
   let(:workers_without_defaults) do
     Gitlab::SidekiqConfig.workers - Gitlab::SidekiqConfig::DEFAULT_WORKERS.values
   end
@@ -481,7 +483,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'WorkItems::ImportWorkItemsCsvWorker' => 3,
         'X509CertificateRevokeWorker' => 3,
         'ComplianceManagement::MergeRequests::ComplianceViolationsWorker' => 3
-      }
+      }.merge(extra_retry_exceptions)
     end
 
     it 'uses the default number of retries for new jobs' do

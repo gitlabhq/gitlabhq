@@ -10,12 +10,6 @@ module Mutations
                 Types::GlobalIDType[::Terraform::State],
                 required: true,
                 description: 'Global ID of the Terraform state.'
-
-        private
-
-        def find_object(id:)
-          GitlabSchema.find_by_gid(id)
-        end
       end
     end
   end

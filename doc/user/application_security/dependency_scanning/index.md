@@ -359,7 +359,7 @@ The following package managers use lockfiles that GitLab analyzers are capable o
 | Go              | Not applicable                 | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/go-modules/gosum/default/go.sum) <sup><strong><a href="#notes-regarding-parsing-lockfiles-1">1</a></strong></sup>                                                                       |
 | NuGet           | v1                             | [4.9](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/csharp-nuget-dotnetcore/default/src/web.api/packages.lock.json#L2)                                                                                                                      |
 | npm             | v1, v2, v3<sup><b><a href="#notes-regarding-parsing-lockfiles-2">2</a></b></sup>                     | [6.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/default/package-lock.json#L4), [7.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/lockfileVersion2/package-lock.json#L4), [9.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/scanner/parser/npm/fixtures/lockfile-v3/simple/package-lock.json#L4) |
-| yarn            | v1                             | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/default/yarn.lock#L2)                                                                                                                                                           |
+| yarn            | v1, v2<sup><b><a href="#notes-regarding-parsing-lockfiles-3">3</a></b></sup>, v3<sup><b><a href="#notes-regarding-parsing-lockfiles-3">3</a></b></sup>                       | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/default/yarn.lock#L2), [2.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn-v2/default/yarn.lock), [3.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn-v3/default/yarn.lock)                                                                                                                                                           |
 | Poetry          | v1                             | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/python-poetry/default/poetry.lock)                                                                                                                                                      |
 
 <!-- markdownlint-disable MD044 -->
@@ -375,6 +375,26 @@ The following package managers use lockfiles that GitLab analyzers are capable o
     <a id="notes-regarding-parsing-lockfiles-2"></a>
     <p>
       Support for <code>lockfileVersion = 3</code> was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/365176">introduced</a> in GitLab 15.7.
+    </p>
+  </li>
+  <li>
+    <a id="notes-regarding-parsing-lockfiles-3"></a>
+    <p>
+      Support for Yarn <code>v2</code> and <code>v3</code> was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/263358">introduced in GitLab 15.11</a>. However, this feature is also available to versions of GitLab 15.0 and later.
+    </p>
+    <p>
+      The following features are not supported for Yarn <code>v2</code> or <code>v3</code>:
+    </p>
+    <ul>
+      <li>
+        <a href="https://yarnpkg.com/features/workspaces">workspaces</a>
+      </li>
+      <li>
+        <a href="https://yarnpkg.com/cli/patch">yarn patch</a>
+      </li>
+    </ul>
+    <p>
+      Yarn files that contain a patch, a workspace, or both, are still processed, but these features are ignored.
     </p>
   </li>
 </ol>

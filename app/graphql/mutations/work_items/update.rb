@@ -42,10 +42,6 @@ module Mutations
 
       private
 
-      def find_object(id:)
-        GitlabSchema.find_by_gid(id)
-      end
-
       def interpret_quick_actions!(work_item, current_user, widget_params, attributes = {})
         return unless work_item.work_item_type.widgets.include?(::WorkItems::Widgets::Description)
 

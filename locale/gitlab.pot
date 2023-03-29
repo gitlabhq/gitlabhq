@@ -9182,7 +9182,7 @@ msgstr ""
 msgid "CiVariable|Define a CI/CD variable in the UI"
 msgstr ""
 
-msgid "CiVariable|Maximum of 20 environments listed. For more environments, enter a search query."
+msgid "CiVariable|Maximum of %{limit} environments listed. For more environments, enter a search query."
 msgstr ""
 
 msgid "CiVariable|New environment"
@@ -18106,6 +18106,9 @@ msgid "Filter users"
 msgstr ""
 
 msgid "Filter..."
+msgstr ""
+
+msgid "Finalizing"
 msgstr ""
 
 msgid "Find File"
@@ -36606,6 +36609,9 @@ msgstr ""
 msgid "Report Finding not found"
 msgstr ""
 
+msgid "Report abuse"
+msgstr ""
+
 msgid "Report abuse to administrator"
 msgstr ""
 
@@ -36628,6 +36634,12 @@ msgid "ReportAbuse|Link to spam"
 msgstr ""
 
 msgid "ReportAbuse|Report abuse to administrator"
+msgstr ""
+
+msgid "ReportAbuse|Screenshot"
+msgstr ""
+
+msgid "ReportAbuse|Screenshot of abuse"
 msgstr ""
 
 msgid "ReportAbuse|Something else."
@@ -38545,6 +38557,9 @@ msgstr ""
 msgid "Scopes: %{scope_list}"
 msgstr ""
 
+msgid "Screenshot must be less than 1 MB."
+msgstr ""
+
 msgid "Scroll down"
 msgstr ""
 
@@ -39461,7 +39476,10 @@ msgstr ""
 msgid "SecurityOrchestration|branches"
 msgstr ""
 
-msgid "SecurityOrchestration|group level branch"
+msgid "SecurityOrchestration|group level branch input"
+msgstr ""
+
+msgid "SecurityOrchestration|group level branch selector"
 msgstr ""
 
 msgid "SecurityOrchestration|or from:"
@@ -52476,6 +52494,9 @@ msgid "must have a repository"
 msgstr ""
 
 msgid "must match %{association}.project_id"
+msgstr ""
+
+msgid "must match one of the following file types: %{extension_list}"
 msgstr ""
 
 msgid "must not be an owner of the namespace"

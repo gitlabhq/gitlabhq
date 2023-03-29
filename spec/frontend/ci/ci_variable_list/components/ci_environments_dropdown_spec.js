@@ -1,6 +1,6 @@
 import { GlListboxItem, GlCollapsibleListbox, GlDropdownItem, GlIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { allEnvironments } from '~/ci/ci_variable_list/constants';
+import { allEnvironments, ENVIRONMENT_QUERY_LIMIT } from '~/ci/ci_variable_list/constants';
 import CiEnvironmentsDropdown from '~/ci/ci_variable_list/components/ci_environments_dropdown.vue';
 
 describe('Ci environments dropdown', () => {
@@ -148,6 +148,7 @@ describe('Ci environments dropdown', () => {
 
     it('displays note about max environments shown', () => {
       expect(findMaxEnvNote().exists()).toBe(true);
+      expect(findMaxEnvNote().text()).toContain(String(ENVIRONMENT_QUERY_LIMIT));
     });
   });
 

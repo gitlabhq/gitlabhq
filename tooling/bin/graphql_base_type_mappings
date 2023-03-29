@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../lib/tooling/mappings/graphql_base_type_mappings'
+
+changes_file         = ARGV.shift
+matching_tests_paths = ARGV.shift
+
+Tooling::Mappings::GraphqlBaseTypeMappings.new(changes_file, matching_tests_paths).execute

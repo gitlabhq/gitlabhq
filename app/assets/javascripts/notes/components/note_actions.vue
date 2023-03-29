@@ -21,7 +21,7 @@ export default {
     editCommentLabel: __('Edit comment'),
     deleteCommentLabel: __('Delete comment'),
     moreActionsLabel: __('More actions'),
-    reportAbuse: __('Report abuse to administrator'),
+    reportAbuse: __('Report abuse'),
   },
   name: 'NoteActions',
   components: {

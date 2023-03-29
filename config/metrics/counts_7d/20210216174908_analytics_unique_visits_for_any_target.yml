@@ -36,6 +36,7 @@ options:
   - p_analytics_ci_cd_pipelines
   - p_analytics_ci_cd_deployment_frequency
   - p_analytics_ci_cd_lead_time
+  - g_metrics_comparison_page
 distribution:
 - ce
 - ee

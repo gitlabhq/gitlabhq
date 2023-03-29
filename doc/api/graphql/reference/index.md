@@ -13355,7 +13355,7 @@ Returns [`[DoraMetric!]`](#dorametric).
 | <a id="egressnodeartifactsegress"></a>`artifactsEgress` | [`BigInt!`](#bigint) | Artifacts egress for that project in that period of time. |
 | <a id="egressnodedate"></a>`date` | [`String!`](#string) | First day of the node range. There is one node per month. |
 | <a id="egressnodepackagesegress"></a>`packagesEgress` | [`BigInt!`](#bigint) | Packages egress for that project in that period of time. |
-| <a id="egressnoderegistryegress"></a>`registryEgress` | [`BigInt!`](#bigint) | Registery egress for that project in that period of time. |
+| <a id="egressnoderegistryegress"></a>`registryEgress` | [`BigInt!`](#bigint) | Registry egress for that project in that period of time. |
 | <a id="egressnoderepositoryegress"></a>`repositoryEgress` | [`BigInt!`](#bigint) | Repository egress for that project in that period of time. |
 | <a id="egressnodetotalegress"></a>`totalEgress` | [`BigInt!`](#bigint) | Total egress for that project in that period of time. |
 
@@ -14574,7 +14574,7 @@ Returns [`GroupDataTransfer`](#groupdatatransfer).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupdatatransferfrom"></a>`from` | [`Date`](#date) | Retain egress data for 1 year. Current month will increase dynamically as egress occurs. |
+| <a id="groupdatatransferfrom"></a>`from` | [`Date`](#date) | Retain egress data for one year. Data for the current month will increase dynamically as egress occurs. |
 | <a id="groupdatatransferto"></a>`to` | [`Date`](#date) | End date for the data. |
 
 ##### `Group.descendantGroups`
@@ -18604,7 +18604,7 @@ Returns [`ProjectDataTransfer`](#projectdatatransfer).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectdatatransferfrom"></a>`from` | [`Date`](#date) | Retain egress data for 1 year. Current month will increase dynamically as egress occurs. |
+| <a id="projectdatatransferfrom"></a>`from` | [`Date`](#date) | Retain egress data for one year. Data for the current month will increase dynamically as egress occurs. |
 | <a id="projectdatatransferto"></a>`to` | [`Date`](#date) | End date for the data. |
 
 ##### `Project.deployment`

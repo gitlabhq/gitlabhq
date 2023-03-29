@@ -1,8 +1,0 @@
----
-name: codeowners_default_owners
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113594
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/394811
-milestone: '15.11'
-type: development
-group: group::source code
-default_enabled: false

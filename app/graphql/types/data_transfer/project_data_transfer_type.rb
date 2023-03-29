@@ -8,12 +8,14 @@ module Types
 
       field :total_egress, GraphQL::Types::BigInt,
         description: 'Total egress for that project in that period of time.',
-        null: true # disallow null once data_transfer_monitoring feature flag is rolled-out!
+        null: true, # disallow null once data_transfer_monitoring feature flag is rolled-out! https://gitlab.com/gitlab-org/gitlab/-/issues/397693
+        extras: [:parent]
 
-      def total_egress(**_)
-        return unless Feature.enabled?(:data_transfer_monitoring)
+      def total_egress(parent:)
+        return unless Feature.enabled?(:data_transfer_monitoring, parent.group)
+        return 40_000_000 if Feature.enabled?(:data_transfer_monitoring_mock_data, parent.group)
 
-        40_000_000
+        object[:egress_nodes].sum('repository_egress + artifacts_egress + packages_egress + registry_egress')
       end
     end
   end

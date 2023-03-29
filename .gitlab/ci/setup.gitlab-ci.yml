@@ -123,6 +123,7 @@ detect-tests:
         tooling/bin/partial_to_views_mappings ${RSPEC_CHANGED_FILES_PATH} ${RSPEC_VIEWS_INCLUDING_PARTIALS_PATH};
         tooling/bin/find_tests ${RSPEC_VIEWS_INCLUDING_PARTIALS_PATH} ${RSPEC_MATCHING_TESTS_PATH};
         tooling/bin/js_to_system_specs_mappings ${RSPEC_CHANGED_FILES_PATH} ${RSPEC_MATCHING_TESTS_PATH};
+        tooling/bin/graphql_base_type_mappings ${RSPEC_CHANGED_FILES_PATH} ${RSPEC_MATCHING_TESTS_PATH};
         tooling/bin/find_changes ${RSPEC_CHANGED_FILES_PATH} ${RSPEC_MATCHING_TESTS_PATH} ${FRONTEND_FIXTURES_MAPPING_PATH};
         filter_rspec_matched_foss_tests ${RSPEC_MATCHING_TESTS_PATH} ${RSPEC_MATCHING_TESTS_FOSS_PATH};
         filter_rspec_matched_ee_tests ${RSPEC_MATCHING_TESTS_PATH} ${RSPEC_MATCHING_TESTS_EE_PATH};

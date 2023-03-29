@@ -11,5 +11,9 @@ FactoryBot.define do
     trait :closed do
       status { 'closed' }
     end
+
+    trait :with_screenshot do
+      screenshot { fixture_file_upload('spec/fixtures/dk.png') }
+    end
   end
 end

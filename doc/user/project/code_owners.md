@@ -220,18 +220,10 @@ The following image shows a **Groups** and **Documentation** section:
 
 ![MR widget - Sectional Code Owners](img/sectional_code_owners_v13.2.png)
 
-#### Set default owner for a section **(PREMIUM SELF)**
+#### Set default owner for a section
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371711) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `codeowners_default_owners`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `codeowners_default_owners`.
-The feature is not ready for production use.
-
-WARNING:
-To disable this feature flag after setting default owners per section, edit your
-CODEOWNERS file to [list Code Owners per line](#set-up-code-owners).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371711) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `codeowners_default_owners`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115888) in GitLab 15.11. Feature flag `codeowners_default_owners` removed.
 
 If multiple file paths inside a section share the same ownership, define a default
 Code Owner for the section. All paths in that section inherit this default, unless

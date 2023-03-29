@@ -567,8 +567,8 @@ module Types
           description: "Find runners visible to the current user."
 
     field :data_transfer, Types::DataTransfer::ProjectDataTransferType,
-          null: true, # disallow null once data_transfer_monitoring feature flag is rolled-out!
-          resolver: Resolvers::DataTransferResolver.project,
+          null: true, # disallow null once data_transfer_monitoring feature flag is rolled-out! https://gitlab.com/gitlab-org/gitlab/-/issues/391682
+          resolver: Resolvers::DataTransfer::ProjectDataTransferResolver,
           description: 'Data transfer data point for a specific period. This is mocked data under a development feature flag.'
 
     field :visible_forks, Types::ProjectType.connection_type,

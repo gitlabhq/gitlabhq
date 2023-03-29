@@ -103,9 +103,9 @@ supported by `push_hooks` and `tag_push_hooks` events aren't executed.
 You can change the number of supported branches or tags by changing the
 [`push_event_hooks_limit` application setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
 
-## Troubleshooting integrations
+## Troubleshooting
 
-Some integrations use hooks to integrate with external applications. To confirm which ones use integration hooks, see the [available integrations](#available-integrations). For more information, see [Troubleshooting webhooks](webhooks.md#troubleshoot-webhooks).
+Some integrations use hooks to integrate with external applications. To confirm which ones use integration hooks, see the [available integrations](#available-integrations). For more information, see [webhook troubleshooting](webhooks.md#troubleshooting).
 
 ### `Test Failed. Save Anyway` error
 
