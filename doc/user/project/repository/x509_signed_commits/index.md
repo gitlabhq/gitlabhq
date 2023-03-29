@@ -101,7 +101,7 @@ To configure Windows or macOS:
    - Downloading the installer.
    - Running `brew install smimesign` on macOS.
 1. Get the ID of your certificate by running `smimesign --list-keys`.
-1. Set your signing key by running `git config --global user.signingkey ID`.
+1. Set your signing key by running `git config --global user.signingkey <ID>`, replacing `<ID>` with the certificate ID.
 1. Configure X.509 with this command:
 
    ```shell

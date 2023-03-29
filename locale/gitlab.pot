@@ -8128,12 +8128,6 @@ msgstr ""
 msgid "CICD|instance enabled"
 msgstr ""
 
-msgid "CLOSED"
-msgstr ""
-
-msgid "CLOSED (MOVED)"
-msgstr ""
-
 msgid "CODEOWNERS rule violation"
 msgstr ""
 
@@ -9386,6 +9380,9 @@ msgid "Closed"
 msgstr ""
 
 msgid "Closed %{epicTimeagoDate}"
+msgstr ""
+
+msgid "Closed (moved)"
 msgstr ""
 
 msgid "Closed MRs"
@@ -21404,6 +21401,9 @@ msgstr ""
 msgid "Hostname used in private commit emails. %{learn_more}"
 msgstr ""
 
+msgid "Hour"
+msgstr ""
+
 msgid "Hour (UTC)"
 msgstr ""
 
@@ -29946,7 +29946,7 @@ msgstr ""
 msgid "OnCallSchedules|Create on-call schedules in GitLab"
 msgstr ""
 
-msgid "OnCallSchedules|Currently no rotation."
+msgid "OnCallSchedules|Currently no rotation"
 msgstr ""
 
 msgid "OnCallSchedules|Delete rotation"
@@ -31612,7 +31612,13 @@ msgstr ""
 msgid "Pipeline durations for the last 30 commits"
 msgstr ""
 
+msgid "Pipeline editor"
+msgstr ""
+
 msgid "Pipeline ran in fork of project"
+msgstr ""
+
+msgid "Pipeline schedules"
 msgstr ""
 
 msgid "Pipeline status emails"

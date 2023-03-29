@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlKeysetPagination, GlSkeletonLoader, GlPagination } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlKeysetPagination, GlSkeletonLoader, GlPagination } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
@@ -24,6 +24,7 @@ export default {
   },
   components: {
     GlAlert,
+    GlBadge,
     GlKeysetPagination,
     GlSkeletonLoader,
     IssuableTabs,
@@ -371,7 +372,9 @@ export default {
             <slot name="timeframe" :issuable="issuable"></slot>
           </template>
           <template #status>
-            <slot name="status" :issuable="issuable"></slot>
+            <gl-badge size="sm" variant="info">
+              <slot name="status" :issuable="issuable"></slot>
+            </gl-badge>
           </template>
           <template #statistics>
             <slot name="statistics" :issuable="issuable"></slot>

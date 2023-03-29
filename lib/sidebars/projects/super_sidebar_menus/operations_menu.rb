@@ -13,6 +13,20 @@ module Sidebars
         def sprite_icon
           'deployments'
         end
+
+        override :configure_menu_items
+        def configure_menu_items
+          [
+            :packages_registry,
+            :container_registry,
+            :kubernetes,
+            :terraform,
+            :infrastructure_registry,
+            :activity,
+            :google_cloud,
+            :aws
+          ].each { |id| add_item(::Sidebars::NilMenuItem.new(item_id: id)) }
+        end
       end
     end
   end

@@ -312,7 +312,7 @@ export default {
             :icon-size="16"
             :max-visible="4"
             img-css-classes="gl-mr-2!"
-            class="gl-align-items-center gl-display-flex gl-ml-3"
+            class="gl-align-items-center gl-display-flex"
           />
         </li>
         <slot name="statistics"></slot>

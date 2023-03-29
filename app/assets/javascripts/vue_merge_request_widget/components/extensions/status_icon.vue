@@ -60,7 +60,7 @@ export default {
     >
       <div class="gl-absolute gl-top-half gl-left-50p gl-translate-x-n50 gl-display-flex gl-m-auto">
         <div class="gl-display-flex gl-m-auto gl-translate-y-n50">
-          <gl-loading-icon v-if="isLoading" size="md" inline />
+          <gl-loading-icon v-if="isLoading" size="sm" inline />
           <gl-icon
             v-else
             :name="$options.EXTENSION_ICON_NAMES[iconName]"
