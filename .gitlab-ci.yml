@@ -152,7 +152,7 @@ variables:
   DOCKER_VERSION: "23.0.1"
   RUBY_VERSION: "2.7"
   RUBYGEMS_VERSION: "3.4"
-  GO_VERSION: "1.18"
+  GO_VERSION: "1.19"
   RUST_VERSION: "1.65"
 
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec/flaky/report-suite.json

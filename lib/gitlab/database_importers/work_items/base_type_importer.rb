@@ -19,7 +19,8 @@ module Gitlab
           status: 'Status',
           requirement_legacy: 'Requirement legacy',
           test_reports: 'Test reports',
-          notifications: 'Notifications'
+          notifications: 'Notifications',
+          current_user_todos: "Current user todos"
         }.freeze
 
         WIDGETS_FOR_TYPE = {
@@ -34,18 +35,21 @@ module Gitlab
             :iteration,
             :weight,
             :health_status,
-            :notifications
+            :notifications,
+            :current_user_todos
           ],
           incident: [
             :description,
             :hierarchy,
             :notes,
-            :notifications
+            :notifications,
+            :current_user_todos
           ],
           test_case: [
             :description,
             :notes,
-            :notifications
+            :notifications,
+            :current_user_todos
           ],
           requirement: [
             :description,
@@ -53,7 +57,8 @@ module Gitlab
             :status,
             :requirement_legacy,
             :test_reports,
-            :notifications
+            :notifications,
+            :current_user_todos
           ],
           task: [
             :assignees,
@@ -65,7 +70,8 @@ module Gitlab
             :notes,
             :iteration,
             :weight,
-            :notifications
+            :notifications,
+            :current_user_todos
           ],
           objective: [
             :assignees,
@@ -76,7 +82,8 @@ module Gitlab
             :notes,
             :health_status,
             :progress,
-            :notifications
+            :notifications,
+            :current_user_todos
           ],
           key_result: [
             :assignees,
@@ -87,7 +94,8 @@ module Gitlab
             :notes,
             :health_status,
             :progress,
-            :notifications
+            :notifications,
+            :current_user_todos
           ]
         }.freeze
 

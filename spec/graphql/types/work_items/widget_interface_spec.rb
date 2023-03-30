@@ -21,6 +21,7 @@ RSpec.describe Types::WorkItems::WidgetInterface do
       WorkItems::Widgets::Labels        | Types::WorkItems::Widgets::LabelsType
       WorkItems::Widgets::Notes         | Types::WorkItems::Widgets::NotesType
       WorkItems::Widgets::Notifications | Types::WorkItems::Widgets::NotificationsType
+      WorkItems::Widgets::CurrentUserTodos | Types::WorkItems::Widgets::CurrentUserTodosType
     end
 
     with_them do

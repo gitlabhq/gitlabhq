@@ -4,6 +4,8 @@ module SidebarsHelper
   include MergeRequestsHelper
   include Nav::NewDropdownHelper
 
+  USER_BAR_COUNT_LIMIT = 99
+
   def sidebar_tracking_attributes_by_object(object)
     sidebar_attributes_for_object(object).fetch(:tracking_attrs, {})
   end
@@ -62,10 +64,10 @@ module SidebarsHelper
       },
       can_sign_out: current_user_menu?(:sign_out),
       sign_out_link: destroy_user_session_path,
-      assigned_open_issues_count: user.assigned_open_issues_count,
-      todos_pending_count: user.todos_pending_count,
+      assigned_open_issues_count: format_user_bar_count(user.assigned_open_issues_count),
+      todos_pending_count: format_user_bar_count(user.todos_pending_count),
       issues_dashboard_path: issues_dashboard_path(assignee_username: user.username),
-      total_merge_requests_count: user_merge_requests_counts[:total],
+      total_merge_requests_count: format_user_bar_count(user_merge_requests_counts[:total]),
       create_new_menu_groups: create_new_menu_groups(group: group, project: project),
       merge_request_menu: create_merge_request_menu(user),
       projects_path: projects_path,
@@ -291,6 +293,17 @@ module SidebarsHelper
     end
 
     links
+  end
+
+  # Formats the counts to be shown in the super sidebar's top section (issues, MRs and todos).
+  # We want to avoid printing huge numbers there, so when the count exceeds USER_BAR_COUNT_LIMIT,
+  # we cap it to USER_BAR_COUNT_LIMIT and append a "+" to it.
+  def format_user_bar_count(count)
+    if count > USER_BAR_COUNT_LIMIT
+      "#{USER_BAR_COUNT_LIMIT}+"
+    else
+      count.to_s
+    end
   end
 end
 

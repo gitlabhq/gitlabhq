@@ -981,6 +981,22 @@ RSpec.describe Group, feature_category: :subgroups do
         expect(result).to include(group_2, group_3, group_4)
         expect(result).not_to include(group_1)
       end
+
+      context 'when the application_setting is set to `NO_ONE_PROJECT_ACCESS`' do
+        before do
+          stub_application_setting(default_project_creation: Gitlab::Access::NO_ONE_PROJECT_ACCESS)
+        end
+
+        it 'only includes groups where project creation is allowed' do
+          result = described_class.project_creation_allowed
+
+          expect(result).to include(group_2, group_3)
+
+          # group_4 won't be included because it has `project_creation_level: nil`,
+          # and that means it behaves like the value of the application_setting will inherited.
+          expect(result).not_to include(group_1, group_4)
+        end
+      end
     end
 
     describe 'by_ids_or_paths' do

@@ -97,7 +97,7 @@ module Ci
       def status_of_previous_jobs(job)
         if job.scheduling_type_dag?
           # job uses DAG, get status of all dependent needs
-          @collection.status_of_jobs(job.aggregated_needs_names.to_a, dag: true)
+          @collection.status_of_jobs(job.aggregated_needs_names.to_a)
         else
           # job uses Stages, get status of prior stage
           @collection.status_of_jobs_prior_to_stage(job.stage_idx.to_i)

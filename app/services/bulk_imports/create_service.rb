@@ -45,7 +45,12 @@ module BulkImports
 
       bulk_import = create_bulk_import
 
-      Gitlab::Tracking.event(self.class.name, 'create', label: 'bulk_import_group')
+      Gitlab::Tracking.event(
+        self.class.name,
+        'create',
+        label: 'bulk_import_group',
+        extra: { source_equals_destination: source_equals_destination? }
+      )
 
       BulkImportWorker.perform_async(bulk_import.id)
 
@@ -124,6 +129,10 @@ module BulkImports
         user: current_user,
         extra: { user_role: user_role(entity_params[:destination_namespace]), import_type: 'bulk_import_group' }
       )
+    end
+
+    def source_equals_destination?
+      credentials[:url].starts_with?(Settings.gitlab.base_url)
     end
 
     def validate_destination_full_path(entity_params)

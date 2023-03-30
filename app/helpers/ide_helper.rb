@@ -83,5 +83,3 @@ module IdeHelper
     current_user.dismissed_callout?(feature_name: 'web_ide_ci_environments_guidance')
   end
 end
-
-IdeHelper.prepend_mod_with('IdeHelper')

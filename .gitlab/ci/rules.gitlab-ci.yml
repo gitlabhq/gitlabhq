@@ -283,6 +283,7 @@
 # This list should match the list in Tasks::Gitlab::Assets.assets_impacting_compilation
 .assets-compilation-patterns: &assets-compilation-patterns
   - "{package.json,yarn.lock}"
+  - "{Gemfile,Gemfile.lock}"
   - ".browserslistrc"
   - "babel.config.js"
   - "config/webpack.config.js"

@@ -9,6 +9,7 @@ module QA
         include Page::Component::Breadcrumbs
         include Page::Project::SubMenus::Settings
         include Page::File::Shared::CommitMessage
+        include ::QA::Page::Component::Dropdown
         prepend Mobile::Page::Project::Show if Runtime::Env.mobile_layout?
 
         view 'app/assets/javascripts/repository/components/preview/index.vue' do
@@ -66,11 +67,6 @@ module QA
 
         view 'app/assets/javascripts/vue_shared/components/web_ide_link.vue' do
           element :web_ide_button
-        end
-
-        view 'app/views/shared/_ref_switcher.html.haml' do
-          element :branches_dropdown
-          element :branches_dropdown_content
         end
 
         view 'app/views/projects/blob/viewers/_loading.html.haml' do
@@ -184,11 +180,8 @@ module QA
         end
 
         def switch_to_branch(branch_name)
-          find_element(:branches_dropdown).click
-
-          within_element(:branches_dropdown_content) do
-            click_on branch_name
-          end
+          expand_select_list
+          select_item(branch_name)
         end
 
         def wait_for_import

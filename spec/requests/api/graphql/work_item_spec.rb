@@ -399,6 +399,93 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           )
         end
       end
+
+      describe 'currentUserTodos widget' do
+        let_it_be(:current_user) { developer }
+        let_it_be(:other_todo) { create(:todo, state: :pending, user: current_user) }
+
+        let_it_be(:done_todo) do
+          create(:todo, state: :done, target: work_item, target_type: work_item.class.name, user: current_user)
+        end
+
+        let_it_be(:pending_todo) do
+          create(:todo, state: :pending, target: work_item, target_type: work_item.class.name, user: current_user)
+        end
+
+        let_it_be(:other_user_todo) do
+          create(:todo, state: :pending, target: work_item, target_type: work_item.class.name, user: create(:user))
+        end
+
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetCurrentUserTodos {
+                currentUserTodos {
+                  nodes {
+                    id
+                    state
+                  }
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        context 'with access' do
+          it 'returns widget information' do
+            expect(work_item_data).to include(
+              'id' => work_item.to_gid.to_s,
+              'widgets' => include(
+                hash_including(
+                  'type' => 'CURRENT_USER_TODOS',
+                  'currentUserTodos' => {
+                    'nodes' => match_array(
+                      [done_todo, pending_todo].map { |t| { 'id' => t.to_gid.to_s, 'state' => t.state } }
+                    )
+                  }
+                )
+              )
+            )
+          end
+        end
+
+        context 'with filter' do
+          let(:work_item_fields) do
+            <<~GRAPHQL
+              id
+              widgets {
+                type
+                ... on WorkItemWidgetCurrentUserTodos {
+                  currentUserTodos(state: done) {
+                    nodes {
+                      id
+                      state
+                    }
+                  }
+                }
+              }
+            GRAPHQL
+          end
+
+          it 'returns widget information' do
+            expect(work_item_data).to include(
+              'id' => work_item.to_gid.to_s,
+              'widgets' => include(
+                hash_including(
+                  'type' => 'CURRENT_USER_TODOS',
+                  'currentUserTodos' => {
+                    'nodes' => match_array(
+                      [done_todo].map { |t| { 'id' => t.to_gid.to_s, 'state' => t.state } }
+                    )
+                  }
+                )
+              )
+            )
+          end
+        end
+      end
     end
 
     context 'when an Issue Global ID is provided' do

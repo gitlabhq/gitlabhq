@@ -112,10 +112,10 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         },
         can_sign_out: helper.current_user_menu?(:sign_out),
         sign_out_link: destroy_user_session_path,
-        assigned_open_issues_count: 1,
-        todos_pending_count: 3,
+        assigned_open_issues_count: "1",
+        todos_pending_count: "3",
         issues_dashboard_path: issues_dashboard_path(assignee_username: user.username),
-        total_merge_requests_count: 4,
+        total_merge_requests_count: "4",
         projects_path: projects_path,
         groups_path: groups_path,
         support_path: helper.support_url,
@@ -193,6 +193,23 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           )
         )
       )
+    end
+
+    context 'when counts are high' do
+      before do
+        allow(user).to receive(:assigned_open_issues_count).and_return(1000)
+        allow(user).to receive(:todos_pending_count).and_return(3000)
+        allow(user).to receive(:assigned_open_merge_requests_count).and_return(50)
+        allow(user).to receive(:review_requested_open_merge_requests_count).and_return(50)
+      end
+
+      it 'caps counts to USER_BAR_COUNT_LIMIT and appends a "+" to them' do
+        expect(subject).to include(
+          assigned_open_issues_count: "99+",
+          todos_pending_count: "99+",
+          total_merge_requests_count: "99+"
+        )
+      end
     end
 
     describe 'current context' do

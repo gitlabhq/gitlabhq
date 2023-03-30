@@ -7,7 +7,6 @@ resources :pipelines, only: [:index, :new, :create, :show, :destroy] do
     scope '(*ref)', constraints: { ref: Gitlab::PathRegex.git_reference_regex } do
       get :latest, action: :show, defaults: { latest: true }
     end
-    get :config_variables
   end
 
   member do

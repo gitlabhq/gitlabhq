@@ -25,7 +25,7 @@ module Ci
 
         # This methods gets composite status of all jobs
         def status_of_all
-          status_for_array(all_jobs, dag: false)
+          status_for_array(all_jobs)
         end
 
         # This methods gets composite status for jobs at a given stage
@@ -33,15 +33,15 @@ module Ci
           strong_memoize("status_of_stage_#{stage_position}") do
             stage_jobs = all_jobs_grouped_by_stage_position[stage_position].to_a
 
-            status_for_array(stage_jobs.flatten, dag: false)
+            status_for_array(stage_jobs.flatten)
           end
         end
 
         # This methods gets composite status for jobs with given names
-        def status_of_jobs(names, dag:)
+        def status_of_jobs(names)
           jobs = all_jobs_by_name.slice(*names)
 
-          status_for_array(jobs.values, dag: dag)
+          status_for_array(jobs.values, dag: true)
         end
 
         # This methods gets composite status for jobs before given stage
@@ -50,7 +50,7 @@ module Ci
             stage_jobs = all_jobs_grouped_by_stage_position
               .select { |position, _| position < stage_position }
 
-            status_for_array(stage_jobs.values.flatten, dag: false)
+            status_for_array(stage_jobs.values.flatten)
           end
         end
 
@@ -75,9 +75,9 @@ module Ci
           :stage_idx, :processed, :lock_version
         ].freeze
 
-        def status_for_array(jobs, dag:)
+        def status_for_array(jobs, dag: false)
           result = Gitlab::Ci::Status::Composite
-            .new(jobs, dag: dag)
+            .new(jobs, dag: dag, project: pipeline.project)
             .status
           result || 'success'
         end

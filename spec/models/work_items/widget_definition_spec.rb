@@ -12,7 +12,8 @@ RSpec.describe WorkItems::WidgetDefinition, feature_category: :team_planning do
       ::WorkItems::Widgets::StartAndDueDate,
       ::WorkItems::Widgets::Milestone,
       ::WorkItems::Widgets::Notes,
-      ::WorkItems::Widgets::Notifications
+      ::WorkItems::Widgets::Notifications,
+      ::WorkItems::Widgets::CurrentUserTodos
     ]
 
     if Gitlab.ee?

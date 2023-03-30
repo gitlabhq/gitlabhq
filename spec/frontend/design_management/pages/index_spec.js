@@ -100,6 +100,7 @@ describe('Design management index page', () => {
   let wrapper;
   let fakeApollo;
   let moveDesignHandler;
+  let permissionsQueryHandler;
 
   const findDesignCheckboxes = () => wrapper.findAll('.design-checkbox');
   const findSelectAllButton = () => wrapper.findByTestId('select-all-designs-button');
@@ -174,14 +175,16 @@ describe('Design management index page', () => {
   }
 
   function createComponentWithApollo({
+    permissionsHandler = jest.fn().mockResolvedValue(getPermissionsQueryResponse()),
     moveHandler = jest.fn().mockResolvedValue(moveDesignMutationResponse),
   }) {
     Vue.use(VueApollo);
+    permissionsQueryHandler = permissionsHandler;
     moveDesignHandler = moveHandler;
 
     const requestHandlers = [
       [getDesignListQuery, jest.fn().mockResolvedValue(designListQueryResponse)],
-      [permissionsQuery, jest.fn().mockResolvedValue(getPermissionsQueryResponse())],
+      [permissionsQuery, permissionsQueryHandler],
       [moveDesignMutation, moveDesignHandler],
     ];
 
@@ -228,13 +231,6 @@ describe('Design management index page', () => {
       expect(findDesigns().length).toBe(3);
       expect(findDesignToolbarWrapper().exists()).toBe(true);
       expect(findDesignUploadButton().exists()).toBe(true);
-    });
-
-    it('does not render toolbar when there is no permission', () => {
-      createComponent({ designs: mockDesigns, allVersions: [mockVersion], createDesign: false });
-
-      expect(findDesignToolbarWrapper().exists()).toBe(false);
-      expect(findDesignUploadButton().exists()).toBe(false);
     });
 
     it('has correct classes applied to design dropzone', () => {
@@ -744,6 +740,17 @@ describe('Design management index page', () => {
     });
   });
 
+  describe('when there is no permission to create a design', () => {
+    beforeEach(() => {
+      createComponent({ designs: mockDesigns, allVersions: [mockVersion], createDesign: false });
+    });
+
+    it("doesn't render the design toolbar and dropzone", () => {
+      expect(findToolbar().exists()).toBe(false);
+      expect(findDropzoneWrapper().exists()).toBe(false);
+    });
+  });
+
   describe('with mocked Apollo client', () => {
     it('has a design with id 1 as a first one', async () => {
       createComponentWithApollo({});
@@ -818,6 +825,18 @@ describe('Design management index page', () => {
       expect(findDesignUpdateAlert().text()).toBe(
         'Something went wrong when reordering designs. Please try again',
       );
+    });
+
+    it("doesn't render the design toolbar and dropzone if the user can't edit", async () => {
+      createComponentWithApollo({
+        permissionsHandler: jest.fn().mockResolvedValue(getPermissionsQueryResponse(false)),
+      });
+
+      await waitForPromises();
+
+      expect(permissionsQueryHandler).toHaveBeenCalled();
+      expect(findToolbar().exists()).toBe(false);
+      expect(findDropzoneWrapper().exists()).toBe(false);
     });
   });
 });

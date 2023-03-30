@@ -150,7 +150,8 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
           expect_snowplow_event(
             category: 'BulkImports::CreateService',
             action: 'create',
-            label: 'bulk_import_group'
+            label: 'bulk_import_group',
+            extra: { source_equals_destination: false }
           )
 
           expect_snowplow_event(
@@ -160,6 +161,23 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
             user: user,
             extra: { user_role: 'Owner', import_type: 'bulk_import_group' }
           )
+        end
+
+        context 'on the same instance' do
+          before do
+            allow(Settings.gitlab).to receive(:base_url).and_return('http://gitlab.example')
+          end
+
+          it 'tracks the same instance migration' do
+            expect { subject.execute }.to change { BulkImport.count }.by(1)
+
+            expect_snowplow_event(
+              category: 'BulkImports::CreateService',
+              action: 'create',
+              label: 'bulk_import_group',
+              extra: { source_equals_destination: true }
+            )
+          end
         end
 
         describe 'projects migration flag' do
@@ -229,7 +247,8 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
         expect_snowplow_event(
           category: 'BulkImports::CreateService',
           action: 'create',
-          label: 'bulk_import_group'
+          label: 'bulk_import_group',
+          extra: { source_equals_destination: false }
         )
 
         expect_snowplow_event(
@@ -239,6 +258,23 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
           user: user,
           extra: { user_role: 'Owner', import_type: 'bulk_import_group' }
         )
+      end
+
+      context 'on the same instance' do
+        before do
+          allow(Settings.gitlab).to receive(:base_url).and_return('http://gitlab.example')
+        end
+
+        it 'tracks the same instance migration' do
+          expect { subject.execute }.to change { BulkImport.count }.by(1)
+
+          expect_snowplow_event(
+            category: 'BulkImports::CreateService',
+            action: 'create',
+            label: 'bulk_import_group',
+            extra: { source_equals_destination: true }
+          )
+        end
       end
 
       it 'creates bulk import entities' do

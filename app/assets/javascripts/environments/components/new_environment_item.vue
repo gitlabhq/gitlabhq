@@ -270,7 +270,6 @@ export default {
           <stop-component
             v-if="canStop"
             :environment="environment"
-            class="gl-z-index-2"
             data-track-action="click_button"
             data-track-label="environment_stop"
             graphql

@@ -4834,6 +4834,9 @@ msgstr ""
 msgid "Analytics|No dashboard matches the specified URL path."
 msgstr ""
 
+msgid "Analytics|No results match your query or filter"
+msgstr ""
+
 msgid "Analytics|OS"
 msgstr ""
 
@@ -18160,6 +18163,18 @@ msgid "Find file"
 msgstr ""
 
 msgid "FindFile|Switch branch/tag"
+msgstr ""
+
+msgid "FindingsDrawer|Category:"
+msgstr ""
+
+msgid "FindingsDrawer|Engine:"
+msgstr ""
+
+msgid "FindingsDrawer|Other locations:"
+msgstr ""
+
+msgid "FindingsDrawer|Severity:"
 msgstr ""
 
 msgid "Fingerprint (MD5)"

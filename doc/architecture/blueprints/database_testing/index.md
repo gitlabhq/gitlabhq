@@ -10,7 +10,7 @@ participating-stages: []
 
 # Database Testing
 
-**Notice:** This blueprints has been partially implemented. We still plan to
+**Notice:** This blueprint has been partially implemented. We still plan to
 iterate on the tooling. The content below is a historical version of the
 blueprint, written prior to incorporating database testing into our development
 workflow.

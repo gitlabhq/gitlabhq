@@ -21,7 +21,8 @@
     "Epic",
     "EpicIssue",
     "Issue",
-    "MergeRequest"
+    "MergeRequest",
+    "WorkItemWidgetCurrentUserTodos"
   ],
   "DependencyLinkMetadata": [
     "NugetDependencyLinkMetadata"
@@ -145,6 +146,7 @@
   ],
   "WorkItemWidget": [
     "WorkItemWidgetAssignees",
+    "WorkItemWidgetCurrentUserTodos",
     "WorkItemWidgetDescription",
     "WorkItemWidgetHealthStatus",
     "WorkItemWidgetHierarchy",

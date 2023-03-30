@@ -104,7 +104,7 @@ export default {
       return this.permissions.createDesign;
     },
     showToolbar() {
-      return this.canCreateDesign && this.allVersions.length > 0;
+      return this.allVersions.length > 0;
     },
     hasDesigns() {
       return this.designs.length > 0;
@@ -375,6 +375,7 @@ export default {
           <design-version-dropdown />
         </div>
         <div
+          v-if="canCreateDesign"
           v-show="hasDesigns"
           class="gl-display-flex gl-align-items-center"
           data-testid="design-selector-toolbar"
@@ -489,7 +490,11 @@ export default {
           />
         </li>
         <template #header>
-          <li :class="designDropzoneWrapperClass" data-testid="design-dropzone-wrapper">
+          <li
+            v-if="canCreateDesign"
+            :class="designDropzoneWrapperClass"
+            data-testid="design-dropzone-wrapper"
+          >
             <design-dropzone
               :enable-drag-behavior="isDraggingDesign"
               :class="{ 'design-list-item design-list-item-new': !isDesignListEmpty }"

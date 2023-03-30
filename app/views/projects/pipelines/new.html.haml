@@ -7,7 +7,6 @@
 
 #js-new-pipeline{ data: { project_id: @project.id,
   pipelines_path: project_pipelines_path(@project),
-  config_variables_path: config_variables_namespace_project_pipelines_path(@project.namespace, @project),
   default_branch: @project.default_branch,
   pipelines_editor_path: project_ci_pipeline_editor_path(@project),
   can_view_pipeline_editor: can_view_pipeline_editor?(@project),

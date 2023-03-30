@@ -63,8 +63,8 @@ RSpec.describe Gitlab::Ci::Status::Composite, feature_category: :continuous_inte
         %i(created success pending)         | false | 'running'              | false
         %i(skipped success failed)          | false | 'failed'               | false
         %i(skipped success failed)          | true  | 'skipped'              | false
-        %i(success manual)                  | true  | 'pending'              | false
-        %i(success failed created)          | true  | 'pending'              | false
+        %i(success manual)                  | true  | 'manual'               | false
+        %i(success failed created)          | true  | 'running'              | false
       end
 
       with_them do

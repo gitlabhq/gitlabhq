@@ -47,6 +47,7 @@ import { reviewStatuses } from '../utils/file_reviews';
 import { diffsApp } from '../utils/performance';
 import { updateChangesTabCount } from '../utils/merge_request';
 import { queueRedisHllEvents } from '../utils/queue_events';
+import FindingsDrawer from './shared/findings_drawer.vue';
 import CollapsedFilesWarning from './collapsed_files_warning.vue';
 import CommitWidget from './commit_widget.vue';
 import CompareVersions from './compare_versions.vue';
@@ -60,6 +61,7 @@ import PreRenderer from './pre_renderer.vue';
 export default {
   name: 'DiffsApp',
   components: {
+    FindingsDrawer,
     DynamicScroller,
     DynamicScrollerItem,
     PreRenderer,
@@ -200,6 +202,7 @@ export default {
       numTotalFiles: 'realSize',
       numVisibleFiles: 'size',
     }),
+    ...mapState('findingsDrawer', ['activeDrawer']),
     ...mapState('diffs', [
       'showTreeList',
       'isLoading',
@@ -234,6 +237,7 @@ export default {
       'flatBlobsList',
     ]),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
+    ...mapGetters('findingsDrawer', ['activeDrawer']),
     diffs() {
       if (!this.viewDiffsFileByFile) {
         return this.diffFiles;
@@ -437,6 +441,10 @@ export default {
       'setFileByFile',
       'disableVirtualScroller',
     ]),
+    ...mapActions('findingsDrawer', ['setDrawer']),
+    closeDrawer() {
+      this.setDrawer({});
+    },
     subscribeToEvents() {
       notesEventHub.$once('fetchDiffData', this.fetchData);
       notesEventHub.$on('refetchDiffData', this.refetchDiffData);
@@ -631,6 +639,11 @@ export default {
 
 <template>
   <div v-show="shouldShow">
+    <findings-drawer
+      v-if="glFeatures.codeQualityInlineDrawer"
+      :drawer="activeDrawer"
+      @close="closeDrawer"
+    />
     <div v-if="isLoading || !isTreeLoaded" class="loading"><gl-loading-icon size="lg" /></div>
     <div v-else id="diffs" :class="{ active: shouldShow }" class="diffs tab-pane">
       <compare-versions :diff-files-count-text="numTotalFiles" />

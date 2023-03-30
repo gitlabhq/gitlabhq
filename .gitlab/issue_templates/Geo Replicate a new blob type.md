@@ -425,6 +425,7 @@ That's all of the required database changes.
         state { Geo::CoolWidgetRegistry.state_value(:failed) }
         last_synced_at { 1.day.ago }
         retry_count { 2 }
+        retry_at { 2.hours.from_now }
         last_sync_failure { 'Random error' }
       end
 

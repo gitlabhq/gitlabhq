@@ -9,16 +9,16 @@ class Projects::PipelinesController < Projects::ApplicationController
   urgency :low, [
     :index, :new, :builds, :show, :failures, :create,
     :stage, :retry, :dag, :cancel, :test_report,
-    :charts, :config_variables, :destroy, :status
+    :charts, :destroy, :status
   ]
 
   before_action :disable_query_limiting, only: [:create, :retry]
-  before_action :pipeline, except: [:index, :new, :create, :charts, :config_variables]
+  before_action :pipeline, except: [:index, :new, :create, :charts]
   before_action :set_pipeline_path, only: [:show]
   before_action :authorize_read_pipeline!
   before_action :authorize_read_build!, only: [:index, :show]
   before_action :authorize_read_ci_cd_analytics!, only: [:charts]
-  before_action :authorize_create_pipeline!, only: [:new, :create, :config_variables]
+  before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action :ensure_pipeline, only: [:show, :downloadable_artifacts]
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:destroy]
@@ -45,7 +45,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   POLLING_INTERVAL = 10_000
 
   feature_category :continuous_integration, [
-    :charts, :show, :config_variables, :stage, :cancel, :retry,
+    :charts, :show, :stage, :cancel, :retry,
     :builds, :dag, :failures, :status,
     :index, :create, :new, :destroy
   ]
@@ -212,18 +212,6 @@ class Projects::PipelinesController < Projects::ApplicationController
         render json: TestReportSerializer
           .new(current_user: @current_user)
           .represent(pipeline_test_report, project: project, details: true)
-      end
-    end
-  end
-
-  def config_variables
-    respond_to do |format|
-      format.json do
-        # Even if the parameter name is `sha`, it is actually a ref name. We always send `ref` to the endpoint.
-        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/389065
-        result = Ci::ListConfigVariablesService.new(@project, current_user).execute(params[:sha])
-
-        result.nil? ? head(:no_content) : render(json: result)
       end
     end
   end

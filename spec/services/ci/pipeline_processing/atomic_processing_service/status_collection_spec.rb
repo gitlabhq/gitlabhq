@@ -36,7 +36,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService::StatusCollection
     it 'does update existing status of job' do
       collection.set_job_status(test_a.id, 'success', 100)
 
-      expect(collection.status_of_jobs(['test-a'], dag: false)).to eq('success')
+      expect(collection.status_of_jobs(['test-a'])).to eq('success')
     end
 
     it 'ignores a missing job' do
@@ -51,18 +51,15 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService::StatusCollection
   end
 
   describe '#status_of_jobs' do
-    where(:names, :status, :dag) do
-      %w[build-a]         | 'success' | false
-      %w[build-a build-b] | 'failed'  | false
-      %w[build-a test-a]  | 'running' | false
-      %w[build-a]         | 'success' | true
-      %w[build-a build-b] | 'failed'  | true
-      %w[build-a test-a]  | 'pending' | true
+    where(:names, :status) do
+      %w[build-a]         | 'success'
+      %w[build-a build-b] | 'failed'
+      %w[build-a test-a]  | 'running'
     end
 
     with_them do
       it 'returns composite status of given names' do
-        expect(collection.status_of_jobs(names, dag: dag)).to eq(status)
+        expect(collection.status_of_jobs(names)).to eq(status)
       end
     end
   end

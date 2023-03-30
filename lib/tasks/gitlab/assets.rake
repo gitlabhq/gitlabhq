@@ -55,6 +55,9 @@ module Tasks
         Digest::SHA256.hexdigest(assets_sha256).tap { |sha256| puts "=> SHA256 generated in #{Time.now - start_time}: #{sha256}" if verbose }
       end
 
+      # Files listed here should match the list in:
+      # .assets-compilation-patterns in .gitlab/ci/rules.gitlab-ci.yml
+      # So we make sure that any impacting changes we do rebuild cache
       def self.assets_impacting_compilation
         assets_folders = FOSS_ASSET_FOLDERS
         assets_folders += EE_ASSET_FOLDERS if ::Gitlab.ee?
