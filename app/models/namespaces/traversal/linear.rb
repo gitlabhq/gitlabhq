@@ -125,7 +125,7 @@ module Namespaces
           elsif parent_id.nil?
             # There is no parent, so we are the root ancestor.
             self
-          elsif traversal_ids.present?
+          else
             Namespace.find_by(id: traversal_ids.first)
           end
         end

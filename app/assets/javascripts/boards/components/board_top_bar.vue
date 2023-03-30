@@ -98,6 +98,7 @@ export default {
         <issue-board-filtered-search
           v-if="isIssueBoard"
           :board="board"
+          :is-swimlanes-on="isSwimlanesOn"
           @setFilters="$emit('setFilters', $event)"
         />
         <epic-board-filtered-search

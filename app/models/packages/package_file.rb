@@ -85,6 +85,13 @@ class Packages::PackageFile < ApplicationRecord
       .where(packages_debian_file_metadata: { architecture: architecture_name })
   end
 
+  scope :with_debian_unknown_since, ->(updated_before) do
+    file_metadata = Packages::Debian::FileMetadatum.with_file_type(:unknown)
+                                                   .updated_before(updated_before)
+                                                   .where('packages_package_files.id = packages_debian_file_metadata.package_file_id')
+    where('EXISTS (?)', file_metadata.select(1))
+  end
+
   scope :with_conan_package_reference, ->(conan_package_reference) do
     joins(:conan_file_metadatum)
       .where(packages_conan_file_metadata: { conan_package_reference: conan_package_reference })

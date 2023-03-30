@@ -22,7 +22,7 @@ import {
   TOKEN_TYPE_WEIGHT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
-import { AssigneeFilterType } from '~/boards/constants';
+import { AssigneeFilterType, GroupByParamType } from 'ee_else_ce/boards/constants';
 import { TYPENAME_ITERATION } from '~/graphql_shared/constants';
 import eventHub from '../eventhub';
 
@@ -33,6 +33,11 @@ export default {
   components: { FilteredSearch },
   inject: ['initialFilterParams', 'isApolloBoard'],
   props: {
+    isSwimlanesOn: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     tokens: {
       type: Array,
       required: true,
@@ -321,6 +326,7 @@ export default {
           release_tag: releaseTag,
           confidential,
           health_status: healthStatus,
+          group_by: this.isSwimlanesOn ? GroupByParamType.epic : undefined,
         },
         (value) => {
           if (value || value === false) {

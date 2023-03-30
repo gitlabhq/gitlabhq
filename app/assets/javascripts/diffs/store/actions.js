@@ -50,6 +50,7 @@ import {
   TRACKING_SINGLE_FILE_MODE,
   TRACKING_MULTIPLE_FILES_MODE,
 } from '../constants';
+import { LOAD_SINGLE_DIFF_FAILED } from '../i18n';
 import eventHub from '../event_hub';
 import { isCollapsed } from '../utils/diff_file';
 import { markFileReview, setReviewsForMergeRequest } from '../utils/file_reviews';
@@ -588,6 +589,31 @@ export const toggleTreeOpen = ({ commit }, path) => {
 
 export const setCurrentFileHash = ({ commit }, hash) => {
   commit(types.SET_CURRENT_DIFF_FILE, hash);
+};
+
+export const goToFile = ({ state, commit, dispatch, getters }, { path }) => {
+  if (!state.viewDiffsFileByFile) {
+    dispatch('scrollToFile', { path });
+  } else {
+    if (!state.treeEntries[path]) return;
+
+    const { fileHash } = state.treeEntries[path];
+
+    commit(types.SET_CURRENT_DIFF_FILE, fileHash);
+
+    if (!getters.isTreePathLoaded(path)) {
+      document.location.hash = fileHash;
+      dispatch('fetchFileByFile')
+        .then(() => {
+          dispatch('scrollToFile', { path });
+        })
+        .catch(() => {
+          createAlert({
+            message: LOAD_SINGLE_DIFF_FAILED,
+          });
+        });
+    }
+  }
 };
 
 export const scrollToFile = ({ state, commit, getters }, { path }) => {

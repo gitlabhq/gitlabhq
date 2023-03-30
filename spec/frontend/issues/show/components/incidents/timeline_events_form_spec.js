@@ -113,17 +113,7 @@ describe('Timeline events form', () => {
     ]);
   });
 
-  describe('with incident_event_tag feature flag enabled', () => {
-    beforeEach(() => {
-      mountComponent(
-        {},
-        {},
-        {
-          incidentEventTags: true,
-        },
-      );
-    });
-
+  describe('Event Tags', () => {
     describe('event tags listbox', () => {
       it('should render option list from provided array', () => {
         expect(findTagsListbox().props('items')).toEqual(mockTags);

@@ -78,7 +78,8 @@ see [epic 3559](https://gitlab.com/groups/gitlab-org/-/epics/3559).
 
 ### Allow access to your project with a job token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346298/) in GitLab 15.9. [Deployed behind the `:inbound_ci_scoped_job_token` feature flag](../../user/feature_flags.md), enabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346298/) in GitLab 15.9. [Deployed behind the `:inbound_ci_scoped_job_token` feature flag](../../user/feature_flags.md), enabled by default.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/346298/) in GitLab 15.10.
 
 Create an **inbound** allowlist of projects which can access your project through
 their `CI_JOB_TOKEN`.

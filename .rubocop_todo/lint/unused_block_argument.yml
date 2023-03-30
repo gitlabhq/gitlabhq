@@ -374,7 +374,6 @@ Lint/UnusedBlockArgument:
     - 'spec/models/concerns/each_batch_spec.rb'
     - 'spec/models/container_repository_spec.rb'
     - 'spec/models/network/graph_spec.rb'
-    - 'spec/models/packages/debian/file_metadatum_spec.rb'
     - 'spec/requests/api/ci/pipeline_schedules_spec.rb'
     - 'spec/requests/api/graphql/gitlab_schema_spec.rb'
     - 'spec/requests/api/internal/container_registry/migration_spec.rb'

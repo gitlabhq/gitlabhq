@@ -78,7 +78,7 @@ RSpec.describe Notify do
       end
     end
 
-    context 'for issues' do
+    context 'for issues', feature_category: :team_planning do
       describe 'that are new' do
         subject { described_class.new_issue_email(issue.assignees.first.id, issue.id) }
 
@@ -154,6 +154,9 @@ RSpec.describe Notify do
             is_expected.to have_body_text("Assignee changed from <strong>#{previous_assignee.name}</strong> to <strong>#{assignee.name}</strong>")
             is_expected.to have_body_text(%(<a href="#{project_issue_url(project, issue)}">view it on GitLab</a>))
             is_expected.to have_body_text("You're receiving this email because of your account")
+            is_expected.to have_plain_text_content("Assignee changed from #{previous_assignee.name} to #{assignee.name}")
+            is_expected.to have_plain_text_content("view it on GitLab: #{project_issue_url(project, issue)}")
+            is_expected.to have_plain_text_content("You're receiving this email because of your account")
           end
         end
 
@@ -164,6 +167,11 @@ RSpec.describe Notify do
 
           it 'uses "Unassigned" placeholder' do
             is_expected.to have_body_text("Assignee changed from <strong>#{previous_assignee.name}</strong> to <strong>Unassigned</strong>")
+            is_expected.to have_body_text(%(<a href="#{project_issue_url(project, issue)}">view it on GitLab</a>))
+            is_expected.to have_body_text("You're receiving this email because of your account")
+            is_expected.to have_plain_text_content("Assignee changed from #{previous_assignee.name} to Unassigned")
+            is_expected.to have_plain_text_content("view it on GitLab: #{project_issue_url(project, issue)}")
+            is_expected.to have_plain_text_content("You're receiving this email because of your account")
           end
         end
 
@@ -172,6 +180,11 @@ RSpec.describe Notify do
 
           it 'uses short text' do
             is_expected.to have_body_text("Assignee changed to <strong>#{assignee.name}</strong>")
+            is_expected.to have_body_text(%(<a href="#{project_issue_url(project, issue)}">view it on GitLab</a>))
+            is_expected.to have_body_text("You're receiving this email because of your account")
+            is_expected.to have_plain_text_content("Assignee changed to #{assignee.name}")
+            is_expected.to have_plain_text_content("view it on GitLab: #{project_issue_url(project, issue)}")
+            is_expected.to have_plain_text_content("You're receiving this email because of your account")
           end
         end
 
@@ -2365,6 +2378,21 @@ RSpec.describe Notify do
 
       expect(mail.subject).to eq('Go farther with GitLab')
       expect(mail.body.parts.first.to_s).to include('Start a GitLab Ultimate trial today in less than one minute, no credit card required.')
+    end
+  end
+
+  # can be replaced with https://github.com/email-spec/email-spec/pull/196 in the future
+  RSpec::Matchers.define :have_plain_text_content do |expected_text|
+    match do |actual_email|
+      plain_text_body(actual_email).include? expected_text
+    end
+
+    failure_message do |actual_email|
+      "Expected email\n#{plain_text_body(actual_email).indent(2)}\nto contain\n#{expected_text.indent(2)}"
+    end
+
+    def plain_text_body(email)
+      email.text_part.body.to_s
     end
   end
 end

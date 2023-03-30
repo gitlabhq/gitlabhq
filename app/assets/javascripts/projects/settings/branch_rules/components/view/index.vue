@@ -187,6 +187,7 @@ export default {
       :roles="pushAccessLevels.roles"
       :users="pushAccessLevels.users"
       :groups="pushAccessLevels.groups"
+      data-qa-selector="allowed_to_push_content"
     />
 
     <!-- Allowed to merge -->
@@ -197,6 +198,7 @@ export default {
       :roles="mergeAccessLevels.roles"
       :users="mergeAccessLevels.users"
       :groups="mergeAccessLevels.groups"
+      data-qa-selector="allowed_to_merge_content"
     />
 
     <!-- Force push -->

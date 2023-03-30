@@ -126,6 +126,26 @@ export const config = {
                 };
               },
             },
+            Group: {
+              fields: {
+                projects: {
+                  keyArgs: ['includeSubgroups', 'search'],
+                },
+                descendantGroups: {
+                  keyArgs: ['includeSubgroups', 'search'],
+                },
+              },
+            },
+            ProjectConnection: {
+              fields: {
+                nodes: concatPagination(),
+              },
+            },
+            GroupConnection: {
+              fields: {
+                nodes: concatPagination(),
+              },
+            },
             Board: {
               fields: {
                 epics: {

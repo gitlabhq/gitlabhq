@@ -98,6 +98,8 @@
     "@tiptap/pm": "^2.0.0-beta.220",
     "@tiptap/suggestion": "^2.0.0-beta.220",
     "@tiptap/vue-2": "2.0.0-beta.220",
+    "@vue/apollo-components": "^4.0.0-beta.4",
+    "@vue/apollo-option": "^4.0.0-beta.4",
     "apollo-upload-client": "15.0.0",
     "apollo3-cache-persist": "^0.14.1",
     "autosize": "^5.0.1",

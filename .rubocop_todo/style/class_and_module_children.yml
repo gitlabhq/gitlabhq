@@ -285,7 +285,6 @@ Style/ClassAndModuleChildren:
     - 'app/models/packages/build_info.rb'
     - 'app/models/packages/conan/file_metadatum.rb'
     - 'app/models/packages/conan/metadatum.rb'
-    - 'app/models/packages/debian/file_metadatum.rb'
     - 'app/models/packages/debian/group_architecture.rb'
     - 'app/models/packages/debian/group_component.rb'
     - 'app/models/packages/debian/group_component_file.rb'

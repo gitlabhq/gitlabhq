@@ -34,6 +34,7 @@ describe('Ref selector Vuex store mutations', () => {
             error: null,
           },
         },
+        params: null,
         selectedRef: null,
         requestCount: 0,
       });
@@ -53,6 +54,15 @@ describe('Ref selector Vuex store mutations', () => {
       mutations[types.SET_USE_SYMBOLIC_REF_NAMES](state, true);
 
       expect(state.useSymbolicRefNames).toBe(true);
+    });
+  });
+
+  describe(`${types.SET_PARAMS}`, () => {
+    it('sets the additional query params', () => {
+      const params = { sort: 'updated_desc' };
+      mutations[types.SET_PARAMS](state, params);
+
+      expect(state.params).toBe(params);
     });
   });
 

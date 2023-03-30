@@ -294,7 +294,9 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
       end
     end
 
-    context 'with valid username/password' do
+    # Freeze time to prevent failures when time between code being entered and
+    # validated greater than otp_allowed_drift
+    context 'with valid username/password', :freeze_time do
       let(:user) { create(:user, :two_factor) }
 
       before do
@@ -321,8 +323,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
       end
 
       context 'using one-time code' do
-        it 'allows login with valid code',
-          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/402322' do
+        it 'allows login with valid code' do
           expect(authentication_metrics)
             .to increment(:user_authenticated_counter)
             .and increment(:user_two_factor_authenticated_counter)
@@ -348,8 +349,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
           expect(page).to have_content('Invalid two-factor code')
         end
 
-        it 'allows login with invalid code, then valid code',
-          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/402322' do
+        it 'allows login with invalid code, then valid code' do
           expect(authentication_metrics)
             .to increment(:user_authenticated_counter)
             .and increment(:user_two_factor_authenticated_counter)
@@ -363,8 +363,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
           expect(page).to have_current_path root_path, ignore_query: true
         end
 
-        it 'triggers ActiveSession.cleanup for the user',
-          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/402322' do
+        it 'triggers ActiveSession.cleanup for the user' do
           expect(authentication_metrics)
             .to increment(:user_authenticated_counter)
             .and increment(:user_two_factor_authenticated_counter)
@@ -421,8 +420,10 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
         end
       end
 
-      context 'when two factor authentication is required' do
-        it 'shows 2FA prompt after OAuth login', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/402615' do
+      # Freeze time to prevent failures when time between code being entered and
+      # validated greater than otp_allowed_drift
+      context 'when two factor authentication is required', :freeze_time do
+        it 'shows 2FA prompt after OAuth login' do
           expect(authentication_metrics)
             .to increment(:user_authenticated_counter)
             .and increment(:user_two_factor_authenticated_counter)
@@ -613,23 +614,21 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
         end
 
         context 'within the grace period' do
-          it 'redirects to two-factor configuration page' do
-            freeze_time do
-              expect(authentication_metrics)
-                .to increment(:user_authenticated_counter)
+          it 'redirects to two-factor configuration page', :freeze_time do
+            expect(authentication_metrics)
+              .to increment(:user_authenticated_counter)
 
-              gitlab_sign_in(user)
+            gitlab_sign_in(user)
 
-              expect(page).to have_current_path profile_two_factor_auth_path, ignore_query: true
-              expect(page).to have_content(
-                'The group settings for Group 1 and Group 2 require you to enable '\
-                'Two-Factor Authentication for your account. '\
-                'You can leave Group 1 and leave Group 2. '\
-                'You need to do this '\
-                'before '\
-                "#{(Time.zone.now + 2.days).strftime("%a, %d %b %Y %H:%M:%S %z")}"
-              )
-            end
+            expect(page).to have_current_path profile_two_factor_auth_path, ignore_query: true
+            expect(page).to have_content(
+              'The group settings for Group 1 and Group 2 require you to enable '\
+              'Two-Factor Authentication for your account. '\
+              'You can leave Group 1 and leave Group 2. '\
+              'You need to do this '\
+              'before '\
+              "#{(Time.zone.now + 2.days).strftime("%a, %d %b %Y %H:%M:%S %z")}"
+            )
           end
 
           it 'allows skipping two-factor configuration', :js do

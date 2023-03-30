@@ -86,7 +86,7 @@ class Packages::Package < ApplicationRecord
   validates :name, format: { with: Gitlab::Regex.nuget_package_name_regex }, if: :nuget?
   validates :name, format: { with: Gitlab::Regex.terraform_module_package_name_regex }, if: :terraform_module?
   validates :name, format: { with: Gitlab::Regex.debian_package_name_regex }, if: :debian_package?
-  validates :name, inclusion: { in: %w[incoming] }, if: :debian_incoming?
+  validates :name, inclusion: { in: [Packages::Debian::INCOMING_PACKAGE_NAME] }, if: :debian_incoming?
   validates :version, format: { with: Gitlab::Regex.nuget_version_regex }, if: :nuget?
   validates :version, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }

@@ -27313,6 +27313,9 @@ msgstr ""
 msgid "MergeRequest|Compare %{target} and %{source}"
 msgstr ""
 
+msgid "MergeRequest|Encountered an issue while trying to fetch the single file diff."
+msgstr ""
+
 msgid "MergeRequest|Error dismissing suggestion popover. Please try again."
 msgstr ""
 
@@ -29223,6 +29226,9 @@ msgid "Normal text"
 msgstr ""
 
 msgid "NorthstarNavigation|Alpha"
+msgstr ""
+
+msgid "NorthstarNavigation|Beta"
 msgstr ""
 
 msgid "NorthstarNavigation|Could not update the new navigation preference. Please try again later."

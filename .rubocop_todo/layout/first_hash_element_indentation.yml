@@ -186,7 +186,6 @@ Layout/FirstHashElementIndentation:
     - 'spec/controllers/projects/web_ide_terminals_controller_spec.rb'
     - 'spec/controllers/projects_controller_spec.rb'
     - 'spec/factories/ci/builds.rb'
-    - 'spec/factories/packages/debian/file_metadatum.rb'
     - 'spec/frontend/fixtures/autocomplete_sources.rb'
     - 'spec/graphql/types/ci/detailed_status_type_spec.rb'
     - 'spec/helpers/groups/observability_helper_spec.rb'

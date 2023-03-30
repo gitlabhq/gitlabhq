@@ -610,10 +610,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
         padding: 0;
         vertical-align: top;
         white-space: normal;
-
-        // Fixes subpixel rounding issue https://gitlab.com/gitlab-org/gitlab-foss/issues/53973
-        // background-color is needed for dark code preference
-        padding-bottom: 1px;
         background-color: $white;
 
         &.parallel {
@@ -638,6 +634,14 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
           margin-right: 0;
         }
       }
+    }
+  }
+
+  .diff-grid-comments:last-child {
+    .notes-content {
+      border-bottom-width: 0;
+      border-bottom-left-radius: #{$border-radius-default - 1px};
+      border-bottom-right-radius: #{$border-radius-default - 1px};
     }
   }
 }

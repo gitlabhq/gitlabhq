@@ -1,3 +1,3 @@
-.detail-page-description.py-2.gl-display-flex.gl-align-items-center.gl-flex-wrap{ class: "#{'is-merge-request' if moved_mr_sidebar_enabled? && !fluid_layout}" }
+.detail-page-description.gl-pt-2.gl-pb-4.gl-display-flex.gl-align-items-center.gl-flex-wrap{ class: "#{'is-merge-request' if moved_mr_sidebar_enabled? && !fluid_layout}" }
   = render 'shared/issuable/status_box', issuable: @merge_request
   = merge_request_header(@project, @merge_request)

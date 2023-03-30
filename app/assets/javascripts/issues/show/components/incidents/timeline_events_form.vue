@@ -199,7 +199,7 @@ export default {
         <p class="gl-ml-3 gl-align-self-end gl-line-height-32">{{ __('UTC') }}</p>
       </div>
     </div>
-    <gl-form-group v-if="glFeatures.incidentEventTags">
+    <gl-form-group>
       <label class="gl-display-flex gl-align-items-center gl-gap-3" for="timeline-input-tags">
         {{ $options.i18n.tagsLabel }}
         <timeline-events-tags-popover />

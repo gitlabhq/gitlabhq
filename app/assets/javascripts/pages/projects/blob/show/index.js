@@ -43,6 +43,7 @@ const initRefSwitcher = () => {
         props: {
           projectId,
           value: ref,
+          queryParams: { sort: 'updated_desc' },
         },
         on: {
           input(selectedRef) {

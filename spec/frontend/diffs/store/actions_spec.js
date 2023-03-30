@@ -10,6 +10,7 @@ import {
   INLINE_DIFF_VIEW_TYPE,
   PARALLEL_DIFF_VIEW_TYPE,
 } from '~/diffs/constants';
+import { LOAD_SINGLE_DIFF_FAILED } from '~/diffs/i18n';
 import * as diffActions from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
 import * as utils from '~/diffs/store/utils';
@@ -991,6 +992,87 @@ describe('DiffsStoreActions', () => {
         [{ type: types.TOGGLE_FOLDER_OPEN, payload: 'path' }],
         [],
       );
+    });
+  });
+
+  describe('goToFile', () => {
+    const getters = {};
+    const file = { path: 'path' };
+    const fileHash = 'test';
+    let state;
+    let dispatch;
+    let commit;
+
+    beforeEach(() => {
+      getters.isTreePathLoaded = () => false;
+      state = {
+        viewDiffsFileByFile: true,
+        treeEntries: {
+          path: {
+            fileHash,
+          },
+        },
+      };
+      commit = jest.fn();
+      dispatch = jest.fn().mockResolvedValue();
+    });
+
+    it('immediately defers to scrollToFile if the app is not in file-by-file mode', () => {
+      state.viewDiffsFileByFile = false;
+
+      diffActions.goToFile({ state, dispatch }, file);
+
+      expect(dispatch).toHaveBeenCalledWith('scrollToFile', file);
+    });
+
+    describe('when the app is in fileByFile mode', () => {
+      it('commits SET_CURRENT_DIFF_FILE', () => {
+        diffActions.goToFile({ state, commit, dispatch, getters }, file);
+
+        expect(commit).toHaveBeenCalledWith(types.SET_CURRENT_DIFF_FILE, fileHash);
+      });
+
+      it('does nothing more if the path has already been loaded', () => {
+        getters.isTreePathLoaded = () => true;
+
+        diffActions.goToFile({ state, dispatch, getters, commit }, file);
+
+        expect(commit).toHaveBeenCalledWith(types.SET_CURRENT_DIFF_FILE, fileHash);
+        expect(dispatch).toHaveBeenCalledTimes(0);
+      });
+
+      describe('when the tree entry has not been loaded', () => {
+        it('updates location hash', () => {
+          diffActions.goToFile({ state, commit, getters, dispatch }, file);
+
+          expect(document.location.hash).toBe('#test');
+        });
+
+        it('loads the file and then scrolls to it', async () => {
+          diffActions.goToFile({ state, commit, getters, dispatch }, file);
+
+          // Wait for the fetchFileByFile dispatch to return, to trigger scrollToFile
+          await waitForPromises();
+
+          expect(dispatch).toHaveBeenCalledWith('fetchFileByFile');
+          expect(dispatch).toHaveBeenCalledWith('scrollToFile', file);
+          expect(dispatch).toHaveBeenCalledTimes(2);
+        });
+
+        it('shows an alert when there was an error fetching the file', async () => {
+          dispatch = jest.fn().mockRejectedValue();
+
+          diffActions.goToFile({ state, commit, getters, dispatch }, file);
+
+          // Wait for the fetchFileByFile dispatch to return, to trigger the catch
+          await waitForPromises();
+
+          expect(createAlert).toHaveBeenCalledTimes(1);
+          expect(createAlert).toHaveBeenCalledWith({
+            message: expect.stringMatching(LOAD_SINGLE_DIFF_FAILED),
+          });
+        });
+      });
     });
   });
 

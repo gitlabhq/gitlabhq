@@ -2434,6 +2434,20 @@
     "@typescript-eslint/types" "5.38.0"
     eslint-visitor-keys "^3.3.0"
 
+"@vue/apollo-components@^4.0.0-beta.4":
+  version "4.0.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@vue/apollo-components/-/apollo-components-4.0.0-beta.4.tgz#cc2510cf22636c5b13fb42470578031631af6c51"
+  integrity sha512-a3Jwx49a8/0WsCPih4qj836DbbKnbX/9F+5B/paXAm7A2ajAJJ8PoPqqrFTCGZWExc4dMjAKQM6EOu6LIurjMg==
+  dependencies:
+    "@vue/apollo-option" "^4.0.0-beta.4"
+
+"@vue/apollo-option@^4.0.0-beta.4":
+  version "4.0.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@vue/apollo-option/-/apollo-option-4.0.0-beta.4.tgz#b81a16327d98770c42b37cbed8fa0ff004a13afb"
+  integrity sha512-eGONgeLBzy4PqYytxF+5ivRGjLQ7TqUF/qVK3vi1xTdnW7+3Oy02cfDrxL8ErWUG/tNIaZF7Qm1N/HIvPfaxIg==
+  dependencies:
+    throttle-debounce "^3.0.1"
+
 "@vue/compat@^3.2.47":
   version "3.2.47"
   resolved "https://registry.yarnpkg.com/@vue/compat/-/compat-3.2.47.tgz#315c9708a46ce13a1d81e7ff0bec33060a210741"

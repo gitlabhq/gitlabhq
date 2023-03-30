@@ -137,6 +137,7 @@ export default function setupVueRepositoryList() {
           props: {
             projectId,
             value: ref,
+            queryParams: { sort: 'updated_desc' },
           },
           on: {
             input(selectedRef) {

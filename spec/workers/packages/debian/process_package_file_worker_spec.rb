@@ -64,6 +64,7 @@ RSpec.describe Packages::Debian::ProcessPackageFileWorker, type: :worker, featur
               .to not_change(Packages::Package, :count)
               .and not_change { Packages::PackageFile.count }
               .and not_change { package.package_files.count }
+              .and change { package_file.reload.status }.to('error')
               .and change { package.reload.status }.from('processing').to('error')
           end
         end

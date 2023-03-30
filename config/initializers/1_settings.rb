@@ -682,6 +682,9 @@ Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker']['job
 Settings.cron_jobs['ci_runners_stale_machines_cleanup_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['ci_runners_stale_machines_cleanup_worker']['cron'] ||= '36 4 * * *'
 Settings.cron_jobs['ci_runners_stale_machines_cleanup_worker']['job_class'] = 'Ci::Runners::StaleMachinesCleanupCronWorker'
+Settings.cron_jobs['cleanup_dangling_debian_package_files_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['cleanup_dangling_debian_package_files_worker']['cron'] ||= '20 21 * * *'
+Settings.cron_jobs['cleanup_dangling_debian_package_files_worker']['job_class'] = 'Packages::Debian::CleanupDanglingPackageFilesWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= Settingslogic.new({})

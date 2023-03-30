@@ -324,6 +324,7 @@ if (USE_VUE3) {
   Object.assign(alias, {
     vue: '@vue/compat',
     vuex: path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vuex.js'),
+    'vue-apollo': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue_apollo.js'),
   });
 
   vueLoaderOptions.compiler = require.resolve('./vue3migration/compiler');

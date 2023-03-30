@@ -1,5 +1,5 @@
 ---
-status: accepted
+status: implemented
 creation-date: "2021-02-08"
 authors: [ "@abrandl" ]
 coach: "@glopezfernandez"
@@ -9,6 +9,11 @@ participating-stages: []
 ---
 
 # Database Testing
+
+**Notice:** This blueprints has been partially implemented. We still plan to
+iterate on the tooling. The content below is a historical version of the
+blueprint, written prior to incorporating database testing into our development
+workflow.
 
 We have identified [common themes of reverted migrations](https://gitlab.com/gitlab-org/gitlab/-/issues/233391) and discovered failed migrations breaking in both production and staging even when successfully tested in a developer environment. We have also experienced production incidents even with successful testing in staging. These failures are quite expensive: they can have a significant effect on availability, block deployments, and generate incident escalations. These escalations must be triaged and either reverted or fixed forward. Often, this can take place without the original author's involvement due to time zones and/or the criticality of the escalation. With our increased deployment speeds and stricter uptime requirements, the need for improving database testing is critical, particularly earlier in the development process (shift left).
 

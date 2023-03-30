@@ -5264,7 +5264,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/models/packages/conan/file_metadatum_spec.rb'
     - 'spec/models/packages/conan/metadatum_spec.rb'
     - 'spec/models/packages/debian/file_entry_spec.rb'
-    - 'spec/models/packages/debian/file_metadatum_spec.rb'
     - 'spec/models/packages/debian/group_architecture_spec.rb'
     - 'spec/models/packages/debian/group_component_file_spec.rb'
     - 'spec/models/packages/debian/group_component_spec.rb'

@@ -5,6 +5,8 @@ import * as types from './mutation_types';
 export const setEnabledRefTypes = ({ commit }, refTypes) =>
   commit(types.SET_ENABLED_REF_TYPES, refTypes);
 
+export const setParams = ({ commit }, params) => commit(types.SET_PARAMS, params);
+
 export const setUseSymbolicRefNames = ({ commit }, useSymbolicRefNames) =>
   commit(types.SET_USE_SYMBOLIC_REF_NAMES, useSymbolicRefNames);
 
@@ -29,7 +31,7 @@ export const search = ({ state, dispatch, commit }, query) => {
 export const searchBranches = ({ commit, state }) => {
   commit(types.REQUEST_START);
 
-  Api.branches(state.projectId, state.query)
+  Api.branches(state.projectId, state.query, state.params)
     .then((response) => {
       commit(types.RECEIVE_BRANCHES_SUCCESS, response);
     })

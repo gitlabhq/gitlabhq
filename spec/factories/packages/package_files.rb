@@ -215,6 +215,7 @@ FactoryBot.define do
       end
 
       trait(:keep) do
+        # do not override attributes
       end
     end
 

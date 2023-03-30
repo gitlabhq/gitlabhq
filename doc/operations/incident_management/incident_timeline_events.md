@@ -113,10 +113,7 @@ Alternatively:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8741) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `incident_event_tags`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/387647) in GitLab 15.9.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/387647) in GitLab 15.10.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `incident_event_tags`.
-On GitLab.com, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/387647) in GitLab 15.11. Feature flag `incident_event_tags` removed.
 
 [When creating an event using the form](#using-the-form) or editing it,
 you can specify incident tags to capture relevant incident timestamps.

@@ -1,6 +1,9 @@
 import { __, s__ } from '~/locale';
 
 export const GENERIC_ERROR = __('Something went wrong on our end. Please try again!');
+export const LOAD_SINGLE_DIFF_FAILED = s__(
+  'MergeRequest|Encountered an issue while trying to fetch the single file diff.',
+);
 
 export const DIFF_FILE_HEADER = {
   optionsDropdownTitle: __('Options'),

@@ -137,7 +137,7 @@ Create the group you want to import to and connect the source GitLab instance:
 1. Enter the [personal access token](../../../user/profile/personal_access_tokens.md) for your source GitLab instance.
 1. Select **Connect instance**.
 
-### Select the groups to import
+### Select the groups and projects to import
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385689) in GitLab 15.8, option to import groups with or without projects.
 
@@ -220,11 +220,14 @@ Group items that are migrated to the destination GitLab instance include:
    - Already exists in the destination GitLab instance.
    - Has a public email in the source GitLab instance that matches a confirmed email in the destination GitLab instance.
 
-### Migrated project items (beta)
+### Migrated project items (Beta)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
 > - `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
+
+If you choose to migrate projects when you [select groups to migrate](#select-the-groups-and-projects-to-import),
+project items are migrated with the projects.
 
 The project items that are migrated depends on the version of GitLab you use on the destination. To determine if a
 specific project item is migrated:

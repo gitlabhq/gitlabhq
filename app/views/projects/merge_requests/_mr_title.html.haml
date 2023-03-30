@@ -12,7 +12,7 @@
       = c.body do
         = _('The source project of this merge request has been removed.')
 
-  .detail-page-header.border-bottom-0.pb-0.gl-display-block{ class: "gl-md-display-flex! #{'is-merge-request' if moved_mr_sidebar_enabled? && !fluid_layout}" }
+  .detail-page-header.border-bottom-0.gl-display-block.gl-pt-5{ class: "gl-md-display-flex! #{'is-merge-request' if moved_mr_sidebar_enabled? && !fluid_layout}" }
     .detail-page-header-body
       .issuable-meta.gl-display-flex
         #js-issuable-header-warnings{ data: { hidden: @merge_request.hidden?.to_s } }

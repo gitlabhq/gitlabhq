@@ -54,7 +54,6 @@ Naming/HeredocDelimiterNaming:
     - 'rubocop/cop/gitlab/predicate_memoization.rb'
     - 'spec/controllers/projects/pipelines_controller_spec.rb'
     - 'spec/deprecation_toolkit_env.rb'
-    - 'spec/factories/packages/debian/file_metadatum.rb'
     - 'spec/features/projects/commit/user_comments_on_commit_spec.rb'
     - 'spec/features/task_lists_spec.rb'
     - 'spec/initializers/100_patch_omniauth_oauth2_spec.rb'

@@ -26,10 +26,15 @@ RSpec.describe Sidebars::Groups::SuperSidebarPanel, feature_category: :navigatio
     let(:category_menu) do
       [
         Sidebars::StaticMenu,
+        Sidebars::Groups::SuperSidebarMenus::ManageMenu,
         Sidebars::Groups::SuperSidebarMenus::PlanMenu,
+        Sidebars::Groups::SuperSidebarMenus::BuildMenu,
+        Sidebars::Groups::SuperSidebarMenus::SecureMenu,
+        Sidebars::Groups::SuperSidebarMenus::OperationsMenu,
+        Sidebars::Groups::SuperSidebarMenus::MonitorMenu,
+        Sidebars::Groups::SuperSidebarMenus::AnalyzeMenu,
         Sidebars::Groups::Menus::CiCdMenu,
         (Sidebars::Groups::Menus::SecurityComplianceMenu if Gitlab.ee?),
-        Sidebars::Groups::SuperSidebarMenus::OperationsMenu,
         Sidebars::Groups::Menus::ObservabilityMenu,
         (Sidebars::Groups::Menus::AnalyticsMenu if Gitlab.ee?),
         Sidebars::UncategorizedMenu,

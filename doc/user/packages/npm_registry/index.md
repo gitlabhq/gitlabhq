@@ -124,21 +124,50 @@ You can install a package from a GitLab project or instance:
 - **Instance-level**: Use when you have many npm packages in different GitLab groups or in their own namespace.
 - **Project-level**: Use when you have few npm packages and they are not in the same GitLab group.
 
+### Authenticate to the Package Registry
+
+You must authenticate to the Package Registry to install a package from a private project.
+No authentication is needed if the project is public.
+
+To authenticate with `npm`:
+
+```shell
+npm config set -- //your_domain_name/:_authToken=your_token
+```
+
+With npm version 7 or earlier, use the full URL to the endpoint.
+
+If you're installing:
+
+- From the instance level:
+
+  ```shell
+  npm config set -- //your_domain_name/api/v4/packages/npm/:_authToken=your_token
+  ```
+
+  From the project level:
+
+  ```shell
+  npm config set -- //your_domain_name/api/v4/projects/your_project_id/packages/npm/:_authToken=your_token
+  ```
+
+In these examples:
+
+- Replace `your_domain_name` with your domain name, for example, `gitlab.com`.
+- Replace `your_project_id` is your project ID, found on the project's home page.
+- Replace `your_token` with a deploy token, group access token, project access token, or personal access token.
+
+NOTE:
+Starting with npm version 8, you can [use a URI fragment instead of a full URL](https://docs.npmjs.com/cli/v8/configuring-npm/npmrc?v=true#auth-related-configuration)
+in the `_authToken` parameter. However, [group-level endpoints](https://gitlab.com/gitlab-org/gitlab/-/issues/299834)
+are not supported.
+
 ### Install from the instance level
 
 WARNING:
 To install a package from the instance level, the package must have been published following the scoped [naming convention](#naming-convention).
 
-1. Authenticate to the Package Registry
-
-   If you would like to install a package from a private project, you would have to authenticate to the Package Registry. Skip this step if the project is not private.
-
-   ```shell
-   npm config set -- //your_domain_name/api/v4/packages/npm/:_authToken=your_token
-   ```
-
-   - Replace `your_domain_name` with your domain name, for example, `gitlab.com`.
-   - Replace `your_token` with a deploy token, group access token, project access token, or personal access token.
+1. [Authenticate to the Package Registry](#authenticate-to-the-package-registry).
 
 1. Set the registry
 
@@ -158,17 +187,7 @@ To install a package from the instance level, the package must have been publish
 
 ### Install from the project level
 
-1. Authenticate to the Package Registry
-
-   If you would like to install a package from a private project, you would have to authenticate to the Package Registry. Skip this step if the project is not private.
-
-   ```shell
-   npm config set -- //your_domain_name/api/v4/projects/your_project_id/packages/npm/:_authToken=your_token
-   ```
-
-   - Replace `your_domain_name` with your domain name, for example, `gitlab.com`.
-   - Replace `your_project_id` is your project ID, found on the project's home page.
-   - Replace `your_token` with a deploy token, group access token, project access token, or personal access token.
+1. [Authenticate to the Package Registry](#authenticate-to-the-package-registry).
 
 1. Set the registry
 

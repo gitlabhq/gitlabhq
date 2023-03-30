@@ -2,15 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::FileMetadatum, type: :model do
-  RSpec.shared_context 'Debian file metadatum' do |factory, trait|
-    let_it_be_with_reload(:debian_package_file) { create(factory, trait) }
+RSpec.describe Packages::Debian::FileMetadatum, type: :model, feature_category: :package_registry do
+  RSpec.shared_context 'with Debian file metadatum' do |package_file_trait|
+    let_it_be_with_reload(:debian_package_file) { create(:debian_package_file, package_file_trait) }
     let(:debian_file_metadatum) { debian_package_file.debian_file_metadatum }
 
     subject { debian_file_metadatum }
   end
 
-  RSpec.shared_examples 'Test Debian file metadatum' do |has_component, has_architecture, has_fields, has_outdated|
+  RSpec.shared_examples 'Test Debian file metadatum' do |has_component, has_architecture, has_fields|
     describe 'relationships' do
       it { is_expected.to belong_to(:package_file) }
     end
@@ -51,8 +51,8 @@ RSpec.describe Packages::Debian::FileMetadatum, type: :model do
       describe '#fields' do
         if has_fields
           it { is_expected.to validate_presence_of(:fields) }
-          it { is_expected.to allow_value({ 'a': 'b' }).for(:fields) }
-          it { is_expected.not_to allow_value({ 'a': { 'b': 'c' } }).for(:fields) }
+          it { is_expected.to allow_value({ a: 'b' }).for(:fields) }
+          it { is_expected.not_to allow_value({ a: { b: 'c' } }).for(:fields) }
         else
           it { is_expected.to validate_absence_of(:fields) }
         end
@@ -69,24 +69,35 @@ RSpec.describe Packages::Debian::FileMetadatum, type: :model do
         end
       end
     end
+
+    describe 'scopes' do
+      describe '.with_file_type' do
+        subject { described_class.with_file_type(package_file_trait) }
+
+        it 'returns the matching file metadatum' do
+          expect(subject).to match_array([debian_file_metadatum])
+        end
+      end
+    end
   end
 
   using RSpec::Parameterized::TableSyntax
 
-  where(:factory, :trait, :has_component, :has_architecture, :has_fields) do
-    :debian_package_file      | :unknown   | false | false | false
-    :debian_package_file      | :source    | true  | false | false
-    :debian_package_file      | :dsc       | true  | false | true
-    :debian_package_file      | :deb       | true  | true  | true
-    :debian_package_file      | :udeb      | true  | true  | true
-    :debian_package_file      | :ddeb      | true  | true  | true
-    :debian_package_file      | :buildinfo | true  | false | true
-    :debian_package_file      | :changes   | false | false | true
+  where(:package_file_trait, :has_component, :has_architecture, :has_fields) do
+    :unknown   | false | false | false
+    :source    | true  | false | false
+    :dsc       | true  | false | true
+    :deb       | true  | true  | true
+    :udeb      | true  | true  | true
+    :ddeb      | true  | true  | true
+    :buildinfo | true  | false | true
+    :changes   | false | false | true
   end
 
   with_them do
-    include_context 'Debian file metadatum', params[:factory], params[:trait] do
-      it_behaves_like 'Test Debian file metadatum', params[:has_component], params[:has_architecture], params[:has_fields], params[:has_outdated]
+    include_context 'with Debian file metadatum', params[:package_file_trait] do
+      it_behaves_like 'Test Debian file metadatum',
+        params[:has_component], params[:has_architecture], params[:has_fields]
     end
   end
 end
