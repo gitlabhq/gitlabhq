@@ -47,6 +47,17 @@ module Gitlab
       RE2.Replace(text, regexp, rewrite)
     end
 
+    # #scan returns an array of the groups captured, rather than MatchData.
+    # Use this to give the capture group name and grab the proper value
+    def extract_named_group(name, match)
+      return unless match
+
+      match_position = regexp.named_capturing_groups[name.to_s]
+      raise RegexpError, "Invalid named capture group: #{name}" unless match_position
+
+      match[match_position - 1]
+    end
+
     def ==(other)
       self.source == other.source
     end
