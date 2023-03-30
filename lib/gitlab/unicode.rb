@@ -9,6 +9,12 @@ module Gitlab
     # https://idiosyncratic-ruby.com/41-proper-unicoding.html
     BIDI_REGEXP = /\p{Bidi Control}/.freeze
 
+    # Regular expression for identifying space characters
+    #
+    # In web browsers space characters can be confused with simple
+    # spaces which may be misleading
+    SPACE_REGEXP = /\p{Space_Separator}/.freeze
+
     class << self
       # Warning message used to highlight bidi characters in the GUI
       def bidi_warning

@@ -130,8 +130,8 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
       context 'there is userinfo' do
         before do
           project_hook.update!(
-            url: 'http://{one}:{two}@example.com',
-            url_variables: { 'one' => 'a', 'two' => 'b' }
+            url: 'http://{foo}:{bar}@example.com',
+            url_variables: { 'foo' => 'a', 'bar' => 'b' }
           )
           stub_full_request('http://example.com', method: :post)
         end

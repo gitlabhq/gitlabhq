@@ -25,7 +25,10 @@ module Rouge
           yield %(<span id="LC#{@line_number}" class="line" lang="#{@tag}">)
 
           line.each do |token, value|
-            yield highlight_unicode_control_characters(span(token, value.chomp! || value))
+            value = value.chomp! || value
+            value = replace_space_characters(value)
+
+            yield highlight_unicode_control_characters(span(token, value))
           end
 
           yield ellipsis if @ellipsis_indexes.include?(@line_number - 1) && @ellipsis_svg.present?
@@ -40,6 +43,10 @@ module Rouge
 
       def ellipsis
         %(<span class="gl-px-2 gl-rounded-base gl-mx-2 gl-bg-gray-100 gl-cursor-help has-tooltip" title="Content has been trimmed">#{@ellipsis_svg}</span>)
+      end
+
+      def replace_space_characters(text)
+        text.gsub(Gitlab::Unicode::SPACE_REGEXP, ' ')
       end
 
       def highlight_unicode_control_characters(text)

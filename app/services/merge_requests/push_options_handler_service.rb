@@ -54,7 +54,15 @@ module MergeRequests
     end
 
     def validate_service
-      errors << 'User is required' if current_user.nil?
+      if current_user.nil?
+        errors << 'User is required'
+        return
+      end
+
+      unless current_user&.can?(:read_code, target_project)
+        errors << 'User access was denied'
+        return
+      end
 
       unless target_project.merge_requests_enabled?
         errors << "Merge requests are not enabled for project #{target_project.full_path}"

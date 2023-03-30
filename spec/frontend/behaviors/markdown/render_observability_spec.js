@@ -16,7 +16,7 @@ describe('Observability iframe renderer', () => {
   });
 
   it('renders an observability iframe', () => {
-    document.body.innerHTML = `<div class="js-render-observability" data-frame-url="https://observe.gitlab.com/"></div>`;
+    document.body.innerHTML = `<div class="js-render-observability" data-frame-url="https://observe.gitlab.com/"  data-observability-url="https://observe.gitlab.com/" ></div>`;
 
     expect(findObservabilityIframes()).toHaveLength(0);
 
@@ -26,7 +26,7 @@ describe('Observability iframe renderer', () => {
   });
 
   it('renders iframe with dark param when GL has dark theme', () => {
-    document.body.innerHTML = `<div class="js-render-observability" data-frame-url="https://observe.gitlab.com/"></div>`;
+    document.body.innerHTML = `<div class="js-render-observability" data-frame-url="https://observe.gitlab.com/" data-observability-url="https://observe.gitlab.com/"></div>`;
     jest.spyOn(ColorUtils, 'darkModeEnabled').mockImplementation(() => true);
 
     expect(findObservabilityIframes('dark')).toHaveLength(0);
@@ -34,5 +34,13 @@ describe('Observability iframe renderer', () => {
     renderEmbeddedObservability();
 
     expect(findObservabilityIframes('dark')).toHaveLength(1);
+  });
+
+  it('does not render if url is different from observability url', () => {
+    document.body.innerHTML = `<div class="js-render-observability" data-frame-url="https://example.com/" data-observability-url="https://observe.gitlab.com/"></div>`;
+
+    renderEmbeddedObservability();
+
+    expect(findObservabilityIframes()).toHaveLength(0);
   });
 });
