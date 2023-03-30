@@ -99,7 +99,7 @@ to authenticate with Kerberos tokens.
 
 #### Enable single sign-on
 
-Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+Configure the [common settings](omniauth.md#configure-common-settings)
 to add `kerberos` as a single sign-on provider. This enables Just-In-Time
 account provisioning for users who do not have an existing GitLab account.
 

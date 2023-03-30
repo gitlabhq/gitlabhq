@@ -46,7 +46,7 @@ container_scanning:
   script:
     - gtcs scan
   rules:
-    - if: $CONTAINER_SCANNING_DISABLED
+    - if: $CONTAINER_SCANNING_DISABLED == 'true' || $CONTAINER_SCANNING_DISABLED == '1'
       when: never
 
     # Add the job to merge request pipelines if there's an open merge request.

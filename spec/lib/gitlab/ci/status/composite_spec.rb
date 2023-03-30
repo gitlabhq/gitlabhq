@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Composite do
+RSpec.describe Gitlab::Ci::Status::Composite, feature_category: :continuous_integration do
   let_it_be(:pipeline) { create(:ci_pipeline) }
 
   before_all do
@@ -12,6 +12,18 @@ RSpec.describe Gitlab::Ci::Status::Composite do
 
     @statuses_with_allow_failure = Ci::HasStatus::STATUSES_ENUM.to_h do |status, idx|
       [status, create(:ci_build, pipeline: pipeline, status: status, allow_failure: true, importing: true)]
+    end
+  end
+
+  describe '.initialize' do
+    subject(:composite_status) { described_class.new(all_statuses) }
+
+    context 'when passing a single status' do
+      let(:all_statuses) { @statuses[:success] }
+
+      it 'raises ArgumentError' do
+        expect { composite_status }.to raise_error(ArgumentError, 'all_jobs needs to respond to `.pluck`')
+      end
     end
   end
 

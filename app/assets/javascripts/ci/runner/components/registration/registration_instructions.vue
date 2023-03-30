@@ -116,8 +116,7 @@ export default {
     registerCommand() {
       return registerCommand({
         platform: this.platform,
-        registrationToken: this.token,
-        description: this.description,
+        token: this.token,
       });
     },
     runCommand() {

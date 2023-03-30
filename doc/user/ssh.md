@@ -280,7 +280,7 @@ You can use [1Password](https://1password.com/) and the [1Password browser exten
 
 1. Sign in to GitLab.
 1. On the top bar, in the upper-right corner, select your avatar.
-1. Select **Preferences**.
+1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
 1. Select **Key**, and you should see the 1Password helper appear.
 1. Select the 1Password icon and unlock 1Password.
@@ -325,7 +325,7 @@ To use SSH with GitLab, copy your public key to your GitLab account:
 
 1. Sign in to GitLab.
 1. On the top bar, in the upper-right corner, select your avatar.
-1. Select **Preferences**.
+1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
 1. In the **Key** box, paste the contents of your public key.
    If you manually copied the key, make sure you copy the entire key,
@@ -398,7 +398,7 @@ on `ssh` command options, see the `man` pages for both `ssh` and `ssh_config`.
 
 1. Sign in to GitLab.
 1. On the top bar, in the upper-right corner, select your avatar.
-1. Select **Preferences**.
+1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
 
 Your existing SSH keys are listed at the bottom of the page. The information includes:

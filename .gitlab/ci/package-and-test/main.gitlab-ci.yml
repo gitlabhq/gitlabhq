@@ -230,6 +230,7 @@ _super-sidebar-nav:
     QA_SUPER_SIDEBAR_ENABLED: "true"
     QA_ALLURE_RESULTS_DIRECTORY: tmp/allure-results-super-sidebar
     QA_EXPORT_TEST_METRICS: "false"
+    QA_DISABLE_RSPEC_RETRY: "true"
     GITLAB_QA_OPTS: --set-feature-flags super_sidebar_nav=enabled
     RSPEC_REPORT_OPTS: "--format documentation"
     SKIP_REPORT_IN_ISSUES: "true"

@@ -63,15 +63,28 @@ module Ci
       end
 
     has_many :stages, -> { order(position: :asc) }, inverse_of: :pipeline
+
+    #
+    # In https://gitlab.com/groups/gitlab-org/-/epics/9991, we aim to convert all CommitStatus related models to
+    # Ci:Job models. With that epic, we aim to replace `statuses` with `jobs`.
+    #
+    # DEPRECATED:
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
+    has_many :processables, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :latest_statuses_ordered_by_stage, -> { latest.order(:stage_idx, :stage) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :latest_statuses, -> { latest }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :statuses_order_id_desc, -> { order_id_desc }, class_name: 'CommitStatus', foreign_key: :commit_id,
       inverse_of: :pipeline
-    has_many :processables, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :bridges, class_name: 'Ci::Bridge', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
     has_many :generic_commit_statuses, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'GenericCommitStatus'
+    #
+    # NEW:
+    has_many :all_jobs, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
+    has_many :current_jobs, -> { latest }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
+    has_many :all_processable_jobs, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline
+    has_many :current_processable_jobs, -> { latest }, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline
+
     has_many :job_artifacts, through: :builds
     has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id, inverse_of: :pipeline # rubocop:disable Cop/ActiveRecordDependent

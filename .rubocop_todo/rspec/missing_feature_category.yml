@@ -1410,7 +1410,6 @@ RSpec/MissingFeatureCategory:
     - 'ee/spec/serializers/dependency_list_serializer_spec.rb'
     - 'ee/spec/serializers/ee/admin/user_entity_spec.rb'
     - 'ee/spec/serializers/ee/blob_entity_spec.rb'
-    - 'ee/spec/serializers/ee/build_details_entity_spec.rb'
     - 'ee/spec/serializers/ee/ci/job_entity_spec.rb'
     - 'ee/spec/serializers/ee/ci/pipeline_entity_spec.rb'
     - 'ee/spec/serializers/ee/deployment_entity_spec.rb'

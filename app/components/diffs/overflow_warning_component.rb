@@ -54,8 +54,8 @@ module Diffs
 
     def message_text
       _(
-        "To preserve performance only %{strong_open}%{display_size} " \
-        "of %{real_size}%{strong_close} files are displayed."
+        "For a faster browsing experience, only %{strong_open}%{display_size} of %{real_size}%{strong_close} " \
+        "files are shown. Download one of the files below to see all changes."
       )
     end
 

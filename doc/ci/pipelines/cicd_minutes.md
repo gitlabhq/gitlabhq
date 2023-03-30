@@ -86,11 +86,16 @@ NOTE:
 You can set a quota of CI/CD minutes for only top-level groups or user namespaces.
 If you set a quota for a subgroup, it is not used.
 
-## View CI/CD minutes used by a group
+## View CI/CD minutes
+
+Prerequisite:
+
+- You must have access to the build to view the total usage and quota summary for a namespace associated with a build.
+- Access to **Usage Quotas** page is based on your role in the associated namespace or group.
+
+### View Usage Quota Reports for a group
 
 > Displaying shared runners duration per project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355666) in GitLab 15.0.
-
-You can view the number of CI/CD minutes being used by a group.
 
 Prerequisite:
 
@@ -108,7 +113,7 @@ The projects list shows projects with CI/CD minute usage or shared runners usage
 in the current month only. The list includes all projects in the namespace and its
 subgroups, sorted in descending order of CI/CD minute usage.
 
-## View CI/CD minutes used by a personal namespace
+### View Usage Quota reports for a personal namespace
 
 > Displaying shared runners duration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345795) in GitLab 15.0.
 

@@ -11,6 +11,8 @@ export default () => {
     dismissable,
     targetAccessLevels,
     targetAccessLevelOptions,
+    messagesPath,
+    previewPath,
     targetPath,
     startsAt,
     endsAt,
@@ -21,6 +23,8 @@ export default () => {
     name: 'EditBroadcastMessage',
     provide: {
       targetAccessLevelOptions: JSON.parse(targetAccessLevelOptions),
+      messagesPath,
+      previewPath,
     },
     render(createElement) {
       return createElement(MessageForm, {

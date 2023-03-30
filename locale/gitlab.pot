@@ -18264,6 +18264,12 @@ msgstr ""
 msgid "Footer message"
 msgstr ""
 
+msgid "For a faster browsing experience, only %{strongStart}%{visible} of %{total}%{strongEnd} files are shown. Download one of the files below to see all changes."
+msgstr ""
+
+msgid "For a faster browsing experience, only %{strong_open}%{display_size} of %{real_size}%{strong_close} files are shown. Download one of the files below to see all changes."
+msgstr ""
+
 msgid "For a faster browsing experience, some files are collapsed by default."
 msgstr ""
 
@@ -41292,6 +41298,9 @@ msgstr ""
 msgid "Some changes are not shown"
 msgstr ""
 
+msgid "Some changes are not shown."
+msgstr ""
+
 msgid "Some child epics may be hidden due to applied filters"
 msgstr ""
 
@@ -45625,12 +45634,6 @@ msgstr ""
 msgid "To personalize your GitLab experience, we'd like to know a bit more about you"
 msgstr ""
 
-msgid "To preserve performance only %{strongStart}%{visible} of %{total}%{strongEnd} files are displayed."
-msgstr ""
-
-msgid "To preserve performance only %{strong_open}%{display_size} of %{real_size}%{strong_close} files are displayed."
-msgstr ""
-
 msgid "To protect this issue's confidentiality, %{linkStart}fork this project%{linkEnd} and set the fork's visibility to private."
 msgstr ""
 
@@ -45911,9 +45914,6 @@ msgid "Tokens|Select scopes"
 msgstr ""
 
 msgid "Tomorrow"
-msgstr ""
-
-msgid "Too many changes to show."
 msgstr ""
 
 msgid "Too many namespaces enabled. Manage them through the console or the API."

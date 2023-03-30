@@ -32,8 +32,8 @@ To fix it:
 1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   gitlab_pages['gitlab_server'] = "https://<your_pages_domain_name>"
-   gitlab_pages['internal_gitlab_server'] = "https://<your_pages_domain_name>"
+   gitlab_pages['gitlab_server'] = "https://<your_gitlab_server_public_host_and_port>"
+   gitlab_pages['internal_gitlab_server'] = "https://<your_gitlab_server_private_host_and_port>" # optional, gitlab_pages['gitlab_server'] is used as default
    ```
 
 1. Reconfigure GitLab:

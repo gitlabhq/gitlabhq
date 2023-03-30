@@ -22,9 +22,7 @@ module QA
       end
 
       def fabricate!
-        Page::Main::Menu.perform(&:go_to_snippets)
-
-        Page::Dashboard::Snippet::Index.perform(&:go_to_new_snippet_page)
+        Page::Main::Menu.perform(&:go_to_create_snippet)
 
         Page::Dashboard::Snippet::New.perform do |new_page|
           new_page.fill_title(@title)

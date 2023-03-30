@@ -32,7 +32,7 @@ license_scanning:
       license_scanning: gl-license-scanning-report.json
   dependencies: []
   rules:
-    - if: $LICENSE_MANAGEMENT_DISABLED
+    - if: $LICENSE_MANAGEMENT_DISABLED == 'true' || $LICENSE_MANAGEMENT_DISABLED == '1'
       when: never
 
     # Add the job to merge request pipelines if there's an open merge request.

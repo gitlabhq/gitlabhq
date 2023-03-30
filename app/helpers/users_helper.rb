@@ -67,11 +67,9 @@ module UsersHelper
     project_ids = projects.pluck(:id)
     # rubocop: enable CodeReuse/ActiveRecord
 
-    if Feature.enabled?(:fix_users_helper_load_max_project_member_accesses)
-      Preloaders::UserMaxAccessLevelInProjectsPreloader
-        .new(project_ids, current_user)
-        .execute
-    end
+    Preloaders::UserMaxAccessLevelInProjectsPreloader
+      .new(project_ids, current_user)
+      .execute
 
     current_user&.max_member_access_for_project_ids(project_ids)
   end

@@ -40,7 +40,7 @@ this provider also allows Crowd authentication for Git-over-https requests.
      sudo -u git -H editor config/gitlab.yml
    ```
 
-1. Edit the [common configuration file settings](../../integration/omniauth.md#configure-common-settings)
+1. Configure the [common settings](../../integration/omniauth.md#configure-common-settings)
    to add `crowd` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
 

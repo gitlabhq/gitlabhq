@@ -71,27 +71,19 @@ module QA
         view 'app/helpers/nav/new_dropdown_helper.rb' do
           element :global_new_group_link
           element :global_new_project_link
+          element :global_new_snippet_link
         end
 
         view 'app/assets/javascripts/nav/components/new_nav_toggle.vue' do
           element :new_navigation_toggle
         end
 
-        def go_to_groups
-          within_groups_menu do
-            click_element(:menu_item_link, title: 'View all groups')
-          end
-        end
-
-        def go_to_create_group
-          click_element(:new_menu_toggle)
-          click_element(:global_new_group_link)
-        end
-
         def go_to_projects
-          within_projects_menu do
-            click_element(:menu_item_link, title: 'View all projects')
-          end
+          click_element(:sidebar_menu_link, menu_item: 'Projects')
+        end
+
+        def go_to_groups
+          click_element(:sidebar_menu_link, menu_item: 'Groups')
         end
 
         def go_to_snippets
@@ -101,6 +93,16 @@ module QA
         def go_to_create_project
           click_element(:new_menu_toggle)
           click_element(:global_new_project_link)
+        end
+
+        def go_to_create_group
+          click_element(:new_menu_toggle)
+          click_element(:global_new_group_link)
+        end
+
+        def go_to_create_snippet
+          click_element(:new_menu_toggle)
+          click_element(:global_new_snippet_link)
         end
 
         def go_to_menu_dropdown_option(option_name)

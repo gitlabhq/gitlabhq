@@ -28,7 +28,7 @@ For more information on:
 :::TabTitle Linux package (Omnibus)
 
 1. Make sure GitLab is [configured with HTTPS](https://docs.gitlab.com/omnibus/settings/ssl/).
-1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `saml` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
 1. To allow your users to use SAML to sign up without having to manually create
@@ -98,7 +98,7 @@ For more information on:
 :::TabTitle Helm chart (Kubernetes)
 
 1. Make sure GitLab is [configured with HTTPS](https://docs.gitlab.com/charts/installation/tls.html).
-1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `saml` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
 1. Export the Helm values:
@@ -193,7 +193,7 @@ For more information on:
 :::TabTitle Docker
 
 1. Make sure GitLab is [configured with HTTPS](https://docs.gitlab.com/omnibus/settings/ssl/).
-1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `saml` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
 1. To allow your users to use SAML to sign up without having to manually create
@@ -278,7 +278,7 @@ For more information on:
 :::TabTitle Self-compiled (source)
 
 1. Make sure GitLab is [configured with HTTPS](../install/installation.md#using-https).
-1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `saml` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
 1. To allow your users to use SAML to sign up without having to manually create

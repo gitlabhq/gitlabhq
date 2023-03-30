@@ -26,8 +26,6 @@ import { runnerForRegistration, mockAuthenticationToken } from '../../mock_data'
 
 Vue.use(VueApollo);
 
-const mockDescription = runnerForRegistration.data.runner.description;
-
 const mockRunner = {
   ...runnerForRegistration.data.runner,
   ephemeralAuthenticationToken: mockAuthenticationToken,
@@ -138,8 +136,7 @@ describe('RegistrationInstructions', () => {
         command: [
           'gitlab-runner register',
           `  --url ${TEST_HOST}`,
-          `  --registration-token ${mockAuthenticationToken}`,
-          `  --description '${mockDescription}'`,
+          `  --token ${mockAuthenticationToken}`,
         ],
         prompt: '$',
       });
@@ -168,7 +165,6 @@ describe('RegistrationInstructions', () => {
       expect(step1.findComponent(CliCommand).props('command')).toEqual([
         'gitlab-runner register',
         `  --url ${TEST_HOST}`,
-        `  --description '${mockDescription}'`,
       ]);
       expect(step1.findByTestId('runner-token').exists()).toBe(false);
       expect(step1.findComponent(ClipboardButton).exists()).toBe(false);
@@ -210,8 +206,7 @@ describe('RegistrationInstructions', () => {
         expect(step1.findComponent(CliCommand).props('command')).toEqual([
           'gitlab-runner register',
           `  --url ${TEST_HOST}`,
-          `  --registration-token ${mockAuthenticationToken}`,
-          `  --description '${mockDescription}'`,
+          `  --token ${mockAuthenticationToken}`,
         ]);
         expect(step1.findByTestId('runner-token').text()).toBe(mockAuthenticationToken);
         expect(step1.findComponent(ClipboardButton).props('text')).toBe(mockAuthenticationToken);
@@ -225,8 +220,7 @@ describe('RegistrationInstructions', () => {
         expect(step1.findComponent(CliCommand).props('command')).toEqual([
           'gitlab-runner register',
           `  --url ${TEST_HOST}`,
-          `  --registration-token ${mockAuthenticationToken}`,
-          `  --description '${mockDescription}'`,
+          `  --token ${mockAuthenticationToken}`,
         ]);
         expect(step1.findByTestId('runner-token').text()).toBe(mockAuthenticationToken);
         expect(step1.findComponent(ClipboardButton).props('text')).toBe(mockAuthenticationToken);

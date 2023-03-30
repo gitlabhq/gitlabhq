@@ -7,6 +7,8 @@ module QA
         # We need to check remote_mobile_device_name instead of mobile_layout? here
         # since tablets have the regular top navigation bar but still close the left nav
         prepend QA::Mobile::Page::SubMenus::Common if QA::Runtime::Env.remote_mobile_device_name
+        # TODO: integrate back once super sidebar becomes default
+        prepend QA::Page::Profile::SuperSidebar::Menu if QA::Runtime::Env.super_sidebar_enabled?
 
         view 'lib/sidebars/user_settings/menus/access_tokens_menu.rb' do
           element :access_token_link
@@ -60,10 +62,8 @@ module QA
 
         private
 
-        def within_sidebar
-          page.within('.sidebar-top-level-items') do
-            yield
-          end
+        def within_sidebar(&block)
+          page.within('.sidebar-top-level-items', &block)
         end
       end
     end

@@ -120,7 +120,7 @@ RSpec.describe 'Metrics rendering', :js, :kubeclient, :use_clean_rails_memory_st
       allow(Grafana::ProxyService).to receive(:new).and_call_original
     end
 
-    it 'shows embedded metrics' do
+    it 'shows embedded metrics', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/402973' do
       visit project_issue_path(project, issue)
 
       expect(page).to have_css('div.prometheus-graph')

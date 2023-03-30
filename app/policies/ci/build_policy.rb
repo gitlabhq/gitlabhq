@@ -71,6 +71,10 @@ module Ci
       can?(:developer_access, @subject.project)
     end
 
+    # Use admin_ci_minutes for detailed quota and usage reporting
+    # this is limited to total usage and total quota for a builds namespace
+    rule { can_read_project_build }.enable :read_ci_minutes_limited_summary
+
     rule { can_read_project_build }.enable :read_build_trace
     rule { debug_mode & ~project_update_build }.prevent :read_build_trace
 

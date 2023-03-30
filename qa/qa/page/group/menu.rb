@@ -5,6 +5,7 @@ module QA
     module Group
       class Menu < Page::Base
         include SubMenus::Common
+        include SubMenus::SuperSidebar::Settings if Runtime::Env.super_sidebar_enabled?
 
         def click_group_members_item
           hover_group_information do
@@ -29,6 +30,8 @@ module QA
         end
 
         def click_group_general_settings_item
+          return go_to_general_settings if Runtime::Env.super_sidebar_enabled?
+
           hover_group_settings do
             within_submenu do
               click_element(:sidebar_menu_item_link, menu_item: 'General')

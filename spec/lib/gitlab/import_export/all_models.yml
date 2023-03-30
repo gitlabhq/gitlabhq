@@ -260,6 +260,11 @@ ci_pipelines:
 - statuses
 - statuses_order_id_desc
 - latest_statuses_ordered_by_stage
+- latest_statuses
+- all_jobs
+- current_jobs
+- all_processable_jobs
+- current_processable_jobs
 - builds
 - bridges
 - processables
@@ -308,7 +313,6 @@ ci_pipelines:
 - latest_builds_report_results
 - messages
 - pipeline_artifacts
-- latest_statuses
 - dast_profile
 - dast_profiles_pipeline
 - dast_site_profile

@@ -1,8 +1,0 @@
----
-name: fix_users_helper_load_max_project_member_accesses
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114665
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/396647
-milestone: '15.11'
-type: development
-group: 'group::pipeline execution'
-default_enabled: false
