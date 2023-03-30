@@ -1183,3 +1183,7 @@ Rate limits are enforced using the following:
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+## Related topics
+
+- [Troubleshooting GitLab Pages administration](troubleshooting.md)

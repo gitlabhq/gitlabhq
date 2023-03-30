@@ -33,8 +33,8 @@ and include an unordered list of related topics. This topic should be above the 
 ```markdown
 ## Related topics
 
-- [Configure your pipeline](link-to-topic).
-- [Trigger a pipeline manually](link-to-topic).
+- [CI/CD variables](link-to-topic)
+- [Environment variables](link-to-topic)
 ```
 
 ## Get started

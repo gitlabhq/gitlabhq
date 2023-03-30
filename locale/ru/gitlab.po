@@ -43245,9 +43245,6 @@ msgstr "Теги"
 msgid "TagsPage|Tags give the ability to mark specific points in history as being important"
 msgstr "Теги дают возможность отмечать определенные точки в истории как важные"
 
-msgid "TagsPage|This tag has no release notes."
-msgstr "Этот тег не содержит заметок к релизу."
-
 msgid "TagsPage|Unable to load tags"
 msgstr ""
 

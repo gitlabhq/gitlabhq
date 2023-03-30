@@ -15,10 +15,6 @@
     .form-group.row
       = deploy_keys_project_form.gitlab_ui_checkbox_component :can_push, _('Grant write permissions to this key'),
         help_text: _('Allow this key to push to this repository')
-  .form-group.row
-    = f.label :expires_at, _('Expiration date (optional)'), class: 'label-bold'
-    = f.gitlab_ui_datepicker :expires_at, data: { qa_selector: 'deploy_key_expires_at_field' }, value: f.object.expires_at
-    %p.form-text.text-muted= ssh_key_expires_field_description
 
   .form-group.row
     = f.submit _("Add key"), data: { qa_selector: "add_deploy_key_button"}, pajamas_button: true

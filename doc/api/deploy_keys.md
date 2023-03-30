@@ -43,7 +43,6 @@ Example response:
     "fingerprint": "4a:9d:64:15:ed:3a:e6:07:6e:89:36:b3:3b:03:05:d9",
     "fingerprint_sha256": "SHA256:Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU",
     "created_at": "2013-10-02T10:12:29Z",
-    "expires_at": null,
     "projects_with_write_access": [
       {
         "id": 73,
@@ -72,7 +71,6 @@ Example response:
     "fingerprint": "0b:cf:58:40:b9:23:96:c7:ba:44:df:0e:9e:87:5e:75",
     "fingerprint_sha256": "SHA256:lGI/Ys/Wx7PfMhUO1iuBH92JQKYN+3mhJZvWO4Q5ims",
     "created_at": "2013-10-02T11:12:29Z",
-    "expires_at": null,
     "projects_with_write_access": []
   }
 ]
@@ -105,7 +103,6 @@ Example response:
     "fingerprint": "4a:9d:64:15:ed:3a:e6:07:6e:89:36:b3:3b:03:05:d9",
     "fingerprint_sha256": "SHA256:Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU",
     "created_at": "2013-10-02T10:12:29Z",
-    "expires_at": null,
     "can_push": false
   },
   {
@@ -115,7 +112,6 @@ Example response:
     "fingerprint": "0b:cf:58:40:b9:23:96:c7:ba:44:df:0e:9e:87:5e:75",
     "fingerprint_sha256": "SHA256:lGI/Ys/Wx7PfMhUO1iuBH92JQKYN+3mhJZvWO4Q5ims",
     "created_at": "2013-10-02T11:12:29Z",
-    "expires_at": null,
     "can_push": false
   }
 ]
@@ -209,7 +205,6 @@ Example response:
   "fingerprint": "4a:9d:64:15:ed:3a:e6:07:6e:89:36:b3:3b:03:05:d9",
   "fingerprint_sha256": "SHA256:Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU",
   "created_at": "2013-10-02T10:12:29Z",
-  "expires_at": null,
   "can_push": false
 }
 ```
@@ -225,13 +220,12 @@ project only if the original one is accessible by the same user.
 POST /projects/:id/deploy_keys
 ```
 
-| Attribute    | Type | Required | Description |
-| -----------  | ---- | -------- | ----------- |
-| `id`         | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `title`      | string   | yes | New deploy key's title |
-| `key`        | string   | yes | New deploy key |
-| `expires_at` | datetime | no | Expiration date for the deploy key. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `can_push`   | boolean  | no  | Can deploy key push to the project's repository |
+| Attribute  | Type | Required | Description |
+| ---------  | ---- | -------- | ----------- |
+| `id`       | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `title`    | string  | yes | New deploy key's title |
+| `key`      | string  | yes | New deploy key |
+| `can_push` | boolean | no  | Can deploy key push to the project's repository |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
@@ -247,8 +241,7 @@ Example response:
    "id" : 12,
    "title" : "My deploy key",
    "can_push": true,
-   "created_at" : "2015-08-29T12:44:31.550Z",
-   "expires_at": null
+   "created_at" : "2015-08-29T12:44:31.550Z"
 }
 ```
 
@@ -279,7 +272,6 @@ Example response:
    "title": "New deploy key",
    "key": "ssh-rsa AAAA...",
    "created_at": "2015-08-29T12:44:31.550Z",
-   "expires_at": null,
    "can_push": true
 }
 ```
@@ -325,8 +317,7 @@ Example response:
    "key" : "ssh-rsa AAAA...",
    "id" : 12,
    "title" : "My deploy key",
-   "created_at" : "2015-08-29T12:44:31.550Z",
-   "expires_at": null
+   "created_at" : "2015-08-29T12:44:31.550Z"
 }
 ```
 

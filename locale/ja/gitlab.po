@@ -42465,9 +42465,6 @@ msgstr "タグ一覧"
 msgid "TagsPage|Tags give the ability to mark specific points in history as being important"
 msgstr "タグは、履歴の特定の位置を重要なものとしてマークする機能を提供します"
 
-msgid "TagsPage|This tag has no release notes."
-msgstr "このタグにはリリースノートがありません。"
-
 msgid "TagsPage|Unable to load tags"
 msgstr ""
 

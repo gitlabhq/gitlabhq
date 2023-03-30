@@ -235,81 +235,6 @@ The certificate [fingerprint algorithm](../../../integration/saml.md#configure-s
 
 If you are having issues configuring GitLab, see the [troubleshooting documentation](#troubleshooting).
 
-### SSO enforcement
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5291) in GitLab 11.8.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/9255) in GitLab 11.11 with ongoing enforcement in the GitLab UI.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/292811) in GitLab 13.8, with an updated timeout experience.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/211962) in GitLab 13.8 with allowing group owners to not go through SSO.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/9152) in GitLab 13.11 with enforcing open SSO session to use Git if this setting is switched on.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/339888) in GitLab 14.7 to not enforce SSO checks for Git activity originating from CI/CD jobs.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/215155) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `transparent_sso_enforcement` to include transparent enforcement even when SSO enforcement is not enabled. Disabled on GitLab.com.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/375788) in GitLab 15.8 by enabling transparent SSO by default on GitLab.com.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/389562) in GitLab 15.10. Feature flag `transparent_sso_enforcement` removed.
-
-On GitLab.com, SSO is enforced:
-
-- When SAML SSO is enabled.
-- For users with an existing SAML identity when accessing groups and projects in the organization's
-  group hierarchy. Users can view other groups and projects as well as their user settings without SSO sign in by using their GitLab.com credentials.
-
-A user has a SAML identity if one or both of the following are true:
-
-- They have signed in to GitLab by using their GitLab group's single sign-on URL.
-- They were provisioned by SCIM.
-
-Users are not prompted to sign in through SSO on each visit. GitLab checks
-whether a user has authenticated through SSO. If the user last signed in more
-than 24 hours ago, GitLab prompts the user to sign in again through SSO.
-
-SSO is enforced as follows:
-
-| Project/Group visibility | Enforce SSO setting | Member with identity | Member without identity | Non-member or not signed in |
-|--------------------------|---------------------|--------------------| ------ |------------------------------|
-| Private                  | Off                 | Enforced           | Not enforced | No access                    |
-| Private                  | On            | Enforced           | Enforced | No access                    |
-| Public                   | Off                 | Enforced           | Not enforced | Not enforced                 |
-| Public                   | On            | Enforced           | Enforced | Not enforced                 |
-
-An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/297389) to add a similar SSO requirement for API activity.
-
-#### SSO-only for web activity enforcement
-
-When the **Enforce SSO-only authentication for web activity for this group** option is enabled:
-
-- All users must access GitLab by using their GitLab group's single sign-on URL
-  to access group resources, regardless of whether they have an existing SAML
-  identity.
-- SSO is enforced when users access groups and projects in the organization's
-  group hierarchy. Users can view other groups and projects without SSO sign in.
-- Users cannot be added as new members manually.
-- Users with the Owner role can use the standard sign in process to make
-  necessary changes to top-level group settings.
-
-SSO enforcement for web activity has the following effects when enabled:
-
-- For groups, users cannot share a project in the group outside the top-level
-  group, even if the project is forked.
-- Git activity originating from CI/CD jobs do not have the SSO check enforced.
-- Credentials that are not tied to regular users (for example, project and group
-  access tokens, and deploy keys) do not have the SSO check enforced.
-- Users must be signed-in through SSO before they can pull images using the
-  [Dependency Proxy](../../packages/dependency_proxy/index.md).
-- When the **Enforce SSO-only authentication for Git and Dependency Proxy
-  activity for this group** option is enabled, any API endpoint that involves
-  Git activity is under SSO enforcement. For example, creating or deleting a
-  branch, commit, or tag. For Git activity over SSH and HTTPS, users must
-  have at least one active session signed-in through SSO before they can push to or
-  pull from a GitLab repository.
-
-When SSO for web activity is enforced, non-SSO group members do not lose access
-immediately. If the user:
-
-- Has an active session, they can continue accessing the group for up to 24
-  hours until the identity provider session times out.
-- Is signed out, they cannot access the group after being removed from the
-  identity provider.
-
 ## User access and management
 
 > - SAML user provisioning [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268142) in GitLab 13.7.
@@ -478,10 +403,6 @@ For example, to unlink the `MyOrg` account:
 
 For information on automatically managing GitLab group membership, see [SAML Group Sync](group_sync.md).
 
-## Passwords for users created via SAML SSO for Groups
-
-The [Generated passwords for users created through integrated authentication](../../../security/passwords_for_integrated_authentication_methods.md) guide provides an overview of how GitLab generates and sets passwords for users created via SAML SSO for Groups.
-
 ## NameID
 
 GitLab.com uses the SAML **NameID** to identify users. The **NameID** is:
@@ -517,16 +438,87 @@ requires a different format.
 
 You can use any format except `Transient`.
 
+## SSO enforcement
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5291) in GitLab 11.8.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/9255) in GitLab 11.11 with ongoing enforcement in the GitLab UI.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/292811) in GitLab 13.8, with an updated timeout experience.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/211962) in GitLab 13.8 with allowing group owners to not go through SSO.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/9152) in GitLab 13.11 with enforcing open SSO session to use Git if this setting is switched on.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/339888) in GitLab 14.7 to not enforce SSO checks for Git activity originating from CI/CD jobs.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/215155) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `transparent_sso_enforcement` to include transparent enforcement even when SSO enforcement is not enabled. Disabled on GitLab.com.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/375788) in GitLab 15.8 by enabling transparent SSO by default on GitLab.com.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/389562) in GitLab 15.10. Feature flag `transparent_sso_enforcement` removed.
+
+On GitLab.com, SSO is enforced:
+
+- When SAML SSO is enabled.
+- For users with an existing SAML identity when accessing groups and projects in the organization's
+  group hierarchy. Users can view other groups and projects as well as their user settings without SSO sign in by using their GitLab.com credentials.
+
+A user has a SAML identity if one or both of the following are true:
+
+- They have signed in to GitLab by using their GitLab group's single sign-on URL.
+- They were provisioned by SCIM.
+
+Users are not prompted to sign in through SSO on each visit. GitLab checks
+whether a user has authenticated through SSO. If the user last signed in more
+than 24 hours ago, GitLab prompts the user to sign in again through SSO.
+
+SSO is enforced as follows:
+
+| Project/Group visibility | Enforce SSO setting | Member with identity | Member without identity | Non-member or not signed in |
+|--------------------------|---------------------|--------------------| ------ |------------------------------|
+| Private                  | Off                 | Enforced           | Not enforced | No access                    |
+| Private                  | On            | Enforced           | Enforced | No access                    |
+| Public                   | Off                 | Enforced           | Not enforced | Not enforced                 |
+| Public                   | On            | Enforced           | Enforced | Not enforced                 |
+
+An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/297389) to add a similar SSO requirement for API activity.
+
+### SSO-only for web activity enforcement
+
+When the **Enforce SSO-only authentication for web activity for this group** option is enabled:
+
+- All users must access GitLab by using their GitLab group's single sign-on URL
+  to access group resources, regardless of whether they have an existing SAML
+  identity.
+- SSO is enforced when users access groups and projects in the organization's
+  group hierarchy. Users can view other groups and projects without SSO sign in.
+- Users cannot be added as new members manually.
+- Users with the Owner role can use the standard sign in process to make
+  necessary changes to top-level group settings.
+
+SSO enforcement for web activity has the following effects when enabled:
+
+- For groups, users cannot share a project in the group outside the top-level
+  group, even if the project is forked.
+- Git activity originating from CI/CD jobs do not have the SSO check enforced.
+- Credentials that are not tied to regular users (for example, project and group
+  access tokens, and deploy keys) do not have the SSO check enforced.
+- Users must be signed-in through SSO before they can pull images using the
+  [Dependency Proxy](../../packages/dependency_proxy/index.md).
+- When the **Enforce SSO-only authentication for Git and Dependency Proxy
+  activity for this group** option is enabled, any API endpoint that involves
+  Git activity is under SSO enforcement. For example, creating or deleting a
+  branch, commit, or tag. For Git activity over SSH and HTTPS, users must
+  have at least one active session signed-in through SSO before they can push to or
+  pull from a GitLab repository.
+
+When SSO for web activity is enforced, non-SSO group members do not lose access
+immediately. If the user:
+
+- Has an active session, they can continue accessing the group for up to 24
+  hours until the identity provider session times out.
+- Is signed out, they cannot access the group after being removed from the
+  identity provider.
+
 ## Related topics
 
-For more information on:
-
-- Setting up SAML on self-managed GitLab instances, see
-  [SAML SSO for self-managed GitLab instances](../../../integration/saml.md).
-- Commonly-used terms, see the
-  [glossary of common terms](../../../integration/saml.md#glossary-of-common-terms).
-- The differences between SaaS and self-managed authentication and authorization,
-  see the [SaaS vs. Self-Managed comparison](../../../administration/auth/index.md#saas-vs-self-managed-comparison).
+- [SAML SSO for self-managed GitLab instances](../../../integration/saml.md)
+- [Glossary of common terms](../../../integration/saml.md#glossary-of-common-terms)
+- [Authentication comparison between SaaS and self-managed](../../../administration/auth/index.md#saas-vs-self-managed-comparison)
+- [Passwords for users created through integrated authentication](../../../security/passwords_for_integrated_authentication_methods.md)
 
 ## Troubleshooting
 

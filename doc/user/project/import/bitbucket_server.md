@@ -132,5 +132,4 @@ Consider memory constraints on the system before deciding to increase `SIDEKIQ_M
 
 ## Related topics
 
-For information on automating user, group, and project import API calls, see
-[Automate group and project import](index.md#automate-group-and-project-import).
+- [Automate group and project import](index.md#automate-group-and-project-import)

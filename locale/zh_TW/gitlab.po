@@ -42465,9 +42465,6 @@ msgstr "標籤"
 msgid "TagsPage|Tags give the ability to mark specific points in history as being important"
 msgstr "標籤可以將歷史中的特定點標示為重要的"
 
-msgid "TagsPage|This tag has no release notes."
-msgstr "此標籤無發行說明。"
-
 msgid "TagsPage|Unable to load tags"
 msgstr "無法載入標籤"
 

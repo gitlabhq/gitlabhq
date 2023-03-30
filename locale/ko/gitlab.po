@@ -42465,9 +42465,6 @@ msgstr "태그"
 msgid "TagsPage|Tags give the ability to mark specific points in history as being important"
 msgstr "태그는 특정 지점을 중요하다고 표시하는 기능입니다."
 
-msgid "TagsPage|This tag has no release notes."
-msgstr "이 태그는 릴리스 노트가 없습니다."
-
 msgid "TagsPage|Unable to load tags"
 msgstr ""
 

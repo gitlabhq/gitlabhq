@@ -53,4 +53,4 @@ The filtering options are:
 
 ## Related topics
 
-- The [Notes API](../../api/notes.md) can add system notes to objects in GitLab.
+- [Notes API](../../api/notes.md)

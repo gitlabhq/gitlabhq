@@ -140,7 +140,7 @@ However, approvals are reset if the target branch is changed.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90578) in GitLab 15.3.
 
-If you only want to remove approvals by Code Owners whose files have been changed:
+If you only want to remove approvals by Code Owners whose files have been changed when a commit is added:
 
 Prerequisite:
 

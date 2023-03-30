@@ -108,6 +108,6 @@ ls:
 
 ## Related topics
 
-- Download the [official GitLab ChatOps icon](img/gitlab-chatops-icon.png).
-- The GitLab team maintains a [repository of common ChatOps scripts](https://gitlab.com/gitlab-com/chatops)
-  they use to interact with GitLab.com.
+- [The official GitLab ChatOps icon](img/gitlab-chatops-icon.png)
+- [A repository of common ChatOps scripts](https://gitlab.com/gitlab-com/chatops)
+  that GitLab uses to interact with GitLab.com

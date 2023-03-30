@@ -42725,9 +42725,6 @@ msgstr "අනන්‍යන"
 msgid "TagsPage|Tags give the ability to mark specific points in history as being important"
 msgstr ""
 
-msgid "TagsPage|This tag has no release notes."
-msgstr "මෙම අනන්‍යයෙහි කිසිදු නිකුතු සටහනක් නැත."
-
 msgid "TagsPage|Unable to load tags"
 msgstr "අනන්‍යන පූරණය කිරීමට නොහැකිය"
 

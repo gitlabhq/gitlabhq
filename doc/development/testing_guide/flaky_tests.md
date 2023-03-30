@@ -130,6 +130,7 @@ Adding a delay in API or controller could help reproducing the issue.
 **Examples:**
 
 - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/issues/118612): A test that breaks after some time passed.
+- [Example 2](https://gitlab.com/gitlab-org/gitlab/-/issues/403332): A test that breaks in the last day of the month.
 
 ### Unstable infrastructure
 

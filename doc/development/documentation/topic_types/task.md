@@ -155,4 +155,4 @@ how to write the phrase for each role.
 
 ## Related topics
 
-- [View the format for writing task steps](../styleguide/index.md#navigation).
+- [How to write task steps](../styleguide/index.md#navigation)

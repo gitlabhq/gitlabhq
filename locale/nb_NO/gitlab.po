@@ -42725,9 +42725,6 @@ msgstr "Tagger"
 msgid "TagsPage|Tags give the ability to mark specific points in history as being important"
 msgstr ""
 
-msgid "TagsPage|This tag has no release notes."
-msgstr "Denne etiketten har ingen utgivelsesbeskrivelser."
-
 msgid "TagsPage|Unable to load tags"
 msgstr ""
 

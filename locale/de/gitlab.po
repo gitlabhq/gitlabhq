@@ -42725,9 +42725,6 @@ msgstr "Tags"
 msgid "TagsPage|Tags give the ability to mark specific points in history as being important"
 msgstr "Tags erlauben es, bestimmte Punkte in der git-Historie als wichtig zu markieren"
 
-msgid "TagsPage|This tag has no release notes."
-msgstr "Dieses Tag enthält keine Versionshinweise."
-
 msgid "TagsPage|Unable to load tags"
 msgstr ""
 

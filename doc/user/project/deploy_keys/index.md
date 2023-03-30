@@ -86,7 +86,6 @@ Prerequisites:
 1. Complete the fields.
 1. Optional. To grant `read-write` permission, select the **Grant write permissions to this key**
    checkbox.
-1. Optional. Update the **Expiration date**.
 
 A project deploy key is enabled when it is created. You can modify only a project deploy key's
 name and permissions.

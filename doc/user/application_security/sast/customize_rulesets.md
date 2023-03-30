@@ -323,7 +323,7 @@ With the following custom ruleset configuration, vulnerabilities found with
 [semgrep]
   [[semgrep.ruleset]]
     [semgrep.ruleset.identifier]
-      type = "CWE"
+      type = "cwe"
       value = "322"
     [semgrep.ruleset.override]
       severity = "Critical"

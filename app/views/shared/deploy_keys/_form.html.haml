@@ -27,11 +27,6 @@
       .col-sm-10
         = form.text_field :fingerprint, class: 'form-control gl-form-input', readonly: 'readonly'
 
-.form-group
-  .col-sm-10
-    = form.label :expires_at, _('Expiration date (optional)'), class: 'label-bold'
-    = form.text_field :expires_at, class: 'form-control gl-form-input', readonly: 'readonly'
-
 - if deploy_keys_project.present?
   = form.fields_for :deploy_keys_projects, deploy_keys_project do |deploy_keys_project_form|
     .form-group

@@ -131,7 +131,7 @@ export default {
         </dl>
       </div>
     </div>
-    <div class="table-section section-20 section-wrap">
+    <div class="table-section section-30 section-wrap">
       <div role="rowheader" class="table-mobile-header">{{ s__('DeployKeys|Project usage') }}</div>
       <div class="table-mobile-content deploy-project-list">
         <template v-if="projects.length > 0">
@@ -168,7 +168,7 @@ export default {
         <span v-else class="text-secondary">{{ __('None') }}</span>
       </div>
     </div>
-    <div class="table-section section-15">
+    <div class="table-section section-15 text-right">
       <div role="rowheader" class="table-mobile-header">{{ __('Created') }}</div>
       <div class="table-mobile-content text-secondary key-created-at">
         <span v-gl-tooltip :title="tooltipTitle(deployKey.created_at)">
@@ -176,23 +176,7 @@ export default {
         </span>
       </div>
     </div>
-    <div class="table-section section-15">
-      <div role="rowheader" class="table-mobile-header">{{ __('Expires') }}</div>
-      <div class="table-mobile-content text-secondary key-expires-at">
-        <span
-          v-if="deployKey.expires_at"
-          v-gl-tooltip
-          :title="tooltipTitle(deployKey.expires_at)"
-          data-testid="expires-at-tooltip"
-        >
-          <gl-icon name="calendar" /> <span>{{ timeFormatted(deployKey.expires_at) }}</span>
-        </span>
-        <span v-else>
-          <span data-testid="expires-never">{{ __('Never') }}</span>
-        </span>
-      </div>
-    </div>
-    <div class="table-section section-10 table-button-footer deploy-key-actions">
+    <div class="table-section section-15 table-button-footer deploy-key-actions">
       <div class="btn-group table-action-buttons">
         <action-btn v-if="!isEnabled" :deploy-key="deployKey" type="enable" category="secondary">
           {{ __('Enable') }}

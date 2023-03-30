@@ -903,6 +903,10 @@ class Group < Namespace
     ].compact.min
   end
 
+  def content_editor_on_issues_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:content_editor_on_issues)
+  end
+
   def work_items_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:work_items)
   end

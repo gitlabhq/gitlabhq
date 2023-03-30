@@ -144,7 +144,7 @@ RSpec.describe Snippets::DestroyService, feature_category: :source_code_manageme
       end
     end
 
-    context 'when the repository does not exists' do
+    context 'when the repository does not exist' do
       let(:snippet) { create(:personal_snippet, author: user) }
 
       it 'does not schedule anything and return success' do

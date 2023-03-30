@@ -61,10 +61,6 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :p
 
       let(:new_ssh_key) { attributes_for(:key)[:key] }
 
-      around do |example|
-        freeze_time { example.run }
-      end
-
       it 'get list of keys' do
         project.deploy_keys << private_deploy_key
         project.deploy_keys << public_deploy_key
@@ -84,21 +80,6 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :p
         click_button 'Add key'
 
         expect(page).to have_content('new_deploy_key')
-        expect(page).to have_content('Grant write permissions to this key')
-      end
-
-      it 'add a new deploy key with expiration' do
-        one_month = (Date.today.next_day + 1.month)
-        visit project_settings_repository_path(project)
-
-        fill_in 'deploy_key_title', with: 'new_deploy_key_with_expiry'
-        fill_in 'deploy_key_key', with: new_ssh_key
-        fill_in 'deploy_key_expires_at', with: one_month.to_s
-        check 'deploy_key_deploy_keys_projects_attributes_0_can_push'
-        click_button 'Add key'
-
-        expect(page).to have_content('new_deploy_key_with_expiry')
-        expect(page).to have_content('in 1 month')
         expect(page).to have_content('Grant write permissions to this key')
       end
 

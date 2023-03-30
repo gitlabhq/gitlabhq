@@ -27,7 +27,7 @@ RSpec.describe Projects::ImportsController do
         project.add_maintainer(user)
       end
 
-      context 'when repository does not exists' do
+      context 'when repository does not exist' do
         it 'renders template' do
           get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
 

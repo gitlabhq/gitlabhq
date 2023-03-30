@@ -3,7 +3,11 @@
 module QA
   RSpec.describe 'Manage' do
     # TODO: `:reliable` should be added back once https://gitlab.com/gitlab-org/gitlab/-/issues/403001 is resolved
-    describe 'User', :requires_admin, product_group: :authentication_and_authorization do
+    describe 'User', :requires_admin, product_group: :authentication_and_authorization, quarantine: {
+      type: :bug,
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/403001',
+      except: { subdomain: /(staging.)?/, domain: 'gitlab' }
+    } do
       before(:all) do
         admin_api_client = Runtime::API::Client.as_admin
 

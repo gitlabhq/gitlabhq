@@ -81,8 +81,7 @@ to send us feedback.
 
 - [Install the CLI](https://gitlab.com/gitlab-org/cli/-/blob/main/README.md#installation)
 - [Documentation](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source)
-- The extension source code is available in the
-  [`cli`](https://gitlab.com/gitlab-org/cli/) project.
+- Extension source code in the [`cli`](https://gitlab.com/gitlab-org/cli/) project
 
 ## Troubleshooting
 

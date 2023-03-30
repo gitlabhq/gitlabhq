@@ -11558,6 +11558,9 @@ msgstr ""
 msgid "Contribution Analytics"
 msgstr ""
 
+msgid "Contribution analytics"
+msgstr ""
+
 msgid "ContributionAnalytics|%{createdCount} created, %{closedCount} closed."
 msgstr ""
 
@@ -12671,7 +12674,13 @@ msgstr ""
 msgid "Custom range (UTC)"
 msgstr ""
 
+msgid "Customer contacts"
+msgstr ""
+
 msgid "Customer experience improvement and third-party offers"
+msgstr ""
+
+msgid "Customer organizations"
 msgstr ""
 
 msgid "Customer relations"
@@ -33355,6 +33364,9 @@ msgstr ""
 msgid "Productivity Analytics"
 msgstr ""
 
+msgid "Productivity analytics"
+msgstr ""
+
 msgid "Productivity analytics can help identify the problems that are delaying your team"
 msgstr ""
 
@@ -43152,9 +43164,6 @@ msgid "TagsPage|Tags"
 msgstr ""
 
 msgid "TagsPage|Tags give the ability to mark specific points in history as being important"
-msgstr ""
-
-msgid "TagsPage|This tag has no release notes."
 msgstr ""
 
 msgid "TagsPage|Unable to load tags"

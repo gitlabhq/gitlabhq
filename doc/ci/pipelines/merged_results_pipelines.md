@@ -74,3 +74,10 @@ is not found in the merge ref.
 
 This behavior was improved in GitLab 12.4 by introducing [persistent pipeline refs](../troubleshooting.md#fatal-reference-is-not-a-tree-error).
 Upgrade to GitLab 12.4 or later to resolve the problem.
+
+### Successful merged results pipeline overrides a failed branch pipeline
+
+A failed branch pipeline is sometimes ignored when the
+[**Pipelines must succeed** setting](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge)
+is activated.
+[Issue 385841](https://gitlab.com/gitlab-org/gitlab/-/issues/385841) is open to track this.

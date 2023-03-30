@@ -187,7 +187,7 @@ label to the incident.
 - [Toggle notifications](../../user/profile/notifications.md#edit-notification-settings-for-issues-merge-requests-and-epics)
 - [Track spent time](../../user/project/time_tracking.md)
 - [Add a Zoom meeting to an incident](../../user/project/issues/associate_zoom_meeting.md) the same
-  way you add it to an issue.
+  way you add it to an issue
 - [Linked resources in incidents](linked_resources.md)
-- Create incidents and receive incident notifications [directly from Slack](slack.md).
-- Use the [Issues API](../../api/issues.md) to interact with incidents.
+- Create incidents and receive incident notifications [directly from Slack](slack.md)
+- Use the [Issues API](../../api/issues.md) to interact with incidents

@@ -338,6 +338,5 @@ You can also use [the GraphQL API](../../../api/graphql/reference/index.md#mutat
 
 ## Related topics
 
-- [Troubleshooting GitLab-managed Terraform state](troubleshooting.md).
-- To use GitLab and Terraform to deploy an AWS EC2 instance in a custom VPC,
-  see [this sample project](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-aws).
+- [Troubleshooting GitLab-managed Terraform state](troubleshooting.md)
+- [Sample project: Terraform deployment of AWS EC2 instance in a custom VPC](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-aws)

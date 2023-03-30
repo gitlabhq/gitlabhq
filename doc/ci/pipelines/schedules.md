@@ -83,8 +83,8 @@ To take ownership of a pipeline created by a different user:
 
 ## Related topics
 
-- Pipeline schedules can be maintained by using the [Pipeline schedules API](../../api/pipeline_schedules.md).
-- You can [control which jobs are added to scheduled pipelines](../jobs/job_control.md#run-jobs-for-scheduled-pipelines).
+- [Pipeline schedules API](../../api/pipeline_schedules.md)
+- [Adding jobs to scheduled pipelines](../jobs/job_control.md#run-jobs-for-scheduled-pipelines)
 
 <!-- ## Troubleshooting
 

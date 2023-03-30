@@ -3614,6 +3614,13 @@ RSpec.describe Group, feature_category: :subgroups do
     end
   end
 
+  describe '#content_editor_on_issues_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :content_editor_on_issues }
+      let(:feature_flag_method) { :content_editor_on_issues_feature_flag_enabled? }
+    end
+  end
+
   describe '#work_items_feature_flag_enabled?' do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :work_items }

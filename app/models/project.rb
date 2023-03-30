@@ -3088,6 +3088,10 @@ class Project < ApplicationRecord
     pending_delete? || hidden?
   end
 
+  def content_editor_on_issues_feature_flag_enabled?
+    group&.content_editor_on_issues_feature_flag_enabled? || Feature.enabled?(:content_editor_on_issues, self)
+  end
+
   def work_items_feature_flag_enabled?
     group&.work_items_feature_flag_enabled? || Feature.enabled?(:work_items, self)
   end

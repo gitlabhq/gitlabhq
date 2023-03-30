@@ -42985,9 +42985,6 @@ msgstr "Etichete"
 msgid "TagsPage|Tags give the ability to mark specific points in history as being important"
 msgstr "Etichetele vă permit să marcați anumite momente din istorie ca fiind importante."
 
-msgid "TagsPage|This tag has no release notes."
-msgstr "Această etichetă nu conține note de lansare."
-
 msgid "TagsPage|Unable to load tags"
 msgstr "Nu se pot încărca etichetele"
 

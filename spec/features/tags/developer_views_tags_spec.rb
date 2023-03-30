@@ -60,7 +60,6 @@ RSpec.describe 'Developer views tags', feature_category: :source_code_management
       expect(page).to have_current_path(
         project_tag_path(project, 'v1.0.0'), ignore_query: true)
       expect(page).to have_content 'v1.0.0'
-      expect(page).to have_content 'This tag has no release notes.'
     end
 
     describe 'links on the tag page' do

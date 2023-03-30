@@ -42725,9 +42725,6 @@ msgstr "Étiquettes"
 msgid "TagsPage|Tags give the ability to mark specific points in history as being important"
 msgstr "Les étiquettes permettent de marquer des moments spécifiques de l’historique du projet comme étant importants"
 
-msgid "TagsPage|This tag has no release notes."
-msgstr "Cette étiquette n’a pas de notes de version."
-
 msgid "TagsPage|Unable to load tags"
 msgstr "Impossible de charger les étiquettes"
 

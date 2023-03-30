@@ -27,8 +27,9 @@ If you are considering switching from OpenSSH to `gitlab-sshd`, consider these c
 
 - `gitlab-sshd` supports the PROXY protocol. It can run behind proxy servers that rely
   on it, such as HAProxy. The PROXY protocol is not enabled by default, but [it can be enabled](#proxy-protocol-support).
-- `gitlab-sshd` **does not** support SSH certificates. For more details, read
-  [issue #495](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/495).
+- `gitlab-sshd` **does not** support SSH certificates. For more details, see the
+  [confidential issue](../../user/project/issues/confidential_issues.md)
+  `https://gitlab.com/gitlab-org/gitlab-shell/-/issues/495`.
 
 ## Enable `gitlab-sshd`
 

@@ -313,7 +313,8 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     before do
       allow(helper).to receive(:project_sidebar_context_data).and_return(
         { current_user: nil, container: project, can_view_pipeline_editor: false, learn_gitlab_enabled: false })
-      allow(helper).to receive(:group_sidebar_context_data).and_return({ current_user: nil, container: group })
+      allow(helper).to receive(:group_sidebar_context_data).and_return(
+        { current_user: nil, container: group, show_discover_group_security: false })
 
       allow(group).to receive(:to_global_id).and_return(5)
       Rails.cache.write(['users', user.id, 'assigned_open_issues_count'], 1)

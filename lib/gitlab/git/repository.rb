@@ -1138,7 +1138,7 @@ module Gitlab
 
       def checksum
         # The exists? RPC is much cheaper, so we perform this request first
-        raise NoRepository, "Repository does not exists" unless exists?
+        raise NoRepository, "Repository does not exist" unless exists?
 
         gitaly_repository_client.calculate_checksum
       rescue GRPC::NotFound

@@ -180,4 +180,4 @@ sudo /etc/init.d/gitlab start
 
 ## Related topics
 
-- [Reset a user's password](../security/reset_user_password.md#use-a-rake-task).
+- [Reset a user's password](../security/reset_user_password.md#use-a-rake-task)

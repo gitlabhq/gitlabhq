@@ -66,5 +66,4 @@ A URL to the reported user's comment is pre-filled in the abuse report's
 
 ## Related topics
 
-- Administrators can view and resolve abuse reports.
-  For more information, see [abuse reports administration documentation](admin_area/review_abuse_reports.md).
+- [Abuse reports administration documentation](admin_area/review_abuse_reports.md)
