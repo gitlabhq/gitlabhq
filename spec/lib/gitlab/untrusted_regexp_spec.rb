@@ -137,6 +137,38 @@ RSpec.describe Gitlab::UntrustedRegexp do
     end
   end
 
+  describe '#extract_named_group' do
+    let(:re) { described_class.new('(?P<name>\w+) (?P<age>\d+)|(?P<name_only>\w+)') }
+    let(:text) { 'Bob 40' }
+
+    it 'returns values for both named groups' do
+      matched = re.scan(text).first
+
+      expect(re.extract_named_group(:name, matched)).to eq 'Bob'
+      expect(re.extract_named_group(:age, matched)).to eq '40'
+    end
+
+    it 'returns nil if there was no match for group' do
+      matched = re.scan('Bob').first
+
+      expect(re.extract_named_group(:name, matched)).to be_nil
+      expect(re.extract_named_group(:age, matched)).to be_nil
+      expect(re.extract_named_group(:name_only, matched)).to eq 'Bob'
+    end
+
+    it 'returns nil if match is nil' do
+      matched = '(?P<age>\d+)'.scan(text).first
+
+      expect(re.extract_named_group(:age, matched)).to be_nil
+    end
+
+    it 'raises if name is not a capture group' do
+      matched = re.scan(text).first
+
+      expect { re.extract_named_group(:foo, matched) }.to raise_error('Invalid named capture group: foo')
+    end
+  end
+
   describe '#match' do
     context 'when there are matches' do
       it 'returns a match object' do

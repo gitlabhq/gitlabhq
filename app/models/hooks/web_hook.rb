@@ -41,7 +41,7 @@ class WebHook < ApplicationRecord
   after_initialize :initialize_url_variables
 
   before_validation :reset_token
-  before_validation :reset_url_variables, unless: ->(hook) { hook.is_a?(ServiceHook) }
+  before_validation :reset_url_variables, unless: ->(hook) { hook.is_a?(ServiceHook) }, on: :update
   before_validation :set_branch_filter_nil, if: :branch_filter_strategy_all_branches?
   validates :push_events_branch_filter, untrusted_regexp: true, if: :branch_filter_strategy_regex?
   validates :push_events_branch_filter, "web_hooks/wildcard_branch_filter": true, if: :branch_filter_strategy_wildcard?
@@ -150,7 +150,7 @@ class WebHook < ApplicationRecord
   # See app/validators/json_schemas/web_hooks_url_variables.json
   VARIABLE_REFERENCE_RE = /\{([A-Za-z]+[0-9]*(?:[._-][A-Za-z0-9]+)*)\}/.freeze
 
-  def interpolated_url
+  def interpolated_url(url = self.url, url_variables = self.url_variables)
     return url unless url.include?('{')
 
     vars = url_variables
@@ -176,7 +176,19 @@ class WebHook < ApplicationRecord
   end
 
   def reset_url_variables
-    self.url_variables = {} if url_changed? && !encrypted_url_variables_changed?
+    interpolated_url_was = interpolated_url(decrypt_url_was, url_variables_were)
+
+    return if url_variables_were.empty? || interpolated_url_was == interpolated_url
+
+    self.url_variables = {} if url_changed? && url_variables_were.to_a.intersection(url_variables.to_a).any?
+  end
+
+  def decrypt_url_was
+    self.class.decrypt_url(encrypted_url_was, iv: Base64.decode64(encrypted_url_iv_was))
+  end
+
+  def url_variables_were
+    self.class.decrypt_url_variables(encrypted_url_variables_was, iv: encrypted_url_variables_iv_was)
   end
 
   def next_failure_count

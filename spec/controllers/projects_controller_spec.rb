@@ -163,6 +163,69 @@ RSpec.describe ProjectsController, feature_category: :projects do
             expect(assigns(:notification_setting).level).to eq("watch")
           end
         end
+
+        context 'when there is a tag with the same name as the default branch' do
+          let_it_be(:tagged_project) { create(:project, :public, :custom_repo, files: ['somefile']) }
+          let(:tree_with_default_branch) do
+            branch = tagged_project.repository.find_branch(tagged_project.default_branch)
+            project_tree_path(tagged_project, branch.target)
+          end
+
+          before do
+            tagged_project.repository.create_file(
+              tagged_project.creator,
+              'file_for_tag',
+              'content for file',
+              message: "Automatically created file",
+              branch_name: 'branch-to-tag'
+            )
+
+            tagged_project.repository.add_tag(
+              tagged_project.creator,
+              tagged_project.default_branch, # tag name
+              'branch-to-tag' # target
+            )
+          end
+
+          it 'redirects to tree view for the default branch' do
+            get :show, params: { namespace_id: tagged_project.namespace, id: tagged_project }
+            expect(response).to redirect_to(tree_with_default_branch)
+          end
+        end
+
+        context 'when the default branch name can resolve to another ref' do
+          let!(:project_with_default_branch) do
+            create(:project, :public, :custom_repo, files: ['somefile']).tap do |p|
+              p.repository.create_branch("refs/heads/refs/heads/#{other_ref}", 'master')
+              p.change_head("refs/heads/#{other_ref}")
+            end.reload
+          end
+
+          let(:other_ref) { 'branch-name' }
+
+          context 'but there is no other ref' do
+            it 'responds with ok' do
+              get :show, params: { namespace_id: project_with_default_branch.namespace, id: project_with_default_branch }
+              expect(response).to be_ok
+            end
+          end
+
+          context 'and that other ref exists' do
+            let(:tree_with_default_branch) do
+              branch = project_with_default_branch.repository.find_branch(project_with_default_branch.default_branch)
+              project_tree_path(project_with_default_branch, branch.target)
+            end
+
+            before do
+              project_with_default_branch.repository.create_branch(other_ref, 'master')
+            end
+
+            it 'redirects to tree view for the default branch' do
+              get :show, params: { namespace_id: project_with_default_branch.namespace, id: project_with_default_branch }
+              expect(response).to redirect_to(tree_with_default_branch)
+            end
+          end
+        end
       end
 
       describe "when project repository is disabled" do

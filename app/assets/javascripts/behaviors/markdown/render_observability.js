@@ -7,23 +7,36 @@ export function getFrameSrc(url) {
 }
 
 const mountVueComponent = (element) => {
-  const url = [element.dataset.frameUrl];
+  const { frameUrl, observabilityUrl } = element.dataset;
 
-  return new Vue({
-    el: element,
-    render(h) {
-      return h('iframe', {
-        style: {
-          height: '366px',
-          width: '768px',
-        },
-        attrs: {
-          src: getFrameSrc(url),
-          frameBorder: '0',
-        },
-      });
-    },
-  });
+  try {
+    if (
+      !observabilityUrl ||
+      !frameUrl ||
+      new URL(frameUrl)?.host !== new URL(observabilityUrl).host
+    )
+      return;
+
+    // eslint-disable-next-line no-new
+    new Vue({
+      el: element,
+      render(h) {
+        return h('iframe', {
+          style: {
+            height: '366px',
+            width: '768px',
+          },
+          attrs: {
+            src: getFrameSrc(frameUrl),
+            frameBorder: '0',
+          },
+        });
+      },
+    });
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e);
+  }
 };
 
 export default function renderObservability(elements) {

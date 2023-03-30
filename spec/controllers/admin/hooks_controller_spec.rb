@@ -59,6 +59,7 @@ RSpec.describe Admin::HooksController do
         enable_ssl_verification: false,
         url_variables: [
           { key: 'token', value: 'some secret value' },
+          { key: 'baz', value: 'qux' },
           { key: 'foo', value: nil }
         ]
       }
@@ -71,7 +72,7 @@ RSpec.describe Admin::HooksController do
       expect(flash[:notice]).to include('was updated')
       expect(hook).to have_attributes(hook_params.except(:url_variables))
       expect(hook).to have_attributes(
-        url_variables: { 'token' => 'some secret value', 'baz' => 'woo' }
+        url_variables: { 'token' => 'some secret value', 'baz' => 'qux' }
       )
     end
   end
