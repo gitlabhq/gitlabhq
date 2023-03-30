@@ -359,6 +359,26 @@ The following user actions on a GitLab instance generate instance audit events:
 
 Instance events can also be accessed using the [Instance Audit Events API](../api/audit_events.md#instance-audit-events).
 
+### GitLab Runner events
+
+The following GitLab Runner actions generate instance audit events:
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335509) in GitLab 14.8:
+  - Registered instance runner.
+  - Registered group runner.
+  - Registered project runner.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355637) in GitLab 15.0. and [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102579) in GitLab 15.6:
+  - Reset instance runner registration token.
+  - Reset group runner registration token.
+  - Reset project runner registration token.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349542) in GitLab 14.9.
+  - Assigned runner to project.
+  - Unassigned runner from project.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349540) in GitLab 14.9.
+  - Unregistered instance runner.
+  - Unregistered group runner.
+  - Unregistered project runner.
+
 ## "Deleted User" events
 
 Audit events created after users are deleted are created for "Deleted User". For example, if a deleted user's access to

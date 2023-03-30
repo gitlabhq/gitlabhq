@@ -13,6 +13,30 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
   describe 'Validation' do
     it { is_expected.to validate_presence_of(:name) }
 
+    context 'uniqueness' do
+      let(:protected_branch) { build(:protected_branch) }
+
+      subject { protected_branch }
+
+      it { is_expected.to validate_uniqueness_of(:name).scoped_to([:project_id, :namespace_id]) }
+
+      context 'when the protected_branch was saved previously' do
+        before do
+          protected_branch.save!
+        end
+
+        it { is_expected.not_to validate_uniqueness_of(:name) }
+
+        context 'and name is changed' do
+          before do
+            protected_branch.name = "#{protected_branch.name} + something else"
+          end
+
+          it { is_expected.to validate_uniqueness_of(:name).scoped_to([:project_id, :namespace_id]) }
+        end
+      end
+    end
+
     describe '#validate_either_project_or_top_group' do
       context 'when protected branch does not have project or group association' do
         it 'validate failed' do

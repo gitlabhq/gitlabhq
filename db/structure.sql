@@ -13042,8 +13042,7 @@ CREATE TABLE p_ci_builds_metadata (
     runtime_runner_features jsonb DEFAULT '{}'::jsonb NOT NULL,
     id_tokens jsonb DEFAULT '{}'::jsonb NOT NULL,
     partition_id bigint DEFAULT 100 NOT NULL,
-    debug_trace_enabled boolean DEFAULT false NOT NULL,
-    runner_machine_id bigint
+    debug_trace_enabled boolean DEFAULT false NOT NULL
 )
 PARTITION BY LIST (partition_id);
 
@@ -13072,8 +13071,7 @@ CREATE TABLE ci_builds_metadata (
     runtime_runner_features jsonb DEFAULT '{}'::jsonb NOT NULL,
     id_tokens jsonb DEFAULT '{}'::jsonb NOT NULL,
     partition_id bigint DEFAULT 100 NOT NULL,
-    debug_trace_enabled boolean DEFAULT false NOT NULL,
-    runner_machine_id bigint
+    debug_trace_enabled boolean DEFAULT false NOT NULL
 );
 ALTER TABLE ONLY p_ci_builds_metadata ATTACH PARTITION ci_builds_metadata FOR VALUES IN ('100');
 
@@ -29453,10 +29451,6 @@ CREATE UNIQUE INDEX index_aws_roles_on_role_external_id ON aws_roles USING btree
 
 CREATE UNIQUE INDEX index_aws_roles_on_user_id ON aws_roles USING btree (user_id);
 
-CREATE INDEX p_ci_builds_metadata_on_runner_machine_id_idx ON ONLY p_ci_builds_metadata USING btree (runner_machine_id) WHERE (runner_machine_id IS NOT NULL);
-
-CREATE INDEX index_b6331cde35 ON ci_builds_metadata USING btree (runner_machine_id) WHERE (runner_machine_id IS NOT NULL);
-
 CREATE INDEX index_background_migration_jobs_for_partitioning_migrations ON background_migration_jobs USING btree (((arguments ->> 2))) WHERE (class_name = 'Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable'::text);
 
 CREATE INDEX index_background_migration_jobs_on_class_name_and_arguments ON background_migration_jobs USING btree (class_name, arguments);
@@ -34096,8 +34090,6 @@ ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_p
 ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_63_pkey;
 
 ALTER INDEX p_ci_builds_metadata_pkey ATTACH PARTITION ci_builds_metadata_pkey;
-
-ALTER INDEX p_ci_builds_metadata_on_runner_machine_id_idx ATTACH PARTITION index_b6331cde35;
 
 ALTER INDEX p_ci_builds_metadata_build_id_idx ATTACH PARTITION index_ci_builds_metadata_on_build_id_and_has_exposed_artifacts;
 

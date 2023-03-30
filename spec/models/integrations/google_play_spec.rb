@@ -16,9 +16,14 @@ RSpec.describe Integrations::GooglePlay, feature_category: :mobile_devops do
       it { is_expected.not_to allow_value(File.read('spec/fixtures/group.json')).for(:service_account_key) }
       it { is_expected.to allow_value('com.example.myapp').for(:package_name) }
       it { is_expected.to allow_value('com.example.myorg.myapp').for(:package_name) }
+      it { is_expected.to allow_value('com_us.example.my_org.my_app').for(:package_name) }
+      it { is_expected.to allow_value('a.a.a').for(:package_name) }
       it { is_expected.not_to allow_value('com.example').for(:package_name) }
       it { is_expected.not_to allow_value('com').for(:package_name) }
       it { is_expected.not_to allow_value('com.example.my app').for(:package_name) }
+      it { is_expected.not_to allow_value('1com.example.myapp').for(:package_name) }
+      it { is_expected.not_to allow_value('com.1example.myapp').for(:package_name) }
+      it { is_expected.not_to allow_value('com.example._myapp').for(:package_name) }
     end
   end
 
