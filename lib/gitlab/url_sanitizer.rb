@@ -7,7 +7,7 @@ module Gitlab
     ALLOWED_SCHEMES = %w[http https ssh git].freeze
     ALLOWED_WEB_SCHEMES = %w[http https].freeze
     SCHEMIFIED_SCHEME = 'glschemelessuri'
-    SCHEMIFY_PLACEHOLDER = "#{SCHEMIFIED_SCHEME}://".freeze
+    SCHEMIFY_PLACEHOLDER = "#{SCHEMIFIED_SCHEME}://"
     # URI::DEFAULT_PARSER.make_regexp will only match URLs with schemes or
     # relative URLs. This section will match schemeless URIs with userinfo
     # e.g. user:pass@gitlab.com but will not match scp-style URIs e.g.
@@ -25,7 +25,7 @@ module Gitlab
        (?!#{URI::REGEXP::PATTERN::HOST}:(?:#{URI::REGEXP::PATTERN::REL_PATH}|#{URI::REGEXP::PATTERN::ABS_PATH}))
        #{URI::REGEXP::PATTERN::HOSTPORT}
     )
-    }x
+    }x.freeze
 
     def self.sanitize(content)
       content.gsub(URI_REGEXP) do |url|
