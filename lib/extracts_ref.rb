@@ -5,7 +5,8 @@
 # Can be extended for different types of repository object, e.g. Project or Snippet
 module ExtractsRef
   InvalidPathError = Class.new(StandardError)
-
+  BRANCH_REF_TYPE = 'heads'
+  TAG_REF_TYPE = 'tags'
   # Given a string containing both a Git tree-ish, such as a branch or tag, and
   # a filesystem path joined by forward slashes, attempts to separate the two.
   #
@@ -91,7 +92,7 @@ module ExtractsRef
   def ref_type
     return unless params[:ref_type].present?
 
-    params[:ref_type] == 'tags' ? 'tags' : 'heads'
+    params[:ref_type] == TAG_REF_TYPE ? TAG_REF_TYPE : BRANCH_REF_TYPE
   end
 
   private
@@ -153,5 +154,14 @@ module ExtractsRef
 
   def repository_container
     raise NotImplementedError
+  end
+
+  def ambiguous_ref?(project, ref)
+    return true if project.repository.ambiguous_ref?(ref)
+
+    return false unless ref&.starts_with?('refs/')
+
+    unprefixed_ref = ref.sub(%r{^refs/(heads|tags)/}, '')
+    project.repository.commit(unprefixed_ref).present?
   end
 end
