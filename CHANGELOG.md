@@ -2,6 +2,27 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.8.5 (2023-03-30)
+
+### Security (16 changes)
+
+- [Fix rubocop offenses in lib/gitlab/url_sanitizer.rb](gitlab-org/security/gitlab@ddc04cf7059e411e20033b95e1297381d64d4b22) ([merge request](gitlab-org/security/gitlab!3175))
+- [Add checks to remove open redirects from Observability URL](gitlab-org/security/gitlab@a22ce3851128eb900dbabe9e38c07889967a2915) ([merge request](gitlab-org/security/gitlab!3032))
+- [Redirect to tree from project root on ref collision](gitlab-org/security/gitlab@fad24ae9d8fa0e7bd9eff0c9e6914c8267451b4d) ([merge request](gitlab-org/security/gitlab!3134))
+- [Fixes soft email confirmation alert vulnerability](gitlab-org/security/gitlab@85be0fbfc98cdb774d68070479e35be22f6ba40a) ([merge request](gitlab-org/security/gitlab!3125))
+- [Restrict Prometheus API access on public projects](gitlab-org/security/gitlab@2df2fa2dc4b9015d044d0ddc5d26e17e9e5f85c0) ([merge request](gitlab-org/security/gitlab!3164))
+- [Verify that users have access to the parent of the fork](gitlab-org/security/gitlab@53f7f06843eea4d666d361f5a1d349bd1e3f4312) ([merge request](gitlab-org/security/gitlab!3085))
+- [Protect webhook secrets by resetting url_variables](gitlab-org/security/gitlab@9fa9dbff463f6015ffaf8d082db3d41ae623763e) ([merge request](gitlab-org/security/gitlab!3141))
+- [Replace Unicode space chars with spaces](gitlab-org/security/gitlab@20d77d4d680d13f916fb69de0d79802753421c8f) ([merge request](gitlab-org/security/gitlab!3137))
+- [Check access to parent when creating and updating epics](gitlab-org/security/gitlab@0fed113756b27a3a078f87f29711b225e1ed4cce) ([merge request](gitlab-org/security/gitlab!3150))
+- [Improve Gitlab::UrlSanitizer regex to match more URIs](gitlab-org/security/gitlab@2285088f37aca877b1dcd59c728cdf33171b30cb) ([merge request](gitlab-org/security/gitlab!3109))
+- [Check access to target project before looking for branch](gitlab-org/security/gitlab@37b8d855d87c88170322e6a6d4c285fee6c6cb64) ([merge request](gitlab-org/security/gitlab!3038))
+- [Fix the potential leak of internal notes](gitlab-org/security/gitlab@66f8cc2eb13509397b980d53a4b67ca03d8903f7) ([merge request](gitlab-org/security/gitlab!3121))
+- [Filter namespace environments by feature visibility](gitlab-org/security/gitlab@e1859de393b4794e1356d6318e56ede4b557c059) ([merge request](gitlab-org/security/gitlab!3112))
+- [Check access to reorder issues in epic tree](gitlab-org/security/gitlab@13f9c6231cea956f73355c5b5b820163f523e7d8) ([merge request](gitlab-org/security/gitlab!3100))
+- [Fix security report authorization](gitlab-org/security/gitlab@19baab85c7a5a64a09e3e4808e8550fc72e18323) ([merge request](gitlab-org/security/gitlab!3105))
+- [Prevent XSS attack in "Maximum page reached" page](gitlab-org/security/gitlab@be5491c5db05161e4b14d53900dd19b66848de48) ([merge request](gitlab-org/security/gitlab!3131))
+
 ## 15.8.4 (2023-03-02)
 
 ### Security (12 changes)
