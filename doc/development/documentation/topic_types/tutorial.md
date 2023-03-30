@@ -13,6 +13,10 @@ In general, you might consider using a tutorial when:
   of sub-steps.
 - The steps cover a variety of GitLab features or third-party tools.
 
+Tutorials are not [tasks](task.md). A task gives instructions for how to complete
+a procedure. A tutorial combines different tasks to achieve a specific goal. At
+the end of a tutorial, you have a working example of something.
+
 Tutorials are learning aids that complement our core documentation.
 They do not introduce new features.
 Always use the primary [topic types](index.md) to document new features.

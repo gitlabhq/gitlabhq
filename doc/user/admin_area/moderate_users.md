@@ -5,7 +5,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Moderate users **(FREE SELF)**
+# Moderate users (administration) **(FREE SELF)**
+
+This is the administration documentation. For information about moderating users at the group level, see the [group-level documentation](../group/moderate_users.md).
 
 GitLab administrators can moderate user access by approving, blocking, banning, or deactivating
 users.
