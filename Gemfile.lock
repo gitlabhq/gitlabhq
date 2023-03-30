@@ -1031,8 +1031,9 @@ GEM
     omniauth-atlassian-oauth2 (0.2.0)
       omniauth (>= 1.1.1)
       omniauth-oauth2 (>= 1.5)
-    omniauth-auth0 (2.0.0)
-      omniauth-oauth2 (~> 1.4)
+    omniauth-auth0 (3.1.0)
+      omniauth (~> 2)
+      omniauth-oauth2 (~> 1)
     omniauth-azure-activedirectory-v2 (2.0.0)
       omniauth-oauth2 (~> 1.8)
     omniauth-dingtalk-oauth2 (1.0.1)
@@ -1814,7 +1815,7 @@ DEPENDENCIES
   omniauth (~> 2.1.0)
   omniauth-alicloud (~> 2.0.1)
   omniauth-atlassian-oauth2 (~> 0.2.0)
-  omniauth-auth0 (~> 2.0.0)
+  omniauth-auth0 (~> 3.1)
   omniauth-azure-activedirectory-v2 (~> 2.0)
   omniauth-azure-oauth2 (~> 0.0.9)!
   omniauth-cas3 (~> 1.1.4)!

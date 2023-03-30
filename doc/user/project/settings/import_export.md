@@ -29,18 +29,11 @@ If you migrate from GitLab.com to self-managed GitLab, an administrator can crea
 
 ## Compatibility
 
-FLAG:
-On self-managed GitLab by default project, file exports are in NDJSON format. To make GitLab produce project file
-exports in JSON format, ask an administrator to [disable the feature flags](../../../administration/feature_flags.md)
-named `project_export_as_ndjson`. To allow GitLab to import project file exports in JSON format, ask an administrator to
-[disable the feature flags](../../../administration/feature_flags.md) named `project_import_ndjson`. On GitLab.com,
-project file exports are in NDJSON format only.
+> Support for JSON-formatted project file exports [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/389888) in GitLab 15.11.
 
-Project file exports are in NDJSON format. Before version 14.0, GitLab produced project file exports in JSON format.
-To support transitions, you can still import JSON-formatted project file exports if you configure the relevant feature
-flags.
+Project file exports are in NDJSON format.
 
-From GitLab 13.0, GitLab can import project file exports that were exported from a version of GitLab up to two
+You can import project file exports that were exported from a version of GitLab up to two
 [minor](../../../policy/maintenance.md#versioning) versions behind, which is similar to our process for
 [security releases](../../../policy/maintenance.md#security-releases).
 

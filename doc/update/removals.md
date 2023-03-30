@@ -36,9 +36,14 @@ For removal reviewers (Technical Writers only):
 
 ## Removed in 15.11
 
-### Exporting and importing groups and projects in JSON format is no longer supported
+### Exporting and importing projects in JSON format not supported
 
-Before version 14.0, GitLab produced project file exports in JSON format. To support transitions, importing JSON-formatted group and project file exports was still possible if you configured the relevant feature flags. As of GitLab 15.11, importing a JSON-formatted group and project file export is no longer supported.
+GitLab previously created project file exports in JSON format. In GitLab 12.10, NDJSON was added as the preferred format.
+
+To support transitions, importing JSON-formatted project file exports was still possible if you configured the
+relevant feature flags.
+
+From GitLab 15.11, importing a JSON-formatted project file exports is not supported.
 
 ## Removed in 15.9
 
@@ -60,6 +65,15 @@ If you want to preserve this functionality, you can follow one of these two path
 
 1. Fork the [GitLab Auto Deploy Helm chart](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app) into the `chart/` path within your project
 1. Set `AUTO_DEPLOY_IMAGE_VERSION` and `DAST_AUTO_DEPLOY_IMAGE_VERSION` to the most recent version of the image that included the CiliumNetworkPolicy
+
+### Exporting and importing groups in JSON format not supported
+
+GitLab previously created group file exports in JSON format. In GitLab 13.10, NDJSON was added as the preferred format.
+
+To support transitions, importing JSON-formatted group file exports was still possible if you configured the
+relevant feature flags.
+
+From GitLab 15.8, importing a JSON-formatted group file exports is not supported.
 
 ### `artifacts:public` CI/CD keyword refactored
 

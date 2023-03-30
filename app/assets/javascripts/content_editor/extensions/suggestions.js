@@ -57,14 +57,25 @@ function createSuggestionPlugin({
       let component;
       let popup;
 
+      const onUpdate = (props) => {
+        component?.updateProps({ ...props, loading: false });
+
+        if (!props.clientRect) return;
+
+        popup?.[0].setProps({
+          getReferenceClientRect: props.clientRect,
+        });
+      };
+
       return {
-        onStart: (props) => {
+        onBeforeStart: (props) => {
           component = new VueRenderer(SuggestionsDropdown, {
             propsData: {
               ...props,
               char,
               nodeType,
               nodeProps,
+              loading: true,
             },
             editor: props.editor,
           });
@@ -84,17 +95,8 @@ function createSuggestionPlugin({
           });
         },
 
-        onUpdate(props) {
-          component?.updateProps(props);
-
-          if (!props.clientRect) {
-            return;
-          }
-
-          popup?.[0].setProps({
-            getReferenceClientRect: props.clientRect,
-          });
-        },
+        onStart: onUpdate,
+        onUpdate,
 
         onKeyDown(props) {
           if (props.event.key === 'Escape') {

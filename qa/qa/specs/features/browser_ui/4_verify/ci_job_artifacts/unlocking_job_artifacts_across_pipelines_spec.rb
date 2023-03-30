@@ -60,7 +60,11 @@ module QA
         end
 
         it 'keeps job artifacts from latest failed pipelines and from latest successful pipeline',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/394808' do
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/394808',
+          quarantine: {
+            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/266958',
+            type: :bug
+          } do
           update_ci_file(job_name: 'failed_job_1', script: 'exit 1')
           Flow::Pipeline.wait_for_latest_pipeline(status: 'failed')
 
@@ -91,7 +95,11 @@ module QA
         end
 
         it 'keeps job artifacts from the latest blocked pipeline and from latest successful pipeline',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/395511' do
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/395511',
+          quarantine: {
+            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/387087',
+            type: :bug
+          } do
           update_ci_with_manual_job(job_name: 'successful_job_with_manual_1', script: 'echo test')
           Flow::Pipeline.wait_for_latest_pipeline(status: 'blocked')
 

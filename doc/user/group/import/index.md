@@ -429,13 +429,11 @@ Note the following:
 
 ### Compatibility
 
-Group file exports are in NDJSON format. GitLab previously produced group file exports in JSON format, however:
+> Support for JSON-formatted project file exports [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/383682) in GitLab 15.8.
 
-- From GitLab 15.8, GitLab no longer supports importing a JSON-formatted group file export.
-- Between GitLab 14.0 and GitLab 14.7, GitLab no longer produces group file exports in JSON format but, to support
-  transitions, can still import JSON-formatted group file exports.
+Group file exports are in NDJSON format.
 
-From GitLab 13.0, GitLab can import group file exports that were exported from a version of GitLab up to two
+You can import group file exports that were exported from a version of GitLab up to two
 [minor](../../../policy/maintenance.md#versioning) versions behind, which is similar to our process for
 [security releases](../../../policy/maintenance.md#security-releases).
 
