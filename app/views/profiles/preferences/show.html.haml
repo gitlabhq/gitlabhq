@@ -1,6 +1,5 @@
 - page_title _('Preferences')
 - add_page_specific_style 'page_bundles/profiles/preferences'
-- @content_class = "limit-container-width" unless fluid_layout
 - user_theme_id = Gitlab::Themes.for_user(@user).id
 - user_color_schema_id = Gitlab::ColorSchemes.for_user(@user).id
 - user_fields = { theme: user_theme_id, gitpod_enabled: @user.gitpod_enabled, sourcegraph_enabled: @user.sourcegraph_enabled }.to_json

@@ -125,22 +125,42 @@ describe('UserMenu component', () => {
           expect(findModalWrapper().exists()).toBe(true);
         });
 
-        it('sets default data attributes when status is not customized', () => {
-          setItem({ can_update: true });
-          expect(findModalWrapper().attributes()).toMatchObject({
-            'data-current-emoji': '',
-            'data-current-message': '',
-            'data-default-emoji': 'speech_balloon',
+        describe('when user cannot update status', () => {
+          it('sets default data attributes', () => {
+            setItem({ can_update: true });
+            expect(findModalWrapper().attributes()).toMatchObject({
+              'data-current-emoji': '',
+              'data-current-message': '',
+              'data-default-emoji': 'speech_balloon',
+            });
           });
         });
 
-        it('sets user status as data attributes when status is customized', () => {
-          setItem({ can_update: true, customized: true });
-          expect(findModalWrapper().attributes()).toMatchObject({
-            'data-current-emoji': userMenuMockStatus.emoji,
-            'data-current-message': userMenuMockStatus.message,
-            'data-current-availability': userMenuMockStatus.availability,
-            'data-current-clear-status-after': userMenuMockStatus.clear_after,
+        describe.each`
+          busy     | customized
+          ${true}  | ${true}
+          ${true}  | ${false}
+          ${false} | ${true}
+          ${false} | ${false}
+        `(`when user can update status`, ({ busy, customized }) => {
+          it(`and ${busy ? 'is busy' : 'is not busy'} and status ${
+            customized ? 'is' : 'is not'
+          } customized sets user status data attributes`, () => {
+            setItem({ can_update: true, busy, customized });
+            if (busy || customized) {
+              expect(findModalWrapper().attributes()).toMatchObject({
+                'data-current-emoji': userMenuMockStatus.emoji,
+                'data-current-message': userMenuMockStatus.message,
+                'data-current-availability': userMenuMockStatus.availability,
+                'data-current-clear-status-after': userMenuMockStatus.clear_after,
+              });
+            } else {
+              expect(findModalWrapper().attributes()).toMatchObject({
+                'data-current-emoji': '',
+                'data-current-message': '',
+                'data-default-emoji': 'speech_balloon',
+              });
+            }
           });
         });
       });

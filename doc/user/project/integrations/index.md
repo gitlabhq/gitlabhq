@@ -103,6 +103,13 @@ supported by `push_hooks` and `tag_push_hooks` events aren't executed.
 You can change the number of supported branches or tags by changing the
 [`push_event_hooks_limit` application setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
 
+## Contribute to integrations
+
+If you're interested in developing a new native integration for GitLab, see:
+
+- [Integrations development guidelines](../../../development/integrations/index.md)
+- [GitLab Developer Portal](https://developer.gitlab.com)
+
 ## Troubleshooting
 
 Some integrations use hooks to integrate with external applications. To confirm which ones use integration hooks, see the [available integrations](#available-integrations). For more information, see [webhook troubleshooting](webhooks.md#troubleshooting).
@@ -115,7 +122,3 @@ push data to build the test payload, and there are no push events in the project
 
 To resolve this error, initialize the repository by pushing a test file to the project
 and set up the integration again.
-
-## Contribute to integrations
-
-To add a new integration, see the [Integrations development guide](../../../development/integrations/index.md).

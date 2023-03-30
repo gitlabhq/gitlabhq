@@ -6468,6 +6468,32 @@ Input type: `VulnerabilityRevertToDetectedInput`
 | <a id="mutationvulnerabilityreverttodetectederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationvulnerabilityreverttodetectedvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Vulnerability after state change. |
 
+### `Mutation.workItemConvert`
+
+Converts the work item to a new type.
+
+WARNING:
+**Introduced** in 15.11.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Input type: `WorkItemConvertInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemconvertclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemconvertid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
+| <a id="mutationworkitemconvertworkitemtypeid"></a>`workItemTypeId` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of the new work item type. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemconvertclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemconverterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationworkitemconvertworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
+
 ### `Mutation.workItemCreate`
 
 Creates a work item.

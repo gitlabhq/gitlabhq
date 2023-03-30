@@ -318,6 +318,15 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_909cf0a06094() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."awardable_id_convert_to_bigint" := NEW."awardable_id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION trigger_bfc6e47be8cc() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -12198,7 +12207,8 @@ CREATE TABLE award_emoji (
     awardable_id integer,
     awardable_type character varying,
     created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    awardable_id_convert_to_bigint bigint
 );
 
 CREATE SEQUENCE award_emoji_id_seq
@@ -13002,7 +13012,7 @@ CREATE TABLE ci_builds (
     scheduling_type smallint,
     id bigint NOT NULL,
     stage_id bigint,
-    partition_id bigint DEFAULT 100 NOT NULL,
+    partition_id bigint NOT NULL,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL)),
     CONSTRAINT partitioning_constraint CHECK ((partition_id = 100))
 );
@@ -34138,6 +34148,8 @@ CREATE TRIGGER trigger_482bac5ec48a BEFORE INSERT OR UPDATE ON system_note_metad
 CREATE TRIGGER trigger_775287b6d67a BEFORE INSERT OR UPDATE ON note_diff_files FOR EACH ROW EXECUTE FUNCTION trigger_775287b6d67a();
 
 CREATE TRIGGER trigger_7f4fcd5aa322 BEFORE INSERT OR UPDATE ON sent_notifications FOR EACH ROW EXECUTE FUNCTION trigger_7f4fcd5aa322();
+
+CREATE TRIGGER trigger_909cf0a06094 BEFORE INSERT OR UPDATE ON award_emoji FOR EACH ROW EXECUTE FUNCTION trigger_909cf0a06094();
 
 CREATE TRIGGER trigger_bfc6e47be8cc BEFORE INSERT OR UPDATE ON snippet_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_bfc6e47be8cc();
 

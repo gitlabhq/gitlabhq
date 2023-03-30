@@ -36,6 +36,7 @@ module Gitlab
         def partition
           assert_existing_constraints_partitionable
           assert_partitioning_constraint_present
+
           create_parent_table
           attach_foreign_keys_to_parent
 
@@ -45,7 +46,9 @@ module Gitlab
           }
 
           migration_context.with_lock_retries(**lock_args) do
-            migration_context.execute(sql_to_convert_table)
+            redefine_loose_foreign_key_triggers do
+              migration_context.execute(sql_to_convert_table)
+            end
           end
         end
 
@@ -261,6 +264,19 @@ module Gitlab
           aggressive_iterations = Array.new(5) { [10.seconds, 1.minute] }
 
           iterations + aggressive_iterations
+        end
+
+        def redefine_loose_foreign_key_triggers
+          if migration_context.has_loose_foreign_key?(table_name)
+            migration_context.untrack_record_deletions(table_name)
+
+            yield if block_given?
+
+            migration_context.track_record_deletions(parent_table_name)
+            migration_context.track_record_deletions(table_name)
+          elsif block_given?
+            yield
+          end
         end
       end
     end

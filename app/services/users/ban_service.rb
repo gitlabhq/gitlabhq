@@ -17,3 +17,5 @@ module Users
     end
   end
 end
+
+Users::BanService.prepend_mod_with('Users::BanService')

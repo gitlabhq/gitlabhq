@@ -15400,9 +15400,6 @@ msgstr ""
 msgid "Download this directory"
 msgstr ""
 
-msgid "DownloadCommit|Email Patches"
-msgstr ""
-
 msgid "DownloadCommit|Plain Diff"
 msgstr ""
 
@@ -15788,9 +15785,6 @@ msgid "Email notification for unknown sign-ins"
 msgstr ""
 
 msgid "Email patch"
-msgstr ""
-
-msgid "Email patches"
 msgstr ""
 
 msgid "Email sent"
@@ -31351,6 +31345,9 @@ msgstr ""
 msgid "Patch to apply"
 msgstr ""
 
+msgid "Patches"
+msgstr ""
+
 msgid "Path"
 msgstr ""
 
@@ -38530,9 +38527,6 @@ msgstr ""
 msgid "ScanResultPolicy|%{count} licenses"
 msgstr ""
 
-msgid "ScanResultPolicy|%{ifLabelStart}if%{ifLabelEnd} %{scanners} find(s) more than %{vulnerabilitiesAllowed} %{severities} %{vulnerabilityStates} vulnerabilities in an open merge request targeting %{branches}"
-msgstr ""
-
 msgid "ScanResultPolicy|%{ifLabelStart}if%{ifLabelEnd} %{selector}"
 msgstr ""
 
@@ -39528,9 +39522,6 @@ msgid "SecurityOrchestration|Use a scan execution policy to create rules which e
 msgstr ""
 
 msgid "SecurityOrchestration|Use a scan result policy to create rules that check for security vulnerabilities and license compliance before merging a merge request."
-msgstr ""
-
-msgid "SecurityOrchestration|Use a scan result policy to create rules that ensure security issues are checked before merging a merge request."
 msgstr ""
 
 msgid "SecurityOrchestration|View policy project"
@@ -49486,6 +49477,9 @@ msgstr ""
 msgid "Won't fix / Accept risk"
 msgstr ""
 
+msgid "Work Item type with id %{id} was not found"
+msgstr ""
+
 msgid "Work in progress (open and unassigned)"
 msgstr ""
 
@@ -49908,6 +49902,9 @@ msgid "You are not allowed to %{action} a user"
 msgstr ""
 
 msgid "You are not allowed to approve a user"
+msgstr ""
+
+msgid "You are not allowed to change the Work Item type to %{name}."
 msgstr ""
 
 msgid "You are not allowed to create this tag as it is protected."

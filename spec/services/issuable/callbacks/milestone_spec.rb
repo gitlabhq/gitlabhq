@@ -80,6 +80,14 @@ RSpec.describe Issuable::Callbacks::Milestone, feature_category: :team_planning 
           expect { callback.after_initialize }.not_to change { issuable.milestone }
         end
       end
+
+      context 'when new type does not support milestones' do
+        let(:params) { { excluded_in_new_type: true } }
+
+        it "unsets the issuable's milestone" do
+          expect { callback.after_initialize }.to change { issuable.milestone }.from(project_milestone).to(nil)
+        end
+      end
     end
   end
 end

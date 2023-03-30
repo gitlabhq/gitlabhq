@@ -6,6 +6,7 @@ module Issuable
       ALLOWED_PARAMS = %i[milestone milestone_id skip_milestone_email].freeze
 
       def after_initialize
+        params[:milestone_id] = nil if excluded_in_new_type?
         return unless params.key?(:milestone_id) && has_permission?(:"set_#{issuable.to_ability_name}_metadata")
 
         @old_milestone = issuable.milestone

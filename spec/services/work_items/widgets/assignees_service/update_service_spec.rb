@@ -21,10 +21,9 @@ RSpec.describe WorkItems::Widgets::AssigneesService::UpdateService, :freeze_time
   end
 
   describe '#before_update_in_transaction' do
-    subject do
-      described_class.new(widget: widget, current_user: current_user)
-        .before_update_in_transaction(params: params)
-    end
+    let(:service) { described_class.new(widget: widget, current_user: current_user) }
+
+    subject { service.before_update_in_transaction(params: params) }
 
     it 'updates the assignees and sets updated_at to the current time' do
       subject
@@ -110,6 +109,21 @@ RSpec.describe WorkItems::Widgets::AssigneesService::UpdateService, :freeze_time
 
         expect(work_item.assignee_ids).to contain_exactly(new_assignee.id)
         expect(work_item.updated_at).to be_like_time(1.day.ago)
+      end
+    end
+
+    context 'when widget does not exist in new type' do
+      let(:params) { {} }
+
+      before do
+        allow(service).to receive(:new_type_excludes_widget?).and_return(true)
+        work_item.assignee_ids = [new_assignee.id]
+      end
+
+      it "resets the work item's assignees" do
+        subject
+
+        expect(work_item.assignee_ids).to be_empty
       end
     end
   end

@@ -79,7 +79,7 @@ Administrators can set a default branch protection level in the
 
 Configure protected branches for all projects in a group, or just for a project.
 
-### For all projects in a group
+### For all projects in a group **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 behind a feature flag, disabled by default.
 

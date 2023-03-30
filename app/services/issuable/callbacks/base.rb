@@ -19,6 +19,10 @@ module Issuable
 
       attr_reader :issuable, :current_user, :params
 
+      def excluded_in_new_type?
+        params.key?(:excluded_in_new_type) && params[:excluded_in_new_type]
+      end
+
       def has_permission?(permission)
         can?(current_user, permission, issuable)
       end

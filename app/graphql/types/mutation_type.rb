@@ -169,6 +169,7 @@ module Types
     mount_mutation Mutations::WorkItems::Update, alpha: { milestone: '15.1' }
     mount_mutation Mutations::WorkItems::UpdateTask, alpha: { milestone: '15.1' }
     mount_mutation Mutations::WorkItems::Export, alpha: { milestone: '15.10' }
+    mount_mutation Mutations::WorkItems::Convert, alpha: { milestone: '15.11' }
     mount_mutation Mutations::SavedReplies::Create
     mount_mutation Mutations::SavedReplies::Update
     mount_mutation Mutations::Pages::MarkOnboardingComplete

@@ -93,7 +93,7 @@ export default {
       data-testid="email-patches-link"
       data-qa-selector="email_patches"
     >
-      {{ s__('DownloadCommit|Email Patches') }}
+      {{ __('Patches') }}
     </gl-dropdown-item>
     <gl-dropdown-item
       :href="plainDiffPath"

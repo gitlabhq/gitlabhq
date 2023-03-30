@@ -107,7 +107,7 @@ To download the changes included in a merge request as a patch file:
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Merge requests**.
 1. Select your merge request.
-1. In the upper-right corner, select **Code > Email patches**.
+1. In the upper-right corner, select **Code > Patches**.
 
 If you know the URL of the merge request, you can also download the patch from
 the command line by appending `.patch` to the URL. This example downloads the patch

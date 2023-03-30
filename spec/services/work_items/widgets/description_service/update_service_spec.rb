@@ -20,7 +20,9 @@ RSpec.describe WorkItems::Widgets::DescriptionService::UpdateService, feature_ca
   let(:widget) { work_item.widgets.find { |widget| widget.is_a?(WorkItems::Widgets::Description) } }
 
   describe '#update' do
-    subject { described_class.new(widget: widget, current_user: current_user).before_update_callback(params: params) }
+    let(:service) { described_class.new(widget: widget, current_user: current_user) }
+
+    subject(:before_update_callback) { service.before_update_callback(params: params) }
 
     shared_examples 'sets work item description' do
       it 'correctly sets work item description value' do
@@ -77,6 +79,23 @@ RSpec.describe WorkItems::Widgets::DescriptionService::UpdateService, feature_ca
         let(:params) { {} }
 
         it_behaves_like 'does not set work item description'
+      end
+
+      context 'when widget does not exist in new type' do
+        let(:current_user) { author }
+        let(:params) { {} }
+
+        before do
+          allow(service).to receive(:new_type_excludes_widget?).and_return(true)
+          work_item.update!(description: 'test')
+        end
+
+        it "resets the work item's description" do
+          expect { before_update_callback }
+            .to change { work_item.description }
+            .from('test')
+            .to(nil)
+        end
       end
     end
 

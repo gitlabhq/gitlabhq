@@ -6,7 +6,11 @@ RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition 
   include Gitlab::Database::DynamicModelHelpers
   include Database::TableSchemaHelpers
 
-  let(:migration_context) { Gitlab::Database::Migration[2.0].new }
+  let(:migration_context) do
+    Gitlab::Database::Migration[2.0].new.tap do |migration|
+      migration.extend Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers
+    end
+  end
 
   let(:connection) { migration_context.connection }
   let(:table_name) { '_test_table_to_partition' }
@@ -102,7 +106,7 @@ RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition 
     end
   end
 
-  describe "#convert_to_zero_partition" do
+  describe "#partition" do
     subject(:partition) { converter.partition }
 
     before do
@@ -231,9 +235,24 @@ RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition 
         end
       end
     end
+
+    context 'when table has LFK triggers' do
+      before do
+        migration_context.track_record_deletions(table_name)
+      end
+
+      it 'moves the trigger on the parent table', :aggregate_failures do
+        expect(migration_context.has_loose_foreign_key?(table_name)).to be_truthy
+
+        expect { partition }.not_to raise_error
+
+        expect(migration_context.has_loose_foreign_key?(table_name)).to be_truthy
+        expect(migration_context.has_loose_foreign_key?(parent_table_name)).to be_truthy
+      end
+    end
   end
 
-  describe '#revert_conversion_to_zero_partition' do
+  describe '#revert_partitioning' do
     before do
       converter.prepare_for_partitioning
       converter.partition
@@ -268,6 +287,22 @@ RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition 
     it 'moves sequences back to the original table' do
       expect { revert_conversion }.to change { converter.send(:sequences_owned_by, table_name).count }.from(0)
                                  .and change { converter.send(:sequences_owned_by, parent_table_name).count }.to(0)
+    end
+
+    context 'when table has LFK triggers' do
+      before do
+        migration_context.track_record_deletions(parent_table_name)
+        migration_context.track_record_deletions(table_name)
+      end
+
+      it 'restores the trigger on the partition', :aggregate_failures do
+        expect(migration_context.has_loose_foreign_key?(table_name)).to be_truthy
+        expect(migration_context.has_loose_foreign_key?(parent_table_name)).to be_truthy
+
+        expect { revert_conversion }.not_to raise_error
+
+        expect(migration_context.has_loose_foreign_key?(table_name)).to be_truthy
+      end
     end
   end
 end

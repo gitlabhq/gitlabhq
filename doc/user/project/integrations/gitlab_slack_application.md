@@ -18,6 +18,10 @@ integrations on GitLab.com.
 
 ## Installation
 
+In GitLab 15.0 and later, the GitLab for Slack app uses
+[granular permissions](https://medium.com/slack-developer-blog/more-precision-less-restrictions-a3550006f9c3).
+Although functionality has not changed, you should [reinstall the app](#update-the-gitlab-for-slack-app).
+
 ### Through the Slack App Directory
 
 To enable the GitLab for Slack app for your workspace,
@@ -43,8 +47,8 @@ To enable the GitLab integration for your Slack workspace:
 1. Select **Install GitLab for Slack app**.
 1. Select **Allow** on Slack's confirmation screen.
 
-You can also select **Reinstall GitLab for Slack app** to update the app in your Slack workspace
-to the latest version. See [Version history](#version-history) for details.
+To update the app in your Slack workspace to the latest version,
+you can also select **Reinstall GitLab for Slack app**.
 
 ## Slash commands
 
@@ -192,8 +196,3 @@ If you're not receiving notifications to a Slack channel, ensure:
 ### The App Home does not display properly
 
 If the [App Home](https://api.slack.com/start/overview#app_home) does not display properly, ensure your [app is up to date](#update-the-gitlab-for-slack-app).
-
-## Version history
-
-In GitLab 15.0 and later, the GitLab for Slack app is updated to [Slack's new granular permissions model](https://medium.com/slack-developer-blog/more-precision-less-restrictions-a3550006f9c3).
-Although there is no change in functionality, you should [reinstall the app](#update-the-gitlab-for-slack-app).

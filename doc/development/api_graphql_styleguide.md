@@ -40,6 +40,13 @@ GraphiQL is an interactive GraphQL API explorer where you can play around with e
 You can access it in any GitLab environment on `https://<your-gitlab-site.com>/-/graphql-explorer`.
 For example, the one for [GitLab.com](https://gitlab.com/-/graphql-explorer).
 
+## Reviewing merge requests with GraphQL changes
+
+The GraphQL framework has some specific gotchas to be aware of, and domain expertise is required to ensure they are satisfied.
+
+If you are asked to review a merge request that modifies any GraphQL files or adds an endpoint, please have a look at
+[our GraphQL review guide](graphql_guide/reviewing.md).
+
 ## Authentication
 
 Authentication happens through the `GraphqlController`, right now this
@@ -1132,7 +1139,9 @@ you need to do something more custom however, remember, if you encounter an
 object the `current_user` does not have access to when resolving a field, then
 the entire field should resolve to `null`.
 
-### Deriving resolvers (`BaseResolver.single` and `BaseResolver.last`)
+### Deriving resolvers
+
+(including `BaseResolver.single` and `BaseResolver.last`)
 
 For some use cases, we can derive resolvers from others.
 The main use case for this is one resolver to find all items, and another to

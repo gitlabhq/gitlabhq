@@ -139,9 +139,12 @@ export default {
         'data-default-emoji': 'speech_balloon',
       };
 
-      if (!this.data.status.customized) {
+      const { busy, customized } = this.data.status;
+
+      if (!busy && !customized) {
         return defaultData;
       }
+
       return {
         ...defaultData,
         'data-current-emoji': this.data.status.emoji,

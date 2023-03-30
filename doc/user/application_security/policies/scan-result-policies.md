@@ -87,11 +87,8 @@ This rule enforces the defined actions based on security scan findings.
 
 ## `license_finding` rule type
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8092) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `license_scanning_policies`. Enabled by default in GitLab 15.10.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `license_scanning_policies`.
-On GitLab.com, this feature is not available.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8092) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `license_scanning_policies`.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/397644) in GitLab 15.11. Feature flag `license_scanning_policies` removed.
 
 This rule enforces the defined actions based on license findings.
 

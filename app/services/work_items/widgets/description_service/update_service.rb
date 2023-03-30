@@ -5,6 +5,8 @@ module WorkItems
     module DescriptionService
       class UpdateService < WorkItems::Widgets::BaseService
         def before_update_callback(params: {})
+          params[:description] = nil if new_type_excludes_widget?
+
           return unless params.present? && params.key?(:description)
           return unless has_permission?(:update_work_item)
 
