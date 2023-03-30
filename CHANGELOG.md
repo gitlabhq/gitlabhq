@@ -2,6 +2,27 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.9.4 (2023-03-30)
+
+### Security (16 changes)
+
+- [Add checks to remove open redirects from Observability URL](gitlab-org/security/gitlab@98b1bd243f454bd28c262131be616ee2060c3a78) ([merge request](gitlab-org/security/gitlab!3104))
+- [Redirect to tree from project root on ref collision](gitlab-org/security/gitlab@0f0c0f21dffe300a56abf1e07a2fefb17160faeb) ([merge request](gitlab-org/security/gitlab!3133))
+- [Fixes soft email confirmation alert vulnerability](gitlab-org/security/gitlab@12498f791f9c5fe833f5202b06cc818d4dcf965b) ([merge request](gitlab-org/security/gitlab!3124))
+- [Restrict Prometheus API access on public projects](gitlab-org/security/gitlab@440a7989ff46ca333f86a38aefa47f74301e66fc) ([merge request](gitlab-org/security/gitlab!3163))
+- [Verify that users have access to the parent of the fork](gitlab-org/security/gitlab@9dd0dff69d3941e827c461c67b9af10da07d69f8) ([merge request](gitlab-org/security/gitlab!3084))
+- [Protect webhook secrets by resetting url_variables](gitlab-org/security/gitlab@cd20b44dd5b075827203330802e331b896448265) ([merge request](gitlab-org/security/gitlab!3140))
+- [Replace Unicode space chars with spaces](gitlab-org/security/gitlab@76975082c41870265e1285fa8f4e053eb6ff11ae) ([merge request](gitlab-org/security/gitlab!3136))
+- [Check access to parent when creating and updating epics](gitlab-org/security/gitlab@7fcc4a0d010d3a428e803f95ef47904c4c7178a8) ([merge request](gitlab-org/security/gitlab!3149))
+- [Improve Gitlab::UrlSanitizer regex to match more URIs](gitlab-org/security/gitlab@4e7313536e4cdb3ecef37100b5a73720eabfbc79) ([merge request](gitlab-org/security/gitlab!3108))
+- [Check access to target project before looking for branch](gitlab-org/security/gitlab@f55edf39e52af9eecb19caf8ed5d4cb8524ef64d) ([merge request](gitlab-org/security/gitlab!3040))
+- [Fix the potential leak of internal notes](gitlab-org/security/gitlab@be73600e8c43c22cda1ace5910eb2052b2741972) ([merge request](gitlab-org/security/gitlab!3120))
+- [Use UntrustedRegexp to limit scan of HTML comments](gitlab-org/security/gitlab@d5e65583debcae71787e171643275bc9b9d4393e) ([merge request](gitlab-org/security/gitlab!3142))
+- [Filter namespace environments by feature visibility](gitlab-org/security/gitlab@54045b508a9ba9ae18f5992b77970240774b28a7) ([merge request](gitlab-org/security/gitlab!3111))
+- [Check access to reorder issues in epic tree](gitlab-org/security/gitlab@bc033cd3a98c9a1468545811a8180604f7f8aee3) ([merge request](gitlab-org/security/gitlab!3101))
+- [Fix security report authorization](gitlab-org/security/gitlab@a01cf9d8383ffc4c0e29514f71d49bf345e1f7c2) ([merge request](gitlab-org/security/gitlab!3106))
+- [Prevent XSS attack in "Maximum page reached" page](gitlab-org/security/gitlab@3cefb16a5e369ee99f4c3ccbaa02cead6faf1a99) ([merge request](gitlab-org/security/gitlab!3130))
+
 ## 15.9.3 (2023-03-09)
 
 ### Fixed (4 changes)

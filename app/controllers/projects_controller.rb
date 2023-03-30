@@ -171,11 +171,19 @@ class ProjectsController < Projects::ApplicationController
       flash.now[:alert] = _("Project '%{project_name}' queued for deletion.") % { project_name: @project.name }
     end
 
+    if ambiguous_ref?(@project, @ref)
+      branch = @project.repository.find_branch(@ref)
+
+      # The files view would render a ref other than the default branch
+      # This redirect can be removed once the view is fixed
+      redirect_to(project_tree_path(@project, branch.target), alert: _("The default branch of this project clashes with another ref"))
+      return
+    end
+
     respond_to do |format|
       format.html do
         @notification_setting = current_user.notification_settings_for(@project) if current_user
         @project = @project.present(current_user: current_user)
-
         render_landing_page
       end
 
