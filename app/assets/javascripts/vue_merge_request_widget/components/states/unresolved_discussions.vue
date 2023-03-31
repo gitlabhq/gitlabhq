@@ -30,7 +30,12 @@ export default {
 </script>
 
 <template>
-  <state-container :mr="mr" status="failed">
+  <state-container
+    status="failed"
+    is-collapsible
+    :collapsed="mr.mergeDetailsCollapsed"
+    @toggle="() => mr.toggleMergeDetails()"
+  >
     <span class="gl-ml-3 gl-w-100 gl-flex-grow-1 gl-md-mr-3 gl-ml-0! gl-text-body!">
       <bold-text :message="$options.message" />
     </span>

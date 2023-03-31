@@ -1,7 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
-import { __ } from '~/locale';
 import StatusIcon from './mr_widget_status_icon.vue';
 import Actions from './action_buttons.vue';
 
@@ -14,7 +13,30 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: {
+    expandDetailsTooltip: {
+      default: '',
+    },
+    collapseDetailsTooltip: {
+      default: '',
+    },
+  },
   props: {
+    isCollapsible: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    collapseOnDesktop: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    collapsed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     mr: {
       type: Object,
       required: false,
@@ -36,10 +58,6 @@ export default {
       default: () => [],
     },
   },
-  i18n: {
-    expandDetailsTooltip: __('Expand merge details'),
-    collapseDetailsTooltip: __('Collapse merge details'),
-  },
   computed: {
     wrapperClasses() {
       if (this.status === STATUS_MERGED) return 'gl-bg-blue-50';
@@ -55,7 +73,7 @@ export default {
 
 <template>
   <div
-    class="mr-widget-body media gl-display-flex gl-align-items-center"
+    class="mr-widget-body media gl-display-flex gl-align-items-center gl-pl-5 gl-pr-4 gl-py-4"
     :class="wrapperClasses"
     v-on="$listeners"
   >
@@ -95,21 +113,19 @@ export default {
           </div>
         </div>
         <div
-          v-if="mr"
-          class="gl-md-display-none gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3 gl-h-6 gl-mt-1"
+          v-if="isCollapsible"
+          :class="{ 'gl-md-display-none': !collapseOnDesktop }"
+          class="gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3 gl-h-6"
         >
           <gl-button
             v-gl-tooltip
-            :title="
-              mr.mergeDetailsCollapsed
-                ? $options.i18n.expandDetailsTooltip
-                : $options.i18n.collapseDetailsTooltip
-            "
-            :icon="mr.mergeDetailsCollapsed ? 'chevron-lg-down' : 'chevron-lg-up'"
+            :title="collapsed ? expandDetailsTooltip : collapseDetailsTooltip"
+            :icon="collapsed ? 'chevron-lg-down' : 'chevron-lg-up'"
             category="tertiary"
             size="small"
             class="gl-vertical-align-top"
-            @click="() => mr.toggleMergeDetails()"
+            data-testid="widget-toggle"
+            @click="() => $emit('toggle')"
           />
         </div>
       </div>

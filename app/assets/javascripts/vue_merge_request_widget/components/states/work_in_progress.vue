@@ -137,7 +137,12 @@ export default {
 </script>
 
 <template>
-  <state-container :mr="mr" status="failed">
+  <state-container
+    status="failed"
+    is-collapsible
+    :collapsed="mr.mergeDetailsCollapsed"
+    @toggle="() => mr.toggleMergeDetails()"
+  >
     <span class="gl-ml-0! gl-text-body! gl-flex-grow-1">
       <bold-text :message="$options.i18n.removeDraftStatus" />
     </span>

@@ -116,6 +116,7 @@ describe('WikiForm', () => {
         renderMarkdownPath: pageInfoPersisted.markdownPreviewPath,
         uploadsPath: pageInfoPersisted.uploadsPath,
         autofocus: pageInfoPersisted.persisted,
+        markdownDocsPath: pageInfoPersisted.markdownHelpPath,
       }),
     );
 
@@ -123,10 +124,6 @@ describe('WikiForm', () => {
       id: 'wiki_content',
       name: 'wiki[content]',
     });
-
-    expect(markdownEditor.vm.$attrs['markdown-docs-path']).toEqual(
-      pageInfoPersisted.markdownHelpPath,
-    );
   });
 
   it.each`

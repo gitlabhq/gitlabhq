@@ -932,7 +932,7 @@ information, see the [Sidekiq configuration](../sidekiq/index.md)
 page.
 
 To reduce the amount of [Container Registry disk space used by a given project](#registry-disk-space-usage-by-project),
-administrators can clean up image tags
+administrators can setup cleanup policies
 and [run garbage collection](#container-registry-garbage-collection).
 
 ### Registry Disk Space Usage by Project

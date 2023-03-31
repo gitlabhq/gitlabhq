@@ -82,6 +82,9 @@ export default {
       'hasDrafts',
     ]),
     ...mapState(['isToggleStateButtonLoading']),
+    autocompleteDataSources() {
+      return gl.GfmAutoComplete?.dataSources;
+    },
     noteableDisplayName() {
       const displayNameMap = {
         [constants.ISSUE_NOTEABLE_TYPE]: this.$options.i18n.issue,
@@ -371,6 +374,7 @@ export default {
                 :form-field-props="formFieldProps"
                 :autosave-key="autosaveKey"
                 :disabled="isSubmitting"
+                :autocomplete-data-sources="autocompleteDataSources"
                 supports-quick-actions
                 @keydown.up="editCurrentUserLastNote()"
                 @keydown.meta.enter="handleEnter()"

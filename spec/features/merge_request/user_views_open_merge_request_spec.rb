@@ -56,25 +56,25 @@ RSpec.describe 'User views an open merge request', feature_category: :code_revie
       end
 
       it 'renders empty description preview' do
-        find('.gfm-form').fill_in(:merge_request_description, with: '')
+        fill_in(:merge_request_description, with: '')
 
-        page.within('.gfm-form') do
-          click_button('Preview')
+        page.within('.js-vue-markdown-field') do
+          click_link('Preview')
 
-          expect(find('.js-md-preview')).to have_content('Nothing to preview.')
+          expect(find('.js-vue-md-preview')).to have_content('Nothing to preview.')
         end
       end
 
       it 'renders description preview' do
-        find('.gfm-form').fill_in(:merge_request_description, with: ':+1: Nice')
+        fill_in(:merge_request_description, with: ':+1: Nice')
 
-        page.within('.gfm-form') do
-          click_button('Preview')
+        page.within('.js-vue-markdown-field') do
+          click_link('Preview')
 
-          expect(find('.js-md-preview')).to have_css('gl-emoji')
+          expect(find('.js-vue-md-preview')).to have_css('gl-emoji')
         end
 
-        expect(find('.gfm-form')).to have_css('.js-md-preview').and have_button('Write')
+        expect(find('.js-vue-markdown-field')).to have_css('.js-vue-md-preview').and have_link('Write')
         expect(find('#merge_request_description', visible: false)).not_to be_visible
       end
     end

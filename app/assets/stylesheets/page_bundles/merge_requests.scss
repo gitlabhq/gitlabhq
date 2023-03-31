@@ -1,6 +1,5 @@
 @import 'mixins_and_variables_and_functions';
 
-$mr-review-bar-height: calc(2rem + 13px);
 $mr-widget-margin-left: 40px;
 $mr-widget-min-height: 69px;
 $tabs-holder-z-index: 250;
@@ -242,18 +241,6 @@ $tabs-holder-z-index: 250;
   }
 }
 
-.with-system-header {
-  --system-header-height: #{$system-header-height};
-}
-
-.with-performance-bar {
-  --performance-bar-height: #{$performance-bar-height};
-}
-
-.review-bar-visible {
-  --review-bar-height: #{$mr-review-bar-height};
-}
-
 .diff-tree-list {
   // This 11px value should match the additional value found in
   //      /assets/stylesheets/framework/diffs.scss
@@ -271,7 +258,7 @@ $tabs-holder-z-index: 250;
   position: sticky;
   top: calc(var(--top-pos) + var(--performance-bar-height, 0px));
   min-height: 300px;
-  height: calc(100vh - var(--top-pos) - var(--system-header-height, 0px) - var(--performance-bar-height, 0px) - var(--review-bar-height, 0px));
+  height: calc(100vh - var(--top-pos) - var(--system-header-height, 0px) - var(--performance-bar-height, 0px) - var(--mr-review-bar-height, 0px));
 
   .drag-handle {
     bottom: 16px;

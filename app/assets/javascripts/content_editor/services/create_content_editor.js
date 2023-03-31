@@ -88,6 +88,8 @@ export const createContentEditor = ({
   serializerConfig = { marks: {}, nodes: {} },
   tiptapOptions,
   drawioEnabled = false,
+  enableAutocomplete,
+  autocompleteDataSources = {},
 } = {}) => {
   if (!isFunction(renderMarkdown)) {
     throw new Error(PROVIDE_SERIALIZER_OR_RENDERER_ERROR);
@@ -144,7 +146,6 @@ export const createContentEditor = ({
     Sourcemap,
     Strike,
     Subscript,
-    Suggestions,
     Superscript,
     TableCell,
     TableHeader,
@@ -160,6 +161,7 @@ export const createContentEditor = ({
 
   const allExtensions = [...builtInContentEditorExtensions, ...extensions];
 
+  if (enableAutocomplete) allExtensions.push(Suggestions.configure({ autocompleteDataSources }));
   if (drawioEnabled) allExtensions.push(DrawioDiagram.configure({ uploadsPath, renderMarkdown }));
 
   const trackedExtensions = allExtensions.map(trackInputRulesAndShortcuts);

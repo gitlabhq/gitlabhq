@@ -20,15 +20,6 @@ RSpec.describe Projects::IssuesController, '(JavaScript fixtures)', :with_licens
     remove_repository(project)
   end
 
-  it 'issues/new-issue.html' do
-    get :new, params: {
-      namespace_id: project.namespace.to_param,
-      project_id: project
-    }
-
-    expect(response).to be_successful
-  end
-
   it 'issues/open-issue.html' do
     render_issue(create(:issue, project: project))
   end

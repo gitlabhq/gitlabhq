@@ -842,6 +842,32 @@ Input type: `AchievementsRevokeInput`
 | <a id="mutationachievementsrevokeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationachievementsrevokeuserachievement"></a>`userAchievement` | [`UserAchievement`](#userachievement) | Achievement award. |
 
+### `Mutation.achievementsUpdate`
+
+WARNING:
+**Introduced** in 15.11.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Input type: `AchievementsUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationachievementsupdateachievementid"></a>`achievementId` | [`AchievementsAchievementID!`](#achievementsachievementid) | Global ID of the achievement being updated. |
+| <a id="mutationachievementsupdateavatar"></a>`avatar` | [`Upload`](#upload) | Avatar for the achievement. |
+| <a id="mutationachievementsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationachievementsupdatedescription"></a>`description` | [`String`](#string) | Description of or notes for the achievement. |
+| <a id="mutationachievementsupdatename"></a>`name` | [`String`](#string) | Name for the achievement. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationachievementsupdateachievement"></a>`achievement` | [`Achievement`](#achievement) | Achievement. |
+| <a id="mutationachievementsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationachievementsupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.addProjectToSecurityDashboard`
 
 Input type: `AddProjectToSecurityDashboardInput`

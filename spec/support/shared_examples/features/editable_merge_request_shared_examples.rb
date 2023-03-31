@@ -77,7 +77,7 @@ RSpec.shared_examples 'an editable merge request' do
     expect(page).to have_selector('.js-quick-submit')
   end
 
-  it 'warns about version conflict' do
+  it 'warns about version conflict', :js do
     merge_request.update!(title: "New title")
 
     fill_in 'merge_request_title', with: 'bug 345'

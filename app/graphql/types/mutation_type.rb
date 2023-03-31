@@ -10,6 +10,7 @@ module Types
     mount_mutation Mutations::Achievements::Create, alpha: { milestone: '15.8' }
     mount_mutation Mutations::Achievements::Delete, alpha: { milestone: '15.11' }
     mount_mutation Mutations::Achievements::Revoke, alpha: { milestone: '15.10' }
+    mount_mutation Mutations::Achievements::Update, alpha: { milestone: '15.11' }
     mount_mutation Mutations::Admin::SidekiqQueues::DeleteJobs
     mount_mutation Mutations::AlertManagement::CreateAlertIssue
     mount_mutation Mutations::AlertManagement::UpdateAlertStatus

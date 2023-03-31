@@ -11,7 +11,7 @@ const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
 const MR_TARGET_BRANCH = 'merge_request[target_branch]';
 const DATA_ISSUES_NEW_PATH = 'data-new-issue-path';
 
-function organizeQuery(obj, isFallbackKey = false) {
+export function organizeQuery(obj, isFallbackKey = false) {
   if (!obj[MR_SOURCE_BRANCH] && !obj[MR_TARGET_BRANCH]) {
     return obj;
   }
@@ -83,11 +83,8 @@ export default class IssuableForm {
     this.searchTerm = getSearchTerm(form[0].getAttribute(DATA_ISSUES_NEW_PATH));
     this.fallbackKey = getFallbackKey();
     this.titleField = this.form.find('input[name*="[title]"]');
-    this.descriptionField = this.form.find('textarea[name*="[description]"]');
     this.draftCheck = document.querySelector('input.js-toggle-draft');
-    if (!(this.titleField.length && this.descriptionField.length)) {
-      return;
-    }
+    if (!this.titleField.length) return;
 
     this.autosaves = this.initAutosave();
     this.form.on('submit', this.handleSubmit);
@@ -120,13 +117,6 @@ export default class IssuableForm {
       autosaveMap,
       'title',
       this.form.find('input[name*="[title]"]').get(0),
-      this.searchTerm,
-      this.fallbackKey,
-    );
-    IssuableForm.addAutosave(
-      autosaveMap,
-      'description',
-      this.form.find('textarea[name*="[description]"]').get(0),
       this.searchTerm,
       this.fallbackKey,
     );

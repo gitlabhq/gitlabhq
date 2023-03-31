@@ -1,10 +1,12 @@
 <script>
 import { GlButton, GlTooltipDirective, GlModalDirective } from '@gitlab/ui';
 import Tracking from '~/tracking';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../../event_hub';
 import { BUTTON_TOOLTIP_RETRY, BUTTON_TOOLTIP_CANCEL, TRACKING_CATEGORIES } from '../../constants';
 import PipelineMultiActions from './pipeline_multi_actions.vue';
 import PipelinesManualActions from './pipelines_manual_actions.vue';
+import PipelinesManualActionsLegacy from './pipelines_manual_actions_legacy.vue';
 
 export default {
   BUTTON_TOOLTIP_RETRY,
@@ -17,8 +19,9 @@ export default {
     GlButton,
     PipelineMultiActions,
     PipelinesManualActions,
+    PipelinesManualActionsLegacy,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
   props: {
     pipeline: {
       type: Object,
@@ -36,6 +39,14 @@ export default {
     };
   },
   computed: {
+    shouldLazyLoadActions() {
+      return this.glFeatures.lazyLoadPipelineDropdownActions;
+    },
+    hasActions() {
+      return (
+        this.pipeline?.details?.has_manual_actions || this.pipeline?.details?.has_scheduled_actions
+      );
+    },
     actions() {
       if (!this.pipeline || !this.pipeline.details) {
         return [];
@@ -75,7 +86,12 @@ export default {
 <template>
   <div class="gl-text-right">
     <div class="btn-group">
-      <pipelines-manual-actions v-if="actions.length > 0" :actions="actions" />
+      <pipelines-manual-actions v-if="hasActions && shouldLazyLoadActions" :iid="pipeline.iid" />
+
+      <pipelines-manual-actions-legacy
+        v-if="actions.length > 0 && !shouldLazyLoadActions"
+        :actions="actions"
+      />
 
       <gl-button
         v-if="pipeline.flags.retryable"

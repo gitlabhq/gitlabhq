@@ -20,6 +20,11 @@ export default {
       type: String,
       required: true,
     },
+    setFacade: {
+      type: Function,
+      required: false,
+      default: null,
+    },
     renderMarkdownPath: {
       type: String,
       required: true,
@@ -44,6 +49,16 @@ export default {
       required: false,
       default: false,
     },
+    enableAutocomplete: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    autocompleteDataSources: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     supportsQuickActions: {
       type: Boolean,
       required: false,
@@ -53,6 +68,11 @@ export default {
       type: String,
       required: false,
       default: null,
+    },
+    markdownDocsPath: {
+      type: String,
+      required: false,
+      default: '',
     },
     quickActionsDocsPath: {
       type: String,
@@ -99,8 +119,23 @@ export default {
 
     this.$emit('input', this.markdown);
     this.saveDraft();
+
+    this.setFacade?.({
+      getValue: () => this.getValue(),
+      setValue: (val) => this.setValue(val),
+    });
   },
   methods: {
+    getValue() {
+      return this.markdown;
+    },
+    setValue(value) {
+      this.markdown = value;
+      this.$emit('input', value);
+
+      this.saveDraft();
+      this.autosizeTextarea();
+    },
     updateMarkdownFromContentEditor({ markdown }) {
       this.markdown = markdown;
       this.$emit('input', markdown);
@@ -162,7 +197,7 @@ export default {
   <div>
     <local-storage-sync
       v-model="editingMode"
-      storage-key="gl-wiki-content-editor-enabled"
+      storage-key="gl-content-editor-enabled"
       @input="onEditingModeRestored"
     />
     <markdown-field
@@ -174,6 +209,9 @@ export default {
       can-attach-file
       :textarea-value="markdown"
       :uploads-path="uploadsPath"
+      :enable-autocomplete="enableAutocomplete"
+      :autocomplete-data-sources="autocompleteDataSources"
+      :markdown-docs-path="markdownDocsPath"
       :quick-actions-docs-path="quickActionsDocsPath"
       :show-content-editor-switcher="enableContentEditor"
       :drawio-enabled="drawioEnabled"
@@ -206,6 +244,8 @@ export default {
         :autofocus="contentEditorAutofocused"
         :placeholder="formFieldProps.placeholder"
         :drawio-enabled="drawioEnabled"
+        :enable-autocomplete="enableAutocomplete"
+        :autocomplete-data-sources="autocompleteDataSources"
         :editable="!disabled"
         @initialized="setEditorAsAutofocused"
         @change="updateMarkdownFromContentEditor"

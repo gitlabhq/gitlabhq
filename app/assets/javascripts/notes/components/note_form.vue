@@ -125,6 +125,9 @@ export default {
       withBatchComments: (state) => state.batchComments?.withBatchComments,
     }),
     ...mapGetters('batchComments', ['hasDrafts']),
+    autocompleteDataSources() {
+      return gl.GfmAutoComplete?.dataSources;
+    },
     showBatchCommentsActions() {
       return this.withBatchComments && this.noteId === '' && !this.discussion.for_commit;
     },
@@ -352,6 +355,7 @@ export default {
           :show-suggest-popover="showSuggestPopover"
           :quick-actions-docs-path="quickActionsDocsPath"
           :autosave-key="autosaveKey"
+          :autocomplete-data-sources="autocompleteDataSources"
           :disabled="isSubmitting"
           supports-quick-actions
           autofocus

@@ -82,6 +82,16 @@ export default {
       required: false,
       default: true,
     },
+    enableAutocomplete: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    autocompleteDataSources: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -109,6 +119,8 @@ export default {
       autofocus,
       drawioEnabled,
       editable,
+      enableAutocomplete,
+      autocompleteDataSources,
     } = this;
 
     // This is a non-reactive attribute intentionally since this is a complex object.
@@ -118,6 +130,8 @@ export default {
       extensions,
       serializerConfig,
       drawioEnabled,
+      enableAutocomplete,
+      autocompleteDataSources,
       tiptapOptions: {
         autofocus,
         editable,

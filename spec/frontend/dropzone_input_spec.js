@@ -48,9 +48,9 @@ describe('dropzone_input', () => {
     };
 
     beforeEach(() => {
-      loadHTMLFixture('issues/new-issue.html');
+      loadHTMLFixture('milestones/new-milestone.html');
 
-      form = $('#new_issue');
+      form = $('#new_milestone');
       form.data('uploads-path', TEST_UPLOAD_PATH);
       dropzoneInput(form);
     });

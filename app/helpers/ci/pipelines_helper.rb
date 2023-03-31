@@ -101,7 +101,8 @@ module Ci
         has_gitlab_ci: has_gitlab_ci?(project).to_s,
         pipeline_editor_path: can?(current_user, :create_pipeline, project) && project_ci_pipeline_editor_path(project),
         suggested_ci_templates: suggested_ci_templates.to_json,
-        ci_runner_settings_path: project_settings_ci_cd_path(project, anchor: 'js-runners-settings')
+        ci_runner_settings_path: project_settings_ci_cd_path(project, anchor: 'js-runners-settings'),
+        full_path: project.full_path
       }
 
       experiment(:runners_availability_section, namespace: project.root_ancestor) do |e|

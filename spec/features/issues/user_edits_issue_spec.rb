@@ -26,6 +26,8 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
         visit edit_project_issue_path(project, issue)
       end
 
+      it_behaves_like 'edits content using the content editor'
+
       it "previews content", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391757' do
         form = first(".gfm-form")
 

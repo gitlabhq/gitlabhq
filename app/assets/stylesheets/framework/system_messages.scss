@@ -48,7 +48,6 @@
   // left sidebar eg: project page
   // right sidebar eg: MR page
   .nav-sidebar,
-  .super-sidebar,
   .right-sidebar {
     top: calc(#{$system-header-height} + #{$header-height});
   }
@@ -73,7 +72,6 @@
     // left sidebar eg: project page
     // right sidebar eg: MR page
     .nav-sidebar,
-    .super-sidebar,
     .right-sidebar {
       top: calc(#{$header-height} + #{$performance-bar-height} + #{$system-header-height});
     }
@@ -85,7 +83,6 @@
   // left sidebar eg: project page
   // right sidebar eg: mr page
   .nav-sidebar,
-  .super-sidebar,
   .right-sidebar,
   .review-bar-component,
   // navless pages' footer eg: login page

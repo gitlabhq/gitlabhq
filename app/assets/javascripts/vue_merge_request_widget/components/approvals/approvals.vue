@@ -9,8 +9,7 @@ import { s__, __ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import eventHub from '../../event_hub';
 import approvalsMixin from '../../mixins/approvals';
-import MrWidgetContainer from '../mr_widget_container.vue';
-import MrWidgetIcon from '../mr_widget_icon.vue';
+import StateContainer from '../state_container.vue';
 import { INVALID_RULES_DOCS_PATH } from '../../constants';
 import ApprovalsSummary from './approvals_summary.vue';
 import ApprovalsSummaryOptional from './approvals_summary_optional.vue';
@@ -19,14 +18,17 @@ import { FETCH_LOADING, APPROVE_ERROR, UNAPPROVE_ERROR } from './messages';
 export default {
   name: 'MRWidgetApprovals',
   components: {
-    MrWidgetContainer,
-    MrWidgetIcon,
     ApprovalsSummary,
     ApprovalsSummaryOptional,
+    StateContainer,
     GlButton,
     GlSprintf,
   },
   mixins: [approvalsMixin, glFeatureFlagsMixin()],
+  provide: {
+    expandDetailsTooltip: __('Expand eligible approvers'),
+    collapseDetailsTooltip: __('Collapse eligible approvers'),
+  },
   props: {
     mr: {
       type: Object,
@@ -52,6 +54,11 @@ export default {
       default: null,
     },
     requirePasswordToApprove: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    collapsed: {
       type: Boolean,
       required: false,
       default: false,
@@ -209,10 +216,17 @@ export default {
 };
 </script>
 <template>
-  <mr-widget-container>
-    <div class="js-mr-approvals d-flex align-items-start align-items-md-center">
-      <mr-widget-icon name="approval" />
-      <div v-if="$apollo.queries.approvals.loading">{{ $options.FETCH_LOADING }}</div>
+  <div class="js-mr-approvals mr-section-container mr-widget-workflow">
+    <state-container
+      :is-loading="$apollo.queries.approvals.loading"
+      :mr="mr"
+      status="approval"
+      is-collapsible
+      collapse-on-desktop
+      :collapsed="collapsed"
+      @toggle="() => $emit('toggle')"
+    >
+      <template v-if="$apollo.queries.approvals.loading">{{ $options.FETCH_LOADING }}</template>
       <template v-else>
         <div class="gl-display-flex gl-flex-direction-column">
           <div class="gl-display-flex gl-flex-direction-row gl-align-items-center">
@@ -221,7 +235,7 @@ export default {
               :variant="action.variant"
               :category="action.category"
               :loading="isApproving"
-              class="gl-mr-5"
+              class="gl-mr-3"
               data-qa-selector="approve_button"
               @click="action.action"
             >
@@ -235,6 +249,7 @@ export default {
             <approvals-summary
               v-else
               :approval-state="approvals"
+              :disable-committers-approval="disableCommittersApproval"
               :multiple-approval-rules-available="mr.multipleApprovalRulesAvailable"
             />
           </div>
@@ -250,9 +265,7 @@ export default {
           :has-approval-auth-error="hasApprovalAuthError"
         ></slot>
       </template>
-    </div>
-    <template #footer>
-      <slot name="footer"></slot>
-    </template>
-  </mr-widget-container>
+    </state-container>
+    <slot name="footer"></slot>
+  </div>
 </template>

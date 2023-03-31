@@ -8,7 +8,7 @@ import {
 
 export default {
   i18n: {
-    toggleLabel: s__('ContainerRegistry|Enable expiration policy'),
+    toggleLabel: s__('ContainerRegistry|Enable cleanup policy'),
   },
   components: {
     GlFormGroup,

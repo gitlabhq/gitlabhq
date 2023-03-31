@@ -10395,7 +10395,7 @@ msgstr ""
 msgid "Collapse all threads"
 msgstr ""
 
-msgid "Collapse approvers"
+msgid "Collapse eligible approvers"
 msgstr ""
 
 msgid "Collapse issues"
@@ -11199,9 +11199,6 @@ msgstr ""
 msgid "ContainerRegistry|CLI Commands"
 msgstr ""
 
-msgid "ContainerRegistry|Clean up image tags"
-msgstr ""
-
 msgid "ContainerRegistry|Cleanup disabled"
 msgstr ""
 
@@ -11217,10 +11214,16 @@ msgstr ""
 msgid "ContainerRegistry|Cleanup is disabled for this project"
 msgstr ""
 
+msgid "ContainerRegistry|Cleanup is not scheduled."
+msgstr ""
+
 msgid "ContainerRegistry|Cleanup is ongoing"
 msgstr ""
 
 msgid "ContainerRegistry|Cleanup pending"
+msgstr ""
+
+msgid "ContainerRegistry|Cleanup policies"
 msgstr ""
 
 msgid "ContainerRegistry|Cleanup policy for tags is disabled"
@@ -11233,6 +11236,9 @@ msgid "ContainerRegistry|Cleanup ran but some tags were not removed"
 msgstr ""
 
 msgid "ContainerRegistry|Cleanup will run %{time}"
+msgstr ""
+
+msgid "ContainerRegistry|Cleanup will run in %{time}"
 msgstr ""
 
 msgid "ContainerRegistry|Cleanup will run soon"
@@ -11277,13 +11283,7 @@ msgstr ""
 msgid "ContainerRegistry|Edit cleanup rules"
 msgstr ""
 
-msgid "ContainerRegistry|Enable expiration policy"
-msgstr ""
-
-msgid "ContainerRegistry|Expiration policy is disabled."
-msgstr ""
-
-msgid "ContainerRegistry|Expiration policy will run in %{time}"
+msgid "ContainerRegistry|Enable cleanup policy"
 msgstr ""
 
 msgid "ContainerRegistry|If you are not already logged in, you need to authenticate to the Container Registry by using your GitLab username and password. If you have %{twofaDocLinkStart}Two-Factor Authentication%{twofaDocLinkEnd} enabled, use a %{personalAccessTokensDocLinkStart}Personal Access Token%{personalAccessTokensDocLinkEnd} instead of a password."
@@ -11444,7 +11444,7 @@ msgstr ""
 msgid "ContainerRegistry|Tags with names that match this regex pattern are removed. %{linkStart}View regex examples.%{linkEnd}"
 msgstr ""
 
-msgid "ContainerRegistry|The cleanup policy timed out before it could delete all tags. An administrator can %{adminLinkStart}manually run cleanup now%{adminLinkEnd} or you can wait for the cleanup policy to automatically run again. %{docLinkStart}More information%{docLinkEnd}"
+msgid "ContainerRegistry|The cleanup policy timed out before it could delete all tags. An administrator can %{adminLinkStart}run cleanup now manually%{adminLinkEnd} or you can wait for the next scheduled run of the cleanup policy. %{docLinkStart}More information%{docLinkEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|The cleanup will continue within %{time}. %{linkStart}Learn more%{linkEnd}"
@@ -15967,10 +15967,10 @@ msgstr ""
 msgid "Enable automatic repository housekeeping"
 msgstr ""
 
-msgid "Enable container expiration and retention policies for projects created earlier than GitLab 12.7."
+msgid "Enable cleanup policies for projects created earlier than GitLab 12.7."
 msgstr ""
 
-msgid "Enable container expiration caching."
+msgid "Enable cleanup policy caching."
 msgstr ""
 
 msgid "Enable dashboard limits on namespaces"
@@ -17238,7 +17238,7 @@ msgstr ""
 msgid "Existing projects may be moved into a group"
 msgstr ""
 
-msgid "Existing projects will be able to use expiration policies. Avoid enabling this if an external Container Registry is being used, as there is a performance risk if many images exist on one project."
+msgid "Existing projects will be able to use cleanup policies. Avoid enabling this if an external Container Registry is being used, as there is a performance risk if many images exist on one project."
 msgstr ""
 
 msgid "Existing sign in methods may be removed"
@@ -17259,7 +17259,7 @@ msgstr ""
 msgid "Expand all threads"
 msgstr ""
 
-msgid "Expand approvers"
+msgid "Expand eligible approvers"
 msgstr ""
 
 msgid "Expand file"
@@ -40914,6 +40914,9 @@ msgstr ""
 msgid "Showing data for workflow items completed in this date range. Date range limited to %{maxDateRange} days."
 msgstr ""
 
+msgid "Showing first 50 actions."
+msgstr ""
+
 msgid "Showing last %{size} of log -"
 msgstr ""
 
@@ -48120,9 +48123,6 @@ msgstr ""
 msgid "View documentation"
 msgstr ""
 
-msgid "View eligible approvers"
-msgstr ""
-
 msgid "View exposed artifact"
 msgid_plural "View %d exposed artifacts"
 msgstr[0] ""
@@ -49231,7 +49231,7 @@ msgstr ""
 msgid "When enabled, SSH keys with no expiry date or an invalid expiration date are no longer accepted. Leave blank for no limit."
 msgstr ""
 
-msgid "When enabled, cleanup polices execute faster but put more load on Redis."
+msgid "When enabled, cleanup policies execute faster but put more load on Redis."
 msgstr ""
 
 msgid "When enabled, existing access tokens may be revoked. Leave blank for no limit."
@@ -49295,6 +49295,9 @@ msgid "Who will be using this group?"
 msgstr ""
 
 msgid "Why are you signing up? (optional)"
+msgstr ""
+
+msgid "Why can't I approve?"
 msgstr ""
 
 msgid "Why is this rule invalid?"
@@ -50154,6 +50157,9 @@ msgid "You can specify notification level per group or per project."
 msgstr ""
 
 msgid "You can view the source or %{linkStart}%{cloneIcon} clone the repository%{linkEnd}"
+msgstr ""
+
+msgid "You can't approve because you added one or more commits to this merge request."
 msgstr ""
 
 msgid "You can't follow more than %{limit} users. To follow more users, unfollow some others."

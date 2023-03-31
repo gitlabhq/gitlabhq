@@ -9,7 +9,7 @@ import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
-import PipelinesManualActions from '~/pipelines/components/pipelines_list/pipelines_manual_actions.vue';
+import PipelinesManualActionsLegacy from '~/pipelines/components/pipelines_list/pipelines_manual_actions_legacy.vue';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 import { TRACKING_CATEGORIES } from '~/pipelines/constants';
 
@@ -21,7 +21,7 @@ describe('Pipelines Actions dropdown', () => {
   let mock;
 
   const createComponent = (props, mountFn = shallowMount) => {
-    wrapper = mountFn(PipelinesManualActions, {
+    wrapper = mountFn(PipelinesManualActionsLegacy, {
       propsData: {
         ...props,
       },

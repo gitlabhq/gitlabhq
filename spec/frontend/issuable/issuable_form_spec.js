@@ -21,7 +21,6 @@ describe('IssuableForm', () => {
       <form>
         <input name="[title]" />
         <input type="checkbox" class="js-toggle-draft" />
-        <textarea name="[description]"></textarea>
       </form>
     `);
     $form = $('form');
@@ -35,16 +34,13 @@ describe('IssuableForm', () => {
 
   describe('autosave', () => {
     let $title;
-    let $description;
 
     beforeEach(() => {
       $title = $form.find('input[name*="[title]"]').get(0);
-      $description = $form.find('textarea[name*="[description]"]').get(0);
     });
 
     afterEach(() => {
       $title = null;
-      $description = null;
     });
 
     describe('initAutosave', () => {
@@ -64,11 +60,6 @@ describe('IssuableForm', () => {
           ['/foo', 'bar=true', 'title'],
           'autosave//foo/bar=true=title',
         );
-        expect(Autosave).toHaveBeenCalledWith(
-          $description,
-          ['/foo', 'bar=true', 'description'],
-          'autosave//foo/bar=true=description',
-        );
       });
 
       it("creates autosave fields without the searchTerm if it's an issue new form", () => {
@@ -80,11 +71,6 @@ describe('IssuableForm', () => {
           $title,
           ['/issues/new', '', 'title'],
           'autosave//issues/new/bar=true=title',
-        );
-        expect(Autosave).toHaveBeenCalledWith(
-          $description,
-          ['/issues/new', '', 'description'],
-          'autosave//issues/new/bar=true=description',
         );
       });
 
@@ -116,13 +102,12 @@ describe('IssuableForm', () => {
     });
 
     describe('resetAutosave', () => {
-      it('calls reset on title and description', () => {
+      it('calls reset on title', () => {
         instance = createIssuable($form);
 
         instance.resetAutosave();
 
         expect(instance.autosaves.get('title').reset).toHaveBeenCalledTimes(1);
-        expect(instance.autosaves.get('description').reset).toHaveBeenCalledTimes(1);
       });
 
       it('resets autosave when submit', () => {

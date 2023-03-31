@@ -24,7 +24,12 @@ export default {
 </script>
 
 <template>
-  <state-container :mr="mr" status="failed">
+  <state-container
+    status="failed"
+    is-collapsible
+    :collapsed="mr.mergeDetailsCollapsed"
+    @toggle="() => mr.toggleMergeDetails()"
+  >
     <span
       class="gl-md-mr-3 gl-flex-grow-1 gl-ml-0! gl-text-body!"
       data-qa-selector="head_mismatch_content"

@@ -14,7 +14,11 @@ RSpec.shared_examples 'edits content using the content editor' do
 
     wait_until_hidden_field_is_updated /Typing text in the content editor/
 
-    refresh
+    begin
+      refresh
+    rescue Selenium::WebDriver::Error::UnexpectedAlertOpenError
+      page.driver.browser.switch_to.alert.dismiss
+    end
 
     expect(page).to have_text('Typing text in the content editor')
   end

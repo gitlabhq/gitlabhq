@@ -32,6 +32,7 @@ export default {
     <div class="gl-display-flex gl-m-auto">
       <gl-icon v-if="isMerged" name="merge" :size="16" class="gl-text-blue-500" />
       <gl-icon v-else-if="isClosed" name="merge-request-close" :size="16" class="gl-text-red-500" />
+      <gl-icon v-else-if="status === 'approval'" name="approval" :size="16" />
       <status-icon v-else :is-loading="isLoading" :icon-name="status" :level="1" class="gl-m-0!" />
     </div>
   </div>

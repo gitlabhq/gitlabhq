@@ -156,8 +156,8 @@ You can create a cleanup policy in [the API](#use-the-cleanup-policy-api) or the
 To create a cleanup policy in the UI:
 
 1. For your project, go to **Settings > Packages and registries**.
-1. Expand the **Clean up image tags** section.
-1. Complete the fields.
+1. In the **Cleanup policies** section, select **Set cleanup rules**.
+1. Complete the fields:
 
    | Field                      | Description                                     |
    |----------------------------|-------------------------------------------------|

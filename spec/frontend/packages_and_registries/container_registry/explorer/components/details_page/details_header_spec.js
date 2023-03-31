@@ -247,7 +247,7 @@ describe('Details Header', () => {
         expect(findCleanup().props('icon')).toBe('expire');
       });
 
-      it('when the expiration policy is disabled', async () => {
+      it('when cleanup is not scheduled', async () => {
         mountComponent();
         await waitForMetadataItems();
 

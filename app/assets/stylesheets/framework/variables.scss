@@ -480,6 +480,7 @@ $highlight-changes-color: rgb(235, 255, 232);
 $performance-bar-height: 35px;
 $system-header-height: 16px;
 $system-footer-height: $system-header-height;
+$mr-review-bar-height: calc(2rem + 13px);
 $flash-height: 52px;
 $flash-container-top: 48px;
 $context-header-height: 60px;
@@ -495,6 +496,14 @@ $gl-line-height-24: 24px;
 $gl-line-height-14: 14px;
 
 $pages-group-name-color: #4c4e54;
+
+/*
+ * Calculated heights
+ */
+$calc-application-bars-height: calc(var(--system-header-height) + var(--performance-bar-height));
+$calc-application-header-height: calc(#{$header-height} + #{$calc-application-bars-height});
+$calc-application-footer-height: var(--system-footer-height);
+$calc-application-viewport-height: calc(100vh - #{$calc-application-header-height} - #{$calc-application-footer-height});
 
 /*
 * Common component specific colors

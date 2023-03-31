@@ -528,7 +528,7 @@ export default {
           >
             <template v-if="shouldShowMergeControls">
               <div
-                class="gl-display-flex gl-sm-flex-direction-column gl-md-align-items-center gl-flex-wrap-wrap gl-w-full gl-md-pb-5"
+                class="gl-display-flex gl-sm-flex-direction-column gl-md-align-items-center gl-flex-wrap-wrap gl-w-full gl-md-pb-2"
               >
                 <gl-form-checkbox
                   v-if="canRemoveSourceBranch"
@@ -598,9 +598,7 @@ export default {
                   </li>
                 </ul>
               </div>
-              <div
-                class="gl-w-full gl-text-gray-500 gl-mb-3 gl-md-mb-0 gl-md-pb-5 mr-widget-merge-details"
-              >
+              <div class="gl-w-full gl-text-gray-500 gl-mb-3 mr-widget-merge-details">
                 <template v-if="sourceHasDivergedFromTarget">
                   <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
                     <template #link>

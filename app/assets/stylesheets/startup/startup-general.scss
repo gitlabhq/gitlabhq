@@ -616,6 +616,11 @@ html {
   color: #535158;
   vertical-align: baseline;
 }
+:root {
+  --performance-bar-height: 0px;
+  --system-header-height: 0px;
+  --system-footer-height: 0px;
+}
 .gl-font-sm {
   font-size: 12px;
 }
@@ -1444,8 +1449,11 @@ kbd {
   display: flex;
   flex-direction: column;
   position: fixed;
-  top: 0;
-  bottom: 0;
+  top: calc(
+    var(--header-height, 48px) +
+      calc(var(--system-header-height) + var(--performance-bar-height))
+  );
+  bottom: var(--system-footer-height);
   left: 0;
   background-color: var(--gray-10, #fbfafd);
   border-right: 1px solid rgba(31, 30, 36, 0.08);

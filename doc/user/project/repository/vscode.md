@@ -48,7 +48,7 @@ as they type. Depending on the cursor position, the extension either:
 - Provides entire code snippets, like generating functions.
 - Completes the current line.
 
-Developers can press <kbd>Tab</tab> to accept suggestions.
+Developers can press <kbd>Tab</kbd> to accept suggestions.
 
 Code Suggestions support the following languages with the highest confidence:
 
@@ -87,7 +87,7 @@ To enable Code Suggestions in VS Code:
 1. Provide your GitLab instance URL. A default is provided.
 1. Provide your personal access token.
 1. After your GitLab account connects successfully, in the left sidebar, select **Extensions**.
-1. Find the **GitLab workflow** extension, and select **Settings** (**{settings}**).
+1. Find the **GitLab workflow** extension, select **Settings** (**{settings}**), and select **Extension Settings**.
 1. Enable **GitLab › AI Assisted Code Suggestions**.
 
 Start typing and receive suggestions for your GitLab projects.

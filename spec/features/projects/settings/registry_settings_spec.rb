@@ -42,10 +42,10 @@ feature_category: :projects do
       subject
 
       settings_block = find('[data-testid="container-expiration-policy-project-settings"]')
-      expect(settings_block).to have_text 'Clean up image tags'
+      expect(settings_block).to have_text 'Cleanup policies'
     end
 
-    it 'contains link to clean up image tags page' do
+    it 'contains link to cleanup policies page' do
       subject
 
       expect(page).to have_link('Edit cleanup rules', href: cleanup_image_tags_project_settings_packages_and_registries_path(project))

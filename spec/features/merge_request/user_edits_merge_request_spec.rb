@@ -108,4 +108,6 @@ RSpec.describe 'User edits a merge request', :js, feature_category: :code_review
       end
     end
   end
+
+  it_behaves_like 'edits content using the content editor'
 end

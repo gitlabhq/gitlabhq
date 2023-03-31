@@ -81,11 +81,8 @@ describe('Description field component', () => {
         autofocus: true,
         supportsQuickActions: true,
         quickActionsDocsPath: expect.any(String),
-      });
-
-      expect(findMarkdownEditor().vm.$attrs).toMatchObject({
-        'enable-autocomplete': true,
-        'markdown-docs-path': '/',
+        markdownDocsPath: '/',
+        enableAutocomplete: true,
       });
     });
 

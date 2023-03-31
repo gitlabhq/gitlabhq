@@ -121,7 +121,8 @@ RSpec.describe Ci::PipelinesHelper do
                                            :has_gitlab_ci,
                                            :pipeline_editor_path,
                                            :suggested_ci_templates,
-                                           :ci_runner_settings_path])
+                                           :ci_runner_settings_path,
+                                           :full_path])
     end
 
     describe 'the `any_runners_available` attribute' do
