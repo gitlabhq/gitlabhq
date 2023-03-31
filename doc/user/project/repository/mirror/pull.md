@@ -141,6 +141,5 @@ end
 
 ## Related topics
 
-- Configure [pull mirroring intervals](../../../../administration/instance_limits.md#pull-mirroring-interval)
-  on self-managed instances.
-- Configure [pull mirroring through the API](../../../../api/projects.md#configure-pull-mirroring-for-a-project).
+- [Pull mirroring intervals](../../../../administration/instance_limits.md#pull-mirroring-interval)
+- [Pull mirroring API](../../../../api/projects.md#configure-pull-mirroring-for-a-project)

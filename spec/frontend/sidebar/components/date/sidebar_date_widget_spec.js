@@ -38,7 +38,6 @@ describe('Sidebar date Widget', () => {
     canInherit = false,
     dateType = undefined,
     issuableType = 'issue',
-    realTimeIssueDueDate = true,
   } = {}) => {
     fakeApollo = createMockApollo([
       [issueDueDateQuery, dueDateQueryHandler],
@@ -50,9 +49,6 @@ describe('Sidebar date Widget', () => {
       apolloProvider: fakeApollo,
       provide: {
         canUpdate: true,
-        glFeatures: {
-          realTimeIssueDueDate,
-        },
       },
       propsData: {
         fullPath: 'group/project',
@@ -148,28 +144,14 @@ describe('Sidebar date Widget', () => {
   });
 
   describe('real time issue due date feature', () => {
-    describe('when :real_time_issue_due_date feature is enabled', () => {
-      it('should call the subscription', async () => {
-        const dueDateSubscriptionHandler = jest
-          .fn()
-          .mockResolvedValue(issueDueDateSubscriptionResponse());
-        createComponent({ realTimeIssueDueDate: true, dueDateSubscriptionHandler });
-        await waitForPromises();
+    it('should call the subscription', async () => {
+      const dueDateSubscriptionHandler = jest
+        .fn()
+        .mockResolvedValue(issueDueDateSubscriptionResponse());
+      createComponent({ dueDateSubscriptionHandler });
+      await waitForPromises();
 
-        expect(dueDateSubscriptionHandler).toHaveBeenCalled();
-      });
-    });
-
-    describe('when :real_time_issue_due_date feature is disabled', () => {
-      it('should not call the subscription', async () => {
-        const dueDateSubscriptionHandler = jest
-          .fn()
-          .mockResolvedValue(issueDueDateSubscriptionResponse());
-        createComponent({ realTimeIssueDueDate: false, dueDateSubscriptionHandler });
-        await waitForPromises();
-
-        expect(dueDateSubscriptionHandler).not.toHaveBeenCalled();
-      });
+      expect(dueDateSubscriptionHandler).toHaveBeenCalled();
     });
   });
 

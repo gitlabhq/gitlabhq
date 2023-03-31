@@ -227,10 +227,10 @@ automatically when a merge request was merged.
 
 ## Related topics
 
-- [Protected branches](../../protected_branches.md) user documentation.
-- [Branches API](../../../../api/branches.md), for information on operating on repository branches using the GitLab API.
-- [Protected Branches API](../../../../api/protected_branches.md).
-- [Getting started with Git](../../../../topics/git/index.md) and GitLab.
+- [Protected branches](../../protected_branches.md)
+- [Branches API](../../../../api/branches.md)
+- [Protected Branches API](../../../../api/protected_branches.md)
+- [Getting started with Git](../../../../topics/git/index.md)
 
 ## Troubleshooting
 

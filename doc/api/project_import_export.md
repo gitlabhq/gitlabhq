@@ -8,13 +8,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Use the project import and export API to import and export projects using file transfers.
 
-For more information, see:
-
-- [Migrating projects using file exports](../user/project/settings/import_export.md)
-- [Project import and export Rake tasks](../administration/raketasks/project_import_export.md)
-
 Before using the project import and export API, you might want to use the
 [group import and export API](group_import_export.md).
+
+## Prerequisites
+
+For information on prerequisites for project import and export API, see:
+
+- Prerequisites for [project export](../user/project/settings/import_export.md#export-a-project-and-its-data).
+- Prerequisites for [project import](../user/project/settings/import_export.md#import-a-project-and-its-data).
 
 ## Schedule an export
 
@@ -444,3 +446,8 @@ GitHub and how many were already imported:
   }
 }
 ```
+
+## Related topics
+
+- [Migrating projects using file exports](../user/project/settings/import_export.md).
+- [Project import and export Rake tasks](../administration/raketasks/project_import_export.md).

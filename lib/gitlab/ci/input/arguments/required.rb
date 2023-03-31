@@ -28,7 +28,7 @@ module Gitlab
           #       website:
           # ```
           #
-          # An empty value, that has no specification is also considered as a "required" input, however we should
+          # An empty string value, that has no specification is also considered as a "required" input, however we should
           # never see that being used, because it will be rejected by Ci::Config::Header validation.
           #
           # ```yaml
@@ -36,8 +36,17 @@ module Gitlab
           #     inputs:
           #       website: ""
           # ```
+          #
+          # An empty hash value is also considered to be a required argument:
+          #
+          # ```yaml
+          #   spec:
+          #     inputs:
+          #       website: {}
+          # ```
+          #
           def self.matches?(spec)
-            spec.to_s.empty?
+            spec.blank?
           end
         end
       end

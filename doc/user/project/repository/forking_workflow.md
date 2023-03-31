@@ -134,8 +134,8 @@ You can unlink your fork from its upstream project in the [advanced settings](..
 
 ## Related topics
 
-- GitLab blog post: [How to keep your fork up to date with its origin](https://about.gitlab.com/blog/2016/12/01/how-to-keep-your-fork-up-to-date-with-its-origin/).
-- GitLab community forum: [Refreshing a fork](https://forum.gitlab.com/t/refreshing-a-fork/).
+- GitLab blog post: [Keep your fork up to date with its origin](https://about.gitlab.com/blog/2016/12/01/how-to-keep-your-fork-up-to-date-with-its-origin/)
+- GitLab community forum: [Refreshing a fork](https://forum.gitlab.com/t/refreshing-a-fork/)
 
 ## Troubleshooting
 

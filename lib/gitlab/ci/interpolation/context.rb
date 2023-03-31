@@ -38,6 +38,10 @@ module Gitlab
           @context.fetch(field)
         end
 
+        def key?(name)
+          @context.key?(name)
+        end
+
         def to_h
           @context.to_h
         end
@@ -53,7 +57,7 @@ module Gitlab
             end
           end
 
-          values.max
+          values.max.to_i
         end
 
         def self.fabricate(context)

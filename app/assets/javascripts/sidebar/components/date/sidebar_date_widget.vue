@@ -4,7 +4,6 @@ import { createAlert } from '~/alert';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { dateInWords, formatDate, parsePikadayDate } from '~/lib/utils/datetime_utility';
 import { __, sprintf } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { dateFields, dateTypes, dueDateQueries, startDateQueries, Tracking } from '../../constants';
 import SidebarEditableItem from '../sidebar_editable_item.vue';
 import SidebarFormattedDate from './sidebar_formatted_date.vue';
@@ -31,7 +30,6 @@ export default {
     SidebarFormattedDate,
     SidebarInheritDate,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['canUpdate'],
   props: {
     iid: {
@@ -182,12 +180,7 @@ export default {
       return this.issuable.id;
     },
     skipIssueDueDateSubscription() {
-      return (
-        this.issuableType !== TYPE_ISSUE ||
-        !this.issuableId ||
-        this.isLoading ||
-        !this.glFeatures?.realTimeIssueDueDate
-      );
+      return this.issuableType !== TYPE_ISSUE || !this.issuableId || this.isLoading;
     },
   },
   methods: {

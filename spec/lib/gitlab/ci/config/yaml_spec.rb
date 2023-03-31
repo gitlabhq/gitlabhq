@@ -127,21 +127,6 @@ RSpec.describe Gitlab::Ci::Config::Yaml, feature_category: :pipeline_composition
     end
 
     context 'when the first document is a header' do
-      let(:yaml) do
-        <<~YAML
-          spec:
-          ---
-          b: 2
-        YAML
-      end
-
-      it 'considers the first document as header and the second as content' do
-        expect(result).to be_valid
-        expect(result.error).to be_nil
-        expect(result.header).to eq({ spec: nil })
-        expect(result.content).to eq({ b: 2 })
-      end
-
       context 'with explicit document start marker' do
         let(:yaml) do
           <<~YAML
@@ -158,6 +143,51 @@ RSpec.describe Gitlab::Ci::Config::Yaml, feature_category: :pipeline_composition
           expect(result.header).to eq({ spec: nil })
           expect(result.content).to eq({ b: 2 })
         end
+      end
+    end
+
+    context 'when first document is empty' do
+      let(:yaml) do
+        <<~YAML
+          ---
+          ---
+          b: 2
+        YAML
+      end
+
+      it 'considers the first document as header and the second as content' do
+        expect(result).not_to have_header
+      end
+    end
+
+    context 'when first document is an empty hash' do
+      let(:yaml) do
+        <<~YAML
+          {}
+          ---
+          b: 2
+        YAML
+      end
+
+      it 'returns second document as a content' do
+        expect(result).not_to have_header
+        expect(result.content).to eq({ b: 2 })
+      end
+    end
+
+    context 'when first an array' do
+      let(:yaml) do
+        <<~YAML
+          ---
+           - a
+           - b
+          ---
+          b: 2
+        YAML
+      end
+
+      it 'considers the first document as header and the second as content' do
+        expect(result).not_to have_header
       end
     end
 

@@ -2139,7 +2139,7 @@ instead of `email`, let GitLab know by setting it on your configuration:
 By default, the local part of the email address in the SAML response is used to
 generate the user's GitLab username.
 
-Configure `nickname` in `attribute_statements` to specify one or more attributes that contain a user's desired username:
+Configure [`username` or `nickname`](omniauth.md#per-provider-configuration) in `attribute_statements` to specify one or more attributes that contain a user's desired username:
 
 ::Tabs
 

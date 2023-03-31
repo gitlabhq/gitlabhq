@@ -725,7 +725,7 @@ Depending on your installation method, this file is located at:
 - Omnibus GitLab: `/var/log/gitlab/gitlab-rails/importer.log`
 - Installations from source: `/home/git/gitlab/log/importer.log`
 
-It logs the progress of the import process.
+This file logs the progress of [project imports and migrations](../../user/project/import/index.md).
 
 ## `exporter.log`
 
@@ -820,6 +820,8 @@ Depending on your installation method, this file is located at:
 
 - Omnibus GitLab: `/var/log/gitlab/gitlab-rails/migrations.log`
 - Installations from source: `/home/git/gitlab/log/migrations.log`
+
+This file logs the progress of [database migrations](../raketasks/maintenance.md#display-status-of-database-migrations).
 
 ## `mail_room_json.log` (default)
 

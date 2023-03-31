@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Group import and export API **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20353) in GitLab 12.8.
-
 Use the group import and export API to export a group structure and import it to a new location.
 When you use the group import and export API with the [project import and export API](project_import_export.md), you can preserve connections with
 group-level relationships, such as connections between project issues and group epics.
@@ -28,6 +26,11 @@ Imported groups have a `private` visibility level unless you import them into a 
 If you import groups into a parent group, the subgroups inherit by default a similar level of visibility.
 
 To preserve the member list and their respective permissions on imported groups, review the users in these groups. Make sure these users exist before importing the desired groups.
+
+## Prerequisites
+
+For information on prerequisites for group import and export API, see prerequisites for
+[migrating groups by uploading an export file](../user/group/import/index.md#preparation).
 
 ## Schedule new export
 

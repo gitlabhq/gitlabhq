@@ -430,7 +430,7 @@ For more information, see
 
 Owners can add members with a "minimal access" role to a root group. Such users do not:
 
-- Count as licensed seats.
+- Count as licensed seats on self-managed Ultimate subscriptions or any GitLab.com subscriptions.
 - Automatically have access to projects and subgroups in that root group.
 
 Owners must explicitly add these "minimal access" users to the specific subgroups and

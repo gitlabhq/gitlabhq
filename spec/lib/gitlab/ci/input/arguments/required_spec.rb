@@ -34,6 +34,10 @@ RSpec.describe Gitlab::Ci::Input::Arguments::Required, feature_category: :pipeli
       expect(described_class.matches?('')).to be true
     end
 
+    it 'matches specs with an empty hash configuration' do
+      expect(described_class.matches?({})).to be true
+    end
+
     it 'does not match specs with configuration' do
       expect(described_class.matches?({ options: %w[a b] })).to be false
     end

@@ -10,16 +10,16 @@ Use the Import API to import repositories from GitHub or Bitbucket Server.
 
 Related APIs include:
 
-- [Group migration by direct transfer API](bulk_imports.md)
-- [Group import and export API](group_import_export.md)
-- [Project import and export API](project_import_export.md)
+- [Group migration by direct transfer API](bulk_imports.md).
+- [Group import and export API](group_import_export.md).
+- [Project import and export API](project_import_export.md).
 
 ## Prerequisites
 
 For information on prerequisites for using the Import API, see:
 
-- [Prerequisites for GitHub importer](../user/project/import/github.md#prerequisites)
-- [Prerequisites for Bitbucket Server importer](../user/project/import/bitbucket_server.md#import-your-bitbucket-repositories)
+- [Prerequisites for GitHub importer](../user/project/import/github.md#prerequisites).
+- [Prerequisites for Bitbucket Server importer](../user/project/import/bitbucket_server.md#import-your-bitbucket-repositories).
 
 ## Import repository from GitHub
 

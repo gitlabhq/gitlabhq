@@ -167,4 +167,4 @@ Read about [Git Fusion settings on Perforce.com](https://www.perforce.com/manual
 
 ## Related topics
 
-- [Configure server hooks](../../../../administration/server_hooks.md) on a GitLab server.
+- [Configure server hooks](../../../../administration/server_hooks.md)

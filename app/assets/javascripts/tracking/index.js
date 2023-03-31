@@ -7,7 +7,7 @@ export { Tracking as default };
 
 /**
  * Tracker initialization as defined in:
- * https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v2/tracker-setup/initializing-a-tracker-2/.
+ * https://docs.snowplow.io/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v3/tracker-setup/initialization-options/.
  * It also dispatches any event emitted before its execution.
  *
  * @returns {undefined}
@@ -42,13 +42,19 @@ export function initDefaultTrackers() {
   // must be before initializing the trackers
   Tracking.setAnonymousUrls();
 
-  window.snowplow('enableActivityTracking', 30, 30);
+  window.snowplow('enableActivityTracking', {
+    minimumVisitLength: 30,
+    heartbeatDelay: 30,
+  });
   // must be after enableActivityTracking
   const standardContext = getStandardContext();
   const experimentContexts = getAllExperimentContexts();
   // To not expose personal identifying information, the page title is hardcoded as `GitLab`
   // See: https://gitlab.com/gitlab-org/gitlab/-/issues/345243
-  window.snowplow('trackPageView', 'GitLab', [standardContext, ...experimentContexts]);
+  window.snowplow('trackPageView', {
+    title: 'GitLab',
+    context: [standardContext, ...experimentContexts],
+  });
   window.snowplow('setDocumentTitle', 'GitLab');
 
   if (window.snowplowOptions.formTracking) {

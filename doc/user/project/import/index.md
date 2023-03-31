@@ -172,3 +172,14 @@ For more information, see:
   including settings that need checking afterwards and other limitations.
 
 For support, customers must enter into a paid engagement with GitLab Professional Services.
+
+## Troubleshooting
+
+### Imported repository is missing branches
+
+If an imported repository does not contain all branches of the source repository:
+
+1. Set the [environment variable](../../../administration/logs/index.md#override-default-log-level) `IMPORT_DEBUG=true`.
+1. Retry the import with a [different group, subgroup, or project name](https://about.gitlab.com/releases/2023/02/22/gitlab-15-9-released/#re-import-projects-from-external-providers).
+1. If some branches are still missing, inspect [`importer.log`](../../../administration/logs/index.md#importerlog)
+   (for example, with [`jq`](../../../administration/logs/log_parsing.md#parsing-gitlab-railsimporterlog)).

@@ -22,7 +22,7 @@ module Gitlab
               strong_memoize(:content) do
                 Gitlab::Ci::ArtifactFileReader.new(artifact_job).read(location)
               rescue Gitlab::Ci::ArtifactFileReader::Error => error
-                errors.push(error.message)
+                errors.push(error.message) # TODO this memoizes the error message as a content!
               end
             end
 

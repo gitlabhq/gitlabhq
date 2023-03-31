@@ -75,7 +75,7 @@ RSpec.describe Gitlab::Usage::Metrics::NamesSuggestions::Generator, feature_cate
       end
     end
 
-    context 'for redis metrics' do
+    context 'for redis metrics', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/399421' do
       it_behaves_like 'name suggestion' do
         let(:key_path) { 'usage_activity_by_stage_monthly.create.merge_requests_users' }
         let(:name_suggestion) { /<please fill metric name, suggested format is: {subject}_{verb}{ing|ed}_{object} eg: users_creating_epics or merge_requests_viewed_in_single_file_mode>/ }

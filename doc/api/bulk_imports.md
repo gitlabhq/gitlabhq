@@ -11,6 +11,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 With the group migration by direct transfer API, you can start and view the progress of migrations initiated with
 [group migration by direct transfer](../user/group/import/index.md#migrate-groups-by-direct-transfer-recommended).
 
+## Prerequisites
+
+For information on prerequisites for group migration by direct transfer API, see
+prerequisites for [migrating groups by direct transfer](../user/group/import/index.md#prerequisites).
+
 ## Start a new group migration
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66353) in GitLab 14.2.

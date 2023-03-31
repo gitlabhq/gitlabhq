@@ -101,5 +101,4 @@ Report any issues, bugs, or feature requests in the
 
 - [Download the extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
 - [Extension documentation](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/README.md)
-- The extension source code is available in the
-  [`gitlab-vscode-extension`](https://gitlab.com/gitlab-org/gitlab-vscode-extension/) project.
+- [View source code](https://gitlab.com/gitlab-org/gitlab-vscode-extension/)

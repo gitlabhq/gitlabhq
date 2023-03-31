@@ -17,6 +17,8 @@ module Gitlab
           end
 
           def has_header?
+            return false unless @config.first.is_a?(Hash)
+
             @config.size > 1 && @config.first.key?(:spec)
           end
 

@@ -115,6 +115,6 @@ you can trigger based on a new tag:
 
 ## Related topics
 
-- [Tagging](https://git-scm.com/book/en/v2/Git-Basics-Tagging) Git reference page.
-- [Protected tags](../../protected_tags.md).
-- [Tags API](../../../../api/tags.md).
+- [Tagging (Git reference page)](https://git-scm.com/book/en/v2/Git-Basics-Tagging)
+- [Protected tags](../../protected_tags.md)
+- [Tags API](../../../../api/tags.md)

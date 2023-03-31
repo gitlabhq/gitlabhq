@@ -1220,127 +1220,126 @@ lib/gitlab/checks/** @proglottis @toon
 /lib/tasks/gitlab/password.rake @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/tasks/tokens.rake @gitlab-org/manage/authentication-and-authorization/approvers
 
-^[Verify]
-/app/**/ci/ @gitlab-org/maintainers/cicd-verify
-/app/controllers/admin/jobs_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/admin/runner_projects_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/admin/runners_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/artifacts_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/build_artifacts_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/builds_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/jobs_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/runner_setup_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/pipeline_schedules_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/pipelines_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/pipelines_settings_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/runner_projects_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/runners_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/triggers_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/variables_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/models/commit_status.rb @gitlab-org/maintainers/cicd-verify
-/app/models/external_pull_request.rb @gitlab-org/maintainers/cicd-verify
-/app/models/generic_commit_status.rb @gitlab-org/maintainers/cicd-verify
-/app/models/namespace_ci_cd_setting.rb @gitlab-org/maintainers/cicd-verify
-/app/models/project_ci_cd_setting.rb @gitlab-org/maintainers/cicd-verify
-/app/presenters/commit_status_presenter.rb @gitlab-org/maintainers/cicd-verify
-/app/presenters/generic_commit_status_presenter.rb @gitlab-org/maintainers/cicd-verify
-/app/validators/json_schemas/build_metadata_id_tokens.json @gitlab-org/maintainers/cicd-verify
-/app/views/projects/artifacts/ @gitlab-org/maintainers/cicd-verify
-/app/views/projects/generic_commit_statuses/ @gitlab-org/maintainers/cicd-verify
-/app/views/projects/jobs/ @gitlab-org/maintainers/cicd-verify
-/app/views/projects/pipeline_schedules/ @gitlab-org/maintainers/cicd-verify
-/app/views/projects/pipelines/ @gitlab-org/maintainers/cicd-verify
-/app/views/projects/triggers/ @gitlab-org/maintainers/cicd-verify
-/app/workers/build_hooks_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/build_queue_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/build_success_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/ci_platform_metrics_update_cron_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/create_pipeline_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/expire_build_artifacts_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/pipeline_hooks_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/pipeline_metrics_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/pipeline_notification_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/pipeline_process_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/pipeline_schedule_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/run_pipeline_schedule_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/stuck_ci_jobs_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/update_external_pull_requests_worker.rb @gitlab-org/maintainers/cicd-verify
-/lib/**/ci/ @gitlab-org/maintainers/cicd-verify
-/lib/api/commit_statuses.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/**/ci/ @gitlab-org/maintainers/cicd-verify
-/ee/app/**/merge_trains/ @gitlab-org/maintainers/cicd-verify
-/ee/app/models/merge_train.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/finders/merge_trains_finder.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/services/auto_merge/merge_train_service.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/services/system_notes/merge_train_service.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/controllers/ee/admin/runners_controller.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/controllers/ee/projects/pipelines_controller.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/controllers/projects/pipelines/ @gitlab-org/maintainers/cicd-verify
-/ee/app/controllers/projects/subscriptions_controller.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/models/merge_train.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/helpers/ee/projects/pipeline_helper.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/views/ci_minutes_usage_mailer/ @gitlab-org/maintainers/cicd-verify
-/ee/app/views/projects/pipelines/ @gitlab-org/maintainers/cicd-verify
-/ee/app/views/projects/settings/ci_cd/ @gitlab-org/maintainers/cicd-verify
-/ee/app/workers/clear_shared_runners_minutes_worker.rb @gitlab-org/maintainers/cicd-verify
-/ee/lib/**/ci/ @gitlab-org/maintainers/cicd-verify
-/ee/lib/ee/api/entities/merge_train.rb @gitlab-org/maintainers/cicd-verify
-/spec/**/ci @gitlab-org/maintainers/cicd-verify
-/spec/controllers/admin/jobs_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/controllers/admin/runner_projects_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/controllers/admin/runners_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/controllers/projects/artifacts_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/controllers/projects/jobs_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/requests/runner_setup_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/controllers/projects/pipeline_schedules_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/requests/projects/pipelines_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/controllers/projects/pipelines_settings_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/controllers/projects/runners_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/controllers/groups/variables_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/models/commit_status_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/models/external_pull_request_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/models/generic_commit_status_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/models/namespace_ci_cd_setting_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/models/project_ci_cd_setting_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/presenters/commit_status_presenter_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/views/projects/jobs/ @gitlab-org/maintainers/cicd-verify
-/spec/views/projects/pipeline_schedules/ @gitlab-org/maintainers/cicd-verify
-/spec/views/projects/pipelines/ @gitlab-org/maintainers/cicd-verify
-/spec/views/projects/settings/ci_cd/ @gitlab-org/maintainers/cicd-verify
-/spec/workers/build_hooks_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/build_queue_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/build_success_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/ci_platform_metrics_update_cron_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/create_pipeline_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/expire_build_artifacts_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/pipeline_hooks_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/pipeline_metrics_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/pipeline_notification_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/pipeline_process_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/pipeline_schedule_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/run_pipeline_schedule_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/stuck_ci_jobs_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/update_external_pull_requests_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/ee/spec/**/ci @gitlab-org/maintainers/cicd-verify
-/ee/spec/**/merge_trains @gitlab-org/maintainers/cicd-verify
-/ee/spec/models/merge_train_spec.rb @gitlab-org/maintainers/cicd-verify
-/ee/spec/finders/merge_trains_finder_spec.rb @gitlab-org/maintainers/cicd-verify
-/ee/spec/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service_spec.rb @gitlab-org/maintainers/cicd-verify
-/ee/spec/services/auto_merge/merge_train_service_spec.rb @gitlab-org/maintainers/cicd-verify
-/ee/spec/services/system_notes/merge_train_service_spec.rb @gitlab-org/maintainers/cicd-verify
-/ee/spec/controllers/projects/subscriptions_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/ee/spec/helpers/ee/projects/pipeline_helper_spec.rb @gitlab-org/maintainers/cicd-verify
-/ee/spec/workers/clear_shared_runners_minutes_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/ee/spec/lib/**/ci/ @gitlab-org/maintainers/cicd-verify
-/**/javascripts/jobs/ @gitlab-org/ci-cd/verify/frontend
-/**/javascripts/pipelines/ @gitlab-org/ci-cd/verify/frontend
-/app/assets/javascripts/ci/ @gitlab-org/ci-cd/verify/frontend
-/app/assets/javascripts/ci/pipeline_schedules/ @gitlab-org/ci-cd/verify/frontend
-/ee/app/assets/javascripts/ci/ @gitlab-org/ci-cd/verify/frontend
-/app/assets/javascripts/token_access/ @gitlab-org/ci-cd/verify/frontend
-/app/assets/javascripts/admin/application_settings/runner_token_expiration/ @gitlab-org/ci-cd/verify/frontend
-/ee/app/assets/javascripts/usage_quotas/pipelines/ @gitlab-org/ci-cd/verify/frontend @fulfillment-group/utilization-group/fe
+[Verify] @gitlab-org/maintainers/cicd-verify
+# Verify Backend
+/**/app/**/ci/ 
+/**/lib/**/ci/
+/**/spec/**/ci/
+/**/app/**/merge_trains/
+/**/spec/**/merge_trains/
+/app/controllers/admin/jobs_controller.rb
+/app/controllers/admin/runner_projects_controller.rb
+/app/controllers/admin/runners_controller.rb
+/app/controllers/projects/artifacts_controller.rb
+/app/controllers/projects/build_artifacts_controller.rb
+/app/controllers/projects/builds_controller.rb
+/app/controllers/projects/jobs_controller.rb
+/app/controllers/runner_setup_controller.rb
+/app/controllers/projects/pipeline_schedules_controller.rb
+/app/controllers/projects/pipelines_controller.rb
+/app/controllers/projects/pipelines_settings_controller.rb
+/app/controllers/projects/runner_projects_controller.rb
+/app/controllers/projects/runners_controller.rb
+/app/controllers/projects/triggers_controller.rb
+/app/controllers/projects/variables_controller.rb
+/app/models/commit_status.rb
+/app/models/external_pull_request.rb
+/app/models/generic_commit_status.rb
+/app/models/namespace_ci_cd_setting.rb
+/app/models/project_ci_cd_setting.rb
+/app/presenters/commit_status_presenter.rb
+/app/presenters/generic_commit_status_presenter.rb
+/app/validators/json_schemas/build_metadata_id_tokens.json
+/app/views/projects/artifacts/
+/app/views/projects/generic_commit_statuses/
+/app/views/projects/jobs/
+/app/views/projects/pipeline_schedules/
+/app/views/projects/pipelines/
+/app/views/projects/triggers/
+/app/workers/build_hooks_worker.rb
+/app/workers/build_queue_worker.rb
+/app/workers/build_success_worker.rb
+/app/workers/ci_platform_metrics_update_cron_worker.rb
+/app/workers/create_pipeline_worker.rb
+/app/workers/expire_build_artifacts_worker.rb
+/app/workers/pipeline_hooks_worker.rb
+/app/workers/pipeline_metrics_worker.rb
+/app/workers/pipeline_notification_worker.rb
+/app/workers/pipeline_process_worker.rb
+/app/workers/pipeline_schedule_worker.rb
+/app/workers/run_pipeline_schedule_worker.rb
+/app/workers/stuck_ci_jobs_worker.rb
+/app/workers/update_external_pull_requests_worker.rb
+/lib/api/commit_statuses.rb
+/ee/app/models/merge_train.rb
+/ee/app/finders/merge_trains_finder.rb
+/ee/app/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service.rb
+/ee/app/services/auto_merge/merge_train_service.rb
+/ee/app/services/system_notes/merge_train_service.rb
+/ee/app/controllers/ee/admin/runners_controller.rb
+/ee/app/controllers/ee/projects/pipelines_controller.rb
+/ee/app/controllers/projects/pipelines/
+/ee/app/controllers/projects/subscriptions_controller.rb
+/ee/app/models/merge_train.rb
+/ee/app/helpers/ee/projects/pipeline_helper.rb
+/ee/app/views/ci_minutes_usage_mailer/
+/ee/app/views/projects/pipelines/
+/ee/app/views/projects/settings/ci_cd/
+/ee/app/workers/clear_shared_runners_minutes_worker.rb
+/ee/lib/api/merge_trains.rb
+/ee/lib/ee/api/entities/merge_train.rb
+/ee/spec/requests/api/merge_trains_spec.rb
+/spec/controllers/admin/jobs_controller_spec.rb
+/spec/controllers/admin/runner_projects_controller_spec.rb
+/spec/controllers/admin/runners_controller_spec.rb
+/spec/controllers/projects/artifacts_controller_spec.rb
+/spec/controllers/projects/jobs_controller_spec.rb
+/spec/requests/runner_setup_controller_spec.rb
+/spec/controllers/projects/pipeline_schedules_controller_spec.rb
+/spec/requests/projects/pipelines_controller_spec.rb
+/spec/controllers/projects/pipelines_settings_controller_spec.rb
+/spec/controllers/projects/runners_controller_spec.rb
+/spec/controllers/groups/variables_controller_spec.rb
+/spec/models/commit_status_spec.rb
+/spec/models/external_pull_request_spec.rb
+/spec/models/generic_commit_status_spec.rb
+/spec/models/namespace_ci_cd_setting_spec.rb
+/spec/models/project_ci_cd_setting_spec.rb
+/spec/presenters/commit_status_presenter_spec.rb
+/spec/views/projects/jobs/
+/spec/views/projects/pipeline_schedules/
+/spec/views/projects/pipelines/
+/spec/views/projects/settings/ci_cd/
+/spec/workers/build_hooks_worker_spec.rb
+/spec/workers/build_queue_worker_spec.rb
+/spec/workers/build_success_worker_spec.rb
+/spec/workers/ci_platform_metrics_update_cron_worker_spec.rb
+/spec/workers/create_pipeline_worker_spec.rb
+/spec/workers/expire_build_artifacts_worker_spec.rb
+/spec/workers/pipeline_hooks_worker_spec.rb
+/spec/workers/pipeline_metrics_worker_spec.rb
+/spec/workers/pipeline_notification_worker_spec.rb
+/spec/workers/pipeline_process_worker_spec.rb
+/spec/workers/pipeline_schedule_worker_spec.rb
+/spec/workers/run_pipeline_schedule_worker_spec.rb
+/spec/workers/stuck_ci_jobs_worker_spec.rb
+/spec/workers/update_external_pull_requests_worker_spec.rb
+/ee/spec/models/merge_train_spec.rb
+/ee/spec/finders/merge_trains_finder_spec.rb
+/ee/spec/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service_spec.rb
+/ee/spec/services/auto_merge/merge_train_service_spec.rb
+/ee/spec/services/system_notes/merge_train_service_spec.rb
+/ee/spec/controllers/projects/subscriptions_controller_spec.rb
+/ee/spec/helpers/ee/projects/pipeline_helper_spec.rb
+/ee/spec/workers/clear_shared_runners_minutes_worker_spec.rb
+
+# Verify Frontend
+/**/javascripts/ci/            @gitlab-org/ci-cd/verify/frontend
+/**/javascripts/pipelines/     @gitlab-org/ci-cd/verify/frontend
+/**/javascripts/jobs/          @gitlab-org/ci-cd/verify/frontend
+/**/javascripts/token_access/  @gitlab-org/ci-cd/verify/frontend
+/**/javascripts/admin/application_settings/runner_token_expiration/  @gitlab-org/ci-cd/verify/frontend
+/**/javascripts/usage_quotas/pipelines/ @gitlab-org/ci-cd/verify/frontend @fulfillment-group/utilization-group/fe
 
 [Manage::Workspace]
 lib/api/entities/basic_project_details.rb @gitlab-org/manage/manage-workspace/backend-approvers

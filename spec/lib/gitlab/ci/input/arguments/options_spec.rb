@@ -29,7 +29,7 @@ RSpec.describe Gitlab::Ci::Input::Arguments::Options, feature_category: :pipelin
     argument = described_class.new(:website, { options: { a: 1 } }, 'opt1')
 
     expect(argument).not_to be_valid
-    expect(argument.errors.first).to eq '`website` input: argument value opt1 not allowlisted'
+    expect(argument.errors.first).to eq '`website` input: argument specification invalid'
   end
 
   it 'returns an empty value if it is allowlisted' do
@@ -47,6 +47,8 @@ RSpec.describe Gitlab::Ci::Input::Arguments::Options, feature_category: :pipelin
 
     it 'does not match specs different configuration keyword' do
       expect(described_class.matches?({ default: 'abc' })).to be false
+      expect(described_class.matches?(['options'])).to be false
+      expect(described_class.matches?('options')).to be false
     end
   end
 end

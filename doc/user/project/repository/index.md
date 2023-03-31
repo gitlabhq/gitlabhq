@@ -277,15 +277,15 @@ to fetch configuration from a project that is renamed or moved.
 
 ## Related topics
 
-- [GitLab Workflow VS Code extension](vscode.md).
-- To lock files and prevent change conflicts, use [file locking](../file_lock.md).
-- [Repository API](../../../api/repositories.md).
-- [Find files](file_finder.md) in a repository.
-- [Branches](branches/index.md).
-- [Create a directory](web_editor.md#create-a-directory).
-- [Find file history](git_history.md).
-- [Identify changes by line (Git blame)](git_blame.md).
-- [Use Jupyter notebooks with GitLab](jupyter_notebooks/index.md).
+- [GitLab Workflow VS Code extension](vscode.md)
+- [Lock files and prevent change conflicts](../file_lock.md)
+- [Repository API](../../../api/repositories.md)
+- [Find files](file_finder.md)
+- [Branches](branches/index.md)
+- [Create a directory](web_editor.md#create-a-directory)
+- [Find file history](git_history.md)
+- [Identify changes by line (Git blame)](git_blame.md)
+- [Use Jupyter notebooks with GitLab](jupyter_notebooks/index.md)
 
 ## Troubleshooting
 

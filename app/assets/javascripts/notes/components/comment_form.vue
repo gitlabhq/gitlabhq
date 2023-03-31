@@ -411,10 +411,10 @@ export default {
                   {{ $options.i18n.internal }}
                   <gl-icon
                     v-gl-tooltip:tooltipcontainer.bottom
-                    name="question"
+                    name="question-o"
                     :size="16"
                     :title="$options.i18n.internalVisibility"
-                    class="gl-text-gray-500"
+                    class="gl-text-blue-500"
                   />
                 </gl-form-checkbox>
                 <comment-type-dropdown

@@ -180,6 +180,10 @@ $tabs-holder-z-index: 250;
     .content + .content {
       @include gl-border-t;
     }
+
+    .notes-content {
+      border: 0;
+    }
   }
 
   &.inline-diff-view {

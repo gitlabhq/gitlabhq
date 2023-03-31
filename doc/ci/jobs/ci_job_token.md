@@ -238,6 +238,8 @@ CI job token failures are usually shown as responses like `404 Not Found` or sim
 
 While troubleshooting CI/CD job token authentication issues, be aware that:
 
+- A [GraphQL example mutation](../../api/graphql/getting_started.md#update-project-settings)
+  is available to toggle the inbound outbound scope settings per project.
 - When the [CI/CD job token scopes](#configure-cicd-job-token-access) are enabled,
   and the job token is being used to access a different project:
   - The user that executes the job must be a member of the project that is being accessed.

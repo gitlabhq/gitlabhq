@@ -121,7 +121,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
 
           it 'is invalid' do
             expect(subject).to be_falsy
-            expect(external_resource.error_message).to match(/does not have valid YAML syntax/)
+            expect(external_resource.error_message).to match(/does not have a valid YAML syntax/)
           end
         end
       end
@@ -174,6 +174,37 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
         sha: '12345',
         user: context.user,
         variables: context.variables)
+    end
+  end
+
+  describe '#to_hash' do
+    context 'when interpolation is being used' do
+      let(:response) do
+        ServiceResponse.success(payload: { content: content, path: path })
+      end
+
+      let(:path) do
+        instance_double(::Gitlab::Ci::Components::InstancePath, project: project, sha: '12345')
+      end
+
+      let(:content) do
+        <<~YAML
+          spec:
+            inputs:
+              env:
+          ---
+          deploy:
+            script: deploy $[[ inputs.env ]]
+        YAML
+      end
+
+      let(:params) do
+        { component: 'gitlab.com/acme/components/my-component@1.0', with: { env: 'production' } }
+      end
+
+      it 'correctly interpolates the content' do
+        expect(external_resource.to_hash).to eq({ deploy: { script: 'deploy production' } })
+      end
     end
   end
 end

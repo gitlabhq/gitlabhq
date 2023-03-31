@@ -132,6 +132,7 @@ export default {
           {{ item.subtitle }}
         </div>
       </div>
+      <slot name="actions"></slot>
       <span v-if="isSection || hasPill" class="gl-flex-grow-1 gl-text-right gl-mr-3">
         <gl-badge v-if="hasPill" size="sm" variant="info">
           {{ pillData }}

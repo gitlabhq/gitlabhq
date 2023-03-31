@@ -324,7 +324,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
           expect(page).to have_selector('[data-testid="pipelines-manual-actions-dropdown"] [data-testid="play-icon"]')
         end
 
-        it "has link to the delayed job's action" do
+        it "has link to the delayed job's action", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/403601' do
           find('[data-testid="pipelines-manual-actions-dropdown"]').click
 
           wait_for_requests

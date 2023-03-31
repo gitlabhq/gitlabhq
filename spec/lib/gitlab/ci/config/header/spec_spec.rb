@@ -28,6 +28,18 @@ RSpec.describe Gitlab::Ci::Config::Header::Spec, feature_category: :pipeline_com
     end
   end
 
+  context 'when spec contains a required value' do
+    let(:spec_hash) do
+      { inputs: { foo: nil } }
+    end
+
+    it 'parses the config correctly' do
+      expect(config).to be_valid
+      expect(config.errors).to be_empty
+      expect(config.value).to eq({ inputs: { foo: {} } })
+    end
+  end
+
   context 'when spec contains unknown keywords' do
     let(:spec_hash) { { test: 123 } }
     let(:expected_errors) { ['spec config contains unknown keys: test'] }

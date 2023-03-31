@@ -1,3 +1,4 @@
+import { GlIcon, GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { s__ } from '~/locale';
 import FrequentItemsList from '~/super_sidebar/components//frequent_items_list.vue';
@@ -16,6 +17,7 @@ describe('FrequentItemsList component', () => {
   let wrapper;
 
   const findListTitle = () => wrapper.findByTestId('list-title');
+  const findListEditButton = () => findListTitle().findComponent(GlButton);
   const findItemsList = () => wrapper.findComponent(ItemsList);
   const findEmptyText = () => wrapper.findByTestId('empty-text');
 
@@ -63,6 +65,39 @@ describe('FrequentItemsList component', () => {
 
     it('does not render the empty text slot', () => {
       expect(findEmptyText().exists()).toBe(false);
+    });
+
+    describe('items editing', () => {
+      it('renders edit button within header', () => {
+        const itemsEditButton = findListEditButton();
+
+        expect(itemsEditButton.exists()).toBe(true);
+        expect(itemsEditButton.attributes('title')).toBe('Toggle edit mode');
+        expect(itemsEditButton.findComponent(GlIcon).props('name')).toBe('pencil');
+      });
+
+      it('clicking edit button makes items list editable', async () => {
+        // Off by default
+        expect(findItemsList().props('editable')).toBe(false);
+
+        // On when clicked
+        await findListEditButton().vm.$emit('click');
+        expect(findItemsList().props('editable')).toBe(true);
+
+        // Off when clicked again
+        await findListEditButton().vm.$emit('click');
+        expect(findItemsList().props('editable')).toBe(false);
+      });
+
+      it('remove-item event emission from items-list causes list item to be removed', async () => {
+        const localStorageProjects = findItemsList().props('items');
+        await findListEditButton().vm.$emit('click');
+
+        await findItemsList().vm.$emit('remove-item', localStorageProjects[0]);
+
+        expect(findItemsList().props('items')).toHaveLength(maxItems - 1);
+        expect(findItemsList().props('items')).not.toContain(localStorageProjects[0]);
+      });
     });
   });
 });

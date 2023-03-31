@@ -30,14 +30,21 @@ is usually not allowed to create or delete the SQL database needed to import
 data into (`gitlabhq_production`). All existing data is either erased
 (SQL) or moved to a separate directory (such as repositories and uploads).
 
-To restore a backup, you must restore `/etc/gitlab/gitlab-secrets.json`
-(for Omnibus packages) or `/home/git/gitlab/.secret` (for installations from
-source). This file contains the database encryption key,
-[CI/CD variables](../ci/variables/index.md), and
+To restore a backup, **you must also restore the GitLab secrets**.
+
+These include the database encryption key, [CI/CD variables](../ci/variables/index.md), and
 variables used for [two-factor authentication](../user/profile/account/two_factor_authentication.md).
-If you fail to restore this encryption key file along with the application data
-backup, users with two-factor authentication enabled and GitLab Runner
-loses access to your GitLab server.
+
+Without the keys, [multiple issues occur](backup_restore.md#when-the-secrets-file-is-lost),
+including loss of access by users with [two-factor authentication enabled](../user/profile/account/two_factor_authentication.md),
+and GitLab Runners cannot log in.
+
+Restore:
+
+- `/etc/gitlab/gitlab-secrets.json` (Linux package)
+- `/home/git/gitlab/.secret` (self-compiled installations)
+- Rails secret (cloud-native GitLab)
+  - [This can be converted to the Linux package format](https://docs.gitlab.com/charts/installation/migration/helm_to_package.html), if required.
 
 You may also want to restore your previous `/etc/gitlab/gitlab.rb` (for Omnibus packages)
 or `/home/git/gitlab/config/gitlab.yml` (for installations from source) and
@@ -155,9 +162,34 @@ the restore target directories are empty.
 For both these installation types, the backup tarball has to be available in
 the backup location (default location is `/var/opt/gitlab/backups`).
 
-If you use Docker Swarm, [first disable the health check](#restore-gitlab-from-backup-using-docker-swarm).
+### Restore for Helm chart installations
 
-For Docker installations, the restore task can be run from host:
+The GitLab Helm chart uses the process documented in
+[restoring a GitLab Helm chart installation](https://docs.gitlab.com/charts/backup-restore/restore.html#restoring-a-gitlab-installation)
+
+### Restore for Docker image installations
+
+If you're using [Docker Swarm](../install/docker.md#install-gitlab-using-docker-swarm-mode),
+the container might restart during the restore process because Puma is shut down,
+and so the container health check fails. To work around this problem,
+temporarily disable the health check mechanism.
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   healthcheck:
+     disable: true
+   ```
+
+1. Deploy the stack:
+
+   ```shell
+   docker stack deploy --compose-file docker-compose.yml mystack
+   ```
+
+For more information, see [issue 6846](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6846 "GitLab restore can fail owing to `gitlab-healthcheck`").
+
+The restore task can be run from the host:
 
 ```shell
 # Stop the processes that are connected to the database
@@ -176,31 +208,6 @@ docker restart <name of container>
 # Check GitLab
 docker exec -it <name of container> gitlab-rake gitlab:check SANITIZE=true
 ```
-
-Users of GitLab 12.1 and earlier should use the command `gitlab-rake gitlab:backup:create` instead.
-
-WARNING:
-`gitlab-rake gitlab:backup:restore` doesn't set the correct file system
-permissions on your Registry directory. This is a [known issue](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62759).
-In GitLab 12.2 or later, you can use `gitlab-backup restore` to avoid this
-issue.
-
-The GitLab Helm chart uses a different process, documented in
-[restoring a GitLab Helm chart installation](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/backup-restore/restore.md).
-
-### Restore GitLab from backup using Docker Swarm
-
-Docker Swarm might restart the container during the restore process because Puma is shut down,
-and so the container health check fails. To work around this problem, disable the health check
-mechanism in Docker compose file:
-
-```yaml
-healthcheck:
-  disable: true
-```
-
-Read more in issue #6846,
-[GitLab restore can fail owing to `gitlab-healthcheck`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6846).
 
 ## Restore for installation from source
 

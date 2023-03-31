@@ -6,14 +6,10 @@ module Gitlab
       module ActionCableCallbacks
         def self.install
           ::ActionCable::Server::Worker.set_callback :work, :around, &wrapper
-          ::ActionCable::Channel::Base.set_callback :subscribe, :around, &wrapper
-          ::ActionCable::Channel::Base.set_callback :unsubscribe, :around, &wrapper
         end
 
         def self.wrapper
           lambda do |_, inner|
-            ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
-
             inner.call
           ensure
             ::Gitlab::Database::LoadBalancing.release_hosts

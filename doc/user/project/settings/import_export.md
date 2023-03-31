@@ -7,10 +7,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 # Migrating projects using file exports **(FREE)**
 
 Existing projects on any self-managed GitLab instance or GitLab.com can be exported to a file and
-then imported into a new GitLab instance. You can also:
-
-- Migrate projects when you [migrate groups by direct transfer](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended).
-- [Migrate groups by using file exports](../../group/import/index.md#migrate-groups-by-uploading-an-export-file-deprecated).
+then imported into a new GitLab instance.
 
 GitLab maps user contributions correctly when an admin access token is used to perform the import.
 
@@ -248,3 +245,5 @@ To help avoid abuse, by default, users are rate limited to:
 - [Project import and export administration Rake tasks](../../../administration/raketasks/project_import_export.md)
 - [Migrating GitLab groups](../../group/import/index.md)
 - [Group import and export API](../../../api/group_import_export.md)
+- [Migrate groups by direct transfer](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended).
+- [Migrate groups by using file exports](../../group/import/index.md#migrate-groups-by-uploading-an-export-file-deprecated).

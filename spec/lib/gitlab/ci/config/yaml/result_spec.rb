@@ -30,6 +30,15 @@ RSpec.describe Gitlab::Ci::Config::Yaml::Result, feature_category: :pipeline_com
     end
   end
 
+  context 'when the first document is undefined' do
+    it 'does not have header' do
+      result = described_class.new(config: [nil, { a: 1 }])
+
+      expect(result).not_to have_header
+      expect(result.content).to be_nil
+    end
+  end
+
   it 'raises an error when reading a header when there is none' do
     result = described_class.new(config: { b: 2 })
 

@@ -98,8 +98,11 @@ with one of the following:
 
 ## Create a Distribution
 
-On the project-level, Debian packages are published using *Debian Distributions*. To publish
-packages on the group level, create a distribution with the same `codename`.
+At the project level, Debian packages are published with **Debian distributions**. At the
+group level, Debian packages are aggregated from the projects in the group provided that:
+
+- The project visibility is set to `public`.
+- The Debian `codename` for the group matches the Debian `codename` for the project.
 
 To create a project-level distribution using a personal access token:
 
