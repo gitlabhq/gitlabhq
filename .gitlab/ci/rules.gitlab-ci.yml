@@ -1140,6 +1140,13 @@
       when: on_failure
       allow_failure: true
 
+.notify:rules:notify-package-and-test-failure:
+  rules:
+    - <<: *if-not-canonical-namespace
+      when: never
+    - <<: *if-merge-request-targeting-stable-branch
+      when: on_failure
+
 ###############
 # Pages rules #
 ###############
