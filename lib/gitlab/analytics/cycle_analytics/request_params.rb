@@ -116,7 +116,7 @@ module Gitlab
 
           {
             project_id: project.id,
-            group_path: project.group&.path,
+            group_path: project.group ? "groups/#{project.group&.full_path}" : nil,
             request_path: url_helpers.project_cycle_analytics_path(project),
             full_path: project.full_path
           }

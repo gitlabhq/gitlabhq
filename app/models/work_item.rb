@@ -67,6 +67,16 @@ class WorkItem < Issue
     end
   end
 
+  # Returns widget object if available
+  # type parameter can be a symbol, for example, `:description`.
+  def get_widget(type)
+    widgets.find do |widget|
+      widget.instance_of?(WorkItems::Widgets.const_get(type.to_s.camelize, false))
+    end
+  rescue NameError
+    nil
+  end
+
   def ancestors
     hierarchy.ancestors(hierarchy_order: :asc)
   end

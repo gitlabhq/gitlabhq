@@ -49,6 +49,7 @@ module Gitlab
       gon.ee                     = Gitlab.ee?
       gon.jh                     = Gitlab.jh?
       gon.dot_com                = Gitlab.com?
+      gon.uf_error_prefix        = ::Gitlab::Utils::ErrorMessage::UF_ERROR_PREFIX
 
       if current_user
         gon.current_user_id = current_user.id

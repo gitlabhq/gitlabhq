@@ -15,22 +15,14 @@ import StatusAlert from '../components/details_page/status_alert.vue';
 import TagsList from '../components/details_page/tags_list.vue';
 
 import {
-  ALERT_SUCCESS_TAG,
-  ALERT_DANGER_TAG,
-  ALERT_SUCCESS_TAGS,
-  ALERT_DANGER_TAGS,
   ALERT_DANGER_IMAGE,
   FETCH_IMAGES_LIST_ERROR_MESSAGE,
   UNFINISHED_STATUS,
   MISSING_OR_DELETED_IMAGE_BREADCRUMB,
-  GRAPHQL_PAGE_SIZE,
   MISSING_OR_DELETED_IMAGE_TITLE,
   MISSING_OR_DELETED_IMAGE_MESSAGE,
 } from '../constants/index';
-import deleteContainerRepositoryTagsMutation from '../graphql/mutations/delete_container_repository_tags.mutation.graphql';
 import getContainerRepositoryDetailsQuery from '../graphql/queries/get_container_repository_details.query.graphql';
-import getContainerRepositoryTagsQuery from '../graphql/queries/get_container_repository_tags.query.graphql';
-import getContainerRepositoriesDetails from '../graphql/queries/get_container_repositories_details.query.graphql';
 
 export default {
   name: 'RegistryDetailsPage',
@@ -76,7 +68,6 @@ export default {
       mutationLoading: false,
       deleteAlertType: null,
       hidePartialCleanupWarning: false,
-      deleteImageAlert: false,
     };
   },
   computed: {
@@ -97,8 +88,7 @@ export default {
     },
     tracking() {
       return {
-        label:
-          this.itemsToBeDeleted?.length > 1 ? 'bulk_registry_tag_delete' : 'registry_tag_delete',
+        label: 'registry_image_delete',
       };
     },
     pageActionsAreDisabled() {
@@ -112,57 +102,8 @@ export default {
         : MISSING_OR_DELETED_IMAGE_BREADCRUMB;
       this.breadCrumbState.updateName(name);
     },
-    deleteTags(toBeDeleted) {
-      this.deleteImageAlert = false;
-      this.itemsToBeDeleted = toBeDeleted;
-      this.track('click_button');
-      this.$refs.deleteModal.show();
-    },
     confirmDelete() {
-      if (this.deleteImageAlert) {
-        this.$refs.deleteImage.doDelete();
-      } else {
-        this.handleDeleteTag();
-      }
-    },
-    async handleDeleteTag() {
-      this.track('confirm_delete');
-      const { itemsToBeDeleted } = this;
-      this.itemsToBeDeleted = [];
-      this.mutationLoading = true;
-      try {
-        const { data } = await this.$apollo.mutate({
-          mutation: deleteContainerRepositoryTagsMutation,
-          variables: {
-            id: this.queryVariables.id,
-            tagNames: itemsToBeDeleted.map((i) => i.name),
-          },
-          awaitRefetchQueries: true,
-          refetchQueries: [
-            {
-              query: getContainerRepositoryTagsQuery,
-              variables: { ...this.queryVariables, first: GRAPHQL_PAGE_SIZE },
-            },
-            {
-              query: getContainerRepositoriesDetails,
-              variables: {
-                fullPath: this.config.isGroupPage ? this.config.groupPath : this.config.projectPath,
-                isGroupPage: this.config.isGroupPage,
-              },
-            },
-          ],
-        });
-
-        if (data?.destroyContainerRepositoryTags?.errors[0]) {
-          throw new Error();
-        }
-        this.deleteAlertType =
-          itemsToBeDeleted.length === 0 ? ALERT_SUCCESS_TAG : ALERT_SUCCESS_TAGS;
-      } catch (e) {
-        this.deleteAlertType = itemsToBeDeleted.length === 0 ? ALERT_DANGER_TAG : ALERT_DANGER_TAGS;
-      }
-
-      this.mutationLoading = false;
+      this.$refs.deleteImage.doDelete();
     },
     handleResize() {
       this.isMobile = GlBreakpointInstance.getBreakpointSize() === 'xs';
@@ -174,7 +115,6 @@ export default {
       });
     },
     deleteImage() {
-      this.deleteImageAlert = true;
       this.itemsToBeDeleted = [{ ...this.containerRepository }];
       this.$refs.deleteModal.show();
     },
@@ -184,6 +124,9 @@ export default {
     deleteImageIniit() {
       this.itemsToBeDeleted = [];
       this.mutationLoading = true;
+    },
+    showAlert(alertType) {
+      this.deleteAlertType = alertType;
     },
   },
 };
@@ -222,7 +165,7 @@ export default {
         :is-image-loading="isLoading"
         :is-mobile="isMobile"
         :disabled="pageActionsAreDisabled"
-        @delete="deleteTags"
+        @delete="showAlert"
       />
 
       <delete-image
@@ -237,7 +180,7 @@ export default {
       <delete-modal
         ref="deleteModal"
         :items-to-be-deleted="itemsToBeDeleted"
-        :delete-image="deleteImageAlert"
+        delete-image
         @confirmDelete="confirmDelete"
         @cancel="track('cancel_delete')"
       />

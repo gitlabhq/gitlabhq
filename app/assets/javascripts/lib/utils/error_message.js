@@ -1,5 +1,3 @@
-export const USER_FACING_ERROR_MESSAGE_PREFIX = 'UF:';
-
 /**
  * Utility to parse an error object returned from API.
  *
@@ -11,7 +9,7 @@ export const USER_FACING_ERROR_MESSAGE_PREFIX = 'UF:';
  */
 export const parseErrorMessage = (error = {}, defaultMessage = '') => {
   const messageString = error.message || '';
-  return messageString.startsWith(USER_FACING_ERROR_MESSAGE_PREFIX)
-    ? messageString.replace(USER_FACING_ERROR_MESSAGE_PREFIX, '').trim()
+  return messageString.startsWith(window.gon.uf_error_prefix)
+    ? messageString.replace(window.gon.uf_error_prefix, '').trim()
     : defaultMessage;
 };

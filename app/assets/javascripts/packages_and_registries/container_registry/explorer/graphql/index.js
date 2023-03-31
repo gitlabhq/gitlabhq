@@ -6,7 +6,6 @@ Vue.use(VueApollo);
 
 export const mergeVariables = (existing, incoming) => {
   if (!incoming) return existing;
-  if (!existing) return incoming;
   return incoming;
 };
 

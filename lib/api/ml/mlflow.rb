@@ -65,8 +65,8 @@ module API
           experiment_repository.by_iid_or_name(iid: iid, name: name) || resource_not_found!
         end
 
-        def find_candidate!(iid)
-          candidate_repository.by_iid(iid) || resource_not_found!
+        def find_candidate!(eid)
+          candidate_repository.by_eid(eid) || resource_not_found!
         end
 
         def packages_url

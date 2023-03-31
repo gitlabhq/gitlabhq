@@ -6,7 +6,7 @@ RSpec.describe Projects::Ml::CandidatesController, feature_category: :mlops do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { project.first_owner }
   let_it_be(:experiment) { create(:ml_experiments, project: project, user: user) }
-  let_it_be(:candidate) { create(:ml_candidates, experiment: experiment, user: user) }
+  let_it_be(:candidate) { create(:ml_candidates, experiment: experiment, user: user, project: project) }
 
   let(:ff_value) { true }
   let(:candidate_iid) { candidate.iid }
@@ -29,8 +29,6 @@ RSpec.describe Projects::Ml::CandidatesController, feature_category: :mlops do
   end
 
   describe 'GET show' do
-    let(:params) { basic_params.merge(id: experiment.iid) }
-
     before do
       show_candidate
     end
@@ -62,6 +60,6 @@ RSpec.describe Projects::Ml::CandidatesController, feature_category: :mlops do
   private
 
   def show_candidate
-    get project_ml_candidate_path(project, candidate_iid)
+    get project_ml_candidate_path(project, iid: candidate_iid)
   end
 end

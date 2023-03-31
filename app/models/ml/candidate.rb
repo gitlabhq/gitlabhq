@@ -12,7 +12,7 @@ module Ml
 
     enum status: { running: 0, scheduled: 1, finished: 2, failed: 3, killed: 4 }
 
-    validates :iid, :experiment, presence: true
+    validates :eid, :experiment, presence: true
     validates :status, inclusion: { in: statuses.keys }
 
     belongs_to :experiment, class_name: 'Ml::Experiment'
@@ -57,9 +57,7 @@ module Ml
     end
 
     alias_attribute :artifact, :package
-
-    # Remove alias after https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115401
-    alias_attribute :iid, :eid
+    alias_attribute :iid, :internal_id
 
     def artifact_root
       "/#{package_name}/#{package_version}/"
@@ -74,10 +72,16 @@ module Ml
     end
 
     class << self
+      def with_project_id_and_eid(project_id, eid)
+        return unless project_id.present? && eid.present?
+
+        find_by(project_id: project_id, eid: eid)
+      end
+
       def with_project_id_and_iid(project_id, iid)
         return unless project_id.present? && iid.present?
 
-        joins(:experiment).find_by(experiment: { project_id: project_id }, eid: iid)
+        find_by(project_id: project_id, internal_id: iid)
       end
 
       def candidate_id_for_package(package_name)

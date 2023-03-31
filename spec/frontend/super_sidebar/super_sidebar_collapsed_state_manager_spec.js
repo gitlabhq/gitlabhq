@@ -10,7 +10,7 @@ import {
   bindSuperSidebarCollapsedEvents,
   findPage,
   findSidebar,
-  findToggles,
+  findToggle,
 } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
 
 const { xl, sm } = breakpoints;
@@ -61,7 +61,6 @@ describe('Super Sidebar Collapsed State Manager', () => {
         toggleSuperSidebarCollapsed(collapsed, saveCookie);
 
         pageHasCollapsedClass(hasClass);
-        expect(findSidebar().ariaHidden).toBe(collapsed);
         expect(findSidebar().inert).toBe(collapsed);
 
         if (saveCookie && windowWidth >= xl) {
@@ -85,12 +84,22 @@ describe('Super Sidebar Collapsed State Manager', () => {
         'when collapsed is $collapsed, isUserAction is $isUserAction',
         ({ collapsed, isUserAction }) => {
           const sidebar = findSidebar();
+          const toggle = findToggle();
+          jest.spyOn(toggle, 'focus');
           jest.spyOn(sidebar, 'focus');
           toggleSuperSidebarCollapsed(collapsed, false, isUserAction);
 
-          if (!collapsed && isUserAction) {
-            expect(sidebar.focus).toHaveBeenCalled();
+          if (isUserAction) {
+            if (collapsed) {
+              jest.runAllTimers();
+              expect(sidebar.classList).toContain('gl-visibility-hidden');
+              expect(toggle.focus).toHaveBeenCalled();
+            } else {
+              expect(sidebar.classList).not.toContain('gl-visibility-hidden');
+              expect(sidebar.focus).toHaveBeenCalled();
+            }
           } else {
+            expect(toggle.focus).not.toHaveBeenCalled();
             expect(sidebar.focus).not.toHaveBeenCalled();
           }
         },
@@ -140,7 +149,7 @@ describe('Super Sidebar Collapsed State Manager', () => {
 
         bindSuperSidebarCollapsedEvents();
 
-        findToggles()[0].click();
+        findToggle().click();
 
         pageHasCollapsedClass(hasClass);
 

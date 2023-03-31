@@ -18,7 +18,7 @@ RSpec.describe API::Ml::Mlflow, feature_category: :mlops do
   let_it_be(:candidate) do
     create(:ml_candidates,
            :with_metrics_and_params, :with_metadata,
-           user: experiment.user, start_time: 1234, experiment: experiment)
+           user: experiment.user, start_time: 1234, experiment: experiment, project: project)
   end
 
   let_it_be(:tokens) do
@@ -402,7 +402,7 @@ RSpec.describe API::Ml::Mlflow, feature_category: :mlops do
 
     describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/runs/get' do
       let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/runs/get" }
-      let(:default_params) { { 'run_id' => candidate.iid } }
+      let(:default_params) { { 'run_id' => candidate.eid } }
 
       it 'gets the run', :aggregate_failures do
         expected_properties = {
@@ -442,7 +442,7 @@ RSpec.describe API::Ml::Mlflow, feature_category: :mlops do
     end
 
     describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/runs/update' do
-      let(:default_params) { { run_id: candidate.iid.to_s, status: 'FAILED', end_time: Time.now.to_i } }
+      let(:default_params) { { run_id: candidate.eid.to_s, status: 'FAILED', end_time: Time.now.to_i } }
       let(:request) { post api(route), params: params, headers: headers }
       let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/runs/update" }
 
@@ -483,7 +483,7 @@ RSpec.describe API::Ml::Mlflow, feature_category: :mlops do
 
     describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/runs/log-metric' do
       let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/runs/log-metric" }
-      let(:default_params) { { run_id: candidate.iid.to_s, key: 'some_key', value: 10.0, timestamp: Time.now.to_i } }
+      let(:default_params) { { run_id: candidate.eid.to_s, key: 'some_key', value: 10.0, timestamp: Time.now.to_i } }
       let(:request) { post api(route), params: params, headers: headers }
 
       it 'logs the metric', :aggregate_failures do
@@ -504,7 +504,7 @@ RSpec.describe API::Ml::Mlflow, feature_category: :mlops do
 
     describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/runs/log-parameter' do
       let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/runs/log-parameter" }
-      let(:default_params) { { run_id: candidate.iid.to_s, key: 'some_key', value: 'value' } }
+      let(:default_params) { { run_id: candidate.eid.to_s, key: 'some_key', value: 'value' } }
       let(:request) { post api(route), params: params, headers: headers }
 
       it 'logs the parameter', :aggregate_failures do
@@ -531,7 +531,7 @@ RSpec.describe API::Ml::Mlflow, feature_category: :mlops do
 
     describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/runs/set-tag' do
       let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/runs/set-tag" }
-      let(:default_params) { { run_id: candidate.iid.to_s, key: 'some_key', value: 'value' } }
+      let(:default_params) { { run_id: candidate.eid.to_s, key: 'some_key', value: 'value' } }
       let(:request) { post api(route), params: params, headers: headers }
 
       it 'logs the tag', :aggregate_failures do
@@ -556,13 +556,13 @@ RSpec.describe API::Ml::Mlflow, feature_category: :mlops do
 
     describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/runs/log-batch' do
       let(:candidate2) do
-        create(:ml_candidates, user: experiment.user, start_time: 1234, experiment: experiment)
+        create(:ml_candidates, user: experiment.user, start_time: 1234, experiment: experiment, project: project)
       end
 
       let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/runs/log-batch" }
       let(:default_params) do
         {
-          run_id: candidate2.iid.to_s,
+          run_id: candidate2.eid.to_s,
           metrics: [
             { key: 'mae', value: 2.5, timestamp: 1552550804 },
             { key: 'rmse', value: 2.7, timestamp: 1552550804 }

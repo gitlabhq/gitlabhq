@@ -19,6 +19,7 @@ jest.mock('~/lib/utils/url_utility');
 Vue.use(VueApollo);
 
 const projectFullPath = 'namespace/project';
+const ufErrorPrefix = 'Foo:';
 
 describe('ManageViaMr component', () => {
   let wrapper;
@@ -57,6 +58,10 @@ describe('ManageViaMr component', () => {
       }),
     );
   }
+
+  beforeEach(() => {
+    gon.uf_error_prefix = ufErrorPrefix;
+  });
 
   // This component supports different report types/mutations depending on
   // whether it's in a CE or EE context. This makes sure we are only testing
@@ -150,11 +155,12 @@ describe('ManageViaMr component', () => {
       });
 
       describe.each`
-        handler                                   | message
-        ${noSuccessPathHandler}                   | ${`${featureName} merge request creation mutation failed`}
-        ${errorHandler.bind(null, 'UF: message')} | ${'message'}
-        ${errorHandler.bind(null, 'message')}     | ${i18n.genericErrorText}
-        ${errorHandler}                           | ${i18n.genericErrorText}
+        handler                                                | message
+        ${noSuccessPathHandler}                                | ${`${featureName} merge request creation mutation failed`}
+        ${errorHandler.bind(null, `${ufErrorPrefix} message`)} | ${'message'}
+        ${errorHandler.bind(null, 'Blah: message')}            | ${i18n.genericErrorText}
+        ${errorHandler.bind(null, 'message')}                  | ${i18n.genericErrorText}
+        ${errorHandler}                                        | ${i18n.genericErrorText}
       `('given an error response', ({ handler, message }) => {
         beforeEach(() => {
           const apolloProvider = createMockApolloProvider(mutation, handler);

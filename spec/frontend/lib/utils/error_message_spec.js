@@ -1,4 +1,4 @@
-import { parseErrorMessage, USER_FACING_ERROR_MESSAGE_PREFIX } from '~/lib/utils/error_message';
+import { parseErrorMessage } from '~/lib/utils/error_message';
 
 const defaultErrorMessage = 'Default error message';
 const errorMessage = 'Returned error message';
@@ -10,13 +10,18 @@ const generateErrorWithMessage = (message) => {
 };
 
 describe('parseErrorMessage', () => {
+  const ufErrorPrefix = 'Foo:';
+  beforeEach(() => {
+    gon.uf_error_prefix = ufErrorPrefix;
+  });
+
   it.each`
-    error                                                    | expectedResult
-    ${`${USER_FACING_ERROR_MESSAGE_PREFIX} ${errorMessage}`} | ${errorMessage}
-    ${`${errorMessage} ${USER_FACING_ERROR_MESSAGE_PREFIX}`} | ${defaultErrorMessage}
-    ${errorMessage}                                          | ${defaultErrorMessage}
-    ${undefined}                                             | ${defaultErrorMessage}
-    ${''}                                                    | ${defaultErrorMessage}
+    error                                 | expectedResult
+    ${`${ufErrorPrefix} ${errorMessage}`} | ${errorMessage}
+    ${`${errorMessage} ${ufErrorPrefix}`} | ${defaultErrorMessage}
+    ${errorMessage}                       | ${defaultErrorMessage}
+    ${undefined}                          | ${defaultErrorMessage}
+    ${''}                                 | ${defaultErrorMessage}
   `(
     'properly parses "$error" error object and returns "$expectedResult"',
     ({ error, expectedResult }) => {
@@ -26,14 +31,14 @@ describe('parseErrorMessage', () => {
   );
 
   it.each`
-    error                                                                              | defaultMessage         | expectedResult
-    ${undefined}                                                                       | ${defaultErrorMessage} | ${defaultErrorMessage}
-    ${''}                                                                              | ${defaultErrorMessage} | ${defaultErrorMessage}
-    ${{}}                                                                              | ${defaultErrorMessage} | ${defaultErrorMessage}
-    ${generateErrorWithMessage(errorMessage)}                                          | ${undefined}           | ${''}
-    ${generateErrorWithMessage(`${USER_FACING_ERROR_MESSAGE_PREFIX} ${errorMessage}`)} | ${undefined}           | ${errorMessage}
-    ${generateErrorWithMessage(errorMessage)}                                          | ${''}                  | ${''}
-    ${generateErrorWithMessage(`${USER_FACING_ERROR_MESSAGE_PREFIX} ${errorMessage}`)} | ${''}                  | ${errorMessage}
+    error                                                           | defaultMessage         | expectedResult
+    ${undefined}                                                    | ${defaultErrorMessage} | ${defaultErrorMessage}
+    ${''}                                                           | ${defaultErrorMessage} | ${defaultErrorMessage}
+    ${{}}                                                           | ${defaultErrorMessage} | ${defaultErrorMessage}
+    ${generateErrorWithMessage(errorMessage)}                       | ${undefined}           | ${''}
+    ${generateErrorWithMessage(`${ufErrorPrefix} ${errorMessage}`)} | ${undefined}           | ${errorMessage}
+    ${generateErrorWithMessage(errorMessage)}                       | ${''}                  | ${''}
+    ${generateErrorWithMessage(`${ufErrorPrefix} ${errorMessage}`)} | ${''}                  | ${errorMessage}
   `(
     'properly handles the edge case of error="$error" and defaultMessage="$defaultMessage"',
     ({ error, defaultMessage, expectedResult }) => {

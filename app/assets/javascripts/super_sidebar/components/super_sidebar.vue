@@ -56,8 +56,8 @@ export default {
     <div class="super-sidebar-overlay" @click="collapseSidebar"></div>
     <aside
       id="super-sidebar"
-      :aria-hidden="String(isCollapased)"
       class="super-sidebar"
+      :class="{ 'gl-visibility-hidden': isCollapased }"
       data-testid="super-sidebar"
       data-qa-selector="navbar"
       :inert="isCollapased"

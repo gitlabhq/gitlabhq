@@ -25,8 +25,8 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
     end
   end
 
-  shared_examples 'safely handles uploaded files', :aggregate_failures do
-    it 'ensures the upload is handled safely' do
+  shared_examples 'safely handles uploaded files' do
+    it 'ensures the upload is handled safely', :aggregate_failures do
       allow(Gitlab::Utils).to receive(:check_path_traversal!).and_call_original
       expect(Gitlab::Utils).to receive(:check_path_traversal!).with(filename).at_least(:once)
       expect(FileUploader).not_to receive(:cache)

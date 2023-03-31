@@ -87,8 +87,9 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
   describe 'GET /projects/:id/deploy_keys' do
     let(:deploy_key) { create(:deploy_key, public: true, user: admin) }
 
-    it_behaves_like 'GET request permissions for admin mode', :not_found do
+    it_behaves_like 'GET request permissions for admin mode' do
       let(:path) { project_path }
+      let(:failed_status_code) { :not_found }
     end
 
     def perform_request
@@ -119,7 +120,9 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
     let_it_be(:path) { "#{project_path}/#{deploy_key.id}" }
     let_it_be(:unfindable_path) { "#{project_path}/404" }
 
-    it_behaves_like 'GET request permissions for admin mode', :not_found
+    it_behaves_like 'GET request permissions for admin mode' do
+      let(:failed_status_code) { :not_found }
+    end
 
     it 'returns a single key' do
       get api(path, admin, admin_mode: true)
@@ -139,6 +142,7 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
     it_behaves_like 'POST request permissions for admin mode', :not_found do
       let(:params) { attributes_for :another_key }
       let(:path) { project_path }
+      let(:failed_status_code) { :not_found }
     end
 
     it 'does not create an invalid ssh key' do
@@ -198,8 +202,9 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
     let(:extra_params) { {} }
     let(:admin_mode) { false }
 
-    it_behaves_like 'PUT request permissions for admin mode', :not_found do
+    it_behaves_like 'PUT request permissions for admin mode' do
       let(:params) { { title: 'new title', can_push: true } }
+      let(:failed_status_code) { :not_found }
     end
 
     subject do
@@ -319,7 +324,9 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
 
     let(:path) { "#{project_path}/#{deploy_key.id}" }
 
-    it_behaves_like 'DELETE request permissions for admin mode', failed_status_code: :not_found
+    it_behaves_like 'DELETE request permissions for admin mode' do
+      let(:failed_status_code) { :not_found }
+    end
 
     it 'removes existing key from project' do
       expect do
@@ -381,7 +388,9 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
     let_it_be(:path) { "/projects/#{project2.id}/deploy_keys/#{deploy_key.id}/enable" }
     let_it_be(:params) { {} }
 
-    it_behaves_like 'POST request permissions for admin mode', :not_found
+    it_behaves_like 'POST request permissions for admin mode' do
+      let(:failed_status_code) { :not_found }
+    end
 
     context 'when the user can admin the project' do
       it 'enables the key' do
@@ -394,8 +403,10 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
     end
 
     context 'when authenticated as non-admin user' do
-      context 'returns a 404 error' do
-        it_behaves_like 'POST request permissions for admin mode when user', :not_found
+      it 'returns a 404 error' do
+        post api("/projects/#{project2.id}/deploy_keys/#{deploy_key.id}/enable", user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

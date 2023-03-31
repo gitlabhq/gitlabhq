@@ -1,7 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { featureToMutationMap } from 'ee_else_ce/security_configuration/components/constants';
-import { parseErrorMessage, USER_FACING_ERROR_MESSAGE_PREFIX } from '~/lib/utils/error_message';
+import { parseErrorMessage } from '~/lib/utils/error_message';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { sprintf, s__ } from '~/locale';
 import apolloProvider from '../provider';
@@ -66,12 +66,12 @@ export default {
           throw new Error(errors[0]);
         }
 
-        // Sending USER_FACING_ERROR_MESSAGE_PREFIX prefixed messages should happen only in
+        // Sending window.gon.uf_error_prefix prefixed messages should happen only in
         // the backend. Hence the code below is an anti-pattern.
         // The issue to refactor: https://gitlab.com/gitlab-org/gitlab/-/issues/397714
         if (!successPath) {
           throw new Error(
-            `${USER_FACING_ERROR_MESSAGE_PREFIX} ${sprintf(this.$options.i18n.noSuccessPathError, {
+            `${window.gon.uf_error_prefix} ${sprintf(this.$options.i18n.noSuccessPathError, {
               featureName: this.feature.name,
             })}`,
           );

@@ -81,7 +81,7 @@ export const buildCycleAnalyticsInitialData = ({
 } = {}) => {
   return {
     projectId: parseInt(projectId, 10),
-    groupPath: `groups/${groupPath}`,
+    groupPath,
     namespace: {
       name: namespaceName,
       fullPath: namespaceFullPath,

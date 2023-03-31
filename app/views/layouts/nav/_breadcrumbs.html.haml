@@ -7,7 +7,7 @@
   .breadcrumbs{ class: [container, @content_class] }
     .breadcrumbs-container
       - if show_super_sidebar?
-        = render Pajamas::ButtonComponent.new(icon: 'sidebar', category: :tertiary, button_options: { class: 'js-super-sidebar-toggle super-sidebar-toggle gl-ml-n3 gl-mr-2', title: _('Expand sidebar'), aria: { label: _('Expand sidebar') }, data: {toggle: 'tooltip', placement: 'right' } })
+        = render Pajamas::ButtonComponent.new(icon: 'sidebar', category: :tertiary, button_options: { class: 'js-super-sidebar-toggle super-sidebar-toggle gl-ml-n3 gl-mr-2', title: _('Expand sidebar'), aria: { controls: 'super-sidebar', expanded: 'false', label: _('Navigation sidebar') }, data: {toggle: 'tooltip', placement: 'right' } })
       - elsif defined?(@left_sidebar)
         = render Pajamas::ButtonComponent.new(icon: 'sidebar', category: :tertiary, button_options: { class: 'toggle-mobile-nav gl-ml-n3 gl-mr-2', data: { qa_selector: 'toggle_mobile_nav_button' }, aria: { label: _('Open sidebar') } })
       %nav.breadcrumbs-links{ 'aria-label': _('Breadcrumbs'), data: { testid: 'breadcrumb-links', qa_selector: 'breadcrumb_links_content' } }

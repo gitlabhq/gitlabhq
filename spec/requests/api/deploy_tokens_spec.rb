@@ -90,9 +90,7 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
         project.add_developer(user)
       end
 
-      it_behaves_like 'GET request permissions for admin mode when user' do
-        let(:current_user) { user }
-      end
+      it { is_expected.to have_gitlab_http_status(:forbidden) }
     end
 
     context 'when authenticated as maintainer' do
@@ -155,9 +153,7 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
         project.add_developer(user)
       end
 
-      it_behaves_like 'GET request permissions for admin mode when user' do
-        let(:current_user) { user }
-      end
+      it { is_expected.to have_gitlab_http_status(:forbidden) }
     end
 
     context 'when authenticated as maintainer' do
@@ -208,9 +204,7 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
         group.add_developer(user)
       end
 
-      it_behaves_like 'GET request permissions for admin mode when user' do
-        let(:current_user) { user }
-      end
+      it { is_expected.to have_gitlab_http_status(:forbidden) }
     end
 
     context 'when authenticated as maintainer' do
@@ -270,9 +264,7 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
         group.add_developer(user)
       end
 
-      it_behaves_like 'GET request permissions for admin mode when user' do
-        let(:current_user) { user }
-      end
+      it { is_expected.to have_gitlab_http_status(:forbidden) }
     end
 
     context 'when authenticated as maintainer' do
@@ -323,9 +315,7 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
         project.add_developer(user)
       end
 
-      it_behaves_like 'GET request permissions for admin mode when user' do
-        let(:current_user) { user }
-      end
+      it { is_expected.to have_gitlab_http_status(:forbidden) }
     end
 
     context 'when authenticated as maintainer' do
@@ -492,9 +482,7 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
         group.add_developer(user)
       end
 
-      it_behaves_like 'GET request permissions for admin mode when user' do
-        let(:current_user) { user }
-      end
+      it { is_expected.to have_gitlab_http_status(:forbidden) }
     end
 
     context 'when authenticated as maintainer' do

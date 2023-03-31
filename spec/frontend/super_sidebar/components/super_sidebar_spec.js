@@ -37,17 +37,17 @@ describe('SuperSidebar component', () => {
   };
 
   describe('default', () => {
-    it('add aria-hidden and inert attributes when collapsed', () => {
+    it('adds inert attribute and `gl-visibility-hidden` class when collapsed', () => {
       isCollapsed.mockReturnValue(true);
       createWrapper();
-      expect(findSidebar().attributes('aria-hidden')).toBe('true');
+      expect(findSidebar().classes()).toContain('gl-visibility-hidden');
       expect(findSidebar().attributes('inert')).toBe('inert');
     });
 
-    it('does not add aria-hidden and inert attributes when expanded', () => {
+    it('does not add inert attribute and `gl-visibility-hidden` class when expanded', () => {
       isCollapsed.mockReturnValue(false);
       createWrapper();
-      expect(findSidebar().attributes('aria-hidden')).toBe('false');
+      expect(findSidebar().classes()).not.toContain('gl-visibility-hidden');
       expect(findSidebar().attributes('inert')).toBe(undefined);
     });
 

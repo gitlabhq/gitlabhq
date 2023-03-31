@@ -31,7 +31,9 @@ RSpec.describe API::Admin::Sidekiq, :clean_gitlab_redis_queues, feature_category
 
         let_it_be(:path) { "/admin/sidekiq/queues/authorized_projects?user=#{admin.username}&worker_class=AuthorizedProjectsWorker" }
 
-        it_behaves_like 'DELETE request permissions for admin mode', success_status_code: :ok
+        it_behaves_like 'DELETE request permissions for admin mode' do
+          let(:success_status_code) { :ok }
+        end
 
         it 'returns info about the deleted jobs' do
           delete api(path, admin, admin_mode: true)

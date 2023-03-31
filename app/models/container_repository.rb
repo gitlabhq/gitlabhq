@@ -22,6 +22,12 @@ class ContainerRepository < ApplicationRecord
 
   MAX_TAGS_PAGES = 2000
 
+  # The Registry client uses JWT token to authenticate to Registry. We cache the client using expiration
+  # time of JWT token. However it's possible that the token is valid but by the time the request is made to
+  # Regsitry, it's already expired. To prevent this case, we are subtracting a few seconds, defined by this constant
+  # from the cache expiration time.
+  AUTH_TOKEN_USAGE_RESERVED_TIME_IN_SECS = 5
+
   TooManyImportsError = Class.new(StandardError)
 
   belongs_to :project
@@ -289,6 +295,10 @@ class ContainerRepository < ApplicationRecord
     all
   end
 
+  def self.registry_client_expiration_time
+    (Gitlab::CurrentSettings.container_registry_token_expire_delay * 60) - AUTH_TOKEN_USAGE_RESERVED_TIME_IN_SECS
+  end
+
   class << self
     alias_method :pending_destruction, :delete_scheduled # needed by Packages::Destructible
   end
@@ -410,7 +420,7 @@ class ContainerRepository < ApplicationRecord
 
   # rubocop: disable CodeReuse/ServiceClass
   def registry
-    @registry ||= begin
+    strong_memoize_with_expiration(:registry, self.class.registry_client_expiration_time) do
       token = Auth::ContainerRegistryAuthenticationService.full_access_token(path)
 
       url = Gitlab.config.registry.api_url

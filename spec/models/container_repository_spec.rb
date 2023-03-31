@@ -1722,4 +1722,19 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
 
     it { is_expected.to contain_exactly(*stale_migrations) }
   end
+
+  describe '#registry' do
+    it 'caches the client' do
+      registry = repository.registry
+      registry1 = repository.registry
+      registry2 = nil
+
+      travel_to(Time.current + Gitlab::CurrentSettings.container_registry_token_expire_delay.minutes) do
+        registry2 = repository.registry
+      end
+
+      expect(registry1.object_id).to be(registry.object_id)
+      expect(registry2.object_id).not_to be(registry.object_id)
+    end
+  end
 end

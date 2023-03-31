@@ -3,12 +3,15 @@
 require 'fast_spec_helper'
 require 'rspec-benchmark'
 require 'rspec-parameterized'
+require 'active_support/testing/time_helpers'
 
 RSpec.configure do |config|
   config.include RSpec::Benchmark::Matchers
 end
 
 RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
+  include ActiveSupport::Testing::TimeHelpers
+
   let(:klass) do
     strong_memoize_class = described_class
 
@@ -25,6 +28,13 @@ RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
 
       def method_name
         strong_memoize(:method_name) do # rubocop: disable Gitlab/StrongMemoizeAttr
+          trace << value
+          value
+        end
+      end
+
+      def method_name_with_expiration
+        strong_memoize_with_expiration(:method_name_with_expiration, 1) do
           trace << value
           value
         end
@@ -137,6 +147,43 @@ RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
               object.strong_memoize(argument) { 10 }
             end.to perform_allocation(1)
           end
+        end
+      end
+    end
+  end
+
+  describe '#strong_memoize_with_expiration' do
+    [nil, false, true, 'value', 0, [0]].each do |value|
+      context "with value #{value}" do
+        let(:value) { value }
+        let(:method_name) { :method_name_with_expiration }
+
+        it_behaves_like 'caching the value'
+
+        it 'raises exception for invalid type as key' do
+          expect { object.strong_memoize_with_expiration(10, 1) { 20 } }.to raise_error /Invalid type of '10'/
+        end
+
+        it 'raises exception for invalid characters in key' do
+          expect { object.strong_memoize_with_expiration(:enabled?, 1) { 20 } }
+            .to raise_error /is not allowed as an instance variable name/
+        end
+      end
+    end
+
+    context 'value memoization test' do
+      let(:value) { 'value' }
+
+      it 'caches the value for specified number of seconds' do
+        object.method_name_with_expiration
+        object.method_name_with_expiration
+
+        expect(object.trace.count).to eq(1)
+
+        travel_to(Time.current + 2.seconds) do
+          object.method_name_with_expiration
+
+          expect(object.trace.count).to eq(2)
         end
       end
     end

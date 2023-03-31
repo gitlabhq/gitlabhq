@@ -3,8 +3,8 @@
 module QA
   RSpec.describe 'Monitor', :orchestrated, :smtp, :requires_admin, product_group: :respond do
     describe 'Alert' do
-      shared_examples 'notification on new alert', :aggregate_failures do
-        it 'sends email to user' do
+      shared_examples 'notification on new alert' do
+        it 'sends email to user', :aggregate_failures do
           expect { email_subjects }.to eventually_include(alert_email_subject).within(max_duration: 60)
           expect(recipient_email_addresses).to include(user.email)
         end

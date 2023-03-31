@@ -34,6 +34,7 @@ export default {
     homepage: __('Homepage'),
     issues: __('Issues'),
     mergeRequests: __('Merge requests'),
+    navigationSidebar: __('Navigation sidebar'),
     search: __('Search'),
     searchKbdHelp: sprintf(
       s__('GlobalSearch|Search GitLab %{kbdOpen}/%{kbdClose}'),
@@ -89,7 +90,9 @@ export default {
       <div class="gl-flex-grow-1"></div>
       <gl-button
         v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.collapseSidebar"
-        :aria-label="$options.i18n.collapseSidebar"
+        aria-controls="super-sidebar"
+        aria-expanded="true"
+        :aria-label="$options.i18n.navigationSidebar"
         icon="sidebar"
         category="tertiary"
         @click="collapseSidebar"

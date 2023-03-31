@@ -19,7 +19,7 @@ module API
           private
 
           def run_id
-            object.iid.to_s
+            object.eid.to_s
           end
         end
       end

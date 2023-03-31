@@ -8,7 +8,7 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
     create(:ml_candidates, experiment: candidate.experiment, user: create(:user), name: 'candidate2')
   end
 
-  let(:project) { candidate.experiment.project }
+  let(:project) { candidate.project }
 
   describe 'associations' do
     it { is_expected.to belong_to(:experiment) }
@@ -20,8 +20,18 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
     it { is_expected.to have_many(:metadata) }
   end
 
+  describe 'modules' do
+    it_behaves_like 'AtomicInternalId' do
+      let(:internal_id_attribute) { :internal_id }
+      let(:instance) { build(:ml_candidates, experiment: candidate.experiment) }
+      let(:scope) { :project }
+      let(:scope_attrs) { { project: instance.project } }
+      let(:usage) { :ml_candidates }
+    end
+  end
+
   describe 'default values' do
-    it { expect(described_class.new.iid).to be_present }
+    it { expect(described_class.new.eid).to be_present }
   end
 
   describe '.artifact_root' do
@@ -42,14 +52,14 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
     it { is_expected.to eq('-') }
   end
 
-  describe '.iid' do
+  describe '.eid' do
     let_it_be(:eid) { SecureRandom.uuid }
 
     let_it_be(:candidate3) do
       build(:ml_candidates, :with_metrics_and_params, name: 'candidate0', eid: eid)
     end
 
-    subject { candidate3.iid }
+    subject { candidate3.eid }
 
     it { is_expected.to eq(eid) }
   end
@@ -72,24 +82,47 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
     end
   end
 
+  describe '#by_project_id_and_eid' do
+    let(:project_id) { candidate.experiment.project_id }
+    let(:eid) { candidate.eid }
+
+    subject { described_class.with_project_id_and_eid(project_id, eid) }
+
+    context 'when eid exists', 'and belongs to project' do
+      it { is_expected.to eq(candidate) }
+    end
+
+    context 'when eid exists', 'and does not belong to project' do
+      let(:project_id) { non_existing_record_id }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when eid does not exist' do
+      let(:eid) { 'a' }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#by_project_id_and_iid' do
     let(:project_id) { candidate.experiment.project_id }
     let(:iid) { candidate.iid }
 
     subject { described_class.with_project_id_and_iid(project_id, iid) }
 
-    context 'when iid exists', 'and belongs to project' do
+    context 'when internal_id exists', 'and belongs to project' do
       it { is_expected.to eq(candidate) }
     end
 
-    context 'when iid exists', 'and does not belong to project' do
+    context 'when internal_id exists', 'and does not belong to project' do
       let(:project_id) { non_existing_record_id }
 
       it { is_expected.to be_nil }
     end
 
-    context 'when iid does not exist' do
-      let(:iid) { 'a' }
+    context 'when internal_id does not exist' do
+      let(:iid) { non_existing_record_id }
 
       it { is_expected.to be_nil }
     end

@@ -99,6 +99,20 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
   end
 
+  describe '#get_widget' do
+    let(:work_item) { build(:work_item, description: 'foo') }
+
+    it 'returns widget object' do
+      expect(work_item.get_widget(:description)).to be_an_instance_of(WorkItems::Widgets::Description)
+    end
+
+    context 'when widget does not exist' do
+      it 'returns nil' do
+        expect(work_item.get_widget(:nop)).to be_nil
+      end
+    end
+  end
+
   describe '#supports_assignee?' do
     let(:work_item) { build(:work_item, :task) }
 

@@ -107,7 +107,9 @@ export default {
     },
     showLinkToDashboard() {
       return Boolean(
-        this.features?.groupLevelAnalyticsDashboard && this.features?.groupAnalyticsDashboardsPage,
+        this.features?.groupLevelAnalyticsDashboard &&
+          this.features?.groupAnalyticsDashboardsPage &&
+          this.groupPath,
       );
     },
     dashboardsPath() {
@@ -128,6 +130,9 @@ export default {
         direction: this.pagination?.direction || null,
         page: this.pagination?.page || null,
       };
+    },
+    filterBarNamespacePath() {
+      return this.groupPath || this.namespace.fullPath;
     },
   },
   methods: {
@@ -168,7 +173,7 @@ export default {
   <div>
     <h3>{{ $options.i18n.pageTitle }}</h3>
     <value-stream-filters
-      :group-path="groupPath"
+      :group-path="filterBarNamespacePath"
       :has-project-filter="false"
       :start-date="createdAfter"
       :end-date="createdBefore"

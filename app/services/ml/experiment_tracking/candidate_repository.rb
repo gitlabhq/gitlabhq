@@ -10,8 +10,8 @@ module Ml
         @user = user
       end
 
-      def by_iid(iid)
-        ::Ml::Candidate.with_project_id_and_iid(project.id, iid)
+      def by_eid(eid)
+        ::Ml::Candidate.with_project_id_and_eid(project.id, eid)
       end
 
       def create!(experiment, start_time, tags = nil, name = nil)

@@ -6,19 +6,19 @@ RSpec.describe ::Ml::ExperimentTracking::CandidateRepository, feature_category: 
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:experiment) { create(:ml_experiments, user: user, project: project) }
-  let_it_be(:candidate) { create(:ml_candidates, user: user, experiment: experiment) }
+  let_it_be(:candidate) { create(:ml_candidates, user: user, experiment: experiment, project: project) }
 
   let(:repository) { described_class.new(project, user) }
 
-  describe '#by_iid' do
-    let(:iid) { candidate.iid }
+  describe '#by_eid' do
+    let(:eid) { candidate.eid }
 
-    subject { repository.by_iid(iid) }
+    subject { repository.by_eid(eid) }
 
     it { is_expected.to eq(candidate) }
 
     context 'when iid does not exist' do
-      let(:iid) { non_existing_record_iid.to_s }
+      let(:eid) { non_existing_record_iid.to_s }
 
       it { is_expected.to be_nil }
     end
@@ -38,7 +38,7 @@ RSpec.describe ::Ml::ExperimentTracking::CandidateRepository, feature_category: 
 
     it 'creates the candidate' do
       expect(subject.start_time).to eq(1234)
-      expect(subject.iid).not_to be_nil
+      expect(subject.eid).not_to be_nil
       expect(subject.end_time).to be_nil
       expect(subject.name).to eq('some_candidate')
     end
