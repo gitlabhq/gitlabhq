@@ -52,6 +52,9 @@ class Issue < ApplicationRecord
   # Types of issues that should be displayed on issue board lists
   TYPES_FOR_BOARD_LIST = %w(issue incident).freeze
 
+  # This default came from the enum `issue_type` column. Defined as default in the DB
+  DEFAULT_ISSUE_TYPE = :issue
+
   belongs_to :project
   belongs_to :namespace, inverse_of: :issues
 
@@ -713,6 +716,12 @@ class Issue < ApplicationRecord
     project || namespace
   end
 
+  # Persisted records will always have a work_item_type. This method is useful
+  # in places where we use a non persisted issue to perform feature checks
+  def work_item_type_with_default
+    work_item_type || WorkItems::Type.default_by_type(DEFAULT_ISSUE_TYPE)
+  end
+
   private
 
   def due_date_after_start_date
@@ -783,6 +792,8 @@ class Issue < ApplicationRecord
   def ensure_work_item_type
     return if work_item_type_id.present? || work_item_type_id_change&.last.present?
 
+    # TODO: We should switch to DEFAULT_ISSUE_TYPE here when the issue_type column is dropped
+    # https://gitlab.com/gitlab-org/gitlab/-/work_items/402700?iid_path=true
     self.work_item_type = WorkItems::Type.default_by_type(issue_type)
   end
 

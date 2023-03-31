@@ -15,7 +15,7 @@ import '~/sourcegraph/load';
 import createStore from '~/code_navigation/store';
 import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
 import RefSelector from '~/ref/components/ref_selector.vue';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
@@ -34,7 +34,7 @@ const initRefSwitcher = () => {
 
   if (!refSwitcherEl) return false;
 
-  const { projectId, projectRootPath, ref } = refSwitcherEl.dataset;
+  const { projectId, projectRootPath, ref, refType } = refSwitcherEl.dataset;
 
   return new Vue({
     el: refSwitcherEl,
@@ -42,7 +42,8 @@ const initRefSwitcher = () => {
       return createElement(RefSelector, {
         props: {
           projectId,
-          value: ref,
+          value: refType ? joinPaths('refs', refType, ref) : ref,
+          useSymbolicRefNames: true,
           queryParams: { sort: 'updated_desc' },
         },
         on: {

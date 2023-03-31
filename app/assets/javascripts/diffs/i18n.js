@@ -4,6 +4,9 @@ export const GENERIC_ERROR = __('Something went wrong on our end. Please try aga
 export const LOAD_SINGLE_DIFF_FAILED = s__(
   'MergeRequest|Encountered an issue while trying to fetch the single file diff.',
 );
+export const DISCUSSION_SINGLE_DIFF_FAILED = s__(
+  "MergeRequest|Can't fetch the single file diff for the discussion. Please reload this page.",
+);
 
 export const DIFF_FILE_HEADER = {
   optionsDropdownTitle: __('Options'),

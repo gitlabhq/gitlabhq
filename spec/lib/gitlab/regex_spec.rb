@@ -1171,7 +1171,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     end
 
     context 'HTML comment lines' do
-      subject { described_class::MARKDOWN_HTML_COMMENT_LINE_REGEX }
+      subject { Gitlab::UntrustedRegexp.new(described_class::MARKDOWN_HTML_COMMENT_LINE_REGEX_UNTRUSTED, multiline: true) }
 
       let(:expected) { [['<!-- an HTML comment -->'], ['<!-- another HTML comment -->']] }
       let(:markdown) do
@@ -1189,20 +1189,20 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
       it { is_expected.to match(%(<!-- single line comment -->)) }
       it { is_expected.not_to match(%(<!--\nblock comment\n-->)) }
       it { is_expected.not_to match(%(must start in first column <!-- comment -->)) }
-      it { expect(markdown.scan(subject)).to eq expected }
+      it { expect(subject.scan(markdown)).to eq expected }
     end
 
     context 'HTML comment blocks' do
-      subject { described_class::MARKDOWN_HTML_COMMENT_BLOCK_REGEX }
+      subject { Gitlab::UntrustedRegexp.new(described_class::MARKDOWN_HTML_COMMENT_BLOCK_REGEX_UNTRUSTED, multiline: true) }
 
-      let(:expected) { %(<!-- the start of an HTML comment\n- [ ] list item commented out\n-->) }
+      let(:expected) { %(<!-- the start of an HTML comment\n- [ ] list item commented out\nmore text -->) }
       let(:markdown) do
         <<~MARKDOWN
         Regular text
 
         <!-- the start of an HTML comment
         - [ ] list item commented out
-        -->
+        more text -->
         MARKDOWN
       end
 

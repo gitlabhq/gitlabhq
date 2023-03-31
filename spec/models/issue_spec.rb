@@ -1773,6 +1773,36 @@ RSpec.describe Issue, feature_category: :team_planning do
     it 'raises error when feature is invalid' do
       expect { issue.issue_type_supports?(:unkown_feature) }.to raise_error(ArgumentError)
     end
+
+    context 'when issue_type_uses_work_item_types_table feature flag is disabled' do
+      before do
+        stub_feature_flags(issue_type_uses_work_item_types_table: false)
+      end
+
+      it 'uses the issue_type column' do
+        expect(issue).to receive(:issue_type).and_call_original
+        expect(issue).not_to receive(:work_item_type).and_call_original
+
+        issue.issue_type_supports?(:assignee)
+      end
+    end
+
+    context 'when issue_type_uses_work_item_types_table feature flag is enabled' do
+      it 'uses the work_item_types table' do
+        expect(issue).not_to receive(:issue_type).and_call_original
+        expect(issue).to receive(:work_item_type).and_call_original
+
+        issue.issue_type_supports?(:assignee)
+      end
+
+      context 'when the issue is not persisted' do
+        it 'uses the default work item type' do
+          non_persisted_issue = build(:issue)
+
+          expect(non_persisted_issue.issue_type_supports?(:assignee)).to be_truthy
+        end
+      end
+    end
   end
 
   describe '#supports_time_tracking?' do
@@ -1919,5 +1949,11 @@ RSpec.describe Issue, feature_category: :team_planning do
         end
       end
     end
+  end
+
+  describe '#work_item_type_with_default' do
+    subject { Issue.new.work_item_type_with_default }
+
+    it { is_expected.to eq(WorkItems::Type.default_by_type(::Issue::DEFAULT_ISSUE_TYPE)) }
   end
 end

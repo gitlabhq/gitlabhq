@@ -421,7 +421,6 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { can?(:metrics_dashboard) }.policy do
-    enable :read_prometheus
     enable :read_deployment
   end
 

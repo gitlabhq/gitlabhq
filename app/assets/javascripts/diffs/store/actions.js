@@ -50,7 +50,7 @@ import {
   TRACKING_SINGLE_FILE_MODE,
   TRACKING_MULTIPLE_FILES_MODE,
 } from '../constants';
-import { LOAD_SINGLE_DIFF_FAILED } from '../i18n';
+import { DISCUSSION_SINGLE_DIFF_FAILED, LOAD_SINGLE_DIFF_FAILED } from '../i18n';
 import eventHub from '../event_hub';
 import { isCollapsed } from '../utils/diff_file';
 import { markFileReview, setReviewsForMergeRequest } from '../utils/file_reviews';
@@ -895,6 +895,24 @@ export function moveToNeighboringCommit({ dispatch, state }, { direction }) {
     dispatch('changeCurrentCommit', { commitId });
   }
 }
+
+export const rereadNoteHash = ({ state, dispatch }) => {
+  const urlHash = window?.location?.hash;
+
+  if (isUrlHashNoteLink(urlHash)) {
+    dispatch('setCurrentDiffFileIdFromNote', urlHash.split('_').pop())
+      .then(() => {
+        if (state.viewDiffsFileByFile) {
+          dispatch('fetchFileByFile');
+        }
+      })
+      .catch(() => {
+        createAlert({
+          message: DISCUSSION_SINGLE_DIFF_FAILED,
+        });
+      });
+  }
+};
 
 export const setCurrentDiffFileIdFromNote = ({ commit, getters, rootGetters }, noteId) => {
   const note = rootGetters.notesById[noteId];

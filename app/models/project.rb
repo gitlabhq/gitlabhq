@@ -261,6 +261,8 @@ class Project < ApplicationRecord
   has_many :debian_distributions,
            class_name: 'Packages::Debian::ProjectDistribution',
            dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :npm_metadata_caches,
+           class_name: 'Packages::Npm::MetadataCache'
   has_one :packages_cleanup_policy,
           class_name: 'Packages::Cleanup::Policy',
           inverse_of: :project

@@ -572,6 +572,22 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     context 'when authenticated', 'as a developer' do
       it_behaves_like 'repository compare' do
         let(:current_user) { user }
+
+        context 'when user does not have read access to the parent project' do
+          let_it_be(:group) { create(:group) }
+          let(:forked_project) { fork_project(project, current_user, repository: true, namespace: group) }
+
+          before do
+            forked_project.add_guest(current_user)
+          end
+
+          it 'returns 403 error' do
+            get api(route, current_user), params: { from: 'improve/awesome', to: 'feature', from_project_id: forked_project.id }
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(json_response['message']).to eq("403 Forbidden - You don't have access to this fork's parent project")
+          end
+        end
       end
     end
 

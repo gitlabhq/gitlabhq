@@ -1,0 +1,10 @@
+---
+table_name: packages_npm_metadata_caches
+classes:
+- Packages::Npm::MetadataCache
+feature_categories:
+- package_registry
+description: Store the metadata of npm packages to use later as a cache
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114312
+milestone: '15.11'
+gitlab_schema: gitlab_main

@@ -2775,6 +2775,9 @@ msgstr ""
 msgid "AdminArea|Users with highest role"
 msgstr ""
 
+msgid "AdminArea|Users with highest role guest and with a %{strongOpen}Custom Role%{strongClose}."
+msgstr ""
+
 msgid "AdminArea|Users without a Group and Project"
 msgstr ""
 
@@ -27322,6 +27325,9 @@ msgstr ""
 msgid "MergeRequest|Approved by @%{username}"
 msgstr ""
 
+msgid "MergeRequest|Can't fetch the single file diff for the discussion. Please reload this page."
+msgstr ""
+
 msgid "MergeRequest|Can't show this merge request because of an internal error. Contact your administrator."
 msgstr ""
 
@@ -43762,6 +43768,9 @@ msgid "The default CI/CD configuration file and path for new projects."
 msgstr ""
 
 msgid "The default branch for this project has been changed. Please update your bookmarks."
+msgstr ""
+
+msgid "The default branch of this project clashes with another ref"
 msgstr ""
 
 msgid "The dependency list details information about the components used within your project."

@@ -1598,6 +1598,54 @@ describe('DiffsStoreActions', () => {
     );
   });
 
+  describe('rereadNoteHash', () => {
+    beforeEach(() => {
+      window.location.hash = 'note_123';
+    });
+
+    it('dispatches setCurrentDiffFileIdFromNote if the hash is a note URL', () => {
+      window.location.hash = 'note_123';
+
+      return testAction(
+        diffActions.rereadNoteHash,
+        {},
+        {},
+        [],
+        [{ type: 'setCurrentDiffFileIdFromNote', payload: '123' }],
+      );
+    });
+
+    it('dispatches fetchFileByFile if the app is in fileByFile mode', () => {
+      window.location.hash = 'note_123';
+
+      return testAction(
+        diffActions.rereadNoteHash,
+        {},
+        { viewDiffsFileByFile: true },
+        [],
+        [{ type: 'setCurrentDiffFileIdFromNote', payload: '123' }, { type: 'fetchFileByFile' }],
+      );
+    });
+
+    it('does not try to fetch the diff file if the app is not in fileByFile mode', () => {
+      window.location.hash = 'note_123';
+
+      return testAction(
+        diffActions.rereadNoteHash,
+        {},
+        { viewDiffsFileByFile: false },
+        [],
+        [{ type: 'setCurrentDiffFileIdFromNote', payload: '123' }],
+      );
+    });
+
+    it('does nothing if the hash is not a note URL', () => {
+      window.location.hash = 'abcdef1234567890';
+
+      return testAction(diffActions.rereadNoteHash, {}, {}, [], []);
+    });
+  });
+
   describe('setCurrentDiffFileIdFromNote', () => {
     it('commits SET_CURRENT_DIFF_FILE', () => {
       const commit = jest.fn();

@@ -208,17 +208,14 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
   end
 
   describe 'with two-factor authentication', :js do
-    def enter_code(code)
-      if page.has_content?("Sign in via 2FA code")
-        click_on("Sign in via 2FA code")
-        enter_code(code)
-      else
-        fill_in 'user_otp_attempt', with: code
-        click_button 'Verify code'
-      end
+    def enter_code(code, only_two_factor_webauthn_enabled: false)
+      click_on("Sign in via 2FA code") if only_two_factor_webauthn_enabled
+
+      fill_in 'user_otp_attempt', with: code
+      click_button 'Verify code'
     end
 
-    shared_examples_for 'can login with recovery codes' do
+    shared_examples_for 'can login with recovery codes' do |only_two_factor_webauthn_enabled: false|
       context 'using backup code' do
         let(:codes) { user.generate_otp_backup_codes! }
 
@@ -235,7 +232,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
               .to increment(:user_authenticated_counter)
               .and increment(:user_two_factor_authenticated_counter)
 
-            enter_code(codes.sample)
+            enter_code(codes.sample, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled)
 
             expect(page).to have_current_path root_path, ignore_query: true
           end
@@ -245,7 +242,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
               .to increment(:user_authenticated_counter)
               .and increment(:user_two_factor_authenticated_counter)
 
-            expect { enter_code(codes.sample) }
+            expect { enter_code(codes.sample, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled) }
               .to change { user.reload.otp_backup_codes.size }.by(-1)
           end
 
@@ -256,13 +253,13 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
               .and increment(:user_session_destroyed_counter)
 
             random_code = codes.delete(codes.sample)
-            expect { enter_code(random_code) }
+            expect { enter_code(random_code, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled) }
               .to change { user.reload.otp_backup_codes.size }.by(-1)
 
             gitlab_sign_out
             gitlab_sign_in(user)
 
-            expect { enter_code(codes.sample) }
+            expect { enter_code(codes.sample, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled) }
               .to change { user.reload.otp_backup_codes.size }.by(-1)
           end
 
@@ -272,7 +269,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
               .and increment(:user_two_factor_authenticated_counter)
             expect(ActiveSession).to receive(:cleanup).with(user).once.and_call_original
 
-            enter_code(codes.sample)
+            enter_code(codes.sample, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled)
           end
         end
 
@@ -287,7 +284,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
             user.save!(touch: false)
             expect(user.reload.otp_backup_codes.size).to eq 9
 
-            enter_code(code)
+            enter_code(code, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled)
             expect(page).to have_content('Invalid two-factor code.')
           end
         end
@@ -382,7 +379,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
       context 'when user with only Webauthn enabled' do
         let(:user) { create(:user, :two_factor_via_webauthn, registrations_count: 1) }
 
-        include_examples 'can login with recovery codes'
+        include_examples 'can login with recovery codes', only_two_factor_webauthn_enabled: true
       end
     end
 

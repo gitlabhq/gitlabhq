@@ -18,19 +18,6 @@ module QA
         @variable_type = 'env_var'
       end
 
-      def fabricate!
-        project.visit!
-
-        Page::Project::Menu.perform(&:go_to_ci_cd_settings)
-
-        Page::Project::Settings::CiCd.perform do |setting|
-          setting.expand_ci_variables do |page|
-            page.click_add_variable
-            page.fill_variable(key, value, masked)
-          end
-        end
-      end
-
       def fabricate_via_api!
         resource_web_url(api_get)
       rescue ResourceNotFoundError

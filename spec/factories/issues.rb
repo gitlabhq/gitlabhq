@@ -66,6 +66,11 @@ FactoryBot.define do
       end
     end
 
+    trait :requirement do
+      issue_type { :requirement }
+      association :work_item_type, :default, :requirement
+    end
+
     trait :task do
       issue_type { :task }
       association :work_item_type, :default, :task

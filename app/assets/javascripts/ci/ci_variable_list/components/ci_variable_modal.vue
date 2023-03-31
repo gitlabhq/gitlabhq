@@ -517,7 +517,6 @@ export default {
         ref="deleteCiVariable"
         variant="danger"
         category="secondary"
-        data-qa-selector="ci_variable_delete_button"
         @click="deleteVarAndClose"
         >{{ __('Delete variable') }}</gl-button
       >

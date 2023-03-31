@@ -126,7 +126,7 @@
             - if show_version_check?
               .float-right
                 .js-gitlab-version-check-badge{ data: { "size": "lg", "actionable": "true", "version": gitlab_version_check.to_json } }
-                = link_to(sprite_icon('question'), "https://gitlab.com/gitlab-org/gitlab/-/blob/master/CHANGELOG.md", class: 'gl-ml-2', target: '_blank', rel: 'noopener noreferrer')
+                = link_to(sprite_icon('question-o'), "https://gitlab.com/gitlab-org/gitlab/-/blob/master/CHANGELOG.md", class: 'gl-ml-2', target: '_blank', rel: 'noopener noreferrer')
           %p
             = link_to _('GitLab'), general_admin_application_settings_path
             %span.float-right

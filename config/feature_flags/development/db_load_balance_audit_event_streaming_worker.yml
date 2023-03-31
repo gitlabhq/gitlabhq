@@ -1,0 +1,8 @@
+---
+name: db_load_balance_audit_event_streaming_worker
+introduced_by_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1811
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/402493
+milestone: '15.11'
+type: development
+group: group::scalability
+default_enabled: false

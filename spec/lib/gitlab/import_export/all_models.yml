@@ -711,6 +711,7 @@ project:
 - packages
 - package_files
 - rpm_repository_files
+- npm_metadata_caches
 - packages_cleanup_policy
 - alerting_setting
 - project_setting
