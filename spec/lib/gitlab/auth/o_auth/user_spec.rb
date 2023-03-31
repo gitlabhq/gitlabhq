@@ -320,6 +320,38 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
         end
 
         include_examples "to verify compliance with allow_single_sign_on"
+
+        context 'and other providers' do
+          context 'when sync_name is disabled' do
+            before do
+              stub_ldap_config(sync_name: false)
+            end
+
+            let!(:existing_user) { create(:omniauth_user, name: 'John Swift', email: 'john@example.com', extern_uid: dn, provider: 'twitter', username: 'john') }
+
+            it "updates the gl_user name" do
+              oauth_user.save # rubocop:disable Rails/SaveBang
+
+              expect(gl_user).to be_valid
+              expect(gl_user.name).to eql 'John'
+            end
+          end
+
+          context 'when sync_name is enabled' do
+            before do
+              stub_ldap_config(sync_name: true)
+            end
+
+            let!(:existing_user) { create(:omniauth_user, name: 'John Swift', email: 'john@example.com', extern_uid: dn, provider: 'twitter', username: 'john') }
+
+            it "updates the gl_user name" do
+              oauth_user.save # rubocop:disable Rails/SaveBang
+
+              expect(gl_user).to be_valid
+              expect(gl_user.name).to eql 'John'
+            end
+          end
+        end
       end
 
       context "with auto_link_ldap_user enabled" do
@@ -418,54 +450,41 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
             end
 
             context "and LDAP user has an account already" do
+              let(:provider) { 'ldapmain' }
+
+              before do
+                allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(ldap_user)
+                stub_omniauth_config(sync_profile_attributes: true)
+                allow(Gitlab.config.ldap).to receive(:enabled).and_return(true)
+              end
+
               context 'when sync_name is disabled' do
                 before do
-                  allow(Gitlab.config.ldap).to receive(:enabled).and_return(true)
-                  allow(Gitlab.config.ldap).to receive(:sync_name).and_return(false)
+                  stub_ldap_config(sync_name: false)
                 end
 
-                let!(:existing_user) { create(:omniauth_user, name: 'John Doe', email: 'john@example.com', extern_uid: dn, provider: 'ldapmain', username: 'john') }
+                let!(:existing_user) { create(:omniauth_user, name: 'John Deo', email: 'john@example.com', extern_uid: dn, provider: 'ldapmain', username: 'john') }
 
-                it "adds the omniauth identity to the LDAP account" do
-                  allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(ldap_user)
-
+                it "does not update the user name" do
                   oauth_user.save # rubocop:disable Rails/SaveBang
 
                   expect(gl_user).to be_valid
-                  expect(gl_user.username).to eql 'john'
-                  expect(gl_user.name).to eql 'John Doe'
-                  expect(gl_user.email).to eql 'john@example.com'
-                  expect(gl_user.identities.length).to be 2
-                  identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
-                  expect(identities_as_hash).to match_array(
-                    [
-                      { provider: 'ldapmain', extern_uid: dn },
-                      { provider: 'twitter', extern_uid: uid }
-                    ]
-                  )
+                  expect(gl_user.name).to eql 'John Deo'
                 end
               end
 
               context 'when sync_name is enabled' do
+                before do
+                  stub_ldap_config(sync_name: true)
+                end
+
                 let!(:existing_user) { create(:omniauth_user, name: 'John Swift', email: 'john@example.com', extern_uid: dn, provider: 'ldapmain', username: 'john') }
 
-                it "adds the omniauth identity to the LDAP account" do
-                  allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(ldap_user)
-
+                it "updates the user name" do
                   oauth_user.save # rubocop:disable Rails/SaveBang
 
                   expect(gl_user).to be_valid
-                  expect(gl_user.username).to eql 'john'
-                  expect(gl_user.name).to eql 'John Swift'
-                  expect(gl_user.email).to eql 'john@example.com'
-                  expect(gl_user.identities.length).to be 2
-                  identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
-                  expect(identities_as_hash).to match_array(
-                    [
-                      { provider: 'ldapmain', extern_uid: dn },
-                      { provider: 'twitter', extern_uid: uid }
-                    ]
-                  )
+                  expect(gl_user.name).to eql 'John'
                 end
               end
             end

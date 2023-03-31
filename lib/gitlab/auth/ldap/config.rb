@@ -184,6 +184,10 @@ module Gitlab
           options['lowercase_usernames']
         end
 
+        def sync_name
+          options['sync_name']
+        end
+
         def name_proc
           if allow_username_or_email_login
             proc { |name| name.gsub(/@.*\z/, '') }

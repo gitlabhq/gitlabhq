@@ -258,7 +258,7 @@ module Gitlab
           metadata = gl_user.build_user_synced_attributes_metadata
 
           if sync_profile_from_provider?
-            UserSyncedAttributesMetadata.syncable_attributes.each do |key|
+            UserSyncedAttributesMetadata.syncable_attributes(auth_hash.provider).each do |key|
               if auth_hash.has_attribute?(key) && gl_user.sync_attribute?(key)
                 gl_user.public_send("#{key}=".to_sym, auth_hash.public_send(key)) # rubocop:disable GitlabSecurity/PublicSend
                 metadata.set_attribute_synced(key, true)

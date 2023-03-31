@@ -27,7 +27,6 @@ end
 
 # backwards compatibility, we only have one host
 if Settings.ldap['enabled'] || Rails.env.test?
-  Settings.ldap['sync_name'] = true if Settings.ldap['sync_name'].nil?
   if Settings.ldap['host'].present?
     # We detected old LDAP configuration syntax. Update the config to make it
     # look like it was entered with the new syntax.
@@ -67,6 +66,8 @@ if Settings.ldap['enabled'] || Rails.env.test?
     # Expose ability to set `tls_options` directly. Deprecate `ca_file` and
     # `ssl_version` in favor of `tls_options` hash option.
     server['tls_options'] ||= {}
+
+    server['sync_name'] = true if server['sync_name'].nil?
 
     if server['ssl_version'] || server['ca_file']
       Gitlab::AppLogger.warn 'DEPRECATED: LDAP options `ssl_version` and `ca_file` should be nested within `tls_options`'
