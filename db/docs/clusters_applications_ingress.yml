@@ -1,7 +1,5 @@
 ---
 table_name: clusters_applications_ingress
-classes:
-- Clusters::Applications::Ingress
 feature_categories:
 - kubernetes_management
 description: "(Deprecated) A GitLab managed Ingress installation in a Kubernetes cluster"

@@ -28,6 +28,7 @@ module API
       end
 
       post '/lint', urgency: :low do
+        render_api_error!('410 Gone', 410) unless Feature.disabled?(:ci_remove_post_lint, current_user)
         unauthorized! unless can_lint_ci?
 
         result = Gitlab::Ci::Lint.new(project: nil, current_user: current_user)
@@ -56,7 +57,7 @@ module API
       end
 
       get ':id/ci/lint', urgency: :low do
-        authorize! :read_code, user_project
+        authorize_read_code!
 
         if user_project.commit.present?
           content = user_project.repository.gitlab_ci_yml_for(user_project.commit.id, user_project.ci_config_path_or_default)

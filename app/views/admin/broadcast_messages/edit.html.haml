@@ -2,17 +2,4 @@
 - breadcrumb_title @broadcast_message.id
 - page_title _("Broadcast Messages")
 
-#js-broadcast-message{ data: {
-  id: @broadcast_message.id,
-  message: @broadcast_message.message,
-  broadcast_type: @broadcast_message.broadcast_type,
-  theme: @broadcast_message.theme,
-  dismissable: @broadcast_message.dismissable.to_s,
-  target_access_levels: @broadcast_message.target_access_levels,
-  messages_path: admin_broadcast_messages_path,
-  preview_path: preview_admin_broadcast_messages_path,
-  target_path: @broadcast_message.target_path,
-  starts_at: @broadcast_message.starts_at,
-  ends_at: @broadcast_message.ends_at,
-  target_access_level_options: target_access_level_options.to_json,
-} }
+#js-broadcast-message{ data: broadcast_message_data(@broadcast_message) }

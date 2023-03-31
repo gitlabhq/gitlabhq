@@ -207,7 +207,6 @@ RSpec.describe 'Database schema', feature_category: :database do
     'Ci::Processable' => %w[failure_reason],
     'Ci::Runner' => %w[access_level],
     'Ci::Stage' => %w[status],
-    'Clusters::Applications::Ingress' => %w[ingress_type],
     'Clusters::Cluster' => %w[platform_type provider_type],
     'CommitStatus' => %w[failure_reason],
     'GenericCommitStatus' => %w[failure_reason],

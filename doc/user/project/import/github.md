@@ -80,10 +80,9 @@ Before you begin, ensure that any GitHub user you want to map to a GitLab user h
 [publicly visible email address](https://docs.github.com/en/rest/users#get-a-user) on GitHub.
 
 If you are importing to GitLab.com, you can alternatively import GitHub repositories using a [personal access token](#use-a-github-token).
-We do not recommend this method, as it does not associate all user activity (such as issues and pull requests) with matching GitLab users.
 
-User-matching attempts occur in that order, and if a user is not identified either way, the activity is associated with
-the user account that is performing the import.
+If a GitHub user's public email address doesn't match any GitLab user email address, the user's activity is associated with the user account that is
+performing the import.
 
 NOTE:
 If you are using a self-managed GitLab instance or if you are importing from GitHub Enterprise, this process requires that you have configured
@@ -101,9 +100,7 @@ Prerequisite:
 
 - Authentication token with administrator access.
 
-Using a personal access token to import projects is not recommended. If you are a GitLab.com user,
-you can use a personal access token to import your project from GitHub, but this method cannot
-associate all user activity (such as issues and pull requests) with matching GitLab users.
+If you are a GitLab.com user, you can use a personal access token to import your project from GitHub.
 If you are an administrator of a self-managed GitLab instance or if you are importing from
 GitHub Enterprise, you cannot use a personal access token.
 The [GitHub integration method (above)](#use-the-github-integration) is recommended for all users.

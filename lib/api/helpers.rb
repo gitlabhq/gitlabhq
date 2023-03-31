@@ -332,6 +332,10 @@ module API
       authorize! :read_build, user_project
     end
 
+    def authorize_read_code!
+      authorize! :read_code, user_project
+    end
+
     def authorize_read_build_trace!(build)
       authorize! :read_build_trace, build
     end

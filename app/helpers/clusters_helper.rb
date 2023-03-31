@@ -37,7 +37,6 @@ module ClustersHelper
       editable: can_edit.to_s,
       environment_scope: cluster.environment_scope,
       base_domain: cluster.base_domain,
-      application_ingress_external_ip: cluster.application_ingress_external_ip,
       auto_devops_help_path: help_page_path('topics/autodevops/index'),
       external_endpoint_help_path: help_page_path('user/project/clusters/gitlab_managed_clusters.md', anchor: 'base-domain')
     }

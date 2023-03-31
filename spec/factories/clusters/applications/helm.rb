@@ -93,9 +93,5 @@ FactoryBot.define do
         helm_installed { false }
       end
     end
-
-    factory :clusters_applications_ingress, class: 'Clusters::Applications::Ingress' do
-      cluster factory: %i(cluster with_installed_helm provided_by_gcp)
-    end
   end
 end

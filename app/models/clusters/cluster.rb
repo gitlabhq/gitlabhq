@@ -12,8 +12,7 @@ module Clusters
     self.table_name = 'clusters'
 
     APPLICATIONS = {
-      Clusters::Applications::Helm.application_name => Clusters::Applications::Helm,
-      Clusters::Applications::Ingress.application_name => Clusters::Applications::Ingress
+      Clusters::Applications::Helm.application_name => Clusters::Applications::Helm
     }.freeze
     DEFAULT_ENVIRONMENT = '*'
     KUBE_INGRESS_BASE_DOMAIN = 'KUBE_INGRESS_BASE_DOMAIN'
@@ -50,7 +49,6 @@ module Clusters
     end
 
     has_one_cluster_application :helm
-    has_one_cluster_application :ingress
 
     has_many :kubernetes_namespaces
     has_many :metrics_dashboard_annotations, class_name: 'Metrics::Dashboard::Annotation', inverse_of: :cluster
@@ -77,9 +75,6 @@ module Clusters
 
     delegate :status, to: :provider, allow_nil: true
     delegate :status_reason, to: :provider, allow_nil: true
-
-    delegate :external_ip, to: :application_ingress, prefix: true, allow_nil: true
-    delegate :external_hostname, to: :application_ingress, prefix: true, allow_nil: true
 
     alias_attribute :base_domain, :domain
     alias_attribute :provided_by_user?, :user?
@@ -262,10 +257,6 @@ module Clusters
 
     def application_helm_available?
       !!application_helm&.available?
-    end
-
-    def application_ingress_available?
-      !!application_ingress&.available?
     end
 
     def integration_prometheus_available?

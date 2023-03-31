@@ -24,7 +24,6 @@ feature_category: :kubernetes_management do
   it { is_expected.to have_one(:platform_kubernetes) }
   it { is_expected.to have_one(:integration_prometheus) }
   it { is_expected.to have_one(:application_helm) }
-  it { is_expected.to have_one(:application_ingress) }
   it { is_expected.to have_many(:kubernetes_namespaces) }
   it { is_expected.to have_one(:cluster_project) }
   it { is_expected.to have_many(:deployment_clusters) }
@@ -34,8 +33,6 @@ feature_category: :kubernetes_management do
 
   it { is_expected.to delegate_method(:status).to(:provider) }
   it { is_expected.to delegate_method(:status_reason).to(:provider) }
-  it { is_expected.to delegate_method(:external_ip).to(:application_ingress).with_prefix }
-  it { is_expected.to delegate_method(:external_hostname).to(:application_ingress).with_prefix }
 
   it { is_expected.to respond_to :project }
   it { is_expected.to be_namespace_per_environment }
@@ -711,10 +708,9 @@ feature_category: :kubernetes_management do
 
     context 'when applications are created' do
       let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
-      let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
 
       it 'returns a list of created applications' do
-        is_expected.to contain_exactly(helm, ingress)
+        is_expected.to contain_exactly(helm)
       end
     end
   end
@@ -1488,36 +1484,6 @@ feature_category: :kubernetes_management do
 
     context 'with application_helm' do
       let(:application_helm) { instance_double(Clusters::Applications::Helm, available?: available?) }
-
-      context 'with available? set to true' do
-        let(:available?) { true }
-
-        it { is_expected.to eq(true) }
-      end
-
-      context 'with available? set to false' do
-        let(:available?) { false }
-
-        it { is_expected.to eq(false) }
-      end
-    end
-  end
-
-  describe '#application_ingress_available?' do
-    subject(:application_ingress_available?) { cluster.application_ingress_available? }
-
-    before do
-      allow(cluster).to receive(:application_ingress).and_return(application_ingress)
-    end
-
-    context 'without application_ingress' do
-      let(:application_ingress) {}
-
-      it { is_expected.to eq(false) }
-    end
-
-    context 'with application_ingress' do
-      let(:application_ingress) { instance_double(Clusters::Applications::Ingress, available?: available?) }
 
       context 'with available? set to true' do
         let(:available?) { true }
