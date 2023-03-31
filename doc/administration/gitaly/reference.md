@@ -155,36 +155,6 @@ Prometheus query to see the hit rate:
 sum(rate(gitaly_catfile_cache_total{type="hit"}[5m])) / sum(rate(gitaly_catfile_cache_total{type=~"(hit)|(miss)"}[5m]))
 ```
 
-### `gitaly-ruby`
-
-A Gitaly process uses one or more `gitaly-ruby` helper processes to
-execute RPCs implemented in Ruby instead of Go. The `[gitaly-ruby]`
-section of the configuration file contains settings for these helper processes.
-
-These processes are known to occasionally suffer from memory leaks.
-Gitaly restarts its `gitaly-ruby` helpers when their memory exceeds the
-`max_rss` limit.
-
-| Name | Type | Required | Description |
-| ---- | ---- | -------- | ----------- |
-| `dir` | string | yes | Path to where `gitaly-ruby` is installed (needed to boot the process).|
-| `max_rss` | integer | no | Resident set size limit that triggers a `gitaly-ruby` restart, in bytes. Default is `200000000` (200 MB). |
-| `graceful_restart_timeout` | string | no | Grace period before a `gitaly-ruby` process is forcibly terminated after exceeding `max_rss`. Default is `10m` (10 minutes).|
-| `restart_delay` | string | no |Time that `gitaly-ruby` memory must remain high before a restart. Default is `5m` (5 minutes).|
-| `num_workers` | integer | no |Number of `gitaly-ruby` worker processes. Try increasing this number in case of `ResourceExhausted` errors. Default is `2`, minimum is `2`.|
-| `linguist_languages_path` | string | no | Override for dynamic `languages.json` discovery. Defaults to an empty string (use of dynamic discovery).|
-
-Example:
-
-```toml
-[gitaly-ruby]
-dir = "/home/git/gitaly/ruby"
-max_rss = 200000000
-graceful_restart_timeout = "10m"
-restart_delay = "5m"
-num_workers = 2
-```
-
 ### GitLab Shell
 
 For historical reasons

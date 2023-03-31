@@ -396,7 +396,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   consistent in our documentation and product defaults.
 
   For example, previously:
-  
+
   - Omnibus GitLab default (`sidekiq['max_concurrency']`): 50
   - From source installation default: 50
   - Helm chart default (`gitlab.sidekiq.concurrency`): 25
@@ -1628,16 +1628,6 @@ gitaly['configuration'] = {
         value: ...,
       },
     ],
-  },
-  'gitaly-ruby': {
-    # gitaly['ruby_max_rss']
-    max_rss: ...,
-    # gitaly['ruby_graceful_restart_timeout']
-    graceful_restart_timeout: ...,
-    # gitaly['ruby_restart_delay']
-    restart_delay: ...,
-    # gitaly['ruby_num_workers']
-    num_workers: ...,
   },
   # gitaly['storage']. While the structure is the same, the string keys in the array elements
   # should be replaced by symbols as elsewhere. {'key' => 'value'}, should become {key: 'value'}.

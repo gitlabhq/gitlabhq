@@ -13,8 +13,29 @@ module Members
         Gitlab::Access.sym_options_with_owner
       end
 
-      def add_members( # rubocop:disable Metrics/ParameterLists
-        source,
+      # Add members to sources with passed access option
+      #
+      # access can be an integer representing a access code
+      # or symbol like :maintainer representing role
+      #
+      # Ex.
+      #   add_members(
+      #     sources,
+      #     user_ids,
+      #     Member::MAINTAINER
+      #   )
+      #
+      #   add_members(
+      #     sources,
+      #     user_ids,
+      #     :maintainer
+      #   )
+      #
+      # @param sources [Group, Project, Array<Group>, Array<Project>, Group::ActiveRecord_Relation,
+      # Project::ActiveRecord_Relation] - Can't be an array of source ids because we don't know the type of source.
+      # @return Array<Member>
+      def add_members(
+        sources,
         invitees,
         access_level,
         current_user: nil,
@@ -22,52 +43,58 @@ module Members
         tasks_to_be_done: [],
         tasks_project_id: nil,
         ldap: nil
-      )
+      ) # rubocop:disable Metrics/ParameterLists
         return [] unless invitees.present?
 
-        # If this user is attempting to manage Owner members and doesn't have permission, do not allow
-        return [] if managing_owners?(current_user, access_level) && cannot_manage_owners?(source, current_user)
-
-        emails, users, existing_members = parse_users_list(source, invitees)
+        sources = Array.wrap(sources) if sources.is_a?(ApplicationRecord) # For single source
 
         Member.transaction do
-          common_arguments = {
-            source: source,
-            access_level: access_level,
-            existing_members: existing_members,
-            current_user: current_user,
-            expires_at: expires_at,
-            tasks_to_be_done: tasks_to_be_done,
-            tasks_project_id: tasks_project_id,
-            ldap: ldap
-          }
+          sources.flat_map do |source|
+            # If this user is attempting to manage Owner members and doesn't have permission, do not allow
+            next [] if managing_owners?(current_user, access_level) && cannot_manage_owners?(source, current_user)
 
-          members = emails.map do |email|
-            new(invitee: email, builder: InviteMemberBuilder, **common_arguments).execute
+            emails, users, existing_members = parse_users_list(source, invitees)
+
+            common_arguments = {
+              source: source,
+              access_level: access_level,
+              existing_members: existing_members,
+              current_user: current_user,
+              expires_at: expires_at,
+              tasks_to_be_done: tasks_to_be_done,
+              tasks_project_id: tasks_project_id,
+              ldap: ldap
+            }
+
+            members = emails.map do |email|
+              new(invitee: email, builder: InviteMemberBuilder, **common_arguments).execute
+            end
+
+            members += users.map do |user|
+              new(invitee: user, **common_arguments).execute
+            end
+
+            members
           end
-
-          members += users.map do |user|
-            new(invitee: user, **common_arguments).execute
-          end
-
-          members
         end
       end
 
-      def add_member( # rubocop:disable Metrics/ParameterLists
+      def add_member(
         source,
         invitee,
         access_level,
         current_user: nil,
         expires_at: nil,
         ldap: nil
-      )
-        add_members(source,
-                  [invitee],
-                  access_level,
-                  current_user: current_user,
-                  expires_at: expires_at,
-                  ldap: ldap).first
+      ) # rubocop:disable Metrics/ParameterLists
+        add_members(
+          source,
+          [invitee],
+          access_level,
+          current_user: current_user,
+          expires_at: expires_at,
+          ldap: ldap
+        ).first
       end
 
       private
@@ -217,8 +244,7 @@ module Members
     end
 
     def approve_request
-      ::Members::ApproveAccessRequestService.new(current_user,
-                                                 access_level: access_level)
+      ::Members::ApproveAccessRequestService.new(current_user, access_level: access_level)
                                             .execute(
                                               member,
                                               skip_authorization: ldap || skip_authorization?,

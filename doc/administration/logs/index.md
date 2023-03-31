@@ -686,14 +686,6 @@ Unix timestamp format, and `gzip`-compressed (like `@1584057562.s`).
 This file is at `/var/log/gitlab/gitlab-rails/grpc.log` for Omnibus GitLab
 packages. Native [gRPC](https://grpc.io/) logging used by Gitaly.
 
-### `gitaly_ruby_json.log`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/2678) in GitLab 13.6.
-
-This file is at `/var/log/gitlab/gitaly/gitaly_ruby_json.log` and is
-produced by [`gitaly-ruby`](../gitaly/reference.md#gitaly-ruby). It contains an
-access log of gRPC calls made by Gitaly to `gitaly-ruby`.
-
 ### `gitaly_hooks.log`
 
 This file is at `/var/log/gitlab/gitaly/gitaly_hooks.log` and is

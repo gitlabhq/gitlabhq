@@ -26,7 +26,6 @@ Configure Gitaly in one of two ways:
 The following configuration options are also available:
 
 - Enabling [TLS support](#enable-tls-support).
-- Configuring the [number of `gitaly-ruby` workers](#configure-number-of-gitaly-ruby-workers).
 - Limiting [RPC concurrency](#limit-rpc-concurrency).
 
 ## About the Gitaly token
@@ -781,50 +780,6 @@ Recommended settings:
 
 NOTE:
 [Epic 2862](https://gitlab.com/groups/gitlab-org/-/epics/2862) proposes to remove `gitaly-ruby`.
-
-### Configure number of `gitaly-ruby` workers
-
-`gitaly-ruby` has much less capacity than Gitaly implemented in Go. If your Gitaly server has to handle lots of
-requests, the default setting of having just one active `gitaly-ruby` sidecar might not be enough.
-
-If you see `ResourceExhausted` errors from Gitaly, it's very likely that you have not enough
-`gitaly-ruby` capacity.
-
-Increase the number of `gitaly-ruby` processes on your Gitaly server in one of two ways:
-
-::Tabs
-
-:::TabTitle Linux package (Omnibus)
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitaly['configuration'] = {
-      # ...
-      'gitaly-ruby': {
-        # ...
-        #
-        # Default is 2 workers. The minimum is 2; 1 worker is always reserved as
-        # a passive stand-by.
-        num_workers: 4
-      },
-   }
-   ```
-
-1. Save the file, and then [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-
-:::TabTitle Self-compiled (source)
-
-1. Edit `/home/git/gitaly/config.toml`:
-
-   ```toml
-   [gitaly-ruby]
-   num_workers = 4
-   ```
-
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
-
-::EndTabs
 
 ## Limit RPC concurrency
 

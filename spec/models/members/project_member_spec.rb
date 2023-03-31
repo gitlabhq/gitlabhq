@@ -136,24 +136,6 @@ RSpec.describe ProjectMember do
     end
   end
 
-  describe '.add_members_to_projects' do
-    it 'adds the given users to the given projects' do
-      projects = create_list(:project, 2)
-      users = create_list(:user, 2)
-
-      described_class.add_members_to_projects(
-        [projects.first.id, projects.second.id],
-        [users.first.id, users.second],
-        described_class::MAINTAINER)
-
-      expect(projects.first.users).to include(users.first)
-      expect(projects.first.users).to include(users.second)
-
-      expect(projects.second.users).to include(users.first)
-      expect(projects.second.users).to include(users.second)
-    end
-  end
-
   describe '.truncate_teams' do
     before do
       @project_1 = create(:project)

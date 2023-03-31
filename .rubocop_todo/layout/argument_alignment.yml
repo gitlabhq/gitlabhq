@@ -611,7 +611,6 @@ Layout/ArgumentAlignment:
     - 'app/services/markdown_content_rewriter_service.rb'
     - 'app/services/members/base_service.rb'
     - 'app/services/members/create_service.rb'
-    - 'app/services/members/creator_service.rb'
     - 'app/services/merge_requests/build_service.rb'
     - 'app/services/merge_requests/ff_merge_service.rb'
     - 'app/services/merge_requests/merge_service.rb'
