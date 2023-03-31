@@ -16,10 +16,12 @@ RSpec.describe Gitlab::Template::Finders::GlobalTemplateFinder do
   end
 
   subject(:finder) do
-    described_class.new(base_dir, '',
-                        { 'General' => '', 'Bar' => 'Bar' },
-                        include_categories_for_file,
-                        excluded_patterns: excluded_patterns)
+    described_class.new(
+      base_dir, '',
+      { 'General' => '', 'Bar' => 'Bar' },
+      include_categories_for_file,
+      excluded_patterns: excluded_patterns
+    )
   end
 
   let(:excluded_patterns) { [] }

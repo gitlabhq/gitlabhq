@@ -25,24 +25,28 @@ RSpec.describe Groups::AcceptingProjectTransfersFinder do
     group_where_direct_maintainer.add_maintainer(user)
     group_where_direct_developer.add_developer(user)
 
-    create(:group_group_link, :owner,
-           shared_with_group: group_where_direct_owner,
-           shared_group: shared_with_group_where_direct_owner_as_owner
+    create(
+      :group_group_link, :owner,
+      shared_with_group: group_where_direct_owner,
+      shared_group: shared_with_group_where_direct_owner_as_owner
     )
 
-    create(:group_group_link, :guest,
-           shared_with_group: group_where_direct_owner,
-           shared_group: shared_with_group_where_direct_owner_as_guest
+    create(
+      :group_group_link, :guest,
+      shared_with_group: group_where_direct_owner,
+      shared_group: shared_with_group_where_direct_owner_as_guest
     )
 
-    create(:group_group_link, :maintainer,
-           shared_with_group: group_where_direct_owner,
-           shared_group: shared_with_group_where_direct_owner_as_maintainer
+    create(
+      :group_group_link, :maintainer,
+      shared_with_group: group_where_direct_owner,
+      shared_group: shared_with_group_where_direct_owner_as_maintainer
     )
 
-    create(:group_group_link, :owner,
-           shared_with_group: group_where_direct_developer,
-           shared_group: shared_with_group_where_direct_developer_as_owner
+    create(
+      :group_group_link, :owner,
+      shared_with_group: group_where_direct_developer,
+      shared_group: shared_with_group_where_direct_developer_as_owner
     )
   end
 
@@ -51,13 +55,13 @@ RSpec.describe Groups::AcceptingProjectTransfersFinder do
 
     it 'only returns groups where the user has access to transfer projects to' do
       expect(result).to match_array([
-                                      group_where_direct_owner,
-                                      subgroup_of_group_where_direct_owner,
-                                      group_where_direct_maintainer,
-                                      shared_with_group_where_direct_owner_as_owner,
-                                      shared_with_group_where_direct_owner_as_maintainer,
-                                      subgroup_of_shared_with_group_where_direct_owner_as_maintainer
-                                    ])
+        group_where_direct_owner,
+        subgroup_of_group_where_direct_owner,
+        group_where_direct_maintainer,
+        shared_with_group_where_direct_owner_as_owner,
+        shared_with_group_where_direct_owner_as_maintainer,
+        subgroup_of_shared_with_group_where_direct_owner_as_maintainer
+      ])
     end
   end
 end

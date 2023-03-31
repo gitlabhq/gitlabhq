@@ -75,6 +75,7 @@ billable user, with the following exceptions:
     - [Support Bot](../../user/project/service_desk.md#support-bot-user).
     - [Bot users for projects](../../user/project/settings/project_access_tokens.md#bot-users-for-projects).
     - [Bot users for groups](../../user/group/settings/group_access_tokens.md#bot-users-for-groups).
+    - Other [internal users](../../development/internal_users.md#internal-users).
 
 **Billable users** as reported in the `/admin` section is updated once per day.
 

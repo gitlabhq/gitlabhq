@@ -222,14 +222,15 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
 
       context 'search query given' do
         let_it_be(:alert) do
-          create(:alert_management_alert,
-                 :with_fingerprint,
-                 project: project,
-                 title: 'Title',
-                 description: 'Desc',
-                 service: 'Service',
-                 monitoring_tool: 'Monitor'
-                )
+          create(
+            :alert_management_alert,
+            :with_fingerprint,
+            project: project,
+            title: 'Title',
+            description: 'Desc',
+            service: 'Service',
+            monitoring_tool: 'Monitor'
+          )
         end
 
         context 'searching title' do

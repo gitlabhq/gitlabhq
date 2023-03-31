@@ -74,11 +74,13 @@ RSpec.describe NotesFinder do
 
     context 'on restricted projects' do
       let(:project) do
-        create(:project,
-               :public,
-               :issues_private,
-               :snippets_private,
-               :merge_requests_private)
+        create(
+          :project,
+          :public,
+          :issues_private,
+          :snippets_private,
+          :merge_requests_private
+        )
       end
 
       it 'publicly excludes notes on merge requests' do

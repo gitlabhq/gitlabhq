@@ -130,8 +130,10 @@ RSpec.describe GroupDescendantsFinder do
     it 'does not include projects shared with the group' do
       project = create(:project, namespace: group)
       other_project = create(:project)
-      other_project.project_group_links.create!(group: group,
-                                                group_access: Gitlab::Access::MAINTAINER)
+      other_project.project_group_links.create!(
+        group: group,
+        group_access: Gitlab::Access::MAINTAINER
+      )
 
       expect(finder.execute).to contain_exactly(project)
     end
@@ -140,9 +142,11 @@ RSpec.describe GroupDescendantsFinder do
   context 'with shared groups' do
     let_it_be(:other_group) { create(:group) }
     let_it_be(:shared_group_link) do
-      create(:group_group_link,
-            shared_group: group,
-            shared_with_group: other_group)
+      create(
+        :group_group_link,
+        shared_group: group,
+        shared_with_group: other_group
+      )
     end
 
     context 'without common ancestor' do
@@ -230,9 +234,11 @@ RSpec.describe GroupDescendantsFinder do
             other_user = create(:user)
             other_subgroup.add_developer(other_user)
 
-            finder = described_class.new(current_user: other_user,
-                                         parent_group: group,
-                                         params: params)
+            finder = described_class.new(
+              current_user: other_user,
+              parent_group: group,
+              params: params
+            )
 
             expect(finder.execute).to contain_exactly(other_subgroup, public_subgroup, other_subsubgroup)
           end

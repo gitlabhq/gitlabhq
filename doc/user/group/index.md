@@ -20,6 +20,9 @@ For larger organizations, you can also create [subgroups](subgroups/index.md).
 
 For more information about creating and managing your groups, see [Manage groups](manage.md).
 
+NOTE:
+Self-managed customers should create a top-level group so you can see an overview of your organization. We are working on creating an [organization view](https://gitlab.com/groups/gitlab-org/-/epics/9266), so you can see all groups.
+
 ## Group visibility
 
 Like projects, a group can be configured to limit the visibility of it to:

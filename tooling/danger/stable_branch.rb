@@ -42,18 +42,18 @@ module Tooling
       MSG
 
       PIPELINE_EXPEDITE_ERROR_MESSAGE = <<~MSG
-      ~"pipeline:expedite" is not allowed on stable branches because it causes the `e2e:package-and-test` job to be skipped.
+      ~"pipeline:expedite" is not allowed on stable branches because it causes the `e2e:package-and-test-ee` job to be skipped.
       MSG
 
       NEEDS_PACKAGE_AND_TEST_MESSAGE = <<~MSG
-      The `e2e:package-and-test` job is not present, has been canceled, or needs to be automatically triggered.
+      The `e2e:package-and-test-ee` job is not present, has been canceled, or needs to be automatically triggered.
       Please ensure the job is present in the latest pipeline, if necessary, retry the `danger-review` job.
-      Read the "QA e2e:package-and-test" section for more details.
+      Read the "QA e2e:package-and-test-ee" section for more details.
       MSG
 
       WARN_PACKAGE_AND_TEST_MESSAGE = <<~MSG
-      **The `e2e:package-and-test` job needs to succeed or have approval from a Software Engineer in Test.**
-      Read the "QA e2e:package-and-test" section for more details.
+      **The `e2e:package-and-test-ee` job needs to succeed or have approval from a Software Engineer in Test.**
+      Read the "QA e2e:package-and-test-ee" section for more details.
       MSG
 
       # rubocop:disable Style/SignalException

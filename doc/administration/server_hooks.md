@@ -150,15 +150,32 @@ To create a global server hook for all repositories:
 If the server hook code is properly implemented, it should execute when the Git hook is next triggered. Hooks are executed in alphabetical order by filename in the hook type
 subdirectories.
 
-## Remove server hooks for a repository using Gitaly CLI
+## Remove server hooks for a repository
+
+::Tabs
+
+:::TabTitle GitLab 15.11 and later
 
 > [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access.
 
-To remove hooks using the Gitaly CLI, pass an empty tarball to `hook set` to indicate that the repository should contain no hooks. For example:
+Prerequisites:
+
+- The [storage name and relative path](repository_storage_types.md#from-project-name-to-hashed-path) for the repository.
+
+To remove server hooks, pass an empty tarball to `hook set` to indicate that the repository should contain no hooks. For example:
 
 ```shell
 cat empty_hooks.tar | gitaly hooks set --storage <storage> --repository <relative path> --config <config path>`.
 ```
+
+:::TabTitle GitLab 15.10 and earlier
+
+To remove server hooks:
+
+1. Go to the location of the repository on disk.
+1. Delete the server hooks in the `custom_hooks` directory.
+
+::EndTabs
 
 ## Chained server hooks
 

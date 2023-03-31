@@ -331,9 +331,11 @@ RSpec.describe DeploymentsFinder do
 
         with_them do
           it 'returns the deployments unordered' do
-            expect(subject.to_a).to contain_exactly(group_project_1_deployment,
-                                                    group_project_2_deployment,
-                                                    subgroup_project_1_deployment)
+            expect(subject.to_a).to contain_exactly(
+              group_project_1_deployment,
+              group_project_2_deployment,
+              subgroup_project_1_deployment
+            )
           end
         end
       end

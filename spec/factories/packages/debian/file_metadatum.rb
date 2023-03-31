@@ -61,7 +61,7 @@ FactoryBot.define do
           'Source' => package_file.package.name,
           'Version' => package_file.package.version,
           'Architecture' => 'amd64',
-          'Maintainer' => "#{FFaker::Name.name} <#{FFaker::Internet.email}>",
+          'Maintainer' => "#{FFaker::NameCN.name} #{FFaker::Name.name} <#{FFaker::Internet.email}>",
           'Installed-Size' => '7',
           'Section' => 'libs',
           'Priority' => 'optional',

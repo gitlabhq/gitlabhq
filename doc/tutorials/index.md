@@ -80,13 +80,14 @@ Use GitLab Pages to publish a static website directly from your project.
 | [Create a Pages website from a CI/CD template](../user/project/pages/getting_started/pages_ci_cd_template.md) | Quickly generate a Pages website for your project using a CI/CD template for a popular Static Site Generator (SSG). | **{star}** |
 | [Create a Pages website from scratch](../user/project/pages/getting_started/pages_from_scratch.md) | Create all the components of a Pages website from a blank project. | |
 
-## Secure your application
+## Secure your application and check compliance
 
-GitLab can check your application for security vulnerabilities.
+GitLab can check your application for security vulnerabilities and that it meets compliance requirements.
 
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
 | [Set up dependency scanning](https://about.gitlab.com/blog/2021/01/14/try-dependency-scanning/) | Try out dependency scanning, which checks for known vulnerabilities in dependencies. | **{star}** |
+| [Create a compliance pipeline](create_compliance_pipeline.md) | Learn how to create compliance pipelines for your groups. | **{star}** |
 | [Get started with GitLab application security](../user/application_security/get-started-security.md) | Follow recommended steps to set up security tools. | |
 | [GitLab Security Essentials](https://levelup.gitlab.com/courses/security-essentials) | Learn about the essential security capabilities of GitLab in this self-paced course. | |
 

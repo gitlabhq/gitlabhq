@@ -237,25 +237,28 @@ RSpec.describe SnippetsFinder do
         it 'returns all personal snippets for the admin' do
           snippets = described_class.new(admin, only_personal: true).execute
 
-          expect(snippets).to contain_exactly(admin_private_personal_snippet,
-                                              private_personal_snippet,
-                                              internal_personal_snippet,
-                                              public_personal_snippet)
+          expect(snippets).to contain_exactly(
+            admin_private_personal_snippet,
+            private_personal_snippet,
+            internal_personal_snippet,
+            public_personal_snippet
+          )
         end
 
         it 'returns only personal snippets visible by user' do
           snippets = described_class.new(user, only_personal: true).execute
 
-          expect(snippets).to contain_exactly(private_personal_snippet,
-                                              internal_personal_snippet,
-                                              public_personal_snippet)
+          expect(snippets).to contain_exactly(
+            private_personal_snippet,
+            internal_personal_snippet,
+            public_personal_snippet
+          )
         end
 
         it 'returns only internal or public personal snippets for user without snippets' do
           snippets = described_class.new(user_without_snippets, only_personal: true).execute
 
-          expect(snippets).to contain_exactly(internal_personal_snippet,
-                                              public_personal_snippet)
+          expect(snippets).to contain_exactly(internal_personal_snippet, public_personal_snippet)
         end
       end
     end

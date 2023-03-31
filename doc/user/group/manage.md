@@ -8,6 +8,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Use groups to manage one or more related projects at the same time.
 
+NOTE:
+Self-managed customers should create a top-level group so you can see an overview of your organization. We are working on creating an [organization view](https://gitlab.com/groups/gitlab-org/-/epics/9266), so you can see all groups.
+
 ## View groups
 
 To view groups, on the top bar, select **Main menu > Groups > View all groups**.
