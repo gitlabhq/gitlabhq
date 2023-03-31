@@ -157,8 +157,13 @@
         %legend.col-form-label.col-form-label
           = s_("Profiles|Private contributions")
         = f.gitlab_ui_checkbox_component :include_private_contributions,
-          s_('Profiles|Include private contributions on my profile'),
+          s_('Profiles|Include private contributions on your profile'),
           help_text: s_("Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information.")
+      %fieldset.form-group.gl-form-group
+        %legend.col-form-label.col-form-label
+          = s_("Profiles|Achievements")
+        = f.gitlab_ui_checkbox_component :achievements_enabled,
+          s_('Profiles|Display achievements on your profile')
   .row.js-hide-when-nothing-matches-search
     .col-lg-12
       %hr

@@ -363,6 +363,15 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_cd1aeb22b34a() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."target_id_convert_to_bigint" := NEW."target_id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION trigger_dca935e3a712() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -15876,6 +15885,7 @@ CREATE TABLE events (
     group_id bigint,
     fingerprint bytea,
     id bigint NOT NULL,
+    target_id_convert_to_bigint bigint,
     CONSTRAINT check_97e06e05ad CHECK ((octet_length(fingerprint) <= 128))
 );
 
@@ -23334,6 +23344,7 @@ CREATE TABLE user_preferences (
     markdown_automatic_lists boolean DEFAULT true NOT NULL,
     use_legacy_web_ide boolean DEFAULT false NOT NULL,
     use_new_navigation boolean,
+    achievements_enabled boolean DEFAULT true NOT NULL,
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_d07ccd35f7 CHECK ((char_length(diffs_addition_color) <= 7))
 );
@@ -34182,6 +34193,8 @@ CREATE TRIGGER trigger_bfcbace4260d BEFORE INSERT OR UPDATE ON merge_request_use
 CREATE TRIGGER trigger_c2051020aa8b BEFORE INSERT OR UPDATE ON issue_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_c2051020aa8b();
 
 CREATE TRIGGER trigger_c5a5f48f12b0 BEFORE INSERT OR UPDATE ON epic_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_c5a5f48f12b0();
+
+CREATE TRIGGER trigger_cd1aeb22b34a BEFORE INSERT OR UPDATE ON events FOR EACH ROW EXECUTE FUNCTION trigger_cd1aeb22b34a();
 
 CREATE TRIGGER trigger_dca935e3a712 BEFORE INSERT OR UPDATE ON todos FOR EACH ROW EXECUTE FUNCTION trigger_dca935e3a712();
 

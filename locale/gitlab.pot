@@ -33460,6 +33460,9 @@ msgstr ""
 msgid "Profiles|Account scheduled for removal."
 msgstr ""
 
+msgid "Profiles|Achievements"
+msgstr ""
+
 msgid "Profiles|Active"
 msgstr ""
 
@@ -33541,6 +33544,9 @@ msgstr ""
 msgid "Profiles|Discord ID is too short (minimum is %{min_length} characters)."
 msgstr ""
 
+msgid "Profiles|Display achievements on your profile"
+msgstr ""
+
 msgid "Profiles|Do not show on profile"
 msgstr ""
 
@@ -33589,7 +33595,7 @@ msgstr ""
 msgid "Profiles|If after setting a password, the option to delete your account is still not available, please %{link_start}submit a request%{link_end} to begin the account deletion process."
 msgstr ""
 
-msgid "Profiles|Include private contributions on my profile"
+msgid "Profiles|Include private contributions on your profile"
 msgstr ""
 
 msgid "Profiles|Incoming email token was successfully reset"

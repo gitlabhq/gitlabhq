@@ -133,6 +133,7 @@ class ProfilesController < Profiles::ApplicationController
       :organization,
       :private_profile,
       :include_private_contributions,
+      :achievements_enabled,
       :timezone,
       :job_title,
       :pronouns,

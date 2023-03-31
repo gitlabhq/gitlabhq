@@ -546,4 +546,36 @@ RSpec.describe 'User page', feature_category: :user_profile do
       end
     end
   end
+
+  context 'achievements' do
+    it 'renders the user achievements mount point' do
+      subject
+
+      expect(page).to have_selector('#js-user-achievements')
+    end
+
+    context 'when the user has chosen not to display achievements' do
+      let(:user) { create(:user) }
+
+      before do
+        user.update!(achievements_enabled: false)
+      end
+
+      it 'does not render the user achievements mount point' do
+        subject
+
+        expect(page).not_to have_selector('#js-user-achievements')
+      end
+    end
+
+    context 'when the profile is private' do
+      let(:user) { create(:user, private_profile: true) }
+
+      it 'does not render the user achievements mount point' do
+        subject
+
+        expect(page).not_to have_selector('#js-user-achievements')
+      end
+    end
+  end
 end
