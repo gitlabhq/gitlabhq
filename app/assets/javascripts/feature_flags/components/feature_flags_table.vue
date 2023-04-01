@@ -108,7 +108,7 @@ export default {
         {{ s__('FeatureFlags|Status') }}
       </div>
       <div class="table-section section-20" role="columnheader">
-        {{ s__('FeatureFlags|Feature Flag') }}
+        {{ s__('FeatureFlags|Feature flag') }}
       </div>
       <div class="table-section section-40" role="columnheader">
         {{ s__('FeatureFlags|Environment Specs') }}
@@ -148,7 +148,7 @@ export default {
 
         <div class="table-section section-20" role="gridcell">
           <div class="table-mobile-header" role="rowheader">
-            {{ s__('FeatureFlags|Feature Flag') }}
+            {{ s__('FeatureFlags|Feature flag') }}
           </div>
           <div class="table-mobile-content d-flex flex-column js-feature-flag-title">
             <div class="gl-display-flex gl-align-items-center">

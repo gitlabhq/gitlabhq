@@ -30,7 +30,7 @@ As of [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73309)
 ## Accessibility merge request widget
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39425) in GitLab 13.0 behind the disabled [feature flag](../../administration/feature_flags.md) `:accessibility_report_view`.
-> - [Feature Flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/217372) in GitLab 13.1.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/217372) in GitLab 13.1.
 
 GitLab displays an **Accessibility Report** in the merge request widget area:
 

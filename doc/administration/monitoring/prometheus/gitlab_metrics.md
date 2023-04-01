@@ -173,7 +173,7 @@ The following metrics are available:
 
 The following metrics can be controlled by feature flags:
 
-| Metric                                                         | Feature Flag                                                       |
+| Metric                                                         | Feature flag                                                       |
 |:---------------------------------------------------------------|:-------------------------------------------------------------------|
 | `gitlab_view_rendering_duration_seconds`                       | `prometheus_metrics_view_instrumentation`                          |
 

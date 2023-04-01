@@ -94,7 +94,7 @@ Use the toggles to enable or disable features in the project.
 | **Metrics Dashboard**            | ✓                         | Control access to [metrics dashboard](../integrations/prometheus.md).                                                                                  |
 | **Releases**                     | ✓                         | Control access to [Releases](../releases/index.md).                                                                                                    |
 | **Environments**                 | ✓                         | Control access to [Environments and Deployments](../../../ci/environments/index.md).                                                                   |
-| **Feature flags**                | ✓                         | Control access to [Feature Flags](../../../operations/feature_flags.md).                                                                               |
+| **Feature flags**                | ✓                         | Control access to [Feature flags](../../../operations/feature_flags.md).                                                                               |
 | **Monitor**                      | ✓                         | Control access to [Monitor](../../../operations/index.md) features.                                                                                    |
 | **Infrastructure**               | ✓                         | Control access to [Infrastructure](../../infrastructure/index.md) features.                                                                            |
 

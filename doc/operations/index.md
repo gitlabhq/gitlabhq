@@ -76,4 +76,4 @@ an environment.
 
 - Deploy to different [environments](../ci/environments/index.md).
 - Connect your project to a [Kubernetes cluster](../user/infrastructure/clusters/index.md).
-- Create, toggle, and remove [Feature Flags](feature_flags.md).
+- Create, toggle, and remove [feature flags](feature_flags.md).

@@ -163,7 +163,7 @@ function check_fixtures_download() {
     return 1
   fi
 
-  # Note: Currently, reusing frontend fixtures is only supported in EE. 
+  # Note: Currently, reusing frontend fixtures is only supported in EE.
   # Other projects will be supported through this issue in the future: https://gitlab.com/gitlab-org/gitlab/-/issues/393615.
   if [[ "${CI_PROJECT_NAME}" != "gitlab" ]] || [[ "${CI_JOB_NAME}" =~ "foss" ]]; then
     return 1
@@ -172,7 +172,7 @@ function check_fixtures_download() {
   if [[ -z "${CI_MERGE_REQUEST_IID:-}" ]]; then
     return 1
   else
-    if only_js_files_changed && ! fixtures_archive_doesnt_exist; then
+    if tooling/bin/find_only_js_changes && ! fixtures_archive_doesnt_exist; then
       return 0
     else
       return 1
@@ -219,30 +219,6 @@ function fixtures_directory_exists() {
     echo "${fixtures_directory} directory does not exist"
     return 1
   fi
-}
-
-function only_js_files_changed {
-  local target_branch_sha="${CI_MERGE_REQUEST_TARGET_BRANCH_SHA:-}"
-  local source_branch_sha="${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-}"
-
-  if [[ -z "${target_branch_sha}" || -z "${source_branch_sha}" ]]; then
-    echoinfo "The commit hash(es) provided are missing or are empty."
-    echoinfo "Please provide valid commit hash(es)."
-    return 1
-  fi
-
-  local changed_files
-  changed_files=$(git diff --name-only "${target_branch_sha}..${source_branch_sha}")
-
-  for file in $changed_files; do
-    if [[ ! $file = *.js ]]; then
-      echoinfo "Changes were made to files other than JS files"
-      return 1
-    fi
-  done
-
-  echoinfo "Only JS files were changed"
-  return 0
 }
 
 function upload_fixtures_package() {

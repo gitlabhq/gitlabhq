@@ -106,6 +106,7 @@ retrieve-frontend-fixtures:
   script:
     - source scripts/utils.sh
     - source scripts/gitlab_component_helpers.sh
+    - install_gitlab_gem
     - export_fixtures_sha_for_download
     - |
       if check_fixtures_download; then
@@ -131,6 +132,7 @@ retrieve-frontend-fixtures:
   script:
     - source scripts/utils.sh
     - source scripts/gitlab_component_helpers.sh
+    - install_gitlab_gem
     - export_fixtures_sha_for_download
     - |
       if check_fixtures_download; then

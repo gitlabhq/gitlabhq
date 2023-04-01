@@ -47,7 +47,7 @@ module Sidebars
           end
 
           ::Sidebars::MenuItem.new(
-            title: _('Feature Flags'),
+            title: s_('FeatureFlags|Feature flags'),
             link: project_feature_flags_path(context.project),
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::BuildMenu,
             active_routes: { controller: :feature_flags },

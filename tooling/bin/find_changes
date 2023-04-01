@@ -1,82 +1,14 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'gitlab'
+require_relative '../lib/tooling/find_changes'
 
-class FindChanges # rubocop:disable Gitlab/NamespacedClass
-  def initialize(output_file:, matched_tests_file: nil, frontend_fixtures_mapping_path: nil)
-    @gitlab_token = ENV.fetch('PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE', '')
-    @gitlab_endpoint = ENV.fetch('CI_API_V4_URL')
-    @mr_project_path = ENV.fetch('CI_MERGE_REQUEST_PROJECT_PATH')
-    @mr_iid = ENV.fetch('CI_MERGE_REQUEST_IID')
-    @output_file = output_file
-    @matched_tests_file = matched_tests_file
-    @frontend_fixtures_mapping_path = frontend_fixtures_mapping_path
-  end
-
-  def execute
-    add_frontend_fixture_files!
-
-    File.write(output_file, file_changes.join(' '))
-  end
-
-  private
-
-  def add_frontend_fixture_files?
-    matched_tests_file && frontend_fixtures_mapping_path
-  end
-
-  def add_frontend_fixture_files!
-    return unless add_frontend_fixture_files?
-
-    # If we have a `test file -> JSON frontend fixture` mapping file, we add the files JSON frontend fixtures
-    # files to the list of changed files so that Jest can automatically run the dependent tests thanks to --findRelatedTests
-    test_files.each do |test_file|
-      file_changes.concat(frontend_fixtures_mapping[test_file]) if frontend_fixtures_mapping.key?(test_file)
-    end
-  end
-
-  def file_changes
-    @file_changes ||=
-      if File.exist?(output_file)
-        File.read(output_file).split(' ')
-      else
-        Gitlab.configure do |config|
-          config.endpoint      = gitlab_endpoint
-          config.private_token = gitlab_token
-        end
-
-        mr_changes.changes.flat_map do |change|
-          change.to_h.values_at('old_path', 'new_path')
-        end.uniq
-      end
-  end
-
-  def mr_changes
-    @mr_changes ||= Gitlab.merge_request_changes(mr_project_path, mr_iid)
-  end
-
-  def test_files
-    return [] if !matched_tests_file || !File.exist?(matched_tests_file)
-
-    File.read(matched_tests_file).split(' ')
-  end
-
-  def frontend_fixtures_mapping
-    return {} if !frontend_fixtures_mapping_path || !File.exist?(frontend_fixtures_mapping_path)
-
-    JSON.parse(File.read(frontend_fixtures_mapping_path)) # rubocop:disable Gitlab/Json
-  end
-
-  attr_reader :gitlab_token, :gitlab_endpoint, :mr_project_path, :mr_iid, :output_file, :matched_tests_file, :frontend_fixtures_mapping_path
-end
-
-output_file = ARGV.shift
-raise ArgumentError, "An path to an output file must be given as first argument of #{__FILE__}." if output_file.nil?
-
-matched_tests_file = ARGV.shift
+output_file                    = ARGV.shift
+matched_tests_file             = ARGV.shift
 frontend_fixtures_mapping_path = ARGV.shift
 
-FindChanges
-  .new(output_file: output_file, matched_tests_file: matched_tests_file, frontend_fixtures_mapping_path: frontend_fixtures_mapping_path)
-  .execute
+Tooling::FindChanges
+  .new(
+    output_file: output_file,
+    matched_tests_file: matched_tests_file,
+    frontend_fixtures_mapping_path: frontend_fixtures_mapping_path).execute

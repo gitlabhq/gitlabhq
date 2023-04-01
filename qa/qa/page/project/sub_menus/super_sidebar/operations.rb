@@ -21,7 +21,7 @@ module QA
             end
 
             def go_to_feature_flags
-              open_operations_submenu('Feature Flags')
+              open_operations_submenu('Feature flags')
             end
 
             def go_to_releases

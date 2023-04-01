@@ -65,7 +65,7 @@ that is not directly perceivable by a user.
 graph RL
     plain[Plain JavaScript];
     Vue[Vue Components];
-    feature-flags[Feature Flags];
+    feature-flags[Feature flags];
     license-checks[License Checks];
 
     plain---Vuex;
@@ -149,7 +149,7 @@ Component tests cover the state of a single component that is perceivable by a u
 graph RL
     plain[Plain JavaScript];
     Vue[Vue Components];
-    feature-flags[Feature Flags];
+    feature-flags[Feature flags];
     license-checks[License Checks];
 
     plain---Vuex;
@@ -243,7 +243,7 @@ Their abstraction level is comparable to how a user would interact with the UI.
 graph RL
     plain[Plain JavaScript];
     Vue[Vue Components];
-    feature-flags[Feature Flags];
+    feature-flags[Feature flags];
     license-checks[License Checks];
 
     plain---Vuex;
@@ -371,7 +371,7 @@ See also:
 graph RL
     plain[Plain JavaScript];
     Vue[Vue Components];
-    feature-flags[Feature Flags];
+    feature-flags[Feature flags];
     license-checks[License Checks];
 
     plain---Vuex;

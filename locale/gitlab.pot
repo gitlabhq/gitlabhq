@@ -17853,7 +17853,7 @@ msgstr ""
 msgid "FeatureFlags|Description"
 msgstr ""
 
-msgid "FeatureFlags|Edit Feature Flag"
+msgid "FeatureFlags|Edit Feature flag"
 msgstr ""
 
 msgid "FeatureFlags|Edit User List"
@@ -17865,25 +17865,25 @@ msgstr ""
 msgid "FeatureFlags|Environment Specs"
 msgstr ""
 
-msgid "FeatureFlags|Feature Flag"
-msgstr ""
-
-msgid "FeatureFlags|Feature Flag User List Details"
-msgstr ""
-
-msgid "FeatureFlags|Feature Flag User Lists"
-msgstr ""
-
 msgid "FeatureFlags|Feature Flag behavior is built up by creating a set of rules to define the status of target environments. A default wildcard rule %{codeStart}*%{codeEnd} for %{boldStart}All Environments%{boldEnd} is set, and you are able to add as many rules as you need by choosing environment specs below. You can toggle the behavior for each of your rules to set them %{boldStart}Active%{boldEnd} or %{boldStart}Inactive%{boldEnd}."
 msgstr ""
 
 msgid "FeatureFlags|Feature Flag has no strategies"
 msgstr ""
 
-msgid "FeatureFlags|Feature Flags"
+msgid "FeatureFlags|Feature flag"
 msgstr ""
 
 msgid "FeatureFlags|Feature flag %{name} will be removed. Are you sure?"
+msgstr ""
+
+msgid "FeatureFlags|Feature flag User Lists"
+msgstr ""
+
+msgid "FeatureFlags|Feature flag user list details"
+msgstr ""
+
+msgid "FeatureFlags|Feature flags"
 msgstr ""
 
 msgid "FeatureFlags|Feature flags allow you to configure your code into different flavors by dynamically toggling certain functionality."
@@ -17923,9 +17923,6 @@ msgid "FeatureFlags|Name"
 msgstr ""
 
 msgid "FeatureFlags|New"
-msgstr ""
-
-msgid "FeatureFlags|New Feature Flag"
 msgstr ""
 
 msgid "FeatureFlags|New User List"

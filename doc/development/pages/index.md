@@ -255,7 +255,7 @@ incidents and downtime. To add a new feature flag to GitLab Pages:
 1. Create the feature flag in
    [`internal/feature/feature.go`](https://gitlab.com/gitlab-org/gitlab-pages/-/blob/master/internal/feature/feature.go),
    which must be **off** by default.
-1. Create an issue to track the feature flag using the `Feature Flag` template.
+1. Create an issue to track the feature flag using the `Feature flag` template.
 1. Add the `~"feature flag"` label to any merge requests that handle feature flags.
 
 For GitLab Pages, the feature flags are controlled by environment variables at a global level.

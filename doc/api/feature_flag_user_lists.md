@@ -9,9 +9,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205409) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to GitLab Free in 13.5.
 
-API for accessing GitLab Feature Flag User Lists.
+API for accessing GitLab feature flag user lists.
 
-Users with Developer or higher [permissions](../user/permissions.md) can access the Feature Flag User Lists API.
+Users with Developer or higher [permissions](../user/permissions.md) can access the feature flag user lists API.
 
 NOTE:
 `GET` requests return twenty results at a time because the API results

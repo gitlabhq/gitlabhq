@@ -95,7 +95,7 @@ GitLab CI/CD features, grouped by DevOps stage, include:
 | [Building Docker images](docker/using_docker_build.md)                                       | Maintain Docker-based projects using GitLab CI/CD. |
 | [Canary Deployments](../user/project/canary_deployments.md)                                  | Ship features to only a portion of your pods and let a percentage of your user base to visit the temporarily deployed feature. |
 | [Deploy boards](../user/project/deploy_boards.md)                                            | Check the current health and status of each CI/CD environment running on Kubernetes. |
-| [Feature Flags](../operations/feature_flags.md)                                              | Deploy your features behind Feature Flags. |
+| [Feature flags](../operations/feature_flags.md)                                              | Deploy your features behind Feature flags. |
 | [GitLab Pages](../user/project/pages/index.md)                                               | Deploy static websites. |
 | [GitLab Releases](../user/project/releases/index.md)                                         | Add release notes to Git tags. |
 | [Cloud deployment](cloud_deployment/index.md)                                                | Deploy your application to a main cloud provider. |

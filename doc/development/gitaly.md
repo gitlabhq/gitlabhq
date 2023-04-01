@@ -239,7 +239,7 @@ Re-run steps 2-5 each time you want to try out new changes.
 
 [Return to Development documentation](index.md)
 
-## Wrapping RPCs in Feature Flags
+## Wrapping RPCs in feature flags
 
 Here are the steps to gate a new feature in Gitaly behind a feature flag.
 

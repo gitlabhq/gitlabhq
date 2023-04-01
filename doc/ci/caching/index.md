@@ -65,7 +65,7 @@ For runners to work with caches efficiently, you must do one of the following:
 ## Use multiple caches
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32814) in GitLab 13.10.
-> - [Feature Flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321877), in GitLab 13.12.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321877), in GitLab 13.12.
 
 You can have a maximum of four caches:
 
