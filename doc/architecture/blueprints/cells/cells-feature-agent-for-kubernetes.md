@@ -4,6 +4,8 @@ group: Tenant Scale
 description: 'Cells: Agent for Kubernetes'
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 This document is a work-in-progress and represents a very early state of the
 Cells design. Significant aspects are not documented, though we expect to add
 them in the future. This is one possible architecture for Cells, and we intend to

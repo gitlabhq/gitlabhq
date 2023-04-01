@@ -4,6 +4,8 @@ group: Tenant Scale
 description: 'Cells: Database Sequences'
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 DISCLAIMER:
 This page may contain information related to upcoming products, features and
 functionality. It is important to note that the information presented is for

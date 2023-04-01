@@ -8,6 +8,8 @@ owning-stage: "~devops::verify"
 participating-stages: []
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # CI/CD data time decay
 
 ## Summary

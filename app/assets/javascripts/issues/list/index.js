@@ -42,7 +42,7 @@ export function mountJiraIssuesListApp() {
   });
 }
 
-export function mountIssuesListApp() {
+export async function mountIssuesListApp() {
   const el = document.querySelector('.js-issues-list-root');
 
   if (!el) {
@@ -100,7 +100,7 @@ export function mountIssuesListApp() {
     el,
     name: 'IssuesListRoot',
     apolloProvider: new VueApollo({
-      defaultClient: gqlClient,
+      defaultClient: await gqlClient(),
     }),
     router: new VueRouter({
       base: window.location.pathname,

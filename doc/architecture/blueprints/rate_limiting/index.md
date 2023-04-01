@@ -8,6 +8,8 @@ owning-stage: "~devops::enablement"
 participating-stages: []
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # Next Rate Limiting Architecture
 
 ## Summary

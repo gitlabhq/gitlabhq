@@ -27,7 +27,12 @@ module QA
 
       context(
         'when using HTTP endpoint integration',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/393842'
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/393842',
+        quarantine: {
+          only: { pipeline: :nightly },
+          type: :bug,
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/403596'
+        }
       ) do
         include_context 'sends and resolves test alerts'
 

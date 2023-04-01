@@ -7,6 +7,8 @@ approvers: [ "@cheryl.li", "@jreporter" ]
 owning-stage: "~devops::verify"
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # CI/CD Scaling
 
 ## Summary

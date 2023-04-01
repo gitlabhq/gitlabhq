@@ -9,7 +9,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Use groups to manage one or more related projects at the same time.
 
 NOTE:
-Self-managed customers should create a top-level group so you can see an overview of your organization. We are working on creating an [organization view](https://gitlab.com/groups/gitlab-org/-/epics/9266), so you can see all groups.
+Self-managed customers should create a top-level group so you can see an overview of
+your organization. For more information about efforts to create an
+organization view of all groups, [see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
+A top-level group can also have one complete
+[Security Dashboard and Center](../application_security/security_dashboard/index.md),
+[Vulnerability](../application_security/vulnerability_report/index.md#vulnerability-report) and
+[Compliance Report](../compliance/compliance_report/index.md), and
+[Value stream analytics](../group/value_stream_analytics/index.md#value-stream-analytics-for-groups).
 
 ## View groups
 

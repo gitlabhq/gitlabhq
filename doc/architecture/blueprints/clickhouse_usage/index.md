@@ -8,6 +8,8 @@ owning-stage: "~devops::data_stores"
 participating-stages: ["~section::ops", "~section::dev"]
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # ClickHouse Usage at GitLab
 
 ## Summary

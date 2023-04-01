@@ -8,6 +8,8 @@ owning-stage: "~devops::verify"
 description: 'Pipeline data partitioning design'
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # Pipeline data partitioning design
 
 ## What problem are we trying to solve?

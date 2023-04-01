@@ -8,6 +8,8 @@ owning-stage: "~devops::enablement"
 participating-stages: []
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # Use Zoekt For code search
 
 ## Summary

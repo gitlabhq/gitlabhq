@@ -24,8 +24,12 @@ GitLab supports the following security policies:
 
 All security policies are stored as YAML in a separate security policy project that gets linked to
 the development project, group, or sub-group. This association can be a one-to-many relationship, allowing one security
-policy project to apply to multiple development projects, groups, or sub-groups. Linked projects are not required to be in
-the same group as the development projects to which they are linked.
+policy project to apply to multiple development projects, groups, or sub-groups:
+
+- For self-managed GitLab instances, linked projects are not required to be in the same group
+  or the same subgroup as the development projects to which they are linked.
+- For GitLab SaaS, the security policy project is required to be in the same top-level group
+  as the development project, although, it is not necessary for the project to be in the same subgroup.
 
 ![Security Policy Project Linking Diagram](img/association_diagram.png)
 

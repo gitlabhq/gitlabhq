@@ -41,6 +41,24 @@ To select the group to use as the source for the project templates:
 
 Projects in subgroups of the template group are **not** included in the template list.
 
+## What is copied from the templates
+
+The entire custom instance-level project templates repository is copied, including:
+
+- Branches
+- Commits
+- Tags
+
+If the user:
+
+- Has the Owner role on the custom instance-level project templates project or is a GitLab administrator, all project settings are copied over to the new
+  project.
+- Doesn't have the Owner role or is not a GitLab administrator, project [deploy keys](../project/deploy_keys/index.md#view-deploy-keys) and project
+  [webhooks](../project/integrations/webhooks.md) aren't copied over because they contain sensitive data.
+
+To learn more about what is migrated, see
+[Items that are exported](../project/settings/import_export.md#items-that-are-exported).
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

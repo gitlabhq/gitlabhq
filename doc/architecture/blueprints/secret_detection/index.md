@@ -8,6 +8,8 @@ owning-stage: "~devops::secure"
 participating-stages: []
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # Secret Detection as a platform-wide experience
 
 ## Summary

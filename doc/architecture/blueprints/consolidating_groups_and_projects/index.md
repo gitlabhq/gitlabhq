@@ -9,6 +9,8 @@ owning-stage: "~devops::data_stores"
 participating-stages: []
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # Consolidating Groups and Projects
 
 There are numerous features that exist exclusively within groups or

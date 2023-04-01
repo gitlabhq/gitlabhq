@@ -8,6 +8,8 @@ owning-stage: "~devops::data_stores"
 participating-stages: []
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # Object storage: `direct_upload` consolidation
 
 ## Abstract

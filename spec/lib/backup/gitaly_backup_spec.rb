@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Backup::GitalyBackup do
+RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
   let(:max_parallelism) { nil }
   let(:storage_parallelism) { nil }
   let(:destination) { File.join(Gitlab.config.backup.path, 'repositories') }
@@ -179,6 +179,15 @@ RSpec.describe Backup::GitalyBackup do
       expect(collect_commit_shas.call(project.design_repository)).to match_array(['c3cd4d7bd73a51a0f22045c3a4c871c435dc959d'])
       expect(collect_commit_shas.call(personal_snippet.repository)).to match_array(['3b3c067a3bc1d1b695b51e2be30c0f8cf698a06e'])
       expect(collect_commit_shas.call(project_snippet.repository)).to match_array(['6e44ba56a4748be361a841e759c20e421a1651a1'])
+    end
+
+    it 'clears specified storages when remove_all_repositories is set' do
+      expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer', '-remove-all-repositories', 'default').and_call_original
+
+      copy_bundle_to_backup_path('project_repo.bundle', project.disk_path + '.bundle')
+      subject.start(:restore, destination, backup_id: backup_id, remove_all_repositories: %w[default])
+      subject.enqueue(project, Gitlab::GlRepository::PROJECT)
+      subject.finish!
     end
 
     context 'parallel option set' do

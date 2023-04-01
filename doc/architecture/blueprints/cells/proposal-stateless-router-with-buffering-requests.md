@@ -4,6 +4,8 @@ group: Tenant Scale
 description: 'Cells Stateless Router Proposal'
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 This document is a work-in-progress and represents a very early state of the
 Pods design. Significant aspects are not documented, though we expect to add
 them in the future. This is one possible architecture for Pods, and we intend to

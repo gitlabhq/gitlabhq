@@ -8,6 +8,8 @@ owning-stage: "~devops::data_stores"
 participating-stages: []
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # Database Testing
 
 **Notice:** This blueprint has been partially implemented. We still plan to

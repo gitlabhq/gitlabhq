@@ -8,6 +8,8 @@ owning-stage: "~devops::verify"
 participating-stages: []
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # Next Runner Auto-scaling Architecture
 
 ## Summary

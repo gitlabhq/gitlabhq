@@ -8,6 +8,8 @@ owning-stage: "~devops::create"
 participating-stages: []
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # Remote Development
 
 ## Summary

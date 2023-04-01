@@ -114,6 +114,7 @@ module.exports = (path, options = {}) => {
     '^ee_else_ce_jest/(.*)$': '<rootDir>/spec/frontend/$1',
     '^jquery$': '<rootDir>/node_modules/jquery/dist/jquery.slim.js',
     '^@sentry/browser$': '<rootDir>/app/assets/javascripts/sentry/sentry_browser_wrapper.js',
+    '^dexie$': '<rootDir>/node_modules/dexie/dist/dexie.min.js',
     ...extModuleNameMapper,
     ...vueModuleNameMappers,
   };
@@ -207,6 +208,7 @@ module.exports = (path, options = {}) => {
     'lowlight',
     'vscode-languageserver-types',
     'yaml',
+    'dexie',
     ...gfmParserDependencies,
   ];
 
