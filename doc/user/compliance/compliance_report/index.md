@@ -223,3 +223,20 @@ To remove a compliance framework from projects in a group:
 1. Select one or more projects.
 1. From the **Choose one bulk action** dropdown list, select **Remove framework from selected projects**.
 1. Select **Remove**.
+
+#### Filter the compliance frameworks report
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387911) in GitLab 15.11.
+
+To filter the list of compliance frameworks:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Security & Compliance > Compliance report**.
+1. On the page, select the **Frameworks** tab.
+1. In the search field:
+   1. Select the attribute you want to filter by.
+   1. Select an operator.
+   1. Select from the list of options or enter text for the search.
+1. Select **Search** (**{search}**).
+
+Repeat this process to filter by multiple attributes.

@@ -10784,6 +10784,9 @@ msgstr ""
 msgid "ComplianceFrameworks|No compliance frameworks are set up yet"
 msgstr ""
 
+msgid "ComplianceFrameworks|No framework"
+msgstr ""
+
 msgid "ComplianceFrameworks|Remove default"
 msgstr ""
 
@@ -10833,6 +10836,9 @@ msgid "ComplianceReport|Choose one bulk action"
 msgstr ""
 
 msgid "ComplianceReport|Choose one framework"
+msgstr ""
+
+msgid "ComplianceReport|Compliance framework"
 msgstr ""
 
 msgid "ComplianceReport|Create a new framework"
@@ -38789,6 +38795,9 @@ msgid "Search or create tag"
 msgstr ""
 
 msgid "Search or filter commits"
+msgstr ""
+
+msgid "Search or filter results"
 msgstr ""
 
 msgid "Search or filter results..."
