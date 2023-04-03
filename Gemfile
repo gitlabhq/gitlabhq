@@ -291,7 +291,7 @@ gem 'sanitize', '~> 6.0'
 gem 'babosa', '~> 1.0.4'
 
 # Sanitizes SVG input
-gem 'loofah', '~> 2.19.1'
+gem 'loofah', '~> 2.20.0'
 
 # Working with license
 # Detects the open source license the repository includes

@@ -39,5 +39,8 @@ export default {
     <template #metadata-amount>
       <metadata-item v-if="showPackageCount" icon="package" :text="packageAmountText" />
     </template>
+    <template #right-actions>
+      <slot name="settings-link"></slot>
+    </template>
   </title-area>
 </template>

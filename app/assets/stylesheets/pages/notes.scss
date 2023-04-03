@@ -7,7 +7,7 @@ $system-note-icon-size: 1.5rem;
 $system-note-svg-size: 1rem;
 $icon-size-diff: $avatar-icon-size - $system-note-icon-size;
 
-$system-note-icon-m-top: $avatar-m-top + $icon-size-diff - 0.3rem;
+$system-note-icon-m-top: $avatar-m-top + $icon-size-diff - 1.3rem;
 $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
 @mixin vertical-line($left) {
@@ -15,10 +15,10 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     content: '';
     border-left: 2px solid var(--gray-50, $gray-50);
     position: absolute;
-    top: $gl-padding-6;
+    top: 16px;
     bottom: 0;
     left: calc(#{$left} - 1px);
-    height: calc(100% + 1.5rem);
+    height: calc(100% + 20px);
   }
 }
 
@@ -30,8 +30,30 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
 .issuable-discussion:not(.incident-timeline-events),
 .limited-width-notes {
-  .main-notes-list > li.timeline-entry:not(:last-of-type) {
-    @include vertical-line(1rem);
+  .main-notes-list::before,
+  .timeline-entry:last-child::before {
+    content: '';
+    position: absolute;
+    width: 2px;
+    left: 15px;
+    top: 15px;
+    height: calc(100% - 15px);
+  }
+
+  .main-notes-list::before {
+    background: var(--gray-50, $gray-50);
+  }
+
+  .timeline-entry:last-child::before {
+    background: var(--white);
+
+    .gl-dark & {
+      background: var(--gray-10);
+    }
+
+    &.note-comment {
+      top: 30px;
+    }
   }
 }
 
@@ -61,6 +83,10 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
     .timeline-avatar {
       height: 2rem;
+    }
+
+    .gl-avatar {
+      border-color: var(--gray-50, $gray-50);
     }
 
     &.note-comment,
@@ -265,7 +291,10 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
     &.being-posted {
       pointer-events: none;
-      opacity: 0.5;
+
+      .timeline-entry-inner {
+        opacity: 0.5;
+      }
 
       .dummy-avatar {
         background-color: $gray-100;
@@ -370,9 +399,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     }
 
     .timeline-content {
-      @include notes-media('min', map-get($grid-breakpoints, sm)) {
-        margin-left: 30px;
-      }
+      margin-left: 30px;
     }
 
     .note-header {
@@ -460,7 +487,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   }
 
   .timeline-icon {
-    margin: 12px 0 0 20px;
+    margin: 20px 0 0 28px;
   }
 }
 
@@ -570,15 +597,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     .system-note {
       background-color: transparent;
       padding: 0;
-
-      .timeline-icon {
-        margin-top: -2px;
-      }
-
-      .timeline-entry-inner .timeline-icon {
-        margin-top: $system-note-icon-m-top;
-        margin-left: $system-note-icon-m-left;
-      }
     }
   }
 

@@ -83,7 +83,17 @@ module QA
         end
 
         def go_to_groups
-          click_element(:sidebar_menu_link, menu_item: 'Groups')
+          # Use new functionality to visit Groups where possible
+          if has_element?(:sidebar_menu_link, menu_item: 'Groups')
+            click_element(:sidebar_menu_link, menu_item: 'Groups')
+          else
+            # Otherwise fallback to previous functionality
+            # See https://gitlab.com/gitlab-org/gitlab/-/issues/403589
+            # and related issues
+            within_groups_menu do
+              click_element(:menu_item_link, title: 'View all groups')
+            end
+          end
         end
 
         def go_to_snippets

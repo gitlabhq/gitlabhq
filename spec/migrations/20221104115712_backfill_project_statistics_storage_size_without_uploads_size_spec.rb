@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe BackfillProjectStatisticsStorageSizeWithoutUploadsSize,
-  feature_category: :subscription_cost_management do
+  feature_category: :consumables_cost_management do
   let!(:batched_migration) { described_class::MIGRATION_CLASS }
 
   it 'does not schedule background jobs when Gitlab.org_or_com? is false' do

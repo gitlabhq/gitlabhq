@@ -23,7 +23,6 @@
 - capacity_planning
 - cell
 - cloud_native_installation
-- cluster_cost_management
 - code_quality
 - code_review_workflow
 - code_search
@@ -31,11 +30,11 @@
 - code_testing
 - commerce_integrations
 - compliance_management
+- consumables_cost_management
 - container_registry
 - container_scanning
 - continuous_delivery
 - continuous_integration
-- continuous_verification
 - customersdot_application
 - database
 - dataops
@@ -116,6 +115,7 @@
 - saas_provisioning
 - sbom
 - scalability
+- seat_cost_management
 - secret_detection
 - secrets_management
 - security_benchmarking
@@ -126,7 +126,6 @@
 - source_code_management
 - static_application_security_testing
 - subgroups
-- subscription_cost_management
 - subscription_management
 - system_access
 - team_planning

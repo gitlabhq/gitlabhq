@@ -1,14 +1,15 @@
 <script>
 import { GlDrawer, GlAccordion, GlButton } from '@gitlab/ui';
 import { stringify, parse } from 'yaml';
-import { set, omit, trim } from 'lodash';
+import { set, omit } from 'lodash';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import eventHub, { SCROLL_EDITOR_TO_BOTTOM } from '~/ci/pipeline_editor/event_hub';
 import getRunnerTags from '../../graphql/queries/runner_tags.query.graphql';
-import { DRAWER_CONTAINER_CLASS, JOB_TEMPLATE, i18n } from './constants';
-import { removeEmptyObj, trimFields } from './utils';
+import { DRAWER_CONTAINER_CLASS, JOB_TEMPLATE, i18n, JOB_RULES_WHEN } from './constants';
+import { removeEmptyObj, trimFields, validateEmptyValue, validateStartIn } from './utils';
 import JobSetupItem from './accordion_items/job_setup_item.vue';
 import ImageItem from './accordion_items/image_item.vue';
+import RulesItem from './accordion_items/rules_item.vue';
 
 export default {
   i18n,
@@ -18,6 +19,7 @@ export default {
     GlButton,
     JobSetupItem,
     ImageItem,
+    RulesItem,
   },
   props: {
     isVisible: {
@@ -43,6 +45,7 @@ export default {
     return {
       isNameValid: true,
       isScriptValid: true,
+      isStartValid: true,
       job: JSON.parse(JSON.stringify(JOB_TEMPLATE)),
     };
   },
@@ -74,6 +77,21 @@ export default {
     drawerHeightOffset() {
       return getContentWrapperHeight(DRAWER_CONTAINER_CLASS);
     },
+    isJobValid() {
+      return this.isNameValid && this.isScriptValid && this.isStartValid;
+    },
+  },
+
+  watch: {
+    'job.name': function jobNameWatch(name) {
+      this.isNameValid = validateEmptyValue(name);
+    },
+    'job.script': function jobScriptWatch(script) {
+      this.isScriptValid = validateEmptyValue(script);
+    },
+    'job.rules.0.start_in': function JobRulesStartInWatch(startIn) {
+      this.isStartValid = validateStartIn(this.job.rules[0].when, startIn);
+    },
   },
   methods: {
     closeDrawer() {
@@ -81,10 +99,9 @@ export default {
       this.$emit('close-job-assistant-drawer');
     },
     addCiConfig() {
-      this.isNameValid = this.validate(this.job.name);
-      this.isScriptValid = this.validate(this.job.script);
+      this.validateJob();
 
-      if (!this.isNameValid || !this.isScriptValid) {
+      if (!this.isJobValid) {
         return;
       }
 
@@ -97,27 +114,46 @@ export default {
     generateYmlString() {
       let job = JSON.parse(JSON.stringify(this.job));
       const jobName = job.name;
-      job = omit(job, ['name']);
+      job = this.removeUnnecessaryKeys(job);
       job.tags = job.tags.map((tag) => tag.name); // Tag item is originally an option object, we need a string here to match `.gitlab-ci.yml` rules
       const cleanedJob = trimFields(removeEmptyObj(job));
       return stringify({ [jobName]: cleanedJob });
     },
+    removeUnnecessaryKeys(job) {
+      const keys = ['name'];
+
+      // rules[0].allow_failure value should not be passed down
+      // if it equals the default value
+      if (this.job.rules[0].allow_failure === false) {
+        keys.push('rules[0].allow_failure');
+      }
+      // rules[0].when value should not be passed down
+      // if it equals the default value
+      if (this.job.rules[0].when === JOB_RULES_WHEN.onSuccess.value) {
+        keys.push('rules[0].when');
+      }
+      // rules[0].start_in value should not be passed down
+      // if rules[0].start_in doesn't equal 'delayed'
+      if (this.job.rules[0].when !== JOB_RULES_WHEN.delayed.value) {
+        keys.push('rules[0].start_in');
+      }
+      return omit(job, keys);
+    },
     clearJob() {
       this.job = JSON.parse(JSON.stringify(JOB_TEMPLATE));
-      this.isNameValid = true;
-      this.isScriptValid = true;
+      this.$nextTick(() => {
+        this.isNameValid = true;
+        this.isScriptValid = true;
+        this.isStartValid = true;
+      });
     },
     updateJob(key, value) {
       set(this.job, key, value);
-      if (key === 'name') {
-        this.isNameValid = this.validate(this.job.name);
-      }
-      if (key === 'script') {
-        this.isScriptValid = this.validate(this.job.script);
-      }
     },
-    validate(value) {
-      return trim(value) !== '';
+    validateJob() {
+      this.isNameValid = validateEmptyValue(this.job.name);
+      this.isScriptValid = validateEmptyValue(this.job.script);
+      this.isStartValid = validateStartIn(this.job.rules[0].when, this.job.rules[0].start_in);
     },
   },
 };
@@ -143,6 +179,7 @@ export default {
         @update-job="updateJob"
       />
       <image-item :job="job" @update-job="updateJob" />
+      <rules-item :job="job" :is-start-valid="isStartValid" @update-job="updateJob" />
     </gl-accordion>
     <template #footer>
       <div class="gl-display-flex gl-justify-content-end">

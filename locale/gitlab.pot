@@ -22196,22 +22196,10 @@ msgstr ""
 msgid "InProductMarketing|3 ways to dive into GitLab CI/CD"
 msgstr ""
 
-msgid "InProductMarketing|A single application eliminates complex integrations, data chokepoints, and toolchain maintenance, resulting in greater productivity and lower cost."
-msgstr ""
-
-msgid "InProductMarketing|Access advanced features, build more efficiently, strengthen security and compliance."
-msgstr ""
-
-msgid "InProductMarketing|Access advanced features."
-msgstr ""
-
 msgid "InProductMarketing|Actually, GitLab makes the team work (better)"
 msgstr ""
 
 msgid "InProductMarketing|And finally %{deploy_link} a Python application."
-msgstr ""
-
-msgid "InProductMarketing|And many more..."
 msgstr ""
 
 msgid "InProductMarketing|Are your runners ready?"
@@ -22232,31 +22220,13 @@ msgstr ""
 msgid "InProductMarketing|Blog"
 msgstr ""
 
-msgid "InProductMarketing|Break down silos to coordinate seamlessly across development, operations, and security with a consistent experience across the development lifecycle."
-msgstr ""
-
 msgid "InProductMarketing|Building for iOS? We've got you covered."
-msgstr ""
-
-msgid "InProductMarketing|Burn up/down charts"
 msgstr ""
 
 msgid "InProductMarketing|By enabling code owners and required merge approvals the right person will review the right MR. This is a win-win: cleaner code and a more efficient review process."
 msgstr ""
 
-msgid "InProductMarketing|Code owners"
-msgstr ""
-
 msgid "InProductMarketing|Code owners and required merge approvals are part of the paid tiers of GitLab. You can start a free 30-day trial of GitLab Ultimate and enable these features in less than 5 minutes with no credit card required."
-msgstr ""
-
-msgid "InProductMarketing|Code review analytics"
-msgstr ""
-
-msgid "InProductMarketing|Collaboration across stages in GitLab"
-msgstr ""
-
-msgid "InProductMarketing|Collaboration made easy"
 msgstr ""
 
 msgid "InProductMarketing|Create a custom CI runner with just a few clicks"
@@ -22268,19 +22238,10 @@ msgstr ""
 msgid "InProductMarketing|Create a project in GitLab in 5 minutes"
 msgstr ""
 
-msgid "InProductMarketing|Create well-defined workflows by using scoped labels on issues, merge requests, and epics. Labels with the same scope cannot be used together, which prevents conflicts."
-msgstr ""
-
 msgid "InProductMarketing|Create your first project!"
 msgstr ""
 
-msgid "InProductMarketing|Define who owns specific files or directories, so the right reviewers are suggested when a merge request introduces changes to those files."
-msgstr ""
-
 msgid "InProductMarketing|Deliver Better Products Faster"
-msgstr ""
-
-msgid "InProductMarketing|Dependency scanning"
 msgstr ""
 
 msgid "InProductMarketing|Did you know teams that use GitLab are far more efficient?"
@@ -22289,19 +22250,7 @@ msgstr ""
 msgid "InProductMarketing|Dig in and create a project and a repo"
 msgstr ""
 
-msgid "InProductMarketing|Discover Premium & Ultimate"
-msgstr ""
-
-msgid "InProductMarketing|Discover Premium & Ultimate."
-msgstr ""
-
 msgid "InProductMarketing|Do you have a teammate who would be perfect for this task?"
-msgstr ""
-
-msgid "InProductMarketing|Dynamic application security testing"
-msgstr ""
-
-msgid "InProductMarketing|Epics"
 msgstr ""
 
 msgid "InProductMarketing|Expand your DevOps journey with a free GitLab trial"
@@ -22322,13 +22271,7 @@ msgstr ""
 msgid "InProductMarketing|Feel the need for speed?"
 msgstr ""
 
-msgid "InProductMarketing|Find and fix bottlenecks in your code review process by understanding how long open merge requests have been in review."
-msgstr ""
-
 msgid "InProductMarketing|Find out how your teams are really doing"
-msgstr ""
-
-msgid "InProductMarketing|Find out if your external libraries are safe. Run dependency scanning jobs that check for known vulnerabilities in your external libraries."
 msgstr ""
 
 msgid "InProductMarketing|Follow our steps"
@@ -22365,9 +22308,6 @@ msgid "InProductMarketing|Git basics"
 msgstr ""
 
 msgid "InProductMarketing|GitHub Enterprise projects to GitLab"
-msgstr ""
-
-msgid "InProductMarketing|GitLab is infrastructure agnostic (supporting GCP, AWS, Azure, OpenShift, VMWare, On Prem, Bare Metal, and more), offering a consistent workflow experience – irrespective of the environment."
 msgstr ""
 
 msgid "InProductMarketing|GitLab provides static application security testing (SAST), dynamic application security testing (DAST), container scanning, and dependency scanning to help you deliver secure applications along with license compliance."
@@ -22451,19 +22391,10 @@ msgstr ""
 msgid "InProductMarketing|It's also possible to simply %{external_repo_link} in order to take advantage of GitLab's CI/CD."
 msgstr ""
 
-msgid "InProductMarketing|Keep your code quality high by defining who should approve merge requests and how many approvals are required."
-msgstr ""
-
 msgid "InProductMarketing|Launch GitLab CI/CD in 20 minutes or less"
 msgstr ""
 
 msgid "InProductMarketing|Learn how to build for iOS"
-msgstr ""
-
-msgid "InProductMarketing|Lower cost of development"
-msgstr ""
-
-msgid "InProductMarketing|Make it easier to collaborate on high-level ideas by grouping related issues in an epic."
 msgstr ""
 
 msgid "InProductMarketing|Making the switch? It's easier than you think to import your projects into GitLab. Move %{github_link}, or import something %{bitbucket_link}."
@@ -22472,16 +22403,10 @@ msgstr ""
 msgid "InProductMarketing|Master the art of importing!"
 msgstr ""
 
-msgid "InProductMarketing|Merge request approval rule"
-msgstr ""
-
 msgid "InProductMarketing|Move on to easily creating a Pages website %{ci_template_link}"
 msgstr ""
 
 msgid "InProductMarketing|Multiple owners, confusing workstreams? We've got you covered"
-msgstr ""
-
-msgid "InProductMarketing|Multiple required approvers"
 msgstr ""
 
 msgid "InProductMarketing|Need an alternative to importing?"
@@ -22493,31 +22418,16 @@ msgstr ""
 msgid "InProductMarketing|Our tool brings all the things together"
 msgstr ""
 
-msgid "InProductMarketing|Protect your web application by using DAST to examine for vulnerabilities in deployed environments."
-msgstr ""
-
 msgid "InProductMarketing|Rapid development, simplified"
 msgstr ""
 
 msgid "InProductMarketing|Reduce Security and Compliance Risk"
 msgstr ""
 
-msgid "InProductMarketing|Require multiple approvers on a merge request, so you know it's in good shape before it's merged."
-msgstr ""
-
-msgid "InProductMarketing|Roadmaps"
-msgstr ""
-
-msgid "InProductMarketing|Scoped labels"
-msgstr ""
-
 msgid "InProductMarketing|Security that's integrated into your development lifecycle"
 msgstr ""
 
 msgid "InProductMarketing|Sometimes you're not ready to make a full transition to a new tool. If you're not ready to fully commit, %{mirroring_link} gives you a safe way to try out GitLab in parallel with your current tool."
-msgstr ""
-
-msgid "InProductMarketing|Speed. Efficiency. Trust."
 msgstr ""
 
 msgid "InProductMarketing|Spin up an autoscaling runner in GitLab"
@@ -22527,9 +22437,6 @@ msgid "InProductMarketing|Start a GitLab Ultimate trial today in less than one m
 msgstr ""
 
 msgid "InProductMarketing|Start a Self-Managed trial"
-msgstr ""
-
-msgid "InProductMarketing|Start a free trial"
 msgstr ""
 
 msgid "InProductMarketing|Start a free trial of GitLab Ultimate – no credit card required"
@@ -22598,9 +22505,6 @@ msgstr ""
 msgid "InProductMarketing|To understand and get the most out of GitLab, start at the beginning and %{project_link}. In GitLab, repositories are part of a project, so after you've created your project you can go ahead and %{repo_link}."
 msgstr ""
 
-msgid "InProductMarketing|Track completed issues in a chart, so you can see how a milestone is progressing at a glance."
-msgstr ""
-
 msgid "InProductMarketing|Try GitLab Ultimate for free"
 msgstr ""
 
@@ -22631,9 +22535,6 @@ msgstr ""
 msgid "InProductMarketing|Used by more than 100,000 organizations from around the globe:"
 msgstr ""
 
-msgid "InProductMarketing|Visualize your epics and milestones in a timeline."
-msgstr ""
-
 msgid "InProductMarketing|Want to get your iOS app up and running, including publishing all the way to TestFlight? Follow our guide to set up GitLab and fastlane to publish iOS apps to the App Store."
 msgstr ""
 
@@ -22656,9 +22557,6 @@ msgid "InProductMarketing|Working in GitLab = more efficient"
 msgstr ""
 
 msgid "InProductMarketing|YouTube"
-msgstr ""
-
-msgid "InProductMarketing|Your software, deployed your way"
 msgstr ""
 
 msgid "InProductMarketing|Your teams can be more efficient"
@@ -24849,6 +24747,12 @@ msgstr ""
 msgid "JobAssistant|Add job"
 msgstr ""
 
+msgid "JobAssistant|Allow failure"
+msgstr ""
+
+msgid "JobAssistant|Error - Valid value is between 1 second and 1 week"
+msgstr ""
+
 msgid "JobAssistant|Image"
 msgstr ""
 
@@ -24867,6 +24771,9 @@ msgstr ""
 msgid "JobAssistant|Job name"
 msgstr ""
 
+msgid "JobAssistant|Rules"
+msgstr ""
+
 msgid "JobAssistant|Script"
 msgstr ""
 
@@ -24874,6 +24781,39 @@ msgid "JobAssistant|Stage (optional)"
 msgstr ""
 
 msgid "JobAssistant|Tags (optional)"
+msgstr ""
+
+msgid "JobAssistant|When"
+msgstr ""
+
+msgid "JobAssistant|always"
+msgstr ""
+
+msgid "JobAssistant|day(s)"
+msgstr ""
+
+msgid "JobAssistant|delayed"
+msgstr ""
+
+msgid "JobAssistant|manual"
+msgstr ""
+
+msgid "JobAssistant|minute(s)"
+msgstr ""
+
+msgid "JobAssistant|never"
+msgstr ""
+
+msgid "JobAssistant|on_failure"
+msgstr ""
+
+msgid "JobAssistant|on_success"
+msgstr ""
+
+msgid "JobAssistant|second(s)"
+msgstr ""
+
+msgid "JobAssistant|week(s)"
 msgstr ""
 
 msgid "Jobs"
@@ -29285,9 +29225,6 @@ msgstr ""
 msgid "Normal text"
 msgstr ""
 
-msgid "NorthstarNavigation|Alpha"
-msgstr ""
-
 msgid "NorthstarNavigation|Beta"
 msgstr ""
 
@@ -30822,6 +30759,9 @@ msgid "PackageRegistry|Conan"
 msgstr ""
 
 msgid "PackageRegistry|Conan Command"
+msgstr ""
+
+msgid "PackageRegistry|Configure in settings"
 msgstr ""
 
 msgid "PackageRegistry|Configure package forwarding and package file size limits."
@@ -39764,10 +39704,16 @@ msgstr ""
 msgid "SecurityReports|Download %{artifactName}"
 msgstr ""
 
+msgid "SecurityReports|Download patch to resolve"
+msgstr ""
+
 msgid "SecurityReports|Download results"
 msgstr ""
 
 msgid "SecurityReports|Download scanned URLs"
+msgstr ""
+
+msgid "SecurityReports|Download the patch to apply it manually"
 msgstr ""
 
 msgid "SecurityReports|Either you don't have permission to view this dashboard or the dashboard has not been setup. Please check your permission settings with your administrator or check your dashboard configurations to proceed."

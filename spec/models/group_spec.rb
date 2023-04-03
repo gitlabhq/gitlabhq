@@ -3733,7 +3733,7 @@ RSpec.describe Group, feature_category: :subgroups do
     end
   end
 
-  describe '#usage_quotas_enabled?', feature_category: :subscription_cost_management, unless: Gitlab.ee? do
+  describe '#usage_quotas_enabled?', feature_category: :consumables_cost_management, unless: Gitlab.ee? do
     using RSpec::Parameterized::TableSyntax
 
     where(:feature_enabled, :root_group, :result) do

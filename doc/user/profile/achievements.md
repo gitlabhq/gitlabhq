@@ -223,3 +223,12 @@ mutation {
   }
 }
 ```
+
+## Hide achievements
+
+If you don't want to display achievements on your profile, you can opt out. To do this:
+
+1. On the top bar, in the upper-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the **Main settings** section, clear the **Display achievements on your profile** checkbox.
+1. Select **Update profile settings**.

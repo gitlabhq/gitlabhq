@@ -126,6 +126,7 @@ trigger-omnibus-env:
       echo "OMNIBUS_GITLAB_RUBY3_BUILD=${OMNIBUS_GITLAB_RUBY3_BUILD:-false}" >> $BUILD_ENV
       echo "OMNIBUS_GITLAB_RUBY2_BUILD=${OMNIBUS_GITLAB_RUBY2_BUILD:-false}" >> $BUILD_ENV
       echo "OMNIBUS_GITLAB_CACHE_EDITION=${OMNIBUS_GITLAB_CACHE_EDITION:-GITLAB}" >> $BUILD_ENV
+      echo "OMNIBUS_GITLAB_BUILD_ON_ALL_OS=${OMNIBUS_GITLAB_BUILD_ON_ALL_OS:-false}" >> $BUILD_ENV
       echo "GITLAB_ASSETS_TAG=$(assets_image_tag)" >> $BUILD_ENV
       echo "EE=$([[ $FOSS_ONLY == 'true' ]] && echo 'false' || echo 'true')" >> $BUILD_ENV
       echo "Built environment file for omnibus build:"
@@ -158,6 +159,7 @@ trigger-omnibus:
     RUBY3_BUILD: $OMNIBUS_GITLAB_RUBY3_BUILD
     RUBY2_BUILD: $OMNIBUS_GITLAB_RUBY2_BUILD
     CACHE_EDITION: $OMNIBUS_GITLAB_CACHE_EDITION
+    BUILD_ON_ALL_OS: $OMNIBUS_GITLAB_BUILD_ON_ALL_OS
     SKIP_QA_TEST: "true"
     ee: $EE
   trigger:

@@ -68,13 +68,11 @@ describe('BranchesDropdown', () => {
 
   describe('When searching', () => {
     it('invokes fetchBranches', async () => {
-      const spy = jest.spyOn(wrapper.vm, 'fetchBranches');
-
       findDropdown().vm.$emit('search', '_anything_');
 
       await nextTick();
 
-      expect(spy).toHaveBeenCalledWith('_anything_');
+      expect(spyFetchBranches).toHaveBeenCalledWith(expect.any(Object), '_anything_');
     });
   });
 });

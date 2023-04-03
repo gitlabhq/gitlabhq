@@ -668,7 +668,6 @@ Style/IfUnlessModifier:
     - 'ee/spec/support/helpers/feature_approval_helper.rb'
     - 'ee/spec/support/helpers/search_results_helpers.rb'
     - 'ee/spec/support/http_io/http_io_helpers.rb'
-    - 'ee/spec/views/layouts/header/help_dropdown/_cross_stage_fdm.html.haml_spec.rb'
     - 'ee/spec/workers/elastic/migration_worker_spec.rb'
     - 'lib/api/api_guard.rb'
     - 'lib/api/boards_responses.rb'

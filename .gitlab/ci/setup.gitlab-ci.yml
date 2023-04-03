@@ -63,7 +63,7 @@ verify-ruby-3.0:
 verify-tests-yml:
   extends:
     - .setup:rules:verify-tests-yml
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.13
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.16
   stage: test
   needs: []
   script:

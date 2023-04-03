@@ -5,7 +5,7 @@ class Projects::UsageQuotasController < Projects::ApplicationController
 
   layout "project_settings"
 
-  feature_category :subscription_cost_management
+  feature_category :consumables_cost_management
   urgency :low
 
   def index

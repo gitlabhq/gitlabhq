@@ -69,6 +69,11 @@ module PackagesHelper
     Ability.allowed?(current_user, :admin_package, project)
   end
 
+  def show_group_package_registry_settings(group)
+    group.packages_feature_enabled? &&
+    Ability.allowed?(current_user, :admin_group, group)
+  end
+
   def cleanup_settings_data
     {
       project_id: @project.id,

@@ -157,6 +157,11 @@ export default {
       this.notifyEditingModeChange(editingMode);
     },
     onEditingModeRestored(editingMode) {
+      if (editingMode === EDITING_MODE_CONTENT_EDITOR && !this.enableContentEditor) {
+        this.editingMode = EDITING_MODE_MARKDOWN_FIELD;
+        return;
+      }
+
       this.editingMode = editingMode;
       this.$emit(editingMode);
       this.notifyEditingModeChange(editingMode);
@@ -197,7 +202,8 @@ export default {
   <div>
     <local-storage-sync
       v-model="editingMode"
-      storage-key="gl-content-editor-enabled"
+      as-string
+      storage-key="gl-markdown-editor-mode"
       @input="onEditingModeRestored"
     />
     <markdown-field

@@ -916,7 +916,7 @@ GEM
       activesupport (>= 4)
       railties (>= 4)
       request_store (~> 1.0)
-    loofah (2.19.1)
+    loofah (2.20.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     lookbook (1.5.3)
@@ -1803,7 +1803,7 @@ DEPENDENCIES
   listen (~> 3.7)
   lockbox (~> 1.1.1)
   lograge (~> 0.5)
-  loofah (~> 2.19.1)
+  loofah (~> 2.20.0)
   lookbook (~> 1.5, >= 1.5.3)
   lru_redux
   mail (= 2.8.1)

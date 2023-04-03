@@ -120,9 +120,10 @@
 }
 
 .referenced-commands {
+  $radius: $border-radius-default - 1px;
   background: $blue-50;
   padding: $gl-padding-8 $gl-padding;
-  border-radius: $border-radius-default;
+  border-radius: 0 0 $radius $radius;
 
   p {
     margin: 0;

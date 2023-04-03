@@ -9,4 +9,5 @@
       empty_list_illustration: image_path('illustrations/no-packages.svg'),
       npm_instance_url: package_registry_instance_url(:npm),
       project_list_url: project_packages_path(@project),
+      settings_path: show_package_registry_settings(@project) ? project_settings_packages_and_registries_path(@project) : '',
       group_list_url: '' } }

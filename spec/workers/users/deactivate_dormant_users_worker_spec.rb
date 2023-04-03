@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::DeactivateDormantUsersWorker, feature_category: :subscription_cost_management do
+RSpec.describe Users::DeactivateDormantUsersWorker, feature_category: :seat_cost_management do
   using RSpec::Parameterized::TableSyntax
 
   describe '#perform' do

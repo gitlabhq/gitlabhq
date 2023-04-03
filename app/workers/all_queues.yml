@@ -842,7 +842,7 @@
   :tags: []
 - :name: cronjob:users_deactivate_dormant_users
   :worker_name: Users::DeactivateDormantUsersWorker
-  :feature_category: :subscription_cost_management
+  :feature_category: :seat_cost_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -3452,7 +3452,7 @@
   :tags: []
 - :name: update_highest_role
   :worker_name: UpdateHighestRoleWorker
-  :feature_category: :subscription_cost_management
+  :feature_category: :seat_cost_management
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :unknown

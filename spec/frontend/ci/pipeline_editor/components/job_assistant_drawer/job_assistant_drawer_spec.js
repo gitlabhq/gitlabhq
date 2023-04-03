@@ -5,6 +5,8 @@ import { stringify } from 'yaml';
 import JobAssistantDrawer from '~/ci/pipeline_editor/components/job_assistant_drawer/job_assistant_drawer.vue';
 import JobSetupItem from '~/ci/pipeline_editor/components/job_assistant_drawer/accordion_items/job_setup_item.vue';
 import ImageItem from '~/ci/pipeline_editor/components/job_assistant_drawer/accordion_items/image_item.vue';
+import RulesItem from '~/ci/pipeline_editor/components/job_assistant_drawer/accordion_items/rules_item.vue';
+import { JOB_RULES_WHEN } from '~/ci/pipeline_editor/components/job_assistant_drawer/constants';
 import getRunnerTags from '~/ci/pipeline_editor/graphql/queries/runner_tags.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -23,10 +25,14 @@ describe('Job assistant drawer', () => {
   const dummyJobScript = 'b';
   const dummyImageName = 'c';
   const dummyImageEntrypoint = 'd';
+  const dummyRulesWhen = JOB_RULES_WHEN.delayed.value;
+  const dummyRulesStartIn = '1 second';
+  const dummyRulesAllowFailure = true;
 
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findJobSetupItem = () => wrapper.findComponent(JobSetupItem);
   const findImageItem = () => wrapper.findComponent(ImageItem);
+  const findRulesItem = () => wrapper.findComponent(RulesItem);
 
   const findConfirmButton = () => wrapper.findByTestId('confirm-button');
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
@@ -68,6 +74,10 @@ describe('Job assistant drawer', () => {
     expect(findImageItem().exists()).toBe(true);
   });
 
+  it('should contain rules accordion', () => {
+    expect(findRulesItem().exists()).toBe(true);
+  });
+
   it('should emit close job assistant drawer event when closing the drawer', () => {
     expect(wrapper.emitted('close-job-assistant-drawer')).toBeUndefined();
 
@@ -84,7 +94,7 @@ describe('Job assistant drawer', () => {
     expect(wrapper.emitted('close-job-assistant-drawer')).toHaveLength(1);
   });
 
-  it('trigger validate if job name is empty', async () => {
+  it('should block submit if job name is empty', async () => {
     findJobSetupItem().vm.$emit('update-job', 'script', 'b');
     findConfirmButton().trigger('click');
 
@@ -95,12 +105,25 @@ describe('Job assistant drawer', () => {
     expect(wrapper.emitted('updateCiConfig')).toBeUndefined();
   });
 
+  it('should block submit if rules when is delayed and start in is out of range', async () => {
+    findRulesItem().vm.$emit('update-job', 'rules[0].when', JOB_RULES_WHEN.delayed.value);
+    findRulesItem().vm.$emit('update-job', 'rules[0].start_in', '2 weeks');
+    findConfirmButton().trigger('click');
+
+    await nextTick();
+
+    expect(wrapper.emitted('updateCiConfig')).toBeUndefined();
+  });
+
   describe('when enter valid input', () => {
     beforeEach(() => {
       findJobSetupItem().vm.$emit('update-job', 'name', dummyJobName);
       findJobSetupItem().vm.$emit('update-job', 'script', dummyJobScript);
       findImageItem().vm.$emit('update-job', 'image.name', dummyImageName);
       findImageItem().vm.$emit('update-job', 'image.entrypoint', [dummyImageEntrypoint]);
+      findRulesItem().vm.$emit('update-job', 'rules[0].allow_failure', dummyRulesAllowFailure);
+      findRulesItem().vm.$emit('update-job', 'rules[0].when', dummyRulesWhen);
+      findRulesItem().vm.$emit('update-job', 'rules[0].start_in', dummyRulesStartIn);
     });
 
     it('passes correct prop to accordions', () => {
@@ -113,6 +136,13 @@ describe('Job assistant drawer', () => {
             name: dummyImageName,
             entrypoint: [dummyImageEntrypoint],
           },
+          rules: [
+            {
+              allow_failure: dummyRulesAllowFailure,
+              when: dummyRulesWhen,
+              start_in: dummyRulesStartIn,
+            },
+          ],
         });
       });
     });
@@ -138,6 +168,24 @@ describe('Job assistant drawer', () => {
       expect(findJobSetupItem().props('job')).toMatchObject({ name: '', script: '' });
     });
 
+    it('should omit keys with default value when click add button', () => {
+      findRulesItem().vm.$emit('update-job', 'rules[0].allow_failure', false);
+      findRulesItem().vm.$emit('update-job', 'rules[0].when', JOB_RULES_WHEN.onSuccess.value);
+      findRulesItem().vm.$emit('update-job', 'rules[0].start_in', dummyRulesStartIn);
+      findConfirmButton().trigger('click');
+
+      expect(wrapper.emitted('updateCiConfig')).toStrictEqual([
+        [
+          `${wrapper.props('ciFileContent')}\n${stringify({
+            [dummyJobName]: {
+              script: dummyJobScript,
+              image: { name: dummyImageName, entrypoint: [dummyImageEntrypoint] },
+            },
+          })}`,
+        ],
+      ]);
+    });
+
     it('should update correct ci content when click add button', () => {
       findConfirmButton().trigger('click');
 
@@ -147,6 +195,13 @@ describe('Job assistant drawer', () => {
             [dummyJobName]: {
               script: dummyJobScript,
               image: { name: dummyImageName, entrypoint: [dummyImageEntrypoint] },
+              rules: [
+                {
+                  allow_failure: dummyRulesAllowFailure,
+                  when: dummyRulesWhen,
+                  start_in: dummyRulesStartIn,
+                },
+              ],
             },
           })}`,
         ],

@@ -580,6 +580,24 @@ or records that point to nowhere, which might lead to bugs. As such we created
 ["loose foreign keys"](loose_foreign_keys.md) which is an asynchronous
 process of cleaning up orphaned records.
 
+## Testing for multiple databases
+
+In our testing CI pipelines, we test GitLab by default with multiple databases set up, using
+both `main` and `ci` databases. But in merge requests, for example when we modify some database-related code or
+add the label `~"pipeline:run-single-db"` to the MR, we additionally run our tests in
+[two other database modes](../pipelines/index.md#single-database-testing):
+`single-db` and `single-db-ci-connection`.
+
+To handle situations where our tests need to run in specific database modes, we have some RSpec helpers
+to limit the modes where tests can run, and skip them on any other modes.
+
+| Helper name                                 | Test runs |
+|---------------------------------------------| ---      |
+| `skip_if_shared_database(:ci)`              | On **multiple databases**   |
+| `skip_if_database_exists(:ci)`              | On **single-db** and **single-db-ci-connection**   |
+| `skip_if_multiple_databases_are_setup(:ci)` | Only on **single-db**   |
+| `skip_if_multiple_databases_not_setup(:ci)` | On **single-db-ci-connection** and **multiple databases** |
+
 ## Locking writes on the tables that don't belong to the database schemas
 
 When the CI database is promoted and the two databases are fully split,

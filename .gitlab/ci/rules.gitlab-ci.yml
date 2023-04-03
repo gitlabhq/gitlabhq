@@ -1212,6 +1212,11 @@
       allow_failure: true
     - <<: *if-ruby2-branch
       allow_failure: true
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+      changes: *dependency-patterns
+      allow_failure: true
+      variables:
+        OMNIBUS_GITLAB_BUILD_ON_ALL_OS: 'true'
     - <<: *if-merge-request-labels-run-all-e2e
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e

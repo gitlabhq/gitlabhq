@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RemoveDeactivatedUserHighestRoleStats, feature_category: :subscription_cost_management do
+RSpec.describe RemoveDeactivatedUserHighestRoleStats, feature_category: :seat_cost_management do
   let!(:users) { table(:users) }
   let!(:user_highest_roles) { table(:user_highest_roles) }
 

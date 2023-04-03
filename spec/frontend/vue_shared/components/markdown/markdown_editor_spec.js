@@ -346,6 +346,16 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     });
   });
 
+  describe('when contentEditor is disabled', () => {
+    it('resets the editingMode to markdownField', async () => {
+      localStorage.setItem('gl-markdown-editor-mode', 'contentEditor');
+
+      buildWrapper({ propsData: { autosaveKey: 'issue/1234', enableContentEditor: false } });
+
+      expect(wrapper.vm.editingMode).toBe(EDITING_MODE_MARKDOWN_FIELD);
+    });
+  });
+
   describe(`when editingMode is ${EDITING_MODE_CONTENT_EDITOR}`, () => {
     beforeEach(async () => {
       buildWrapper({ propsData: { autosaveKey: 'issue/1234' } });

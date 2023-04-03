@@ -51,7 +51,7 @@ RSpec.describe 'getting Alert Management Alert Notes', feature_category: :team_p
 
     expect(first_notes_result.first).to include(
       'id' => first_system_note.to_global_id.to_s,
-      'systemNoteIconName' => 'git-merge',
+      'systemNoteIconName' => 'merge',
       'body' => first_system_note.note
     )
   end

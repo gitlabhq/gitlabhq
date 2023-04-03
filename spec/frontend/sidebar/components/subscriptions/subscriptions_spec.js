@@ -1,23 +1,24 @@
 import { GlToggle } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mockTracking } from 'helpers/tracking_helper';
 import Subscriptions from '~/sidebar/components/subscriptions/subscriptions.vue';
 import eventHub from '~/sidebar/event_hub';
 
 describe('Subscriptions', () => {
   let wrapper;
+  let trackingSpy;
 
   const findToggleButton = () => wrapper.findComponent(GlToggle);
+  const findTooltip = () => wrapper.findComponent({ ref: 'tooltip' });
 
-  const mountComponent = (propsData) =>
-    extendedWrapper(
-      shallowMount(Subscriptions, {
-        propsData,
-      }),
-    );
+  const mountComponent = (propsData) => {
+    wrapper = shallowMountExtended(Subscriptions, {
+      propsData,
+    });
+  };
 
   it('shows loading spinner when loading', () => {
-    wrapper = mountComponent({
+    mountComponent({
       loading: true,
       subscribed: undefined,
     });
@@ -26,7 +27,7 @@ describe('Subscriptions', () => {
   });
 
   it('is toggled "off" when currently not subscribed', () => {
-    wrapper = mountComponent({
+    mountComponent({
       subscribed: false,
     });
 
@@ -34,7 +35,7 @@ describe('Subscriptions', () => {
   });
 
   it('is toggled "on" when currently subscribed', () => {
-    wrapper = mountComponent({
+    mountComponent({
       subscribed: true,
     });
 
@@ -43,44 +44,38 @@ describe('Subscriptions', () => {
 
   it('toggleSubscription method emits `toggleSubscription` event on eventHub and Component', () => {
     const id = 42;
-    wrapper = mountComponent({ subscribed: true, id });
+    mountComponent({ subscribed: true, id });
     const eventHubSpy = jest.spyOn(eventHub, '$emit');
-    const wrapperEmitSpy = jest.spyOn(wrapper.vm, '$emit');
 
-    wrapper.vm.toggleSubscription();
+    findToggleButton().vm.$emit('change');
 
     expect(eventHubSpy).toHaveBeenCalledWith('toggleSubscription', id);
-    expect(wrapperEmitSpy).toHaveBeenCalledWith('toggleSubscription', id);
-    eventHubSpy.mockRestore();
-    wrapperEmitSpy.mockRestore();
+    expect(wrapper.emitted('toggleSubscription')).toEqual([[id]]);
   });
 
   it('tracks the event when toggled', () => {
-    wrapper = mountComponent({ subscribed: true });
+    trackingSpy = mockTracking('_category_', undefined, jest.spyOn);
+    mountComponent({ subscribed: true });
 
-    const wrapperTrackSpy = jest.spyOn(wrapper.vm, 'track');
+    findToggleButton().vm.$emit('change');
 
-    wrapper.vm.toggleSubscription();
-
-    expect(wrapperTrackSpy).toHaveBeenCalledWith('toggle_button', {
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'toggle_button', {
+      category: undefined,
+      label: 'right_sidebar',
       property: 'notifications',
       value: 0,
     });
-    wrapperTrackSpy.mockRestore();
   });
 
   it('onClickCollapsedIcon method emits `toggleSidebar` event on component', () => {
-    wrapper = mountComponent({ subscribed: true });
-    const spy = jest.spyOn(wrapper.vm, '$emit');
+    mountComponent({ subscribed: true });
+    findTooltip().trigger('click');
 
-    wrapper.vm.onClickCollapsedIcon();
-
-    expect(spy).toHaveBeenCalledWith('toggleSidebar');
-    spy.mockRestore();
+    expect(wrapper.emitted('toggleSidebar')).toHaveLength(1);
   });
 
   it('has visually hidden label', () => {
-    wrapper = mountComponent();
+    mountComponent();
 
     expect(findToggleButton().props()).toMatchObject({
       label: 'Notifications',
@@ -92,7 +87,7 @@ describe('Subscriptions', () => {
     const subscribeDisabledDescription = 'Notifications have been disabled';
 
     beforeEach(() => {
-      wrapper = mountComponent({
+      mountComponent({
         subscribed: false,
         projectEmailsDisabled: true,
         subscribeDisabledDescription,
@@ -103,9 +98,7 @@ describe('Subscriptions', () => {
       expect(wrapper.findByTestId('subscription-title').text()).toContain(
         subscribeDisabledDescription,
       );
-      expect(wrapper.findComponent({ ref: 'tooltip' }).attributes('title')).toBe(
-        subscribeDisabledDescription,
-      );
+      expect(findTooltip().attributes('title')).toBe(subscribeDisabledDescription);
     });
 
     it('does not render the toggle button', () => {

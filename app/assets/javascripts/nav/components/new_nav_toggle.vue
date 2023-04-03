@@ -7,7 +7,7 @@ import Tracking from '~/tracking';
 
 export default {
   i18n: {
-    badgeLabel: s__('NorthstarNavigation|Alpha'),
+    badgeLabel: s__('NorthstarNavigation|Beta'),
     sectionTitle: s__('NorthstarNavigation|Navigation redesign'),
     toggleMenuItemLabel: s__('NorthstarNavigation|New navigation'),
     toggleLabel: s__('NorthstarNavigation|Toggle new navigation'),

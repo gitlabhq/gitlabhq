@@ -364,8 +364,6 @@ Dangerfile @gl-quality/eng-prod
 /ee/spec/services/namespaces/in_product_marketing_emails_service_spec.rb @gitlab-org/growth/engineers
 /app/workers/projects/record_target_platforms_worker.rb @gitlab-org/growth/engineers
 /spec/workers/projects/record_target_platforms_worker_spec.rb @gitlab-org/growth/engineers
-/ee/app/controllers/groups/feature_discovery_moments_controller.rb @gitlab-org/growth/engineers
-/ee/spec/requests/groups/feature_discovery_moments_spec.rb @gitlab-org/growth/engineers
 
 ^[Legal]
 /config/dependency_decisions.yml @gitlab-org/legal-reviewers

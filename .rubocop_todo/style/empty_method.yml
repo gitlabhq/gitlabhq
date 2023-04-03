@@ -85,7 +85,6 @@ Style/EmptyMethod:
     - 'ee/app/controllers/groups/analytics/cycle_analytics_controller.rb'
     - 'ee/app/controllers/groups/analytics/devops_adoption_controller.rb'
     - 'ee/app/controllers/groups/compliance_frameworks_controller.rb'
-    - 'ee/app/controllers/groups/feature_discovery_moments_controller.rb'
     - 'ee/app/controllers/groups/ldap_group_links_controller.rb'
     - 'ee/app/controllers/groups/settings/reporting_controller.rb'
     - 'ee/app/controllers/projects/analytics/code_reviews_controller.rb'
