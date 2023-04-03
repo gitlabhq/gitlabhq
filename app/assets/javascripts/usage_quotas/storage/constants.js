@@ -27,40 +27,44 @@ export const PROJECT_TABLE_LABEL_USAGE = s__('UsageQuota|Usage');
 export const PROJECT_STORAGE_TYPES = [
   {
     id: 'containerRegistrySize',
-    name: s__('UsageQuota|Container Registry'),
+    name: __('Container Registry'),
     description: s__(
       'UsageQuota|Gitlab-integrated Docker Container Registry for storing Docker Images.',
     ),
   },
   {
     id: 'buildArtifactsSize',
-    name: s__('UsageQuota|Artifacts'),
-    description: s__('UsageQuota|Pipeline artifacts and job artifacts, created with CI/CD.'),
-    tooltip: s__('UsageQuota|Artifacts is a sum of build and pipeline artifacts.'),
+    name: __('Job artifacts'),
+    description: s__('UsageQuota|Job artifacts created by CI/CD.'),
+  },
+  {
+    id: 'pipelineArtifactsSize',
+    name: __('Pipeline artifacts'),
+    description: s__('UsageQuota|Pipeline artifacts created by CI/CD.'),
   },
   {
     id: 'lfsObjectsSize',
-    name: s__('UsageQuota|LFS storage'),
+    name: __('LFS'),
     description: s__('UsageQuota|Audio samples, videos, datasets, and graphics.'),
   },
   {
     id: 'packagesSize',
-    name: s__('UsageQuota|Packages'),
+    name: __('Packages'),
     description: s__('UsageQuota|Code packages and container images.'),
   },
   {
     id: 'repositorySize',
-    name: s__('UsageQuota|Repository'),
+    name: __('Repository'),
     description: s__('UsageQuota|Git repository.'),
   },
   {
     id: 'snippetsSize',
-    name: s__('UsageQuota|Snippets'),
+    name: __('Snippets'),
     description: s__('UsageQuota|Shared bits of code and text.'),
   },
   {
     id: 'wikiSize',
-    name: s__('UsageQuota|Wiki'),
+    name: __('Wiki'),
     description: s__('UsageQuota|Wiki content.'),
   },
 ];
@@ -75,6 +79,9 @@ export const projectHelpPaths = {
   }),
   buildArtifacts: helpPagePath('ci/pipelines/job_artifacts', {
     anchor: 'when-job-artifacts-are-deleted',
+  }),
+  pipelineArtifacts: helpPagePath('/ci/pipelines/pipeline_artifacts', {
+    anchor: 'when-pipeline-artifacts-are-deleted',
   }),
   packages: helpPagePath('user/packages/package_registry/index.md', {
     anchor: 'reduce-storage-usage',

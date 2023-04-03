@@ -117,7 +117,7 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                     'file_size' => deployment.size,
                     'file_count' => deployment.file_count
                   },
-                  'unique_url' => nil
+                  'unique_host' => nil
                 }
               ]
             )
@@ -206,7 +206,7 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                     'file_size' => deployment.size,
                     'file_count' => deployment.file_count
                   },
-                  'unique_url' => 'http://unique-domain.example.com'
+                  'unique_host' => 'unique-domain.example.com'
                 }
               ]
             )
@@ -262,7 +262,7 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                       'file_size' => deployment.size,
                       'file_count' => deployment.file_count
                     },
-                    'unique_url' => nil
+                    'unique_host' => nil
                   }
                 ]
               )
@@ -310,7 +310,7 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                       'file_size' => deployment.size,
                       'file_count' => deployment.file_count
                     },
-                    'unique_url' => nil
+                    'unique_host' => nil
                   }
                 ]
               )

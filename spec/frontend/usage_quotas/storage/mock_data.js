@@ -19,16 +19,25 @@ export const projectData = {
       {
         storageType: {
           id: 'buildArtifactsSize',
-          name: 'Artifacts',
-          description: 'Pipeline artifacts and job artifacts, created with CI/CD.',
+          name: 'Job artifacts',
+          description: 'Job artifacts created by CI/CD.',
           helpPath: '/build-artifacts',
         },
         value: 400000,
       },
       {
         storageType: {
+          id: 'pipelineArtifactsSize',
+          name: 'Pipeline artifacts',
+          description: 'Pipeline artifacts created by CI/CD.',
+          helpPath: '/pipeline-artifacts',
+        },
+        value: 400000,
+      },
+      {
+        storageType: {
           id: 'lfsObjectsSize',
-          name: 'LFS storage',
+          name: 'LFS',
           description: 'Audio samples, videos, datasets, and graphics.',
           helpPath: '/lsf-objects',
         },
@@ -78,6 +87,7 @@ export const projectHelpLinks = {
   containerRegistry: '/container_registry',
   usageQuotas: '/usage-quotas',
   buildArtifacts: '/build-artifacts',
+  pipelineArtifacts: '/pipeline-artifacts',
   lfsObjects: '/lsf-objects',
   packages: '/packages',
   repository: '/repository',

@@ -28,3 +28,5 @@
 = render_if_exists 'groups/group_activity_analytics', group: @group
 
 #js-group-overview-tabs{ data: group_overview_tabs_app_data(@group) }
+
+= render partial: 'groups/group_readme', locals: { group: @group }

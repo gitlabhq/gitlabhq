@@ -262,7 +262,15 @@ module Gitlab
 
       def archive_metadata(ref, storage_path, project_path, format = "tar.gz", append_sha:, path: nil)
         ref ||= root_ref
-        commit = Gitlab::Git::Commit.find(self, ref)
+
+        if Feature.enabled?(:resolve_ambiguous_archives, container)
+          commit_id = extract_commit_id_from_ref(ref)
+          return {} if commit_id.nil?
+        else
+          commit_id = ref
+        end
+
+        commit = Gitlab::Git::Commit.find(self, commit_id)
         return {} if commit.nil?
 
         prefix = archive_prefix(ref, commit.id, project_path, append_sha: append_sha, path: path)
@@ -1222,6 +1230,26 @@ module Gitlab
 
       def gitaly_delete_refs(*ref_names)
         gitaly_ref_client.delete_refs(refs: ref_names) if ref_names.any?
+      end
+
+      # The order is based on git priority to resolve ambiguous references
+      #
+      # `git show <ref>`
+      #
+      # In case of name clashes, it uses this order:
+      # 1. Commit
+      # 2. Tag
+      # 3. Branch
+      def extract_commit_id_from_ref(ref)
+        return ref if Gitlab::Git.commit_id?(ref)
+
+        tag = find_tag(ref)
+        return tag.dereferenced_target.sha if tag
+
+        branch = find_branch(ref)
+        return branch.dereferenced_target.sha if branch
+
+        ref
       end
     end
   end

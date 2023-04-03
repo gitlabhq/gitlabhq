@@ -331,8 +331,8 @@ before_script:
 test:
   script:
     - python setup.py test
-    - pip install flake8
-    - flake8 .
+    - pip install ruff
+    - ruff --format=gitlab .
 ```
 
 ### Cache Ruby dependencies

@@ -49,7 +49,9 @@
   }
 
   &:not(.super-sidebar-loading) {
-    transition: transform $gl-transition-duration-medium;
+    @media (prefers-reduced-motion: no-preference) {
+      transition: transform $gl-transition-duration-medium ease-out;
+    }
   }
 
   .user-bar {
@@ -154,9 +156,26 @@
   display: none;
 }
 
+.super-sidebar-peek {
+  @include gl-shadow;
+  border-right: 0;
+  transform: translate3d(0, 0, 0) !important;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: transform 100ms ease-out !important;
+  }
+}
+
+.super-sidebar-hover-area {
+  z-index: $super-sidebar-z-index;
+}
+
 .page-with-super-sidebar {
   padding-left: 0;
-  transition: padding-left $gl-transition-duration-medium;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: padding-left $gl-transition-duration-medium ease-out;
+  }
 
   &:not(.page-with-super-sidebar-collapsed) {
     .super-sidebar-overlay {

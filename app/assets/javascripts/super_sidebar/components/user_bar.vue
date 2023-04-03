@@ -50,6 +50,11 @@ export default {
   },
   inject: ['rootPath'],
   props: {
+    hasCollapseButton: {
+      default: true,
+      type: Boolean,
+      required: false,
+    },
     sidebarData: {
       type: Object,
       required: true,
@@ -89,10 +94,12 @@ export default {
       >
       <div class="gl-flex-grow-1"></div>
       <gl-button
+        v-if="hasCollapseButton"
         v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.collapseSidebar"
         aria-controls="super-sidebar"
         aria-expanded="true"
         :aria-label="$options.i18n.navigationSidebar"
+        data-testid="super-sidebar-collapse-button"
         icon="sidebar"
         category="tertiary"
         @click="collapseSidebar"

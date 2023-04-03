@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification, query_analyzers: false,
-  feature_category: :pods do
+  feature_category: :cell do
   let_it_be(:pipeline, refind: true) { create(:ci_pipeline) }
   let_it_be(:project, refind: true) { create(:project) }
 

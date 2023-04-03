@@ -338,3 +338,19 @@ If you manage an open source project, these improvements can also reduce CI/CD m
 consumption for contributor fork projects, enabling more contributions.
 
 See our [pipeline efficiency guide](pipeline_efficiency.md) for more details.
+
+## Reset CI/CD minutes used **(PREMIUM SELF)**
+
+An administrator can reset the number of minutes used by a namespace for the current month.
+
+### Reset minutes for a personal namespace
+
+1. Find the [user in the admin area](../../user/admin_area/index.md#administering-users).
+1. Select **Edit**.
+1. In **Limits**, select **Reset pipeline minutes**.
+
+### Reset minutes for a group namespace
+
+1. Find the [group in the admin area](../../user/admin_area/index.md#administering-groups).
+1. Select **Edit**.
+1. In **Permissions and group features**, select **Reset pipeline minutes**.

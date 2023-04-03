@@ -4,7 +4,6 @@ description: Weekly counts for Container Scanning CI Latest template (Jobs folde
 product_section: sec
 product_stage: secure
 product_group: composition_analysis
-product_category: container_scanning
 value_type: number
 status: active
 milestone: '15.6'

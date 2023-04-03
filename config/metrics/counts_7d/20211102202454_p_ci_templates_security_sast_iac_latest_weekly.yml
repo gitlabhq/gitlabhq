@@ -5,7 +5,6 @@ description: Count of pipelines using the latest SAST IaC template
 product_section: sec
 product_stage: secure
 product_group: "static_analysis"
-product_category: SAST
 value_type: number
 status: active
 milestone: "14.5"

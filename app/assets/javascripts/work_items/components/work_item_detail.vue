@@ -710,6 +710,7 @@ export default {
           :full-path="fullPath"
           :fetch-by-iid="fetchByIid"
           :work-item-type="workItemType"
+          :is-modal="isModal"
           class="gl-pt-5"
           @error="updateError = $event"
         />

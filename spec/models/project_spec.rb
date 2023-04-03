@@ -2874,6 +2874,21 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
+  describe '#pages_unique_host', feature_category: :pages do
+    let(:project_settings) { create(:project_setting, pages_unique_domain: 'unique-domain') }
+    let(:project) { build(:project, project_setting: project_settings) }
+    let(:domain) { 'example.com' }
+
+    before do
+      allow(Settings.pages).to receive(:host).and_return(domain)
+      allow(Gitlab.config.pages).to receive(:url).and_return("http://#{domain}")
+    end
+
+    it 'returns the pages unique url' do
+      expect(project.pages_unique_host).to eq('unique-domain.example.com')
+    end
+  end
+
   describe '#pages_namespace_url', feature_category: :pages do
     let(:group) { create(:group, name: group_name) }
     let(:project) { create(:project, namespace: group, name: project_name) }

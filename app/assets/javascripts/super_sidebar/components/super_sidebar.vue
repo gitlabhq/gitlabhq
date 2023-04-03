@@ -2,6 +2,7 @@
 import { GlButton, GlCollapse } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { isCollapsed, toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
+import { SUPER_SIDEBAR_PEEK_DELAY } from '../constants';
 import UserBar from './user_bar.vue';
 import SidebarPortalTarget from './sidebar_portal_target.vue';
 import ContextSwitcherToggle from './context_switcher_toggle.vue';
@@ -32,7 +33,8 @@ export default {
   data() {
     return {
       contextSwitcherOpen: false,
-      isCollapased: isCollapsed(),
+      isInert: isCollapsed(),
+      isPeek: false,
     };
   },
   computed: {
@@ -47,6 +49,18 @@ export default {
     onContextSwitcherShown() {
       this.$refs['context-switcher'].focusInput();
     },
+    onMouseOver() {
+      setTimeout(() => {
+        this.isPeek = true;
+        this.isInert = false;
+      }, SUPER_SIDEBAR_PEEK_DELAY);
+    },
+    onMouseLeave() {
+      setTimeout(() => {
+        this.isPeek = false;
+        this.isInert = true;
+      }, SUPER_SIDEBAR_PEEK_DELAY);
+    },
   },
 };
 </script>
@@ -54,14 +68,21 @@ export default {
 <template>
   <div>
     <div class="super-sidebar-overlay" @click="collapseSidebar"></div>
+    <div
+      v-if="!isPeek"
+      class="super-sidebar-hover-area gl-fixed gl-left-0 gl-top-0 gl-bottom-0 gl-w-3"
+      data-testid="super-sidebar-hover-area"
+      @mouseover="onMouseOver"
+    ></div>
     <aside
       id="super-sidebar"
       class="super-sidebar"
-      :class="{ 'gl-visibility-hidden': isCollapased }"
+      :class="{ 'gl-visibility-hidden': isInert, 'super-sidebar-peek': isPeek }"
       data-testid="super-sidebar"
       data-qa-selector="navbar"
-      :inert="isCollapased"
+      :inert="isInert"
       tabindex="-1"
+      @mouseleave="onMouseLeave"
     >
       <gl-button
         class="super-sidebar-skip-to gl-sr-only-focusable gl-absolute gl-left-3 gl-right-3 gl-top-3"
@@ -70,7 +91,7 @@ export default {
       >
         {{ $options.i18n.skipToMainContent }}
       </gl-button>
-      <user-bar :sidebar-data="sidebarData" />
+      <user-bar :has-collapse-button="!isPeek" :sidebar-data="sidebarData" />
       <div class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden">
         <div class="gl-flex-grow-1 gl-overflow-auto">
           <context-switcher-toggle

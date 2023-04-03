@@ -4,7 +4,6 @@ description: Weekly counts for implicit use of License Scanning CI template (Job
 product_section: sec
 product_stage: secure
 product_group: composition_analysis
-product_category: license_compliance
 value_type: number
 status: active
 milestone: '14.8'

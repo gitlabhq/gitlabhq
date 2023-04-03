@@ -109,7 +109,7 @@ export default {
         return isIncomplete
           ? {
               icon: 'status-alert',
-              text: __('Partial import'),
+              text: s__('Import|Partially completed'),
               variant: 'warning',
             }
           : {
@@ -146,14 +146,8 @@ export default {
 
 <template>
   <div>
-    <div class="gl-display-inline-block gl-w-13">
-      <gl-badge
-        :icon="mappedStatus.icon"
-        :variant="mappedStatus.variant"
-        size="md"
-        icon-size="sm"
-        class="gl-mr-2"
-      >
+    <div class="gl-display-inline-block">
+      <gl-badge :icon="mappedStatus.icon" :variant="mappedStatus.variant" size="md" icon-size="sm">
         {{ mappedStatus.text }}
       </gl-badge>
     </div>

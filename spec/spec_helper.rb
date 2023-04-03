@@ -362,13 +362,6 @@ RSpec.configure do |config|
       ./spec/requests/api/project_snapshots_spec.rb
       ./spec/requests/api/project_snippets_spec.rb
       ./spec/requests/api/projects_spec.rb
-      ./ee/spec/requests/api/group_push_rule_spec.rb
-      ./ee/spec/requests/api/group_repository_storage_moves_spec.rb
-      ./ee/spec/requests/api/groups_spec.rb
-      ./ee/spec/requests/api/internal/upcoming_reconciliations_spec.rb
-      ./ee/spec/requests/api/invitations_spec.rb
-      ./ee/spec/requests/api/license_spec.rb
-      ./ee/spec/requests/api/notes_spec.rb
     ]
 
     if example.metadata[:file_path].start_with?(*admin_mode_for_api_feature_flag_paths)

@@ -180,18 +180,20 @@ export default {
       class="gl-mb-5"
     />
     <div v-if="repositories.length" class="gl-w-full">
-      <table>
-        <thead class="gl-border-0 gl-border-solid gl-border-t-1 gl-border-gray-100">
-          <th class="gl-w-half gl-p-4 gl-vertical-align-top gl-border-b-1">
-            {{ fromHeaderText }}
-          </th>
-          <th class="gl-w-half gl-p-4 gl-vertical-align-top gl-border-b-1">
-            {{ __('To GitLab') }}
-          </th>
-          <th class="gl-p-4 gl-vertical-align-top gl-border-b-1">
-            {{ __('Status') }}
-          </th>
-          <th class="gl-p-4 gl-vertical-align-top gl-border-b-1"></th>
+      <table class="table gl-table">
+        <thead>
+          <tr>
+            <th class="gl-w-half">
+              {{ fromHeaderText }}
+            </th>
+            <th class="gl-w-half">
+              {{ __('To GitLab') }}
+            </th>
+            <th>
+              {{ __('Status') }}
+            </th>
+            <th></th>
+          </tr>
         </thead>
         <tbody>
           <template v-for="repo in repositories">

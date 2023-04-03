@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :pods do
+RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :cell do
   let(:connection) { ApplicationRecord.connection }
   let(:test_table) { '_test_table' }
   let(:logger) { instance_double(Logger) }

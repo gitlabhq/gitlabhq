@@ -49,7 +49,7 @@ describe('Import entities status component', () => {
         },
       });
 
-      expect(getStatusText()).toBe('Partial import');
+      expect(getStatusText()).toBe('Partially completed');
       expect(getStatusIcon()).toBe('status-alert');
     });
   });

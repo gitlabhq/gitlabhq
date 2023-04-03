@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate_connection, :silence_stdout,
-  feature_category: :pods do
+  feature_category: :cell do
   let(:default_lock_writes_manager) do
     instance_double(
       Gitlab::Database::LockWritesManager,

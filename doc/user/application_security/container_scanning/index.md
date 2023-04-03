@@ -696,6 +696,14 @@ These reports must follow a format defined in the
 
 For more information, see [Security scanner integration](../../../development/integrations/secure.md).
 
+### CycloneDX Software Bill of Materials
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396381) in GitLab 15.11.
+
+In addition to the [JSON report file](#reports-json-format), the [Container Scanning](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning) tool outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM) for the scanned image. This CycloneDX SBOM is named `gl-sbom-report.cdx.json` and is saved in the same directory as the `JSON report file`. This feature is only supported when the `Trivy` analyzer is used.
+
+You can download CycloneDX SBOMs [the same way as other job artifacts](../../../ci/pipelines/job_artifacts.md#download-job-artifacts).
+
 ## Security Dashboard
 
 The [Security Dashboard](../security_dashboard/index.md) shows you an overview of all

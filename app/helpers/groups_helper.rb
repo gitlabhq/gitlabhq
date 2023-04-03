@@ -168,6 +168,17 @@ module GroupsHelper
     }
   end
 
+  def group_readme_app_data(group_readme)
+    {
+      web_path: group_readme.present.web_path,
+      name: group_readme.present.name
+    }
+  end
+
+  def show_group_readme?(group)
+    Feature.enabled?(:show_group_readme, group) && group.group_readme
+  end
+
   def enabled_git_access_protocol_options_for_group
     case ::Gitlab::CurrentSettings.enabled_git_access_protocol
     when nil, ""

@@ -9,17 +9,10 @@ class ScheduleMigrationForLinks < Gitlab::Database::Migration[2.1]
   BATCH_SIZE = 10000
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :vulnerability_occurrences,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op as it is rescheduled via db/post_migrate/20230314144640_reschedule_migration_for_links.rb
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :vulnerability_occurrences, :id, [])
+    # no-op as it is rescheduled via db/post_migrate/20230314144640_reschedule_migration_for_links.rb
   end
 end

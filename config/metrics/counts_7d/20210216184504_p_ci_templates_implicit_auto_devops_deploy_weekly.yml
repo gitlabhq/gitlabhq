@@ -5,7 +5,6 @@ description: Count of pipelines with implicit Auto Deploy runs
 product_section: ops
 product_stage: configure
 product_group: configure
-product_category: infrastructure_as_code
 value_type: number
 status: removed
 milestone_removed: '14.6'

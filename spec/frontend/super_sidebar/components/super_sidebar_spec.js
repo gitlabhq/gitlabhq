@@ -1,6 +1,8 @@
+import { nextTick } from 'vue';
 import { GlCollapse } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SuperSidebar from '~/super_sidebar/components/super_sidebar.vue';
+import { SUPER_SIDEBAR_PEEK_DELAY } from '~/super_sidebar/constants';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';
 import UserBar from '~/super_sidebar/components/user_bar.vue';
 import SidebarPortalTarget from '~/super_sidebar/components/sidebar_portal_target.vue';
@@ -17,13 +19,19 @@ const focusInputMock = jest.fn();
 describe('SuperSidebar component', () => {
   let wrapper;
 
-  const findSidebar = () => wrapper.find('.super-sidebar');
+  const findSidebar = () => wrapper.findByTestId('super-sidebar');
+  const findHoverArea = () => wrapper.findByTestId('super-sidebar-hover-area');
   const findUserBar = () => wrapper.findComponent(UserBar);
   const findHelpCenter = () => wrapper.findComponent(HelpCenter);
   const findSidebarPortalTarget = () => wrapper.findComponent(SidebarPortalTarget);
 
-  const createWrapper = (props = {}) => {
+  const createWrapper = ({ props = {}, isPeek = false } = {}) => {
     wrapper = shallowMountExtended(SuperSidebar, {
+      data() {
+        return {
+          isPeek,
+        };
+      },
       propsData: {
         sidebarData,
         ...props,
@@ -51,6 +59,36 @@ describe('SuperSidebar component', () => {
       expect(findSidebar().attributes('inert')).toBe(undefined);
     });
 
+    it('updates inert attribute and `gl-visibility-hidden` class when peeking on hover', async () => {
+      const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+      isCollapsed.mockReturnValue(true);
+      createWrapper();
+
+      findHoverArea().trigger('mouseover');
+      expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+      expect(setTimeoutSpy).toHaveBeenLastCalledWith(
+        expect.any(Function),
+        SUPER_SIDEBAR_PEEK_DELAY,
+      );
+      jest.runAllTimers();
+      await nextTick();
+
+      expect(findSidebar().classes()).not.toContain('gl-visibility-hidden');
+      expect(findSidebar().attributes('inert')).toBe(undefined);
+
+      findSidebar().trigger('mouseleave');
+      expect(setTimeoutSpy).toHaveBeenCalledTimes(2);
+      expect(setTimeoutSpy).toHaveBeenLastCalledWith(
+        expect.any(Function),
+        SUPER_SIDEBAR_PEEK_DELAY,
+      );
+      jest.runAllTimers();
+      await nextTick();
+
+      expect(findSidebar().classes()).toContain('gl-visibility-hidden');
+      expect(findSidebar().attributes('inert')).toBe('inert');
+    });
+
     it('renders UserBar with sidebarData', () => {
       createWrapper();
       expect(findUserBar().props('sidebarData')).toBe(sidebarData);
@@ -67,6 +105,7 @@ describe('SuperSidebar component', () => {
     });
 
     it("does not call the context switcher's focusInput method initially", () => {
+      createWrapper();
       expect(focusInputMock).not.toHaveBeenCalled();
     });
   });

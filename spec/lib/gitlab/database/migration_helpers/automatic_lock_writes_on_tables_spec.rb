@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
-  :reestablished_active_record_base, :delete, query_analyzers: false, feature_category: :pods do
+  :reestablished_active_record_base, :delete, query_analyzers: false, feature_category: :cell do
   using RSpec::Parameterized::TableSyntax
 
   let(:schema_class) { Class.new(Gitlab::Database::Migration[2.1]) }

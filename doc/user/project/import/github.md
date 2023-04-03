@@ -279,7 +279,7 @@ These GitHub collaborator roles are mapped to these GitLab [member roles](../../
 
 GitHub Enterprise Cloud has
 [custom repository roles](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-peoples-access-to-your-organization-with-roles/about-custom-repository-roles).
-These roles aren't supported and cause partial imports.
+These roles aren't supported and cause partially completed imports.
 
 To import GitHub collaborators, you must have at least the Write role on the GitHub project. Otherwise collaborators import is skipped.
 

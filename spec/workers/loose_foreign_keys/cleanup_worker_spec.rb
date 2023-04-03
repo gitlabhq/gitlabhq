@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe LooseForeignKeys::CleanupWorker, feature_category: :pods do
+RSpec.describe LooseForeignKeys::CleanupWorker, feature_category: :cell do
   include MigrationsHelpers
   using RSpec::Parameterized::TableSyntax
 

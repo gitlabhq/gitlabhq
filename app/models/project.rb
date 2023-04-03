@@ -2166,6 +2166,10 @@ class Project < ApplicationRecord
     pages_url_for(project_setting.pages_unique_domain)
   end
 
+  def pages_unique_host
+    URI(pages_unique_url).host
+  end
+
   def pages_namespace_url
     pages_url_for(pages_subdomain)
   end

@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:db:decomposition:connection_status', feature_category: :pods do
+RSpec.describe 'gitlab:db:decomposition:connection_status', feature_category: :cell do
   let(:max_connections) { 500 }
   let(:current_connections) { 300 }
 

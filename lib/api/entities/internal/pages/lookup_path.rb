@@ -10,7 +10,7 @@ module API
             :prefix,
             :project_id,
             :source,
-            :unique_url
+            :unique_host
         end
       end
     end
