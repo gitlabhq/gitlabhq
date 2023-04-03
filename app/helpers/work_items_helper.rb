@@ -7,7 +7,7 @@ module WorkItemsHelper
       issues_list_path: project_issues_path(project),
       register_path: new_user_registration_path(redirect_to_referer: 'yes'),
       sign_in_path: new_session_path(:user, redirect_to_referer: 'yes'),
-      saved_replies_new_path: profile_saved_replies_path
+      new_comment_template_path: profile_comment_templates_path
     }
   end
 end

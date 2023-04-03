@@ -41,7 +41,7 @@ export default () => {
     apolloProvider,
     provide: {
       reportAbusePath: notesDataset.reportAbusePath,
-      newSavedRepliesPath: notesDataset.savedRepliesNewPath,
+      newCommentTemplatePath: notesDataset.newCommentTemplatePath,
     },
     data() {
       const noteableData = JSON.parse(notesDataset.noteableData);

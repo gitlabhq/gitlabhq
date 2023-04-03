@@ -17,7 +17,7 @@ import { s__, __ } from '~/locale';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import ToolbarButton from './toolbar_button.vue';
 import DrawioToolbarButton from './drawio_toolbar_button.vue';
-import SavedRepliesDropdown from './saved_replies_dropdown.vue';
+import CommentTemplatesDropdown from './comment_templates_dropdown.vue';
 
 export default {
   components: {
@@ -27,14 +27,14 @@ export default {
     GlTabs,
     GlTab,
     DrawioToolbarButton,
-    SavedRepliesDropdown,
+    CommentTemplatesDropdown,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
-    newSavedRepliesPath: {
+    newCommentTemplatePath: {
       default: null,
     },
   },
@@ -400,9 +400,9 @@ export default {
             :uploads-path="uploadsPath"
             :markdown-preview-path="markdownPreviewPath"
           />
-          <saved-replies-dropdown
-            v-if="newSavedRepliesPath && glFeatures.savedReplies"
-            :new-saved-replies-path="newSavedRepliesPath"
+          <comment-templates-dropdown
+            v-if="newCommentTemplatePath && glFeatures.savedReplies"
+            :new-comment-template-path="newCommentTemplatePath"
           />
           <toolbar-button
             v-if="!restrictedToolBarItems.includes('full-screen')"

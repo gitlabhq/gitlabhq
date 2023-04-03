@@ -84,7 +84,7 @@
                 current_user_data: @current_user_data,
                 is_locked: @merge_request.discussion_locked.to_s,
                 report_abuse_path: add_category_abuse_reports_path,
-                saved_replies_new_path: profile_saved_replies_path } }
+                new_comment_template_path: profile_comment_templates_path } }
           - if moved_mr_sidebar_enabled?
             = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, reviewers: @merge_request.reviewers, source_branch: @merge_request.source_branch
 
@@ -108,7 +108,7 @@
 - if @merge_request.can_be_cherry_picked?
   = render "projects/commit/change", type: 'cherry-pick', commit: @merge_request.merge_commit
 
-#js-review-bar{ data: { saved_replies_new_path: profile_saved_replies_path } }
+#js-review-bar{ data: { new_comment_template_path: profile_comment_templates_path } }
 
 - if current_user && Feature.enabled?(:mr_experience_survey, current_user)
   #js-mr-experience-survey{ data: { account_age: current_user.account_age_in_days } }

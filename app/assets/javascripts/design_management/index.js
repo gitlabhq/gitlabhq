@@ -14,7 +14,7 @@ export default () => {
     issuePath,
     registerPath,
     signInPath,
-    savedRepliesNewPath,
+    newCommentTemplatePath,
   } = el.dataset;
   const router = createRouter(issuePath);
 
@@ -39,7 +39,7 @@ export default () => {
       issueIid,
       registerPath,
       signInPath,
-      newSavedRepliesPath: savedRepliesNewPath,
+      newCommentTemplatePath,
     },
     mounted() {
       performanceMarkAndMeasure({

@@ -40,7 +40,7 @@ module Sidebars
         add_menu(Sidebars::UserSettings::Menus::SshKeysMenu.new(context))
         add_menu(Sidebars::UserSettings::Menus::GpgKeysMenu.new(context))
         add_menu(Sidebars::UserSettings::Menus::PreferencesMenu.new(context))
-        add_menu(Sidebars::UserSettings::Menus::SavedRepliesMenu.new(context))
+        add_menu(Sidebars::UserSettings::Menus::CommentTemplatesMenu.new(context))
         add_menu(Sidebars::UserSettings::Menus::ActiveSessionsMenu.new(context))
         add_menu(Sidebars::UserSettings::Menus::AuthenticationLogMenu.new(context))
       end

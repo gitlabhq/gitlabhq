@@ -80,7 +80,7 @@ RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline, feature_category: :team_
       let(:markdown) { %Q(``` foo\\@bar\nfoo\n```) }
 
       it 'renders correct html' do
-        correct_html_included(markdown, %Q(<pre data-sourcepos="1:1-3:3" lang="foo@bar"><code>foo\n</code></pre>))
+        correct_html_included(markdown, %Q(<pre lang="foo@bar"><code>foo\n</code></pre>))
       end
 
       where(:markdown, :expected) do
@@ -95,7 +95,7 @@ RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline, feature_category: :team_
   end
 
   def correct_html_included(markdown, expected)
-    result = described_class.call(markdown, {})
+    result = described_class.call(markdown, { no_sourcepos: true })
 
     expect(result[:output].to_html).to include(expected)
 

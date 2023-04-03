@@ -18,7 +18,7 @@ export const initReviewBar = () => {
       ReviewBar: () => import('./components/review_bar.vue'),
     },
     provide: {
-      newSavedRepliesPath: el.dataset.savedRepliesNewPath,
+      newCommentTemplatePath: el.dataset.newCommentTemplatePath,
     },
     computed: {
       ...mapGetters('batchComments', ['draftsCount']),
