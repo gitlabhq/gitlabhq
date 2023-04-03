@@ -55,6 +55,22 @@ Review the details carefully before upgrading.
 
 The Live Preview feature of the Web IDE was intended to provide a client-side preview of static web applications. However, complex configuration steps and a narrow set of supported project types have limited its utility. With the introduction of the Web IDE Beta in GitLab 15.7, you can now connect to a full server-side runtime environment. With upcoming support for installing extensions in the Web IDE, we’ll also support more advanced workflows than those available with Live Preview. As of GitLab 15.9, Live Preview is no longer available in the Web IDE.
 
+### `omniauth-authentiq` gem no longer available
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+`omniauth-authentiq` is an OmniAuth strategy gem that was part of GitLab. The company providing authentication services, Authentiq, has shut down. Therefore the gem is being removed.
+
+### `omniauth-shibboleth` gem no longer available
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+`omniauth-shibboleth` is an OmniAuth strategy gem that was part of GitLab. The gem has not received security updates and does not meet GitLab quality guidance criteria. This gem was originally scheduled for removal by 14.1, but it was not removed at that time. The gem is being removed now.
+
 ## Removed in 15.8
 
 ### CiliumNetworkPolicy within the auto deploy Helm chart is removed

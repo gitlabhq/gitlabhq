@@ -55,6 +55,25 @@ RSpec.shared_examples 'work items comments' do |type|
     end
   end
 
+  context 'for work item note actions signed in user with developer role' do
+    it 'shows work item note actions' do
+      set_comment
+
+      click_button "Comment"
+
+      wait_for_requests
+
+      page.within(".main-notes-list") do
+        expect(page).to have_selector('[data-testid="work-item-note-actions"]')
+
+        find('[data-testid="work-item-note-actions"]', match: :first).click
+
+        expect(page).to have_selector('[data-testid="copy-link-action"]')
+        expect(page).to have_selector('[data-testid="assign-note-action"]')
+      end
+    end
+  end
+
   it 'successfully posts comments using shortcut and checks if textarea is blank when reinitiated' do
     set_comment
 
@@ -255,5 +274,20 @@ RSpec.shared_examples 'work items milestone' do
     set_milestone(find(milestone_dropdown_selector), 'No milestone')
 
     expect(page.find(milestone_dropdown_selector)).to have_text('Add to milestone')
+  end
+end
+
+RSpec.shared_examples 'work items comment actions for guest users' do
+  context 'for guest user' do
+    it 'hides other actions other than copy link' do
+      page.within(".main-notes-list") do
+        expect(page).to have_selector('[data-testid="work-item-note-actions"]')
+
+        find('[data-testid="work-item-note-actions"]', match: :first).click
+
+        expect(page).to have_selector('[data-testid="copy-link-action"]')
+        expect(page).not_to have_selector('[data-testid="assign-note-action"]')
+      end
+    end
   end
 end

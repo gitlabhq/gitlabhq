@@ -224,14 +224,17 @@ export default {
     canDelete() {
       return this.workItem?.userPermissions?.deleteWorkItem;
     },
+    canSetWorkItemMetadata() {
+      return this.workItem?.userPermissions?.setWorkItemMetadata;
+    },
+    canAssignUnassignUser() {
+      return this.workItemAssignees && this.canSetWorkItemMetadata;
+    },
     confidentialTooltip() {
       return sprintfWorkItem(this.$options.i18n.confidentialTooltip, this.workItemType);
     },
     fullPath() {
       return this.workItem?.project.fullPath;
-    },
-    workItemsMvcEnabled() {
-      return this.glFeatures.workItemsMvc;
     },
     workItemsMvc2Enabled() {
       return this.glFeatures.workItemsMvc2;
@@ -711,8 +714,11 @@ export default {
           :fetch-by-iid="fetchByIid"
           :work-item-type="workItemType"
           :is-modal="isModal"
+          :assignees="workItemAssignees && workItemAssignees.assignees.nodes"
+          :can-set-work-item-metadata="canAssignUnassignUser"
           class="gl-pt-5"
           @error="updateError = $event"
+          @has-notes="updateHasNotes"
         />
         <gl-empty-state
           v-if="error"

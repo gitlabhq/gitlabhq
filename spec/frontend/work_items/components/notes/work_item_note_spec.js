@@ -1,4 +1,4 @@
-import { GlAvatarLink, GlDropdown } from '@gitlab/ui';
+import { GlAvatarLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -12,8 +12,17 @@ import NoteBody from '~/work_items/components/notes/work_item_note_body.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
 import NoteActions from '~/work_items/components/notes/work_item_note_actions.vue';
 import WorkItemCommentForm from '~/work_items/components/notes/work_item_comment_form.vue';
+import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import updateWorkItemNoteMutation from '~/work_items/graphql/notes/update_work_item_note.mutation.graphql';
-import { mockWorkItemCommentNote } from 'jest/work_items/mock_data';
+import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import {
+  mockAssignees,
+  mockWorkItemCommentNote,
+  updateWorkItemMutationResponse,
+  workItemQueryResponse,
+} from 'jest/work_items/mock_data';
+import { i18n, TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
+import { mockTracking } from 'helpers/tracking_helper';
 
 Vue.use(VueApollo);
 jest.mock('~/lib/utils/autosave');
@@ -22,6 +31,7 @@ describe('Work Item Note', () => {
   let wrapper;
   const updatedNoteText = '# Some title';
   const updatedNoteBody = '<h1 data-sourcepos="1:1-1:12" dir="auto">Some title</h1>';
+  const mockWorkItemId = workItemQueryResponse.data.workItem.id;
 
   const successHandler = jest.fn().mockResolvedValue({
     data: {
@@ -35,6 +45,13 @@ describe('Work Item Note', () => {
       },
     },
   });
+
+  const workItemResponseHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
+
+  const updateWorkItemMutationSuccessHandler = jest
+    .fn()
+    .mockResolvedValue(updateWorkItemMutationResponse);
+
   const errorHandler = jest.fn().mockRejectedValue('Oops');
 
   const findAuthorAvatarLink = () => wrapper.findComponent(GlAvatarLink);
@@ -42,27 +59,38 @@ describe('Work Item Note', () => {
   const findNoteHeader = () => wrapper.findComponent(NoteHeader);
   const findNoteBody = () => wrapper.findComponent(NoteBody);
   const findNoteActions = () => wrapper.findComponent(NoteActions);
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findCommentForm = () => wrapper.findComponent(WorkItemCommentForm);
   const findEditedAt = () => wrapper.findComponent(EditedAt);
-
-  const findDeleteNoteButton = () => wrapper.find('[data-testid="delete-note-action"]');
   const findNoteWrapper = () => wrapper.find('[data-testid="note-wrapper"]');
 
   const createComponent = ({
     note = mockWorkItemCommentNote,
     isFirstNote = false,
     updateNoteMutationHandler = successHandler,
+    workItemId = mockWorkItemId,
+    updateWorkItemMutationHandler = updateWorkItemMutationSuccessHandler,
+    assignees = mockAssignees,
+    queryVariables = { id: mockWorkItemId },
+    fetchByIid = false,
   } = {}) => {
     wrapper = shallowMount(WorkItemNote, {
       propsData: {
         note,
         isFirstNote,
         workItemType: 'Task',
+        workItemId,
         markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
         autocompleteDataSources: {},
+        assignees,
+        queryVariables,
+        fetchByIid,
+        fullPath: 'test-project-path',
       },
-      apolloProvider: mockApollo([[updateWorkItemNoteMutation, updateNoteMutationHandler]]),
+      apolloProvider: mockApollo([
+        [workItemQuery, workItemResponseHandler],
+        [updateWorkItemNoteMutation, updateNoteMutationHandler],
+        [updateWorkItemMutation, updateWorkItemMutationHandler],
+      ]),
     });
   };
 
@@ -226,36 +254,57 @@ describe('Work Item Note', () => {
       });
     });
 
-    it('should display the `Delete comment` dropdown item if user has a permission to delete a note', () => {
-      createComponent({
-        note: {
-          ...mockWorkItemCommentNote,
-          userPermissions: { ...mockWorkItemCommentNote.userPermissions, adminNote: true },
-        },
+    describe('assign/unassign to commenting user', () => {
+      it('calls a mutation with correct variables', async () => {
+        createComponent({ assignees: mockAssignees });
+        await waitForPromises();
+        findNoteActions().vm.$emit('assignUser');
+
+        await waitForPromises();
+
+        expect(updateWorkItemMutationSuccessHandler).toHaveBeenCalledWith({
+          input: {
+            id: mockWorkItemId,
+            assigneesWidget: {
+              assigneeIds: [mockAssignees[1].id],
+            },
+          },
+        });
       });
 
-      expect(findDropdown().exists()).toBe(true);
-      expect(findDeleteNoteButton().exists()).toBe(true);
-    });
+      it('emits an error and resets assignees if mutation was rejected', async () => {
+        createComponent({
+          updateWorkItemMutationHandler: errorHandler,
+          assignees: [mockAssignees[0]],
+        });
 
-    it('should not display the `Delete comment` dropdown item if user has no permission to delete a note', () => {
-      createComponent();
+        await waitForPromises();
 
-      expect(findDropdown().exists()).toBe(true);
-      expect(findDeleteNoteButton().exists()).toBe(false);
-    });
+        expect(findNoteActions().props('isAuthorAnAssignee')).toEqual(true);
 
-    it('should emit `deleteNote` event when delete note action is clicked', () => {
-      createComponent({
-        note: {
-          ...mockWorkItemCommentNote,
-          userPermissions: { ...mockWorkItemCommentNote.userPermissions, adminNote: true },
-        },
+        findNoteActions().vm.$emit('assignUser');
+
+        await waitForPromises();
+
+        expect(wrapper.emitted('error')).toEqual([[i18n.updateError]]);
+        expect(findNoteActions().props('isAuthorAnAssignee')).toEqual(true);
       });
 
-      findDeleteNoteButton().vm.$emit('click');
+      it('tracks the event', async () => {
+        createComponent();
+        await waitForPromises();
+        const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
 
-      expect(wrapper.emitted('deleteNote')).toEqual([[]]);
+        findNoteActions().vm.$emit('assignUser');
+
+        await waitForPromises();
+
+        expect(trackingSpy).toHaveBeenCalledWith(TRACKING_CATEGORY_SHOW, 'unassigned_user', {
+          category: TRACKING_CATEGORY_SHOW,
+          label: 'work_item_note_actions',
+          property: 'type_Task',
+        });
+      });
     });
   });
 });

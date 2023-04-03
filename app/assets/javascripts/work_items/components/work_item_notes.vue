@@ -78,6 +78,16 @@ export default {
       required: false,
       default: false,
     },
+    assignees: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    canSetWorkItemMetadata: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -375,6 +385,8 @@ export default {
                 :is-modal="isModal"
                 :autocomplete-data-sources="autocompleteDataSources"
                 :markdown-preview-path="markdownPreviewPath"
+                :assignees="assignees"
+                :can-set-work-item-metadata="canSetWorkItemMetadata"
                 @deleteNote="showDeleteNoteModal($event, discussion)"
                 @error="$emit('error', $event)"
               />

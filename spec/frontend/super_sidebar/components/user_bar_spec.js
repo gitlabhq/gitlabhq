@@ -19,7 +19,6 @@ describe('UserBar component', () => {
   const findCreateMenu = () => wrapper.findComponent(CreateMenu);
   const findCounter = (at) => wrapper.findAllComponents(Counter).at(at);
   const findMergeRequestMenu = () => wrapper.findComponent(MergeRequestMenu);
-  const findCollapseButton = () => wrapper.findByTestId('super-sidebar-collapse-button');
   const findBrandLogo = () => wrapper.findByTestId('brand-header-custom-logo');
   const findSearchButton = () => wrapper.findByTestId('super-sidebar-search-button');
   const findSearchModal = () => wrapper.findComponent(SearchModal);
@@ -31,10 +30,9 @@ describe('UserBar component', () => {
       searchOptions: () => MOCK_DEFAULT_SEARCH_OPTIONS,
     },
   });
-  const createWrapper = ({ hasCollapseButton = true, extraSidebarData = {} } = {}) => {
+  const createWrapper = (extraSidebarData = {}) => {
     wrapper = shallowMountExtended(UserBar, {
       propsData: {
-        hasCollapseButton,
         sidebarData: { ...sidebarData, ...extraSidebarData },
       },
       provide: {
@@ -82,21 +80,12 @@ describe('UserBar component', () => {
       expect(findBrandLogo().exists()).toBe(true);
       expect(findBrandLogo().attributes('src')).toBe(sidebarData.logo_url);
     });
-
-    it('renders collapse button when hasCollapseButton is true', () => {
-      expect(findCollapseButton().exists()).toBe(true);
-    });
-
-    it('does not render collapse button when hasCollapseButton is false', () => {
-      createWrapper({ hasCollapseButton: false });
-      expect(findCollapseButton().exists()).toBe(false);
-    });
   });
 
   describe('GitLab Next badge', () => {
     describe('when on canary', () => {
       it('should render a badge to switch off GitLab Next', () => {
-        createWrapper({ extraSidebarData: { gitlab_com_and_canary: true } });
+        createWrapper({ gitlab_com_and_canary: true });
         const badge = wrapper.findComponent(GlBadge);
         expect(badge.text()).toBe('Next');
         expect(badge.attributes('href')).toBe(sidebarData.canary_toggle_com_url);
@@ -105,7 +94,7 @@ describe('UserBar component', () => {
 
     describe('when not on canary', () => {
       it('should not render the GitLab Next badge', () => {
-        createWrapper({ extraSidebarData: { gitlab_com_and_canary: false } });
+        createWrapper({ gitlab_com_and_canary: false });
         const badge = wrapper.findComponent(GlBadge);
         expect(badge.exists()).toBe(false);
       });

@@ -128,7 +128,7 @@ export default {
   >
     <div class="gl-pb-3 position-relative tree-list-search d-flex">
       <div class="flex-fill d-flex">
-        <gl-icon name="search" class="position-absolute tree-list-icon" />
+        <gl-icon name="search" class="gl-absolute gl-top-5 tree-list-icon" />
         <label for="diff-tree-search" class="sr-only">{{ $options.searchPlaceholder }}</label>
         <input
           id="diff-tree-search"

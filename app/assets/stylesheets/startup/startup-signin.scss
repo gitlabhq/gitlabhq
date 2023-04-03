@@ -430,8 +430,12 @@ input.btn-block[type="button"] {
   cursor: not-allowed;
   color: #89888d;
 }
+.gl-form-checkbox.custom-control {
+  padding-left: 1rem;
+}
 .gl-form-checkbox.custom-control .custom-control-input ~ .custom-control-label {
   cursor: pointer;
+  padding-left: 0.5rem;
 }
 .gl-form-checkbox.custom-control
   .custom-control-input
@@ -440,6 +444,7 @@ input.btn-block[type="button"] {
   .custom-control-input
   ~ .custom-control-label::after {
   top: 0;
+  left: -1rem;
 }
 .gl-form-checkbox.custom-control
   .custom-control-input

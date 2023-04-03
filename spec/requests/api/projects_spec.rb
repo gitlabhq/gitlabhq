@@ -3040,6 +3040,7 @@ RSpec.describe API::Projects, feature_category: :projects do
         end
 
         create(:project_group_link, project: project)
+        create(:project_group_link, project: project)
 
         expect do
           get api("/projects/#{project.id}", user)

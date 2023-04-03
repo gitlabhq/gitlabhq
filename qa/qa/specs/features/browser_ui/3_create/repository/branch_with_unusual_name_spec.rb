@@ -30,14 +30,8 @@ module QA
           Page::Project::Show.perform do |show|
             show.switch_to_branch(branch_name)
 
-            # It takes a few seconds for console errors to appear
-            sleep 3
-
-            errors = page.driver.browser.logs.get(:browser)
-                         .select { |e| e.level == "SEVERE" }
-                         .to_a
-
-            raise("Console error(s):\n#{errors.join("\n\n")}") if errors.present?
+            # To prevent false positives: https://gitlab.com/gitlab-org/gitlab/-/issues/383863
+            expect(show).to have_no_content('An error occurred')
 
             show.click_file('test-folder')
 

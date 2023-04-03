@@ -8,6 +8,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
   let_it_be(:work_item) { create(:work_item, project: project) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:milestones) { create_list(:milestone, 25, project: project) }
+  let_it_be(:note) { create(:note, noteable: work_item, project: work_item.project) }
   let(:work_items_path) { project_work_items_path(project, work_items_path: work_item.iid, iid_path: true) }
 
   context 'for signed in user' do
@@ -44,5 +45,17 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     end
 
     it_behaves_like 'work items invite members'
+  end
+
+  context 'for guest users' do
+    before do
+      project.add_guest(user)
+
+      sign_in(user)
+
+      visit work_items_path
+    end
+
+    it_behaves_like 'work items comment actions for guest users'
   end
 end

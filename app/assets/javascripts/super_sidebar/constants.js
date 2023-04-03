@@ -13,7 +13,5 @@ export const portalState = Vue.observable({
 export const MAX_FREQUENT_PROJECTS_COUNT = 5;
 export const MAX_FREQUENT_GROUPS_COUNT = 3;
 
-export const SUPER_SIDEBAR_PEEK_DELAY = 150;
-
 export const TRACKING_UNKNOWN_ID = 'item_without_id';
 export const CLICK_MENU_ITEM_ACTION = 'click_menu_item';

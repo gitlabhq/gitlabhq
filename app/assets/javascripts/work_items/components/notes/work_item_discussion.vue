@@ -63,6 +63,16 @@ export default {
       required: false,
       default: () => ({}),
     },
+    assignees: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    canSetWorkItemMetadata: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -153,6 +163,12 @@ export default {
     :autocomplete-data-sources="autocompleteDataSources"
     :markdown-preview-path="markdownPreviewPath"
     :class="{ 'gl-mb-4': hasReplies }"
+    :assignees="assignees"
+    :can-set-work-item-metadata="canSetWorkItemMetadata"
+    :work-item-id="workItemId"
+    :query-variables="queryVariables"
+    :full-path="fullPath"
+    :fetch-by-iid="fetchByIid"
     @startReplying="showReplyForm"
     @deleteNote="$emit('deleteNote', note)"
     @error="$emit('error', $event)"
@@ -179,6 +195,12 @@ export default {
                   :class="{ 'gl-mb-4': hasReplies }"
                   :autocomplete-data-sources="autocompleteDataSources"
                   :markdown-preview-path="markdownPreviewPath"
+                  :assignees="assignees"
+                  :work-item-id="workItemId"
+                  :can-set-work-item-metadata="canSetWorkItemMetadata"
+                  :query-variables="queryVariables"
+                  :full-path="fullPath"
+                  :fetch-by-iid="fetchByIid"
                   @startReplying="showReplyForm"
                   @deleteNote="$emit('deleteNote', note)"
                   @error="$emit('error', $event)"
@@ -200,6 +222,12 @@ export default {
                         :is-modal="isModal"
                         :autocomplete-data-sources="autocompleteDataSources"
                         :markdown-preview-path="markdownPreviewPath"
+                        :assignees="assignees"
+                        :work-item-id="workItemId"
+                        :can-set-work-item-metadata="canSetWorkItemMetadata"
+                        :query-variables="queryVariables"
+                        :full-path="fullPath"
+                        :fetch-by-iid="fetchByIid"
                         @startReplying="showReplyForm"
                         @deleteNote="$emit('deleteNote', reply)"
                         @error="$emit('error', $event)"

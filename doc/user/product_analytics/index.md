@@ -120,9 +120,9 @@ To view a list of product analytics dashboards for a project:
 To define a dashboard:
 
 1. In `.gitlab/product_analytics/dashboards/`, create a directory named like the dashboard. Each dashboard should have its own directory.
-1. In the new directory, create a `.yaml` file with the same name as the directory. This file contains the dashboard definition, and must conform to the JSON schema defined in `ee/app/validators/json_schemas/product_analytics_dashboard.json`.
+1. In the new directory, create a `.yaml` file with the same name as the directory. This file contains the dashboard definition, and must conform to the JSON schema defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
 1. In the `.gitlab/product_analytics/dashboards/visualizations/` directory, create a `yaml` file. This file defines the visualization type for the dashboard, and must conform to the schema in
- `ee/app/validators/json_schemas/product_analytics_visualization.json`.
+ `ee/app/validators/json_schemas/analytics_visualization.json`.
 
 The example below includes three dashboards and one visualization that applies to all dashboards.
 

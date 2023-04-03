@@ -1,3 +1,4 @@
+import { GlDropdown } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -17,6 +18,10 @@ describe('Work Item Note Actions', () => {
   const findReplyButton = () => wrapper.findComponent(ReplyButton);
   const findEditButton = () => wrapper.find('[data-testid="edit-work-item-note"]');
   const findEmojiButton = () => wrapper.find('[data-testid="note-emoji-button"]');
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findDeleteNoteButton = () => wrapper.find('[data-testid="delete-note-action"]');
+  const findCopyLinkButton = () => wrapper.find('[data-testid="copy-link-action"]');
+  const findAssignUnassignButton = () => wrapper.find('[data-testid="assign-note-action"]');
 
   const addEmojiMutationResolver = jest.fn().mockResolvedValue({
     data: {
@@ -29,13 +34,19 @@ describe('Work Item Note Actions', () => {
     template: '<div></div>',
   };
 
-  const createComponent = ({ showReply = true, showEdit = true, showAwardEmoji = true } = {}) => {
+  const createComponent = ({
+    showReply = true,
+    showEdit = true,
+    showAwardEmoji = true,
+    showAssignUnassign = false,
+  } = {}) => {
     wrapper = shallowMount(WorkItemNoteActions, {
       propsData: {
         showReply,
         showEdit,
         noteId,
         showAwardEmoji,
+        showAssignUnassign,
       },
       provide: {
         glFeatures: {
@@ -111,6 +122,77 @@ describe('Work Item Note Actions', () => {
         awardableId: noteId,
         name: awardName,
       });
+    });
+  });
+
+  describe('delete note', () => {
+    it('should display the `Delete comment` dropdown item if user has a permission to delete a note', () => {
+      createComponent({
+        showEdit: true,
+      });
+
+      expect(findDropdown().exists()).toBe(true);
+      expect(findDeleteNoteButton().exists()).toBe(true);
+    });
+
+    it('should not display the `Delete comment` dropdown item if user has no permission to delete a note', () => {
+      createComponent({
+        showEdit: false,
+      });
+
+      expect(findDropdown().exists()).toBe(true);
+      expect(findDeleteNoteButton().exists()).toBe(false);
+    });
+
+    it('should emit `deleteNote` event when delete note action is clicked', () => {
+      createComponent({
+        showEdit: true,
+      });
+
+      findDeleteNoteButton().vm.$emit('click');
+
+      expect(wrapper.emitted('deleteNote')).toEqual([[]]);
+    });
+  });
+
+  describe('copy link', () => {
+    beforeEach(() => {
+      createComponent({});
+    });
+    it('should display Copy link always', () => {
+      expect(findCopyLinkButton().exists()).toBe(true);
+    });
+
+    it('should emit `notifyCopyDone` event when copy link note action is clicked', () => {
+      findCopyLinkButton().vm.$emit('click');
+
+      expect(wrapper.emitted('notifyCopyDone')).toEqual([[]]);
+    });
+  });
+
+  describe('assign/unassign to commenting user', () => {
+    it('should not display assign/unassign by default', () => {
+      createComponent();
+
+      expect(findAssignUnassignButton().exists()).toBe(false);
+    });
+
+    it('should display assign/unassign when the props is true', () => {
+      createComponent({
+        showAssignUnassign: true,
+      });
+
+      expect(findAssignUnassignButton().exists()).toBe(true);
+    });
+
+    it('should emit `assignUser` event when assign note action is clicked', () => {
+      createComponent({
+        showAssignUnassign: true,
+      });
+
+      findAssignUnassignButton().vm.$emit('click');
+
+      expect(wrapper.emitted('assignUser')).toEqual([[]]);
     });
   });
 });

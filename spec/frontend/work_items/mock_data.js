@@ -82,6 +82,7 @@ export const workItemQueryResponse = {
       userPermissions: {
         deleteWorkItem: false,
         updateWorkItem: false,
+        setWorkItemMetadata: false,
         __typename: 'WorkItemPermissions',
       },
       widgets: [
@@ -183,6 +184,7 @@ export const updateWorkItemMutationResponse = {
         userPermissions: {
           deleteWorkItem: false,
           updateWorkItem: false,
+          setWorkItemMetadata: false,
           __typename: 'WorkItemPermissions',
         },
         widgets: [
@@ -332,6 +334,7 @@ export const workItemResponseFactory = ({
       userPermissions: {
         deleteWorkItem: canDelete,
         updateWorkItem: canUpdate,
+        setWorkItemMetadata: canUpdate,
         __typename: 'WorkItemPermissions',
       },
       widgets: [
@@ -542,6 +545,7 @@ export const createWorkItemMutationResponse = {
         userPermissions: {
           deleteWorkItem: false,
           updateWorkItem: false,
+          setWorkItemMetadata: false,
           __typename: 'WorkItemPermissions',
         },
         widgets: [],
@@ -591,6 +595,7 @@ export const createWorkItemFromTaskMutationResponse = {
         userPermissions: {
           deleteWorkItem: false,
           updateWorkItem: false,
+          setWorkItemMetadata: false,
           __typename: 'WorkItemPermissions',
         },
         widgets: [
@@ -632,6 +637,7 @@ export const createWorkItemFromTaskMutationResponse = {
         userPermissions: {
           deleteWorkItem: false,
           updateWorkItem: false,
+          setWorkItemMetadata: false,
           __typename: 'WorkItemPermissions',
         },
         widgets: [],
@@ -857,6 +863,7 @@ export const workItemHierarchyEmptyResponse = {
       userPermissions: {
         deleteWorkItem: false,
         updateWorkItem: false,
+        setWorkItemMetadata: false,
         __typename: 'WorkItemPermissions',
       },
       confidential: false,
@@ -898,6 +905,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
       userPermissions: {
         deleteWorkItem: false,
         updateWorkItem: false,
+        setWorkItemMetadata: false,
         __typename: 'WorkItemPermissions',
       },
       project: {
@@ -1039,6 +1047,7 @@ export const workItemHierarchyResponse = {
       userPermissions: {
         deleteWorkItem: true,
         updateWorkItem: true,
+        setWorkItemMetadata: true,
         __typename: 'WorkItemPermissions',
       },
       author: {
@@ -1128,6 +1137,7 @@ export const workItemObjectiveWithChild = {
   userPermissions: {
     deleteWorkItem: true,
     updateWorkItem: true,
+    setWorkItemMetadata: true,
     __typename: 'WorkItemPermissions',
   },
   author: {
@@ -1195,6 +1205,7 @@ export const workItemHierarchyTreeResponse = {
       userPermissions: {
         deleteWorkItem: true,
         updateWorkItem: true,
+        setWorkItemMetadata: true,
         __typename: 'WorkItemPermissions',
       },
       confidential: false,
@@ -1272,6 +1283,7 @@ export const changeIndirectWorkItemParentMutationResponse = {
         userPermissions: {
           deleteWorkItem: true,
           updateWorkItem: true,
+          setWorkItemMetadata: true,
           __typename: 'WorkItemPermissions',
         },
         description: null,
@@ -1333,6 +1345,7 @@ export const changeWorkItemParentMutationResponse = {
         userPermissions: {
           deleteWorkItem: true,
           updateWorkItem: true,
+          setWorkItemMetadata: true,
           __typename: 'WorkItemPermissions',
         },
         description: null,

@@ -27,6 +27,7 @@ fragment WorkItem on WorkItem {
   userPermissions {
     deleteWorkItem
     updateWorkItem
+    setWorkItemMetadata
   }
   widgets {
     ...WorkItemWidgets
