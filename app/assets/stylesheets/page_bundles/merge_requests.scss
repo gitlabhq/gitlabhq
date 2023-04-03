@@ -255,21 +255,19 @@ $tabs-holder-z-index: 250;
   // If they don't match, the file tree and the diff files stick
   // to the top at different heights, which is a bad-looking defect
   $diff-file-header-top: 11px;
-  --initial-pos: calc(#{$header-height} + #{$mr-tabs-height} + #{$diff-file-header-top});
-  --top-pos: var(--initial-pos);
 
-  position: -webkit-sticky;
   position: sticky;
-  top: calc(var(--top-pos) + var(--performance-bar-height, 0px));
+  top: calc(#{$calc-application-header-height} + #{$mr-tabs-height} + #{$diff-file-header-top});
   min-height: 300px;
-  height: calc(100vh - var(--top-pos) - var(--system-header-height, 0px) - var(--performance-bar-height, 0px) - var(--mr-review-bar-height, 0px));
+  height: calc(#{$calc-application-viewport-height} - (#{$mr-tabs-height} + #{$diff-file-header-top}));
 
   .drag-handle {
     bottom: 16px;
   }
 
   &.is-sidebar-moved {
-    --top-pos: calc(var(--initial-pos) + 26px);
+    height: calc(#{$calc-application-viewport-height} - (#{$mr-tabs-height} + #{$diff-file-header-top} + 26px));
+    top: calc(#{$calc-application-header-height} + #{$mr-tabs-height} + #{$diff-file-header-top} + 26px);
   }
 }
 
@@ -1138,7 +1136,7 @@ $tabs-holder-z-index: 250;
 
 .review-bar-component {
   position: fixed;
-  bottom: 0;
+  bottom: $calc-application-footer-height;
   left: 0;
   z-index: $zindex-dropdown-menu;
   display: flex;

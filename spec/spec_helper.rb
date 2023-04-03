@@ -179,6 +179,7 @@ RSpec.configure do |config|
   config.include DetailedErrorHelpers
   config.include RequestUrgencyMatcher, type: :controller
   config.include RequestUrgencyMatcher, type: :request
+  config.include Capybara::RSpecMatchers, type: :request
 
   config.include_context 'when rendered has no HTML escapes', type: :view
 

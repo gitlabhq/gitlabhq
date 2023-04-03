@@ -170,6 +170,7 @@ function createApolloClient(resolvers = {}, config = {}) {
           config: {
             url: httpResponse.url,
             operationName: operation.operationName,
+            method: operation.getContext()?.fetchOptions?.method || 'POST', // If method is not explicitly set, we default to POST request
           },
           headers: {
             'x-request-id': httpResponse.headers.get('x-request-id'),

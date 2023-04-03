@@ -19,6 +19,7 @@ namespace :import do
   resource :github, only: [:create, :new], controller: :github do
     post :personal_access_token
     get :status
+    get :details
     get :callback
     get :realtime_changes
     post :cancel

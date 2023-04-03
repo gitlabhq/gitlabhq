@@ -252,7 +252,7 @@ ul.related-merge-requests > li gl-emoji {
 
   @include gl-left-0;
   width: var(--width);
-  top: $header-height;
+  top: $calc-application-header-height;
 
   // collapsed right sidebar
   @include media-breakpoint-up(sm) {
@@ -264,10 +264,6 @@ ul.related-merge-requests > li gl-emoji {
   .issue-sticky-header-text {
     max-width: $limited-layout-width;
   }
-}
-
-.with-performance-bar .issue-sticky-header {
-  top: calc(#{$header-height} + #{$performance-bar-height});
 }
 
 @include media-breakpoint-up(md) {

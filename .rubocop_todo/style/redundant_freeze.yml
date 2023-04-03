@@ -51,7 +51,6 @@ Style/RedundantFreeze:
     - 'app/services/grafana/proxy_service.rb'
     - 'app/services/import/validate_remote_git_endpoint_service.rb'
     - 'app/services/issues/base_service.rb'
-    - 'app/services/packages/debian/process_package_file_service.rb'
     - 'app/services/projects/import_error_filter.rb'
     - 'app/services/projects/lfs_pointers/lfs_object_download_list_service.rb'
     - 'app/services/prometheus/proxy_variable_substitution_service.rb'

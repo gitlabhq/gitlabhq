@@ -64,7 +64,6 @@ RSpec.describe Projects::WikisController, feature_category: :wiki do
       before do
         # Setting an invalid page title to render edit page
         put wiki_page_path(project_wiki, wiki_page), params: { wiki: { title: '' } }
-        print(response.body)
       end
 
       it_behaves_like 'embed.diagrams.net frame-src directive'

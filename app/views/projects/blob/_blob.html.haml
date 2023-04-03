@@ -13,8 +13,7 @@
   #js-code-owners{ data: { blob_path: blob.path, project_path: @project.full_path, branch: @ref } }
   = render "projects/blob/auxiliary_viewer", blob: blob
 
-- if project.forked? && Feature.enabled?(:fork_divergence_counts, @project.fork_source)
-
+- if project.forked?
   #js-fork-info{ data: vue_fork_divergence_data(project, ref) }
 
 #blob-content-holder.blob-content-holder.js-per-page{ data: { blame_per_page: Projects::BlameService::PER_PAGE } }

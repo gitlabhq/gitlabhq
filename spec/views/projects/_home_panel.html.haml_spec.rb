@@ -199,18 +199,6 @@ RSpec.describe 'projects/_home_panel' do
 
         expect(rendered).not_to have_content("Forked from #{source_project.full_name}")
       end
-
-      context 'when fork_divergence_counts is disabled' do
-        before do
-          stub_feature_flags(fork_divergence_counts: false)
-        end
-
-        it 'shows the forked-from project' do
-          render
-
-          expect(rendered).to have_content("Forked from #{source_project.full_name}")
-        end
-      end
     end
 
     context 'user cannot read fork source' do
@@ -222,18 +210,6 @@ RSpec.describe 'projects/_home_panel' do
         render
 
         expect(rendered).not_to have_content("Forked from an inaccessible project")
-      end
-
-      context 'when fork_divergence_counts is disabled' do
-        before do
-          stub_feature_flags(fork_divergence_counts: false)
-        end
-
-        it 'shows the message that forked project is inaccessible' do
-          render
-
-          expect(rendered).to have_content("Forked from an inaccessible project")
-        end
       end
     end
   end

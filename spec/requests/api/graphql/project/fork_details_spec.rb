@@ -62,18 +62,6 @@ RSpec.describe 'getting project fork details', feature_category: :source_code_ma
     end
   end
 
-  context 'when fork_divergence_counts feature flag is disabled' do
-    before do
-      stub_feature_flags(fork_divergence_counts: false)
-    end
-
-    it 'does not return fork details' do
-      post_graphql(query, current_user: current_user)
-
-      expect(graphql_data['project']['forkDetails']).to be_nil
-    end
-  end
-
   context 'when a user cannot read the code' do
     let_it_be(:current_user) { create(:user) }
 

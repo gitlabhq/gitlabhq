@@ -44,14 +44,14 @@ For example:
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 
-## View a file's Code Owner
+## View Code Owners of a file or directory
 
-To view the Code Owners for a file:
+To view the Code Owners of a file or directory:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Repository > Files**.
 1. Go to the file or directory you want to see the Code Owners for.
-1. Optional. Select your desired branch.
+1. Optional. Select a branch or tag.
 
 GitLab shows the Code Owners at the top of the page.
 

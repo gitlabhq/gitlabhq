@@ -67,6 +67,10 @@ class Import::GithubController < Import::BaseController
     end
   end
 
+  def details
+    render_404 unless Feature.enabled?(:import_details_page)
+  end
+
   def create
     result = Import::GithubService.new(client, current_user, import_params).execute(access_params, provider_name)
 

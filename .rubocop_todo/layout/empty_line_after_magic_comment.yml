@@ -806,8 +806,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/services/packages/debian/extract_changes_metadata_service_spec.rb'
     - 'spec/services/packages/debian/extract_deb_metadata_service_spec.rb'
     - 'spec/services/packages/debian/parse_debian822_service_spec.rb'
-    - 'spec/services/packages/debian/process_changes_service_spec.rb'
-    - 'spec/services/packages/debian/process_package_file_service_spec.rb'
     - 'spec/services/packages/helm/extract_file_metadata_service_spec.rb'
     - 'spec/services/packages/helm/process_file_service_spec.rb'
     - 'spec/services/packages/maven/create_package_service_spec.rb'

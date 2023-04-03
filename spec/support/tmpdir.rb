@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'tmpdir'
+
 module TmpdirHelper
   def mktmpdir
     @tmpdir_helper_dirs ||= []

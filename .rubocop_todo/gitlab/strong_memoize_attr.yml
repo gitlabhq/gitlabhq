@@ -229,7 +229,6 @@ Gitlab/StrongMemoizeAttr:
     - 'app/services/packages/cleanup/update_policy_service.rb'
     - 'app/services/packages/composer/create_package_service.rb'
     - 'app/services/packages/debian/extract_changes_metadata_service.rb'
-    - 'app/services/packages/debian/find_or_create_package_service.rb'
     - 'app/services/packages/debian/generate_distribution_key_service.rb'
     - 'app/services/packages/debian/generate_distribution_service.rb'
     - 'app/services/packages/debian/process_changes_service.rb'

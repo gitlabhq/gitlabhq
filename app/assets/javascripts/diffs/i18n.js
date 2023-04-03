@@ -2,7 +2,7 @@ import { __, s__ } from '~/locale';
 
 export const GENERIC_ERROR = __('Something went wrong on our end. Please try again!');
 export const LOAD_SINGLE_DIFF_FAILED = s__(
-  'MergeRequest|Encountered an issue while trying to fetch the single file diff.',
+  "MergeRequest|Can't fetch the diff needed to update this view. Please reload this page.",
 );
 export const DISCUSSION_SINGLE_DIFF_FAILED = s__(
   "MergeRequest|Can't fetch the single file diff for the discussion. Please reload this page.",

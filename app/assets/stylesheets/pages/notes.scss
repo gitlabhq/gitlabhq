@@ -500,18 +500,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     border-radius: 0;
     margin-left: 2.5rem;
 
-    @media (min-width: map-get($grid-breakpoints, md)) {
-      --initial-top: calc(#{$header-height} + #{$mr-tabs-height});
-
-      &.is-sidebar-moved {
-        --initial-top: calc(#{$header-height} + #{$mr-tabs-height + 24px});
-      }
-
-      .with-performance-bar & {
-        --top: 123px;
-      }
-    }
-
     &:hover {
       background-color: $gray-light;
     }

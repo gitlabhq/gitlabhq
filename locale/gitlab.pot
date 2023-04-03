@@ -10835,6 +10835,9 @@ msgstr ""
 msgid "ComplianceFramework|No compliance frameworks are set up yet"
 msgstr ""
 
+msgid "ComplianceFramework|No pipeline configuration found"
+msgstr ""
+
 msgid "ComplianceReport|Apply framework to selected projects"
 msgstr ""
 
@@ -13650,9 +13653,6 @@ msgid "Deactivate dormant users after a period of inactivity"
 msgstr ""
 
 msgid "Dear Administrator,"
-msgstr ""
-
-msgid "Debian package already exists in Distribution"
 msgstr ""
 
 msgid "Debug"
@@ -22127,6 +22127,9 @@ msgstr ""
 msgid "Importing..."
 msgstr ""
 
+msgid "Import|GitHub import details"
+msgstr ""
+
 msgid "Import|Partially completed"
 msgstr ""
 
@@ -27289,6 +27292,9 @@ msgstr ""
 msgid "MergeRequest|Approved by @%{username}"
 msgstr ""
 
+msgid "MergeRequest|Can't fetch the diff needed to update this view. Please reload this page."
+msgstr ""
+
 msgid "MergeRequest|Can't fetch the single file diff for the discussion. Please reload this page."
 msgstr ""
 
@@ -27305,9 +27311,6 @@ msgid "MergeRequest|Can't show this merge request because the target branch %{br
 msgstr ""
 
 msgid "MergeRequest|Compare %{target} and %{source}"
-msgstr ""
-
-msgid "MergeRequest|Encountered an issue while trying to fetch the single file diff."
 msgstr ""
 
 msgid "MergeRequest|Error dismissing suggestion popover. Please try again."
@@ -50429,6 +50432,9 @@ msgid "You need to verify your primary email first before enabling Two-Factor Au
 msgstr ""
 
 msgid "You see projects here when you're added to a group or project."
+msgstr ""
+
+msgid "You should add a %{linkStart}.gitlab-ci.yml%{linkEnd} file to this project to avoid pipeline failures. %{compliancePipelineLinkStart}Why?%{compliancePipelineLinkEnd}"
 msgstr ""
 
 msgid "You successfully declined the invitation"

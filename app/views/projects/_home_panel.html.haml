@@ -55,15 +55,6 @@
         %button.btn.gl-button.btn-blank.btn-link.js-read-more-trigger.d-lg-none{ type: "button" }
           = _("Read more")
 
-    - if @project.forked? && Feature.disabled?(:fork_divergence_counts, @project.fork_source)
-      %p
-        - source = visible_fork_source(@project)
-        - if source
-          #{ s_('ForkedFromProjectPath|Forked from') }
-          = link_to source.full_name, project_path(source), data: { qa_selector: 'forked_from_link' }
-        - else
-          = s_('ForkedFromProjectPath|Forked from an inaccessible project.')
-
     = render_if_exists "projects/home_mirror"
 
   - if @project.badges.present?

@@ -123,7 +123,6 @@
 - './ee/spec/controllers/projects/branches_controller_spec.rb'
 - './ee/spec/controllers/projects/clusters_controller_spec.rb'
 - './ee/spec/controllers/projects_controller_spec.rb'
-- './ee/spec/controllers/projects/dependencies_controller_spec.rb'
 - './ee/spec/controllers/projects/deploy_keys_controller_spec.rb'
 - './ee/spec/controllers/projects/environments_controller_spec.rb'
 - './ee/spec/controllers/projects/feature_flag_issues_controller_spec.rb'

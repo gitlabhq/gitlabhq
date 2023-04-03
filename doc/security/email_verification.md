@@ -4,14 +4,14 @@ group: Anti-Abuse
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Email verification **(FREE)**
+# Account email verification **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86352) in GitLab 15.2 [with a flag](../administration/feature_flags.md) named `require_email_verification`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `require_email_verification`. On GitLab.com, this feature is not available.
 
-Email verification provides an additional layer of GitLab account security.
+Account email verification provides an additional layer of GitLab account security.
 When certain conditions are met, an account is locked. If your account is locked,
 you must verify your identity or reset your password to sign in to GitLab.
 

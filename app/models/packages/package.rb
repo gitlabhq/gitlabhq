@@ -72,9 +72,8 @@ class Packages::Package < ApplicationRecord
               scope: %i[project_id version package_type],
               conditions: -> { not_pending_destruction }
             },
-            unless: -> { pending_destruction? || conan? || debian_package? }
+            unless: -> { pending_destruction? || conan? }
 
-  validate :unique_debian_package_name, if: :debian_package?
   validate :valid_conan_package_recipe, if: :conan?
   validate :valid_composer_global_name, if: :composer?
   validate :npm_package_already_taken, if: :npm?
@@ -222,6 +221,12 @@ class Packages::Package < ApplicationRecord
 
   def self.by_name_and_version!(name, version)
     find_by!(name: name, version: version)
+  end
+
+  def self.existing_debian_packages_with(name:, version:)
+    debian.with_name(name)
+          .with_version(version)
+          .not_pending_destruction
   end
 
   def self.pluck_names
@@ -416,19 +421,6 @@ class Packages::Package < ApplicationRecord
     return false unless project&.root_namespace&.path
 
     project.root_namespace.path == ::Packages::Npm.scope_of(name)
-  end
-
-  def unique_debian_package_name
-    return unless debian_publication&.distribution
-
-    package_exists = debian_publication.distribution.packages
-                            .with_name(name)
-                            .with_version(version)
-                            .not_pending_destruction
-                            .id_not_in(id)
-                            .exists?
-
-    errors.add(:base, _('Debian package already exists in Distribution')) if package_exists
   end
 
   def forbidden_debian_changes

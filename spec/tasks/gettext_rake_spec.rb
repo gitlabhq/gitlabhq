@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rake_helper'
+require_relative "../../tooling/lib/tooling/gettext_extractor"
 
 RSpec.describe 'gettext', :silence_stdout, feature_category: :internationalization do
   let(:locale_path) { Rails.root.join('tmp/gettext_spec') }
@@ -37,19 +38,17 @@ RSpec.describe 'gettext', :silence_stdout, feature_category: :internationalizati
   describe ':regenerate' do
     let(:locale_nz_path) { File.join(locale_path, 'en_NZ') }
     let(:po_file_path) { File.join(locale_nz_path, 'gitlab.po') }
+    let(:extractor) { instance_double(Tooling::GettextExtractor, generate_pot: '') }
 
     before do
       FileUtils.mkdir(locale_nz_path)
       File.write(po_file_path, fixture_file('valid.po'))
 
-      Rake::Task['gettext:setup'].invoke
       # this task takes a *really* long time to complete, so stub it for the spec
-      allow(Rake::Task['gettext:pot:create']).to receive(:invoke) { invoke_find.call }
+      allow(Tooling::GettextExtractor).to receive(:new).and_return(extractor)
     end
 
     context 'when the locale folder is not found' do
-      let(:invoke_find) { -> { true } }
-
       before do
         FileUtils.rm_r(locale_path) if Dir.exist?(locale_path)
       end
@@ -61,31 +60,11 @@ RSpec.describe 'gettext', :silence_stdout, feature_category: :internationalizati
     end
 
     context 'when the gitlab.pot file cannot be generated' do
-      let(:invoke_find) { -> { true } }
-
       it 'prints an error' do
+        allow(File).to receive(:exist?).and_return(false)
+
         expect { run_rake_task('gettext:regenerate') }
           .to raise_error(/gitlab.pot file not generated/)
-      end
-    end
-
-    context 'when gettext:pot:create changes the revision dates' do
-      let(:invoke_find) { -> { File.write pot_file_path, fixture_file('valid.po') } }
-
-      before do
-        File.write pot_file_path, fixture_file('valid.po')
-      end
-
-      it 'resets the changes' do
-        pot_file = File.read(pot_file_path)
-        expect(pot_file).to include('PO-Revision-Date: 2017-07-13 12:10-0500')
-        expect(pot_file).to include('PO-Creation-Date: 2016-07-13 12:11-0500')
-
-        run_rake_task('gettext:regenerate')
-
-        pot_file = File.read(pot_file_path)
-        expect(pot_file).not_to include('PO-Revision-Date: 2017-07-13 12:10-0500')
-        expect(pot_file).not_to include('PO-Creation-Date: 2016-07-13 12:11-0500')
       end
     end
   end

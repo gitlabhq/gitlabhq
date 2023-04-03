@@ -668,6 +668,12 @@ body.navless {
 .btn-block.btn {
   padding: 6px 0;
 }
+:root {
+  --performance-bar-height: 0px;
+  --system-header-height: 0px;
+  --system-footer-height: 0px;
+  --mr-review-bar-height: 0px;
+}
 .tab-content {
   overflow: visible;
 }

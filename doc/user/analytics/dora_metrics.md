@@ -154,6 +154,11 @@ These deployment records are not created for pull-based deployments, for example
 
 To track DORA metrics in these cases, you can [create a deployment record](../../api/deployments.md#create-a-deployment) using the Deployments API. See also the documentation page for [Track deployments of an external deployment tool](../../ci/environments/external_deployment_tools.md).
 
+### Measure DORA metrics with Jira
+
+- Deployment frequency and Lead time for changes are calculated based on GitLab CI/CD and Merge Requests (MRs), and do not require Jira data.
+- Time to restore service and Change failure rate require GitLab incidents for the calculation. For more information, see [Measure DORA Time to restore service and Change failure rate with external incidents](#measure-dora-time-to-restore-service-and-change-failure-rate-with-external-incidents).
+
 ### Measure DORA Time to restore service and Change failure rate with external incidents
 
 [Time to restore service](#time-to-restore-service) and [Change failure rate](#change-failure-rate)

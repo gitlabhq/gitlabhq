@@ -1,11 +1,19 @@
+import { mergeUrlParams } from '~/lib/utils/url_utility';
+
 export default class PerformanceBarStore {
   constructor() {
     this.requests = [];
   }
 
-  addRequest(requestId, requestUrl, operationName) {
+  addRequest(requestId, requestUrl, operationName, requestParams, methodVerb) {
     if (!this.findRequest(requestId)) {
-      let displayName = PerformanceBarStore.truncateUrl(requestUrl);
+      let displayName = '';
+
+      if (methodVerb) {
+        displayName += `${methodVerb.toUpperCase()} `;
+      }
+
+      displayName += PerformanceBarStore.truncateUrl(requestUrl);
 
       if (operationName) {
         displayName += ` (${operationName})`;
@@ -14,6 +22,8 @@ export default class PerformanceBarStore {
       this.requests.push({
         id: requestId,
         url: requestUrl,
+        fullUrl: mergeUrlParams(requestParams, requestUrl),
+        method: methodVerb,
         details: {},
         displayName,
       });

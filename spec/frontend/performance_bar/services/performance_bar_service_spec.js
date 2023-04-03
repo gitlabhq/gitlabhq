@@ -66,7 +66,7 @@ describe('PerformanceBarService', () => {
 
     describe('operationName', () => {
       function requestUrl(response, peekUrl) {
-        return PerformanceBarService.callbackParams(response, peekUrl)[3];
+        return PerformanceBarService.callbackParams(response, peekUrl)[4];
       }
 
       it('gets the operation name from response.config', () => {

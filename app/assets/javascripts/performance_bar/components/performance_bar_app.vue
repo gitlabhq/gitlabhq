@@ -1,4 +1,5 @@
 <script>
+import { GlLink } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { glEmojiTag } from '~/emoji';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
@@ -12,6 +13,7 @@ export default {
   components: {
     AddRequest,
     DetailedMetric,
+    GlLink,
     RequestSelector,
   },
   directives: {
@@ -27,6 +29,10 @@ export default {
       required: true,
     },
     requestId: {
+      type: String,
+      required: true,
+    },
+    requestMethod: {
       type: String,
       required: true,
     },
@@ -108,9 +114,6 @@ export default {
         this.currentRequestId = requestId;
       },
     },
-    initialRequest() {
-      return this.currentRequestId === this.requestId;
-    },
     hasHost() {
       return this.currentRequest && this.currentRequest.details && this.currentRequest.details.host;
     },
@@ -135,6 +138,9 @@ export default {
     showZoekt() {
       return document.body.dataset.page === 'search:show';
     },
+    showFlamegraphButtons() {
+      return this.currentRequest.details && this.isGetRequest(this.currentRequestId);
+    },
   },
   created() {
     if (!this.showZoekt) {
@@ -151,11 +157,14 @@ export default {
       this.currentRequest = newRequestId;
       this.$emit('change-request', newRequestId);
     },
-    flamegraphPath(mode) {
+    flamegraphPath(mode, requestId) {
       return mergeUrlParams(
         { performance_bar: 'flamegraph', stackprof_mode: mode },
-        window.location.href,
+        this.store.findRequest(requestId).fullUrl,
       );
+    },
+    isGetRequest(requestId) {
+      return this.store.findRequest(requestId)?.method?.toUpperCase() === 'GET';
     },
   },
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
@@ -192,41 +201,41 @@ export default {
         id="peek-view-trace"
         class="view"
       >
-        <a class="gl-text-blue-200" :href="currentRequest.details.tracing.tracing_url">{{
+        <gl-link class="gl-text-blue-200" :href="currentRequest.details.tracing.tracing_url">{{
           s__('PerformanceBar|Trace')
-        }}</a>
+        }}</gl-link>
       </div>
       <div v-if="currentRequest.details" id="peek-download" class="view">
-        <a class="gl-text-blue-200" :download="downloadName" :href="downloadPath">{{
+        <gl-link class="gl-text-blue-200" :download="downloadName" :href="downloadPath">{{
           s__('PerformanceBar|Download')
-        }}</a>
+        }}</gl-link>
       </div>
       <div
         v-if="currentRequest.details && env === 'development'"
         id="peek-memory-report"
         class="view"
       >
-        <a class="gl-text-blue-200" :href="memoryReportPath">{{
+        <gl-link class="gl-text-blue-200" :href="memoryReportPath">{{
           s__('PerformanceBar|Memory report')
-        }}</a>
+        }}</gl-link>
       </div>
-      <div v-if="currentRequest.details" id="peek-flamegraph" class="view">
+      <div v-if="showFlamegraphButtons" id="peek-flamegraph" class="view">
         <span class="gl-text-white-200">{{ s__('PerformanceBar|Flamegraph with mode:') }}</span>
-        <a class="gl-text-blue-200" :href="flamegraphPath('wall')">{{
+        <gl-link class="gl-text-blue-200" :href="flamegraphPath('wall', currentRequestId)">{{
           s__('PerformanceBar|wall')
-        }}</a>
+        }}</gl-link>
         /
-        <a class="gl-text-blue-200" :href="flamegraphPath('cpu')">{{
+        <gl-link class="gl-text-blue-200" :href="flamegraphPath('cpu', currentRequestId)">{{
           s__('PerformanceBar|cpu')
-        }}</a>
+        }}</gl-link>
         /
-        <a class="gl-text-blue-200" :href="flamegraphPath('object')">{{
+        <gl-link class="gl-text-blue-200" :href="flamegraphPath('object', currentRequestId)">{{
           s__('PerformanceBar|object')
-        }}</a>
+        }}</gl-link>
       </div>
-      <a v-if="statsUrl" class="gl-text-blue-200 view" :href="statsUrl">{{
+      <gl-link v-if="statsUrl" class="gl-text-blue-200 view" :href="statsUrl">{{
         s__('PerformanceBar|Stats')
-      }}</a>
+      }}</gl-link>
       <request-selector
         v-if="currentRequest"
         :current-request="currentRequest"

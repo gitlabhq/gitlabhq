@@ -11,24 +11,25 @@ namespace :gettext do
   end
 
   desc 'Regenerate gitlab.pot file'
-  task regenerate: ['gettext:setup'] do
+  task :regenerate do
+    require_relative "../../tooling/lib/tooling/gettext_extractor"
     ensure_locale_folder_presence!
 
     # remove the `pot` file to ensure it's completely regenerated
     FileUtils.rm_f(pot_file_path)
 
-    Rake::Task['gettext:pot:create'].invoke
+    extractor = Tooling::GettextExtractor.new(
+      glob_base: Rails.root
+    )
+    File.write(pot_file_path, extractor.generate_pot)
 
     raise 'gitlab.pot file not generated' unless File.exist?(pot_file_path)
-
-    # Remove timestamps from the pot file
-    pot_content = File.read pot_file_path
-    pot_content.gsub!(/^"POT?-(?:Creation|Revision)-Date:.*\n/, '')
-    File.write pot_file_path, pot_content
 
     puts <<~MSG
       All done. Please commit the changes to `locale/gitlab.pot`.
 
+      Tip: For even faster regeneration, directly run the following command:
+        tooling/bin/gettext_extractor locale/gitlab.pot
     MSG
   end
 
@@ -74,7 +75,7 @@ namespace :gettext do
       raise <<~MSG
         Changes in translated strings found, please update file `#{pot_file_path}` by running:
 
-          bin/rake gettext:regenerate
+          tooling/bin/gettext_extractor locale/gitlab.pot
 
         Then commit and push the resulting changes to `#{pot_file_path}`.
 
@@ -86,17 +87,6 @@ namespace :gettext do
   end
 
   private
-
-  # Customize list of translatable files
-  # See: https://github.com/grosser/gettext_i18n_rails#customizing-list-of-translatable-files
-  def files_to_translate
-    folders = %W(ee app lib config #{locale_path}).join(',')
-    exts = %w(rb erb haml slim rhtml js jsx vue handlebars hbs mustache).join(',')
-
-    Dir.glob(
-      "{#{folders}}/**/*.{#{exts}}"
-    )
-  end
 
   def report_errors_for_file(file, errors_for_file)
     puts "Errors in `#{file}`:"
