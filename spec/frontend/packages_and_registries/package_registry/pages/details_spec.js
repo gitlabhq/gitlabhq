@@ -33,6 +33,7 @@ import {
 
 import destroyPackageFilesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package_files.mutation.graphql';
 import getPackageDetails from '~/packages_and_registries/package_registry/graphql/queries/get_package_details.query.graphql';
+import getPackageVersionsQuery from '~/packages_and_registries/package_registry/graphql//queries/get_package_versions.query.graphql';
 import {
   packageDetailsQuery,
   packageData,
@@ -42,11 +43,12 @@ import {
   packageFiles,
   packageDestroyFilesMutation,
   packageDestroyFilesMutationError,
-  pagination,
 } from '../mock_data';
 
 jest.mock('~/alert');
 useMockLocationHelper();
+
+Vue.use(VueApollo);
 
 describe('PackagesApp', () => {
   let wrapper;
@@ -57,7 +59,7 @@ describe('PackagesApp', () => {
   };
 
   const provide = {
-    packageId: '111',
+    packageId: '1',
     emptyListIllustration: 'svgPath',
     projectListUrl: 'projectListUrl',
     groupListUrl: 'groupListUrl',
@@ -73,8 +75,6 @@ describe('PackagesApp', () => {
     filesDeleteMutationResolver = jest.fn().mockResolvedValue(packageDestroyFilesMutation()),
     routeId = '1',
   } = {}) {
-    Vue.use(VueApollo);
-
     const requestHandlers = [
       [getPackageDetails, resolver],
       [destroyPackageFilesMutation, filesDeleteMutationResolver],
@@ -475,6 +475,8 @@ describe('PackagesApp', () => {
 
         await doDeleteFiles();
 
+        expect(resolver).toHaveBeenCalledTimes(2);
+
         expect(createAlert).toHaveBeenCalledWith(
           expect.objectContaining({
             message: DELETE_PACKAGE_FILES_SUCCESS_MESSAGE,
@@ -565,8 +567,6 @@ describe('PackagesApp', () => {
           packageDetailsQuery({
             versions: {
               count: 0,
-              nodes: [],
-              pageInfo: pagination({ hasNextPage: false, hasPreviousPage: false }),
             },
           }),
         ),
@@ -582,55 +582,55 @@ describe('PackagesApp', () => {
     });
 
     it('binds the correct props', async () => {
-      const versionNodes = packageVersions();
       createComponent();
 
       await waitForPromises();
 
       expect(findVersionsList().props()).toMatchObject({
         canDestroy: true,
-        versions: expect.arrayContaining(versionNodes),
+        count: packageVersions().length,
+        isMutationLoading: false,
+        packageId: 'gid://gitlab/Packages::Package/1',
       });
     });
 
     describe('delete packages', () => {
-      it('exists and has the correct props', async () => {
+      beforeEach(async () => {
         createComponent();
-
         await waitForPromises();
-
-        expect(findDeletePackages().props()).toMatchObject({
-          refetchQueries: [{ query: getPackageDetails, variables: {} }],
-          showSuccessAlert: true,
-        });
       });
 
-      it('deletePackages is bound to package-versions-list delete event', async () => {
-        createComponent();
+      it('exists and has the correct props', () => {
+        expect(findDeletePackages().props('showSuccessAlert')).toBe(true);
+        expect(findDeletePackages().props('refetchQueries')).toEqual([
+          {
+            query: getPackageVersionsQuery,
+            variables: {
+              first: 20,
+              id: 'gid://gitlab/Packages::Package/1',
+            },
+          },
+        ]);
+      });
 
-        await waitForPromises();
-
+      it('deletePackages is bound to package-versions-list delete event', () => {
         findVersionsList().vm.$emit('delete', [{ id: 1 }]);
 
         expect(findDeletePackages().emitted('start')).toEqual([[]]);
       });
 
       it('start and end event set loading correctly', async () => {
-        createComponent();
-
-        await waitForPromises();
-
         findDeletePackages().vm.$emit('start');
 
         await nextTick();
 
-        expect(findVersionsList().props('isLoading')).toBe(true);
+        expect(findVersionsList().props('isMutationLoading')).toBe(true);
 
         findDeletePackages().vm.$emit('end');
 
         await nextTick();
 
-        expect(findVersionsList().props('isLoading')).toBe(false);
+        expect(findVersionsList().props('isMutationLoading')).toBe(false);
       });
     });
   });

@@ -36,7 +36,6 @@ module Sidebars
 
       # Finds a menu_items super sidebar parent and adds the item to that menu
       # Handles:
-      #   - menu_item.super_sidebar_before, adding before a certain item
       #   - parent == nil, or parent not being part of the panel:
       #       we assume that the menu item hasn't been categorized yet
       #   - parent == ::Sidebars::NilMenuItem, the item explicitly is supposed to be removed
@@ -47,11 +46,7 @@ module Sidebars
         idx = index_of(menus, parent) || index_of(menus, ::Sidebars::UncategorizedMenu)
         return unless idx
 
-        if menu_item.super_sidebar_before
-          menus[idx].insert_item_before(menu_item.super_sidebar_before, menu_item)
-        else
-          menus[idx].replace_placeholder(menu_item)
-        end
+        menus[idx].replace_placeholder(menu_item)
       end
     end
   end

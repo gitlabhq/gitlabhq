@@ -54,6 +54,7 @@ import {
 
 import destroyPackageFilesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package_files.mutation.graphql';
 import getPackageDetails from '~/packages_and_registries/package_registry/graphql/queries/get_package_details.query.graphql';
+import getPackageVersionsQuery from '~/packages_and_registries/package_registry/graphql/queries/get_package_versions.query.graphql';
 import Tracking from '~/tracking';
 
 export default {
@@ -135,7 +136,6 @@ export default {
     queryVariables() {
       return {
         id: convertToGraphQLId(TYPENAME_PACKAGES_PACKAGE, this.packageId),
-        first: GRAPHQL_PAGE_SIZE,
       };
     },
     packageFiles() {
@@ -146,9 +146,6 @@ export default {
     },
     isLoading() {
       return this.$apollo.queries.packageEntity.loading;
-    },
-    isVersionsLoading() {
-      return this.isLoading || this.versionsMutationLoading;
     },
     packageFilesLoading() {
       return this.isLoading || this.mutationLoading;
@@ -161,11 +158,11 @@ export default {
         category: packageTypeToTrackCategory(this.packageType),
       };
     },
-    versionPageInfo() {
-      return this.packageEntity?.versions?.pageInfo ?? {};
-    },
     packageDependencies() {
       return this.packageEntity.dependencyLinks?.nodes || [];
+    },
+    packageVersionsCount() {
+      return this.packageEntity.versions?.count ?? 0;
     },
     showDependencies() {
       return this.packageType === PACKAGE_TYPE_NUGET;
@@ -187,6 +184,17 @@ export default {
         {
           query: getPackageDetails,
           variables: this.queryVariables,
+        },
+      ];
+    },
+    refetchVersionsQueryData() {
+      return [
+        {
+          query: getPackageVersionsQuery,
+          variables: {
+            id: this.queryVariables.id,
+            first: GRAPHQL_PAGE_SIZE,
+          },
         },
       ];
     },
@@ -273,34 +281,6 @@ export default {
     },
     resetDeleteModalContent() {
       this.deletePackageModalContent = DELETE_MODAL_CONTENT;
-    },
-    updateQuery(_, { fetchMoreResult }) {
-      return fetchMoreResult;
-    },
-    fetchPreviousVersionsPage() {
-      const variables = {
-        ...this.queryVariables,
-        first: null,
-        last: GRAPHQL_PAGE_SIZE,
-        before: this.versionPageInfo?.startCursor,
-      };
-      this.$apollo.queries.packageEntity.fetchMore({
-        variables,
-        updateQuery: this.updateQuery,
-      });
-    },
-    fetchNextVersionsPage() {
-      const variables = {
-        ...this.queryVariables,
-        first: GRAPHQL_PAGE_SIZE,
-        last: null,
-        after: this.versionPageInfo?.endCursor,
-      };
-
-      this.$apollo.queries.packageEntity.fetchMore({
-        variables,
-        updateQuery: this.updateQuery,
-      });
     },
   },
   i18n: {
@@ -403,12 +383,12 @@ export default {
         <template #title>
           <span>{{ $options.i18n.otherVersionsTabTitle }}</span>
           <gl-badge size="sm" class="gl-tab-counter-badge" data-testid="other-versions-badge">{{
-            packageEntity.versions.count
+            packageVersionsCount
           }}</gl-badge>
         </template>
 
         <delete-packages
-          :refetch-queries="refetchQueriesData"
+          :refetch-queries="refetchVersionsQueryData"
           show-success-alert
           @start="versionsMutationLoading = true"
           @end="versionsMutationLoading = false"
@@ -416,12 +396,10 @@ export default {
           <template #default="{ deletePackages }">
             <package-versions-list
               :can-destroy="packageEntity.canDestroy"
-              :is-loading="isVersionsLoading"
-              :page-info="versionPageInfo"
-              :versions="packageEntity.versions.nodes"
+              :count="packageVersionsCount"
+              :is-mutation-loading="versionsMutationLoading"
+              :package-id="packageEntity.id"
               @delete="deletePackages"
-              @prev-page="fetchPreviousVersionsPage"
-              @next-page="fetchNextVersionsPage"
             >
               <template #empty-state>
                 <p class="gl-mt-3" data-testid="no-versions-message">

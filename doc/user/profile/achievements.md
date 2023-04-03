@@ -108,6 +108,36 @@ mutation achievementsCreate($file: Upload!) {
 }
 ```
 
+## Update an achievement
+
+You can change the name, description, and avatar of an achievement at any time.
+
+Prerequisites:
+
+- You must have the Maintainer or Owner role for the namespace.
+
+To update an achievement, call the [`achievementsUpdate` GraphQL mutation](../../api/graphql/reference/index.md#mutationachievementsupdate).
+
+```graphql
+mutation achievementsUpdate($file: Upload!) {
+  achievementsUpdate(
+    input: {
+      achievementId: "gid://gitlab/Achievements::Achievement/<achievement id>",
+      name: "<new name>",
+      description: "<new description>",
+      avatar: $file}
+  ) {
+    errors
+    achievement {
+      id
+      name
+      description
+      avatarUrl
+    }
+  }
+}
+```
+
 ## Award an achievement
 
 You can award an achievement to a user to recognize their contributions.

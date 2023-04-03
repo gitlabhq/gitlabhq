@@ -14,7 +14,7 @@
 
   - elsif defined?(nav) && nav
     = render "layouts/nav/sidebar/#{nav}"
-  .content-wrapper.content-wrapper-margin{ class: "#{@content_wrapper_class}" }
+  .content-wrapper{ class: "#{@content_wrapper_class}" }
     .mobile-overlay
     = dispensable_render_if_exists 'layouts/header/verification_reminder'
     .alert-wrapper.gl-force-block-formatting-context
@@ -47,4 +47,4 @@
     -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab-cn/-/issues/81)
     = render_if_exists "shared/footer/global_footer"
 
-= render "layouts/nav/top_nav_responsive", class: 'layout-page content-wrapper-margin' unless show_super_sidebar?
+= render "layouts/nav/top_nav_responsive", class: 'layout-page' unless show_super_sidebar?

@@ -43,4 +43,4 @@ reset your password.
 
 ## Related topics
 
-- [Locked and blocked account support](https://about.gitlab.com/handbook/support/workflows/reinstating-blocked-accounts.html).
+- [Locked and blocked account support](https://about.gitlab.com/handbook/support/workflows/reinstating-blocked-accounts.html)

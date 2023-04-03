@@ -115,6 +115,10 @@ export const DELETE_PACKAGE_VERSION_TRACKING_ACTION = 'delete_package_version';
 export const REQUEST_DELETE_PACKAGE_VERSION_TRACKING_ACTION = 'request_delete_package_version';
 export const CANCEL_DELETE_PACKAGE_VERSION_TRACKING_ACTION = 'cancel_delete_package_version';
 
+export const FETCH_PACKAGE_VERSIONS_ERROR_MESSAGE = s__(
+  'PackageRegistry|Failed to load version data',
+);
+
 export const DELETE_PACKAGES_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while deleting packages.',
 );

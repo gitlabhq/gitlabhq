@@ -4,10 +4,12 @@ import { s__, sprintf, n__ } from '~/locale';
 import { createAlert } from '~/alert';
 import syncForkMutation from '~/repository/mutations/sync_fork.mutation.graphql';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import eventHub from '../event_hub';
 import {
   POLLING_INTERVAL_DEFAULT,
   POLLING_INTERVAL_BACKOFF,
   FIVE_MINUTES_IN_MS,
+  FORK_UPDATED_EVENT,
 } from '../constants';
 import forkDetailsQuery from '../queries/fork_details.query.graphql';
 import ConflictsModal from './fork_sync_conflicts_modal.vue';
@@ -55,7 +57,12 @@ export default {
         });
       },
       result({ loading }) {
-        this.handlePolingInterval(loading);
+        if (!loading && this.isSyncing) {
+          this.increasePollInterval();
+        }
+        if (this.isForkUpdated) {
+          eventHub.$emit(FORK_UPDATED_EVENT);
+        }
       },
       pollInterval() {
         return this.pollInterval;
@@ -125,6 +132,9 @@ export default {
     },
     isSyncing() {
       return this.forkDetails?.isSyncing;
+    },
+    isForkUpdated() {
+      return !this.hasConflicts && !this.isSyncing && this.currentPollInterval;
     },
     ahead() {
       return this.project?.forkDetails?.ahead;
@@ -237,18 +247,11 @@ export default {
         this.startSyncing();
       }
     },
-    handlePolingInterval(loading) {
-      if (!loading && this.isSyncing) {
-        const backoff = POLLING_INTERVAL_BACKOFF;
-        const interval = this.currentPollInterval;
-        const newInterval = Math.min(interval * backoff, FIVE_MINUTES_IN_MS);
-        this.currentPollInterval = this.currentPollInterval
-          ? newInterval
-          : POLLING_INTERVAL_DEFAULT;
-      }
-      if (this.currentPollInterval === FIVE_MINUTES_IN_MS) {
-        this.$apollo.queries.forkDetailsQuery.stopPolling();
-      }
+    increasePollInterval() {
+      const backoff = POLLING_INTERVAL_BACKOFF;
+      const interval = this.currentPollInterval;
+      const newInterval = Math.min(interval * backoff, FIVE_MINUTES_IN_MS);
+      this.currentPollInterval = this.currentPollInterval ? newInterval : POLLING_INTERVAL_DEFAULT;
     },
   },
 };

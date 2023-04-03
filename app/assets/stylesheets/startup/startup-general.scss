@@ -577,6 +577,9 @@ svg {
 html {
   overflow-y: scroll;
 }
+.layout-page {
+  padding-top: var(--header-height, 48px);
+}
 @media (min-width: 576px) {
   .logged-out-marketing-header {
     --header-height: 72px;

@@ -84,7 +84,7 @@ export default {
       data-testid="insert-image-toolbar-button"
       @hidden="resetFields()"
     >
-      <gl-dropdown-form class="gl-px-3!">
+      <gl-dropdown-form class="gl-px-3! gl-pb-2!">
         <gl-form-input-group v-model="imgSrc" :placeholder="__('Image URL')">
           <template #append>
             <gl-button variant="confirm" @click="insertImage">{{ __('Insert') }}</gl-button>

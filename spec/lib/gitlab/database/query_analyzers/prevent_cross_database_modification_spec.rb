@@ -118,6 +118,18 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
         end
       end
 
+      context 'when ci_pipelines are ignored for cross modification' do
+        it 'does not raise error' do
+          Project.transaction do
+            expect do
+              described_class.temporary_ignore_tables_in_transaction(%w[ci_pipelines], url: 'TODO') do
+                run_queries
+              end
+            end.not_to raise_error
+          end
+        end
+      end
+
       context 'when data modification happens in nested transactions' do
         it 'raises error' do
           Project.transaction(requires_new: true) do

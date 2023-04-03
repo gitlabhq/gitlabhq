@@ -131,6 +131,8 @@ module ProjectsHelper
     source_default_branch = source_project.default_branch
 
     {
+      project_path: project.full_path,
+      selected_branch: ref,
       source_name: source_project.full_name,
       source_path: project_path(source_project),
       source_default_branch: source_default_branch,

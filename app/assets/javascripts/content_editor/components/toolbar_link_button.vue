@@ -102,7 +102,7 @@ export default {
         lazy
         @show="selectLink()"
       >
-        <gl-dropdown-form class="gl-px-3!">
+        <gl-dropdown-form class="gl-px-3! gl-pb-2!">
           <gl-form-input-group v-model="linkHref" :placeholder="__('Link URL')">
             <template #append>
               <gl-button variant="confirm" @click="updateLink">{{ __('Apply') }}</gl-button>

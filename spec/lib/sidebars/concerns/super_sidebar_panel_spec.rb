@@ -93,14 +93,6 @@ RSpec.describe Sidebars::Concerns::SuperSidebarPanel, feature_category: :navigat
         expect(uncategorized_menu.renderable_items).to eq([])
       end
 
-      it 'adds Menu Items to defined super_sidebar_parent, before super_sidebar_before' do
-        allow(menu_item).to receive(:super_sidebar_before).and_return(:exists)
-        subject.transform_old_menus(current_menus, menu_bar)
-
-        expect(menu_foo.renderable_items).to eq([menu_item, existing_item])
-        expect(uncategorized_menu.renderable_items).to eq([])
-      end
-
       it 'considers Menu Items uncategorized if super_sidebar_parent is nil' do
         allow(menu_item).to receive(:super_sidebar_parent).and_return(nil)
         subject.transform_old_menus(current_menus, menu_bar)

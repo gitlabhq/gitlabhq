@@ -130,13 +130,14 @@ export default {
 
     <template v-if="packageEntity.canDestroy" #right-action>
       <gl-dropdown
+        data-testid="delete-dropdown"
         icon="ellipsis_v"
         :text="$options.i18n.moreActions"
         :text-sr-only="true"
         category="tertiary"
         no-caret
       >
-        <gl-dropdown-item variant="danger" @click="$emit('delete')">{{
+        <gl-dropdown-item data-testid="action-delete" variant="danger" @click="$emit('delete')">{{
           $options.i18n.deletePackage
         }}</gl-dropdown-item>
       </gl-dropdown>

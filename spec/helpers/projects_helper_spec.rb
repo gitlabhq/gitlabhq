@@ -1370,6 +1370,8 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
           "/#{source_project.full_path}/-/compare/ref...#{source_project.default_branch}?from_project_id=#{project.id}"
 
         expect(helper.vue_fork_divergence_data(project, 'ref')).to eq({
+          project_path: project.full_path,
+          selected_branch: 'ref',
           source_name: source_project.full_name,
           source_path: project_path(source_project),
           ahead_compare_path: ahead_path,

@@ -4,11 +4,12 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-
 import LastCommit from '~/repository/components/last_commit.vue';
 import SignatureBadge from '~/commit/components/signature_badge.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import eventHub from '~/repository/event_hub';
 import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
+import { FORK_UPDATED_EVENT } from '~/repository/constants';
 import { refMock } from '../mock_data';
 
 let wrapper;
@@ -178,6 +179,25 @@ describe('Repository last commit component', () => {
 
     expect(findTextExpander().exists()).toBe(false);
     expect(findCommitRowDescription().exists()).toBe(false);
+  });
+
+  describe('created', () => {
+    it('binds `epicsListScrolled` event listener via eventHub', () => {
+      jest.spyOn(eventHub, '$on').mockImplementation(() => {});
+      createComponent();
+
+      expect(eventHub.$on).toHaveBeenCalledWith(FORK_UPDATED_EVENT, expect.any(Function));
+    });
+  });
+
+  describe('beforeDestroy', () => {
+    it('unbinds `epicsListScrolled` event listener via eventHub', () => {
+      jest.spyOn(eventHub, '$off').mockImplementation(() => {});
+      createComponent();
+      wrapper.destroy();
+
+      expect(eventHub.$off).toHaveBeenCalledWith(FORK_UPDATED_EVENT, expect.any(Function));
+    });
   });
 
   describe('when the description is present', () => {

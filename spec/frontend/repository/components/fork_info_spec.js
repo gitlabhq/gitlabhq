@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlSkeletonLoader, GlIcon, GlLink, GlSprintf, GlButton, GlLoadingIcon } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -11,13 +11,19 @@ import ForkInfo, { i18n } from '~/repository/components/fork_info.vue';
 import ConflictsModal from '~/repository/components/fork_sync_conflicts_modal.vue';
 import forkDetailsQuery from '~/repository/queries/fork_details.query.graphql';
 import syncForkMutation from '~/repository/mutations/sync_fork.mutation.graphql';
+import eventHub from '~/repository/event_hub';
+import {
+  POLLING_INTERVAL_DEFAULT,
+  POLLING_INTERVAL_BACKOFF,
+  FORK_UPDATED_EVENT,
+} from '~/repository/constants';
 import { propsForkInfo } from '../mock_data';
 
 jest.mock('~/alert');
 
 describe('ForkInfo component', () => {
   let wrapper;
-  let mockResolver;
+  let mockForkDetailsQuery;
   const forkInfoError = new Error('Something went wrong');
   const projectId = 'gid://gitlab/Project/1';
   const showMock = jest.fn();
@@ -25,14 +31,19 @@ describe('ForkInfo component', () => {
 
   Vue.use(VueApollo);
 
-  const createForkDetailsData = (
+  const waitForPolling = async (interval = POLLING_INTERVAL_DEFAULT) => {
+    jest.advanceTimersByTime(interval);
+    await waitForPromises();
+  };
+
+  const mockResolvedForkDetailsQuery = (
     forkDetails = { ahead: 3, behind: 7, isSyncing: false, hasConflicts: false },
   ) => {
-    return {
+    mockForkDetailsQuery.mockResolvedValue({
       data: {
         project: { id: projectId, forkDetails },
       },
-    };
+    });
   };
 
   const createSyncForkDetailsData = (
@@ -45,14 +56,10 @@ describe('ForkInfo component', () => {
     };
   };
 
-  const createComponent = (props = {}, data = {}, mutationData = {}, isRequestFailed = false) => {
-    mockResolver = isRequestFailed
-      ? jest.fn().mockRejectedValue(forkInfoError)
-      : jest.fn().mockResolvedValue(createForkDetailsData(data));
-
+  const createComponent = (props = {}, mutationData = {}) => {
     wrapper = shallowMountExtended(ForkInfo, {
       apolloProvider: createMockApollo([
-        [forkDetailsQuery, mockResolver],
+        [forkDetailsQuery, mockForkDetailsQuery],
         [syncForkMutation, jest.fn().mockResolvedValue(createSyncForkDetailsData(mutationData))],
       ]),
       propsData: { ...propsForkInfo, ...props },
@@ -83,6 +90,16 @@ describe('ForkInfo component', () => {
   const findInaccessibleMessage = () => wrapper.findByTestId('inaccessible-project');
   const findCompareLinks = () => findDivergenceMessage().findAllComponents(GlLink);
 
+  const startForkUpdate = async () => {
+    findUpdateForkButton().vm.$emit('click');
+    await waitForPromises();
+  };
+
+  beforeEach(() => {
+    mockForkDetailsQuery = jest.fn();
+    mockResolvedForkDetailsQuery();
+  });
+
   it('displays a skeleton while loading data', async () => {
     createComponent();
     expect(findSkeleton().exists()).toBe(true);
@@ -100,12 +117,12 @@ describe('ForkInfo component', () => {
 
   it('queries the data when sourceName is present', async () => {
     await createComponent();
-    expect(mockResolver).toHaveBeenCalled();
+    expect(mockForkDetailsQuery).toHaveBeenCalled();
   });
 
   it('does not query the data when sourceName is empty', async () => {
     await createComponent({ sourceName: null });
-    expect(mockResolver).not.toHaveBeenCalled();
+    expect(mockForkDetailsQuery).not.toHaveBeenCalled();
   });
 
   it('renders inaccessible message when fork source is not available', async () => {
@@ -122,19 +139,36 @@ describe('ForkInfo component', () => {
     expect(link.attributes('href')).toBe(propsForkInfo.sourcePath);
   });
 
-  describe('Unknown divergence', () => {
-    beforeEach(async () => {
-      await createComponent(
-        {},
-        { ahead: null, behind: null, isSyncing: false, hasConflicts: false },
-      );
+  it('renders alert with error message when request fails', async () => {
+    mockForkDetailsQuery.mockRejectedValue(forkInfoError);
+    await createComponent({});
+    expect(createAlert).toHaveBeenCalledWith({
+      message: i18n.error,
+      captureError: true,
+      error: forkInfoError,
     });
+  });
 
+  describe('Unknown divergence', () => {
     it('renders unknown divergence message when divergence is unknown', async () => {
+      mockResolvedForkDetailsQuery({
+        ahead: null,
+        behind: null,
+        isSyncing: false,
+        hasConflicts: false,
+      });
+      await createComponent({});
       expect(findDivergenceMessage().text()).toBe(i18n.unknown);
     });
 
     it('renders Update Fork button', async () => {
+      mockResolvedForkDetailsQuery({
+        ahead: null,
+        behind: null,
+        isSyncing: false,
+        hasConflicts: false,
+      });
+      await createComponent({});
       expect(findUpdateForkButton().exists()).toBe(true);
       expect(findUpdateForkButton().text()).toBe(i18n.sync);
     });
@@ -142,6 +176,7 @@ describe('ForkInfo component', () => {
 
   describe('Up to date divergence', () => {
     beforeEach(async () => {
+      mockResolvedForkDetailsQuery({ ahead: 0, behind: 0, isSyncing: false, hasConflicts: false });
       await createComponent({}, { ahead: 0, behind: 0, isSyncing: false, hasConflicts: false });
     });
 
@@ -156,6 +191,7 @@ describe('ForkInfo component', () => {
 
   describe('Limited visibility project', () => {
     beforeEach(async () => {
+      mockResolvedForkDetailsQuery(null);
       await createComponent({}, null);
     });
 
@@ -197,7 +233,8 @@ describe('ForkInfo component', () => {
     'renders correct divergence message for ahead: $ahead, behind: $behind divergence commits',
     ({ ahead, behind, message, firstLink, secondLink, hasButton }) => {
       beforeEach(async () => {
-        await createComponent({}, { ahead, behind, isSyncing: false, hasConflicts: false });
+        mockResolvedForkDetailsQuery({ ahead, behind, isSyncing: false, hasConflicts: false });
+        await createComponent({});
       });
 
       it('displays correct text', () => {
@@ -223,8 +260,9 @@ describe('ForkInfo component', () => {
   );
 
   describe('when sync is not possible due to conflicts', () => {
-    it('opens Conflicts Modal', async () => {
-      await createComponent({}, { ahead: 7, behind: 3, isSyncing: false, hasConflicts: true });
+    it('Opens Conflicts Modal', async () => {
+      mockResolvedForkDetailsQuery({ ahead: 7, behind: 3, isSyncing: false, hasConflicts: true });
+      await createComponent({});
       findUpdateForkButton().vm.$emit('click');
       expect(showMock).toHaveBeenCalled();
     });
@@ -232,24 +270,62 @@ describe('ForkInfo component', () => {
 
   describe('projectSyncFork mutation', () => {
     it('changes button to have loading state', async () => {
-      await createComponent(
-        {},
-        { ahead: 0, behind: 3, isSyncing: false, hasConflicts: false },
-        { ahead: 0, behind: 3, isSyncing: true, hasConflicts: false },
-      );
+      await createComponent({}, { ahead: 0, behind: 3, isSyncing: true, hasConflicts: false });
+      mockResolvedForkDetailsQuery({ ahead: 0, behind: 3, isSyncing: false, hasConflicts: false });
       expect(findLoadingIcon().exists()).toBe(false);
-      findUpdateForkButton().vm.$emit('click');
-      await waitForPromises();
+      await startForkUpdate();
       expect(findLoadingIcon().exists()).toBe(true);
     });
   });
 
-  it('renders alert with error message when request fails', async () => {
-    await createComponent({}, {}, true);
-    expect(createAlert).toHaveBeenCalledWith({
-      message: i18n.error,
-      captureError: true,
-      error: forkInfoError,
+  describe('polling', () => {
+    beforeEach(async () => {
+      await createComponent({}, { ahead: 0, behind: 3, isSyncing: true, hasConflicts: false });
+      mockResolvedForkDetailsQuery({ ahead: 0, behind: 3, isSyncing: true, hasConflicts: false });
+    });
+
+    it('fetches data on the initial load', () => {
+      expect(mockForkDetailsQuery).toHaveBeenCalledTimes(1);
+    });
+
+    it('starts polling after sync button is clicked', async () => {
+      await startForkUpdate();
+      await waitForPolling();
+      expect(mockForkDetailsQuery).toHaveBeenCalledTimes(2);
+
+      await waitForPolling(POLLING_INTERVAL_DEFAULT * POLLING_INTERVAL_BACKOFF);
+      expect(mockForkDetailsQuery).toHaveBeenCalledTimes(3);
+    });
+
+    it('stops polling once sync is finished', async () => {
+      mockResolvedForkDetailsQuery({ ahead: 0, behind: 0, isSyncing: false, hasConflicts: false });
+      await startForkUpdate();
+      await waitForPolling();
+      expect(mockForkDetailsQuery).toHaveBeenCalledTimes(2);
+      await waitForPolling(POLLING_INTERVAL_DEFAULT * POLLING_INTERVAL_BACKOFF);
+      expect(mockForkDetailsQuery).toHaveBeenCalledTimes(2);
+      await nextTick();
+    });
+  });
+
+  describe('once fork is updated', () => {
+    beforeEach(async () => {
+      await createComponent({}, { ahead: 0, behind: 3, isSyncing: true, hasConflicts: false });
+      mockResolvedForkDetailsQuery({ ahead: 0, behind: 0, isSyncing: false, hasConflicts: false });
+    });
+
+    it('emits fork:update event to eventHub', async () => {
+      jest.spyOn(eventHub, '$emit').mockImplementation();
+      await startForkUpdate();
+      await waitForPolling();
+      expect(eventHub.$emit).toHaveBeenCalledWith(FORK_UPDATED_EVENT);
+    });
+
+    it('hides update fork button', async () => {
+      jest.spyOn(eventHub, '$emit').mockImplementation();
+      await startForkUpdate();
+      await waitForPolling();
+      expect(findUpdateForkButton().exists()).toBe(false);
     });
   });
 });

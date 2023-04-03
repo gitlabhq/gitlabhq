@@ -70,6 +70,7 @@ export default function setupVueRepositoryList() {
       return null;
     }
     const {
+      selectedBranch,
       sourceName,
       sourcePath,
       sourceDefaultBranch,
@@ -83,7 +84,7 @@ export default function setupVueRepositoryList() {
         return h(ForkInfo, {
           props: {
             projectPath,
-            selectedBranch: ref,
+            selectedBranch,
             sourceName,
             sourcePath,
             sourceDefaultBranch,

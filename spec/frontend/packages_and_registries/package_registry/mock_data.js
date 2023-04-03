@@ -109,6 +109,7 @@ export const packageVersions = () => [
     id: 'gid://gitlab/Packages::Package/243',
     name: '@gitlab-org/package-15',
     status: 'DEFAULT',
+    packageType: 'NPM',
     canDestroy: true,
     tags: { nodes: packageTags() },
     version: '1.0.1',
@@ -120,6 +121,7 @@ export const packageVersions = () => [
     id: 'gid://gitlab/Packages::Package/244',
     name: '@gitlab-org/package-15',
     status: 'DEFAULT',
+    packageType: 'NPM',
     canDestroy: true,
     tags: { nodes: packageTags() },
     version: '1.0.2',
@@ -130,7 +132,7 @@ export const packageVersions = () => [
 
 export const packageData = (extend) => ({
   __typename: 'Package',
-  id: 'gid://gitlab/Packages::Package/111',
+  id: 'gid://gitlab/Packages::Package/1',
   canDestroy: true,
   name: '@gitlab-org/package-15',
   packageType: 'NPM',
@@ -244,14 +246,6 @@ export const packageDetailsQuery = (extendPackage) => ({
       },
       versions: {
         count: packageVersions().length,
-        nodes: packageVersions(),
-        pageInfo: {
-          hasNextPage: true,
-          hasPreviousPage: false,
-          endCursor: 'endCursor',
-          startCursor: 'startCursor',
-        },
-        __typename: 'PackageConnection',
       },
       dependencyLinks: {
         nodes: dependencyLinks(),
@@ -296,6 +290,41 @@ export const packageMetadataQuery = (packageType) => {
       },
     },
   };
+};
+
+export const packageVersionsQuery = (versions = packageVersions()) => ({
+  data: {
+    package: {
+      id: 'gid://gitlab/Packages::Package/111',
+      versions: {
+        count: versions.length,
+        nodes: versions,
+        pageInfo: pagination(),
+        __typename: 'PackageConnection',
+      },
+      __typename: 'PackageDetailsType',
+    },
+  },
+});
+
+export const emptyPackageVersionsQuery = {
+  data: {
+    package: {
+      id: 'gid://gitlab/Packages::Package/111',
+      versions: {
+        count: 0,
+        nodes: [],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          endCursor: 'endCursor',
+          startCursor: 'startCursor',
+        },
+        __typename: 'PackageConnection',
+      },
+      __typename: 'PackageDetailsType',
+    },
+  },
 };
 
 export const packagesDestroyMutation = () => ({
