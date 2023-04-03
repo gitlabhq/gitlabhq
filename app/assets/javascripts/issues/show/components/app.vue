@@ -14,6 +14,7 @@ import Poll from '~/lib/utils/poll';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
+import { containsSensitiveToken, confirmSensitiveAction, i18n } from '~/lib/utils/secret_detection';
 import { ISSUE_TYPE_PATH, INCIDENT_TYPE_PATH, POLLING_DELAY } from '../constants';
 import eventHub from '../event_hub';
 import getIssueStateQuery from '../queries/get_issue_state.query.graphql';
@@ -376,7 +377,7 @@ export default {
       this.showForm = false;
     },
 
-    updateIssuable() {
+    async updateIssuable() {
       this.setFormState({ updateLoading: true });
 
       const {
@@ -388,6 +389,14 @@ export default {
         : formState;
 
       this.alert?.dismiss();
+
+      if (containsSensitiveToken(issuablePayload.description)) {
+        const confirmed = await confirmSensitiveAction(i18n.descriptionPrompt);
+        if (!confirmed) {
+          this.setFormState({ updateLoading: false });
+          return false;
+        }
+      }
 
       return this.service
         .updateIssuable(issuablePayload)

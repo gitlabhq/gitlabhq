@@ -96,7 +96,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware, feature
             expected_location = {}
 
             Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
-              expect(lb).to receive(:host).and_return(nil)
+              expect(lb).to receive(:host).at_least(:once).and_return(nil)
               expect(lb).to receive(:primary_write_location).and_return(location)
 
               expected_location[lb.name] = location

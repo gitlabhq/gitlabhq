@@ -3,10 +3,17 @@ import Autosave from '~/autosave';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import IssuableForm from '~/issuable/issuable_form';
 import setWindowLocation from 'helpers/set_window_location_helper';
-
+import { confirmSensitiveAction, i18n } from '~/lib/utils/secret_detection';
 import { getSaveableFormChildren } from './helpers';
 
 jest.mock('~/autosave');
+
+jest.mock('~/lib/utils/secret_detection', () => {
+  return {
+    ...jest.requireActual('~/lib/utils/secret_detection'),
+    confirmSensitiveAction: jest.fn(() => Promise.resolve(false)),
+  };
+});
 
 const createIssuable = (form) => {
   return new IssuableForm(form);
@@ -21,6 +28,7 @@ describe('IssuableForm', () => {
       <form>
         <input name="[title]" />
         <input type="checkbox" class="js-toggle-draft" />
+        <textarea name="[description]"></textarea>
       </form>
     `);
     $form = $('form');
@@ -92,7 +100,9 @@ describe('IssuableForm', () => {
 
         const children = getSaveableFormChildren($form[0]);
 
-        expect(Autosave).toHaveBeenCalledTimes(children.length);
+        // description autosave is being handled separately
+        // hence we're using children.length - 1
+        expect(Autosave).toHaveBeenCalledTimes(children.length - 1);
         expect(Autosave).toHaveBeenLastCalledWith(
           $input.get(0),
           ['/', '', id],
@@ -228,6 +238,46 @@ describe('IssuableForm', () => {
           expect(titleField.value).toBe(title);
         },
       );
+    });
+  });
+
+  describe('Checks for sensitive token', () => {
+    let issueDescription;
+    const sensitiveMessage = 'token: glpat-1234567890abcdefghij';
+
+    beforeEach(() => {
+      issueDescription = $form.find('textarea[name*="[description]"]').get(0);
+    });
+
+    afterEach(() => {
+      issueDescription = null;
+    });
+
+    it('submits the form when no token is present', () => {
+      issueDescription.value = 'sample message';
+
+      const handleSubmit = jest.spyOn(IssuableForm.prototype, 'handleSubmit');
+      const resetAutosave = jest.spyOn(IssuableForm.prototype, 'resetAutosave');
+      createIssuable($form);
+
+      $form.submit();
+
+      expect(handleSubmit).toHaveBeenCalled();
+      expect(resetAutosave).toHaveBeenCalled();
+    });
+
+    it('prevents form submission when token is present', () => {
+      issueDescription.value = sensitiveMessage;
+
+      const handleSubmit = jest.spyOn(IssuableForm.prototype, 'handleSubmit');
+      const resetAutosave = jest.spyOn(IssuableForm.prototype, 'resetAutosave');
+      createIssuable($form);
+
+      $form.submit();
+
+      expect(handleSubmit).toHaveBeenCalled();
+      expect(confirmSensitiveAction).toHaveBeenCalledWith(i18n.descriptionPrompt);
+      expect(resetAutosave).not.toHaveBeenCalled();
     });
   });
 });

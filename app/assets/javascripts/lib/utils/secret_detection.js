@@ -1,8 +1,13 @@
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
-import { __ } from '~/locale';
+import { s__, __ } from '~/locale';
 
 export const i18n = {
-  defaultPrompt: __('This comment appears to have a token in it. Are you sure you want to add it?'),
+  defaultPrompt: s__(
+    'SecretDetection|This comment appears to have a token in it. Are you sure you want to add it?',
+  ),
+  descriptionPrompt: s__(
+    'SecretDetection|This description appears to have a token in it. Are you sure you want to add it?',
+  ),
   primaryBtnText: __('Proceed'),
 };
 

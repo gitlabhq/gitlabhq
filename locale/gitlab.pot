@@ -38951,6 +38951,12 @@ msgstr ""
 msgid "Secret token"
 msgstr ""
 
+msgid "SecretDetection|This comment appears to have a token in it. Are you sure you want to add it?"
+msgstr ""
+
+msgid "SecretDetection|This description appears to have a token in it. Are you sure you want to add it?"
+msgstr ""
+
 msgid "Secure Code Warrior"
 msgstr ""
 
@@ -44672,9 +44678,6 @@ msgid "This clears repository check states for all projects in the database and 
 msgstr ""
 
 msgid "This code snippet contains everything reflected in the configuration form. Copy and paste it into %{linkStart}.gitlab-ci.yml%{linkEnd} file and save your changes. Future %{scanType} scans will use these settings."
-msgstr ""
-
-msgid "This comment appears to have a token in it. Are you sure you want to add it?"
 msgstr ""
 
 msgid "This comment changed after you started editing it. Review the %{startTag}updated comment%{endTag} to ensure information is not lost."

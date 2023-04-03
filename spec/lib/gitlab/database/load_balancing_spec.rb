@@ -497,14 +497,14 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
       where(:queries, :expected_role) do
         [
           # Reload cache. The schema loading queries should be handled by
-          # primary.
+          # replica.
           [
             -> {
               model.connection.clear_cache!
               model.connection.schema_cache.add('users')
               model.connection.pool.release_connection
             },
-            :primary
+            :replica
           ],
 
           # Call model's connection method

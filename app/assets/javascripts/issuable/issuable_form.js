@@ -6,6 +6,7 @@ import { parsePikadayDate, pikadayToString } from '~/lib/utils/datetime_utility'
 import { queryToObject, objectToQuery } from '~/lib/utils/url_utility';
 import UsersSelect from '~/users_select';
 import ZenMode from '~/zen_mode';
+import { containsSensitiveToken, confirmSensitiveAction, i18n } from '~/lib/utils/secret_detection';
 
 const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
 const MR_TARGET_BRANCH = 'merge_request[target_branch]';
@@ -83,6 +84,8 @@ export default class IssuableForm {
     this.searchTerm = getSearchTerm(form[0].getAttribute(DATA_ISSUES_NEW_PATH));
     this.fallbackKey = getFallbackKey();
     this.titleField = this.form.find('input[name*="[title]"]');
+    this.descriptionField = () => this.form.find('textarea[name*="[description]"]');
+    this.submitButton = this.form.find('.js-issuable-submit-button');
     this.draftCheck = document.querySelector('input.js-toggle-draft');
     if (!this.titleField.length) return;
 
@@ -138,7 +141,21 @@ export default class IssuableForm {
     return autosaveMap;
   }
 
-  handleSubmit() {
+  async handleSubmit(event) {
+    event.preventDefault();
+
+    const form = event.target;
+    const descriptionText = this.descriptionField().val();
+
+    if (containsSensitiveToken(descriptionText)) {
+      const confirmed = await confirmSensitiveAction(i18n.descriptionPrompt);
+      if (!confirmed) {
+        this.submitButton.removeAttr('disabled');
+        this.submitButton.removeClass('disabled');
+        return false;
+      }
+    }
+    form.submit();
     return this.resetAutosave();
   }
 
