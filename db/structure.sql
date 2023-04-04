@@ -22258,7 +22258,7 @@ CREATE SEQUENCE self_managed_prometheus_alert_events_id_seq
 ALTER SEQUENCE self_managed_prometheus_alert_events_id_seq OWNED BY self_managed_prometheus_alert_events.id;
 
 CREATE TABLE sent_notifications (
-    id integer NOT NULL,
+    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     project_id integer,
     noteable_id integer,
     noteable_type character varying,
@@ -22269,7 +22269,7 @@ CREATE TABLE sent_notifications (
     note_type character varying,
     "position" text,
     in_reply_to_discussion_id character varying,
-    id_convert_to_bigint bigint DEFAULT 0 NOT NULL
+    id bigint NOT NULL
 );
 
 CREATE SEQUENCE sent_notifications_id_seq
