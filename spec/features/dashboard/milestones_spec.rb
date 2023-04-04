@@ -26,7 +26,7 @@ RSpec.describe 'Dashboard > Milestones', feature_category: :team_planning do
       visit dashboard_milestones_path
     end
 
-    it_behaves_like 'a dashboard page with sidebar', :dashboard_milestones_path, :milestones
+    it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :dashboard_milestones_path, :milestones
 
     it 'sees milestones' do
       expect(page).to have_current_path dashboard_milestones_path, ignore_query: true

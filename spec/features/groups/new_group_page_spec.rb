@@ -36,7 +36,7 @@ RSpec.describe 'New group page', :js, feature_category: :subgroups do
       end
 
       context 'for a new top-level group' do
-        it_behaves_like 'a dashboard page with sidebar', :new_group_path, :groups
+        it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :new_group_path, :groups
       end
 
       context 'for a new subgroup' do

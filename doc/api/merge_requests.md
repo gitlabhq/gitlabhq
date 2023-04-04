@@ -845,7 +845,8 @@ Use `detailed_merge_status` instead of `merge_status` to account for all potenti
 - The `detailed_merge_status` field can contain one of the following values related to the merge request:
   - `blocked_status`: Blocked by another merge request.
   - `broken_status`: Can't merge into the target branch due to a potential conflict.
-  - `checking`: Mergeability checks are still in progress.
+  - `checking`: Git is testing if a valid merge is possible.
+  - `unchecked`: Git has not yet tested if a valid merge is possible.
   - `ci_must_pass`: A CI/CD pipeline must succeed before merge.
   - `ci_still_running`: A CI/CD pipeline is still running.
   - `discussions_not_resolved`: All discussions must be resolved before merge.
@@ -855,7 +856,6 @@ Use `detailed_merge_status` instead of `merge_status` to account for all potenti
   - `not_approved`: Approval is required before merge.
   - `not_open`: The merge request must be open before merge.
   - `policies_denied`: The merge request contains denied policies.
-  - `unchecked`: The merge status has not been checked.
 
 ## Get single merge request participants
 

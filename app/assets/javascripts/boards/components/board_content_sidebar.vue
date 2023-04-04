@@ -185,6 +185,7 @@ export default {
         />
         <sidebar-dropdown-widget
           v-if="epicFeatureAvailable && !isIncidentSidebar"
+          :key="`epic-${activeBoardItem.iid}`"
           :iid="activeBoardItem.iid"
           issuable-attribute="epic"
           :workspace-path="projectPathForActiveIssue"
@@ -194,6 +195,7 @@ export default {
         />
         <div>
           <sidebar-dropdown-widget
+            :key="`milestone-${activeBoardItem.iid}`"
             :iid="activeBoardItem.iid"
             issuable-attribute="milestone"
             :workspace-path="projectPathForActiveIssue"
@@ -203,6 +205,7 @@ export default {
           />
           <sidebar-iteration-widget
             v-if="iterationFeatureAvailable && !isIncidentSidebar"
+            :key="`iteration-${activeBoardItem.iid}`"
             :iid="activeBoardItem.iid"
             :workspace-path="projectPathForActiveIssue"
             :attr-workspace-path="groupPathForActiveIssue"

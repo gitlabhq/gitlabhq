@@ -6,7 +6,7 @@
 
 .group-edit-container
 
-  .js-new-group-creation{ data: { has_errors: @group.errors.any?.to_s, groups_url: dashboard_groups_url }.merge(subgroup_creation_data(@group),
+  .js-new-group-creation{ data: { has_errors: @group.errors.any?.to_s, root_path: root_path, groups_url: dashboard_groups_url }.merge(subgroup_creation_data(@group),
     verification_for_group_creation_data) }
 
   .row{ 'v-cloak': true }

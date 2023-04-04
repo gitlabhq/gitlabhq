@@ -10,15 +10,14 @@ import {
   STATE_IDLING,
   STATE_LOADING,
   STATE_ERRORED,
-  RENAMED_DIFF_TRANSITIONS,
 } from '~/diffs/constants';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
+import { transition } from '../utils';
 
 export default {
   STATE_LOADING,
   STATE_ERRORED,
-  TRANSITIONS: RENAMED_DIFF_TRANSITIONS,
   uiText: {
     showLink: __('Show file contents'),
     commitLink: __('View file @ %{commitSha}'),
@@ -52,26 +51,22 @@ export default {
   },
   methods: {
     ...mapActions('diffs', ['switchToFullDiffFromRenamedFile']),
-    transition(transitionEvent) {
-      const key = `${this.state}:${transitionEvent}`;
-
-      if (this.$options.TRANSITIONS[key]) {
-        this.state = this.$options.TRANSITIONS[key];
-      }
-    },
     is(state) {
       return this.state === state;
     },
     switchToFull() {
-      this.transition(TRANSITION_LOAD_START);
+      this.transitionState(TRANSITION_LOAD_START);
 
       this.switchToFullDiffFromRenamedFile({ diffFile: this.diffFile })
         .then(() => {
-          this.transition(TRANSITION_LOAD_SUCCEED);
+          this.transitionState(TRANSITION_LOAD_SUCCEED);
         })
         .catch(() => {
-          this.transition(TRANSITION_LOAD_ERROR);
+          this.transitionState(TRANSITION_LOAD_ERROR);
         });
+    },
+    transitionState(transitionEvent) {
+      this.state = transition(this.state, transitionEvent);
     },
     clickLink(event) {
       if (this.canLoadFullDiff) {
@@ -81,7 +76,7 @@ export default {
       }
     },
     dismissError() {
-      this.transition(TRANSITION_ACKNOWLEDGE_ERROR);
+      this.transitionState(TRANSITION_ACKNOWLEDGE_ERROR);
     },
   },
 };

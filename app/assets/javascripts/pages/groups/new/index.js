@@ -22,6 +22,7 @@ initFilePickers();
 function initNewGroupCreation(el) {
   const {
     hasErrors,
+    rootPath,
     groupsUrl,
     parentGroupUrl,
     parentGroupName,
@@ -33,6 +34,7 @@ function initNewGroupCreation(el) {
 
   const props = {
     groupsUrl,
+    rootPath,
     parentGroupUrl,
     parentGroupName,
     importExistingGroupPath,

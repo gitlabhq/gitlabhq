@@ -1,6 +1,4 @@
-- @hide_top_links = true
-- page_title    _("Snippets")
-- header_title  _("Snippets"), dashboard_snippets_path
+- page_title _("Snippets")
 - button_path = new_snippet_path if can?(current_user, :create_snippet)
 
 = render 'dashboard/snippets_head'

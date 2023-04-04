@@ -5,7 +5,6 @@
 - placeholder = model.is_a?(MergeRequest) ? _('Describe the goal of the changes and what reviewers should be aware of.') : _('Write a description or drag your files here…')
 - no_issuable_templates = issuable_templates(ref_project, model.to_ability_name).empty?
 - preview_url = preview_markdown_path(project, target_type: model.class.name)
-- enable_content_editor = Feature.enabled?(:content_editor_on_issues) ? "true" : ""
 
 .form-group
   = form.label :description, _('Description'), class: 'gl-display-block'
@@ -21,7 +20,6 @@
                                markdown_docs_path: help_page_path('user/markdown'),
                                quick_actions_docs_path: help_page_path('user/project/quick_actions'),
                                qa_selector: 'issuable_form_description_field',
-                               enable_content_editor: enable_content_editor,
                                form_field_placeholder: placeholder,
                                form_field_classes: 'js-gfm-input markdown-area note-textarea rspec-issuable-form-description' } }
     = form.hidden_field :description

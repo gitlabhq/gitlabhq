@@ -19,7 +19,7 @@ RSpec.describe 'Dashboard Merge Requests', feature_category: :code_review_workfl
     sign_in(current_user)
   end
 
-  it_behaves_like 'a dashboard page with sidebar', :merge_requests_dashboard_path, :merge_requests
+  it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :merge_requests_dashboard_path, :merge_requests
 
   it 'disables target branch filter' do
     visit merge_requests_dashboard_path

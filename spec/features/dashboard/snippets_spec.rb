@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Dashboard snippets', feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
 
-  it_behaves_like 'a dashboard page with sidebar', :dashboard_snippets_path, :snippets
+  it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :dashboard_snippets_path, :snippets
 
   it 'links to the "Explore snippets" page' do
     sign_in(user)

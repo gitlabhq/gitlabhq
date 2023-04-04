@@ -17,7 +17,7 @@ that occur during the life cycle of a GitLab object, such as:
 - [Tasks](../tasks.md).
 
 GitLab logs information about events triggered by Git or the GitLab application
-in system notes.
+in system notes. System notes use the format `<Author> <action> <time ago>`.
 
 ## Show or filter system notes
 

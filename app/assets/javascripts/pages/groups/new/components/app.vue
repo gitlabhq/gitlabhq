@@ -11,6 +11,10 @@ export default {
     NewNamespacePage,
   },
   props: {
+    rootPath: {
+      type: String,
+      required: true,
+    },
     groupsUrl: {
       type: String,
       required: true,
@@ -44,6 +48,7 @@ export default {
             { text: s__('GroupsNew|New subgroup'), href: '#' },
           ]
         : [
+            { text: s__('Navigation|Your work'), href: this.rootPath },
             { text: s__('GroupsNew|Groups'), href: this.groupsUrl },
             { text: s__('GroupsNew|New group'), href: '#' },
           ];

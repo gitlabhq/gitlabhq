@@ -594,7 +594,7 @@ RSpec.describe 'New project', :js, feature_category: :projects do
       end
 
       context 'for a new top-level project' do
-        it_behaves_like 'a dashboard page with sidebar', :new_project_path, :projects
+        it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :new_project_path, :projects
       end
 
       context 'for a new group project' do

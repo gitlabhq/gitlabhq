@@ -480,9 +480,8 @@ An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/297389) to add a
 
 When the **Enforce SSO-only authentication for web activity for this group** option is enabled:
 
-- In alignment with the table above, all members must access GitLab by using
-  their GitLab group’s single sign-on URL to
-  access group resources, regardless of whether they have an existing SAML
+- All users must access GitLab by using their GitLab group's single sign-on URL
+  to access group resources, regardless of whether they have an existing SAML
   identity.
 - SSO is enforced when users access groups and projects in the organization's
   group hierarchy. Users can view other groups and projects without SSO sign in.

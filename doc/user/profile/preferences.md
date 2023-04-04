@@ -75,19 +75,7 @@ the respective libraries.
 Changing this setting allows you to customize the color theme when viewing any
 syntax highlighted code on GitLab.
 
-The default syntax theme is White, and you can choose among 5 different themes:
-
-<!-- vale gitlab.Spelling = NO -->
-
-- White
-- Dark
-- Solarized light
-- Solarized dark
-- Monokai
-
-<!-- vale gitlab.Spelling = YES -->
-
-![Profile preferences syntax highlighting themes](img/profile-preferences-syntax-themes.png)
+![Profile preferences syntax highlighting themes](img/profile-preferences-syntax-themes_v15_11.png)
 
 Introduced in GitLab 13.6, the themes [Solarized](https://gitlab.com/gitlab-org/gitlab/-/issues/221034) and [Monokai](https://gitlab.com/gitlab-org/gitlab/-/issues/221034) also apply to the [Web IDE](../project/web_ide/index.md) and [Snippets](../snippets.md).
 

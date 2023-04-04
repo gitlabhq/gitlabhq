@@ -46,7 +46,6 @@ export function mountMarkdownEditor() {
     renderMarkdownPath,
     markdownDocsPath,
     quickActionsDocsPath,
-    enableContentEditor,
     formFieldPlaceholder,
     formFieldClasses,
     qaSelector,
@@ -74,7 +73,7 @@ export function mountMarkdownEditor() {
       return h(MarkdownEditor, {
         props: {
           setFacade,
-          enableContentEditor: Boolean(enableContentEditor),
+          enableContentEditor: Boolean(gon.features?.contentEditorOnIssues),
           value: formFieldValue,
           renderMarkdownPath,
           markdownDocsPath,
