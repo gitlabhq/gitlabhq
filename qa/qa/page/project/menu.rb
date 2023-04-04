@@ -16,12 +16,16 @@ module QA
         include SubMenus::Packages
 
         if Runtime::Env.super_sidebar_enabled?
+          include SubMenus::SuperSidebar::Project
+          include SubMenus::SuperSidebar::Manage
           include SubMenus::SuperSidebar::Plan
           include SubMenus::SuperSidebar::Settings
-          include SubMenus::SuperSidebar::Repository
-          include SubMenus::SuperSidebar::CiCd
-          include SubMenus::SuperSidebar::Compliance
-          include SubMenus::SuperSidebar::Operations
+          include SubMenus::SuperSidebar::Code
+          include SubMenus::SuperSidebar::Build
+          include SubMenus::SuperSidebar::Secure
+          include SubMenus::SuperSidebar::Operate
+          include SubMenus::SuperSidebar::Monitor
+          include SubMenus::SuperSidebar::Analyze
         end
 
         def click_merge_requests

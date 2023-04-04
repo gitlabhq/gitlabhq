@@ -2,7 +2,14 @@
 
 FactoryBot.define do
   factory :debian_file_metadatum, class: 'Packages::Debian::FileMetadatum' do
-    package_file { association(:debian_package_file, without_loaded_metadatum: true) }
+    package_file do
+      if file_type == 'unknown'
+        association(:debian_package_file, :unknown, without_loaded_metadatum: true)
+      else
+        association(:debian_package_file, without_loaded_metadatum: true)
+      end
+    end
+
     file_type { 'deb' }
     component { 'main' }
     architecture { 'amd64' }

@@ -111,13 +111,16 @@ RSpec.describe Banzai::ReferenceRedactor, feature_category: :team_planning do
 
     def create_link(issuable)
       type = issuable.class.name.underscore.downcase
-      ActionController::Base.helpers.link_to(issuable.to_reference, '',
-              class: 'gfm has-tooltip',
-              title: issuable.title,
-              data: {
-                reference_type: type,
-                "#{type}": issuable.id
-              })
+      ActionController::Base.helpers.link_to(
+        issuable.to_reference,
+        '',
+        class: 'gfm has-tooltip',
+        title: issuable.title,
+        data: {
+          reference_type: type,
+          "#{type}": issuable.id
+        }
+      )
     end
 
     before do

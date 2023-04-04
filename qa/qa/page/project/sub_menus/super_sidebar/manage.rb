@@ -5,7 +5,7 @@ module QA
     module Project
       module SubMenus
         module SuperSidebar
-          module Compliance
+          module Manage
             extend QA::Page::PageConcern
 
             def self.included(base)
@@ -16,18 +16,26 @@ module QA
               end
             end
 
-            def go_to_audit_events
-              open_compliance_submenu('Audit events')
+            def go_to_activity
+              open_manage_submenu('Activity')
             end
 
-            def go_to_security_configuration
-              open_compliance_submenu('Security configuration')
+            def go_to_members
+              open_manage_submenu('Members')
+            end
+
+            def go_to_labels
+              open_manage_submenu('Labels')
+            end
+
+            def go_to_milestones
+              open_manage_submenu('Milestones')
             end
 
             private
 
-            def open_compliance_submenu(sub_menu)
-              open_submenu("Security and Compliance", "#security-and-compliance", sub_menu)
+            def open_manage_submenu(sub_menu)
+              open_submenu('Manage', '#manage', sub_menu)
             end
           end
         end

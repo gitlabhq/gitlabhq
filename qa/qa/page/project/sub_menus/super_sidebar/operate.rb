@@ -1,0 +1,45 @@
+# frozen_string_literal: true
+
+module QA
+  module Page
+    module Project
+      module SubMenus
+        module SuperSidebar
+          module Operate
+            extend QA::Page::PageConcern
+
+            def self.included(base)
+              super
+
+              base.class_eval do
+                include QA::Page::Project::SubMenus::SuperSidebar::Common
+              end
+            end
+
+            def go_to_package_registry
+              open_operate_submenu('Package Registry')
+            end
+
+            def go_to_infrastructure_registry
+              open_operate_submenu('Infrastructure Registry')
+            end
+
+            def go_to_kubernetes_clusters
+              open_operate_submenu('Kubernetes clusters')
+            end
+
+            def go_to_terraform
+              open_operate_submenu('Terraform')
+            end
+
+            private
+
+            def open_operate_submenu(sub_menu)
+              open_submenu('Operate', '#operate', sub_menu)
+            end
+          end
+        end
+      end
+    end
+  end
+end

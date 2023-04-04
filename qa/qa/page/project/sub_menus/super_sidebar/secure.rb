@@ -5,7 +5,7 @@ module QA
     module Project
       module SubMenus
         module SuperSidebar
-          module Plan
+          module Secure
             extend QA::Page::PageConcern
 
             def self.included(base)
@@ -16,22 +16,18 @@ module QA
               end
             end
 
-            def go_to_boards
-              open_plan_submenu("Issue boards")
+            def go_to_audit_events
+              open_secure_submenu('Audit events')
             end
 
-            def go_to_service_desk
-              open_plan_submenu("Service Desk")
-            end
-
-            def go_to_wiki
-              open_plan_submenu("Wiki")
+            def go_to_security_configuration
+              open_secure_submenu('Security configuration')
             end
 
             private
 
-            def open_plan_submenu(sub_menu)
-              open_submenu("Plan", "#plan", sub_menu)
+            def open_secure_submenu(sub_menu)
+              open_submenu('Secure', '#secure', sub_menu)
             end
           end
         end

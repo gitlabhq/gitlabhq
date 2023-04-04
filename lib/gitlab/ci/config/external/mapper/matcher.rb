@@ -48,7 +48,9 @@ module Gitlab
                 External::File::Artifact
               ]
 
-              classes << External::File::Component if Feature.enabled?(:ci_include_components, context.project)
+              if Feature.enabled?(:ci_include_components, context.project&.root_namespace)
+                classes << External::File::Component
+              end
 
               classes
             end

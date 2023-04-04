@@ -5,7 +5,7 @@ module QA
     module Project
       module SubMenus
         module SuperSidebar
-          module CiCd
+          module Monitor
             extend QA::Page::PageConcern
 
             def self.included(base)
@@ -16,26 +16,26 @@ module QA
               end
             end
 
-            def go_to_pipelines
-              open_ci_cd_submenu('Pipelines')
+            def go_to_metrics
+              open_monitor_submenu('Metrics')
             end
 
-            def go_to_editor
-              open_ci_cd_submenu('Editor')
+            def go_to_error_tracking
+              open_monitor_submenu('Error tracking')
             end
 
-            def go_to_jobs
-              open_ci_cd_submenu('Jobs')
+            def go_to_alerts
+              open_monitor_submenu('Alerts')
             end
 
-            def go_to_schedules
-              open_ci_cd_submenu('Schedules')
+            def go_to_incidents
+              open_monitor_submenu('Incidents')
             end
 
             private
 
-            def open_ci_cd_submenu(sub_menu)
-              open_submenu("CI/CD", "#ci-cd", sub_menu)
+            def open_monitor_submenu(sub_menu)
+              open_submenu('Monitor', '#monitor', sub_menu)
             end
           end
         end

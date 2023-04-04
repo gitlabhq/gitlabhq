@@ -90,6 +90,18 @@ module StubObjectStorage
                                  **params)
   end
 
+  def debian_component_file_object_storage(**params)
+    stub_object_storage_uploader(config: Gitlab.config.packages.object_store,
+                                 uploader: ::Packages::Debian::ComponentFileUploader,
+                                 **params)
+  end
+
+  def debian_distribution_release_file_object_storage(**params)
+    stub_object_storage_uploader(config: Gitlab.config.packages.object_store,
+                                 uploader: ::Packages::Debian::DistributionReleaseFileUploader,
+                                 **params)
+  end
+
   def stub_uploads_object_storage(uploader = described_class, **params)
     stub_object_storage_uploader(config: Gitlab.config.uploads.object_store,
                                  uploader: uploader,

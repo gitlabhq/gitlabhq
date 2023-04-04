@@ -5,6 +5,7 @@ import { stringify } from 'yaml';
 import JobAssistantDrawer from '~/ci/pipeline_editor/components/job_assistant_drawer/job_assistant_drawer.vue';
 import JobSetupItem from '~/ci/pipeline_editor/components/job_assistant_drawer/accordion_items/job_setup_item.vue';
 import ImageItem from '~/ci/pipeline_editor/components/job_assistant_drawer/accordion_items/image_item.vue';
+import ArtifactsAndCacheItem from '~/ci/pipeline_editor/components/job_assistant_drawer/accordion_items/artifacts_and_cache_item.vue';
 import RulesItem from '~/ci/pipeline_editor/components/job_assistant_drawer/accordion_items/rules_item.vue';
 import { JOB_RULES_WHEN } from '~/ci/pipeline_editor/components/job_assistant_drawer/constants';
 import getRunnerTags from '~/ci/pipeline_editor/graphql/queries/runner_tags.query.graphql';
@@ -25,6 +26,10 @@ describe('Job assistant drawer', () => {
   const dummyJobScript = 'b';
   const dummyImageName = 'c';
   const dummyImageEntrypoint = 'd';
+  const dummyArtifactsPath = 'e';
+  const dummyArtifactsExclude = 'f';
+  const dummyCachePath = 'g';
+  const dummyCacheKey = 'h';
   const dummyRulesWhen = JOB_RULES_WHEN.delayed.value;
   const dummyRulesStartIn = '1 second';
   const dummyRulesAllowFailure = true;
@@ -32,6 +37,7 @@ describe('Job assistant drawer', () => {
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findJobSetupItem = () => wrapper.findComponent(JobSetupItem);
   const findImageItem = () => wrapper.findComponent(ImageItem);
+  const findArtifactsAndCacheItem = () => wrapper.findComponent(ArtifactsAndCacheItem);
   const findRulesItem = () => wrapper.findComponent(RulesItem);
 
   const findConfirmButton = () => wrapper.findByTestId('confirm-button');
@@ -72,6 +78,10 @@ describe('Job assistant drawer', () => {
 
   it('should contain image accordion', () => {
     expect(findImageItem().exists()).toBe(true);
+  });
+
+  it('should contain artifacts and cache item accordion', () => {
+    expect(findArtifactsAndCacheItem().exists()).toBe(true);
   });
 
   it('should contain rules accordion', () => {
@@ -121,13 +131,24 @@ describe('Job assistant drawer', () => {
       findJobSetupItem().vm.$emit('update-job', 'script', dummyJobScript);
       findImageItem().vm.$emit('update-job', 'image.name', dummyImageName);
       findImageItem().vm.$emit('update-job', 'image.entrypoint', [dummyImageEntrypoint]);
+      findArtifactsAndCacheItem().vm.$emit('update-job', 'artifacts.paths', [dummyArtifactsPath]);
+      findArtifactsAndCacheItem().vm.$emit('update-job', 'artifacts.exclude', [
+        dummyArtifactsExclude,
+      ]);
+      findArtifactsAndCacheItem().vm.$emit('update-job', 'cache.paths', [dummyCachePath]);
+      findArtifactsAndCacheItem().vm.$emit('update-job', 'cache.key', dummyCacheKey);
       findRulesItem().vm.$emit('update-job', 'rules[0].allow_failure', dummyRulesAllowFailure);
       findRulesItem().vm.$emit('update-job', 'rules[0].when', dummyRulesWhen);
       findRulesItem().vm.$emit('update-job', 'rules[0].start_in', dummyRulesStartIn);
     });
 
     it('passes correct prop to accordions', () => {
-      const accordions = [findJobSetupItem(), findImageItem()];
+      const accordions = [
+        findJobSetupItem(),
+        findImageItem(),
+        findArtifactsAndCacheItem(),
+        findRulesItem(),
+      ];
       accordions.forEach((accordion) => {
         expect(accordion.props('job')).toMatchObject({
           name: dummyJobName,
@@ -135,6 +156,14 @@ describe('Job assistant drawer', () => {
           image: {
             name: dummyImageName,
             entrypoint: [dummyImageEntrypoint],
+          },
+          artifacts: {
+            paths: [dummyArtifactsPath],
+            exclude: [dummyArtifactsExclude],
+          },
+          cache: {
+            paths: [dummyCachePath],
+            key: dummyCacheKey,
           },
           rules: [
             {
@@ -180,6 +209,14 @@ describe('Job assistant drawer', () => {
             [dummyJobName]: {
               script: dummyJobScript,
               image: { name: dummyImageName, entrypoint: [dummyImageEntrypoint] },
+              artifacts: {
+                paths: [dummyArtifactsPath],
+                exclude: [dummyArtifactsExclude],
+              },
+              cache: {
+                paths: [dummyCachePath],
+                key: dummyCacheKey,
+              },
             },
           })}`,
         ],
@@ -195,6 +232,14 @@ describe('Job assistant drawer', () => {
             [dummyJobName]: {
               script: dummyJobScript,
               image: { name: dummyImageName, entrypoint: [dummyImageEntrypoint] },
+              artifacts: {
+                paths: [dummyArtifactsPath],
+                exclude: [dummyArtifactsExclude],
+              },
+              cache: {
+                paths: [dummyCachePath],
+                key: dummyCacheKey,
+              },
               rules: [
                 {
                   allow_failure: dummyRulesAllowFailure,

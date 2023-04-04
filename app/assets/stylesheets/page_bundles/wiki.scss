@@ -111,6 +111,8 @@
   }
 
   .wiki-list {
+    height: $gl-spacing-scale-8;
+
     &:hover {
       background: $gray-10;
 

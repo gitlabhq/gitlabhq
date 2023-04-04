@@ -7,9 +7,8 @@ module QA
         include Layout::Flash
         include Page::Component::ClonePanel
         include Page::Component::Breadcrumbs
-        include Page::Project::SubMenus::Settings
         include Page::File::Shared::CommitMessage
-        include ::QA::Page::Component::Dropdown
+        include Page::Component::Dropdown
         prepend Mobile::Page::Project::Show if Runtime::Env.mobile_layout?
 
         view 'app/assets/javascripts/repository/components/preview/index.vue' do

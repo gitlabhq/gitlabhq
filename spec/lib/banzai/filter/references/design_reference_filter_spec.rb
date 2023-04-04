@@ -128,10 +128,12 @@ RSpec.describe Banzai::Filter::References::DesignReferenceFilter, feature_catego
     let(:subject) { filter_instance.data_attributes_for(input_text, project, design) }
 
     specify do
-      is_expected.to include(issue: design.issue_id,
-                             original: input_text,
-                             project: project.id,
-                             design: design.id)
+      is_expected.to include(
+        issue: design.issue_id,
+        original: input_text,
+        project: project.id,
+        design: design.id
+      )
     end
   end
 

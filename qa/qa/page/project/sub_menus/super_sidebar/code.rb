@@ -5,7 +5,7 @@ module QA
     module Project
       module SubMenus
         module SuperSidebar
-          module Repository
+          module Code
             extend QA::Page::PageConcern
 
             def self.included(base)
@@ -16,42 +16,38 @@ module QA
               end
             end
 
-            def go_to_files
-              open_repository_submenu("Files")
+            def go_to_repository
+              open_code_submenu('Repository')
             end
 
             def go_to_repository_commits
-              open_repository_submenu("Commits")
+              open_code_submenu('Commits')
             end
 
             def go_to_repository_branches
-              open_repository_submenu("Branches")
+              open_code_submenu('Branches')
             end
 
             def go_to_repository_tags
-              open_repository_submenu("Tags")
+              open_code_submenu('Tags')
             end
 
             def go_to_snippets
-              open_repository_submenu("Snippets")
-            end
-
-            def go_to_contributor_statistics
-              open_repository_submenu("Contributor statistics")
+              open_code_submenu('Snippets')
             end
 
             def go_to_graph
-              open_repository_submenu("Graph")
+              open_code_submenu('Repository graph')
             end
 
             def go_to_compare_revisions
-              open_repository_submenu("Compare revisions")
+              open_code_submenu('Compare revisions')
             end
 
             private
 
-            def open_repository_submenu(sub_menu)
-              open_submenu("Repository", "#repository", sub_menu)
+            def open_code_submenu(sub_menu)
+              open_submenu('Code', '#code', sub_menu)
             end
           end
         end

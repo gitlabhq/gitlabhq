@@ -5,8 +5,6 @@ module QA
     module File
       class Show < Page::Base
         include Shared::CommitMessage
-        include Project::SubMenus::Settings
-        include Project::SubMenus::Common
         include Layout::Flash
         include Page::Component::BlobContent
 

@@ -37,7 +37,7 @@ module QA
 
       it 'user transfers a project between groups',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347878' do
-        Page::File::Show.perform(&:go_to_general_settings)
+        Page::Project::Menu.perform(&:go_to_general_settings)
 
         Page::Project::Settings::Main.perform(&:expand_advanced_settings)
 
@@ -45,7 +45,7 @@ module QA
           advanced.transfer_project!(project.name, target_group.full_path)
         end
 
-        Page::Project::Settings::Main.perform(&:click_project)
+        Page::Project::Menu.perform(&:click_project)
 
         Page::Project::Show.perform do |project|
           expect(project).to have_breadcrumb(target_group.path)

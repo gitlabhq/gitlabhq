@@ -1,14 +1,15 @@
 <script>
 import { GlDrawer, GlAccordion, GlButton } from '@gitlab/ui';
 import { stringify, parse } from 'yaml';
-import { set, omit } from 'lodash';
+import { get, omit, toPath } from 'lodash';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import eventHub, { SCROLL_EDITOR_TO_BOTTOM } from '~/ci/pipeline_editor/event_hub';
 import getRunnerTags from '../../graphql/queries/runner_tags.query.graphql';
-import { DRAWER_CONTAINER_CLASS, JOB_TEMPLATE, i18n, JOB_RULES_WHEN } from './constants';
+import { DRAWER_CONTAINER_CLASS, JOB_TEMPLATE, JOB_RULES_WHEN, i18n } from './constants';
 import { removeEmptyObj, trimFields, validateEmptyValue, validateStartIn } from './utils';
 import JobSetupItem from './accordion_items/job_setup_item.vue';
 import ImageItem from './accordion_items/image_item.vue';
+import ArtifactsAndCacheItem from './accordion_items/artifacts_and_cache_item.vue';
 import RulesItem from './accordion_items/rules_item.vue';
 
 export default {
@@ -19,6 +20,7 @@ export default {
     GlButton,
     JobSetupItem,
     ImageItem,
+    ArtifactsAndCacheItem,
     RulesItem,
   },
   props: {
@@ -148,7 +150,14 @@ export default {
       });
     },
     updateJob(key, value) {
-      set(this.job, key, value);
+      const path = toPath(key);
+      const targetObj = path.length === 1 ? this.job : get(this.job, path.slice(0, -1));
+      const lastKey = path[path.length - 1];
+      if (value !== undefined) {
+        this.$set(targetObj, lastKey, value);
+      } else {
+        this.$delete(targetObj, lastKey);
+      }
     },
     validateJob() {
       this.isNameValid = validateEmptyValue(this.job.name);
@@ -179,6 +188,7 @@ export default {
         @update-job="updateJob"
       />
       <image-item :job="job" @update-job="updateJob" />
+      <artifacts-and-cache-item :job="job" @update-job="updateJob" />
       <rules-item :job="job" :is-start-valid="isStartValid" @update-job="updateJob" />
     </gl-accordion>
     <template #footer>

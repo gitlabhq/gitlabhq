@@ -51,7 +51,7 @@ module QA
             private
 
             def open_settings_submenu(sub_menu)
-              open_submenu("Settings", "#settings", sub_menu)
+              open_submenu('Settings', '#settings', sub_menu)
             end
           end
         end

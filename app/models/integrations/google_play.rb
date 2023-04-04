@@ -2,7 +2,7 @@
 
 module Integrations
   class GooglePlay < Integration
-    PACKAGE_NAME_REGEX = /\A[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*){2,20}\z/
+    PACKAGE_NAME_REGEX = /\A[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*){1,20}\z/
 
     SECTION_TYPE_GOOGLE_PLAY = 'google_play'
 

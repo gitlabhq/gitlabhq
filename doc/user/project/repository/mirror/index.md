@@ -330,6 +330,29 @@ and requires the full version including the protocol (`ssh://git@gitlab.com/gitl
 
 Make sure that host and project path are separated using `/` instead of `:`.
 
+### Host key verification failed
+
+This error is returned when the target host public SSH key changes.
+Public SSH keys rarely, if ever, change. If host key verification fails,
+but you suspect the key is still valid, you can refresh the key's information.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for a project.
+
+To resolve the issue:
+
+1. [Verify the host key](#verify-a-host-key).
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Mirroring repositories**.
+1. To refresh the keys, either:
+
+   - Select **Detect host keys** for GitLab to fetch the host keys from the server, and display the fingerprints.
+   - Select **Input host keys manually**, and enter the host key into the **SSH host key** field.
+
+- Select **Mirror repository**.
+
 ### Transfer mirror users and tokens to a single service account in Rails console
 
 This requires access to the [GitLab Rails console](../../../../administration/operations/rails_console.md#starting-a-rails-console-session).
