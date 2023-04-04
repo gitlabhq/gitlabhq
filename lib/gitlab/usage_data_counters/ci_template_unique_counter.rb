@@ -2,7 +2,7 @@
 
 module Gitlab::UsageDataCounters
   class CiTemplateUniqueCounter
-    REDIS_SLOT = 'ci_templates'
+    PREFIX = 'ci_templates'
     KNOWN_EVENTS_FILE_PATH = File.expand_path('known_events/ci_templates.yml', __dir__)
 
     class << self
@@ -28,7 +28,7 @@ module Gitlab::UsageDataCounters
       def ci_template_event_name(template_name, config_source)
         prefix = 'implicit_' if config_source.to_s == 'auto_devops_source'
 
-        "p_#{REDIS_SLOT}_#{prefix}#{template_to_event_name(template_name)}"
+        "p_#{PREFIX}_#{prefix}#{template_to_event_name(template_name)}"
       end
 
       def expand_template_name(template_name)

@@ -59,7 +59,6 @@ are regular backend changes.
   metrics that are based on Database.
 - Add `~Data Warehouse::Impact Check` for any database metric that has a query change. Changes in queries can affect [data operations](https://about.gitlab.com/handbook/business-technology/data-team/how-we-work/triage/#gitlabcom-db-structure-changes).
 - For tracking using Redis HLL (HyperLogLog):
-  - Check the Redis slot.
   - Check if a [feature flag is needed](implement.md#recommendations).
 - For a metric's YAML definition:
   - Check the metric's `description`.

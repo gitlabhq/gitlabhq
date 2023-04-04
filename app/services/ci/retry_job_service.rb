@@ -19,7 +19,7 @@ module Ci
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def clone!(job, variables: [], enqueue_if_actionable: false)
+    def clone!(job, variables: [], enqueue_if_actionable: false, start_pipeline: false)
       # Cloning a job requires a strict type check to ensure
       # the attributes being used for the clone are taken straight
       # from the model and not overridden by other abstractions.
@@ -32,7 +32,11 @@ module Ci
         new_job.set_enqueue_immediately!
       end
 
+      start_pipeline_proc = -> { start_pipeline(job, new_job) } if start_pipeline && start_pipeline_after_commit?
+
       new_job.run_after_commit do
+        start_pipeline_proc.call if start_pipeline_proc
+
         ::Ci::CopyCrossDatabaseAssociationsService.new.execute(job, new_job)
 
         ::Deployments::CreateForBuildService.new.execute(new_job)
@@ -59,15 +63,14 @@ module Ci
     def check_assignable_runners!(job); end
 
     def retry_job(job, variables: [])
-      clone!(job, variables: variables, enqueue_if_actionable: true).tap do |new_job|
+      clone!(job, variables: variables, enqueue_if_actionable: true, start_pipeline: true).tap do |new_job|
         check_assignable_runners!(new_job) if new_job.is_a?(Ci::Build)
 
         next if new_job.failed?
 
         ResetSkippedJobsService.new(project, current_user).execute(job)
 
-        Ci::PipelineCreation::StartPipelineService.new(job.pipeline).execute
-        new_job.reset
+        start_pipeline(job, new_job) unless start_pipeline_after_commit?
       end
     end
 
@@ -76,6 +79,16 @@ module Ci
         raise Gitlab::Access::AccessDeniedError, '403 Forbidden'
       end
     end
+
+    def start_pipeline(job, new_job)
+      Ci::PipelineCreation::StartPipelineService.new(job.pipeline).execute
+      new_job.reset
+    end
+
+    def start_pipeline_after_commit?
+      Feature.enabled?(:retry_job_start_pipeline_after_commit, project)
+    end
+    strong_memoize_attr :start_pipeline_after_commit?
   end
 end
 

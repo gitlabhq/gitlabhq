@@ -69,7 +69,7 @@ export default {
     },
     participantLabel() {
       return sprintf(
-        n__('%{count} participant', '%{count} participants', this.participants.length),
+        n__('%{count} Participant', '%{count} Participants', this.participants.length),
         { count: this.loading ? '' : this.participantCount },
       );
     },

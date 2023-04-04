@@ -1,16 +1,11 @@
 ---
 - name: i_container_registry_push_tag_user
   aggregation: weekly
-  redis_slot: container_registry
 - name: i_container_registry_delete_tag_user
   aggregation: weekly
-  redis_slot: container_registry
 - name: i_container_registry_push_repository_user
   aggregation: weekly
-  redis_slot: container_registry
 - name: i_container_registry_delete_repository_user
   aggregation: weekly
-  redis_slot: container_registry
 - name: i_container_registry_create_repository_user
   aggregation: weekly
-  redis_slot: container_registry

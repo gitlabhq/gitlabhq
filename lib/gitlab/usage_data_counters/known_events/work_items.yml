@@ -1,28 +1,21 @@
 ---
 - name: users_updating_work_item_title
-  redis_slot: users
   aggregation: weekly
 - name: users_creating_work_items
-  redis_slot: users
   aggregation: weekly
 - name: users_updating_work_item_dates
-  redis_slot: users
   aggregation: weekly
 - name: users_updating_work_item_labels
-  redis_slot: users
   aggregation: weekly
 - name: users_updating_work_item_milestone
-  redis_slot: users
   aggregation: weekly
 - name: users_updating_work_item_iteration
   # The event tracks an EE feature.
   # It's added here so it can be aggregated into the CE/EE 'OR' aggregate metrics.
   # It will report 0 for CE instances and should not be used with 'AND' aggregators.
-  redis_slot: users
   aggregation: weekly
 - name: users_updating_weight_estimate
   # The event tracks an EE feature.
   # It's added here so it can be aggregated into the CE/EE 'OR' aggregate metrics.
   # It will report 0 for CE instances and should not be used with 'AND' aggregators.
-  redis_slot: users
   aggregation: weekly

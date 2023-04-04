@@ -85,7 +85,7 @@ describe('DiffFileHeader component', () => {
   const findExternalLink = () => wrapper.findComponent({ ref: 'externalLink' });
   const findReplacedFileButton = () => wrapper.findComponent({ ref: 'replacedFileButton' });
   const findViewFileButton = () => wrapper.findComponent({ ref: 'viewButton' });
-  const findCollapseIcon = () => wrapper.findComponent({ ref: 'collapseIcon' });
+  const findCollapseButton = () => wrapper.findComponent({ ref: 'collapseButton' });
   const findEditButton = () => wrapper.findComponent({ ref: 'editButton' });
   const findReviewFileCheckbox = () => wrapper.find("[data-testid='fileReviewCheckbox']");
 
@@ -111,7 +111,7 @@ describe('DiffFileHeader component', () => {
     ${'hidden'}  | ${false}
   `('collapse toggle is $visibility if collapsible is $collapsible', ({ collapsible }) => {
     createComponent({ props: { collapsible } });
-    expect(findCollapseIcon().exists()).toBe(collapsible);
+    expect(findCollapseButton().exists()).toBe(collapsible);
   });
 
   it.each`
@@ -120,7 +120,7 @@ describe('DiffFileHeader component', () => {
     ${false} | ${'chevron-right'}
   `('collapse icon is $icon if expanded is $expanded', ({ icon, expanded }) => {
     createComponent({ props: { expanded, collapsible: true } });
-    expect(findCollapseIcon().props('name')).toBe(icon);
+    expect(findCollapseButton().props('icon')).toBe(icon);
   });
 
   it('when header is clicked emits toggleFile', async () => {
@@ -133,7 +133,7 @@ describe('DiffFileHeader component', () => {
 
   it('when collapseIcon is clicked emits toggleFile', async () => {
     createComponent({ props: { collapsible: true } });
-    findCollapseIcon().vm.$emit('click', new Event('click'));
+    findCollapseButton().vm.$emit('click', new Event('click'));
     await nextTick();
     expect(wrapper.emitted().toggleFile).toBeDefined();
   });

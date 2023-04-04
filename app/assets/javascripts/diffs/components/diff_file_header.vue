@@ -202,6 +202,9 @@ export default {
     externalUrlLabel() {
       return sprintf(__('View on %{url}'), { url: this.diffFile.formatted_external_url });
     },
+    labelToggleFile() {
+      return this.expanded ? __('Hide file contents') : __('Show file contents');
+    },
   },
   watch: {
     'idState.moreActionsShown': {
@@ -288,12 +291,14 @@ export default {
     @click.self="handleToggleFile"
   >
     <div class="file-header-content">
-      <gl-icon
+      <gl-button
         v-if="collapsible"
-        ref="collapseIcon"
-        :name="collapseIcon"
-        :size="16"
-        class="diff-toggle-caret gl-mr-2"
+        ref="collapseButton"
+        class="gl-mr-2"
+        category="tertiary"
+        size="small"
+        :icon="collapseIcon"
+        :aria-label="labelToggleFile"
         @click.stop="handleToggleFile"
       />
       <a

@@ -33,7 +33,14 @@ squash commits and merge commits.
 ## Set default squash options for a merge request
 
 Users with permission to create or edit a merge request can set the default squash options
-for a merge request. To do this:
+for a merge request.
+
+Prerequisites:
+
+- Your project must be [configured](#configure-squash-options-for-a-project) to allow or
+  encourage squashing.
+
+To do this:
 
 1. Go to the merge request and select **Edit**.
 1. Select or clear the **Squash commits when merge request is accepted** checkbox.
@@ -57,6 +64,10 @@ squash the commits as part of the merge process:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17613) in GitLab 13.2 [with a flag](../../../administration/feature_flags.md) named `squash_options`, disabled by default.
 > - [Enabled on GitLab.com and self-managed by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39382) in GitLab 13.3.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/232536) in GitLab 13.8. Feature flag `squash_options` removed.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for this project.
 
 To configure the default squashing behavior for all merge requests in your project:
 

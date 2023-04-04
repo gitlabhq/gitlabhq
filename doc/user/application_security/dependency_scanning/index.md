@@ -933,7 +933,7 @@ Then the Gemnasium scanner generates the following CycloneDX SBOMs:
     └── gl-sbom-go-go.cdx.json
 ```
 
-The CycloneDX SBOMs can be downloaded [the same way as other job artifacts](../../../ci/pipelines/job_artifacts.md#download-job-artifacts).
+You can download CycloneDX SBOMs [the same way as other job artifacts](../../../ci/pipelines/job_artifacts.md#download-job-artifacts).
 
 ### Merging multiple CycloneDX SBOMs
 
