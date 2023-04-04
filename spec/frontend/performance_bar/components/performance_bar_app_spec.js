@@ -14,7 +14,6 @@ describe('performance bar app', () => {
       requestMethod: 'GET',
       statsUrl: 'https://log.gprd.gitlab.net/app/dashboards#/view/',
       peekUrl: '/-/peek/results',
-      profileUrl: '?lineprofiler=true',
     },
   });
 

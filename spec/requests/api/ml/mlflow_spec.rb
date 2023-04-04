@@ -409,7 +409,7 @@ RSpec.describe API::Ml::Mlflow, feature_category: :mlops do
           'experiment_id' => candidate.experiment.iid.to_s,
           'user_id' => candidate.user.id.to_s,
           'start_time' => candidate.start_time,
-          'artifact_uri' => "http://www.example.com/api/v4/projects/#{project_id}/packages/generic/ml_candidate_#{candidate.id}/-/",
+          'artifact_uri' => "http://www.example.com/api/v4/projects/#{project_id}/packages/generic/ml_experiment_#{experiment.iid}/#{candidate.iid}/",
           'status' => "RUNNING",
           'lifecycle_stage' => "active"
         }
@@ -452,7 +452,7 @@ RSpec.describe API::Ml::Mlflow, feature_category: :mlops do
           'user_id' => candidate.user.id.to_s,
           'start_time' => candidate.start_time,
           'end_time' => params[:end_time],
-          'artifact_uri' => "http://www.example.com/api/v4/projects/#{project_id}/packages/generic/ml_candidate_#{candidate.id}/-/",
+          'artifact_uri' => "http://www.example.com/api/v4/projects/#{project_id}/packages/generic/ml_experiment_#{experiment.iid}/#{candidate.iid}/",
           'status' => 'FAILED',
           'lifecycle_stage' => 'active'
         }

@@ -7,6 +7,8 @@
       .form-group
         = f.label :email
         = f.email_field :email, class: "form-control gl-form-input", required: true, autocomplete: 'off', title: _('Please provide a valid email address.'), value: nil
+        .form-text.gl-text-secondary
+          = _('Requires your primary GitLab email address.')
 
       %div
       - if recaptcha_enabled?

@@ -14,13 +14,14 @@ RSpec.describe Ml::ExperimentTracking::AssociateMlCandidateToPackageWorker, feat
       )
     end
 
-    let(:package_name) { package.name }
+    let(:package_version) { package.version }
+    let(:project_id) { package.project_id }
     let(:data) do
       {
-        project_id: package.project_id,
+        project_id: project_id,
         id: package.id,
-        name: package_name,
-        version: package.version,
+        name: package.name,
+        version: package_version,
         package_type: package.package_type
       }
     end
@@ -31,33 +32,31 @@ RSpec.describe Ml::ExperimentTracking::AssociateMlCandidateToPackageWorker, feat
       let(:event) { package_created_event }
     end
 
-    context 'when package name matches ml_candidate_{id}' do
-      context 'when candidate with id exists' do
-        it 'associates candidate to package' do
-          consume_event(subscriber: described_class, event: package_created_event)
+    context 'when package name matches ml_experiment_{id}' do
+      before do
+        consume_event(subscriber: described_class, event: package_created_event)
+      end
 
+      context 'when candidate with iid exists' do
+        it 'associates candidate to package' do
           expect(candidate.reload.package).to eq(package)
         end
       end
 
-      context 'when no candidate with id exists' do
-        let(:package_name) { "ml_candidate_#{non_existing_record_iid}" }
+      context 'when no candidate with iid exists' do
+        let(:package_version) { non_existing_record_iid.to_s }
 
         it 'does not associate candidate' do
-          consume_event(subscriber: described_class, event: package_created_event)
-
           expect(candidate.reload.package).to be_nil
         end
       end
-    end
 
-    context 'when package name does not match' do
-      let(:package_name) { non_existing_record_iid.to_s }
+      context 'when candidate with iid exists but in a different project' do
+        let(:project_id) { non_existing_record_id }
 
-      it 'does not associate candidate' do
-        consume_event(subscriber: described_class, event: package_created_event)
-
-        expect(candidate.reload.package_id).to be_nil
+        it 'does not associate candidate' do
+          expect(candidate.reload.package).to be_nil
+        end
       end
     end
 
@@ -92,10 +91,10 @@ RSpec.describe Ml::ExperimentTracking::AssociateMlCandidateToPackageWorker, feat
     subject { described_class.handles_event?(event) }
 
     where(:package_name, :package_type, :handles_event) do
-      'ml_candidate_1234' | 'generic' | true
-      'ml_candidate_1234' | 'maven' | false
+      'ml_experiment_1234' | 'generic' | true
+      'ml_experiment_1234' | 'maven' | false
       '1234' | 'generic' | false
-      'ml_candidate_' | 'generic' | false
+      'ml_experiment_' | 'generic' | false
       'blah' | 'generic' | false
     end
 

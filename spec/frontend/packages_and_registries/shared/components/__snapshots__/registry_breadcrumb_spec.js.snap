@@ -16,29 +16,7 @@ exports[`Registry Breadcrumb when is not rootRoute renders 1`] = `
         class=""
         target="_self"
       >
-        <span>
-          
-        </span>
-         
-        <span
-          class="gl-breadcrumb-separator"
-          data-testid="separator"
-        >
-          <span
-            class="gl-mx-n5"
-          >
-            <svg
-              aria-hidden="true"
-              class="gl-icon s8"
-              data-testid="chevron-lg-right-icon"
-              role="img"
-            >
-              <use
-                href="#chevron-lg-right"
-              />
-            </svg>
-          </span>
-        </span>
+        
       </a>
     </li>
      
@@ -52,11 +30,7 @@ exports[`Registry Breadcrumb when is not rootRoute renders 1`] = `
         href="#"
         target="_self"
       >
-        <span>
-          
-        </span>
-         
-        <!---->
+        
       </a>
     </li>
      
@@ -82,11 +56,7 @@ exports[`Registry Breadcrumb when is rootRoute renders 1`] = `
         class=""
         target="_self"
       >
-        <span>
-          
-        </span>
-         
-        <!---->
+        
       </a>
     </li>
      

@@ -8,8 +8,6 @@ module Ml
 
     ignore_column :iid, remove_with: '16.0', remove_after: '2023-05-01'
 
-    PACKAGE_PREFIX = 'ml_candidate_'
-
     enum status: { running: 0, scheduled: 1, finished: 2, failed: 3, killed: 4 }
 
     validates :eid, :experiment, presence: true
@@ -32,6 +30,7 @@ module Ml
 
     scope :including_relationships, -> { includes(:latest_metrics, :params, :user, :package) }
     scope :by_name, ->(name) { where("ml_candidates.name LIKE ?", "%#{sanitize_sql_like(name)}%") } # rubocop:disable GitlabSecurity/SqlInjection
+
     scope :order_by_metric, ->(metric, direction) do
       subquery = Ml::CandidateMetric.latest.where(name: metric)
       column_expression = Arel::Table.new('latest')[:value]
@@ -59,16 +58,14 @@ module Ml
     alias_attribute :artifact, :package
     alias_attribute :iid, :internal_id
 
+    delegate :package_name, to: :experiment
+
     def artifact_root
       "/#{package_name}/#{package_version}/"
     end
 
-    def package_name
-      "#{PACKAGE_PREFIX}#{id}"
-    end
-
     def package_version
-      '-'
+      iid
     end
 
     class << self
@@ -82,26 +79,6 @@ module Ml
         return unless project_id.present? && iid.present?
 
         find_by(project_id: project_id, internal_id: iid)
-      end
-
-      def candidate_id_for_package(package_name)
-        return unless package_name.starts_with?(PACKAGE_PREFIX)
-
-        id = package_name.delete_prefix(PACKAGE_PREFIX)
-
-        return unless numeric?(id)
-
-        id.to_i
-      end
-
-      def find_from_package_name(package_name)
-        find_by_id(candidate_id_for_package(package_name))
-      end
-
-      private
-
-      def numeric?(value)
-        value.match?(/\A\d+\z/)
       end
     end
   end

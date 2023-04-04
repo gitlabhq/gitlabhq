@@ -34,7 +34,6 @@ const initPerformanceBar = (el) => {
         requestId: performanceBarData.requestId,
         requestMethod: performanceBarData.requestMethod,
         peekUrl: performanceBarData.peekUrl,
-        profileUrl: performanceBarData.profileUrl,
         statsUrl: performanceBarData.statsUrl,
       };
     },
@@ -154,7 +153,6 @@ const initPerformanceBar = (el) => {
           requestId: this.requestId,
           requestMethod: this.requestMethod,
           peekUrl: this.peekUrl,
-          profileUrl: this.profileUrl,
           statsUrl: this.statsUrl,
         },
         on: {

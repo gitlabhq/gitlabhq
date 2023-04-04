@@ -3,11 +3,143 @@ stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
-
 # Git LFS development guidelines
 
 This page contains developer-centric information for GitLab team members. For the
 user documentation, see [Git Large File Storage](../topics/git/lfs/index.md).
+
+## Controllers and Services
+
+### Repositories::GitHttpClientController
+
+The methods for authentication defined here are inherited by all the other LFS controllers.
+
+### Repositories::LfsApiController
+
+#### `#batch`
+
+After authentication the `batch` action is the first action called by the Git LFS
+client during downloads and uploads (such as pull, push, and clone).
+
+### Repositories::LfsStorageController
+
+#### `#upload_authorize`
+
+Provides payload to Workhorse including a path for Workhorse to save the file to. Could be remote object storage.
+
+#### `#upload_finalize`
+
+Handles requests from Workhorse that contain information on a file that workhorse already uploaded (see [this middleware](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/middleware/multipart.rb)) so that `gitlab` can either:
+
+- Create an `LfsObject`.
+- Connect an existing `LfsObject` to a project with an `LfsObjectsProject`.
+
+### LfsObject and LfsObjectsProject
+
+- Only one `LfsObject` is created for a file with a given `oid` (a SHA256 checksum of the file) and file size.
+- `LfsObjectsProject` associate `LfsObject`s with `Project`s. They determine if a file can be accessed through a project.
+- These objects are also used for calculating the amount of LFS storage a given project is using.
+  For more information, see
+  [`ProjectStatistics#update_lfs_objects_size`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/project_statistics.rb#L82-84).
+
+### Repositories::LfsLocksApiController
+
+Handles the lock API for LFS. Delegates mostly to corresponding services:
+
+- `Lfs::LockFileService`
+- `Lfs::UnlockFileService`
+- `Lfs::LocksFinderService`
+
+These services create and delete `LfsFileLock`.
+
+#### `#verify`
+
+- This endpoint responds with a payload that allows a client to check if there are any files being pushed that have locks that belong to another user.
+- A client-side `lfs.locksverify` configuration can be set so that the client aborts the push if locks exist that belong to another user.
+- The existence of locks belonging to other users is also [validated on the server side](https://gitlab.com/gitlab-org/gitlab/-/blob/65f0c6e59121b62c9b0f89b810ef5186969bb4d2/lib/gitlab/checks/diff_check.rb#L69).
+
+## Example authentication
+
+```mermaid
+sequenceDiagram
+autonumber
+    alt Over HTTPS
+        Git client-->>Git client: user-supplied credentials
+    else Over SSH
+        Git client->>gitlab-shell: git-lfs-authenticate
+        activate gitlab-shell
+        activate GitLab Rails
+        gitlab-shell->>GitLab Rails:  POST /api/v4/internal/lfs_authenticate
+        GitLab Rails-->>gitlab-shell: token with expiry
+        deactivate gitlab-shell
+        deactivate GitLab Rails
+    end
+```
+
+1. Clients can be configured to store credentials in a few different ways.
+   See the [Git LFS documentation on authentication](https://github.com/git-lfs/git-lfs/blob/bea0287cdd3acbc0aa9cdf67ae09b6843d3ffcf0/docs/api/authentication.md#git-credentials).
+1. Running `gitlab-lfs-authenticate` on `gitlab-shell`. See the [Git LFS documentation concerning `gitlab-lfs-authenticate`](https://github.com/git-lfs/git-lfs/blob/bea0287cdd3acbc0aa9cdf67ae09b6843d3ffcf0/docs/api/server-discovery.md#ssh).
+1. `gitlab-shell`makes a request to the GitLab API.
+1. [Responding to shell with token](https://gitlab.com/gitlab-org/gitlab/-/blob/7a2f7a31a88b6085ea89b8ba188a4d92d5fada91/lib/api/internal/base.rb#L168) which is used in subsequent requests. See [Git LFS documentation concerning authentication](https://github.com/git-lfs/git-lfs/blob/bea0287cdd3acbc0aa9cdf67ae09b6843d3ffcf0/docs/api/authentication.md).
+
+## Example clone
+
+```mermaid
+sequenceDiagram
+    Note right of Git client: Typical Git clone things happen first
+    Note right of Git client: Authentication for LFS comes next
+    activate GitLab Rails
+    autonumber
+    Git client->>GitLab Rails: POST project/namespace/info/lfs/objects/batch
+    GitLab Rails-->>Git client: payload with objects
+    deactivate GitLab Rails
+    loop each object in payload
+    Git client->>GitLab Rails: GET project/namespace/gitlab-lfs/objects/:oid/ (<- This URL is from the payload)
+    GitLab Rails->>Workhorse: SendfileUpload
+    Workhorse-->> Git client: Binary data
+    end
+```
+
+1. Git LFS requests the ability to download files with authorization header from authorization.
+1. `gitlab` responds with the list of objects and where to find them. See
+   [LfsApiController#batch](https://gitlab.com/gitlab-org/gitlab/-/blob/7a2f7a31a88b6085ea89b8ba188a4d92d5fada91/app/controllers/repositories/lfs_api_controller.rb#L25).
+1. Git LFS makes a request for each file for the `href` in the previous response. See
+   [how downloads are handled with the basic transfer mode](https://github.com/git-lfs/git-lfs/blob/bea0287cdd3acbc0aa9cdf67ae09b6843d3ffcf0/docs/api/basic-transfers.md#downloads).
+1. `gitlab` redirects to the remote URL if remote object storage is enabled. See
+   [SendFileUpload](https://gitlab.com/gitlab-org/gitlab/-/blob/7a2f7a31a88b6085ea89b8ba188a4d92d5fada91/app/controllers/concerns/send_file_upload.rb#L4).
+
+## Example push
+
+```mermaid
+sequenceDiagram
+    Note right of Git client: Typical Git push things happen first.
+    Note right of Git client: Suthentication for LFS comes next.
+    autonumber
+    activate GitLab Rails
+        Git client ->> GitLab Rails: POST project/namespace/info/lfs/objects/batch
+        GitLab Rails-->>Git client: payload with objects
+    deactivate GitLab Rails
+    loop each object in payload
+    Git client->>Workhorse: PUT project/namespace/gitlab-lfs/objects/:oid/:size (URL is from payload)
+    Workhorse->>GitLab Rails: PUT project/namespace/gitlab-lfs/objects/:oid/:size/authorize
+    GitLab Rails-->>Workhorse: response with where path to upload
+    Workhorse->>Workhorse: Upload
+    Workhorse->>GitLab Rails: PUT project/namespace/gitlab-lfs/objects/:oid/:size/finalize
+    end
+```
+
+1. Git LFS requests the ability to upload files.
+1. `gitlab` responds with the list of objects and uploads to find them. See
+   [LfsApiController#batch](https://gitlab.com/gitlab-org/gitlab/-/blob/7a2f7a31a88b6085ea89b8ba188a4d92d5fada91/app/controllers/repositories/lfs_api_controller.rb#L27).
+1. Git LFS makes a request for each file for the `href` in the previous response. See
+   [how uploads are handled with the basic transfer mode](https://github.com/git-lfs/git-lfs/blob/bea0287cdd3acbc0aa9cdf67ae09b6843d3ffcf0/docs/api/basic-transfers.md#uploads).
+1. `gitlab` responds with a payload including a path for Workhorse to save the file to.
+   Could be remote object storage. See
+   [LfsStorageController#upload_authorize](https://gitlab.com/gitlab-org/gitlab/-/blob/96250de93a410e278ef659a3d38b056f12024636/app/controllers/repositories/lfs_storage_controller.rb#L42).
+1. Workhorse does the work of saving the file.
+1. Workhorse makes a request to `gitlab` with information on the uploaded file so
+   that `gitlab` can create an `LfsObject`. See
+   [LfsStorageController#upload_finalize](https://gitlab.com/gitlab-org/gitlab/-/blob/96250de93a410e278ef659a3d38b056f12024636/app/controllers/repositories/lfs_storage_controller.rb#L51).
 
 ## Deep Dive
 

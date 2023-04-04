@@ -4,6 +4,8 @@ module Ml
   class Experiment < ApplicationRecord
     include AtomicInternalId
 
+    PACKAGE_PREFIX = 'ml_experiment_'
+
     validates :name, :project, presence: true
     validates :name, uniqueness: { scope: :project, message: "should be unique in the project" }
 
@@ -20,6 +22,10 @@ module Ml
 
     has_internal_id :iid, scope: :project
 
+    def package_name
+      "#{PACKAGE_PREFIX}#{iid}"
+    end
+
     class << self
       def by_project_id_and_iid(project_id, iid)
         find_by(project_id: project_id, iid: iid)
@@ -31,6 +37,20 @@ module Ml
 
       def by_project_id(project_id)
         where(project_id: project_id).order(id: :desc)
+      end
+
+      def package_for_experiment?(package_name)
+        return false unless package_name&.starts_with?(PACKAGE_PREFIX)
+
+        iid = package_name.delete_prefix(PACKAGE_PREFIX)
+
+        numeric?(iid)
+      end
+
+      private
+
+      def numeric?(value)
+        value.match?(/\A\d+\z/)
       end
     end
   end

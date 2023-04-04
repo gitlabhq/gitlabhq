@@ -130,7 +130,7 @@ export default {
 
 <template>
   <credit-card-verification v-if="shouldVerify" @verified="onVerified" />
-  <div v-else-if="!activePanelName">
+  <div v-else-if="!activePanelName" class="gl-mt-4">
     <gl-breadcrumb :items="breadcrumbs" data-testid="breadcrumb-links" />
     <welcome-page :panels="panels" :title="title">
       <template #footer>
@@ -138,9 +138,11 @@ export default {
       </template>
     </welcome-page>
   </div>
-  <div v-else>
+  <div v-else class="gl-pt-4">
     <gl-breadcrumb :items="breadcrumbs" data-testid="breadcrumb-links" />
-    <div class="gl-display-flex gl-py-5 gl-align-items-center">
+    <div
+      class="gl-display-flex gl-align-items-center gl-mt-4 gl-py-5 gl-border-t-1 gl-border-t-gray-100 gl-border-t-solid"
+    >
       <div v-safe-html="activePanel.illustration" class="gl-text-white col-auto"></div>
       <div class="col">
         <h4>{{ activePanel.title }}</h4>

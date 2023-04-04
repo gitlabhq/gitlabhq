@@ -18,28 +18,15 @@ Users can sign in to GitLab through their SAML identity provider.
 
 You can configure SAML SSO for the top-level group only.
 
-## Configure your identity provider
-
-1. [Configure your SAML identity provider](#set-up-identity-provider).
-1. Configure the SAML response to include a [**NameID**](#nameid) that uniquely identifies each user.
-1. Configure the required [user attributes](#user-attributes), ensuring you include the user's email address.
-1. While the default is enabled for most SAML providers, ensure the app is set to have service provider
-   initiated calls to link existing GitLab accounts.
-1. Once the identity provider is set up, move on to [configuring GitLab](#configure-gitlab).
-
-![Issuer and callback for configuring SAML identity provider with GitLab.com](img/group_saml_configuration_information.png)
-
-If your account is the only owner in the group after SAML is set up, you can't unlink the account. To [unlink the account](#unlinking-accounts),
-set up another user as a group owner.
-
 ## Set up identity provider
 
 The SAML standard means that you can use a wide range of identity providers with GitLab. Your identity provider might have relevant documentation. It can be generic SAML documentation or specifically targeted for GitLab.
 
-When [configuring your identity provider](#configure-your-identity-provider), consider the notes below for specific providers to help avoid common issues and as a guide for terminology used.
+When setting up your identity provider, use the following provider-specific documentation
+to help avoid common issues and as a guide for terminology used.
 
-For providers not listed below, you can refer to the [instance SAML notes on configuring an identity provider](../../../integration/saml.md#configure-saml-on-your-idp)
-for additional guidance on information your identity provider may require.
+For identity providers not listed, you can refer to the [instance SAML notes on configuring an identity provider](../../../integration/saml.md#configure-saml-on-your-idp)
+for additional guidance on information your provider may require.
 
 GitLab provides the following information for guidance only.
 If you have any questions on configuring the SAML app, contact your provider's support.
@@ -68,6 +55,9 @@ To set up SSO with Azure as your identity provider:
    - **Unique User Identifier (Name identifier)** to `user.objectID`.
    - **nameid-format** to `persistent`. For more information, see [**NameID**](#nameid).
    - **Additional claims** to [supported attributes](#user-attributes).
+
+1. Make sure the identity provider is set to have provider-initiated calls
+   to link existing GitLab accounts.
 
 1. Optional. If you use [Group Sync](#group-sync), customize the name of the
    group claim to match the required attribute.
@@ -109,6 +99,9 @@ To set up Google Workspace as your identity provider:
    - For **Name ID format**: `EMAIL`. For more information, see the [**NameID** format documentation](#nameid-format).
    - For **NameID**: `Basic Information > Primary email`. For more information, see [**NameID**](#nameid).
 
+1. Make sure the identity provider is set to have provider-initiated calls
+   to link existing GitLab accounts.
+
 On the GitLab SAML SSO page, when you select **Verify SAML Configuration**, disregard
 the warning that recommends setting the **NameID** format to `persistent`.
 
@@ -137,6 +130,9 @@ To set up SSO with Okta as your identity provider:
 1. Set these values:
    - For **Application username (NameID)**: **Custom** `user.getInternalProperty("id")`.
    - For **Name ID Format**: `Persistent`. For more information, see [**NameID**](#nameid).
+
+1. Make sure the identity provider is set to have provider-initiated calls
+   to link existing GitLab accounts.
 
 The Okta GitLab application available in the App Catalog only supports [SCIM](scim_setup.md). Support
 for SAML is proposed in [issue 216173](https://gitlab.com/gitlab-org/gitlab/-/issues/216173).
@@ -171,6 +167,9 @@ To set up OneLogin as your identity provider:
 
 1. For **NameID**, use `OneLogin ID`. For more information, see [**NameID**](#nameid).
 
+1. Make sure the identity provider is set to have provider-initiated calls
+   to link existing GitLab accounts.
+
 ### Set up identity provider using metadata
 
 To configure some identity providers, you need a GitLab metadata URL.
@@ -198,7 +197,7 @@ users cannot access any of the SAML groups. To mitigate this, you can disable
 
 To change identity providers:
 
-1. [Configure](#configure-your-identity-provider) the group with the new identity provider.
+1. [Configure](#set-up-identity-provider) the group with the new identity provider.
 1. Optional. If the **NameID** is not identical, [change the **NameID** for users](#change-nameid-for-one-or-more-users).
 
 #### Change email domains

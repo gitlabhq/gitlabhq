@@ -313,7 +313,8 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
           create(:ci_build, :scheduled,
             pipeline: pipeline,
             name: 'delayed job 1',
-            stage: 'test')
+            stage: 'test',
+            scheduled_at: 2.hours.since + 2.minutes)
         end
 
         before do
@@ -324,14 +325,15 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
           expect(page).to have_selector('[data-testid="pipelines-manual-actions-dropdown"] [data-testid="play-icon"]')
         end
 
-        it "has link to the delayed job's action", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/403601' do
+        it "has link to the delayed job's action" do
           find('[data-testid="pipelines-manual-actions-dropdown"]').click
 
           wait_for_requests
 
-          time_diff = [0, delayed_job.scheduled_at - Time.zone.now].max
           expect(page).to have_button('delayed job 1')
-          expect(page).to have_content(Time.at(time_diff).utc.strftime("%H:%M:%S"))
+
+          time_diff = [0, delayed_job.scheduled_at - Time.zone.now].max
+          expect(page).to have_content(Time.at(time_diff).utc.strftime("%H:%M"))
         end
 
         context 'when delayed job is expired already' do

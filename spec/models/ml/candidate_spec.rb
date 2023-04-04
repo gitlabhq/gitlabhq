@@ -37,19 +37,13 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
   describe '.artifact_root' do
     subject { candidate.artifact_root }
 
-    it { is_expected.to eq("/ml_candidate_#{candidate.id}/-/") }
-  end
-
-  describe '.package_name' do
-    subject { candidate.package_name }
-
-    it { is_expected.to eq("ml_candidate_#{candidate.id}") }
+    it { is_expected.to eq("/#{candidate.package_name}/#{candidate.iid}/") }
   end
 
   describe '.package_version' do
     subject { candidate.package_version }
 
-    it { is_expected.to eq('-') }
+    it { is_expected.to eq(candidate.iid) }
   end
 
   describe '.eid' do
@@ -199,47 +193,6 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
       it 'orders correctly' do
         expect(subject).to eq([candidate, candidate2])
       end
-    end
-  end
-
-  describe '#candidate_id_for_package' do
-    using RSpec::Parameterized::TableSyntax
-
-    subject { described_class.candidate_id_for_package(package_name) }
-
-    where(:package_name, :id) do
-      'ml_candidate_1234' | 1234
-      'ml_candidate_1234abc' | nil
-      'ml_candidate_abc' | nil
-      'ml_candidate_' | nil
-      'blah' | nil
-      '1234' | nil
-    end
-
-    with_them do
-      it { is_expected.to be(id) }
-    end
-  end
-
-  describe '#find_from_package_name' do
-    let(:package_name) { candidate.package_name }
-
-    subject { described_class.find_from_package_name(package_name) }
-
-    context 'when package_name is ml_candidates_{id} and the candidate exists' do
-      it { is_expected.to eq(candidate) }
-    end
-
-    context 'when package_name is ml_candidates_{id} and candidate does not exist' do
-      let(:package_name) { "ml_candidate_#{non_existing_record_id}" }
-
-      it { is_expected.to be_nil }
-    end
-
-    context 'when package_name is not in the format ml_candidates_{id}' do
-      let(:package_name) { "ml_candidate#{candidate.id}" }
-
-      it { is_expected.to be_nil }
     end
   end
 end

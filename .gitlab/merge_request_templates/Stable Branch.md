@@ -18,7 +18,7 @@ This checklist encourages us to confirm any changes have been analyzed to reduce
 * [ ] This MR is backporting a bug fix, documentation update, or spec fix, previously merged in the default branch.
 * [ ] The original MR has been deployed to GitLab.com (not applicable for documentation or spec changes).
 * [ ] This MR has a [severity label] assigned (if applicable).
-* [ ] Ensure the `e2e:package-and-test` job has either succeeded or been approved by a Software Engineer in Test.
+* [ ] Ensure the `e2e:package-and-test-ee` job has either succeeded or been approved by a Software Engineer in Test.
 
 #### Note to the merge request author and maintainer
 

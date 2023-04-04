@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ml::Experiment do
+RSpec.describe Ml::Experiment, feature_category: :mlops do
   let_it_be(:exp) { create(:ml_experiments) }
   let_it_be(:exp2) { create(:ml_experiments, project: exp.project) }
 
@@ -14,6 +14,12 @@ RSpec.describe Ml::Experiment do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to have_many(:candidates) }
     it { is_expected.to have_many(:metadata) }
+  end
+
+  describe '.package_name' do
+    describe '.package_name' do
+      it { expect(exp.package_name).to eq("ml_experiment_#{exp.iid}") }
+    end
   end
 
   describe '#by_project_id_and_iid' do
@@ -72,6 +78,24 @@ RSpec.describe Ml::Experiment do
       expect(subject[exp.id]).to eq(0)
       expect(subject[exp2.id]).to eq(1)
       expect(subject[exp3.id]).to eq(3)
+    end
+  end
+
+  describe '#package_for_experiment?' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { described_class.package_for_experiment?(package_name) }
+
+    where(:package_name, :id) do
+      'ml_experiment_1234' | true
+      'ml_experiment_1234abc' | false
+      'ml_experiment_abc' | false
+      'ml_experiment_' | false
+      'blah' | false
+    end
+
+    with_them do
+      it { is_expected.to be(id) }
     end
   end
 end

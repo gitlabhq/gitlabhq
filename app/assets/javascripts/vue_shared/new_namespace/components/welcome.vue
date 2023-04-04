@@ -20,7 +20,9 @@ export default {
 };
 </script>
 <template>
-  <div class="container gl-display-flex gl-flex-direction-column">
+  <div
+    class="gl-display-flex gl-flex-direction-column gl-mt-4 gl-border-t-1 gl-border-t-gray-100 gl-border-t-solid"
+  >
     <h2 class="gl-my-7 gl-font-size-h1 gl-text-center">
       {{ title }}
     </h2>

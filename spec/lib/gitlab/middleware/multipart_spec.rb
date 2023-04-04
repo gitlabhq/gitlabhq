@@ -175,7 +175,7 @@ RSpec.describe Gitlab::Middleware::Multipart do
         end
 
         it 'raises an error' do
-          expect { subject }.to raise_error(JWT::VerificationError, 'Signature verification failed')
+          expect { subject }.to raise_error(JWT::VerificationError, 'Signature verification raised')
         end
       end
 
@@ -191,7 +191,7 @@ RSpec.describe Gitlab::Middleware::Multipart do
         end
 
         it 'raises an error' do
-          expect { subject }.to raise_error(JWT::VerificationError, 'Signature verification failed')
+          expect { subject }.to raise_error(JWT::VerificationError, 'Signature verification raised')
         end
       end
     end
