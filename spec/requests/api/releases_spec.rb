@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Releases, feature_category: :release_orchestration do
+RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_orchestration do
   let(:project) { create(:project, :repository, :private) }
   let(:maintainer) { create(:user) }
   let(:reporter) { create(:user) }
@@ -50,7 +50,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
-      it 'returns releases ordered by released_at', :aggregate_failures do
+      it 'returns releases ordered by released_at' do
         get api("/projects/#{project.id}/releases", maintainer)
 
         expect(json_response.count).to eq(2)
@@ -113,7 +113,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
         expect(response).to match_response_schema('public_api/v4/releases')
       end
 
-      it 'returns rendered helper paths', :aggregate_failures do
+      it 'returns rendered helper paths' do
         get api("/projects/#{project.id}/releases", maintainer)
 
         expect(json_response.first['commit_path']).to eq("/#{release_2.project.full_path}/-/commit/#{release_2.commit.id}")
@@ -132,7 +132,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
       end
     end
 
-    it 'returns an upcoming_release status for a future release', :aggregate_failures do
+    it 'returns an upcoming_release status for a future release' do
       tomorrow = Time.now.utc + 1.day
       create(:release, project: project, tag: 'v0.1', author: maintainer, released_at: tomorrow)
 
@@ -142,7 +142,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
       expect(json_response.first['upcoming_release']).to eq(true)
     end
 
-    it 'returns an upcoming_release status for a past release', :aggregate_failures do
+    it 'returns an upcoming_release status for a past release' do
       yesterday = Time.now.utc - 1.day
       create(:release, project: project, tag: 'v0.1', author: maintainer, released_at: yesterday)
 
@@ -152,7 +152,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
       expect(json_response.first['upcoming_release']).to eq(false)
     end
 
-    it 'avoids N+1 queries', :aggregate_failures, :use_sql_query_cache do
+    it 'avoids N+1 queries', :use_sql_query_cache do
       create(:release, :with_evidence, project: project, tag: 'v0.1', author: maintainer)
       create(:release_link, release: project.releases.first)
 
@@ -211,7 +211,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
     context 'when tag does not exist in git repository' do
       let!(:release) { create(:release, project: project, tag: 'v1.1.5') }
 
-      it 'returns the tag', :aggregate_failures do
+      it 'returns the tag' do
         get api("/projects/#{project.id}/releases", maintainer)
 
         expect(json_response.count).to eq(1)
@@ -223,7 +223,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
     context 'when tag contains a slash' do
       let!(:release) { create(:release, project: project, tag: 'debian/2.4.0-1', description: "debian/2.4.0-1") }
 
-      it 'returns 200 HTTP status', :aggregate_failures do
+      it 'returns 200 HTTP status' do
         get api("/projects/#{project.id}/releases", maintainer)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -246,7 +246,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
-      it "does not expose tag, commit, source code or helper paths", :aggregate_failures do
+      it "does not expose tag, commit, source code or helper paths" do
         get api("/projects/#{project.id}/releases", guest)
 
         expect(response).to match_response_schema('public_api/v4/release/releases_for_guest')
@@ -264,7 +264,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
           expect(response).to have_gitlab_http_status(:ok)
         end
 
-        it "exposes tag, commit, source code and helper paths", :aggregate_failures do
+        it "exposes tag, commit, source code and helper paths" do
           get api("/projects/#{project.id}/releases", guest)
 
           expect(response).to match_response_schema('public_api/v4/releases')
@@ -296,7 +296,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
     context 'when releases are public and request user is absent' do
       let(:project) { create(:project, :repository, :public) }
 
-      it 'returns the releases', :aggregate_failures do
+      it 'returns the releases' do
         create(:release, project: project, tag: 'v0.1')
 
         get api("/projects/#{project.id}/releases")
@@ -333,7 +333,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
-      it 'returns a release entry', :aggregate_failures do
+      it 'returns a release entry' do
         get api("/projects/#{project.id}/releases/v0.1", maintainer)
 
         expect(json_response['tag_name']).to eq(release.tag)
@@ -351,7 +351,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
         expect(response).to match_response_schema('public_api/v4/release')
       end
 
-      it 'contains source information as assets', :aggregate_failures do
+      it 'contains source information as assets' do
         get api("/projects/#{project.id}/releases/v0.1", maintainer)
 
         expect(json_response['assets']['sources'].map { |h| h['format'] })
@@ -413,7 +413,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
 
         let(:url) { 'https://my-external-hosting.example.com/scrambled-url/app.zip' }
 
-        it 'contains link information as assets', :aggregate_failures do
+        it 'contains link information as assets' do
           get api("/projects/#{project.id}/releases/v0.1", maintainer)
 
           expect(json_response['assets']['links'].count).to eq(1)
@@ -480,14 +480,14 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
     end
 
     context 'when specified tag is not found in the project' do
-      it 'returns 404 for maintater', :aggregate_failures do
+      it 'returns 404 for maintainer' do
         get api("/projects/#{project.id}/releases/non_exist_tag", maintainer)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Not Found')
       end
 
-      it 'returns project not found for no user', :aggregate_failures do
+      it 'returns project not found for no user' do
         get api("/projects/#{project.id}/releases/non_exist_tag", nil)
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -538,7 +538,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
             expect(json_response['milestones'].first['title']).to eq(milestone.title)
           end
 
-          it 'returns issue stats for milestone', :aggregate_failures do
+          it 'returns issue stats for milestone' do
             create_list(:issue, 2, milestone: milestone, project: project)
             create_list(:issue, 3, :closed, milestone: milestone, project: project)
 
@@ -580,14 +580,14 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
     let(:url) { 'https://google.com/-/jobs/140463678/artifacts/download' }
 
     context 'with an invalid release tag' do
-      it 'returns 404 for maintater', :aggregate_failures do
+      it 'returns 404 for maintater' do
         get api("/projects/#{project.id}/releases/v0.2/downloads#{filepath}", maintainer)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Not Found')
       end
 
-      it 'returns project not found for no user', :aggregate_failures do
+      it 'returns project not found for no user' do
         get api("/projects/#{project.id}/releases/v0.2/downloads#{filepath}", nil)
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -648,14 +648,14 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
         end
 
         context 'when filepath does not exists' do
-          it 'returns 404 for maintater', :aggregate_failures do
+          it 'returns 404 for maintater' do
             get api("/projects/#{project.id}/releases/v0.1/downloads/bin/not_existing.exe", maintainer)
 
             expect(response).to have_gitlab_http_status(:not_found)
             expect(json_response['message']).to eq('404 Not found')
           end
 
-          it 'returns project not found for no user', :aggregate_failures do
+          it 'returns project not found for no user' do
             get api("/projects/#{project.id}/releases/v0.1/downloads/bin/not_existing.exe", nil)
 
             expect(response).to have_gitlab_http_status(:not_found)
@@ -728,7 +728,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
                 released_at: 2.days.ago)
       end
 
-      it 'redirects to the latest release tag', :aggregate_failures do
+      it 'redirects to the latest release tag' do
         get api("/projects/#{project.id}/releases/permalink/latest", maintainer)
 
         uri = URI(response.header["Location"])
@@ -737,7 +737,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
         expect(uri.path).to eq("/api/v4/projects/#{project.id}/releases/#{release_b.tag}")
       end
 
-      it 'redirects to the latest release tag when using JOB-TOKEN auth', :aggregate_failures do
+      it 'redirects to the latest release tag when using JOB-TOKEN auth' do
         job = create(:ci_build, :running, project: project, user: maintainer)
 
         get api("/projects/#{project.id}/releases/permalink/latest"), params: { job_token: job.token }
@@ -748,7 +748,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
         expect(uri.path).to eq("/api/v4/projects/#{project.id}/releases/#{release_b.tag}")
       end
 
-      context 'when there are query parameters present', :aggregate_failures do
+      context 'when there are query parameters present' do
         it 'includes the query params on the redirection' do
           get api("/projects/#{project.id}/releases/permalink/latest", maintainer), params: { include_html_description: true, other_param: "aaa" }
 
@@ -763,7 +763,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
           })
         end
 
-        it 'discards the `order_by` query param', :aggregate_failures do
+        it 'discards the `order_by` query param' do
           get api("/projects/#{project.id}/releases/permalink/latest", maintainer), params: { order_by: 'something', other_param: "aaa" }
 
           uri = URI(response.header["Location"])
@@ -781,7 +781,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
       end
 
       context 'when downloading a release asset' do
-        it 'redirects to the right endpoint keeping the suffix_path', :aggregate_failures do
+        it 'redirects to the right endpoint keeping the suffix_path' do
           get api("/projects/#{project.id}/releases/permalink/latest/downloads/bin/example.exe", maintainer)
 
           uri = URI(response.header["Location"])
@@ -830,7 +830,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
       expect(response).to have_gitlab_http_status(:created)
     end
 
-    it 'creates a new release', :aggregate_failures do
+    it 'creates a new release' do
       expect do
         post api("/projects/#{project.id}/releases", maintainer), params: params
       end.to change { Release.count }.by(1)
@@ -848,7 +848,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
       end
     end
 
-    it 'creates a new release without description', :aggregate_failures do
+    it 'creates a new release without description' do
       params = {
           name: 'New release without description',
           tag_name: 'v0.1',
@@ -926,7 +926,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
         params[:direct_asset_path] = params.delete(:filepath)
       end
 
-      it 'creates a new release successfully', :aggregate_failures do
+      it 'creates a new release successfully' do
         expect do
           post api("/projects/#{project.id}/releases", maintainer), params: params
         end.to change { Release.count }.by(1)
@@ -1010,7 +1010,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
             expect(response).to have_gitlab_http_status(:created)
           end
 
-          it 'creates an asset with specified parameters', :aggregate_failures do
+          it 'creates an asset with specified parameters' do
             post api("/projects/#{project.id}/releases", maintainer), params: params
 
             expect(json_response['assets']['links'].count).to eq(1)
@@ -1038,7 +1038,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
             })
           end
 
-          it 'creates two assets with specified parameters', :aggregate_failures do
+          it 'creates two assets with specified parameters' do
             post api("/projects/#{project.id}/releases", maintainer), params: params
 
             expect(json_response['assets']['links'].count).to eq(2)
@@ -1099,7 +1099,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
       end
 
       context 'when a valid token is provided' do
-        it 'creates the release for a running job', :aggregate_failures do
+        it 'creates the release for a running job' do
           job.update!(status: :running, project: project)
           post api("/projects/#{project.id}/releases"), params: params.merge(job_token: job.token)
 
@@ -1139,7 +1139,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
           .to eq(project.repository.commit('master').id)
       end
 
-      it 'creates a new release', :aggregate_failures do
+      it 'creates a new release' do
         expect do
           post api("/projects/#{project.id}/releases", maintainer), params: params
         end.to change { Release.count }.by(1)
@@ -1155,7 +1155,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
       context 'when tag name is HEAD' do
         let(:tag_name) { 'HEAD' }
 
-        it 'returns a 400 error as failure on tag creation', :aggregate_failures do
+        it 'returns a 400 error as failure on tag creation' do
           post api("/projects/#{project.id}/releases", maintainer), params: params
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -1166,7 +1166,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
       context 'when tag name is empty' do
         let(:tag_name) { '' }
 
-        it 'returns a 400 error as failure on tag creation', :aggregate_failures do
+        it 'returns a 400 error as failure on tag creation' do
           post api("/projects/#{project.id}/releases", maintainer), params: params
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -1216,7 +1216,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
 
       context 'with a project milestone' do
         shared_examples 'adds milestone' do
-          it 'adds the milestone', :aggregate_failures do
+          it 'adds the milestone' do
             expect(response).to have_gitlab_http_status(:created)
             expect(returned_milestones).to match_array(['v1.0'])
           end
@@ -1239,7 +1239,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
         let(:milestone2) { create(:milestone, project: project, title: 'm2') }
         let(:milestone_params) { { milestones: [milestone.title, milestone2.title] } }
 
-        it 'adds all milestones', :aggregate_failures do
+        it 'adds all milestones' do
           expect(response).to have_gitlab_http_status(:created)
           expect(returned_milestones).to match_array(['v1.0', 'm2'])
         end
@@ -1248,7 +1248,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
       context 'with an empty milestone' do
         let(:milestone_params) { { milestones: [] } }
 
-        it 'removes all milestones', :aggregate_failures do
+        it 'removes all milestones' do
           expect(response).to have_gitlab_http_status(:created)
           expect(json_response['milestones']).to be_nil
         end
@@ -1257,7 +1257,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
       context 'with a non-existant milestone' do
         let(:milestone_params) { { milestones: ['xyz'] } }
 
-        it 'returns a 400 error as milestone not found', :aggregate_failures do
+        it 'returns a 400 error as milestone not found' do
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to eq("Milestone(s) not found: xyz")
         end
@@ -1267,7 +1267,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
         let(:milestone) { create(:milestone, title: 'v1.0') }
         let(:milestone_params) { { milestones: [milestone.title] } }
 
-        it 'returns a 400 error as milestone not found', :aggregate_failures do
+        it 'returns a 400 error as milestone not found' do
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to eq("Milestone(s) not found: v1.0")
         end
@@ -1311,7 +1311,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
       expect(project.releases.last.description).to eq('Best release ever!')
     end
 
-    it 'does not change other attributes', :aggregate_failures do
+    it 'does not change other attributes' do
       put api("/projects/#{project.id}/releases/v0.1", maintainer), params: params
 
       expect(project.releases.last.tag).to eq('v0.1')
@@ -1427,7 +1427,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
         end
 
         shared_examples 'updates milestone' do
-          it 'updates the milestone', :aggregate_failures do
+          it 'updates the milestone' do
             subject
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -1461,7 +1461,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
         context 'an empty milestone' do
           let(:params) { { milestones: [] } }
 
-          it 'removes the milestone', :aggregate_failures do
+          it 'removes the milestone' do
             subject
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -1472,7 +1472,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
         context 'without milestones parameter' do
           let(:params) { { name: 'some new name' } }
 
-          it 'does not change the milestone', :aggregate_failures do
+          it 'does not change the milestone' do
             subject
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -1485,7 +1485,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
             let!(:milestone2) { create(:milestone, project: project, title: 'milestone2') }
             let(:params) { { milestones: [milestone.title, milestone2.title] } }
 
-            it 'adds the new milestone', :aggregate_failures do
+            it 'adds the new milestone' do
               subject
 
               expect(response).to have_gitlab_http_status(:ok)
@@ -1498,7 +1498,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
             let!(:milestone3) { create(:milestone, project: project, title: 'milestone3') }
 
             shared_examples 'update milestones' do
-              it 'replaces the milestones', :aggregate_failures do
+              it 'replaces the milestones' do
                 subject
 
                 expect(response).to have_gitlab_http_status(:ok)
@@ -1665,8 +1665,12 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
     let_it_be(:release2) { create(:release, project: project2) }
     let_it_be(:release3) { create(:release, project: project3) }
 
+    it_behaves_like 'GET request permissions for admin mode' do
+      let(:path) { "/groups/#{group1.id}/releases" }
+    end
+
     context 'when authenticated as owner', :enable_admin_mode do
-      it 'gets releases from all projects in the group', :aggregate_failures do
+      it 'gets releases from all projects in the group' do
         get api("/groups/#{group1.id}/releases", admin)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -1700,7 +1704,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
         group1.add_guest(guest)
       end
 
-      it "does not expose tag, commit, source code or helper paths", :aggregate_failures do
+      it "does not expose tag, commit, source code or helper paths" do
         get api("/groups/#{group1.id}/releases", guest)
 
         expect(response).to match_response_schema('public_api/v4/release/releases_for_guest')
@@ -1717,7 +1721,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
 
           subject { get api("/groups/#{group.id}/releases", admin, admin_mode: true), params: query_params.merge({ include_subgroups: true }) }
 
-          it 'include_subgroups avoids N+1 queries', :aggregate_failures, :use_sql_query_cache do
+          it 'include_subgroups avoids N+1 queries', :use_sql_query_cache do
             subject
             expect(response).to have_gitlab_http_status(:ok)
 

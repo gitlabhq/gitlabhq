@@ -42,6 +42,7 @@ issues, epics, and more.
 
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
+| [GitLab Agile Project Management](https://levelup.gitlab.com/courses/gitlab-agile-project-management) | Learn how to use planning features to manage your projects in this self-paced course. | **{star}** |
 | [Create a project from a template](https://gitlab.com/projects/new#create_from_template) | Choose a project template and create a project with files to get you started. | |
 | [Migrate to GitLab](../user/project/import/index.md) | If you are coming to GitLab from another platform, you can import or convert your projects. | |
 | [Run an agile iteration](agile_sprint.md) | Use group, projects, and iterations to run an agile development iteration. |
@@ -55,8 +56,8 @@ CI/CD pipelines are used to automatically build, test, and deploy your code.
 |-------|-------------|--------------------|
 | [Create and run your first GitLab CI/CD pipeline](../ci/quick_start/index.md) | Create a `.gitlab-ci.yml` file and start a pipeline. | **{star}** |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Get started: Learn about CI/CD](https://www.youtube.com/watch?v=sIegJaLy2ug) (9m 02s) | Learn about the `.gitlab-ci.yml` file and how it's used. | **{star}** |
+| [GitLab CI/CD](https://levelup.gitlab.com/courses/continuous-integration-and-delivery-ci-cd-with-gitlab) | Learn about GitLab CI/CD and build a pipeline in this self-paced course. | **{star}** |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [CI deep dive](https://www.youtube.com/watch?v=ZVUbmVac-m8&list=PL05JrBw4t0KorkxIFgZGnzzxjZRCGROt_&index=27) (22m 51s) | Take a closer look at pipelines and continuous integration concepts. | |
-| <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [CD deep dive](https://www.youtube.com/watch?v=Cn0rzND-Yjw&list=PL05JrBw4t0KorkxIFgZGnzzxjZRCGROt_&index=10) (47m 54s) | Learn about deploying in GitLab. | |
 | [Set up CI/CD in the cloud](../ci/examples/index.md#cicd-in-the-cloud) | Learn how to set up CI/CD in different cloud-based environments. | |
 | [Find CI/CD examples and templates](../ci/examples/index.md#cicd-examples)  | Use these examples and templates to set up CI/CD for your use case. | |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Understand CI/CD rules](https://www.youtube.com/watch?v=QjQc-zeL16Q) (8m 56s) |  Learn more about how to use CI/CD rules. | |

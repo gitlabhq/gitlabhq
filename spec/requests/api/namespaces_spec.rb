@@ -117,6 +117,16 @@ RSpec.describe API::Namespaces, :aggregate_failures, feature_category: :subgroup
 
     let_it_be(:user2) { create(:user) }
 
+    it_behaves_like 'GET request permissions for admin mode' do
+      let(:path) { "/namespaces/#{group2.id}" }
+      let(:failed_status_code) { :not_found }
+    end
+
+    it_behaves_like 'GET request permissions for admin mode' do
+      let(:path) { "/namespaces/#{user2.namespace.id}" }
+      let(:failed_status_code) { :not_found }
+    end
+
     shared_examples 'can access namespace' do |admin_mode: false|
       it 'returns namespace details' do
         get api("#{path}/#{namespace_id}", request_actor, admin_mode: admin_mode)

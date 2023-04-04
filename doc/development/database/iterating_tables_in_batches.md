@@ -44,9 +44,13 @@ all of the arguments that `in_batches` supports. You should always use
 
 ## Iterating over non-unique columns
 
-One should proceed with extra caution. When you iterate over an attribute that is not unique,
-even with the applied max batch size, there is no guarantee that the resulting batches do not
-surpass it. The following snippet demonstrates this situation when one attempt to select
+You should not use the `each_batch` method with a non-unique column (in the context of the relation) as it
+[may result in an infinite loop](https://gitlab.com/gitlab-org/gitlab/-/issues/285097).
+Additionally, the inconsistent batch sizes cause performance issues when you
+iterate over non-unique columns. Even when you apply a max batch size
+when iterating over an attribute, there's no guarantee that the resulting
+batches don't surpass it. The following snippet demonstrates this situation
+when you attempt to select
 `Ci::Build` entries for users with `id` between `1` and `10,000`, the database returns
 `1 215 178` matching rows.
 

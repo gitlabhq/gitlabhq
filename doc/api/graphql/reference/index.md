@@ -6678,6 +6678,7 @@ Input type: `WorkItemUpdateInput`
 | <a id="mutationworkitemupdateassigneeswidget"></a>`assigneesWidget` | [`WorkItemWidgetAssigneesInput`](#workitemwidgetassigneesinput) | Input for assignees widget. |
 | <a id="mutationworkitemupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitemupdateconfidential"></a>`confidential` | [`Boolean`](#boolean) | Sets the work item confidentiality. |
+| <a id="mutationworkitemupdatecurrentusertodoswidget"></a>`currentUserTodosWidget` | [`WorkItemWidgetCurrentUserTodosInput`](#workitemwidgetcurrentusertodosinput) | Input for to-dos widget. |
 | <a id="mutationworkitemupdatedescriptionwidget"></a>`descriptionWidget` | [`WorkItemWidgetDescriptionInput`](#workitemwidgetdescriptioninput) | Input for description widget. |
 | <a id="mutationworkitemupdatehealthstatuswidget"></a>`healthStatusWidget` | [`WorkItemWidgetHealthStatusInput`](#workitemwidgethealthstatusinput) | Input for health status widget. |
 | <a id="mutationworkitemupdatehierarchywidget"></a>`hierarchyWidget` | [`WorkItemWidgetHierarchyUpdateInput`](#workitemwidgethierarchyupdateinput) | Input for hierarchy widget. |
@@ -24827,6 +24828,15 @@ Values for work item state events.
 | <a id="workitemstateeventclose"></a>`CLOSE` | Closes the work item. |
 | <a id="workitemstateeventreopen"></a>`REOPEN` | Reopens the work item. |
 
+### `WorkItemTodoUpdateAction`
+
+Values for work item to-do update enum.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="workitemtodoupdateactionadd"></a>`ADD` | Adds the to-do. |
+| <a id="workitemtodoupdateactionmark_as_done"></a>`MARK_AS_DONE` | Marks the to-do as done. |
+
 ### `WorkItemWidgetType`
 
 Type of a work item widget.
@@ -26810,6 +26820,7 @@ A time-frame defined as a closed inclusive range of two dates.
 | ---- | ---- | ----------- |
 | <a id="workitemupdatedtaskinputassigneeswidget"></a>`assigneesWidget` | [`WorkItemWidgetAssigneesInput`](#workitemwidgetassigneesinput) | Input for assignees widget. |
 | <a id="workitemupdatedtaskinputconfidential"></a>`confidential` | [`Boolean`](#boolean) | Sets the work item confidentiality. |
+| <a id="workitemupdatedtaskinputcurrentusertodoswidget"></a>`currentUserTodosWidget` | [`WorkItemWidgetCurrentUserTodosInput`](#workitemwidgetcurrentusertodosinput) | Input for to-dos widget. |
 | <a id="workitemupdatedtaskinputdescriptionwidget"></a>`descriptionWidget` | [`WorkItemWidgetDescriptionInput`](#workitemwidgetdescriptioninput) | Input for description widget. |
 | <a id="workitemupdatedtaskinputhierarchywidget"></a>`hierarchyWidget` | [`WorkItemWidgetHierarchyUpdateInput`](#workitemwidgethierarchyupdateinput) | Input for hierarchy widget. |
 | <a id="workitemupdatedtaskinputid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
@@ -26827,6 +26838,15 @@ A time-frame defined as a closed inclusive range of two dates.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetassigneesinputassigneeids"></a>`assigneeIds` | [`[UserID!]!`](#userid) | Global IDs of assignees. |
+
+### `WorkItemWidgetCurrentUserTodosInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetcurrentusertodosinputaction"></a>`action` | [`WorkItemTodoUpdateAction!`](#workitemtodoupdateaction) | Action for the update. |
+| <a id="workitemwidgetcurrentusertodosinputtodoid"></a>`todoId` | [`TodoID`](#todoid) | Global ID of the to-do. If not present, all to-dos of the work item will be updated. |
 
 ### `WorkItemWidgetDescriptionInput`
 

@@ -28076,6 +28076,9 @@ msgstr ""
 msgid "MlExperimentTracking|Author"
 msgstr ""
 
+msgid "MlExperimentTracking|Candidate removed"
+msgstr ""
+
 msgid "MlExperimentTracking|Create a new experiment"
 msgstr ""
 

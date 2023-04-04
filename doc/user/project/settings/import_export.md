@@ -109,29 +109,30 @@ Items that are exported include:
 - Project configuration, excluding integrations
 - Issues
   - Issue comments
-  - Issue iteration ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96184) in 15.4)
-  - Issue resource state events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
-  - Issue resource milestone events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
-  - Issue resource iteration events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
+  - Issue iterations ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96184) in GitLab 15.4)
+  - Issue resource state events ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
+  - Issue resource milestone events ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
+  - Issue resource iteration events ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
 - Merge requests
   - Merge request diffs
   - Merge request comments
-  - Merge request resource state events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
-  - Merge request multiple assignees ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) in GitLab 15.3)
-  - Merge request reviewers ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) in GitLab 15.3)
-  - Merge request approvers ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) in GitLab 15.3)
+  - Merge request resource state events ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
+  - Merge request multiple assignees ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) in GitLab 15.3)
+  - Merge request reviewers ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) in GitLab 15.3)
+  - Merge request approvers ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) in GitLab 15.3)
+- Commit comments ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391601) in GitLab 15.10)
 - Labels
 - Milestones
 - Snippets
 - Time tracking and other project entities
-- Design Management files and data
+- Design management files and data
 - LFS objects
 - Issue boards
 - Pipelines history
-- Push Rules
+- Push rules
 - Awards
-- Group members are exported as project members, as long as the user has the Maintainer role in the
-  exported project's group, or is an administrator
+- Group members as long as the user has the Maintainer role in the
+  exported project's group or is an administrator
 
 ### Items that are not exported
 

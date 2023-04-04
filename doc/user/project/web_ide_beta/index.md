@@ -99,10 +99,20 @@ Full file search is planned for a later date.
 ## View a list of changed files
 
 To view a list of files you changed in the Web IDE Beta,
-in the Activity Bar on the left, select **Source Control**.
+on the Activity Bar on the left, select **Source Control**.
 Your `CHANGES`, `STAGED CHANGES`, and `MERGE CHANGES` are displayed.
 
 For details, see the [VS Code documentation](https://code.visualstudio.com/docs/sourcecontrol/overview#_commit).
+
+## Commit changes
+
+To commit your changes in the Web IDE Beta:
+
+1. On the Activity Bar on the left, select **Source Control**,
+or press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
+1. Enter your commit message.
+1. Select **Commit & Push**.
+1. Commit to the current branch, or create a new branch.
 
 ## Open the command palette
 

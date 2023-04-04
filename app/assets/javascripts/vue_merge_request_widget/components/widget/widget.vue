@@ -289,7 +289,7 @@ export default {
 
 <template>
   <section class="media-section" data-testid="widget-extension">
-    <div class="gl-px-5 gl-py-4 gl-align-items-center gl-display-flex">
+    <div class="gl-px-5 gl-pr-4 gl-py-4 gl-align-items-center gl-display-flex">
       <status-icon
         :level="1"
         :name="widgetName"

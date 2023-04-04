@@ -40,6 +40,10 @@ module Mutations
                  ::Types::WorkItems::Widgets::NotificationsUpdateInputType,
                  required: false,
                  description: 'Input for notifications widget.'
+        argument :current_user_todos_widget,
+                 ::Types::WorkItems::Widgets::CurrentUserTodosInputType,
+                 required: false,
+                 description: 'Input for to-dos widget.'
       end
     end
   end

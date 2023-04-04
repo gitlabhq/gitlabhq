@@ -21,6 +21,10 @@ RSpec.describe API::UsageDataNonSqlMetrics, :aggregate_failures, feature_categor
         stub_database_flavor_check
       end
 
+      it_behaves_like 'GET request permissions for admin mode' do
+        let(:path) { endpoint }
+      end
+
       it 'returns non sql metrics if user is admin' do
         get api(endpoint, admin, admin_mode: true)
 

@@ -978,6 +978,149 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       end
     end
 
+    context 'when updating currentUserTodos' do
+      let_it_be(:current_user) { reporter }
+
+      let(:fields) do
+        <<~FIELDS
+        workItem {
+          widgets {
+            type
+            ... on WorkItemWidgetCurrentUserTodos {
+              currentUserTodos {
+                nodes {
+                  id
+                  state
+                }
+              }
+            }
+          }
+        }
+        errors
+        FIELDS
+      end
+
+      subject(:update_work_item) { post_graphql_mutation(mutation, current_user: current_user) }
+
+      context 'when adding a new todo' do
+        let(:input) { { 'currentUserTodosWidget' => { 'action' => 'ADD' } } }
+
+        context 'when user has access to the work item' do
+          it 'adds a new todo for the user on the work item' do
+            expect { update_work_item }.to change { current_user.todos.count }.by(1)
+
+            created_todo = current_user.todos.last
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mutation_response['workItem']['widgets']).to include(
+              {
+                'type' => 'CURRENT_USER_TODOS',
+                'currentUserTodos' => {
+                  'nodes' => [
+                    { 'id' => created_todo.to_global_id.to_s, 'state' => 'pending' }
+                  ]
+                }
+              }
+            )
+          end
+        end
+
+        context 'when user has no access' do
+          let_it_be(:current_user) { create(:user) }
+
+          it 'does not create a new todo' do
+            expect { update_work_item }.to change { Todo.count }.by(0)
+
+            expect(response).to have_gitlab_http_status(:success)
+          end
+        end
+      end
+
+      context 'when marking all todos of the work item as done' do
+        let_it_be(:pending_todo1) do
+          create(:todo, target: work_item, target_type: 'WorkItem', user: current_user, state: :pending)
+        end
+
+        let_it_be(:pending_todo2) do
+          create(:todo, target: work_item, target_type: 'WorkItem', user: current_user, state: :pending)
+        end
+
+        let(:input) { { 'currentUserTodosWidget' => { 'action' => 'MARK_AS_DONE' } } }
+
+        context 'when user has access' do
+          it 'marks all todos of the user on the work item as done' do
+            expect { update_work_item }.to change { current_user.todos.done.count }.by(2)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mutation_response['workItem']['widgets']).to include(
+              {
+                'type' => 'CURRENT_USER_TODOS',
+                'currentUserTodos' => {
+                  'nodes' => match_array([
+                    { 'id' => pending_todo1.to_global_id.to_s, 'state' => 'done' },
+                    { 'id' => pending_todo2.to_global_id.to_s, 'state' => 'done' }
+                  ])
+                }
+              }
+            )
+          end
+        end
+
+        context 'when user has no access' do
+          let_it_be(:current_user) { create(:user) }
+
+          it 'does not mark todos as done' do
+            expect { update_work_item }.to change { Todo.done.count }.by(0)
+
+            expect(response).to have_gitlab_http_status(:success)
+          end
+        end
+      end
+
+      context 'when marking one todo of the work item as done' do
+        let_it_be(:pending_todo1) do
+          create(:todo, target: work_item, target_type: 'WorkItem', user: current_user, state: :pending)
+        end
+
+        let_it_be(:pending_todo2) do
+          create(:todo, target: work_item, target_type: 'WorkItem', user: current_user, state: :pending)
+        end
+
+        let(:input) do
+          { 'currentUserTodosWidget' => { 'action' => 'MARK_AS_DONE', todo_id: global_id_of(pending_todo1) } }
+        end
+
+        context 'when user has access' do
+          it 'marks the todo of the work item as done' do
+            expect { update_work_item }.to change { current_user.todos.done.count }.by(1)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mutation_response['workItem']['widgets']).to include(
+              {
+                'type' => 'CURRENT_USER_TODOS',
+                'currentUserTodos' => {
+                  'nodes' => match_array([
+                    { 'id' => pending_todo1.to_global_id.to_s, 'state' => 'done' },
+                    { 'id' => pending_todo2.to_global_id.to_s, 'state' => 'pending' }
+                  ])
+                }
+              }
+            )
+          end
+        end
+
+        context 'when user has no access' do
+          let_it_be(:current_user) { create(:user) }
+
+          it 'does not mark the todo as done' do
+            expect { update_work_item }.to change { Todo.done.count }.by(0)
+
+            expect(response).to have_gitlab_http_status(:success)
+          end
+        end
+      end
+    end
+
     context 'when unsupported widget input is sent' do
       let_it_be(:test_case) { create(:work_item_type, :default, :test_case) }
       let_it_be(:work_item) { create(:work_item, work_item_type: test_case, project: project) }

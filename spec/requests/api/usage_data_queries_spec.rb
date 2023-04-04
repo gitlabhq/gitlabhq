@@ -22,6 +22,10 @@ RSpec.describe API::UsageDataQueries, :aggregate_failures, feature_category: :se
         stub_feature_flags(usage_data_queries_api: true)
       end
 
+      it_behaves_like 'GET request permissions for admin mode' do
+        let(:path) { endpoint }
+      end
+
       it 'returns queries if user is admin' do
         get api(endpoint, admin, admin_mode: true)
 

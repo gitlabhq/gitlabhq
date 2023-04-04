@@ -481,7 +481,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         namespace :ml do
           resources :experiments, only: [:index, :show, :destroy], controller: 'experiments', param: :iid
-          resources :candidates, only: [:show], controller: 'candidates', param: :iid
+          resources :candidates, only: [:show, :destroy], controller: 'candidates', param: :iid
         end
       end
       # End of the /-/ scope.

@@ -597,6 +597,37 @@ for more details.
    more pressure on DB than you expect. Measure on staging,
    or ask someone to measure on production.
 1. Know how much time is required to run the batched background migration.
+1. Be careful when silently rescuing exceptions inside job classes. This may lead to
+   jobs being marked as successful, even in a failure scenario.
+
+   ```ruby
+   # good
+   def perform
+     each_sub_batch do |sub_batch|
+       sub_batch.update_all(name: 'My Name')
+     end
+   end
+
+   # acceptable
+   def perform
+     each_sub_batch do |sub_batch|
+       sub_batch.update_all(name: 'My Name')
+     rescue Exception => error
+       logger.error(message: error.message, class: error.class)
+
+       raise
+     end
+   end
+
+   # bad
+   def perform
+     each_sub_batch do |sub_batch|
+       sub_batch.update_all(name: 'My Name')
+     rescue Exception => error
+       logger.error(message: error.message, class: self.class.name)
+     end
+   end
+   ```
 
 ## Additional tips and strategies
 

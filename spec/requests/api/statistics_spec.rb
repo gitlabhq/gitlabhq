@@ -21,6 +21,8 @@ RSpec.describe API::Statistics, 'Statistics', :aggregate_failures, feature_categ
   let(:path) { "/application/statistics" }
 
   describe "GET /application/statistics" do
+    it_behaves_like 'GET request permissions for admin mode'
+
     context 'when no user' do
       it "returns authentication error" do
         get api(path, nil)

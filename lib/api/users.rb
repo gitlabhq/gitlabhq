@@ -80,31 +80,6 @@ module API
         end
       end
 
-      resources ':id/associations_count' do
-        helpers do
-          def present_entity(result)
-            present result,
-                    with: ::API::Entities::UserAssociationsCount
-          end
-        end
-
-        desc "Returns a list of a specified user's count of projects, groups, issues and merge requests."
-        params do
-          requires :id,
-                   type: Integer,
-                   desc: 'ID of the user to query.'
-        end
-        get do
-          authenticate!
-
-          user = find_user_by_id(params)
-          forbidden! unless can?(current_user, :get_user_associations_count, user)
-          not_found!('User') unless user
-
-          present_entity(user)
-        end
-      end
-
       desc 'Get the list of users' do
         success Entities::UserBasic
       end
@@ -900,6 +875,31 @@ module API
         members = members.including_source
 
         present paginate(members), with: Entities::Membership
+      end
+
+      resources ':id/associations_count' do
+        helpers do
+          def present_entity(result)
+            present result,
+              with: ::API::Entities::UserAssociationsCount
+          end
+        end
+
+        desc "Returns a list of a specified user's count of projects, groups, issues and merge requests."
+        params do
+          requires :id,
+            type: Integer,
+            desc: 'ID of the user to query.'
+        end
+        get do
+          authenticate!
+
+          user = find_user_by_id(params)
+          forbidden! unless can?(current_user, :get_user_associations_count, user)
+          not_found!('User') unless user
+
+          present_entity(user)
+        end
       end
 
       params do
