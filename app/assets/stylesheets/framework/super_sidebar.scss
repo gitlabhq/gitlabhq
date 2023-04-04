@@ -144,6 +144,24 @@
       @include active-toggle;
     }
   }
+
+  .nav-item-link {
+    button,
+    .draggable-icon {
+      opacity: 0;
+    }
+
+    .draggable-icon {
+      cursor: grab;
+    }
+
+    &:hover {
+      button,
+      .draggable-icon {
+        opacity: 1;
+      }
+    }
+  }
 }
 
 .super-sidebar-skip-to {

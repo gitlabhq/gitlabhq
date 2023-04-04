@@ -36,8 +36,8 @@ RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer
       expect(transformed_data[:name]).to eq(entity.destination_slug)
     end
 
-    it 'adds path as parameterized name' do
-      expect(transformed_data[:path]).to eq(entity.destination_slug.parameterize)
+    it 'adds path as normalized name' do
+      expect(transformed_data[:path]).to eq(entity.destination_slug.downcase)
     end
 
     it 'adds import type' do
@@ -83,6 +83,58 @@ RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer
 
         expect(transformed_data.keys)
           .to contain_exactly('created_at', 'import_type', 'name', 'namespace_id', 'path', 'visibility_level')
+      end
+    end
+
+    context 'when destination_slug has invalid characters' do
+      let(:entity) do
+        create(
+          :bulk_import_entity,
+          source_type: :project_entity,
+          bulk_import: bulk_import,
+          source_full_path: 'source/full/path',
+          destination_slug: '------------Destination_-Project-_Name------------',
+          destination_namespace: destination_namespace
+        )
+      end
+
+      it 'parameterizes the path' do
+        expect(transformed_data[:path]).to eq('destination-project-name')
+      end
+    end
+
+    context 'when destination namespace already has a group or project with the same name' do
+      before do
+        create(:project, group: destination_group, name: 'Destination-Project-Name', path: 'project')
+        create(:project, group: destination_group, name: 'Destination-Project-Name_1', path: 'project_1')
+      end
+
+      it 'makes the name unique by appending a counter' do
+        transformed_data = described_class.new.transform(context, data)
+        expect(transformed_data['name']).to eq('Destination-Project-Name_2')
+      end
+    end
+
+    context 'when destination namespace already has a project with the same path' do
+      let(:entity) do
+        create(
+          :bulk_import_entity,
+          source_type: :project_entity,
+          bulk_import: bulk_import,
+          source_full_path: 'source/full/path',
+          destination_slug: 'destination-slug-path',
+          destination_namespace: destination_namespace
+        )
+      end
+
+      before do
+        create(:project, group: destination_group, name: 'Source Project Name', path: 'destination-slug-path')
+        create(:project, group: destination_group, name: 'Source Project Name_1', path: 'destination-slug-path_1')
+      end
+
+      it 'makes the path unique by appending a counter' do
+        transformed_data = described_class.new.transform(context, data)
+        expect(transformed_data['path']).to eq('destination-slug-path_2')
       end
     end
 

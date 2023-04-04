@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.project(fullPath).ciConfigVariables(sha)', feature_category: :secrets_management do
+RSpec.describe 'Query.project(fullPath).ciConfigVariables(ref)', feature_category: :secrets_management do
   include GraphqlHelpers
   include ReactiveCachingHelpers
 
@@ -20,7 +20,7 @@ RSpec.describe 'Query.project(fullPath).ciConfigVariables(sha)', feature_categor
     %(
       query {
         project(fullPath: "#{project.full_path}") {
-          ciConfigVariables(sha: "#{ref}") {
+          ciConfigVariables(ref: "#{ref}") {
             key
             value
             valueOptions
@@ -31,7 +31,7 @@ RSpec.describe 'Query.project(fullPath).ciConfigVariables(sha)', feature_categor
     )
   end
 
-  context 'when the user has the correct permissions' do
+  shared_examples 'when the user has the correct permissions' do
     before do
       project.add_maintainer(user)
       allow(Ci::ListConfigVariablesService)
@@ -97,6 +97,33 @@ RSpec.describe 'Query.project(fullPath).ciConfigVariables(sha)', feature_categor
       post_graphql(query, current_user: user)
 
       expect(graphql_data.dig('project', 'ciConfigVariables')).to be_nil
+    end
+  end
+
+  # Remove this context when `sha` argument is removed
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/404493
+  describe 'argument validation' do
+    context 'when `ref` argument is provided' do
+      it_behaves_like 'when the user has the correct permissions'
+    end
+
+    context 'when `sha` argument is provided' do
+      let(:query) do
+        %(
+          query {
+            project(fullPath: "#{project.full_path}") {
+              ciConfigVariables(sha: "#{ref}") {
+                key
+                value
+                valueOptions
+                description
+              }
+            }
+          }
+        )
+      end
+
+      it_behaves_like 'when the user has the correct permissions'
     end
   end
 end

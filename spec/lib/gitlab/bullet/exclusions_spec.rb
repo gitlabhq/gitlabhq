@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'tempfile'
 
-RSpec.describe Gitlab::Bullet::Exclusions do
+RSpec.describe Gitlab::Bullet::Exclusions, feature_category: :application_performance do
   let(:config_file) do
     file = Tempfile.new('bullet.yml')
     File.basename(file)
@@ -76,6 +76,19 @@ RSpec.describe Gitlab::Bullet::Exclusions do
     context 'when config file does not exist' do
       it 'provides an empty array for exclusions' do
         expect(described_class.new('_some_bogus_file_').execute).to match([])
+      end
+    end
+
+    context 'with a Symbol' do
+      let(:exclude) { [] }
+      let(:config) { { exclusions: { abc: { exclude: exclude } } } }
+
+      before do
+        File.write(config_file, YAML.dump(config))
+      end
+
+      it 'raises an exception' do
+        expect { executor }.to raise_error(Psych::DisallowedClass)
       end
     end
   end

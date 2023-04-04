@@ -15,3 +15,5 @@ export const MAX_FREQUENT_GROUPS_COUNT = 3;
 
 export const TRACKING_UNKNOWN_ID = 'item_without_id';
 export const CLICK_MENU_ITEM_ACTION = 'click_menu_item';
+
+export const PANELS_WITH_PINS = ['group', 'project'];

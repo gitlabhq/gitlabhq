@@ -61,6 +61,13 @@ module Pages
     end
     strong_memoize_attr :unique_host
 
+    def root_directory
+      return unless deployment
+
+      deployment.root_directory
+    end
+    strong_memoize_attr :root_directory
+
     private
 
     attr_reader :project, :trim_prefix, :domain

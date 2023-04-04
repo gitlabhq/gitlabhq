@@ -114,8 +114,8 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
           expect(result).to be_error
           expect(result.message)
             .to eq(
-              "Import aborted as the provided personal access token does not have the required 'api' scope or is " \
-              "no longer valid."
+              "Personal access token does not " \
+              "have the required 'api' scope or is no longer valid."
             )
         end
       end
@@ -306,11 +306,10 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
         expect(result).to be_a(ServiceResponse)
         expect(result).to be_error
         expect(result.message).to eq("Validation failed: Source full path can't be blank, " \
-                                     "Source full path cannot start with a non-alphanumeric character except " \
-                                     "for periods or underscores, can contain only alphanumeric characters, " \
-                                     "forward slashes, periods, and underscores, cannot end with " \
-                                     "a period or forward slash, and has a relative path structure " \
-                                     "with no http protocol chars or leading or trailing forward slashes")
+                                     "Source full path must have a relative path structure with " \
+                                     "no HTTP protocol characters, or leading or trailing forward slashes. " \
+                                     "Path segments must not start or end with a special character, and " \
+                                     "must not contain consecutive special characters.")
       end
 
       describe '#user-role' do
@@ -503,6 +502,65 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
         end
       end
 
+      describe '.validate_destination_namespace' do
+        context 'when the destination_namespace is invalid' do
+          let(:params) do
+            [
+              {
+                source_type: 'group_entity',
+                source_full_path: 'full/path/to/source',
+                destination_slug: 'destination-slug',
+                destination_namespace: '---destination----namespace---',
+                migrate_projects: migrate_projects
+              }
+            ]
+          end
+
+          it 'returns ServiceResponse with an error message' do
+            result = subject.execute
+
+            expect(result).to be_a(ServiceResponse)
+            expect(result).to be_error
+            expect(result.message)
+              .to eq(
+                "Import failed. Destination group or subgroup path " \
+                "must have a relative path structure with no HTTP protocol characters, or leading " \
+                "or trailing forward slashes. Path segments must not start or end with a special " \
+                "character, and must not contain consecutive special characters."
+              )
+          end
+        end
+      end
+
+      describe '.validate_destination_slug' do
+        context 'when the destination_slug is invalid' do
+          let(:params) do
+            [
+              {
+                source_type: 'group_entity',
+                source_full_path: 'full/path/to/source',
+                destination_slug: 'destin-*-ation-slug',
+                destination_namespace: 'destination_namespace',
+                migrate_projects: migrate_projects
+              }
+            ]
+          end
+
+          it 'returns ServiceResponse with an error message' do
+            result = subject.execute
+
+            expect(result).to be_a(ServiceResponse)
+            expect(result).to be_error
+            expect(result.message)
+              .to eq(
+                "Import failed. Destination URL " \
+                "must not start or end with a special character and must " \
+                "not contain consecutive special characters."
+              )
+          end
+        end
+      end
+
       describe '.validate_destination_full_path' do
         context 'when the source_type is a group' do
           context 'when the provided destination_slug already exists in the destination_namespace' do
@@ -527,7 +585,7 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
               expect(result).to be_error
               expect(result.message)
                 .to eq(
-                  "Import aborted as 'parent-group/existing-subgroup' already exists. " \
+                  "Import failed. 'parent-group/existing-subgroup' already exists. " \
                   "Change the destination and try again."
                 )
             end
@@ -554,7 +612,7 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
               expect(result).to be_error
               expect(result.message)
                 .to eq(
-                  "Import aborted as 'top-level-group' already exists. " \
+                  "Import failed. 'top-level-group' already exists. " \
                   "Change the destination and try again."
                 )
             end
@@ -605,7 +663,7 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
               expect(result).to be_error
               expect(result.message)
                 .to eq(
-                  "Import aborted as 'existing-group/existing-project' already exists. " \
+                  "Import failed. 'existing-group/existing-project' already exists. " \
                   "Change the destination and try again."
                 )
             end

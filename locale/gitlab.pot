@@ -1698,6 +1698,9 @@ msgstr ""
 msgid "A Work Item can be a parent or a child, but not both."
 msgstr ""
 
+msgid "A basic folder structure of a Laravel application, to help you get started."
+msgstr ""
+
 msgid "A basic page and serverless function that uses AWS Lambda, AWS API Gateway, and GitLab Pages"
 msgstr ""
 
@@ -28594,6 +28597,12 @@ msgstr ""
 msgid "Navigation|Operate"
 msgstr ""
 
+msgid "Navigation|Pin item"
+msgstr ""
+
+msgid "Navigation|Pinned"
+msgstr ""
+
 msgid "Navigation|Plan"
 msgstr ""
 
@@ -28621,10 +28630,16 @@ msgstr ""
 msgid "Navigation|Toggle edit mode"
 msgstr ""
 
+msgid "Navigation|Unpin item"
+msgstr ""
+
 msgid "Navigation|View all groups"
 msgstr ""
 
 msgid "Navigation|View all projects"
+msgstr ""
+
+msgid "Navigation|Your pinned items appear here."
 msgstr ""
 
 msgid "Navigation|Your work"
@@ -34763,6 +34778,9 @@ msgid "ProjectTemplates|Jsonnet for Dynamic Child Pipelines"
 msgstr ""
 
 msgid "ProjectTemplates|Kotlin Native for Linux"
+msgstr ""
+
+msgid "ProjectTemplates|Laravel Framework"
 msgstr ""
 
 msgid "ProjectTemplates|Netlify/GitBook"

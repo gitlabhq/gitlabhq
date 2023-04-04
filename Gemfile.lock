@@ -1358,6 +1358,8 @@ GEM
       multipart-post (~> 2.0)
     ruby-magic (0.6.0)
       mini_portile2 (~> 2.8)
+    ruby-openai (3.7.0)
+      httparty (>= 0.18.1)
     ruby-progressbar (1.11.0)
     ruby-saml (1.13.0)
       nokogiri (>= 1.10.5)
@@ -1893,6 +1895,7 @@ DEPENDENCIES
   rubocop
   ruby-fogbugz (~> 0.3.0)
   ruby-magic (~> 0.6)
+  ruby-openai (~> 3.7)
   ruby-progressbar (~> 1.10)
   ruby-saml (~> 1.13.0)
   ruby_parser (~> 3.19)

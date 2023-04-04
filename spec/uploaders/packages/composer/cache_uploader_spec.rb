@@ -9,9 +9,9 @@ RSpec.describe Packages::Composer::CacheUploader do
   subject { uploader }
 
   it_behaves_like "builds correct paths",
-                  store_dir: %r[^\h{2}/\h{2}/\h{64}/packages/composer_cache/\d+$],
-                  cache_dir: %r[/packages/tmp/cache],
-                  work_dir: %r[/packages/tmp/work]
+    store_dir: %r[^\h{2}/\h{2}/\h{64}/packages/composer_cache/\d+$],
+    cache_dir: %r[/packages/tmp/cache],
+    work_dir: %r[/packages/tmp/work]
 
   context 'object store is remote' do
     before do
@@ -21,7 +21,7 @@ RSpec.describe Packages::Composer::CacheUploader do
     include_context 'with storage', described_class::Store::REMOTE
 
     it_behaves_like "builds correct paths",
-                  store_dir: %r[^\h{2}/\h{2}/\h{64}/packages/composer_cache/\d+$]
+      store_dir: %r[^\h{2}/\h{2}/\h{64}/packages/composer_cache/\d+$]
   end
 
   describe 'remote file' do

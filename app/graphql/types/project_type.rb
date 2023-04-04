@@ -25,8 +25,13 @@ module Types
           alpha: { milestone: '15.3' },
           description: 'CI/CD config variable.' do
             argument :sha, GraphQL::Types::String,
-              required: true,
-              description: 'Sha.'
+              required: false,
+              description: 'Sha.',
+              deprecated: { reason: 'Use `ref`', milestone: '15.11' }
+
+            argument :ref, GraphQL::Types::String,
+              required: false, # Make required when `sha` argument is removed
+              description: 'Ref.'
           end
 
     field :full_path, GraphQL::Types::ID,
@@ -645,8 +650,10 @@ module Types
 
     # Even if the parameter name is `sha`, it is actually a ref name. We always send `ref` to the endpoint.
     # See: https://gitlab.com/gitlab-org/gitlab/-/issues/389065
-    def ci_config_variables(sha:)
-      result = ::Ci::ListConfigVariablesService.new(object, context[:current_user]).execute(sha)
+    # Remove `sha` argument and make `ref` required in a future release
+    # See: https://gitlab.com/gitlab-org/gitlab/-/issues/404493
+    def ci_config_variables(ref: nil, sha: nil)
+      result = ::Ci::ListConfigVariablesService.new(object, context[:current_user]).execute(ref || sha)
 
       return if result.nil?
 

@@ -286,6 +286,9 @@ gem 'ruby-fogbugz', '~> 0.3.0'
 # Kubernetes integration
 gem 'kubeclient', '~> 4.11.0'
 
+# AI
+gem 'ruby-openai', '~> 3.7'
+
 # Sanitize user input
 gem 'sanitize', '~> 6.0'
 gem 'babosa', '~> 1.0.4'

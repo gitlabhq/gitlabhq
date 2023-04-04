@@ -219,7 +219,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
         request
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq("entities[0][source_full_path] must be a relative path and not include protocol, sub-domain, " \
-                                             "or domain information. E.g. 'source/full/path' not 'https://example.com/source/full/path'")
+                                             "or domain information. For example, 'source/full/path' not 'https://example.com/source/full/path'")
       end
     end
 
@@ -229,10 +229,11 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
         request
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to eq("entities[0][destination_namespace] cannot start with a dash or forward slash, " \
-                                             "or end with a period or forward slash. It can only contain alphanumeric " \
-                                             "characters, periods, underscores, forward slashes and dashes. " \
-                                             "E.g. 'destination_namespace' or 'destination/namespace'")
+        expect(json_response['error']).to eq("entities[0][destination_namespace] must have a relative " \
+                                             "path structure with no HTTP protocol characters, or leading or " \
+                                             "trailing forward slashes. Path segments must not start or " \
+                                             "end with a special character, and must not contain " \
+                                             "consecutive special characters.")
       end
     end
 
@@ -248,15 +249,35 @@ RSpec.describe API::BulkImports, feature_category: :importers do
     end
 
     context 'when the destination_slug is invalid' do
-      it 'returns invalid error' do
+      it 'returns invalid error when restricting special characters is disabled' do
+        Feature.disable(:restrict_special_characters_in_namespace_path)
+
         params[:entities][0][:destination_slug] = 'des?tin?atoi-slugg'
 
         request
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to include("entities[0][destination_slug] cannot start with a dash " \
-                                                  "or forward slash, or end with a period or forward slash. " \
-                                                  "It can only contain alphanumeric characters, periods, underscores, and dashes. " \
-                                                  "E.g. 'destination_namespace' not 'destination/namespace'")
+        expect(json_response['error']).to include("entities[0][destination_slug] cannot start with " \
+                                                  "a non-alphanumeric character except for periods or " \
+                                                  "underscores, can contain only alphanumeric characters, " \
+                                                  "periods, and underscores, cannot end with a period or " \
+                                                  "forward slash, and has no leading or trailing forward " \
+                                                  "slashes. It can only contain alphanumeric characters, " \
+                                                  "periods, underscores, and dashes. For example, " \
+                                                  "'destination_namespace' not 'destination/namespace'")
+      end
+
+      it 'returns invalid error when restricting special characters is enabled' do
+        Feature.enable(:restrict_special_characters_in_namespace_path)
+
+        params[:entities][0][:destination_slug] = 'des?tin?atoi-slugg'
+
+        request
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to include("entities[0][destination_slug] must not start or " \
+                                                  "end with a special character and must not contain " \
+                                                  "consecutive special characters. It can only contain " \
+                                                  "alphanumeric characters, periods, underscores, and " \
+                                                  "dashes. For example, 'destination_namespace' not 'destination/namespace'")
       end
     end
 

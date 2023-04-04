@@ -19831,7 +19831,9 @@ CREATE TABLE pages_deployments (
     file_count integer NOT NULL,
     file_sha256 bytea NOT NULL,
     size bigint,
+    root_directory text DEFAULT 'public'::text,
     CONSTRAINT check_5f9132a958 CHECK ((size IS NOT NULL)),
+    CONSTRAINT check_7e938c810a CHECK ((char_length(root_directory) <= 255)),
     CONSTRAINT check_f0fe8032dd CHECK ((char_length(file) <= 255))
 );
 
@@ -23347,6 +23349,7 @@ CREATE TABLE user_preferences (
     use_legacy_web_ide boolean DEFAULT false NOT NULL,
     use_new_navigation boolean,
     achievements_enabled boolean DEFAULT true NOT NULL,
+    pinned_nav_items jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_d07ccd35f7 CHECK ((char_length(diffs_addition_color) <= 7))
 );
@@ -30764,6 +30767,8 @@ CREATE INDEX index_issue_tracker_data_on_integration_id ON issue_tracker_data US
 
 CREATE UNIQUE INDEX index_issue_user_mentions_on_note_id ON issue_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
 
+CREATE UNIQUE INDEX index_issue_user_mentions_on_note_id_convert_to_bigint ON issue_user_mentions USING btree (note_id_convert_to_bigint) WHERE (note_id_convert_to_bigint IS NOT NULL);
+
 CREATE INDEX index_issues_on_author_id ON issues USING btree (author_id);
 
 CREATE INDEX index_issues_on_author_id_and_id_and_created_at ON issues USING btree (author_id, id, created_at);
@@ -35222,6 +35227,9 @@ ALTER TABLE ONLY issues
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_geo_event_log_on_geo_event_id FOREIGN KEY (geo_event_id) REFERENCES geo_events(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY issue_user_mentions
+    ADD CONSTRAINT fk_issue_user_mentions_note_id_convert_to_bigint FOREIGN KEY (note_id_convert_to_bigint) REFERENCES notes(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY note_diff_files
     ADD CONSTRAINT fk_note_diff_files_diff_note_id_convert_to_bigint FOREIGN KEY (diff_note_id_convert_to_bigint) REFERENCES notes(id) ON DELETE CASCADE NOT VALID;

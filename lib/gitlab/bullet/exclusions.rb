@@ -27,7 +27,8 @@ module Gitlab
 
       def exclusions
         @exclusions ||= if File.exist?(config_file)
-                          YAML.load_file(config_file)['exclusions']&.values || []
+                          config = YAML.safe_load_file(config_file, permitted_classes: [Range])
+                          config['exclusions']&.values || []
                         else
                           []
                         end

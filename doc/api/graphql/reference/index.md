@@ -18531,7 +18531,8 @@ Returns [`[CiConfigVariable!]`](#ciconfigvariable).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectciconfigvariablessha"></a>`sha` | [`String!`](#string) | Sha. |
+| <a id="projectciconfigvariablesref"></a>`ref` | [`String`](#string) | Ref. |
+| <a id="projectciconfigvariablessha"></a>`sha` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.11. Use `ref`. |
 
 ##### `Project.ciTemplate`
 

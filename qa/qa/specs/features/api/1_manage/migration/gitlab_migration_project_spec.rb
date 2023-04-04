@@ -6,23 +6,18 @@ module QA
       include_context 'with gitlab project migration'
 
       # this spec is used as a sanity test for gitlab migration because it can run outside of orchestrated setup
-      # TODO: `:reliable` should be added back once https://gitlab.com/gitlab-org/gitlab/-/issues/403001 is resolved
-      context 'with import within same instance', orchestrated: false, import: false, quarantine: {
-        type: :bug,
-        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/403001',
-        except: { subdomain: /(staging.)?/, domain: 'gitlab' }
-      } do
+      context 'with import within same instance', orchestrated: false, import: false do
         let!(:source_project_with_readme) { true }
         let!(:source_gitlab_address) { Runtime::Scenario.gitlab_address }
         let!(:source_admin_api_client) { admin_api_client }
 
+        # do not use top level group (sandbox) to avoid issues when applying permissions etc. because it will contain
+        # a lot subgroups and projects on live envs
         let!(:source_sandbox) do
-          Resource::Sandbox.fabricate_via_api! do |group|
+          Resource::Group.fabricate_via_api! do |group|
             group.api_client = admin_api_client
           end
         end
-
-        let!(:target_sandbox) { source_sandbox }
 
         let!(:source_group) do
           Resource::Group.fabricate_via_api! do |group|
@@ -32,6 +27,8 @@ module QA
             group.avatar = File.new(File.join(Runtime::Path.fixtures_path, 'designs', 'tanuki.jpg'), 'r')
           end
         end
+
+        let!(:target_sandbox) { source_sandbox }
 
         let(:destination_group_path) { "target-group-for-import-#{SecureRandom.hex(4)}" }
         let(:cleanup!) { user.remove_via_api! }

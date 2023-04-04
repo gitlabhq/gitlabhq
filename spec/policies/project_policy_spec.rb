@@ -3004,6 +3004,84 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'admin_project_runners' do
+    context 'admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:create_project_runners) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.to be_disallowed(:create_project_runners) }
+      end
+    end
+
+    context 'with owner' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:create_project_runners) }
+    end
+
+    context 'with maintainer' do
+      let(:current_user) { maintainer }
+
+      it { is_expected.to be_allowed(:create_project_runners) }
+    end
+
+    context 'with reporter' do
+      let(:current_user) { reporter }
+
+      it { is_expected.to be_disallowed(:create_project_runners) }
+    end
+
+    context 'with guest' do
+      let(:current_user) { guest }
+
+      it { is_expected.to be_disallowed(:create_project_runners) }
+    end
+
+    context 'with developer' do
+      let(:current_user) { developer }
+
+      it { is_expected.to be_disallowed(:create_project_runners) }
+    end
+
+    context 'with anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_disallowed(:create_project_runners) }
+    end
+  end
+
+  describe 'read_project_runners' do
+    subject(:policy) { described_class.new(user, project) }
+
+    context 'with maintainer' do
+      let(:user) { maintainer }
+
+      it { is_expected.to be_allowed(:read_project_runners) }
+    end
+
+    context 'with admin', :enable_admin_mode do
+      let(:user) { admin }
+
+      it { is_expected.to be_allowed(:read_project_runners) }
+    end
+
+    context 'with reporter' do
+      let(:user) { reporter }
+
+      it { is_expected.to be_disallowed(:read_project_runners) }
+    end
+
+    context 'when the user is not part of the project' do
+      let(:user) { non_member }
+
+      it { is_expected.to be_disallowed(:read_project_runners) }
+    end
+  end
+
   describe 'update_sentry_issue' do
     using RSpec::Parameterized::TableSyntax
 
@@ -3104,26 +3182,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
-  describe 'add_catalog_resource' do
-    using RSpec::Parameterized::TableSyntax
-
-    let(:current_user) { public_send(role) }
-
-    where(:role, :allowed) do
-      :owner      | true
-      :maintainer | false
-      :developer  | false
-      :reporter   | false
-      :guest      | false
-    end
-
-    with_them do
-      it do
-        expect(subject.can?(:add_catalog_resource)).to be(allowed)
-      end
-    end
-  end
-
   describe 'read_code' do
     let(:current_user) { create(:user) }
 
@@ -3143,6 +3201,18 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
       it { expect_disallowed(:read_code) }
     end
+  end
+
+  describe 'read_namespace_catalog' do
+    let(:current_user) { owner }
+
+    specify { is_expected.to be_disallowed(:read_namespace_catalog) }
+  end
+
+  describe 'add_catalog_resource' do
+    let(:current_user) { owner }
+
+    specify { is_expected.to be_disallowed(:read_namespace_catalog) }
   end
 
   private

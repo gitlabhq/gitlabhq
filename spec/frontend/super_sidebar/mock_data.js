@@ -90,6 +90,9 @@ export const sidebarData = {
   search: {
     search_path: '/search',
   },
+  pinned_items: [],
+  panel_type: 'your_work',
+  update_pins_url: 'path/to/pins',
 };
 
 export const userMenuMockStatus = {

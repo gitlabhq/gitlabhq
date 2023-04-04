@@ -49,6 +49,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
 
       before do
         project_1.add_developer(user)
+        project_2.add_guest(user)
       end
 
       it 'only returns catalog resources for projects the user has access to' do

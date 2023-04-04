@@ -92,7 +92,12 @@ export default {
             />
           </gl-collapse>
           <gl-collapse :visible="!contextSwitcherOpen">
-            <sidebar-menu :items="menuItems" />
+            <sidebar-menu
+              :items="menuItems"
+              :panel-type="sidebarData.panel_type"
+              :pinned-item-ids="sidebarData.pinned_items"
+              :update-pins-url="sidebarData.update_pins_url"
+            />
             <sidebar-portal-target />
           </gl-collapse>
         </div>

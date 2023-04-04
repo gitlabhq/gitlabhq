@@ -3,7 +3,7 @@
 module Ci
   module Catalog
     module ResourcesHelper
-      def can_view_private_catalog?(_project)
+      def can_view_namespace_catalog?(_project)
         false
       end
 
@@ -13,3 +13,5 @@ module Ci
     end
   end
 end
+
+Ci::Catalog::ResourcesHelper.prepend_mod_with('Ci::Catalog::ResourcesHelper')

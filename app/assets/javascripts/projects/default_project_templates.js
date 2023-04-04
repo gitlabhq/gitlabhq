@@ -121,4 +121,8 @@ export default {
     text: s__('ProjectTemplates|TYPO3 Distribution'),
     icon: '.template-option .icon-typo3',
   },
+  laravel: {
+    text: s__('ProjectTemplates|Laravel Framework'),
+    icon: '.template-option .icon-laravel',
+  },
 };

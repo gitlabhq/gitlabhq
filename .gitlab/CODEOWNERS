@@ -1340,6 +1340,7 @@ lib/gitlab/checks/** @proglottis @toon
 /ee/spec/workers/clear_shared_runners_minutes_worker_spec.rb
 
 # Verify Frontend
+/**/spec/frontend/**/ci/       @gitlab-org/ci-cd/verify/frontend
 /**/javascripts/ci/            @gitlab-org/ci-cd/verify/frontend
 /**/javascripts/pipelines/     @gitlab-org/ci-cd/verify/frontend
 /**/javascripts/jobs/          @gitlab-org/ci-cd/verify/frontend

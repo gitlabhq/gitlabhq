@@ -19,6 +19,8 @@ module BulkImports
       # `maximum_source_version` is equal to 15.1.0, the pipeline will be executed when importing from source instances
       # running versions 15.1.1 (patch), 15.1.0, 15.0.1, 15.0.0, 14.10.0, etc. And it won't be executed when the source
       # instance version is 15.2.0, 15.2.1, 16.0.0, etc.
+      #
+      # SubGroup Entities must be imported in later stage than Project Entities to avoid `full_path` naming conflicts.
 
       def config
         {
@@ -28,10 +30,6 @@ module BulkImports
           },
           group_attributes: {
             pipeline: BulkImports::Groups::Pipelines::GroupAttributesPipeline,
-            stage: 1
-          },
-          subgroups: {
-            pipeline: BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline,
             stage: 1
           },
           namespace_settings: {
@@ -54,6 +52,11 @@ module BulkImports
           badges: {
             pipeline: BulkImports::Common::Pipelines::BadgesPipeline,
             stage: 1
+          },
+          subgroups: {
+            pipeline: BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline,
+            stage: 2 # SubGroup Entities must be imported in later stage
+            # to Project Entities to avoid `full_path` naming conflicts.
           },
           boards: {
             pipeline: BulkImports::Common::Pipelines::BoardsPipeline,

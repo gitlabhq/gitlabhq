@@ -60,6 +60,9 @@
         "string",
         "null"
       ]
+    },
+    "root_directory": {
+      "type": "string"
     }
   },
   "additionalProperties": false

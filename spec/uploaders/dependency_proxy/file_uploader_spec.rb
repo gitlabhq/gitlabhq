@@ -11,9 +11,9 @@ RSpec.describe DependencyProxy::FileUploader do
     subject { uploader }
 
     it_behaves_like "builds correct paths",
-                    store_dir: %r[\h{2}/\h{2}],
-                    cache_dir: %r[/dependency_proxy/tmp/cache],
-                    work_dir: %r[/dependency_proxy/tmp/work]
+      store_dir: %r[\h{2}/\h{2}],
+      cache_dir: %r[/dependency_proxy/tmp/cache],
+      work_dir: %r[/dependency_proxy/tmp/work]
 
     context 'object store is remote' do
       before do
@@ -22,8 +22,7 @@ RSpec.describe DependencyProxy::FileUploader do
 
       include_context 'with storage', described_class::Store::REMOTE
 
-      it_behaves_like "builds correct paths",
-                      store_dir: %r[\h{2}/\h{2}]
+      it_behaves_like "builds correct paths", store_dir: %r[\h{2}/\h{2}]
     end
   end
 

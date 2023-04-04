@@ -843,6 +843,10 @@ if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
 ++ CI_SERVER_HOST=gitlab.com
 ++ export CI_SERVER_PORT=3000
 ++ CI_SERVER_PORT=3000
+++ export CI_SERVER_SHELL_SSH_HOST=gitlab.com
+++ CI_SERVER_SHELL_SSH_HOST=gitlab.com
+++ export CI_SERVER_SHELL_SSH_PORT=22
+++ CI_SERVER_SHELL_SSH_PORT=22
 ++ export CI_SERVER_PROTOCOL=https
 ++ CI_SERVER_PROTOCOL=https
 ++ export CI_SERVER_NAME=GitLab

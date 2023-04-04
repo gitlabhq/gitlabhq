@@ -158,4 +158,27 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
       end
     end
   end
+
+  describe '#root_directory' do
+    subject(:lookup_path) { described_class.new(project) }
+
+    context 'when there is no deployment' do
+      it 'returns nil' do
+        expect(lookup_path.root_directory).to be_nil
+      end
+    end
+
+    context 'when there is a deployment' do
+      let(:deployment) { create(:pages_deployment, project: project, root_directory: 'foo') }
+
+      before do
+        project.mark_pages_as_deployed
+        project.pages_metadatum.update!(pages_deployment: deployment)
+      end
+
+      it 'returns the deployment\'s root_directory' do
+        expect(lookup_path.root_directory).to eq('foo')
+      end
+    end
+  end
 end

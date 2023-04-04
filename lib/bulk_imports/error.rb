@@ -7,16 +7,26 @@ module BulkImports
     end
 
     def self.scope_validation_failure
-      self.new("Import aborted as the provided personal access token does not have the required 'api' scope or " \
-               "is no longer valid.")
+      self.new("Personal access token does not have the required " \
+               "'api' scope or is no longer valid.")
     end
 
     def self.invalid_url
       self.new("Invalid source URL. Enter only the base URL of the source GitLab instance.")
     end
 
+    def self.destination_namespace_validation_failure
+      self.new("Import failed. Destination group or subgroup path " \
+               "#{Gitlab::Regex.bulk_import_destination_namespace_path_regex_message}")
+    end
+
+    def self.destination_slug_validation_failure
+      self.new("Import failed. Destination URL " \
+               "#{Gitlab::Regex.oci_repository_path_regex_message}")
+    end
+
     def self.destination_full_path_validation_failure(full_path)
-      self.new("Import aborted as '#{full_path}' already exists. Change the destination and try again.")
+      self.new("Import failed. '#{full_path}' already exists. Change the destination and try again.")
     end
 
     def self.setting_not_enabled

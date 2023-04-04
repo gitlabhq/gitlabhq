@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Entry point of the BulkImport feature.
+# Entry point of the BulkImport/Direct Transfer feature.
 # This service receives a Gitlab Instance connection params
 # and a list of groups to be imported.
 #
@@ -84,6 +84,8 @@ module BulkImports
         Array.wrap(params).each do |entity_params|
           track_access_level(entity_params)
 
+          validate_destination_namespace(entity_params[:destination_namespace])
+          validate_destination_slug(entity_params[:destination_slug] || entity_params[:destination_name])
           validate_destination_full_path(entity_params)
 
           BulkImports::Entity.create!(
@@ -133,6 +135,18 @@ module BulkImports
 
     def source_equals_destination?
       credentials[:url].starts_with?(Settings.gitlab.base_url)
+    end
+
+    def validate_destination_namespace(destination_namespace)
+      return if destination_namespace =~ Gitlab::Regex.bulk_import_destination_namespace_path_regex
+
+      raise BulkImports::Error.destination_namespace_validation_failure
+    end
+
+    def validate_destination_slug(destination_slug)
+      return if destination_slug =~ Gitlab::Regex.oci_repository_path_regex
+
+      raise BulkImports::Error.destination_slug_validation_failure
     end
 
     def validate_destination_full_path(entity_params)

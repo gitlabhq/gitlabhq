@@ -2409,6 +2409,8 @@ class Project < ApplicationRecord
       .append(key: 'CI_SERVER_HOST', value: Gitlab.config.gitlab.host)
       .append(key: 'CI_SERVER_PORT', value: Gitlab.config.gitlab.port.to_s)
       .append(key: 'CI_SERVER_PROTOCOL', value: Gitlab.config.gitlab.protocol)
+      .append(key: 'CI_SERVER_SHELL_SSH_HOST', value: Gitlab.config.gitlab_shell.ssh_host.to_s)
+      .append(key: 'CI_SERVER_SHELL_SSH_PORT', value: Gitlab.config.gitlab_shell.ssh_port.to_s)
       .append(key: 'CI_SERVER_NAME', value: 'GitLab')
       .append(key: 'CI_SERVER_VERSION', value: Gitlab::VERSION)
       .append(key: 'CI_SERVER_VERSION_MAJOR', value: Gitlab.version_info.major.to_s)

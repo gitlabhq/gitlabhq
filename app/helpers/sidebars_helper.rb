@@ -42,7 +42,7 @@ module SidebarsHelper
     Sidebars::Context.new(**context_data, **args)
   end
 
-  def super_sidebar_context(user, group:, project:, panel:)
+  def super_sidebar_context(user, group:, project:, panel:, panel_type:) # rubocop:disable Metrics/AbcSize
     {
       current_menu_items: panel.super_sidebar_menu_items,
       current_context_header: panel.super_sidebar_context_header,
@@ -84,7 +84,10 @@ module SidebarsHelper
       canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url,
       current_context: super_sidebar_current_context(project: project, group: group),
       context_switcher_links: context_switcher_links,
-      search: search_data
+      search: search_data,
+      pinned_items: user.pinned_nav_items[panel_type] || [],
+      panel_type: panel_type,
+      update_pins_url: pins_url
     }
   end
 

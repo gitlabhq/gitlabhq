@@ -9,9 +9,9 @@ RSpec.describe Packages::Rpm::RepositoryFileUploader do
   subject { uploader }
 
   it_behaves_like 'builds correct paths',
-                  store_dir: %r[^\h{2}/\h{2}/\h{64}/projects/\d+/rpm/repository_files/\d+$],
-                  cache_dir: %r{/packages/tmp/cache},
-                  work_dir: %r{/packages/tmp/work}
+    store_dir: %r[^\h{2}/\h{2}/\h{64}/projects/\d+/rpm/repository_files/\d+$],
+    cache_dir: %r{/packages/tmp/cache},
+    work_dir: %r{/packages/tmp/work}
 
   context 'when object store is remote' do
     before do
@@ -21,7 +21,7 @@ RSpec.describe Packages::Rpm::RepositoryFileUploader do
     include_context 'with storage', described_class::Store::REMOTE
 
     it_behaves_like 'builds correct paths',
-                    store_dir: %r[^\h{2}/\h{2}/\h{64}/projects/\d+/rpm/repository_files/\d+$]
+      store_dir: %r[^\h{2}/\h{2}/\h{64}/projects/\d+/rpm/repository_files/\d+$]
   end
 
   describe 'remote file' do

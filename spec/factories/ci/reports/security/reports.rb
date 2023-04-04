@@ -19,6 +19,19 @@ FactoryBot.define do
       evaluator.findings.each { |o| report.add_finding(o) }
     end
 
+    factory :dependency_scanning_security_report do
+      type { :dependency_scanning }
+
+      after :create do |report|
+        artifact = report.pipeline.job_artifacts.dependency_scanning.last
+        if artifact.present?
+          content = File.read(artifact.file.path)
+
+          Gitlab::Ci::Parsers::Security::DependencyScanning.parse!(content, report)
+        end
+      end
+    end
+
     skip_create
 
     initialize_with do

@@ -122,6 +122,8 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_SERVER_NAME`                         | all    | all    | The name of CI/CD server that coordinates jobs. |
 | `CI_SERVER_PORT`                         | 12.8   | all    | The port of the GitLab instance URL, without host or protocol. For example `8080`. |
 | `CI_SERVER_PROTOCOL`                     | 12.8   | all    | The protocol of the GitLab instance URL, without host or port. For example `https`. |
+| `CI_SERVER_SHELL_SSH_HOST`               | 15.11  | all    | The SSH host of the GitLab instance, used for access to Git repositories via SSH. For example `gitlab.com`. |
+| `CI_SERVER_SHELL_SSH_PORT`               | 15.11  | all    | The SSH port of the GitLab instance, used for access to Git repositories via SSH. For example `22`. |
 | `CI_SERVER_REVISION`                     | all    | all    | GitLab revision that schedules jobs. |
 | `CI_SERVER_TLS_CA_FILE`                  | all    | all    | File containing the TLS CA certificate to verify the GitLab server when `tls-ca-file` set in [runner settings](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section). |
 | `CI_SERVER_TLS_CERT_FILE`                | all    | all    | File containing the TLS certificate to verify the GitLab server when `tls-cert-file` set in [runner settings](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section). |

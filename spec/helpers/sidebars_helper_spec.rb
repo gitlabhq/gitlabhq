@@ -65,9 +65,10 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     let_it_be(:user) { build(:user) }
     let_it_be(:group) { build(:group) }
     let_it_be(:panel) { {} }
+    let_it_be(:panel_type) { 'project' }
 
     subject do
-      helper.super_sidebar_context(user, group: group, project: nil, panel: panel)
+      helper.super_sidebar_context(user, group: group, project: nil, panel: panel, panel_type: panel_type)
     end
 
     before do
@@ -81,6 +82,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       allow(user).to receive(:review_requested_open_merge_requests_count).and_return(0)
       allow(user).to receive(:todos_pending_count).and_return(3)
       allow(user).to receive(:total_merge_requests_count).and_return(4)
+      allow(user).to receive(:pinned_nav_items).and_return({ panel_type => %w[foo bar], 'another_panel' => %w[baz] })
     end
 
     it 'returns sidebar values from user', :use_clean_rails_memory_store_caching do
@@ -134,7 +136,10 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           mr_path: merge_requests_dashboard_path,
           autocomplete_path: search_autocomplete_path,
           search_context: helper.header_search_context
-        }
+        },
+        pinned_items: %w[foo bar],
+        panel_type: panel_type,
+        update_pins_url: pins_url
       })
     end
 
@@ -217,7 +222,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         let_it_be(:project) { build(:project) }
 
         subject do
-          helper.super_sidebar_context(user, group: nil, project: project, panel: panel)
+          helper.super_sidebar_context(user, group: nil, project: project, panel: panel, panel_type: panel_type)
         end
 
         before do
@@ -240,7 +245,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
 
       context 'when current context is a group' do
         subject do
-          helper.super_sidebar_context(user, group: group, project: nil, panel: panel)
+          helper.super_sidebar_context(user, group: group, project: nil, panel: panel, panel_type: panel_type)
         end
 
         before do
@@ -263,7 +268,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
 
       context 'when current context is not tracked' do
         subject do
-          helper.super_sidebar_context(user, group: nil, project: nil, panel: panel)
+          helper.super_sidebar_context(user, group: nil, project: nil, panel: panel, panel_type: panel_type)
         end
 
         it 'returns no context' do
@@ -281,7 +286,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       end
 
       subject do
-        helper.super_sidebar_context(user, group: nil, project: nil, panel: panel)
+        helper.super_sidebar_context(user, group: nil, project: nil, panel: panel, panel_type: panel_type)
       end
 
       context 'when user is not an admin' do
