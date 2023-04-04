@@ -14,21 +14,25 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
   # `:project_id`, or `*id`.
   #
   # See https://github.com/rails/rails/blob/v4.2.8/actionpack/lib/action_dispatch/routing/mapper.rb#L155
-  scope(path: '*namespace_id',
-        as: :namespace,
-        namespace_id: Gitlab::PathRegex.full_namespace_route_regex) do
-    scope(path: ':project_id',
-          constraints: { project_id: Gitlab::PathRegex.project_route_regex },
-          module: :projects,
-          as: :project) do
+  scope(
+    path: '*namespace_id',
+    as: :namespace,
+    namespace_id: Gitlab::PathRegex.full_namespace_route_regex
+  ) do
+    scope(
+      path: ':project_id',
+      constraints: { project_id: Gitlab::PathRegex.project_route_regex },
+      module: :projects,
+      as: :project
+    ) do
       # Begin of the /-/ scope.
       # Use this scope for all new project routes.
       scope '-' do
         get 'archive/*id', constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
         get 'metrics(/:dashboard_path)', constraints: { dashboard_path: /.+\.yml/ },
-                                         to: 'metrics_dashboard#show', as: :metrics_dashboard, format: false
+          to: 'metrics_dashboard#show', as: :metrics_dashboard, format: false
         get 'metrics(/:dashboard_path)/panel/new', constraints: { dashboard_path: /.+\.yml/ },
-                                         to: 'metrics_dashboard#show', as: :new_metrics_dashboard, format: false
+          to: 'metrics_dashboard#show', as: :new_metrics_dashboard, format: false
 
         namespace :metrics, module: :metrics do
           namespace :dashboards do
@@ -495,20 +499,20 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       # Templates
       #
       get '/templates/:template_type' => 'templates#index', # rubocop:todo Cop/PutProjectRoutesUnderScope
-          as: :templates,
-          defaults: { format: 'json' },
-          constraints: { template_type: %r{issue|merge_request}, format: 'json' }
+        as: :templates,
+        defaults: { format: 'json' },
+        constraints: { template_type: %r{issue|merge_request}, format: 'json' }
 
       get '/templates/:template_type/:key' => 'templates#show', # rubocop:todo Cop/PutProjectRoutesUnderScope
-          as: :template,
-          defaults: { format: 'json' },
-          constraints: { key: %r{[^/]+}, template_type: %r{issue|merge_request}, format: 'json' }
+        as: :template,
+        defaults: { format: 'json' },
+        constraints: { key: %r{[^/]+}, template_type: %r{issue|merge_request}, format: 'json' }
 
       get '/description_templates/names/:template_type', # rubocop:todo Cop/PutProjectRoutesUnderScope
-          to: 'templates#names',
-          as: :template_names,
-          defaults: { format: 'json' },
-          constraints: { template_type: %r{issue|merge_request}, format: 'json' }
+        to: 'templates#names',
+        as: :template_names,
+        defaults: { format: 'json' },
+        constraints: { template_type: %r{issue|merge_request}, format: 'json' }
 
       resource :pages, only: [:new, :show, :update, :destroy] do # rubocop: disable Cop/PutProjectRoutesUnderScope
         resources :domains, except: :index, controller: 'pages_domains', constraints: { id: %r{[^/]+} } do # rubocop: disable Cop/PutProjectRoutesUnderScope
@@ -536,14 +540,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       post 'alerts/notify', to: 'alerting/notifications#create' # rubocop:todo Cop/PutProjectRoutesUnderScope
       post 'alerts/notify/:name/:endpoint_identifier', # rubocop:todo Cop/PutProjectRoutesUnderScope
-            to: 'alerting/notifications#create',
-            as: :alert_http_integration,
-            constraints: { endpoint_identifier: /[A-Za-z0-9]+/ }
+        to: 'alerting/notifications#create',
+        as: :alert_http_integration,
+        constraints: { endpoint_identifier: /[A-Za-z0-9]+/ }
 
       draw :legacy_builds
 
       resources :container_registry, only: [:index, :destroy, :show], # rubocop: disable Cop/PutProjectRoutesUnderScope
-                                     controller: 'registry/repositories'
+        controller: 'registry/repositories'
 
       namespace :registry do
         resources :repository, only: [] do # rubocop: disable Cop/PutProjectRoutesUnderScope
@@ -552,7 +556,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           # in JSON format, or a request for tag named `latest.json`.
           scope format: false do
             resources :tags, only: [:index, :destroy], # rubocop: disable Cop/PutProjectRoutesUnderScope
-                             constraints: { id: Gitlab::Regex.container_registry_tag_regex } do
+              constraints: { id: Gitlab::Regex.container_registry_tag_regex } do
               collection do
                 delete :bulk_destroy # rubocop:todo Cop/PutProjectRoutesUnderScope
               end
@@ -628,19 +632,23 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       # Legacy routes.
       # Introduced in 12.0.
       # Should be removed with https://gitlab.com/gitlab-org/gitlab/issues/28848.
-      Gitlab::Routing.redirect_legacy_paths(self, :mirror, :tags, :hooks,
-                                            :commits, :commit, :find_file, :files, :compare,
-                                            :cycle_analytics, :mattermost, :variables, :triggers,
-                                            :environments, :protected_environments, :error_tracking, :alert_management,
-                                            :serverless, :clusters, :audit_events, :wikis, :merge_requests,
-                                            :vulnerability_feedback, :security, :dependencies, :issues,
-                                            :pipelines, :pipeline_schedules, :runners, :snippets)
+      Gitlab::Routing.redirect_legacy_paths(
+        self, :mirror, :tags, :hooks,
+        :commits, :commit, :find_file, :files, :compare,
+        :cycle_analytics, :mattermost, :variables, :triggers,
+        :environments, :protected_environments, :error_tracking, :alert_management,
+        :serverless, :clusters, :audit_events, :wikis, :merge_requests,
+        :vulnerability_feedback, :security, :dependencies, :issues,
+        :pipelines, :pipeline_schedules, :runners, :snippets
+      )
     end
     # rubocop: disable Cop/PutProjectRoutesUnderScope
-    resources(:projects,
-              path: '/',
-              constraints: { id: Gitlab::PathRegex.project_route_regex },
-              only: [:edit, :show, :update, :destroy]) do
+    resources(
+      :projects,
+      path: '/',
+      constraints: { id: Gitlab::PathRegex.project_route_regex },
+      only: [:edit, :show, :update, :destroy]
+    ) do
       member do
         put :transfer
         delete :remove_fork
@@ -667,8 +675,8 @@ end
 # rubocop: disable Cop/PutProjectRoutesUnderScope
 scope path: '(/-/jira)', constraints: ::Constraints::JiraEncodedUrlConstrainer.new, as: :jira do
   scope path: '*namespace_id/:project_id',
-        namespace_id: Gitlab::Jira::Dvcs::ENCODED_ROUTE_REGEX,
-        project_id: Gitlab::Jira::Dvcs::ENCODED_ROUTE_REGEX do
+    namespace_id: Gitlab::Jira::Dvcs::ENCODED_ROUTE_REGEX,
+    project_id: Gitlab::Jira::Dvcs::ENCODED_ROUTE_REGEX do
     get '/', to: redirect { |params, req|
       ::Gitlab::Jira::Dvcs.restore_full_path(
         namespace: params[:namespace_id],

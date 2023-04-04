@@ -448,7 +448,7 @@ You must test the database index changes locally before creating a merge request
    the post-deploy migration has been executed in the production database. For more information, see
    [How to determine if a post-deploy migration has been executed on GitLab.com](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/post_deploy_migration/readme.md#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom).
 1. In the case of an [index removed asynchronously](#schedule-the-index-to-be-removed), wait
-   until the next week so that the index can be created over a weekend.
+   until the next week so that the index can be removed over a weekend.
 1. Use Database Lab [to check if removal was successful](database_lab.md#checking-indexes).
    [Database Lab](database_lab.md)
    should report an error when trying to find the removed index. If not, the index may still exist.

@@ -50,9 +50,11 @@ namespace :admin do
 
   resources :groups, only: [:index, :new, :create]
 
-  scope(path: 'groups/*id',
-        controller: :groups,
-        constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom)/ }) do
+  scope(
+    path: 'groups/*id',
+    controller: :groups,
+    constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom)/ }
+  ) do
     scope(as: :group) do
       put :members_update
       get :edit, action: :edit
@@ -113,13 +115,17 @@ namespace :admin do
   get 'dev_ops_report', to: redirect('admin/dev_ops_reports')
   resources :cohorts, only: :index
 
-  scope(path: 'projects/*namespace_id',
-        as: :namespace,
-        constraints: { namespace_id: Gitlab::PathRegex.full_namespace_route_regex }) do
-    resources(:projects,
-              path: '/',
-              constraints: { id: Gitlab::PathRegex.project_route_regex },
-              only: [:show, :destroy]) do
+  scope(
+    path: 'projects/*namespace_id',
+    as: :namespace,
+    constraints: { namespace_id: Gitlab::PathRegex.full_namespace_route_regex }
+  ) do
+    resources(
+      :projects,
+      path: '/',
+      constraints: { id: Gitlab::PathRegex.project_route_regex },
+      only: [:show, :destroy]
+    ) do
       member do
         put :transfer
         post :repository_check

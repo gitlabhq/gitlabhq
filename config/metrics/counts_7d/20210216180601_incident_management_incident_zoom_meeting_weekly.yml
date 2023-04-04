@@ -5,7 +5,6 @@ description: Count of unique users creating Zoom meetings about incidents per we
 product_section: ops
 product_stage: monitor
 product_group: monitor
-product_category:
 value_type: number
 status: active
 time_frame: 7d

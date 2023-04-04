@@ -68,8 +68,7 @@ this method only supports replies, and not the other features of [incoming email
 
 ## Accepted headers
 
-> - Accepting `Received` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81489) in GitLab 14.9 [with a flag](feature_flags.md) named `use_received_header_for_incoming_emails`. Enabled by default.
-> - Accepting `Received` headers: [feature flag](feature_flags.md) named `use_received_header_for_incoming_emails` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/362596) in GitLab 14.1.
+> Accepting `Received` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81489) in GitLab 14.9.
 
 Email is processed correctly when a configured email address is present in one of the following headers
 (sorted in the order they are checked):

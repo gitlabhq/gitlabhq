@@ -468,8 +468,6 @@ jira:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::Jira
-    JIRA_ADMIN_USERNAME: $QA_JIRA_ADMIN_USERNAME
-    JIRA_ADMIN_PASSWORD: $QA_JIRA_ADMIN_PASSWORD
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Jira/

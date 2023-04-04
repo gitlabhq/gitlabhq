@@ -287,6 +287,14 @@ Dangerfile @gl-quality/eng-prod
 /spec/frontend/diffs/ @viktomas @jboyson @iamphill @thomasrandolph
 /spec/frontend/batch_comments/ @viktomas @jboyson @iamphill @thomasrandolph
 
+^[Product Analytics] @gitlab-org/analytics-section/product-analytics/engineers/frontend
+/ee/app/assets/javascripts/analytics/analytics_dashboards/components/analytics_dashboard.vue
+/ee/app/assets/javascripts/analytics/analytics_dashboards/components/dashboards_list.vue
+/ee/app/assets/javascripts/analytics/analytics_dashboards/data_sources/
+/ee/app/assets/javascripts/vue_shared/components/customizable_dashboard/customizable_dashboard.vue
+/ee/app/assets/javascripts/vue_shared/components/customizable_dashboard/panels_base.vue
+/ee/app/assets/javascripts/product_analytics/
+
 ^[Product Intelligence]
 /ee/lib/gitlab/usage_data_counters/  @gitlab-org/analytics-section/product-intelligence/engineers
 /ee/lib/ee/gitlab/usage_data.rb  @gitlab-org/analytics-section/product-intelligence/engineers

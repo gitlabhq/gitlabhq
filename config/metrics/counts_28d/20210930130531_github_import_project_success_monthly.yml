@@ -4,7 +4,6 @@ description: The number of github projects that were successful monthly
 product_section: dev
 product_stage: manage
 product_group: import
-product_category:
 value_type: number
 status: active
 milestone: "14.4"

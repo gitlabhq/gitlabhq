@@ -85,9 +85,7 @@ scope '-/users', module: :users do
 end
 
 scope(constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }) do
-  scope(path: 'users/:username',
-        as: :user,
-        controller: :users) do
+  scope(path: 'users/:username', as: :user, controller: :users) do
     get :calendar
     get :calendar_activities
     get :groups
@@ -112,10 +110,12 @@ constraints(::Constraints::UserUrlConstrainer.new) do
   # Get all GPG keys of user
   get ':username.gpg' => 'users#gpg_keys', as: 'user_gpg_keys', constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }
 
-  scope(path: ':username',
-        as: :user,
-        constraints: { username: Gitlab::PathRegex.root_namespace_route_regex },
-        controller: :users) do
+  scope(
+    path: ':username',
+    as: :user,
+    constraints: { username: Gitlab::PathRegex.root_namespace_route_regex },
+    controller: :users
+  ) do
     get '/', action: :show
   end
 end

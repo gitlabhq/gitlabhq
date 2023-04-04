@@ -282,11 +282,11 @@ module QA
       end
 
       def jira_admin_username
-        ENV['JIRA_ADMIN_USERNAME']
+        ENV['QA_JIRA_ADMIN_USERNAME']
       end
 
       def jira_admin_password
-        ENV['JIRA_ADMIN_PASSWORD']
+        ENV['QA_JIRA_ADMIN_PASSWORD']
       end
 
       def jira_hostname

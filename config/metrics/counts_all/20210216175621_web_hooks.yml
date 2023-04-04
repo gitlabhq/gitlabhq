@@ -5,7 +5,6 @@ description: Count of web hooks
 product_section: dev
 product_stage: manage
 product_group: integrations
-product_category:
 value_type: number
 status: active
 time_frame: all

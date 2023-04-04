@@ -18,14 +18,12 @@ module QA
         set_up_jira_integration
         import_jira_issues
 
-        QA::Support::Retrier.retry_on_exception do
-          Page::Project::Menu.perform(&:click_issues)
-
-          Page::Project::Issue::Index.perform do |issues_page|
-            expect(issues_page).to have_content("2 issues successfully imported")
-
-            issues_page.click_issue_link(jira_issue_title)
-          end
+        Page::Project::Menu.perform(&:click_issues)
+        Page::Project::Issue::Index.perform do |issues_page|
+          expect { issues_page }.to eventually_have_content(jira_issue_title).within(
+            max_attempts: 5, sleep_interval: 1, reload_page: issues_page
+          )
+          issues_page.click_issue_link(jira_issue_title)
         end
 
         expect(page).to have_content(jira_issue_description)

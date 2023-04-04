@@ -1398,7 +1398,7 @@ export default class Notes {
    */
   static isNewNote(noteEntity, note_ids) {
     if (note_ids.length === 0) {
-      Notes.loadNotesIds(note_ids);
+      note_ids = Notes.getNotesIds();
     }
     const isNewEntry = $.inArray(noteEntity.id, note_ids) === -1;
     if (isNewEntry) {
@@ -1408,16 +1408,17 @@ export default class Notes {
   }
 
   /**
-   * Load notes ids
+   * Get notes ids
    */
-  static loadNotesIds(note_ids) {
-    const $notesList = $('.main-notes-list li[id^=note_]');
-    for (const $noteItem of $notesList) {
-      if (Notes.isNodeTypeElement($noteItem)) {
-        const noteId = parseInt($noteItem.id.split('_')[1], 10);
-        note_ids.push(noteId);
-      }
-    }
+  static getNotesIds() {
+    /**
+     * The selector covers following notes
+     *  - notes and thread below the snippets and commit page
+     *  - notes on the file of commit page
+     *  - notes on an image file of commit page
+     */
+    const notesList = [...document.querySelectorAll('.notes:not(.notes-form) li[id]')];
+    return notesList.map((noteItem) => parseInt(noteItem.dataset.noteId, 10));
   }
 
   /**

@@ -14,7 +14,11 @@ module Enums
       maven: 5,
       npm: 6,
       nuget: 7,
-      pypi: 8
+      pypi: 8,
+      apk: 9,
+      rpm: 10,
+      deb: 11,
+      cbl_mariner: 12
     }.with_indifferent_access.freeze
 
     def self.component_types
