@@ -55,7 +55,7 @@ export default {
         rel="noopener noreferrer nofollow"
         data-testid="artifact-expired-help-link"
       >
-        <gl-icon name="question" />
+        <gl-icon name="question-o" />
       </gl-link>
     </p>
     <p v-else-if="isLocked" class="build-detail-row">

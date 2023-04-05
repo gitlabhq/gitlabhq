@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['Timelog'], feature_category: :team_planning do
-  let_it_be(:fields) { %i[id spent_at time_spent user issue merge_request note summary userPermissions] }
+  let_it_be(:fields) { %i[id spent_at time_spent user issue merge_request note summary userPermissions project] }
 
   it { expect(described_class.graphql_name).to eq('Timelog') }
   it { expect(described_class).to have_graphql_fields(fields) }

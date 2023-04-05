@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.10.2 (2023-04-05)
+
+### Fixed (3 changes)
+
+- [Fix openapi viewer for relative url instances](gitlab-org/gitlab@28c94e7f0e0c29651383212e16422e0b384cddb9) ([merge request](gitlab-org/gitlab!115480))
+- [Update mail gem to v2.8.1](gitlab-org/gitlab@1ec987737d7a3ee96bb1ef8efa3f06fcd32c31e4) ([merge request](gitlab-org/gitlab!116173))
+- [Move ldap option sync_name to ldap server and fix bugs](gitlab-org/gitlab@e56f6d11f76ae858f602b23ea1e2875eb8754fe5) by @zhzhang93 ([merge request](gitlab-org/gitlab!115820)) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Migrate the existing RedisHLL keys to default slot](gitlab-org/gitlab@5fa90b0ef485aee29f62c500fb48c19278099ef0) ([merge request](gitlab-org/gitlab!116604))
+
 ## 15.10.1 (2023-03-30)
 
 ### Fixed (2 changes)

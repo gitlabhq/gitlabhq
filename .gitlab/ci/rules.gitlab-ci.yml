@@ -765,6 +765,7 @@
       when: never
     - <<: *if-merge-request-targeting-stable-branch
     - <<: *if-merge-request-labels-run-review-app
+    - <<: *if-merge-request-labels-run-all-e2e
     - <<: *if-auto-deploy-branches
     - <<: *if-ruby2-branch
     - <<: *if-default-refs
@@ -930,6 +931,7 @@
       when: never
     - <<: *if-merge-request-targeting-stable-branch
     - <<: *if-merge-request-labels-run-review-app
+    - <<: *if-merge-request-labels-run-all-e2e
     - <<: *if-auto-deploy-branches
     - <<: *if-ruby2-branch
     - <<: *if-default-refs

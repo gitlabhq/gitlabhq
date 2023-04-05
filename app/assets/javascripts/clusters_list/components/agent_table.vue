@@ -305,7 +305,7 @@ export default {
             :title="$options.i18n.defaultConfigTooltip"
             :aria-label="$options.i18n.defaultConfigTooltip"
             class="gl-vertical-align-middle"
-            ><gl-icon name="question" :size="14" /></gl-link
+            ><gl-icon name="question-o" :size="14" /></gl-link
         ></span>
       </span>
     </template>

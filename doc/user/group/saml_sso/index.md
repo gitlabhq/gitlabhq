@@ -59,7 +59,7 @@ To set up SSO with Azure as your identity provider:
 1. Make sure the identity provider is set to have provider-initiated calls
    to link existing GitLab accounts.
 
-1. Optional. If you use [Group Sync](#group-sync), customize the name of the
+1. Optional. If you use [Group Sync](group_sync.md), customize the name of the
    group claim to match the required attribute.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -227,8 +227,6 @@ After you set up your identity provider to work with GitLab, you must configure 
    For more information, see the [SSO enforcement documentation](#sso-enforcement).
 1. Select **Save changes**.
 
-![Group SAML Settings for GitLab.com](img/group_saml_settings_v13_12.png)
-
 NOTE:
 The certificate [fingerprint algorithm](../../../integration/saml.md#configure-saml-on-your-idp) must be in SHA1. When configuring the identity provider (such as [Google Workspace](#set-up-google-workspace)), use a secure signature algorithm.
 
@@ -260,7 +258,7 @@ You can pass user information to GitLab as attributes in the SAML assertion.
 
 For more information, see the [attributes available for self-managed GitLab instances](../../../integration/saml.md#configure-assertions).
 
-### Linking SAML to your existing GitLab.com account
+### Link SAML to your existing GitLab.com account
 
 > **Remember me** checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/121569) in GitLab 15.7.
 
@@ -274,9 +272,9 @@ To link SAML to your existing GitLab.com account:
 1. Enter your credentials on the identity provider if prompted.
 1. You are then redirected back to GitLab.com and should now have access to the group. In the future, you can use SAML to sign in to GitLab.com.
 
-On subsequent visits, you should be able to go [sign in to GitLab.com with SAML](#signing-in-to-gitlabcom-with-saml) or by visiting links directly. If the **enforce SSO** option is turned on, you are then redirected to sign in through the identity provider.
+On subsequent visits, you should be able to go [sign in to GitLab.com with SAML](#sign-in-to-gitlabcom-with-saml) or by visiting links directly. If the **enforce SSO** option is turned on, you are then redirected to sign in through the identity provider.
 
-### Signing in to GitLab.com with SAML
+### Sign in to GitLab.com with SAML
 
 1. Sign in to your identity provider.
 1. From the list of apps, select the "GitLab.com" app. (The name is set by the administrator of the identity provider.)
@@ -291,8 +289,8 @@ If [SCIM](scim_setup.md) is configured, group owners can update the SCIM identit
 
 Alternatively, ask the users to reconnect their SAML account.
 
-1. Ask relevant users to [unlink their account from the group](#unlinking-accounts).
-1. Ask relevant users to [link their account to the new SAML app](#linking-saml-to-your-existing-gitlabcom-account).
+1. Ask relevant users to [unlink their account from the group](#unlink-accounts).
+1. Ask relevant users to [link their account to the new SAML app](#link-saml-to-your-existing-gitlabcom-account).
 
 ### Configure user settings from SAML response
 
@@ -305,9 +303,9 @@ created via [SCIM](scim_setup.md) or by first sign-in with SAML SSO for GitLab.c
 
 #### Supported user attributes
 
-- `can_create_group` - 'true' or 'false' to indicate whether the user can create
+- **can_create_group** - `true` or `false` to indicate whether the user can create
   new groups. Default is `true`.
-- `projects_limit` - The total number of personal projects a user can create.
+- **projects_limit** - The total number of personal projects a user can create.
   A value of `0` means the user cannot create new projects in their personal
   namespace. Default is `10000`.
 
@@ -365,7 +363,7 @@ If a user is already a member of the group, linking the SAML identity does not c
 
 Users given a "minimal access" role have [specific restrictions](../../permissions.md#users-with-minimal-access).
 
-### Blocking access
+### Block user access
 
 To rescind a user's access to the group when only SAML SSO is configured, either:
 
@@ -376,7 +374,7 @@ To rescind a user's access to the group when only SAML SSO is configured, either
 
 To rescind a user's access to the group when also using SCIM, refer to [Remove access](scim_setup.md#remove-access).
 
-### Unlinking accounts
+### Unlink accounts
 
 Users can unlink SAML for a group from their profile page. This can be helpful if:
 
@@ -397,10 +395,6 @@ For example, to unlink the `MyOrg` account:
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Service sign-in** section, select **Disconnect** next to the connected account.
-
-## Group Sync
-
-For information on automatically managing GitLab group membership, see [SAML Group Sync](group_sync.md).
 
 ## NameID
 
@@ -518,6 +512,7 @@ immediately. If the user:
 - [Glossary](../../../integration/saml.md#glossary)
 - [Authentication comparison between SaaS and self-managed](../../../administration/auth/index.md#saas-vs-self-managed-comparison)
 - [Passwords for users created through integrated authentication](../../../security/passwords_for_integrated_authentication_methods.md)
+- [SAML Group Sync](group_sync.md)
 
 ## Troubleshooting
 

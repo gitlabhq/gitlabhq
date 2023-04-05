@@ -390,15 +390,15 @@ the language declared as `math` is rendered on a separate line:
 ````markdown
 This math is inline: $`a^2+b^2=c^2`$.
 
-This math is on a separate line:
+This math is on a separate line using a ```` ```math ```` block:
 
 ```math
 a^2+b^2=c^2
 ```
 
-This math is on a separate line: $$a^2+b^2=c^2$$
+This math is on a separate line using inline `$$`: $$a^2+b^2=c^2$$
 
-This math is on a separate line:
+This math is on a separate line using a `$$...$$` block:
 
 $$
 a^2+b^2=c^2
@@ -407,23 +407,15 @@ $$
 
 This math is inline: $`a^2+b^2=c^2`$.
 
-This math is on a separate line:
+This math is on a separate line using a ```` ```math ```` block:
 
 ```math
 a^2+b^2=c^2
 ```
 
-This math is on a separate line: $$a^2+b^2=c^2$$
+This math is on a separate line using inline `$$`: $$a^2+b^2=c^2$$
 
-This math is on a separate line:
-
-$$
-a^2+b^2=c^2
-$$
-
-This math is on a separate line: $$a^2+b^2=c^2$$
-
-This math is on a separate line:
+This math is on a separate line using a `$$...$$` block:
 
 $$
 a^2+b^2=c^2

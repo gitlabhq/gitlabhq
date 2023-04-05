@@ -1,21 +1,28 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { GlDropdownItem } from '@gitlab/ui';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import SidebarAssignee from '~/vue_shared/alert_details/components/sidebar/sidebar_assignee.vue';
 import SidebarAssignees from '~/vue_shared/alert_details/components/sidebar/sidebar_assignees.vue';
 import AlertSetAssignees from '~/vue_shared/alert_details/graphql/mutations/alert_set_assignees.mutation.graphql';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import mockAlerts from '../mocks/alerts.json';
 
 const mockAlert = mockAlerts[0];
 
 describe('Alert Details Sidebar Assignees', () => {
   let wrapper;
+  let requestHandlers;
   let mock;
 
   const mockPath = '/-/autocomplete/users.json';
+  const mockUrlRoot = '/gitlab';
+  const expectedUrl = `${mockUrlRoot}${mockPath}`;
+
   const mockUsers = [
     {
       avatar_url:
@@ -40,81 +47,64 @@ describe('Alert Details Sidebar Assignees', () => {
   const findSidebarIcon = () => wrapper.findByTestId('assignees-icon');
   const findUnassigned = () => wrapper.findByTestId('unassigned-users');
 
-  function mountComponent({
-    data,
-    users = [],
-    isDropdownSearching = false,
-    sidebarCollapsed = true,
-    loading = false,
-    stubs = {},
-  } = {}) {
-    wrapper = shallowMountExtended(SidebarAssignees, {
-      data() {
-        return {
-          users,
-          isDropdownSearching,
-        };
-      },
-      propsData: {
-        alert: { ...mockAlert },
-        ...data,
-        sidebarCollapsed,
-        projectPath: 'projectPath',
-        projectId: '1',
-      },
-      mocks: {
-        $apollo: {
-          mutate: jest.fn(),
-          queries: {
-            alert: {
-              loading,
+  const mockDefaultHandler = (errors = []) =>
+    jest.fn().mockResolvedValue({
+      data: {
+        issuableSetAssignees: {
+          errors,
+          issuable: {
+            id: 'id',
+            iid: 'iid',
+            assignees: {
+              nodes: [],
+            },
+            notes: {
+              nodes: [],
             },
           },
         },
       },
-      stubs,
+    });
+  const createMockApolloProvider = (handlers) => {
+    Vue.use(VueApollo);
+    requestHandlers = handlers;
+
+    return createMockApollo([[AlertSetAssignees, handlers]]);
+  };
+
+  function mountComponent({
+    props,
+    sidebarCollapsed = true,
+    handlers = mockDefaultHandler(),
+  } = {}) {
+    wrapper = shallowMountExtended(SidebarAssignees, {
+      apolloProvider: createMockApolloProvider(handlers),
+      propsData: {
+        alert: { ...mockAlert },
+        ...props,
+        sidebarCollapsed,
+        projectPath: 'projectPath',
+        projectId: '1',
+      },
     });
   }
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-    mock.restore();
-  });
-
   describe('sidebar expanded', () => {
-    const mockUpdatedMutationResult = {
-      data: {
-        alertSetAssignees: {
-          errors: [],
-          alert: {
-            assigneeUsernames: ['root'],
-          },
-        },
-      },
-    };
-
     beforeEach(() => {
       mock = new MockAdapter(axios);
+      window.gon = {
+        relative_url_root: mockUrlRoot,
+      };
 
-      mock.onGet(mockPath).replyOnce(HTTP_STATUS_OK, mockUsers);
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, mockUsers);
       mountComponent({
-        data: { alert: mockAlert },
+        props: { alert: mockAlert },
         sidebarCollapsed: false,
-        loading: false,
-        users: mockUsers,
-        stubs: {
-          SidebarAssignee,
-        },
       });
     });
 
     it('renders a unassigned option', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ isDropdownSearching: false });
-      await nextTick();
+      await waitForPromises();
       expect(findDropdown().text()).toBe('Unassigned');
     });
 
@@ -122,60 +112,38 @@ describe('Alert Details Sidebar Assignees', () => {
       expect(findSidebarIcon().exists()).toBe(false);
     });
 
-    it('calls `$apollo.mutate` with `AlertSetAssignees` mutation and variables containing `iid`, `assigneeUsernames`, & `projectPath`', async () => {
-      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockUpdatedMutationResult);
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ isDropdownSearching: false });
-
-      await nextTick();
+    it('calls `AlertSetAssignees` mutation and variables containing `iid`, `assigneeUsernames`, & `projectPath`', async () => {
+      await waitForPromises();
       wrapper.findComponent(SidebarAssignee).vm.$emit('update-alert-assignees', 'root');
 
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-        mutation: AlertSetAssignees,
-        variables: {
-          iid: '1527542',
-          assigneeUsernames: ['root'],
-          fullPath: 'projectPath',
-        },
+      expect(requestHandlers).toHaveBeenCalledWith({
+        iid: '1527542',
+        assigneeUsernames: ['root'],
+        fullPath: 'projectPath',
       });
     });
 
     it('emits an error when request contains error messages', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ isDropdownSearching: false });
-      const errorMutationResult = {
-        data: {
-          issuableSetAssignees: {
-            errors: ['There was a problem for sure.'],
-            alert: {},
-          },
-        },
-      };
+      mountComponent({
+        sidebarCollapsed: false,
+        handlers: mockDefaultHandler(['There was a problem for sure.']),
+      });
+      await waitForPromises();
 
-      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(errorMutationResult);
-
-      await nextTick();
       const SideBarAssigneeItem = wrapper.findAllComponents(SidebarAssignee).at(0);
       await SideBarAssigneeItem.vm.$emit('update-alert-assignees');
-      expect(wrapper.emitted('alert-error')).toBeDefined();
+
+      await waitForPromises();
+      expect(wrapper.emitted('alert-error')).toHaveLength(1);
     });
 
     it('stops updating and cancels loading when the request fails', () => {
-      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockReturnValue(Promise.reject(new Error()));
-      wrapper.vm.updateAlertAssignees('root');
       expect(findUnassigned().text()).toBe('assign yourself');
     });
 
     it('shows a user avatar, username and full name when a user is set', () => {
       mountComponent({
-        data: { alert: mockAlerts[1] },
-        sidebarCollapsed: false,
-        loading: false,
-        stubs: {
-          SidebarAssignee,
-        },
+        props: { alert: mockAlerts[1] },
       });
 
       expect(findAssigned().find('img').attributes('src')).toBe('/url');
@@ -188,15 +156,10 @@ describe('Alert Details Sidebar Assignees', () => {
     beforeEach(() => {
       mock = new MockAdapter(axios);
 
-      mock.onGet(mockPath).replyOnce(HTTP_STATUS_OK, mockUsers);
+      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, mockUsers);
 
       mountComponent({
-        data: { alert: mockAlert },
-        loading: false,
-        users: mockUsers,
-        stubs: {
-          SidebarAssignee,
-        },
+        props: { alert: mockAlert },
       });
     });
     it('does not display the status dropdown', () => {

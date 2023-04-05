@@ -90,7 +90,7 @@ export default {
               :aria-label="helpLinkAriaLabel(item.storageType.name)"
               :data-testid="`${item.storageType.id}-help-link`"
             >
-              <gl-icon name="question" :size="12" />
+              <gl-icon name="question-o" :size="12" />
             </gl-link>
           </p>
           <p class="gl-mb-0" :data-testid="`${item.storageType.id}-description`">

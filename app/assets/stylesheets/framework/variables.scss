@@ -921,6 +921,12 @@ Board Swimlanes
 */
 $board-swimlanes-headers-height: 64px;
 
+/*
+Source Editor theme overrides
+*/
+$source-editor-hover-light-text-color: #ececef;
+$source-editor-hover-dark-text-color: #333238;
+
 /**
  Bootstrap 4.2.0 introduced new icons for validating forms.
  Our design system does not use those, so we are disabling them for now:

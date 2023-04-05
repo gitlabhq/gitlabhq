@@ -1,0 +1,8 @@
+---
+name: global_time_tracking_report
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108368
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/394715
+milestone: '15.11'
+type: development
+group: group::project management
+default_enabled: false

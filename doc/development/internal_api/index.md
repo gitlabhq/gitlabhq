@@ -811,8 +811,43 @@ Example response:
 
 ## Storage limit exclusions
 
-The namespace storage limit exclusions endpoints manage storage limit exclusions on top-level namespaces on GitLab.com.
+The namespace storage limit exclusion endpoints manage storage limit exclusions on top-level namespaces on GitLab.com.
 These endpoints can only be consumed in the Admin Area of GitLab.com.
+
+### Retrieve storage limit exclusions
+
+Use a GET request to retrieve all `Namespaces::Storage::LimitExclusion` records.
+
+```plaintext
+GET /namespaces/storage/limit_exclusions
+```
+
+Example request:
+
+```shell
+curl --request GET \
+  --url "https://gitlab.com/v4/namespaces/storage/limit_exclusions" \
+  --header 'PRIVATE-TOKEN: <admin access token>' 
+```
+
+Example response:
+
+```json
+[
+    {
+      "id": 1,
+      "namespace_id": 1234,
+      "namespace_name": "A Namespace Name",
+      "reason": "a reason to exclude the Namespace"
+    },
+    {
+      "id": 2,
+      "namespace_id": 4321,
+      "namespace_name": "Another Namespace Name",
+      "reason": "another reason to exclude the Namespace"
+    },
+]
+```
 
 ### Create a storage limit exclusion
 

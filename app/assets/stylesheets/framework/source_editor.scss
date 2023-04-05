@@ -41,6 +41,29 @@
 }
 
 .monaco-editor.gl-source-editor {
+  // Fix unreadable headings in tooltips for syntax highlighting themes that don't match general theme
+  &.vs-dark .markdown-hover {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: $source-editor-hover-light-text-color;
+    }
+  }
+
+  &.vs .markdown-hover {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: $source-editor-hover-dark-text-color;
+    }
+  }
+
   .margin-view-overlays {
     .line-numbers {
       @include gl-display-flex;

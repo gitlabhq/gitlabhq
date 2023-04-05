@@ -50,7 +50,10 @@ module QA
           runner&.remove_via_api!
         end
 
-        it 'merges after pipeline succeeds' do
+        it 'merges after pipeline succeeds', quarantine: {
+          type: :flaky,
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/403017'
+        } do
           transient_test = repeat > 1
 
           repeat.times do |i|

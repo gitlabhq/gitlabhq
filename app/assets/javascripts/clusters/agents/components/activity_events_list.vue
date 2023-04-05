@@ -164,7 +164,7 @@ export default {
           :href="$options.emptyHelpLink"
           :title="$options.i18n.emptyTooltip"
           :aria-label="$options.i18n.emptyTooltip"
-          ><gl-icon name="question" :size="14"
+          ><gl-icon name="question-o" :size="14"
         /></gl-link>
       </template>
     </gl-empty-state>

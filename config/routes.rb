@@ -224,6 +224,8 @@ InitializerConnections.raise_if_new_database_connection do
       # Deprecated route for permanent failures
       # https://gitlab.com/gitlab-org/gitlab/-/issues/362606
       post '/members/mailgun/permanent_failures' => 'mailgun/webhooks#process_webhook'
+
+      get '/timelogs' => 'time_tracking/timelogs#index'
     end
     # End of the /-/ scope.
 

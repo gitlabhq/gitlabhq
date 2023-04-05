@@ -46,6 +46,14 @@ describe('PerformanceBarStore', () => {
       store.addRequest('id', 'http://localhost:3001/api/graphql', 'someOperation');
       expect(findUrl('id')).toBe('graphql (someOperation)');
     });
+
+    it('appends the number of batches queries when it is a GraphQL call', () => {
+      store.addRequest('id', 'http://localhost:3001/api/graphql', 'someOperation');
+      store.addRequest('id', 'http://localhost:3001/api/graphql', 'anotherOperation');
+      store.addRequest('id', 'http://localhost:3001/api/graphql', 'anotherOne');
+      store.addRequest('anotherId', 'http://localhost:3001/api/graphql', 'operationName');
+      expect(findUrl('id')).toBe('graphql (someOperation) [3 queries batched]');
+    });
   });
 
   describe('setRequestDetailsData', () => {

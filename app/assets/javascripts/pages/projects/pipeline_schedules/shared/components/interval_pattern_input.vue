@@ -176,7 +176,7 @@ export default {
         <gl-icon
           v-if="showDailyLimitMessage(option)"
           v-gl-tooltip.hover
-          name="question"
+          name="question-o"
           :title="scheduleDailyLimitMsg"
         />
       </gl-form-radio>

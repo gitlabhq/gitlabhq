@@ -1,0 +1,7 @@
+- @force_fluid_layout = true
+- page_title _('Time tracking report')
+
+.page-title-holder.gl-display-flex.gl-flex-align-items-center
+  %h1.page-title.gl-font-size-h-display= _('Time tracking report')
+
+#js-timelogs-app{ data: { limit_to_hours: Gitlab::CurrentSettings.time_tracking_limit_to_hours.to_s } }

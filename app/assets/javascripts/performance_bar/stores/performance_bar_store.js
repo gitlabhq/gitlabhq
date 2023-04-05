@@ -1,4 +1,5 @@
 import { mergeUrlParams } from '~/lib/utils/url_utility';
+import { __ } from '~/locale';
 
 export default class PerformanceBarStore {
   constructor() {
@@ -6,7 +7,9 @@ export default class PerformanceBarStore {
   }
 
   addRequest(requestId, requestUrl, operationName, requestParams, methodVerb) {
-    if (!this.findRequest(requestId)) {
+    if (this.findRequest(requestId)) {
+      this.updateRequestBatchedQueriesCount(requestId);
+    } else {
       let displayName = '';
 
       if (methodVerb) {
@@ -25,11 +28,27 @@ export default class PerformanceBarStore {
         fullUrl: mergeUrlParams(requestParams, requestUrl),
         method: methodVerb,
         details: {},
+        queriesInBatch: 1, // only for GraphQL
         displayName,
       });
     }
 
     return this.requests;
+  }
+  updateRequestBatchedQueriesCount(requestId) {
+    const existingRequest = this.findRequest(requestId);
+    existingRequest.queriesInBatch += 1;
+
+    const oldDisplayName = existingRequest.displayName;
+    const regex = /\d+ queries batched/;
+    if (regex.test(oldDisplayName)) {
+      existingRequest.displayName = oldDisplayName.replace(
+        regex,
+        `${existingRequest.queriesInBatch} queries batched`,
+      );
+    } else {
+      existingRequest.displayName += __(` [${existingRequest.queriesInBatch} queries batched]`);
+    }
   }
 
   findRequest(requestId) {
