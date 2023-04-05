@@ -72,3 +72,5 @@ To migrate from Jira Server to Jira Cloud in GitLab and maintain your Jira integ
 1. In **Password or API token**, paste the API token value.
 1. Optional. Select **Test settings** to check if the connection is working.
 1. Select **Save changes**.
+
+To update existing Jira issue references in GitLab to use the new Jira site URL, you must [invalidate the Markdown cache](../../administration/invalidate_markdown_cache.md#invalidate-the-cache).

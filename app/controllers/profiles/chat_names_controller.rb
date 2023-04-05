@@ -11,6 +11,7 @@ class Profiles::ChatNamesController < Profiles::ApplicationController
   end
 
   def new
+    @integration_name = integration_name
   end
 
   def create
@@ -65,4 +66,10 @@ class Profiles::ChatNamesController < Profiles::ApplicationController
   def chat_names
     @chat_names ||= current_user.chat_names
   end
+
+  def integration_name
+    s_('Integrations|Mattermost slash commands')
+  end
 end
+
+Profiles::ChatNamesController.prepend_mod

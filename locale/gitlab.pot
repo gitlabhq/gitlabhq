@@ -23209,10 +23209,16 @@ msgstr ""
 msgid "Integrations|All projects inheriting these settings will also be reset."
 msgstr ""
 
+msgid "Integrations|An application called %{integration_name} is requesting access to your GitLab account. This application was created by GitLab Inc."
+msgstr ""
+
 msgid "Integrations|An error occurred while loading projects using custom settings."
 msgstr ""
 
 msgid "Integrations|An event will be triggered when one of the following items happen."
+msgstr ""
+
+msgid "Integrations|Authorize %{integration_name} (%{user}) to use your account?"
 msgstr ""
 
 msgid "Integrations|Branches for which notifications are to be sent"
@@ -23338,6 +23344,9 @@ msgstr ""
 msgid "Integrations|Linked namespaces"
 msgstr ""
 
+msgid "Integrations|Mattermost slash commands"
+msgstr ""
+
 msgid "Integrations|Namespace successfully linked"
 msgstr ""
 
@@ -23351,6 +23360,9 @@ msgid "Integrations|No linked namespaces"
 msgstr ""
 
 msgid "Integrations|Notification settings"
+msgstr ""
+
+msgid "Integrations|Perform common tasks with slash commands."
 msgstr ""
 
 msgid "Integrations|Projects using custom settings"
@@ -41166,13 +41178,7 @@ msgstr ""
 msgid "Slack notifications will be deprecated"
 msgstr ""
 
-msgid "SlackIntegration|An application called GitLab for Slack app is requesting access to your GitLab account. This application was created by GitLab Inc."
-msgstr ""
-
 msgid "SlackIntegration|Are you sure you want to remove this project from the GitLab for Slack app?"
-msgstr ""
-
-msgid "SlackIntegration|Authorize GitLab for Slack app (%{user}) to use your account?"
 msgstr ""
 
 msgid "SlackIntegration|Client ID"

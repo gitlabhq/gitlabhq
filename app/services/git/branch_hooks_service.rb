@@ -156,7 +156,7 @@ module Git
     def enqueue_jira_connect_sync_messages
       return unless project.jira_subscription_exists?
 
-      branch_to_sync = branch_name if Atlassian::JiraIssueKeyExtractor.has_keys?(branch_name)
+      branch_to_sync = branch_name if Atlassian::JiraIssueKeyExtractors::Branch.has_keys?(project, branch_name)
       commits_to_sync = limited_commits.select { |commit| Atlassian::JiraIssueKeyExtractor.has_keys?(commit.safe_message) }.map(&:sha)
 
       if branch_to_sync || commits_to_sync.any?

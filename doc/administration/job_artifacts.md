@@ -174,7 +174,7 @@ In a multi-server setup you must use one of the options to
 [eliminate local disk usage for job logs](job_logs.md#prevent-local-disk-usage), or job logs could be lost.
 
 In GitLab 13.2 and later, you should use the
-[consolidated object storage settings](object_storage.md#consolidated-object-storage-configuration).
+[consolidated object storage settings](object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 
 ### Migrating to object storage
 
@@ -781,7 +781,7 @@ In both cases, you might need to add `region` to the job artifact [object storag
 
 ### Job artifact upload fails with `500 Internal Server Error (Missing file)`
 
-Bucket names that include folder paths are not supported with [consolidated object storage](object_storage.md#consolidated-object-storage-configuration).
+Bucket names that include folder paths are not supported with [consolidated object storage](object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 For example, `bucket/path`. If a bucket name has a path in it, you might receive an error similar to:
 
 ```plaintext

@@ -19,7 +19,7 @@ To set up SAML on GitLab.com, see [SAML SSO for GitLab.com groups](../user/group
 For more information on:
 
 - OmniAuth provider settings, see the [OmniAuth documentation](omniauth.md).
-- Commonly-used terms, see the [glossary of common terms](#glossary-of-common-terms).
+- Commonly-used terms, see the [glossary](#glossary).
 
 ## Configure SAML support in GitLab
 
@@ -3125,7 +3125,7 @@ such as the following:
 
 For example configurations, see the [notes on specific providers](#set-up-identity-providers).
 
-## Glossary of common terms
+## Glossary
 
 | Term                           | Description |
 |--------------------------------|-------------|

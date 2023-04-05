@@ -156,14 +156,14 @@ You can store LFS objects in remote object storage. This allows you
 to reduce reads and writes to the local disk, and free up disk space significantly.
 
 In GitLab 13.2 and later, you should use the
-[consolidated object storage settings](../object_storage.md#consolidated-object-storage-configuration).
+[consolidated object storage settings](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 
 ### Migrating to object storage
 
 You can migrate the LFS objects from local storage to object storage. The
 processing is done in the background and requires **no downtime**.
 
-1. [Configure the object storage](../object_storage.md#consolidated-object-storage-configuration).
+1. [Configure the object storage](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 1. Migrate the LFS objects:
 
    ::Tabs

@@ -2186,15 +2186,15 @@ and scalable.
 
 There are two ways of specifying object storage configuration in GitLab:
 
-- [Consolidated form](../object_storage.md#consolidated-object-storage-configuration): A single credential is
+- [Consolidated form](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form): A single credential is
   shared by all supported object types.
-- [Storage-specific form](../object_storage.md#storage-specific-configuration): Every object defines its
+- [Storage-specific form](../object_storage.md#configure-each-object-type-to-define-its-own-storage-connection-storage-specific-form): Every object defines its
   own object storage [connection and configuration](../object_storage.md#connection-settings).
 
 The consolidated form is used in the following examples when available.
 
 NOTE:
-When using the [storage-specific form](../object_storage.md#storage-specific-configuration)
+When using the [storage-specific form](../object_storage.md#configure-each-object-type-to-define-its-own-storage-connection-storage-specific-form)
 in GitLab 14.x and earlier, you should enable [direct upload mode](../../development/uploads/index.md#direct-upload).
 The previous [background upload](../../development/uploads/index.md#direct-upload) mode,
 which was deprecated in 14.9, requires shared storage such as NFS.

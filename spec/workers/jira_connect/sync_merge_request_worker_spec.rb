@@ -22,7 +22,7 @@ RSpec.describe JiraConnect::SyncMergeRequestWorker, feature_category: :integrati
 
     it 'calls JiraConnect::SyncService#execute' do
       expect_next(JiraConnect::SyncService).to receive(:execute)
-        .with(merge_requests: [merge_request], update_sequence_id: update_sequence_id)
+        .with(merge_requests: [merge_request], branches: [have_attributes(name: 'master')], update_sequence_id: update_sequence_id)
 
       perform
     end
@@ -32,6 +32,21 @@ RSpec.describe JiraConnect::SyncMergeRequestWorker, feature_category: :integrati
 
       it 'does not call JiraConnect::SyncService' do
         expect(JiraConnect::SyncService).not_to receive(:new)
+
+        perform
+      end
+    end
+
+    context 'when source branch cannot be found' do
+      before do
+        allow_next_found_instance_of(MergeRequest) do |mr|
+          allow(mr).to receive(:source_branch).and_return('non-existant-branch')
+        end
+      end
+
+      it 'calls JiraConnect::SyncService will an empty branch' do
+        expect_next(JiraConnect::SyncService).to receive(:execute)
+        .with(merge_requests: [merge_request], branches: [], update_sequence_id: update_sequence_id)
 
         perform
       end

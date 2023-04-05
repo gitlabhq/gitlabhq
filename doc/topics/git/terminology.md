@@ -4,9 +4,9 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Git terminology
+# Git concepts
 
-The following are commonly-used Git terms.
+The following are commonly-used Git concepts.
 
 ## Repository
 

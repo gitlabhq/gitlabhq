@@ -468,9 +468,62 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
         FIELDS
       end
 
+      let_it_be(:valid_parent) { create(:work_item, project: project) }
+      let_it_be(:valid_child1) { create(:work_item, :task, project: project, created_at: 5.minutes.ago) }
+      let_it_be(:valid_child2) { create(:work_item, :task, project: project, created_at: 5.minutes.from_now) }
+      let(:input_base) { { parentId: valid_parent.to_gid.to_s } }
+      let(:child1_ref) { { adjacentWorkItemId: valid_child1.to_global_id.to_s } }
+      let(:child2_ref) { { adjacentWorkItemId: valid_child2.to_global_id.to_s } }
+      let(:relative_range) { [valid_child1, valid_child2].map(&:parent_link).map(&:relative_position) }
+
+      let(:invalid_relative_position_error) do
+        WorkItems::Widgets::HierarchyService::UpdateService::INVALID_RELATIVE_POSITION_ERROR
+      end
+
+      shared_examples 'updates work item parent and sets the relative position' do
+        it do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            work_item.reload
+          end.to change(work_item, :work_item_parent).from(nil).to(valid_parent)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(widgets_response).to include({ 'type' => 'HIERARCHY', 'children' => { 'edges' => [] },
+            'parent' => { 'id' => valid_parent.to_global_id.to_s } })
+
+          expect(work_item.parent_link.relative_position).to be_between(*relative_range)
+        end
+      end
+
+      shared_examples 'sets the relative position and does not update work item parent' do
+        it do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            work_item.reload
+          end.to not_change(work_item, :work_item_parent)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(widgets_response).to include({ 'type' => 'HIERARCHY', 'children' => { 'edges' => [] },
+            'parent' => { 'id' => valid_parent.to_global_id.to_s } })
+
+          expect(work_item.parent_link.relative_position).to be_between(*relative_range)
+        end
+      end
+
+      shared_examples 'returns "relative position is not valid" error message' do
+        it do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            work_item.reload
+          end.to not_change(work_item, :work_item_parent)
+
+          expect(mutation_response['workItem']).to be_nil
+          expect(mutation_response['errors']).to match_array([invalid_relative_position_error])
+        end
+      end
+
       context 'when updating parent' do
         let_it_be(:work_item, reload: true) { create(:work_item, :task, project: project) }
-        let_it_be(:valid_parent) { create(:work_item, project: project) }
         let_it_be(:invalid_parent) { create(:work_item, :task, project: project) }
 
         context 'when parent work item type is invalid' do
@@ -493,20 +546,15 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
         context 'when parent work item has a valid type' do
           let(:input) { { 'hierarchyWidget' => { 'parentId' => valid_parent.to_global_id.to_s } } }
 
-          it 'sets the parent for the work item' do
+          it 'updates work item parent' do
             expect do
               post_graphql_mutation(mutation, current_user: current_user)
               work_item.reload
             end.to change(work_item, :work_item_parent).from(nil).to(valid_parent)
 
             expect(response).to have_gitlab_http_status(:success)
-            expect(widgets_response).to include(
-              {
-                'children' => { 'edges' => [] },
-                'parent' => { 'id' => valid_parent.to_global_id.to_s },
-                'type' => 'HIERARCHY'
-              }
-            )
+            expect(widgets_response).to include({ 'type' => 'HIERARCHY', 'children' => { 'edges' => [] },
+              'parent' => { 'id' => valid_parent.to_global_id.to_s } })
           end
 
           context 'when a parent is already present' do
@@ -521,6 +569,31 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
                 post_graphql_mutation(mutation, current_user: current_user)
                 work_item.reload
               end.to change(work_item, :work_item_parent).from(existing_parent).to(valid_parent)
+            end
+          end
+
+          context 'when updating relative position' do
+            before(:all) do
+              create(:parent_link, work_item_parent: valid_parent, work_item: valid_child1)
+              create(:parent_link, work_item_parent: valid_parent, work_item: valid_child2)
+            end
+
+            context "when incomplete positioning arguments are given" do
+              let(:input) { { hierarchyWidget: input_base.merge(child1_ref) } }
+
+              it_behaves_like 'returns "relative position is not valid" error message'
+            end
+
+            context 'when moving after adjacent' do
+              let(:input) { { hierarchyWidget: input_base.merge(child1_ref).merge(relativePosition: 'AFTER') } }
+
+              it_behaves_like 'updates work item parent and sets the relative position'
+            end
+
+            context 'when moving before adjacent' do
+              let(:input) { { hierarchyWidget: input_base.merge(child2_ref).merge(relativePosition: 'BEFORE') } }
+
+              it_behaves_like 'updates work item parent and sets the relative position'
             end
           end
         end
@@ -578,9 +651,37 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
         end
       end
 
+      context 'when reordering existing child' do
+        let_it_be(:work_item, reload: true) { create(:work_item, :task, project: project) }
+
+        context "when parent is already assigned" do
+          before(:all) do
+            create(:parent_link, work_item_parent: valid_parent, work_item: work_item)
+            create(:parent_link, work_item_parent: valid_parent, work_item: valid_child1)
+            create(:parent_link, work_item_parent: valid_parent, work_item: valid_child2)
+          end
+
+          context "when incomplete positioning arguments are given" do
+            let(:input) { { hierarchyWidget: child1_ref } }
+
+            it_behaves_like 'returns "relative position is not valid" error message'
+          end
+
+          context 'when moving after adjacent' do
+            let(:input) { { hierarchyWidget: child1_ref.merge(relativePosition: 'AFTER') } }
+
+            it_behaves_like 'sets the relative position and does not update work item parent'
+          end
+
+          context 'when moving before adjacent' do
+            let(:input) { { hierarchyWidget: child2_ref.merge(relativePosition: 'BEFORE') } }
+
+            it_behaves_like 'sets the relative position and does not update work item parent'
+          end
+        end
+      end
+
       context 'when updating children' do
-        let_it_be(:valid_child1) { create(:work_item, :task, project: project) }
-        let_it_be(:valid_child2) { create(:work_item, :task, project: project) }
         let_it_be(:invalid_child) { create(:work_item, project: project) }
 
         let(:input) { { 'hierarchyWidget' => { 'childrenIds' => children_ids } } }

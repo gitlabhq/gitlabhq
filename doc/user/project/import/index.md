@@ -167,6 +167,7 @@ GitLab from:
 
 For more information, see:
 
+- Information on paid GitLab [migration services](https://about.gitlab.com/services/migration/).
 - [Quick Start](https://gitlab.com/gitlab-org/professional-services-automation/tools/migration/congregate/-/blob/master/docs/using-congregate.md#quick-start).
 - [Frequently Asked Migration Questions](https://gitlab.com/gitlab-org/professional-services-automation/tools/migration/congregate/-/blob/master/customer/famq.md),
   including settings that need checking afterwards and other limitations.

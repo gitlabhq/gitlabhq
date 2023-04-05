@@ -66,6 +66,13 @@ The three endpoints are:
 - **Group-level**: Use when you want to install packages from many different projects in the same GitLab group. GitLab does not guarantee the uniqueness of package names within the group. You can have two projects with the same package name and package version. As a result, GitLab serves whichever one is more recent.
 - **Instance-level**: Use when you have many packages in different GitLab groups or in their own namespace.
 
+For the instance-level endpoint, ensure the relevant section of your `pom.xml` in Maven looks like this:
+
+```xml
+  <groupId>group-slug.subgroup-slug</groupId>
+  <artifactId>project-slug</artifactId>
+```
+
 **Only packages that have the same path as the project** are exposed by the instance-level endpoint.
 
 | Project             | Package                          | Instance-level endpoint available |

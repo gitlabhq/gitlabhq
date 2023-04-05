@@ -515,7 +515,7 @@ immediately. If the user:
 ## Related topics
 
 - [SAML SSO for self-managed GitLab instances](../../../integration/saml.md)
-- [Glossary of common terms](../../../integration/saml.md#glossary-of-common-terms)
+- [Glossary](../../../integration/saml.md#glossary)
 - [Authentication comparison between SaaS and self-managed](../../../administration/auth/index.md#saas-vs-self-managed-comparison)
 - [Passwords for users created through integrated authentication](../../../security/passwords_for_integrated_authentication_methods.md)
 

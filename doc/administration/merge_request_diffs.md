@@ -105,7 +105,7 @@ be configured already.
 ### Object Storage Settings
 
 In GitLab 13.2 and later, you should use the
-[consolidated object storage settings](object_storage.md#consolidated-object-storage-configuration).
+[consolidated object storage settings](object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 This section describes the earlier configuration format.
 
 For source installations, these settings are nested under `external_diffs:` and

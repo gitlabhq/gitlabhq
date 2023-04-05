@@ -15,11 +15,11 @@ module Integrations
     end
 
     def title
-      'Mattermost slash commands'
+      s_('Integrations|Mattermost slash commands')
     end
 
     def description
-      "Perform common tasks with slash commands."
+      s_('Integrations|Perform common tasks with slash commands.')
     end
 
     def self.to_param

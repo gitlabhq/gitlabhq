@@ -18777,7 +18777,7 @@ ALTER SEQUENCE namespaces_sync_events_id_seq OWNED BY namespaces_sync_events.id;
 
 CREATE TABLE note_diff_files (
     id integer NOT NULL,
-    diff_note_id integer NOT NULL,
+    diff_note_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     diff text NOT NULL,
     new_file boolean NOT NULL,
     renamed_file boolean NOT NULL,
@@ -18786,7 +18786,7 @@ CREATE TABLE note_diff_files (
     b_mode character varying NOT NULL,
     new_path text NOT NULL,
     old_path text NOT NULL,
-    diff_note_id_convert_to_bigint bigint DEFAULT 0 NOT NULL
+    diff_note_id bigint NOT NULL
 );
 
 CREATE SEQUENCE note_diff_files_id_seq
@@ -31240,8 +31240,6 @@ CREATE INDEX index_non_requested_project_members_on_source_id_and_type ON member
 
 CREATE UNIQUE INDEX index_note_diff_files_on_diff_note_id ON note_diff_files USING btree (diff_note_id);
 
-CREATE UNIQUE INDEX index_note_diff_files_on_diff_note_id_convert_to_bigint ON note_diff_files USING btree (diff_note_id_convert_to_bigint);
-
 CREATE INDEX index_notes_for_cherry_picked_merge_requests ON notes USING btree (project_id, commit_id) WHERE ((noteable_type)::text = 'MergeRequest'::text);
 
 CREATE INDEX index_notes_on_author_id_and_created_at_and_id ON notes USING btree (author_id, created_at, id);
@@ -35237,9 +35235,6 @@ ALTER TABLE ONLY ml_candidate_metrics
 
 ALTER TABLE ONLY ml_candidate_params
     ADD CONSTRAINT fk_ml_candidate_params_on_candidate_id FOREIGN KEY (candidate_id) REFERENCES ml_candidates(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY note_diff_files
-    ADD CONSTRAINT fk_note_diff_files_diff_note_id_convert_to_bigint FOREIGN KEY (diff_note_id_convert_to_bigint) REFERENCES notes(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY path_locks
     ADD CONSTRAINT fk_path_locks_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
