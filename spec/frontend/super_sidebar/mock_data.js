@@ -49,11 +49,21 @@ export const mergeRequestMenuGroup = [
         text: 'Assigned',
         href: '/dashboard/merge_requests?assignee_username=root',
         count: 4,
+        extraAttrs: {
+          'data-track-action': 'click_link',
+          'data-track-label': 'merge_requests_assigned',
+          'data-track-property': 'nav_core_menu',
+        },
       },
       {
         text: 'Review requests',
         href: '/dashboard/merge_requests?reviewer_username=root',
         count: 0,
+        extraAttrs: {
+          'data-track-action': 'click_link',
+          'data-track-label': 'merge_requests_to_review',
+          'data-track-property': 'nav_core_menu',
+        },
       },
     ],
   },

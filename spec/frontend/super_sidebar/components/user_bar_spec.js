@@ -18,6 +18,9 @@ describe('UserBar component', () => {
 
   const findCreateMenu = () => wrapper.findComponent(CreateMenu);
   const findCounter = (at) => wrapper.findAllComponents(Counter).at(at);
+  const findIssuesCounter = () => findCounter(0);
+  const findMRsCounter = () => findCounter(1);
+  const findTodosCounter = () => findCounter(2);
   const findMergeRequestMenu = () => wrapper.findComponent(MergeRequestMenu);
   const findBrandLogo = () => wrapper.findByTestId('brand-header-custom-logo');
   const findSearchButton = () => wrapper.findByTestId('super-sidebar-search-button');
@@ -60,20 +63,32 @@ describe('UserBar component', () => {
     });
 
     it('renders issues counter', () => {
-      expect(findCounter(0).props('count')).toBe(sidebarData.assigned_open_issues_count);
-      expect(findCounter(0).props('href')).toBe(sidebarData.issues_dashboard_path);
-      expect(findCounter(0).props('label')).toBe(__('Issues'));
+      const isuesCounter = findIssuesCounter();
+      expect(isuesCounter.props('count')).toBe(sidebarData.assigned_open_issues_count);
+      expect(isuesCounter.props('href')).toBe(sidebarData.issues_dashboard_path);
+      expect(isuesCounter.props('label')).toBe(__('Issues'));
+      expect(isuesCounter.attributes('data-track-action')).toBe('click_link');
+      expect(isuesCounter.attributes('data-track-label')).toBe('issues_link');
+      expect(isuesCounter.attributes('data-track-property')).toBe('nav_core_menu');
     });
 
     it('renders merge requests counter', () => {
-      expect(findCounter(1).props('count')).toBe(sidebarData.total_merge_requests_count);
-      expect(findCounter(1).props('label')).toBe(__('Merge requests'));
+      const mrsCounter = findMRsCounter();
+      expect(mrsCounter.props('count')).toBe(sidebarData.total_merge_requests_count);
+      expect(mrsCounter.props('label')).toBe(__('Merge requests'));
+      expect(mrsCounter.attributes('data-track-action')).toBe('click_dropdown');
+      expect(mrsCounter.attributes('data-track-label')).toBe('merge_requests_menu');
+      expect(mrsCounter.attributes('data-track-property')).toBe('nav_core_menu');
     });
 
     it('renders todos counter', () => {
-      expect(findCounter(2).props('count')).toBe(sidebarData.todos_pending_count);
-      expect(findCounter(2).props('href')).toBe('/dashboard/todos');
-      expect(findCounter(2).props('label')).toBe(__('To-Do list'));
+      const todosCounter = findTodosCounter();
+      expect(todosCounter.props('count')).toBe(sidebarData.todos_pending_count);
+      expect(todosCounter.props('href')).toBe('/dashboard/todos');
+      expect(todosCounter.props('label')).toBe(__('To-Do list'));
+      expect(todosCounter.attributes('data-track-action')).toBe('click_link');
+      expect(todosCounter.attributes('data-track-label')).toBe('todos_link');
+      expect(todosCounter.attributes('data-track-property')).toBe('nav_core_menu');
     });
 
     it('renders branding logo', () => {

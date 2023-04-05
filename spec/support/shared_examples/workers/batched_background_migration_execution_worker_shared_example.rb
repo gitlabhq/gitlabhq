@@ -50,14 +50,20 @@ RSpec.shared_examples 'batched background migrations execution worker' do
   end
 
   describe '.max_running_jobs' do
-    it 'returns MAX_RUNNING_MIGRATIONS' do
-      expect(described_class.max_running_jobs).to eq(described_class::MAX_RUNNING_MIGRATIONS)
+    it 'returns database_max_running_batched_background_migrations application setting' do
+      stub_application_setting(database_max_running_batched_background_migrations: 3)
+
+      expect(described_class.max_running_jobs)
+        .to eq(Gitlab::CurrentSettings.database_max_running_batched_background_migrations)
     end
   end
 
   describe '#max_running_jobs' do
-    it 'returns MAX_RUNNING_MIGRATIONS' do
-      expect(described_class.new.max_running_jobs).to eq(described_class::MAX_RUNNING_MIGRATIONS)
+    it 'returns database_max_running_batched_background_migrations application setting' do
+      stub_application_setting(database_max_running_batched_background_migrations: 3)
+
+      expect(described_class.new.max_running_jobs)
+        .to eq(Gitlab::CurrentSettings.database_max_running_batched_background_migrations)
     end
   end
 

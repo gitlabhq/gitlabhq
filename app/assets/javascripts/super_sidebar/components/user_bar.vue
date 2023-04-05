@@ -70,6 +70,9 @@ export default {
         v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.homepage"
         :href="rootPath"
         :title="$options.i18n.homepage"
+        data-track-action="click_link"
+        data-track-label="gitlab_logo_link"
+        data-track-property="nav_core_menu"
       >
         <img
           v-if="sidebarData.logo_url"
@@ -120,6 +123,9 @@ export default {
         :count="sidebarData.assigned_open_issues_count"
         :href="sidebarData.issues_dashboard_path"
         :label="$options.i18n.issues"
+        data-track-action="click_link"
+        data-track-label="issues_link"
+        data-track-property="nav_core_menu"
       />
       <merge-request-menu
         class="gl-flex-basis-third gl-display-block!"
@@ -131,6 +137,9 @@ export default {
           icon="merge-request-open"
           :count="sidebarData.total_merge_requests_count"
           :label="$options.i18n.mergeRequests"
+          data-track-action="click_dropdown"
+          data-track-label="merge_requests_menu"
+          data-track-property="nav_core_menu"
         />
       </merge-request-menu>
       <counter
@@ -141,6 +150,9 @@ export default {
         href="/dashboard/todos"
         :label="$options.i18n.todoList"
         data-qa-selector="todos_shortcut_button"
+        data-track-action="click_link"
+        data-track-label="todos_link"
+        data-track-property="nav_core_menu"
       />
     </div>
   </div>

@@ -9,6 +9,7 @@ import {
   ENVIRONMENT_QUERY_LIMIT,
   SORT_DIRECTIONS,
   UPDATE_MUTATION_ACTION,
+  mapMutationActionToToast,
   environmentFetchErrorText,
   genericMutationErrorText,
   variableFetchErrorText,
@@ -268,11 +269,15 @@ export default {
         if (data.ciVariableMutation?.errors?.length) {
           const { errors } = data.ciVariableMutation;
           createAlert({ message: errors[0] });
-        } else if (this.refetchAfterMutation) {
-          // The writing to cache for admin variable is not working
-          // because there is no ID in the cache at the top level.
-          // We therefore need to manually refetch.
-          this.$apollo.queries.ciVariables.refetch();
+        } else {
+          this.$toast.show(mapMutationActionToToast[mutationAction](variable.key));
+
+          if (this.refetchAfterMutation) {
+            // The writing to cache for admin variable is not working
+            // because there is no ID in the cache at the top level.
+            // We therefore need to manually refetch.
+            this.$apollo.queries.ciVariables.refetch();
+          }
         }
       } catch (e) {
         createAlert({ message: genericMutationErrorText });

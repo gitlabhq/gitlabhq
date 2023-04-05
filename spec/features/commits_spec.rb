@@ -165,10 +165,24 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
 
   context 'viewing commits for a branch' do
     let(:branch_name) { 'master' }
+    let(:ref_selector) { '.ref-selector' }
+    let(:ref_with_hash) { 'ref-#-hash' }
+
+    def switch_ref_to(ref_name)
+      first(ref_selector).click
+      wait_for_requests
+
+      page.within ref_selector do
+        fill_in 'Search by Git revision', with: ref_name
+        wait_for_requests
+        find('li', text: ref_name, match: :prefer_exact).click
+      end
+    end
 
     before do
       project.add_maintainer(user)
       sign_in(user)
+      project.repository.create_branch(ref_with_hash, branch_name)
       visit project_commits_path(project, branch_name)
     end
 
@@ -180,11 +194,17 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
       end
     end
 
+    it 'switches ref to ref containing a hash', :js do
+      switch_ref_to(ref_with_hash)
+
+      expect(page).to have_selector ref_selector, text: ref_with_hash
+    end
+
     it 'shows the ref switcher with the multi-file editor enabled', :js do
       set_cookie('new_repo', 'true')
       visit project_commits_path(project, branch_name)
 
-      expect(find('.ref-selector')).to have_content branch_name
+      expect(find(ref_selector)).to have_content branch_name
     end
   end
 

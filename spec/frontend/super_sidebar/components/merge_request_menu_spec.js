@@ -8,7 +8,7 @@ describe('MergeRequestMenu component', () => {
 
   const findGlBadge = (at) => wrapper.findAllComponents(GlBadge).at(at);
   const findGlDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findLink = () => wrapper.findByRole('link');
+  const findLink = (name) => wrapper.findByRole('link', { name });
 
   const createWrapper = () => {
     wrapper = mountExtended(MergeRequestMenu, {
@@ -27,11 +27,17 @@ describe('MergeRequestMenu component', () => {
       expect(findGlDisclosureDropdown().props('items')).toBe(mergeRequestMenuGroup);
     });
 
-    it('renders item text and count in link', () => {
-      const { text, href, count } = mergeRequestMenuGroup[0].items[0];
-      expect(findLink().text()).toContain(text);
-      expect(findLink().text()).toContain(String(count));
-      expect(findLink().attributes('href')).toBe(href);
+    it.each(mergeRequestMenuGroup[0].items)('renders item text and count in link', (item) => {
+      const index = mergeRequestMenuGroup[0].items.indexOf(item);
+      const { text, href, count, extraAttrs } = mergeRequestMenuGroup[0].items[index];
+      const link = findLink(new RegExp(text));
+
+      expect(link.text()).toContain(text);
+      expect(link.text()).toContain(String(count));
+      expect(link.attributes('href')).toBe(href);
+      expect(link.attributes('data-track-action')).toBe(extraAttrs['data-track-action']);
+      expect(link.attributes('data-track-label')).toBe(extraAttrs['data-track-label']);
+      expect(link.attributes('data-track-property')).toBe(extraAttrs['data-track-property']);
     });
 
     it('renders item count string in badge', () => {

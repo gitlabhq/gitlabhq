@@ -2886,7 +2886,7 @@ msgstr ""
 msgid "AdminSettings|Configure Let's Encrypt"
 msgstr ""
 
-msgid "AdminSettings|Configure limits on the number of repositories users can download in a given time."
+msgid "AdminSettings|Configure limits on the number of repositories users can download, clone, or fork in a given time."
 msgstr ""
 
 msgid "AdminSettings|Configure product analytics to track events within your project applications."
@@ -9201,6 +9201,15 @@ msgid "CiVariable|New environment"
 msgstr ""
 
 msgid "CiVariable|Search environments"
+msgstr ""
+
+msgid "CiVariable|Variable %{key} has been deleted."
+msgstr ""
+
+msgid "CiVariable|Variable %{key} has been successfully added."
+msgstr ""
+
+msgid "CiVariable|Variable %{key} has been updated."
 msgstr ""
 
 msgid "Classification Label (optional)"
@@ -20643,7 +20652,7 @@ msgstr ""
 msgid "GroupSettings|Configure compliance frameworks to make them available to projects in this group. %{linkStart}What are compliance frameworks?%{linkEnd}"
 msgstr ""
 
-msgid "GroupSettings|Configure limits on the number of repositories users can download in a given time."
+msgid "GroupSettings|Configure limits on the number of repositories users can download, clone, or fork in a given time."
 msgstr ""
 
 msgid "GroupSettings|Custom project templates"

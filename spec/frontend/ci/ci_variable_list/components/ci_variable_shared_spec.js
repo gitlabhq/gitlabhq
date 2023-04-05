@@ -25,6 +25,7 @@ import {
   environmentFetchErrorText,
   genericMutationErrorText,
   variableFetchErrorText,
+  mapMutationActionToToast,
 } from '~/ci/ci_variable_list/constants';
 
 import {
@@ -66,6 +67,8 @@ describe('Ci Variable Shared Component', () => {
   let mockEnvironments;
   let mockVariables;
 
+  const mockToastShow = jest.fn();
+
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findCiTable = () => wrapper.findComponent(GlTable);
   const findCiSettings = () => wrapper.findComponent(ciVariableSettings);
@@ -95,6 +98,11 @@ describe('Ci Variable Shared Component', () => {
       },
       apolloProvider: mockApollo,
       stubs: { ciVariableSettings, ciVariableTable },
+      mocks: {
+        $toast: {
+          show: mockToastShow,
+        },
+      },
     });
 
     if (!isLoading) {
@@ -295,9 +303,9 @@ describe('Ci Variable Shared Component', () => {
         ${'update'} | ${groupProps.mutationData[UPDATE_MUTATION_ACTION]} | ${'update-variable'}
         ${'delete'} | ${groupProps.mutationData[DELETE_MUTATION_ACTION]} | ${'delete-variable'}
       `(
-        'calls the right mutation from propsData when user performs $actionName variable',
-        async ({ event, mutation }) => {
-          jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue();
+        'calls the mutation from propsData and shows a toast when user performs $actionName variable',
+        async ({ event, mutation, actionName }) => {
+          jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({ data: {} });
 
           await findCiSettings().vm.$emit(event, newVariable);
 
@@ -310,6 +318,12 @@ describe('Ci Variable Shared Component', () => {
               variable: newVariable,
             },
           });
+
+          await nextTick();
+
+          expect(mockToastShow).toHaveBeenCalledWith(
+            mapMutationActionToToast[actionName](newVariable.key),
+          );
         },
       );
 

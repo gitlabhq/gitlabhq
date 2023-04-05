@@ -75,7 +75,6 @@ Organizations work under the following assumptions:
 #### Organization properties
 
 - Top-level namespaces belong to organizations
-- Users can be members of different organizations
 - Organizations are isolated from each other by default meaning that cross-namespace features will only work for namespaces that exist within a single organization
 - User namespaces must not belong to an organization
 
@@ -83,9 +82,7 @@ Discouraged synonyms: Billable entities, customers
 
 ### Top-Level namespace
 
-A top-level namespace is the logical object container in the code that represents all groups, subgroups and projects that belong to an organization.
-
-A top-level namespace is the root of nested collection namespaces and projects. The namespace and its related entities form a tree-like hierarchy: Namespaces are the nodes of the tree, projects are the leaves.
+Top-level namespace is the name given to the top most group of all other groups. Groups and projects are nested underneath the top-level namespace.
 
 Example:
 
@@ -94,7 +91,9 @@ Example:
 - `gitlab-org` is a `top-level namespace`; the root for all groups and projects of an organization
 - `gitlab` is a `project`; a project of the organization.
 
-Top-level namespaces may [be replaced by organizations](https://gitlab.com/gitlab-org/gitlab/-/issues/368237#high-level-goals). This proposal only uses the term top-level namespaces as the organization definition is ongoing.
+The top-level namespace has served as the defacto Organization entity. With the creation of Organization, top-level namespaces will be [nested underneath Organizations](https://gitlab.com/gitlab-org/gitlab/-/issues/394796).
+
+Over time there won't be a distinction between a top level namespace and a group. All features that make Top-level namespaces different from groups will move to Organization.
 
 Discouraged synonyms: Root-level namespace
 
@@ -107,14 +106,15 @@ Discouraged synonyms: Root-level namespace
 
 ### Users
 
-Users are available globally and not restricted to a single Cell. Users can be members of many different organizations with varying permissions. Inside organizations, users can create multiple top-level namespaces. User activity is not limited to a single organization but their contributions (for example TODOs) are only aggregated within an organization. This avoids the need for aggregating across cells.
+Users are available globally and not restricted to a single Cell. Users belong to a single organization, but can participate in many organizations through group and project membership with varying permissions. Inside organizations, users can create multiple top-level namespaces. User activity is not limited to a single organization but their contributions (for example TODOs) are only aggregated within an organization. This avoids the need for aggregating across cells.
 
 #### User properties
 
 - Users are shared globally across all Cells
 - Users can create multiple top-level namespaces
 - Users can be a member of multiple top-level namespaces
-- Users can be a member of multiple organizations
+- Users belong to one organization. See [!395736](https://gitlab.com/gitlab-org/gitlab/-/issues/395736)
+- Users can be members of groups and projects in different organizations
 - Users can administer organizations
 - User activity is aggregated in an organization
 - Every user has one personal namespace

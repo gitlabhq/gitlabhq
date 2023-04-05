@@ -149,7 +149,12 @@ module SidebarsHelper
         items: section[:menu_items].map do |item|
           {
             text: item[:title],
-            href: item[:href]
+            href: item[:href],
+            extraAttrs: {
+              'data-track-label': item[:id],
+              'data-track-action': 'click_link',
+              'data-track-property': 'nav_create_menu'
+            }
           }
         end
       }
@@ -164,12 +169,22 @@ module SidebarsHelper
           {
             text: _('Assigned'),
             href: merge_requests_dashboard_path(assignee_username: user.username),
-            count: user_merge_requests_counts[:assigned]
+            count: user_merge_requests_counts[:assigned],
+            extraAttrs: {
+              'data-track-action': 'click_link',
+              'data-track-label': 'merge_requests_assigned',
+              'data-track-property': 'nav_core_menu'
+            }
           },
           {
             text: _('Review requests'),
             href: merge_requests_dashboard_path(reviewer_username: user.username),
-            count: user_merge_requests_counts[:review_requested]
+            count: user_merge_requests_counts[:review_requested],
+            extraAttrs: {
+              'data-track-action': 'click_link',
+              'data-track-label': 'merge_requests_to_review',
+              'data-track-property': 'nav_core_menu'
+            }
           }
         ]
       }
