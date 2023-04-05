@@ -34,6 +34,20 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
     it { expect(described_class.new.eid).to be_present }
   end
 
+  describe '.destroy' do
+    let_it_be(:candidate_to_destroy) do
+      create(:ml_candidates, :with_metrics_and_params, :with_metadata, :with_artifact)
+    end
+
+    it 'destroys metrics, params and metadata, but not the artifact', :aggregate_failures do
+      expect { candidate_to_destroy.destroy! }
+        .to change { Ml::CandidateMetadata.count }.by(-2)
+        .and change { Ml::CandidateParam.count }.by(-2)
+        .and change { Ml::CandidateMetric.count }.by(-2)
+        .and not_change { Packages::Package.count }
+    end
+  end
+
   describe '.artifact_root' do
     subject { candidate.artifact_root }
 

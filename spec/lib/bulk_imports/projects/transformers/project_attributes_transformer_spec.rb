@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer, feature_category: :importers do
   describe '#transform' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project, name: 'My Source Project') }
     let_it_be(:bulk_import) { create(:bulk_import, user: user) }
 
     let(:entity) do
@@ -25,6 +24,7 @@ RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer
     let(:context) { BulkImports::Pipeline::Context.new(tracker) }
     let(:data) do
       {
+        'name' => 'My Project',
         'visibility' => 'private',
         'created_at' => '2016-11-18T09:29:42.634Z'
       }
@@ -32,8 +32,9 @@ RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer
 
     subject(:transformed_data) { described_class.new.transform(context, data) }
 
-    it 'transforms name to destination slug' do
-      expect(transformed_data[:name]).to eq(entity.destination_slug)
+    it 'uniquifies project name' do
+      create(:project, group: destination_group, name: 'My Project')
+      expect(transformed_data[:name]).to eq('My Project_1')
     end
 
     it 'adds path as normalized name' do
@@ -110,6 +111,12 @@ RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer
       end
 
       it 'makes the name unique by appending a counter' do
+        data = {
+          'visibility' => 'private',
+          'created_at' => '2016-11-18T09:29:42.634Z',
+          'name' => 'Destination-Project-Name'
+        }
+
         transformed_data = described_class.new.transform(context, data)
         expect(transformed_data['name']).to eq('Destination-Project-Name_2')
       end

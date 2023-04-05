@@ -16,7 +16,7 @@ module BulkImports
           namespace = Namespace.find_by_full_path(entity.destination_namespace)
           path = normalize_path(entity.destination_slug)
 
-          project[:name] = uniquify(namespace, entity.destination_slug, :name)
+          project[:name] = uniquify(namespace, data['name'], :name)
           project[:path] = uniquify(namespace, path, :path)
           project[:created_at] = data['created_at']
           project[:import_type] = PROJECT_IMPORT_TYPE

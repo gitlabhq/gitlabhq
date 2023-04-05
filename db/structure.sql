@@ -35231,6 +35231,12 @@ ALTER TABLE ONLY geo_event_log
 ALTER TABLE ONLY issue_user_mentions
     ADD CONSTRAINT fk_issue_user_mentions_note_id_convert_to_bigint FOREIGN KEY (note_id_convert_to_bigint) REFERENCES notes(id) ON DELETE CASCADE NOT VALID;
 
+ALTER TABLE ONLY ml_candidate_metrics
+    ADD CONSTRAINT fk_ml_candidate_metrics_on_candidate_id FOREIGN KEY (candidate_id) REFERENCES ml_candidates(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ml_candidate_params
+    ADD CONSTRAINT fk_ml_candidate_params_on_candidate_id FOREIGN KEY (candidate_id) REFERENCES ml_candidates(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY note_diff_files
     ADD CONSTRAINT fk_note_diff_files_diff_note_id_convert_to_bigint FOREIGN KEY (diff_note_id_convert_to_bigint) REFERENCES notes(id) ON DELETE CASCADE NOT VALID;
 
@@ -36683,9 +36689,6 @@ ALTER TABLE ONLY alert_management_alert_assignees
 ALTER TABLE ONLY geo_hashed_storage_attachments_events
     ADD CONSTRAINT fk_rails_d496b088e9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ml_candidate_params
-    ADD CONSTRAINT fk_rails_d4a51d1185 FOREIGN KEY (candidate_id) REFERENCES ml_candidates(id);
-
 ALTER TABLE ONLY packages_rpm_repository_files
     ADD CONSTRAINT fk_rails_d545cfaed2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -36862,9 +36865,6 @@ ALTER TABLE ONLY project_relation_exports
 
 ALTER TABLE ONLY label_priorities
     ADD CONSTRAINT fk_rails_ef916d14fa FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ml_candidate_metrics
-    ADD CONSTRAINT fk_rails_efb613a25a FOREIGN KEY (candidate_id) REFERENCES ml_candidates(id);
 
 ALTER TABLE ONLY fork_network_members
     ADD CONSTRAINT fk_rails_efccadc4ec FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

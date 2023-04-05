@@ -11,6 +11,7 @@ module BulkImports
           query($full_path: ID!) {
             project(fullPath: $full_path) {
               id
+              name
               visibility
               created_at: createdAt
             }

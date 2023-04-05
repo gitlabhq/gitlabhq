@@ -29,7 +29,7 @@ module Clusters
     end
 
     def can_read_cluster_agents?
-      current_user&.can?(:read_cluster, object)
+      current_user&.can?(:read_cluster_agent, object)
     end
   end
 end

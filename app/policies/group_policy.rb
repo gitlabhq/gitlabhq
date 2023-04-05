@@ -165,7 +165,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :developer_access
     enable :admin_crm_organization
     enable :admin_crm_contact
-    enable :read_cluster
+    enable :read_cluster # Deprecated as certificate-based cluster integration (`Clusters::Cluster`).
+    enable :read_cluster_agent
     enable :read_group_all_available_runners
     enable :use_k8s_proxies
   end

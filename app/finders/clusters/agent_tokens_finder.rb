@@ -11,7 +11,7 @@ module Clusters
     end
 
     def execute
-      return ::Clusters::AgentToken.none unless can_read_cluster_agents?
+      return ::Clusters::AgentToken.none unless can_read_cluster_agent?
 
       agent.agent_tokens.then { |agent_tokens| by_status(agent_tokens) }
     end
@@ -24,8 +24,8 @@ module Clusters
       params[:status].present? ? agent_tokens.with_status(params[:status]) : agent_tokens
     end
 
-    def can_read_cluster_agents?
-      current_user&.can?(:read_cluster, agent&.project)
+    def can_read_cluster_agent?
+      current_user&.can?(:read_cluster_agent, agent)
     end
   end
 end
