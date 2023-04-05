@@ -497,6 +497,7 @@ RSpec.describe GroupsHelper do
           new_project_path: including("/projects/new?namespace_id=#{group.id}"),
           new_subgroup_illustration: including('illustrations/subgroup-create-new-sm'),
           new_project_illustration: including('illustrations/project-create-new-sm'),
+          empty_projects_illustration: including('illustrations/empty-state/empty-projects-md'),
           empty_subgroup_illustration: including('illustrations/empty-state/empty-subgroup-md'),
           render_empty_state: 'true',
           can_create_subgroups: 'true',

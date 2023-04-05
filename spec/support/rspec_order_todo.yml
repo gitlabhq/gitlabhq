@@ -5728,7 +5728,6 @@
 - './spec/lib/gitlab/background_migration/migrate_personal_namespace_project_maintainer_to_owner_spec.rb'
 - './spec/lib/gitlab/background_migration/migrate_project_taggings_context_from_tags_to_topics_spec.rb'
 - './spec/lib/gitlab/background_migration/migrate_shimo_confluence_integration_category_spec.rb'
-- './spec/lib/gitlab/background_migration/migrate_u2f_webauthn_spec.rb'
 - './spec/lib/gitlab/background_migration/move_container_registry_enabled_to_project_feature_spec.rb'
 - './spec/lib/gitlab/background_migration/nullify_orphan_runner_id_on_ci_builds_spec.rb'
 - './spec/lib/gitlab/background_migration/populate_container_repository_migration_plan_spec.rb'

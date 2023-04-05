@@ -74,7 +74,7 @@ tab of the pipeline's details page.
 
 ![Code Quality Report](img/code_quality_report_13_11.png)
 
-### Project quality view
+### Project quality view **(ULTIMATE)**
 
 The project quality view displays an overview of the code quality findings. The view can be found under **Analytics > CI/CD**, and requires [`project_quality_summary_page`](../../user/feature_flags.md) feature flag to be enabled for this particular project.
 

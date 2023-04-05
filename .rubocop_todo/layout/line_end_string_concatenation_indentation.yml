@@ -238,8 +238,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'rubocop/cop/rspec/have_gitlab_http_status.rb'
     - 'rubocop/cop/sidekiq_api_usage.rb'
     - 'rubocop/cop/user_admin.rb'
-    - 'scripts/create-pipeline-failure-incident.rb'
-    - 'scripts/generate-failed-pipeline-slack-message.rb'
     - 'scripts/lib/glfm/parse_examples.rb'
     - 'scripts/lib/glfm/update_example_snapshots.rb'
     - 'scripts/lib/glfm/update_specification.rb'

@@ -68,6 +68,14 @@ module CloudProfilerAgent
             duration_s: elapsed,
             **log_labels
           )
+        rescue Exception => e # rubocop:disable Lint/RescueException
+          # We rescue exception here to make sure we log the error message, then we re-raise the exception.
+          logger.error(
+            gcp_ruby_status: "exception",
+            error: e.inspect,
+            **log_labels
+          )
+          raise e
         else
           iteration_time = @min_iteration_sec
         end

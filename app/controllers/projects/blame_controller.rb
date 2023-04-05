@@ -19,20 +19,13 @@ class Projects::BlameController < Projects::ApplicationController
       return redirect_to_tree_root_for_missing_path(@project, @ref, @path)
     end
 
-    environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
-    environment_params[:find_latest] = true
-    @environment = ::Environments::EnvironmentsByDeploymentsFinder.new(@project, current_user, environment_params).execute.last
+    load_environment
 
-    permitted_params = params.permit(:page, :no_pagination, :streaming)
-    blame_service = Projects::BlameService.new(@blob, @commit, permitted_params)
+    blame_service = Projects::BlameService.new(@blob, @commit, blame_params)
 
     @blame = Gitlab::View::Presenter::Factory.new(blame_service.blame, project: @project, path: @path, page: blame_service.page).fabricate!
 
-    @entire_blame_path = full_blame_path(no_pagination: true)
-    @blame_pages_url = blame_pages_url(permitted_params)
-    if blame_service.streaming_possible
-      @entire_blame_path = full_blame_path(streaming: true)
-    end
+    @streaming_possible = blame_service.streaming_possible
 
     @streaming_enabled = blame_service.streaming_enabled
     @blame_pagination = blame_service.pagination unless @streaming_enabled
@@ -45,11 +38,9 @@ class Projects::BlameController < Projects::ApplicationController
   def page
     @blob = @repository.blob_at(@commit.id, @path)
 
-    environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
-    environment_params[:find_latest] = true
-    @environment = ::Environments::EnvironmentsByDeploymentsFinder.new(@project, current_user, environment_params).execute.last
+    load_environment
 
-    blame_service = Projects::BlameService.new(@blob, @commit, params.permit(:page, :streaming))
+    blame_service = Projects::BlameService.new(@blob, @commit, blame_params)
 
     @blame = Gitlab::View::Presenter::Factory.new(blame_service.blame, project: @project, path: @path, page: blame_service.page).fabricate!
 
@@ -58,12 +49,14 @@ class Projects::BlameController < Projects::ApplicationController
 
   private
 
-  def full_blame_path(params)
-    namespace_project_blame_path(namespace_id: @project.namespace, project_id: @project, id: @id, **params)
+  def load_environment
+    environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
+    environment_params[:find_latest] = true
+    @environment = ::Environments::EnvironmentsByDeploymentsFinder.new(@project, current_user, environment_params).execute.last
   end
 
-  def blame_pages_url(params)
-    namespace_project_blame_page_url(namespace_id: @project.namespace, project_id: @project, id: @id, **params)
+  def blame_params
+    params.permit(:page, :no_pagination, :streaming)
   end
 end
 

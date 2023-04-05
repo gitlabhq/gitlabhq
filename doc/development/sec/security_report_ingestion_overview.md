@@ -81,7 +81,7 @@ At this point, the following things can happen to the `Security::Finding` which 
 
 ### Scan runs in a pipeline for the default branch
 
-If the pipeline ran on the default branch then the following, then in addition to the steps in [#Scan-is-executed-again-a-non-default-branch], these additional steps are executed:
+If the pipeline ran on the default branch then the following steps, in addition to the steps in [#scan-runs-in-a-pipeline-for-a-non-default-branch], are executed:
 
 1. `Security::StoreScansService` gets called and schedules `StoreSecurityReportsWorker`.
 1. `StoreSecurityReportsWorker` executes `Security::Ingestion::IngestReportsService`.

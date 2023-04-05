@@ -29611,6 +29611,9 @@ msgstr ""
 msgid "Notify|%{singular_or_plural_line} %{error_lines}: Work item type is not available. Please check your license and permissions."
 msgstr ""
 
+msgid "Notify|%{strong_open}%{user_name}%{strong_close} updated the custom email address credentials for the Service Desk of %{project_link_start}%{project_name}%{project_link_end} and triggered the verification process."
+msgstr ""
+
 msgid "Notify|%{update_at_start} Last update at %{update_at_mid} %{last_update_at} %{update_at_end}"
 msgstr ""
 
@@ -29687,6 +29690,9 @@ msgid "Notify|Hi %{user}!"
 msgstr ""
 
 msgid "Notify|If this key was added in error, you can remove it under %{removal_link}"
+msgstr ""
+
+msgid "Notify|If this was a mistake you can change these settings or deactivate the custom email address in the project settings."
 msgstr ""
 
 msgid "Notify|If you no longer wish to use this domain with GitLab Pages, please remove it from your GitLab project and delete any related DNS records."
@@ -29794,6 +29800,9 @@ msgstr ""
 msgid "Notify|The project is now located under %{project_full_name_link_start}%{project_full_name}%{link_end}."
 msgstr ""
 
+msgid "Notify|The provided custom email address is %{strong_open}%{email_address}%{strong_close} and uses the SMTP host %{strong_open}%{smtp_host}%{strong_close}."
+msgstr ""
+
 msgid "Notify|The push did not contain any new commits, but force pushed to delete the commits and changes below."
 msgstr ""
 
@@ -29804,6 +29813,9 @@ msgid "Notify|This link is valid for %{password_reset_token_valid_time}."
 msgstr ""
 
 msgid "Notify|Unless you verify your domain by %{time_start}%{time}%{time_end} it will be removed from your GitLab project."
+msgstr ""
+
+msgid "Notify|Verification for custom email %{email} for %{project_name} triggered"
 msgstr ""
 
 msgid "Notify|You don't have access to the project."
@@ -48599,6 +48611,9 @@ msgid "Vulnerability|Actual Response"
 msgstr ""
 
 msgid "Vulnerability|Actual received response is the one received when this fault was detected"
+msgstr ""
+
+msgid "Vulnerability|Actual response:"
 msgstr ""
 
 msgid "Vulnerability|Add another identifier"

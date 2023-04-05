@@ -1,15 +1,17 @@
 - page_title _("Blame"), @blob.path, @ref
 - add_page_specific_style 'page_bundles/tree'
+- blame_streaming_url = blame_pages_streaming_url(@id, @project)
+
 - if @streaming_enabled && total_extra_pages > 0
   - content_for :startup_js do
     = javascript_tag do
       :plain
         window.blamePageStream = (() => {
-          const url = new URL("#{@blame_pages_url}");
+          const url = new URL("#{blame_streaming_url}");
           url.searchParams.set('page', 2);
           return fetch(url).then(response => response.body);
         })();
-- dataset = { testid: 'blob-content-holder', qa_selector: 'blame_file_content', per_page: @blame_per_page, total_extra_pages: total_extra_pages - 1, pages_url: @blame_pages_url }
+- dataset = { testid: 'blob-content-holder', qa_selector: 'blame_file_content', per_page: @blame_per_page, total_extra_pages: total_extra_pages - 1, pages_url: blame_streaming_url }
 
 #blob-content-holder.tree-holder.js-per-page{ data: dataset }
   = render "projects/blob/breadcrumb", blob: @blob, blame: true
@@ -40,7 +42,7 @@
 
     - if @blame_pagination && @blame_pagination.total_pages > 1
       .gl-display-flex.gl-justify-content-center.gl-flex-direction-column.gl-align-items-center.gl-p-3.gl-bg-gray-50.gl-border-t-solid.gl-border-t-1.gl-border-gray-100
-        = render Pajamas::ButtonComponent.new(href: @entire_blame_path, size: :small, button_options: { class: 'gl-mt-3' }) do |c|
+        = render Pajamas::ButtonComponent.new(href: entire_blame_path(@id, @project, @streaming_possible), size: :small, button_options: { class: 'gl-mt-3' }) do |c|
           = _('Show full blame')
 
     - if @streaming_enabled

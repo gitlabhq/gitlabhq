@@ -809,6 +809,50 @@ Example response:
 
 - CustomersDot
 
+## Storage limit exclusions
+
+The namespace storage limit exclusions endpoint applies storage limit exclusions to top-level namespaces on GitLab.com.
+This endpoint can only be consumed in the Admin Area of GitLab.com.
+
+### Create a storage limit exclusion
+
+Use a POST request to create an `Namespaces::Storage::LimitExclusion`.
+
+```plaintext
+POST /namespaces/:id/storage/limit_exclusion
+```
+
+| Attribute   | Type    | Required | Description |
+|:------------|:--------|:---------|:------------|
+| `reason`    | string  | yes      | The reason to exclude the namespace. |
+
+Example request:
+
+```shell
+curl --request POST \
+  --url "https://gitlab.com/v4/namespaces/123/storage/limit_exclusion" \
+  --header 'Content-Type: application/json' \
+  --header 'PRIVATE-TOKEN: <admin access token>' \
+  --data '{
+    "reason": "a reason to exclude the Namespace"
+  }'
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "namespace_id": 1234,
+  "namespace_name": "A Namespace Name",
+  "reason": "a reason to exclude the Namespace"
+}
+```
+
+### Known consumers
+
+- GitLab.com Admin Area
+
 ## CI/CD minutes provisioning
 
 The CI/CD Minutes endpoints are used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)

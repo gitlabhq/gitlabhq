@@ -6,7 +6,7 @@ import SharedProjectsEmptyState from '~/groups/components/empty_states/shared_pr
 let wrapper;
 
 const defaultProvide = {
-  newProjectIllustration: '/assets/illustrations/project-create-new-sm.svg',
+  emptyProjectsIllustration: '/assets/illustrations/empty-state/empty-projects-md.svg',
 };
 
 const createComponent = () => {
@@ -21,7 +21,7 @@ describe('SharedProjectsEmptyState', () => {
 
     expect(wrapper.findComponent(GlEmptyState).props()).toMatchObject({
       title: SharedProjectsEmptyState.i18n.title,
-      svgPath: defaultProvide.newProjectIllustration,
+      svgPath: defaultProvide.emptyProjectsIllustration,
     });
   });
 });

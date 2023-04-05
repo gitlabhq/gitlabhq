@@ -226,15 +226,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
           context 'with access token' do
             it_behaves_like 'a package tracking event', 'API::NpmPackages', 'push_package'
 
-            it 'creates npm package with file' do
-              expect { subject }
-                .to change { project.packages.count }.by(1)
-                .and change { Packages::PackageFile.count }.by(1)
-                .and change { Packages::Tag.count }.by(1)
-                .and change { Packages::Npm::Metadatum.count }.by(1)
-
-              expect(response).to have_gitlab_http_status(:ok)
-            end
+            it_behaves_like 'a successful package creation'
           end
 
           it 'creates npm package with file with job token' do
@@ -391,20 +383,35 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
       context 'with a too large metadata structure' do
         let(:package_name) { "@#{group.path}/my_package_name" }
-        let(:params) do
-          upload_params(package_name: package_name, package_version: '1.2.3').tap do |h|
-            h['versions']['1.2.3']['test'] = 'test' * 10000
+
+        ::Packages::Npm::CreatePackageService::PACKAGE_JSON_NOT_ALLOWED_FIELDS.each do |field|
+          context "when a large value for #{field} is set" do
+            let(:params) do
+              upload_params(package_name: package_name, package_version: '1.2.3').tap do |h|
+                h['versions']['1.2.3'][field] = 'test' * 10000
+              end
+            end
+
+            it_behaves_like 'a successful package creation'
           end
         end
 
-        it_behaves_like 'not a package tracking event'
+        context 'when the large field is not one of the ignored fields' do
+          let(:params) do
+            upload_params(package_name: package_name, package_version: '1.2.3').tap do |h|
+              h['versions']['1.2.3']['test'] = 'test' * 10000
+            end
+          end
 
-        it 'returns an error' do
-          expect { upload_package_with_token }
-            .not_to change { project.packages.count }
+          it_behaves_like 'not a package tracking event'
 
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(response.body).to include('Validation failed: Package json structure is too large')
+          it 'returns an error' do
+            expect { upload_package_with_token }
+              .not_to change { project.packages.count }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(response.body).to include('Validation failed: Package json structure is too large')
+          end
         end
       end
     end

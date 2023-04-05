@@ -1,6 +1,7 @@
 - page_description brand_title unless page_description
 - site_name = _('GitLab')
-%head{ prefix: "og: http://ogp.me/ns#" }
+- omit_og = sign_in_with_redirect?
+%head{ omit_og ? { } : { prefix: "og: http://ogp.me/ns#" } }
   %meta{ charset: "utf-8" }
 
   %title= page_title(site_name)
@@ -64,22 +65,23 @@
 
   = yield :project_javascripts
 
-  -# Open Graph - http://ogp.me/
-  %meta{ property: 'og:type', content: "object" }
-  %meta{ property: 'og:site_name', content: site_name }
-  %meta{ property: 'og:title', content: page_title }
-  %meta{ property: 'og:description', content: page_description }
-  %meta{ property: 'og:image', content: page_image }
-  %meta{ property: 'og:image:width', content: '64' }
-  %meta{ property: 'og:image:height', content: '64' }
-  %meta{ property: 'og:url', content: request.base_url + request.fullpath }
+  - unless omit_og
+    -# Open Graph - http://ogp.me/
+    %meta{ property: 'og:type', content: "object" }
+    %meta{ property: 'og:site_name', content: site_name }
+    %meta{ property: 'og:title', content: page_title }
+    %meta{ property: 'og:description', content: page_description }
+    %meta{ property: 'og:image', content: page_image }
+    %meta{ property: 'og:image:width', content: '64' }
+    %meta{ property: 'og:image:height', content: '64' }
+    %meta{ property: 'og:url', content: request.base_url + request.fullpath }
 
-  -# Twitter Card - https://dev.twitter.com/cards/types/summary
-  %meta{ property: 'twitter:card', content: "summary" }
-  %meta{ property: 'twitter:title', content: page_title }
-  %meta{ property: 'twitter:description', content: page_description }
-  %meta{ property: 'twitter:image', content: page_image }
-  = page_card_meta_tags
+    -# Twitter Card - https://dev.twitter.com/cards/types/summary
+    %meta{ property: 'twitter:card', content: "summary" }
+    %meta{ property: 'twitter:title', content: page_title }
+    %meta{ property: 'twitter:description', content: page_description }
+    %meta{ property: 'twitter:image', content: page_image }
+    = page_card_meta_tags
 
   %meta{ name: "description", content: page_description }
 

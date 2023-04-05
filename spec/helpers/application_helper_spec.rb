@@ -706,4 +706,27 @@ RSpec.describe ApplicationHelper do
       expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="screen" href="/stylesheets/test.css" />')
     end
   end
+
+  describe 'sign_in_with_redirect?' do
+    context 'when on the sign-in page that redirects afterwards' do
+      before do
+        allow(helper).to receive(:current_page?).and_return(true)
+        session[:user_return_to] = true
+      end
+
+      it 'returns true' do
+        expect(helper.sign_in_with_redirect?).to be_truthy
+      end
+    end
+
+    context 'when on a non sign-in page' do
+      before do
+        allow(helper).to receive(:current_page?).and_return(false)
+      end
+
+      it 'returns false' do
+        expect(helper.sign_in_with_redirect?).to be_falsey
+      end
+    end
+  end
 end

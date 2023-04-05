@@ -161,6 +161,7 @@ module GroupsHelper
       new_project_path: new_project_path(namespace_id: group.id),
       new_subgroup_illustration: image_path('illustrations/subgroup-create-new-sm.svg'),
       new_project_illustration: image_path('illustrations/project-create-new-sm.svg'),
+      empty_projects_illustration: image_path('illustrations/empty-state/empty-projects-md.svg'),
       empty_subgroup_illustration: image_path('illustrations/empty-state/empty-subgroup-md.svg'),
       render_empty_state: 'true',
       can_create_subgroups: can?(current_user, :create_subgroup, group).to_s,

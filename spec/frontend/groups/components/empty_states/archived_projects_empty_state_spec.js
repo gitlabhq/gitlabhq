@@ -6,7 +6,7 @@ import ArchivedProjectsEmptyState from '~/groups/components/empty_states/archive
 let wrapper;
 
 const defaultProvide = {
-  newProjectIllustration: '/assets/illustrations/project-create-new-sm.svg',
+  emptyProjectsIllustration: '/assets/llustrations/empty-state/empty-projects-md.svg',
 };
 
 const createComponent = () => {
@@ -21,7 +21,7 @@ describe('ArchivedProjectsEmptyState', () => {
 
     expect(wrapper.findComponent(GlEmptyState).props()).toMatchObject({
       title: ArchivedProjectsEmptyState.i18n.title,
-      svgPath: defaultProvide.newProjectIllustration,
+      svgPath: defaultProvide.emptyProjectsIllustration,
     });
   });
 });

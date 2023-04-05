@@ -37,10 +37,6 @@ default:
   OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY2"
 
 .default-branch-pipeline-failure-variables: &default-branch-pipeline-failure-variables
-  CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
-  NOTIFY_PIPELINE_FAILURE_CHANNEL: "master-broken"
-  BROKEN_BRANCH_INCIDENTS_PROJECT: "gitlab-org/quality/engineering-productivity/master-broken-incidents"
-  BROKEN_BRANCH_INCIDENTS_PROJECT_TOKEN: "${BROKEN_MASTER_INCIDENTS_PROJECT_TOKEN}"
   CREATE_ISSUES_FOR_FAILING_TESTS: "true"
 
 workflow:
@@ -87,7 +83,6 @@ workflow:
     - if: '$CI_COMMIT_BRANCH == "ruby2" && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
         <<: *backcompat-ruby-variables
-        NOTIFY_PIPELINE_FAILURE_CHANNEL: "f_ruby3"
         PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline'
     # This work around https://gitlab.com/gitlab-org/gitlab/-/issues/332411 whichs prevents usage of dependency proxy
     # when pipeline is triggered by a project access token.
@@ -115,11 +110,7 @@ workflow:
     - if: '$CI_COMMIT_BRANCH =~ /^[\d-]+-stable(-ee)?$/'
       variables:
         <<: *default-ruby-variables
-        NOTIFY_PIPELINE_FAILURE_CHANNEL: "releases"
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline'
-        CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
-        BROKEN_BRANCH_INCIDENTS_PROJECT: "gitlab-org/release/tasks"
-        BROKEN_BRANCH_INCIDENTS_PROJECT_TOKEN: "${BROKEN_STABLE_INCIDENTS_PROJECT_TOKEN}"
     - if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
       variables:
         <<: *default-ruby-variables

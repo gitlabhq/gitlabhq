@@ -213,6 +213,14 @@ class NotifyPreview < ActionMailer::Preview
     Notify.service_desk_thank_you_email(issue.id).message
   end
 
+  def service_desk_verification_triggered_email
+    cleanup do
+      setup_service_desk_custom_email_objects
+
+      Notify.service_desk_verification_triggered_email(service_desk_setting, 'owner@example.com').message
+    end
+  end
+
   def merge_when_pipeline_succeeds_email
     Notify.merge_when_pipeline_succeeds_email(user.id, merge_request.id, user.id).message
   end
@@ -245,6 +253,43 @@ class NotifyPreview < ActionMailer::Preview
 
   def project
     @project ||= Project.first
+  end
+
+  def setup_service_desk_custom_email_objects
+    # Call accessors to ensure objects have been created
+    custom_email_credential
+    custom_email_verification
+
+    # Update associations in projects, because we access
+    # custom_email_credential and custom_email_verification via project
+    project.reset
+  end
+
+  def custom_email_verification
+    @custom_email_verification ||= project.service_desk_custom_email_verification || ServiceDesk::CustomEmailVerification.create!(
+      project: project,
+      token: 'XXXXXXXXXXXX',
+      triggerer: user,
+      triggered_at: Time.current,
+      state: 0
+    )
+  end
+
+  def custom_email_credential
+    @custom_email_credential ||= project.service_desk_custom_email_credential || ServiceDesk::CustomEmailCredential.create!(
+      project: project,
+      smtp_address: 'smtp.gmail.com', # Use gmail, because Gitlab::UrlBlocker resolves DNS
+      smtp_port: 587,
+      smtp_username: 'user@gmail.com',
+      smtp_password: 'supersecret'
+    )
+  end
+
+  def service_desk_setting
+    @service_desk_setting ||= project.service_desk_setting || ServiceDeskSetting.create!(
+      project: project,
+      custom_email: 'user@gmail.com'
+    )
   end
 
   def issue

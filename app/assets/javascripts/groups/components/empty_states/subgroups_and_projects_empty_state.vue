@@ -43,6 +43,7 @@ export default {
     'newProjectPath',
     'newSubgroupIllustration',
     'newProjectIllustration',
+    'emptyProjectsIllustration',
     'emptySubgroupIllustration',
     'canCreateSubgroups',
     'canCreateProjects',

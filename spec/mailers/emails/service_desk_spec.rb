@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'email_spec'
 
-RSpec.describe Emails::ServiceDesk do
+RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
   include EmailSpec::Helpers
   include EmailSpec::Matchers
   include EmailHelpers
@@ -16,6 +16,9 @@ RSpec.describe Emails::ServiceDesk do
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:email) { 'someone@gitlab.com' }
   let_it_be(:expected_unsubscribe_url) { unsubscribe_sent_notification_url('b7721fc7e8419911a8bea145236a0519') }
+  let_it_be(:credential) { create(:service_desk_custom_email_credential, project: project) }
+  let_it_be(:verification) { create(:service_desk_custom_email_verification, project: project) }
+  let_it_be(:service_desk_setting) { create(:service_desk_setting, project: project, custom_email: 'user@example.com') }
 
   let(:template) { double(content: template_content) }
 
@@ -78,6 +81,24 @@ RSpec.describe Emails::ServiceDesk do
       it 'uses the default template' do
         is_expected.to have_body_text(default_text)
       end
+    end
+  end
+
+  shared_examples 'a custom email verification process email' do
+    it 'contains custom email and project in subject' do
+      expect(subject.subject).to include(service_desk_setting.custom_email)
+      expect(subject.subject).to include(service_desk_setting.project.name)
+    end
+  end
+
+  shared_examples 'a custom email verification process notification email' do
+    it 'has correct recipient' do
+      expect(subject.to).to eq(['owner@example.com'])
+    end
+
+    it 'contains custom email and project in body' do
+      is_expected.to have_body_text(service_desk_setting.custom_email)
+      is_expected.to have_body_text(service_desk_setting.project.name)
     end
   end
 
@@ -303,6 +324,22 @@ RSpec.describe Emails::ServiceDesk do
 
         it_behaves_like 'handle template content', 'new_note'
       end
+    end
+  end
+
+  describe '.service_desk_verification_triggered_email' do
+    before do
+      service_desk_setting.custom_email_verification.triggerer = user
+    end
+
+    subject { Notify.service_desk_verification_triggered_email(service_desk_setting, 'owner@example.com') }
+
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'a custom email verification process email'
+    it_behaves_like 'a custom email verification process notification email'
+
+    it 'contains triggerer username' do
+      is_expected.to have_body_text("@#{user.username}")
     end
   end
 end

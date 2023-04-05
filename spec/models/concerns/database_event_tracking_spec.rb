@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe DatabaseEventTracking, :snowplow do
+  before do
+    allow(Gitlab::Tracking).to receive(:database_event).and_call_original
+  end
+
   let(:test_class) do
     Class.new(ActiveRecord::Base) do
       include DatabaseEventTracking
@@ -17,7 +21,7 @@ RSpec.describe DatabaseEventTracking, :snowplow do
 
   context 'if event emmiter failed' do
     before do
-      allow(Gitlab::Tracking).to receive(:event).and_raise(StandardError) # rubocop:disable RSpec/ExpectGitlabTracking
+      allow(Gitlab::Tracking).to receive(:database_event).and_raise(StandardError) # rubocop:disable RSpec/ExpectGitlabTracking
     end
 
     it 'tracks the exception' do
@@ -35,7 +39,7 @@ RSpec.describe DatabaseEventTracking, :snowplow do
     it 'does not track the event' do
       create_test_class_record
 
-      expect_no_snowplow_event
+      expect_no_snowplow_event(tracking_method: :database_event)
     end
   end
 
@@ -47,6 +51,7 @@ RSpec.describe DatabaseEventTracking, :snowplow do
       create_test_class_record
 
       expect_snowplow_event(
+        tracking_method: :database_event,
         category: category,
         action: "#{event}_create",
         label: 'application_setting_terms',
@@ -61,6 +66,7 @@ RSpec.describe DatabaseEventTracking, :snowplow do
       test_class.first.update!(id: 3)
 
       expect_snowplow_event(
+        tracking_method: :database_event,
         category: category,
         action: "#{event}_update",
         label: 'application_setting_terms',
@@ -75,6 +81,7 @@ RSpec.describe DatabaseEventTracking, :snowplow do
       test_class.first.destroy!
 
       expect_snowplow_event(
+        tracking_method: :database_event,
         category: category,
         action: "#{event}_destroy",
         label: 'application_setting_terms',

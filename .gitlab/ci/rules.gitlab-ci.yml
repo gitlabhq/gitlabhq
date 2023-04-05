@@ -157,12 +157,6 @@
 .if-ruby2-branch: &if-ruby2-branch
   if: '$CI_COMMIT_BRANCH == "ruby2"'
 
-# For Security merge requests, the gitlab-release-tools-bot triggers a new
-# pipeline for the "Pipelines for merged results" feature. If the pipeline
-# fails, we notify release managers.
-.if-security-pipeline-merge-result: &if-security-pipeline-merge-result
-  if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH && $CI_PROJECT_NAMESPACE == "gitlab-org/security" && $GITLAB_USER_LOGIN == "gitlab-release-tools-bot"'
-
 ####################
 # Changes patterns #
 ####################
@@ -837,14 +831,6 @@
     - changes:
         - scripts/lint_templates_bash.rb
 
-##################
-# Delivery rules #
-##################
-.delivery:rules:security-pipeline-merge-result-failure:
-  rules:
-    - <<: *if-security-pipeline-merge-result
-      when: on_failure
-
 ######################
 # Dev fixtures rules #
 ######################
@@ -1126,15 +1112,6 @@
 ##########
 # Notify #
 ##########
-.notify:rules:notify-pipeline-failure:
-  rules:
-    # Don't report child pipeline failures
-    - if: '$CI_PIPELINE_SOURCE == "parent_pipeline"'
-      when: never
-    - if: '$CI_SLACK_WEBHOOK_URL && $NOTIFY_PIPELINE_FAILURE_CHANNEL'
-      when: on_failure
-      allow_failure: true
-
 .notify:rules:create-issues-for-failing-tests:
   rules:
     # Don't report child pipeline failures

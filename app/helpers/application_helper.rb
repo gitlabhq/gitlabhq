@@ -284,6 +284,10 @@ module ApplicationHelper
     !params.has_key?(:no_startup_css)
   end
 
+  def sign_in_with_redirect?
+    current_page?(new_user_session_path) && session[:user_return_to].present?
+  end
+
   def outdated_browser?
     browser.ie?
   end

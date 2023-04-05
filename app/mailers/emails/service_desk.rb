@@ -43,6 +43,19 @@ module Emails
       inject_service_desk_custom_email(mail_answer_thread(@issue, options))
     end
 
+    def service_desk_verification_triggered_email(service_desk_setting, recipient)
+      @service_desk_setting = service_desk_setting
+      @triggerer = @service_desk_setting.custom_email_verification.triggerer
+      @smtp_address = @service_desk_setting.custom_email_credential.smtp_address
+
+      subject = format(s_("Notify|Verification for custom email %{email} for %{project_name} triggered"),
+        email: @service_desk_setting.custom_email,
+        project_name: @service_desk_setting.project.name
+      )
+
+      email_with_layout(to: recipient, subject: subject)
+    end
+
     private
 
     def setup_service_desk_mail(issue_id)

@@ -175,3 +175,15 @@ RSpec.shared_examples 'bumping the package last downloaded at field' do
       .to change { package.reload.last_downloaded_at }.from(nil).to(instance_of(ActiveSupport::TimeWithZone))
   end
 end
+
+RSpec.shared_examples 'a successful package creation' do
+  it 'creates npm package with file' do
+    expect { subject }
+      .to change { project.packages.count }.by(1)
+      .and change { Packages::PackageFile.count }.by(1)
+      .and change { Packages::Tag.count }.by(1)
+      .and change { Packages::Npm::Metadatum.count }.by(1)
+
+    expect(response).to have_gitlab_http_status(:ok)
+  end
+end

@@ -141,8 +141,6 @@ Layout/LineContinuationSpacing:
     - 'rubocop/cop/migration/background_migrations.rb'
     - 'rubocop/cop/performance/ar_exists_and_present_blank.rb'
     - 'rubocop/cop/redis_queue_usage.rb'
-    - 'scripts/create-pipeline-failure-incident.rb'
-    - 'scripts/generate-failed-pipeline-slack-message.rb'
     - 'scripts/qa/testcases-check'
     - 'spec/controllers/concerns/controller_with_cross_project_access_check_spec.rb'
     - 'spec/features/issues/create_issue_for_single_discussion_in_merge_request_spec.rb'
