@@ -37,9 +37,6 @@ export default {
       this.imgSrc = '';
       this.$refs.fileSelector.value = '';
     },
-    openFileUpload() {
-      this.$refs.fileSelector.click();
-    },
     updateLinkState({ editor }) {
       const { canonicalSrc, href } = editor.getAttributes(Link.name);
 
@@ -102,20 +99,19 @@ export default {
         lazy
         @show="selectLink()"
       >
-        <gl-dropdown-form class="gl-px-3! gl-pb-2!">
+        <gl-dropdown-form class="gl-px-3!" :class="{ 'gl-pb-2!': isActive }">
           <gl-form-input-group v-model="linkHref" :placeholder="__('Link URL')">
             <template #append>
               <gl-button variant="confirm" @click="updateLink">{{ __('Apply') }}</gl-button>
             </template>
           </gl-form-input-group>
         </gl-dropdown-form>
-        <gl-dropdown-divider />
-        <gl-dropdown-item v-if="isActive" @click="removeLink">
-          {{ __('Remove link') }}
-        </gl-dropdown-item>
-        <gl-dropdown-item v-else @click="openFileUpload">
-          {{ __('Upload file') }}
-        </gl-dropdown-item>
+        <div v-if="isActive">
+          <gl-dropdown-divider />
+          <gl-dropdown-item @click="removeLink">
+            {{ __('Remove link') }}
+          </gl-dropdown-item>
+        </div>
       </gl-dropdown>
       <input
         ref="fileSelector"

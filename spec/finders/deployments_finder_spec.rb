@@ -260,15 +260,25 @@ RSpec.describe DeploymentsFinder do
       end
 
       describe 'enforce sorting to `updated_at` sorting' do
-        let(:params) { { **base_params, updated_before: 1.day.ago, order_by: 'id', sort: 'asc', raise_for_inefficient_updated_at_query: false } }
+        let(:params) { { **base_params, updated_before: 1.day.ago, order_by: 'id', sort: 'asc' } }
 
-        it 'sorts by only one column' do
-          expect(subject.order_values.size).to eq(2)
+        it 'raises an error' do
+          expect { subject }.to raise_error(DeploymentsFinder::InefficientQueryError)
         end
 
-        it 'sorts by `updated_at`' do
-          expect(subject.order_values.first.to_sql).to eq(Deployment.arel_table[:updated_at].asc.to_sql)
-          expect(subject.order_values.second.to_sql).to eq(Deployment.arel_table[:id].asc.to_sql)
+        context 'when deployments_raise_updated_at_inefficient_error is disabled' do
+          before do
+            stub_feature_flags(deployments_raise_updated_at_inefficient_error: false)
+          end
+
+          it 'sorts by only one column' do
+            expect(subject.order_values.size).to eq(2)
+          end
+
+          it 'sorts by `updated_at`' do
+            expect(subject.order_values.first.to_sql).to eq(Deployment.arel_table[:updated_at].asc.to_sql)
+            expect(subject.order_values.second.to_sql).to eq(Deployment.arel_table[:id].asc.to_sql)
+          end
         end
       end
 

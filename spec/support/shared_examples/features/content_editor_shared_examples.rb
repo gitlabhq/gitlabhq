@@ -48,7 +48,7 @@ RSpec.shared_examples 'edits content using the content editor' do
     before do
       switch_to_content_editor
 
-      open_insert_media_dropdown
+      click_attachment_button
     end
 
     it 'displays correct media bubble menu for images', :js do
@@ -294,7 +294,7 @@ RSpec.shared_examples 'inserts diagrams.net diagram using the content editor' do
   before do
     switch_to_content_editor
 
-    open_insert_media_dropdown
+    click_attachment_button
   end
 
   it 'displays correct media bubble menu with edit diagram button' do

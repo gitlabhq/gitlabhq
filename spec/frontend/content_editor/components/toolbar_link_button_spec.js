@@ -63,10 +63,6 @@ describe('content_editor/components/toolbar_link_button', () => {
       expect(findDropdown().props('toggleClass')).toEqual({ active: true });
     });
 
-    it('does not display the upload file option', () => {
-      expect(wrapper.findByText('Upload file').exists()).toBe(false);
-    });
-
     it('displays a remove link dropdown option', () => {
       expect(wrapper.findByText('Remove link').exists()).toBe(true);
     });
@@ -131,10 +127,6 @@ describe('content_editor/components/toolbar_link_button', () => {
 
     it('does not set dropdown as active', () => {
       expect(findDropdown().props('toggleClass')).toEqual({ active: false });
-    });
-
-    it('displays the upload file option', () => {
-      expect(wrapper.findByText('Upload file').exists()).toBe(true);
     });
 
     it('does not display a remove link dropdown option', () => {

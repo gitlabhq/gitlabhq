@@ -17,7 +17,7 @@ module QA
             element :text_style_dropdown
           end
 
-          base.view 'app/assets/javascripts/content_editor/components/toolbar_image_button.vue' do
+          base.view 'app/assets/javascripts/content_editor/components/toolbar_attachment_button.vue' do
             element :file_upload_field
           end
 

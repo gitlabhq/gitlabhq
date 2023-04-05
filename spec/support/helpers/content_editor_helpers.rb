@@ -10,8 +10,8 @@ module ContentEditorHelpers
     find(content_editor_testid).send_keys keys
   end
 
-  def open_insert_media_dropdown
-    page.find('svg[data-testid="media-icon"]').click
+  def click_attachment_button
+    page.find('svg[data-testid="paperclip-icon"]').click
   end
 
   def set_source_editor_content(content)

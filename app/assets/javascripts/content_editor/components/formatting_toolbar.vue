@@ -2,7 +2,7 @@
 import { GlTabs, GlTab } from '@gitlab/ui';
 import trackUIControl from '../services/track_ui_control';
 import ToolbarButton from './toolbar_button.vue';
-import ToolbarImageButton from './toolbar_image_button.vue';
+import ToolbarAttachmentButton from './toolbar_attachment_button.vue';
 import ToolbarLinkButton from './toolbar_link_button.vue';
 import ToolbarTableButton from './toolbar_table_button.vue';
 import ToolbarTextStyleDropdown from './toolbar_text_style_dropdown.vue';
@@ -16,7 +16,7 @@ export default {
     ToolbarTextStyleDropdown,
     ToolbarLinkButton,
     ToolbarTableButton,
-    ToolbarImageButton,
+    ToolbarAttachmentButton,
     ToolbarMoreDropdown,
   },
   methods: {
@@ -95,12 +95,11 @@ export default {
           :label="__('Add a checklist')"
           @execute="trackToolbarControlExecution"
         />
-        <toolbar-image-button
-          ref="imageButton"
-          data-testid="image"
+        <toolbar-table-button data-testid="table" @execute="trackToolbarControlExecution" />
+        <toolbar-attachment-button
+          data-testid="attachment"
           @execute="trackToolbarControlExecution"
         />
-        <toolbar-table-button data-testid="table" @execute="trackToolbarControlExecution" />
         <toolbar-more-dropdown data-testid="more" @execute="trackToolbarControlExecution" />
       </div>
     </template>
