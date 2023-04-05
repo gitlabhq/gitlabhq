@@ -280,16 +280,14 @@ example, if you have an OS X runner with tag `osx` and a Windows runner with tag
 
 ```yaml
 windows job:
-  stage:
-    - build
+  stage: build
   tags:
     - windows
   script:
     - echo Hello, %USERNAME%!
 
 osx job:
-  stage:
-    - build
+  stage: build
   tags:
     - osx
   script:

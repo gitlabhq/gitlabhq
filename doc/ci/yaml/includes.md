@@ -405,7 +405,8 @@ see this [CI/CD variable demo](https://youtu.be/4XR8gw3Pkos).
 > - Introduced in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.3.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.4. Feature flag `ci_include_rules` removed.
-> - [Support for `exists` keyword added](https://gitlab.com/gitlab-org/gitlab/-/issues/341511) in GitLab 14.5.
+> - Support for `exists` keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341511) in GitLab 14.5.
+> - Support for `needs` job dependency [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345377) in GitLab 15.11.
 
 You can use [`rules`](index.md#rules) with `include` to conditionally include other configuration files.
 
@@ -414,11 +415,6 @@ these keywords:
 
 - [`rules:if`](index.md#rulesif).
 - [`rules:exists`](index.md#rulesexists).
-
-You cannot use [`needs:`](index.md#needs) to create a job dependency that points to
-a job added with `include:local:rules`. When the configuration is validated,
-GitLab returns `undefined need: <job-name>`. [Issue 345377](https://gitlab.com/gitlab-org/gitlab/-/issues/345377)
-proposes improving this behavior.
 
 ### `include` with `rules:if`
 

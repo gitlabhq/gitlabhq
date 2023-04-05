@@ -40,19 +40,19 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures, feature_categ
         expect(assigns(:projects)).to eq(projects)
       end
 
-      it 'assigns the correct total_user_projects_count' do
+      it 'assigns the correct all_user_projects' do
         get :index
-        total_user_projects_count = assigns(:total_user_projects_count)
+        all_user_projects = assigns(:all_user_projects)
 
-        expect(total_user_projects_count.count).to eq(2)
+        expect(all_user_projects.count).to eq(2)
       end
 
-      it 'assigns the correct total_starred_projects_count' do
+      it 'assigns the correct all_starred_projects' do
         get :index
-        total_starred_projects_count = assigns(:total_starred_projects_count)
+        all_starred_projects = assigns(:all_starred_projects)
 
-        expect(total_starred_projects_count.count).to eq(1)
-        expect(total_starred_projects_count).to include(project2)
+        expect(all_starred_projects.count).to eq(1)
+        expect(all_starred_projects).to include(project2)
       end
 
       context 'project sorting' do
@@ -91,20 +91,20 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures, feature_categ
           expect(projects_result).to include(project)
         end
 
-        it 'excludes archived project from total_user_projects_count' do
+        it 'excludes archived project from all_user_projects' do
           get :index
-          total_user_projects_count = assigns(:total_user_projects_count)
+          all_user_projects = assigns(:all_user_projects)
 
-          expect(total_user_projects_count.count).to eq(1)
-          expect(total_user_projects_count).not_to include(archived_project)
+          expect(all_user_projects.count).to eq(1)
+          expect(all_user_projects).not_to include(archived_project)
         end
 
-        it 'excludes archived project from total_starred_projects_count' do
+        it 'excludes archived project from all_starred_projects' do
           get :index
-          total_starred_projects_count = assigns(:total_starred_projects_count)
+          all_starred_projects = assigns(:all_starred_projects)
 
-          expect(total_starred_projects_count.count).to eq(0)
-          expect(total_starred_projects_count).not_to include(archived_project)
+          expect(all_starred_projects.count).to eq(0)
+          expect(all_starred_projects).not_to include(archived_project)
         end
       end
 

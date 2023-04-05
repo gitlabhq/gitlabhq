@@ -489,6 +489,10 @@ module QA
         enabled?(ENV['QA_SKIP_SMOKE_RELIABLE'], default: false)
       end
 
+      def container_registry_host
+        ENV.fetch('QA_CONTAINER_REGISTRY_HOST', 'registry.gitlab.com')
+      end
+
       # ENV variables for authenticating against a private container registry
       # These need to be set if using the
       # Service::DockerRun::Mixins::ThirdPartyDocker module

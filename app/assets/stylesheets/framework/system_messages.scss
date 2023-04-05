@@ -45,11 +45,6 @@
     top: $system-header-height;
   }
 
-  // left sidebar eg: project page
-  .nav-sidebar {
-    top: calc(#{$system-header-height} + #{$header-height});
-  }
-
   // Performance Bar
   // System Header
   &.with-performance-bar {
@@ -59,17 +54,11 @@
       top: $performance-bar-height + $system-header-height;
     }
 
-    // left sidebar eg: project page
-    .nav-sidebar {
-      top: calc(#{$header-height} + #{$performance-bar-height} + #{$system-header-height});
-    }
   }
 }
 
 // System Footer
 .with-system-footer {
-  // left sidebar eg: project page
-  .nav-sidebar,
   // navless pages' footer eg: login page
   // navless pages' footer border eg: login page
   &.devise-layout-html body .footer-container,

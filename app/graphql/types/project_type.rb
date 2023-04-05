@@ -141,6 +141,11 @@ module Types
           null: true,
           description: 'Indicates if CI/CD pipeline jobs are enabled for the current user.'
 
+    field :is_catalog_resource, GraphQL::Types::Boolean,
+          alpha: { milestone: '15.11' },
+          null: true,
+          description: 'Indicates if a project is a catalog resource.'
+
     field :public_jobs, GraphQL::Types::Boolean,
           null: true,
           description: 'Indicates if there is public access to pipelines and job details of the project, ' \
@@ -638,6 +643,16 @@ module Types
 
     def forks_count
       BatchLoader::GraphQL.wrap(object.forks_count)
+    end
+
+    def is_catalog_resource # rubocop:disable Naming/PredicateName
+      lazy_catalog_resource = BatchLoader::GraphQL.for(object.id).batch do |project_ids, loader|
+        ::Ci::Catalog::Resource.for_projects(project_ids).each do |catalog_resource|
+          loader.call(catalog_resource.project_id, catalog_resource)
+        end
+      end
+
+      Gitlab::Graphql::Lazy.with_value(lazy_catalog_resource, &:present?)
     end
 
     def statistics

@@ -99,7 +99,7 @@ module Gitlab
         validate_duplicate_needs!(name, needs)
 
         needs.each do |need|
-          validate_job_dependency!(name, need[:name], 'need')
+          validate_job_dependency!(name, need[:name], 'need', optional: need[:optional])
         end
       end
 
@@ -109,8 +109,11 @@ module Gitlab
         end
       end
 
-      def validate_job_dependency!(name, dependency, dependency_type = 'dependency')
+      def validate_job_dependency!(name, dependency, dependency_type = 'dependency', optional: false)
         unless @jobs[dependency.to_sym]
+          # Here, we ignore the optional needed job if it is not included in the result YAML.
+          return if optional
+
           error!("#{name} job: undefined #{dependency_type}: #{dependency}")
         end
 

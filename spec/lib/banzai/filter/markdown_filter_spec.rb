@@ -6,20 +6,19 @@ RSpec.describe Banzai::Filter::MarkdownFilter, feature_category: :team_planning 
   include FilterSpecHelper
 
   describe 'markdown engine from context' do
-    it 'defaults to CommonMark' do
-      expect_next_instance_of(Banzai::Filter::MarkdownEngines::CommonMark) do |instance|
-        expect(instance).to receive(:render).and_return('test')
-      end
-
-      filter('test')
+    it 'finds the correct engine' do
+      expect(described_class.render_engine(:common_mark)).to eq Banzai::Filter::MarkdownEngines::CommonMark
     end
 
-    it 'uses CommonMark' do
-      expect_next_instance_of(Banzai::Filter::MarkdownEngines::CommonMark) do |instance|
-        expect(instance).to receive(:render).and_return('test')
-      end
+    it 'defaults to the DEFAULT_ENGINE' do
+      default_engine = Banzai::Filter::MarkdownFilter::DEFAULT_ENGINE.to_s.classify
+      default = "Banzai::Filter::MarkdownEngines::#{default_engine}".constantize
 
-      filter('test', { markdown_engine: :common_mark })
+      expect(described_class.render_engine(nil)).to eq default
+    end
+
+    it 'raise error for unrecognized engines' do
+      expect { described_class.render_engine(:foo_bar) }.to raise_error(NameError)
     end
   end
 

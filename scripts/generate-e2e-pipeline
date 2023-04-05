@@ -22,12 +22,12 @@ fi
 qa_cache_key="qa-e2e-ruby-${RUBY_VERSION}-$(md5sum qa/Gemfile.lock | awk '{ print $1 }')"
 variables=$(cat <<YML
 variables:
-  COLORIZED_LOGS: "true"
   GIT_DEPTH: "20"
   GIT_STRATEGY: "clone" # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio
   GIT_SUBMODULE_STRATEGY: "none"
   GITLAB_QA_CACHE_KEY: "$qa_cache_key"
   GITLAB_SEMVER_VERSION: "$(cat VERSION)"
+  SKIP_OMNIBUS_TRIGGER: "false"
   QA_EXPORT_TEST_METRICS: "${QA_EXPORT_TEST_METRICS:-true}"
   QA_FEATURE_FLAGS: "${QA_FEATURE_FLAGS}"
   QA_FRAMEWORK_CHANGES: "${QA_FRAMEWORK_CHANGES:-false}"

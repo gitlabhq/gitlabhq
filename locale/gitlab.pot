@@ -38617,9 +38617,6 @@ msgstr ""
 msgid "ScanResultPolicy|%{count} licenses"
 msgstr ""
 
-msgid "ScanResultPolicy|%{ifLabelStart}if%{ifLabelEnd} %{selector}"
-msgstr ""
-
 msgid "ScanResultPolicy|%{thenLabelStart}Then%{thenLabelEnd} Require approval from %{approvalsRequired} of the following approvers:"
 msgstr ""
 
@@ -38876,6 +38873,9 @@ msgid "SearchCodeResults|of %{link_to_project}"
 msgstr ""
 
 msgid "SearchError|A search query problem has occurred"
+msgstr ""
+
+msgid "SearchError|Learn more about %{search_syntax_link_start} Zoekt search syntax%{search_syntax_link_end}."
 msgstr ""
 
 msgid "SearchError|To resolve the problem, check the query syntax and try again."

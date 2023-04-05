@@ -2556,11 +2556,10 @@ can use that variable in `needs:pipeline` to download artifacts from the parent 
 To need a job that sometimes does not exist in the pipeline, add `optional: true`
 to the `needs` configuration. If not defined, `optional: false` is the default.
 
-Jobs that use [`rules`](#rules), [`only`, or `except`](#only--except) might not always
-be added to a pipeline. GitLab checks the `needs` relationships before starting a
-pipeline:
+Jobs that use [`rules`](#rules), [`only`, or `except`](#only--except) and that are added with [`include`](#include)
+might not always be added to a pipeline. GitLab checks the `needs` relationships before starting a pipeline:
 
-- If the needs entry has `optional: true` and the needed job is present in the pipeline,
+- If the `needs` entry has `optional: true` and the needed job is present in the pipeline,
   the job waits for it to complete before starting.
 - If the needed job is not present, the job can start when all other needs requirements are met.
 - If the `needs` section contains only optional jobs, and none are added to the pipeline,
@@ -3963,9 +3962,9 @@ If `stage` is not defined, the job uses the `test` stage by default.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**: An array including any number of stage names. Stage names can be:
+**Possible inputs**: A string, which can be a:
 
-- The [default stages](#stages).
+- [Default stage](#stages).
 - User-defined stages.
 
 **Example of `stage`**:

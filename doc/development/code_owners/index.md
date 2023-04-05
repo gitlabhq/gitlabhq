@@ -28,6 +28,15 @@ namespace. Code Owners is an EE-only feature, so the files only exist in the `./
 
 - `Gitlab::CodeOwners`: the main module used to interact with the code owner rules.
   - Defined in `./ee/lib/gitlab/code_owners.rb`.
+- `Gitlab::CodeOwners::File`: wraps a `CODEOWNERS` file and exposes the data through
+  the class' public methods.
+  - Defined in `./ee/lib/gitlab/code_owners/file.rb`.
+- `Gitlab::CodeOwners::Section`: wraps a section heading from a
+  `CODEOWNERS` file and parses the different parts.
+  - Defined in `./ee/lib/gitlab/code_owners/section.rb`.
+- `Gitlab::CodeOwners::Entry`: wraps an entry (a pattern and owners line) in a
+  `CODEOWNERS` file and exposes the data through the class' public methods.
+  - Defined in `./ee/lib/gitlab/code_owners/entry.rb`.
 - `Gitlab::CodeOwners::Loader`: finds the correct `CODEOWNER` file and loads the
   content into a `Gitlab::CodeOwners::File` instance.
   - Defined in `./ee/lib/gitlab/code_owners/loader.rb`.
@@ -40,12 +49,6 @@ namespace. Code Owners is an EE-only feature, so the files only exist in the `./
 - `Gitlab::CodeOwners::GroupsLoader`: finds the correct `CODEOWNER` file and loads
   the content into a `Gitlab::CodeOwners::File` instance.
   - Defined in `./ee/lib/gitlab/code_owners/groups_loader.rb`.
-- `Gitlab::CodeOwners::File`: wraps a `CODEOWNERS` file and exposes the data through
-  the class' public methods.
-  - Defined in `./ee/lib/gitlab/code_owners/file.rb`.
-- `Gitlab::CodeOwners::Entry`: wraps an entry (a pattern and owners line) in a
-  `CODEOWNERS` file and exposes the data through the class' public methods.
-  - Defined in `./ee/lib/gitlab/code_owners/entry.rb`.
 - `Gitlab::CodeOwners::Validator`: validates no files in the `CODEOWNERS` entries
   have been changed when a user pushes to a protected branch with `require_code_owner_approval` enabled.
   - Defined in `./ee/lib/gitlab/code_owners/validator.rb`.

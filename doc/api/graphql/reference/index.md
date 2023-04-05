@@ -1341,6 +1341,28 @@ Input type: `BulkRunnerDeleteInput`
 | <a id="mutationbulkrunnerdeletedeletedids"></a>`deletedIds` | [`[CiRunnerID!]`](#cirunnerid) | IDs of records effectively deleted. Only present if operation was performed synchronously. |
 | <a id="mutationbulkrunnerdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.catalogResourcesCreate`
+
+WARNING:
+**Introduced** in 15.11.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Input type: `CatalogResourcesCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcatalogresourcescreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcatalogresourcescreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to convert to a catalog resource. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcatalogresourcescreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcatalogresourcescreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.ciCdSettingsUpdate`
 
 WARNING:
@@ -18335,6 +18357,7 @@ Represents a product analytics dashboard visualization.
 | <a id="projectid"></a>`id` | [`ID!`](#id) | ID of the project. |
 | <a id="projectimportstatus"></a>`importStatus` | [`String`](#string) | Status of import background job of the project. |
 | <a id="projectincidentmanagementtimelineeventtags"></a>`incidentManagementTimelineEventTags` | [`[TimelineEventTagType!]`](#timelineeventtagtype) | Timeline event tags for the project. |
+| <a id="projectiscatalogresource"></a>`isCatalogResource` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 15.11. This feature is in Alpha. It can be changed or removed at any time. Indicates if a project is a catalog resource. |
 | <a id="projectissuesenabled"></a>`issuesEnabled` | [`Boolean`](#boolean) | Indicates if Issues are enabled for the current user. |
 | <a id="projectjiraimportstatus"></a>`jiraImportStatus` | [`String`](#string) | Status of Jira import background job of the project. |
 | <a id="projectjiraimports"></a>`jiraImports` | [`JiraImportConnection`](#jiraimportconnection) | Jira imports into the project. (see [Connections](#connections)) |

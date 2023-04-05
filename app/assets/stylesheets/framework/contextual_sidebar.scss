@@ -229,13 +229,13 @@
 //
 
 .nav-sidebar {
-  @include gl-fixed;
-  @include gl-bottom-0;
-  @include gl-left-0;
+  position: fixed;
+  bottom: $calc-application-footer-height;
+  left: 0;
   transition: width $gl-transition-duration-medium, left $gl-transition-duration-medium;
   z-index: 600;
   width: $contextual-sidebar-width;
-  top: $header-height;
+  top: $calc-application-header-height;
   background-color: $contextual-sidebar-bg-color;
   border-right: 1px solid $contextual-sidebar-border-color;
   transform: translate3d(0, 0, 0);

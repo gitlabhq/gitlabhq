@@ -244,7 +244,7 @@ In GitLab 14.4 we introduced the ability to limit the "outbound" scope of the CI
 
 In 15.9 we extended this functionality with a better solution, an "inbound" scope limit. You can prevent the job tokens from _other_ projects from being used to access your project. With this feature, you can optionally list specific projects that you want to allow to access your project with _their_ job token.
 
-In 16.0, this inbound scope limit will be the only option available for all projects, and the outbound limit setting will be removed. To prepare for this change, you can enable the ["inbound" CI/CD job token limit](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#configure-the-job-token-scope-limit) feature now, and list any projects that need to access your project.
+In 16.0, this inbound scope limit will be the only option available for all projects, and the outbound limit setting will be disabled. To prepare for this change, you can enable the ["inbound" CI/CD job token limit](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#configure-the-job-token-scope-limit) feature now, and list any projects that need to access your project.
 
 </div>
 
