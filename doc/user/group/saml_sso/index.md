@@ -297,9 +297,12 @@ Alternatively, ask the users to reconnect their SAML account.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263661) in GitLab 13.7.
 
 GitLab allows setting certain user attributes based on values from the SAML response.
-Existing users will have these attributes updated if the user was originally
-provisioned by the group. Users are provisioned by the group when the account was
-created via [SCIM](scim_setup.md) or by first sign-in with SAML SSO for GitLab.com groups.
+An existing user's attributes are updated from the SAML response values if that
+user was originally provisioned by the group. Users are provisioned by the group
+when the account was created either:
+
+- Through [SCIM](scim_setup.md).
+- By first sign-in with SAML SSO for GitLab.com groups.
 
 #### Supported user attributes
 
@@ -370,7 +373,7 @@ To rescind a user's access to the group when only SAML SSO is configured, either
 - Remove (in order) the user from:
   1. The user data store on the identity provider or the list of users on the specific app.
   1. The GitLab.com group.
-- Use [Group Sync](group_sync.md#automatic-member-removal) at the top-level of your group with the [default role](#role) set to [minimal access](../../permissions.md#users-with-minimal-access) to automatically block access to all resources within the group.
+- Use [Group Sync](group_sync.md#automatic-member-removal) at the top-level of your group with the [default role](#role) set to [minimal access](../../permissions.md#users-with-minimal-access) to automatically block access to all resources in the group.
 
 To rescind a user's access to the group when also using SCIM, refer to [Remove access](scim_setup.md#remove-access).
 

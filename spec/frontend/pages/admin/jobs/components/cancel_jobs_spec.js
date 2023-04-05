@@ -2,12 +2,12 @@ import { GlButton } from '@gitlab/ui';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { TEST_HOST } from 'helpers/test_constants';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import CancelJobs from '~/pages/admin/jobs/index/components/cancel_jobs.vue';
-import CancelJobsModal from '~/pages/admin/jobs/index/components/cancel_jobs_modal.vue';
+import CancelJobs from '~/pages/admin/jobs/components/cancel_jobs.vue';
+import CancelJobsModal from '~/pages/admin/jobs/components/cancel_jobs_modal.vue';
 import {
   CANCEL_JOBS_MODAL_ID,
   CANCEL_BUTTON_TOOLTIP,
-} from '~/pages/admin/jobs/index/components/constants';
+} from '~/pages/admin/jobs/components/constants';
 
 describe('CancelJobs component', () => {
   let wrapper;

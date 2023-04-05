@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import Translate from '~/vue_shared/translate';
-import { CANCEL_JOBS_MODAL_ID } from './components/constants';
-import CancelJobsModal from './components/cancel_jobs_modal.vue';
-import AdminJobsTableApp from './components/table/admin_jobs_table_app.vue';
+import { CANCEL_JOBS_MODAL_ID } from '../components/constants';
+import CancelJobsModal from '../components/cancel_jobs_modal.vue';
+import AdminJobsTableApp from '../components/table/admin_jobs_table_app.vue';
 
 Vue.use(Translate);
 

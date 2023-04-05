@@ -381,6 +381,10 @@ _KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX.
 This syntax also works for the Asciidoctor `:stem: latexmath`. For details, see
 the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
 
+To prevent malicious activity, GitLab renders only the first 50 inline math instances.
+The number of math blocks is also limited based on render time. If the limit is exceeded,
+GitLab renders the excess math instances as text.
+
 Math written between dollar signs with backticks (``$`...`$``) or single dollar signs (`$...$`)
 is rendered inline with the text.
 
@@ -747,13 +751,17 @@ you can quote that without having to manually prepend `>` to every line!
 
 ```
 
->>>
-If you paste a message from somewhere else
+<!--
+Use a standard blockquote here until https://gitlab.com/gitlab-org/gitlab/-/issues/390290
+gets properly fixed. The mixture of HTML comments and HTML tags
+trigger this problem.
+-->
 
-that spans multiple lines,
-
-you can quote that without having to manually prepend `>` to every line!
->>>
+> If you paste a message from somewhere else
+>
+> that spans multiple lines,
+>
+> you can quote that without having to manually prepend `>` to every line!
 
 ### Code spans and blocks
 

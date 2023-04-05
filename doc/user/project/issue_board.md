@@ -214,7 +214,7 @@ Prerequisites:
 - You must have at least the Reporter role for the project.
 
 When an issue is created, the system assigns a relative order value that is greater than the maximum value
-of that issue's project or root group. This means the issue will be at the bottom of any issue list that
+of that issue's project or root group. This means the issue is at the bottom of any issue list that
 it appears in.
 
 When you visit a board, issues appear ordered in any list. You're able to change
@@ -264,7 +264,7 @@ This allows you to create unique boards according to your team's need.
 
 You can define the scope of your board when creating it or by selecting the **Edit board** button.
 After a milestone, iteration, assignee, or weight is assigned to an issue board, you can no longer
-filter through these in the search bar. In order to do that, you need to remove the desired scope
+filter through these in the search bar. To do that, you need to remove the desired scope
 (for example, milestone, assignee, or weight) from the issue board.
 
 If you don't have editing permission in a board, you're still able to see the configuration by

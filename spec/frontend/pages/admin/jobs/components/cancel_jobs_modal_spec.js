@@ -4,7 +4,7 @@ import { GlModal } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import { redirectTo } from '~/lib/utils/url_utility';
-import CancelJobsModal from '~/pages/admin/jobs/index/components/cancel_jobs_modal.vue';
+import CancelJobsModal from '~/pages/admin/jobs/components/cancel_jobs_modal.vue';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),

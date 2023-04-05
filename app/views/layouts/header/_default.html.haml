@@ -103,7 +103,7 @@
                 = gl_badge_tag({ size: :sm, variant: :info }, { class: "js-todos-count gl-ml-n2 #{'hidden' if todos_pending_count == 0}", "aria-label": _("Todos count") }) do
                   = todos_count_format(todos_pending_count)
           %li.nav-item.header-help.dropdown.d-none.d-md-block
-            = link_to help_path, class: 'header-help-dropdown-toggle gl-relative', data: { toggle: "dropdown" } do
+            = link_to help_path, class: 'header-help-dropdown-toggle gl-relative', data: { toggle: "dropdown", track_action: 'click_question_mark_link', track_label: 'main_navigation', track_property: 'navigation_top' } do
               %span.gl-sr-only
                 = s_('Nav|Help')
               = sprite_icon('question-o')
