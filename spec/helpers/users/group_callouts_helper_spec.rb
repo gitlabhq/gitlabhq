@@ -70,10 +70,12 @@ RSpec.describe Users::GroupCalloutsHelper do
 
       context 'when the invite_members_banner has been dismissed' do
         before do
-          create(:group_callout,
-                 user: user,
-                 group: group,
-                 feature_name: described_class::INVITE_MEMBERS_BANNER)
+          create(
+            :group_callout,
+            user: user,
+            group: group,
+            feature_name: described_class::INVITE_MEMBERS_BANNER
+          )
         end
 
         it { is_expected.to eq(false) }

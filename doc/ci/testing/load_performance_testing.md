@@ -4,9 +4,14 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Load Performance Testing **(PREMIUM)**
+<!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
+# Load Performance Testing (deprecated) **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10683) in GitLab 13.2.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/388723) in GitLab 15.9
+and is planned for removal in 17.0. This change is a breaking change.
 
 With Load Performance Testing, you can test the impact of any pending code changes
 to your application's backend in [GitLab CI/CD](../index.md).
@@ -199,3 +204,5 @@ load_performance:
   rules:
     - if: $CI_COMMIT_BRANCH  # Modify to match your pipeline rules, or use `only/except` if needed.
 ```
+
+<!--- end_remove -->

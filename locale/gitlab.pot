@@ -6180,7 +6180,7 @@ msgstr ""
 msgid "Authorized applications (%{size})"
 msgstr ""
 
-msgid "AuthorizedApplication|Application secret was successfully updated."
+msgid "AuthorizedApplication|Application secret was successfully renewed."
 msgstr ""
 
 msgid "AuthorizedApplication|Are you sure you want to renew this secret? Any applications using the old secret will no longer be able to authenticate with GitLab."
@@ -6192,7 +6192,13 @@ msgstr ""
 msgid "AuthorizedApplication|Renew secret"
 msgstr ""
 
+msgid "AuthorizedApplication|Renew secret?"
+msgstr ""
+
 msgid "AuthorizedApplication|Revoke application"
+msgstr ""
+
+msgid "AuthorizedApplication|There was an error trying to renew the application secret. Please try again."
 msgstr ""
 
 msgid "Authors: %{authors}"

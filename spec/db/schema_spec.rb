@@ -11,7 +11,8 @@ RSpec.describe 'Database schema', feature_category: :database do
 
   IGNORED_INDEXES_ON_FKS = {
     slack_integrations_scopes: %w[slack_api_scope_id],
-    p_ci_builds_metadata: %w[partition_id] # composable FK, the columns are reversed in the index definition
+    p_ci_builds_metadata: %w[partition_id], # composable FK, the columns are reversed in the index definition
+    p_ci_runner_machine_builds: %w[partition_id] # composable FK, the columns are reversed in the index definition
   }.with_indifferent_access.freeze
 
   TABLE_PARTITIONS = %w[ci_builds_metadata].freeze
@@ -319,7 +320,7 @@ RSpec.describe 'Database schema', feature_category: :database do
       # position. Using PARTITIONABLE_MODELS instead of iterating tables since when partitioning existing tables,
       # the routing table only gets created after the PK has already been created, which would be too late for a check.
 
-      skip_tables = %w[Ci::RunnerMachineBuild]
+      skip_tables = %w[]
       partitionable_models = Ci::Partitionable::Testing::PARTITIONABLE_MODELS
       (partitionable_models - skip_tables).each do |klass|
         model = klass.safe_constantize

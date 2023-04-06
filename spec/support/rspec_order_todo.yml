@@ -1868,7 +1868,6 @@
 - './ee/spec/models/merge_requests/external_status_check_spec.rb'
 - './ee/spec/models/merge_request_spec.rb'
 - './ee/spec/models/merge_requests/status_check_response_spec.rb'
-- './ee/spec/models/merge_train_spec.rb'
 - './ee/spec/models/milestone_release_spec.rb'
 - './ee/spec/models/milestone_spec.rb'
 - './ee/spec/models/namespace_limit_spec.rb'

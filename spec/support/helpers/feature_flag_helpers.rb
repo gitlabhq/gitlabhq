@@ -2,22 +2,32 @@
 
 module FeatureFlagHelpers
   def create_flag(project, name, active = true, description: nil, version: Operations::FeatureFlag.versions['new_version_flag'])
-    create(:operations_feature_flag, name: name, active: active, version: version,
-                                     description: description, project: project)
+    create(
+      :operations_feature_flag,
+      name: name,
+      active: active,
+      version: version,
+      description: description,
+      project: project
+    )
   end
 
   def create_scope(feature_flag, environment_scope, active = true, strategies = [{ name: "default", parameters: {} }])
-    create(:operations_feature_flag_scope,
+    create(
+      :operations_feature_flag_scope,
       feature_flag: feature_flag,
       environment_scope: environment_scope,
       active: active,
-      strategies: strategies)
+      strategies: strategies
+    )
   end
 
   def create_strategy(feature_flag, name = 'default', parameters = {})
-    create(:operations_strategy,
+    create(
+      :operations_strategy,
       feature_flag: feature_flag,
-      name: name)
+      name: name
+    )
   end
 
   def within_feature_flag_row(index)

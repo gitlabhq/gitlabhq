@@ -17,7 +17,6 @@ RSpec/HooksBeforeExamples:
     - 'ee/spec/lib/ee/gitlab/usage_data_counters/hll_redis_counter_spec.rb'
     - 'ee/spec/lib/gitlab/analytics/cycle_analytics/summary/group/stage_summary_spec.rb'
     - 'ee/spec/models/ee/merge_request_diff_spec.rb'
-    - 'ee/spec/models/merge_train_spec.rb'
     - 'ee/spec/requests/api/boards_spec.rb'
     - 'ee/spec/requests/ee/projects/deploy_tokens_controller_spec.rb'
     - 'ee/spec/services/ee/groups/deploy_tokens/create_service_spec.rb'

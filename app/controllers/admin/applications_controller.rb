@@ -47,10 +47,9 @@ class Admin::ApplicationsController < Admin::ApplicationController
     @application.renew_secret
 
     if @application.save
-      flash.now[:notice] = s_('AuthorizedApplication|Application secret was successfully updated.')
-      render :show
+      render json: { secret: @application.plaintext_secret }
     else
-      redirect_to admin_application_url(@application)
+      render json: { errors: @application.errors }, status: :unprocessable_entity
     end
   end
 

@@ -71,7 +71,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Code Owners as eligible approvers](../user/project/merge_requests/approvals/rules.md#code-owners-as-eligible-approvers)
   - [Approval rules](../user/project/merge_requests/approvals/rules.md) features
   - [Restricting push and merge access to certain users](../user/project/protected_branches.md)
-  - [Visual Reviews](../ci/review_apps/index.md#visual-reviews)
+  - [Visual Reviews (deprecated)](../ci/review_apps/index.md#visual-reviews-deprecated)
 - Metrics and analytics:
   - [Contribution Analytics](../user/group/contribution_analytics/index.md)
   - [Merge Request Analytics](../user/analytics/merge_request_analytics.md)

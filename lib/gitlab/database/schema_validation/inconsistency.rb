@@ -18,6 +18,10 @@ module Gitlab
           validator_class.name.demodulize.underscore
         end
 
+        def table_name
+          structure_sql_object&.table_name || database_object&.table_name
+        end
+
         def object_name
           structure_sql_object&.name || database_object&.name
         end

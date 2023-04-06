@@ -27376,7 +27376,7 @@ ALTER TABLE ONLY operations_user_lists
     ADD CONSTRAINT operations_user_lists_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY p_ci_runner_machine_builds
-    ADD CONSTRAINT p_ci_runner_machine_builds_pkey PRIMARY KEY (partition_id, build_id);
+    ADD CONSTRAINT p_ci_runner_machine_builds_pkey PRIMARY KEY (build_id, partition_id);
 
 ALTER TABLE ONLY packages_build_infos
     ADD CONSTRAINT packages_build_infos_pkey PRIMARY KEY (id);

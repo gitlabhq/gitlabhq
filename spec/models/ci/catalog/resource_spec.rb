@@ -3,6 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
+  it { is_expected.to belong_to(:project) }
+
+  it { is_expected.to delegate_method(:avatar_path).to(:project) }
+  it { is_expected.to delegate_method(:description).to(:project) }
+  it { is_expected.to delegate_method(:name).to(:project) }
+
   describe '.for_projects' do
     it 'returns catalog resources for the given project IDs' do
       project = create(:project)

@@ -2,9 +2,11 @@
 
 module StubObjectStorage
   def stub_dependency_proxy_object_storage(**params)
-    stub_object_storage_uploader(config: ::Gitlab.config.dependency_proxy.object_store,
-                                 uploader: ::DependencyProxy::FileUploader,
-                                 **params)
+    stub_object_storage_uploader(
+      config: ::Gitlab.config.dependency_proxy.object_store,
+      uploader: ::DependencyProxy::FileUploader,
+      **params
+    )
   end
 
   def stub_object_storage_uploader(
@@ -36,8 +38,10 @@ module StubObjectStorage
 
     return unless enabled
 
-    stub_object_storage(connection_params: uploader.object_store_credentials,
-                        remote_directory: old_config.remote_directory)
+    stub_object_storage(
+      connection_params: uploader.object_store_credentials,
+      remote_directory: old_config.remote_directory
+    )
   end
 
   def stub_object_storage(connection_params:, remote_directory:)
@@ -55,75 +59,99 @@ module StubObjectStorage
   end
 
   def stub_artifacts_object_storage(uploader = JobArtifactUploader, **params)
-    stub_object_storage_uploader(config: Gitlab.config.artifacts.object_store,
-                                 uploader: uploader,
-                                 **params)
+    stub_object_storage_uploader(
+      config: Gitlab.config.artifacts.object_store,
+      uploader: uploader,
+      **params
+    )
   end
 
   def stub_external_diffs_object_storage(uploader = described_class, **params)
-    stub_object_storage_uploader(config: Gitlab.config.external_diffs.object_store,
-                                 uploader: uploader,
-                                 **params)
+    stub_object_storage_uploader(
+      config: Gitlab.config.external_diffs.object_store,
+      uploader: uploader,
+      **params
+    )
   end
 
   def stub_lfs_object_storage(**params)
-    stub_object_storage_uploader(config: Gitlab.config.lfs.object_store,
-                                 uploader: LfsObjectUploader,
-                                 **params)
+    stub_object_storage_uploader(
+      config: Gitlab.config.lfs.object_store,
+      uploader: LfsObjectUploader,
+      **params
+    )
   end
 
   def stub_package_file_object_storage(**params)
-    stub_object_storage_uploader(config: Gitlab.config.packages.object_store,
-                                 uploader: ::Packages::PackageFileUploader,
-                                 **params)
+    stub_object_storage_uploader(
+      config: Gitlab.config.packages.object_store,
+      uploader: ::Packages::PackageFileUploader,
+      **params
+    )
   end
 
   def stub_rpm_repository_file_object_storage(**params)
-    stub_object_storage_uploader(config: Gitlab.config.packages.object_store,
-                                 uploader: ::Packages::Rpm::RepositoryFileUploader,
-                                 **params)
+    stub_object_storage_uploader(
+      config: Gitlab.config.packages.object_store,
+      uploader: ::Packages::Rpm::RepositoryFileUploader,
+      **params
+    )
   end
 
   def stub_composer_cache_object_storage(**params)
-    stub_object_storage_uploader(config: Gitlab.config.packages.object_store,
-                                 uploader: ::Packages::Composer::CacheUploader,
-                                 **params)
+    stub_object_storage_uploader(
+      config: Gitlab.config.packages.object_store,
+      uploader: ::Packages::Composer::CacheUploader,
+      **params
+    )
   end
 
   def debian_component_file_object_storage(**params)
-    stub_object_storage_uploader(config: Gitlab.config.packages.object_store,
-                                 uploader: ::Packages::Debian::ComponentFileUploader,
-                                 **params)
+    stub_object_storage_uploader(
+      config: Gitlab.config.packages.object_store,
+      uploader: ::Packages::Debian::ComponentFileUploader,
+      **params
+    )
   end
 
   def debian_distribution_release_file_object_storage(**params)
-    stub_object_storage_uploader(config: Gitlab.config.packages.object_store,
-                                 uploader: ::Packages::Debian::DistributionReleaseFileUploader,
-                                 **params)
+    stub_object_storage_uploader(
+      config: Gitlab.config.packages.object_store,
+      uploader: ::Packages::Debian::DistributionReleaseFileUploader,
+      **params
+    )
   end
 
   def stub_uploads_object_storage(uploader = described_class, **params)
-    stub_object_storage_uploader(config: Gitlab.config.uploads.object_store,
-                                 uploader: uploader,
-                                 **params)
+    stub_object_storage_uploader(
+      config: Gitlab.config.uploads.object_store,
+      uploader: uploader,
+      **params
+    )
   end
 
   def stub_ci_secure_file_object_storage(**params)
-    stub_object_storage_uploader(config: Gitlab.config.ci_secure_files.object_store,
-                                 uploader: Ci::SecureFileUploader,
-                                 **params)
+    stub_object_storage_uploader(
+      config: Gitlab.config.ci_secure_files.object_store,
+      uploader: Ci::SecureFileUploader,
+      **params
+    )
   end
 
   def stub_terraform_state_object_storage(**params)
-    stub_object_storage_uploader(config: Gitlab.config.terraform_state.object_store,
-                                 uploader: Terraform::StateUploader,
-                                 **params)
+    stub_object_storage_uploader(
+      config: Gitlab.config.terraform_state.object_store,
+      uploader: Terraform::StateUploader,
+      **params
+    )
   end
 
   def stub_pages_object_storage(uploader = described_class, **params)
-    stub_object_storage_uploader(config: Gitlab.config.pages.object_store,
-                                 uploader: uploader,
-                                 **params)
+    stub_object_storage_uploader(
+      config: Gitlab.config.pages.object_store,
+      uploader: uploader,
+      **params
+    )
   end
 
   def stub_object_storage_multipart_init(endpoint, upload_id = "upload_id")

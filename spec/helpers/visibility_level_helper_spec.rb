@@ -178,8 +178,10 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
     end
 
     before do
-      stub_application_setting(restricted_visibility_levels: restricted_levels,
-                               default_project_visibility: global_default_level)
+      stub_application_setting(
+        restricted_visibility_levels: restricted_levels,
+        default_project_visibility: global_default_level
+      )
     end
 
     with_them do

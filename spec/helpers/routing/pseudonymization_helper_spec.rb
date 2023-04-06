@@ -26,17 +26,19 @@ RSpec.describe ::Routing::PseudonymizationHelper do
     context 'with controller for MR' do
       let(:masked_url) { "http://localhost/namespace#{group.id}/project#{project.id}/-/merge_requests/#{merge_request.id}" }
       let(:request) do
-        double(:Request,
-               path_parameters: {
-                controller: "projects/merge_requests",
-                action: "show",
-                namespace_id: group.name,
-                project_id: project.name,
-                id: merge_request.id.to_s
-               },
-               protocol: 'http',
-               host: 'localhost',
-               query_string: '')
+        double(
+          :Request,
+          path_parameters: {
+            controller: "projects/merge_requests",
+            action: "show",
+            namespace_id: group.name,
+            project_id: project.name,
+            id: merge_request.id.to_s
+          },
+          protocol: 'http',
+          host: 'localhost',
+          query_string: ''
+        )
       end
 
       before do
@@ -49,17 +51,19 @@ RSpec.describe ::Routing::PseudonymizationHelper do
     context 'with controller for issue' do
       let(:masked_url) { "http://localhost/namespace#{group.id}/project#{project.id}/-/issues/#{issue.id}" }
       let(:request) do
-        double(:Request,
-               path_parameters: {
-                controller: "projects/issues",
-                action: "show",
-                namespace_id: group.name,
-                project_id: project.name,
-                id: issue.id.to_s
-               },
-               protocol: 'http',
-               host: 'localhost',
-               query_string: '')
+        double(
+          :Request,
+          path_parameters: {
+            controller: "projects/issues",
+            action: "show",
+            namespace_id: group.name,
+            project_id: project.name,
+            id: issue.id.to_s
+          },
+          protocol: 'http',
+          host: 'localhost',
+          query_string: ''
+        )
       end
 
       before do
@@ -74,16 +78,18 @@ RSpec.describe ::Routing::PseudonymizationHelper do
       let(:group) { subgroup }
       let(:project) { subproject }
       let(:request) do
-        double(:Request,
-               path_parameters: {
-                controller: 'projects',
-                action: 'show',
-                namespace_id: subgroup.name,
-                id: subproject.name
-               },
-               protocol: 'http',
-               host: 'localhost',
-               query_string: '')
+        double(
+          :Request,
+          path_parameters: {
+            controller: 'projects',
+            action: 'show',
+            namespace_id: subgroup.name,
+            id: subproject.name
+          },
+          protocol: 'http',
+          host: 'localhost',
+          query_string: ''
+        )
       end
 
       before do
@@ -97,15 +103,17 @@ RSpec.describe ::Routing::PseudonymizationHelper do
       let(:masked_url) { "http://localhost/groups/namespace#{subgroup.id}/-/shared" }
       let(:group) { subgroup }
       let(:request) do
-        double(:Request,
-               path_parameters: {
-                controller: 'groups',
-                action: 'show',
-                id: subgroup.name
-               },
-               protocol: 'http',
-               host: 'localhost',
-               query_string: '')
+        double(
+          :Request,
+          path_parameters: {
+            controller: 'groups',
+            action: 'show',
+            id: subgroup.name
+          },
+          protocol: 'http',
+          host: 'localhost',
+          query_string: ''
+        )
       end
 
       before do
@@ -118,17 +126,19 @@ RSpec.describe ::Routing::PseudonymizationHelper do
     context 'with controller for blob with file path' do
       let(:masked_url) { "http://localhost/namespace#{group.id}/project#{project.id}/-/blob/:repository_path" }
       let(:request) do
-        double(:Request,
-               path_parameters: {
-                controller: 'projects/blob',
-                action: 'show',
-                namespace_id: group.name,
-                project_id: project.name,
-                id: 'master/README.md'
-               },
-               protocol: 'http',
-               host: 'localhost',
-               query_string: '')
+        double(
+          :Request,
+          path_parameters: {
+            controller: 'projects/blob',
+            action: 'show',
+            namespace_id: group.name,
+            project_id: project.name,
+            id: 'master/README.md'
+          },
+          protocol: 'http',
+          host: 'localhost',
+          query_string: ''
+        )
       end
 
       before do
@@ -141,14 +151,16 @@ RSpec.describe ::Routing::PseudonymizationHelper do
     context 'when assignee_username is present' do
       let(:masked_url) { "http://localhost/dashboard/issues?assignee_username=masked_assignee_username" }
       let(:request) do
-        double(:Request,
-               path_parameters: {
-                controller: 'dashboard',
-                action: 'issues'
-               },
-               protocol: 'http',
-               host: 'localhost',
-               query_string: 'assignee_username=root')
+        double(
+          :Request,
+          path_parameters: {
+            controller: 'dashboard',
+            action: 'issues'
+          },
+          protocol: 'http',
+          host: 'localhost',
+          query_string: 'assignee_username=root'
+        )
       end
 
       before do
@@ -161,14 +173,16 @@ RSpec.describe ::Routing::PseudonymizationHelper do
     context 'when author_username is present' do
       let(:masked_url) { "http://localhost/dashboard/issues?author_username=masked_author_username&scope=all&state=opened" }
       let(:request) do
-        double(:Request,
-               path_parameters: {
-                controller: 'dashboard',
-                action: 'issues'
-               },
-               protocol: 'http',
-               host: 'localhost',
-               query_string: 'author_username=root&scope=all&state=opened')
+        double(
+          :Request,
+          path_parameters: {
+            controller: 'dashboard',
+            action: 'issues'
+          },
+          protocol: 'http',
+          host: 'localhost',
+          query_string: 'author_username=root&scope=all&state=opened'
+        )
       end
 
       before do
@@ -181,14 +195,16 @@ RSpec.describe ::Routing::PseudonymizationHelper do
     context 'when some query params are not required to be masked' do
       let(:masked_url) { "http://localhost/dashboard/issues?author_username=masked_author_username&scope=all&state=masked_state&tab=2" }
       let(:request) do
-        double(:Request,
-               path_parameters: {
-                controller: 'dashboard',
-                action: 'issues'
-               },
-               protocol: 'http',
-               host: 'localhost',
-               query_string: 'author_username=root&scope=all&state=opened&tab=2')
+        double(
+          :Request,
+          path_parameters: {
+            controller: 'dashboard',
+            action: 'issues'
+          },
+          protocol: 'http',
+          host: 'localhost',
+          query_string: 'author_username=root&scope=all&state=opened&tab=2'
+        )
       end
 
       before do
@@ -202,14 +218,16 @@ RSpec.describe ::Routing::PseudonymizationHelper do
     context 'when query string has keys with the same names as path params' do
       let(:masked_url) { "http://localhost/dashboard/issues?action=masked_action&scope=all&state=opened" }
       let(:request) do
-        double(:Request,
-               path_parameters: {
-                controller: 'dashboard',
-                action: 'issues'
-               },
-               protocol: 'http',
-               host: 'localhost',
-               query_string: 'action=foobar&scope=all&state=opened')
+        double(
+          :Request,
+          path_parameters: {
+            controller: 'dashboard',
+            action: 'issues'
+          },
+          protocol: 'http',
+          host: 'localhost',
+          query_string: 'action=foobar&scope=all&state=opened'
+        )
       end
 
       before do
@@ -223,16 +241,18 @@ RSpec.describe ::Routing::PseudonymizationHelper do
   describe 'when url has no params to mask' do
     let(:original_url) { 'http://localhost/-/security/vulnerabilities' }
     let(:request) do
-      double(:Request,
-             path_parameters: {
-               controller: 'security/vulnerabilities',
-               action: 'index'
-             },
-             protocol: 'http',
-             host: 'localhost',
-             query_string: '',
-             original_fullpath: '/-/security/vulnerabilities',
-             original_url: original_url)
+      double(
+        :Request,
+        path_parameters: {
+          controller: 'security/vulnerabilities',
+          action: 'index'
+        },
+        protocol: 'http',
+        host: 'localhost',
+        query_string: '',
+        original_fullpath: '/-/security/vulnerabilities',
+        original_url: original_url
+      )
     end
 
     before do
@@ -247,15 +267,17 @@ RSpec.describe ::Routing::PseudonymizationHelper do
   describe 'when it raises exception' do
     context 'calls error tracking' do
       let(:request) do
-        double(:Request,
-               path_parameters: {
-                controller: 'dashboard',
-                action: 'issues'
-               },
-               protocol: 'http',
-               host: 'localhost',
-               query_string: 'assignee_username=root',
-               original_fullpath: '/dashboard/issues?assignee_username=root')
+        double(
+          :Request,
+          path_parameters: {
+            controller: 'dashboard',
+            action: 'issues'
+          },
+          protocol: 'http',
+          host: 'localhost',
+          query_string: 'assignee_username=root',
+          original_fullpath: '/dashboard/issues?assignee_username=root'
+        )
       end
 
       before do

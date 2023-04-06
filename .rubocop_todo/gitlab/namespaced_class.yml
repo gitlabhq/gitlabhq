@@ -923,7 +923,6 @@ Gitlab/NamespacedClass:
     - 'ee/app/models/license.rb'
     - 'ee/app/models/merge_request_block.rb'
     - 'ee/app/models/merge_request_diff_detail.rb'
-    - 'ee/app/models/merge_train.rb'
     - 'ee/app/models/namespace_limit.rb'
     - 'ee/app/models/path_lock.rb'
     - 'ee/app/models/productivity_analytics.rb'

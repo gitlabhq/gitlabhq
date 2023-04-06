@@ -11,8 +11,8 @@ RSpec.describe Gitlab::Database::SchemaValidation::Inconsistency, feature_catego
   let(:structure_stmt) { PgQuery.parse(structure_sql_statement).tree.stmts.first.stmt.index_stmt }
   let(:database_stmt) { PgQuery.parse(database_statement).tree.stmts.first.stmt.index_stmt }
 
-  let(:structure_sql_object) { Gitlab::Database::SchemaValidation::Index.new(structure_stmt) }
-  let(:database_object) { Gitlab::Database::SchemaValidation::Index.new(database_stmt) }
+  let(:structure_sql_object) { Gitlab::Database::SchemaValidation::SchemaObjects::Index.new(structure_stmt) }
+  let(:database_object) { Gitlab::Database::SchemaValidation::SchemaObjects::Index.new(database_stmt) }
 
   subject(:inconsistency) { described_class.new(validator, structure_sql_object, database_object) }
 
@@ -41,6 +41,12 @@ RSpec.describe Gitlab::Database::SchemaValidation::Inconsistency, feature_catego
   describe '#type' do
     it 'returns the type of the validator' do
       expect(inconsistency.type).to eq('different_definition_indexes')
+    end
+  end
+
+  describe '#table_name' do
+    it 'returns the table name' do
+      expect(inconsistency.table_name).to eq('achievements')
     end
   end
 

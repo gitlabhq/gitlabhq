@@ -1281,7 +1281,6 @@ lib/gitlab/checks/** @proglottis @toon
 /app/workers/stuck_ci_jobs_worker.rb
 /app/workers/update_external_pull_requests_worker.rb
 /lib/api/commit_statuses.rb
-/ee/app/models/merge_train.rb
 /ee/app/finders/merge_trains_finder.rb
 /ee/app/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service.rb
 /ee/app/services/auto_merge/merge_train_service.rb
@@ -1290,7 +1289,6 @@ lib/gitlab/checks/** @proglottis @toon
 /ee/app/controllers/ee/projects/pipelines_controller.rb
 /ee/app/controllers/projects/pipelines/
 /ee/app/controllers/projects/subscriptions_controller.rb
-/ee/app/models/merge_train.rb
 /ee/app/helpers/ee/projects/pipeline_helper.rb
 /ee/app/views/ci_minutes_usage_mailer/
 /ee/app/views/projects/pipelines/
@@ -1334,7 +1332,6 @@ lib/gitlab/checks/** @proglottis @toon
 /spec/workers/run_pipeline_schedule_worker_spec.rb
 /spec/workers/stuck_ci_jobs_worker_spec.rb
 /spec/workers/update_external_pull_requests_worker_spec.rb
-/ee/spec/models/merge_train_spec.rb
 /ee/spec/finders/merge_trains_finder_spec.rb
 /ee/spec/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service_spec.rb
 /ee/spec/services/auto_merge/merge_train_service_spec.rb

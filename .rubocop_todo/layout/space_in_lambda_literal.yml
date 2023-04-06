@@ -223,7 +223,6 @@ Layout/SpaceInLambdaLiteral:
     - 'ee/app/models/iterations/cadence.rb'
     - 'ee/app/models/merge_request_block.rb'
     - 'ee/app/models/merge_requests/compliance_violation.rb'
-    - 'ee/app/models/merge_train.rb'
     - 'ee/app/models/namespaces/namespace_ban.rb'
     - 'ee/app/models/requirements_management/requirement.rb'
     - 'ee/app/models/resource_iteration_event.rb'

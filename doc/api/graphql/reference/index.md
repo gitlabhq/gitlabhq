@@ -55,6 +55,26 @@ CI related settings that apply to the entire instance.
 
 Returns [`CiApplicationSettings`](#ciapplicationsettings).
 
+### `Query.ciCatalogResources`
+
+CI Catalog resources visible to the current user.
+
+WARNING:
+**Introduced** in 15.11.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Returns [`CiCatalogResourceConnection`](#cicatalogresourceconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querycicatalogresourcesprojectpath"></a>`projectPath` | [`ID`](#id) | Project with the namespace catalog. |
+
 ### `Query.ciConfig`
 
 Linted and processed contents of a CI config.
@@ -7114,6 +7134,30 @@ The edge type for [`CiBuildNeed`](#cibuildneed).
 | <a id="cibuildneededgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cibuildneededgenode"></a>`node` | [`CiBuildNeed`](#cibuildneed) | The item at the end of the edge. |
 
+#### `CiCatalogResourceConnection`
+
+The connection type for [`CiCatalogResource`](#cicatalogresource).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourceconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="cicatalogresourceconnectionedges"></a>`edges` | [`[CiCatalogResourceEdge]`](#cicatalogresourceedge) | A list of edges. |
+| <a id="cicatalogresourceconnectionnodes"></a>`nodes` | [`[CiCatalogResource]`](#cicatalogresource) | A list of nodes. |
+| <a id="cicatalogresourceconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiCatalogResourceEdge`
+
+The edge type for [`CiCatalogResource`](#cicatalogresource).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cicatalogresourceedgenode"></a>`node` | [`CiCatalogResource`](#cicatalogresource) | The item at the end of the edge. |
+
 #### `CiConfigGroupConnection`
 
 The connection type for [`CiConfigGroup`](#ciconfiggroup).
@@ -11677,6 +11721,17 @@ Represents the total number of issues and their weights for a particular day.
 | ---- | ---- | ----------- |
 | <a id="cibuildneedid"></a>`id` | [`ID!`](#id) | ID of the BuildNeed. |
 | <a id="cibuildneedname"></a>`name` | [`String`](#string) | Name of the job we need to complete. |
+
+### `CiCatalogResource`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourcedescription"></a>`description` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is in Alpha. It can be changed or removed at any time. Description of the catalog resource. |
+| <a id="cicatalogresourceicon"></a>`icon` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is in Alpha. It can be changed or removed at any time. Icon for the catalog resource. |
+| <a id="cicatalogresourceid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in 15.11. This feature is in Alpha. It can be changed or removed at any time. ID of the catalog resource. |
+| <a id="cicatalogresourcename"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is in Alpha. It can be changed or removed at any time. Name of the catalog resource. |
 
 ### `CiConfig`
 

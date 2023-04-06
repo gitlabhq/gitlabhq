@@ -128,12 +128,14 @@ RSpec.describe PageLayoutHelper do
 
     describe 'a bare controller' do
       it 'returns an empty context' do
-        expect(search_context).to have_attributes(project: nil,
-                                                  group: nil,
-                                                  snippets: [],
-                                                  project_metadata: {},
-                                                  group_metadata: {},
-                                                  search_url: '/search')
+        expect(search_context).to have_attributes(
+          project: nil,
+          group: nil,
+          snippets: [],
+          project_metadata: {},
+          group_metadata: {},
+          search_url: '/search'
+        )
       end
     end
   end

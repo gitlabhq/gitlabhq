@@ -13,6 +13,8 @@ module Ci
       belongs_to :project
 
       scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
+
+      delegate :avatar_path, :description, :name, to: :project
     end
   end
 end

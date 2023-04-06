@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25144) in GitLab 12.8.
 
 WARNING:
-This feature was deprecated in GitLab 15.9
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390424) in GitLab 15.9
 and is planned for removal in 17.0. This change is a breaking change.
 
 If your application offers a web interface, you can use

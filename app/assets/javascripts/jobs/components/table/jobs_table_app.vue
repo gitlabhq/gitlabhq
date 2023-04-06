@@ -140,6 +140,19 @@ export default {
       this.infiniteScrollingTriggered = false;
       this.filterSearchTriggered = true;
 
+      // all filters have been cleared reset query param
+      // and refetch jobs/count with defaults
+      if (!filters.length) {
+        updateHistory({
+          url: setUrlParams({ statuses: null }, window.location.href, true),
+        });
+
+        this.$apollo.queries.jobs.refetch({ statuses: null });
+        this.$apollo.queries.jobsCount.refetch({ statuses: null });
+
+        return;
+      }
+
       // Eventually there will be more tokens available
       // this code is written to scale for those tokens
       filters.forEach((filter) => {

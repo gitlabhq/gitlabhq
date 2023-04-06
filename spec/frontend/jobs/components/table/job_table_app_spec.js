@@ -275,5 +275,42 @@ describe('Job table app', () => {
         url: `${TEST_HOST}/?statuses=FAILED`,
       });
     });
+
+    it('resets query param after clearing tokens', () => {
+      createComponent();
+
+      jest.spyOn(urlUtils, 'updateHistory');
+
+      findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
+
+      expect(successHandler).toHaveBeenCalledWith({
+        first: 30,
+        fullPath: 'gitlab-org/gitlab',
+        statuses: 'FAILED',
+      });
+      expect(countSuccessHandler).toHaveBeenCalledWith({
+        fullPath: 'gitlab-org/gitlab',
+        statuses: 'FAILED',
+      });
+      expect(urlUtils.updateHistory).toHaveBeenCalledWith({
+        url: `${TEST_HOST}/?statuses=FAILED`,
+      });
+
+      findFilteredSearch().vm.$emit('filterJobsBySearch', []);
+
+      expect(urlUtils.updateHistory).toHaveBeenCalledWith({
+        url: `${TEST_HOST}/`,
+      });
+
+      expect(successHandler).toHaveBeenCalledWith({
+        first: 30,
+        fullPath: 'gitlab-org/gitlab',
+        statuses: null,
+      });
+      expect(countSuccessHandler).toHaveBeenCalledWith({
+        fullPath: 'gitlab-org/gitlab',
+        statuses: null,
+      });
+    });
   });
 });

@@ -26,7 +26,6 @@ RSpec/DescribedClass:
     - 'ee/spec/models/issue_spec.rb'
     - 'ee/spec/models/iteration_spec.rb'
     - 'ee/spec/models/license_spec.rb'
-    - 'ee/spec/models/merge_train_spec.rb'
     - 'ee/spec/models/project_import_state_spec.rb'
     - 'ee/spec/models/release_highlight_spec.rb'
     - 'ee/spec/models/requirements_management/test_report_spec.rb'

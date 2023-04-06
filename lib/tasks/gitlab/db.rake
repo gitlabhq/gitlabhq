@@ -455,7 +455,15 @@ namespace :gitlab do
 
         inconsistencies = Gitlab::Database::SchemaValidation::Runner.new(structure_sql, database).execute
 
+        gitlab_url = 'gitlab-org/gitlab'
+
         inconsistencies.each do |inconsistency|
+          Gitlab::Database::SchemaValidation::TrackInconsistency.new(
+            inconsistency,
+            Project.find_by_full_path(gitlab_url),
+            User.support_bot
+          ).execute
+
           puts inconsistency.inspect
         end
       end

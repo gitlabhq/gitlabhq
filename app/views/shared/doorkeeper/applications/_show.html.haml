@@ -15,16 +15,7 @@
       %td
         = _('Secret')
       %td
-        - if @application.plaintext_secret
-          = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5'}) do |c|
-            = c.body do
-              = _('This is the only time the secret is accessible. Copy the secret and store it securely.')
-          = clipboard_button(clipboard_text: @application.plaintext_secret, button_text: _('Copy'), title: _("Copy secret"), class: "btn btn-default btn-md gl-button")
-        - else
-          = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5'}) do |c|
-            = c.body do
-              = _('The secret is only available when you create the application or renew the secret.')
-        = render 'shared/doorkeeper/applications/update_form', path: renew_path
+        #js-oauth-application-secret{ data: { initial_secret: @application.plaintext_secret, renew_path: renew_path } }
 
     %tr
       %td

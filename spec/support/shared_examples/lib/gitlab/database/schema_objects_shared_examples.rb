@@ -17,4 +17,10 @@ RSpec.shared_examples "schema objects assertions for" do |stmt_name|
       expect(schema_object.statement).to eq(statement)
     end
   end
+
+  describe '#table_name' do
+    it 'returns schema object table_name' do
+      expect(schema_object.table_name).to eq(table_name)
+    end
+  end
 end

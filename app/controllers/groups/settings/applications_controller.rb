@@ -46,10 +46,9 @@ module Groups
         @application.renew_secret
 
         if @application.save
-          flash.now[:notice] = s_('AuthorizedApplication|Application secret was successfully updated.')
-          render :show
+          render json: { secret: @application.plaintext_secret }
         else
-          redirect_to group_settings_application_url(@group, @application)
+          render json: { errors: @application.errors }, status: :unprocessable_entity
         end
       end
 
