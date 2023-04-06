@@ -46742,13 +46742,16 @@ msgstr ""
 msgid "Unlimited"
 msgstr ""
 
-msgid "UnlimitedMembersDuringTrialAlert|During your trial, invite as many members as you like to %{group} to collaborate with you."
+msgid "UnlimitedMembersDuringTrialAlert|During your trial, invite as many members as you like to %{group_or_project} to collaborate with you."
 msgstr ""
 
 msgid "UnlimitedMembersDuringTrialAlert|Explore paid plans"
 msgstr ""
 
 msgid "UnlimitedMembersDuringTrialAlert|Get the most out of your trial with space for more members"
+msgstr ""
+
+msgid "UnlimitedMembersDuringTrialAlert|Invite more members"
 msgstr ""
 
 msgid "Unlink"

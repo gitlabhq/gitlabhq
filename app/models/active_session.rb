@@ -100,6 +100,19 @@ class ActiveSession
     end
   end
 
+  # set marketing cookie when user has active session
+  def self.set_active_user_cookie(auth)
+    auth.cookies[:about_gitlab_active_user] =
+      {
+        value: true,
+        domain: Gitlab.config.gitlab.host
+      }
+  end
+
+  def self.unset_active_user_cookie(auth)
+    auth.cookies.delete :about_gitlab_active_user
+  end
+
   def self.list(user)
     Gitlab::Redis::Sessions.with do |redis|
       cleaned_up_lookup_entries(redis, user).map do |raw_session|

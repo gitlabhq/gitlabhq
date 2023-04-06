@@ -1,9 +1,6 @@
 - add_page_specific_style 'page_bundles/members'
 - page_title _('Group members')
 
-= content_for :page_level_alert do
-  = render_if_exists 'shared/unlimited_members_during_trial_alert', group: @group.root_ancestor
-
 .row.gl-mt-3
   .col-lg-12
     .gl-display-flex.gl-flex-wrap

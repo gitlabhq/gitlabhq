@@ -3,10 +3,6 @@
 
 = render_if_exists 'shared/ultimate_feature_removal_banner', project: @project
 
-= content_for :page_level_alert do
-  - if can_invite_members_for_project?(@project)
-    = render_if_exists 'shared/unlimited_members_during_trial_alert', group: @project.root_ancestor
-
 .row.gl-mt-3
   .col-lg-12
     .gl-display-flex.gl-flex-wrap

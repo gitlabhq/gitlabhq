@@ -649,4 +649,26 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
       it_behaves_like 'cleaning up lookup entries'
     end
   end
+
+  describe '.set_active_user_cookie' do
+    let(:auth) { double(cookies: {}) }
+
+    it 'sets marketing cookie' do
+      ActiveSession.set_active_user_cookie(auth)
+      expect(auth.cookies[:about_gitlab_active_user][:value]).to be_truthy
+    end
+  end
+
+  describe '.unset_active_user_cookie' do
+    let(:auth) { double(cookies: {}) }
+
+    before do
+      ActiveSession.set_active_user_cookie(auth)
+    end
+
+    it 'unsets marketing cookie' do
+      ActiveSession.unset_active_user_cookie(auth)
+      expect(auth.cookies[:about_gitlab_active_user]).to be_nil
+    end
+  end
 end
