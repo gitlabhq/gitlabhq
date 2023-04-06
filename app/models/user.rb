@@ -1974,7 +1974,7 @@ class User < ApplicationRecord
   end
 
   def enabled_incoming_email_token
-    incoming_email_token if Gitlab::IncomingEmail.supports_issue_creation?
+    incoming_email_token if Gitlab::Email::IncomingEmail.supports_issue_creation?
   end
 
   def sync_attribute?(attribute)

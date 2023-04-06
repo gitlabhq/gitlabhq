@@ -191,6 +191,23 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipe
             .to include('`some-location.yml`: header:spec config contains unknown keys: a')
         end
       end
+
+      context 'when header is not a hash' do
+        let(:content) do
+          <<~YAML
+            spec: abcd
+            ---
+            run:
+              script: deploy $[[ inputs.abcd ]]
+          YAML
+        end
+
+        it 'surfaces header errors' do
+          expect(valid?).to be_falsy
+          expect(file.errors)
+            .to contain_exactly('`some-location.yml`: header:spec config should be a hash')
+        end
+      end
     end
   end
 

@@ -58,7 +58,7 @@ git-lfs --version
 ```
 
 If it doesn't recognize this command, you must install it. There are
-several [installation methods](https://git-lfs.github.com/) that you can
+several [installation methods](https://git-lfs.com/) that you can
 choose according to your OS. To install it with Homebrew:
 
 ```shell

@@ -518,8 +518,8 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
           allow(Notify).to receive(:service_desk_new_note_email)
                              .with(Integer, Integer, String).and_return(mailer)
 
-          allow(::Gitlab::IncomingEmail).to receive(:enabled?) { true }
-          allow(::Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
+          allow(::Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }
+          allow(::Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?) { true }
         end
 
         let(:subject) { NotificationService.new }

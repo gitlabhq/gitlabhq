@@ -2286,8 +2286,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     subject(:project) { build(:project, :private, namespace: namespace, service_desk_enabled: true) }
 
     before do
-      allow(Gitlab::IncomingEmail).to receive(:enabled?).and_return(true)
-      allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
+      allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)
+      allow(Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
     end
 
     it 'is enabled' do
@@ -2327,7 +2327,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
     context 'when service_desk_email is disabled' do
       before do
-        allow(::Gitlab::ServiceDeskEmail).to receive(:enabled?).and_return(false)
+        allow(::Gitlab::Email::ServiceDeskEmail).to receive(:enabled?).and_return(false)
       end
 
       it_behaves_like 'with incoming email address'
@@ -2336,7 +2336,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     context 'when service_desk_email is enabled' do
       before do
         config = double(enabled: true, address: 'foo+%{key}@bar.com')
-        allow(::Gitlab::ServiceDeskEmail).to receive(:config).and_return(config)
+        allow(::Gitlab::Email::ServiceDeskEmail).to receive(:config).and_return(config)
       end
 
       context 'when project_key is set' do

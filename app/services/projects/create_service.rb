@@ -144,8 +144,10 @@ module Projects
     # completes), and any other affected users in the background
     def setup_authorizations
       if @project.group
-        group_access_level = @project.group.max_member_access_for_user(current_user,
-                                                                       only_concrete_membership: true)
+        group_access_level = @project.group.max_member_access_for_user(
+          current_user,
+          only_concrete_membership: true
+        )
 
         if group_access_level > GroupMember::NO_ACCESS
           current_user.project_authorizations.safe_find_or_create_by!(

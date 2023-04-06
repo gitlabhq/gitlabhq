@@ -49,6 +49,12 @@ module CloudProfilerAgent
         begin
           yield
         rescue ::Google::Cloud::Error => e
+          logger.error(
+            gcp_ruby_status: "error",
+            error: e.inspect,
+            **log_labels
+          )
+
           backoff = backoff_duration(e)
           if backoff.nil?
             iteration_time = @max_iteration_sec

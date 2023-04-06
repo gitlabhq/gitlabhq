@@ -2,6 +2,6 @@
 
 module AccountsHelper
   def incoming_email_token_enabled?
-    current_user.incoming_email_token && Gitlab::IncomingEmail.supports_issue_creation?
+    current_user.incoming_email_token && Gitlab::Email::IncomingEmail.supports_issue_creation?
   end
 end

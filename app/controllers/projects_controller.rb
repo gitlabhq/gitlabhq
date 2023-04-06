@@ -208,7 +208,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def new_issuable_address
-    return render_404 unless Gitlab::IncomingEmail.supports_issue_creation?
+    return render_404 unless Gitlab::Email::IncomingEmail.supports_issue_creation?
 
     current_user.reset_incoming_email_token!
     render json: { new_address: @project.new_issuable_address(current_user, params[:issuable_type]) }

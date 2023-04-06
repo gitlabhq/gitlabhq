@@ -140,11 +140,13 @@ module Gitlab
             # Set environment name here so we can access it when evaluating the job's rules
             variables.append(key: 'CI_ENVIRONMENT_NAME', value: job.environment) if job.environment
 
-            # legacy variables
-            variables.append(key: 'CI_BUILD_NAME', value: job.name)
-            variables.append(key: 'CI_BUILD_STAGE', value: job.stage_name)
-            variables.append(key: 'CI_BUILD_TRIGGERED', value: 'true') if job.trigger_request
-            variables.append(key: 'CI_BUILD_MANUAL', value: 'true') if job.action?
+            if Feature.disabled?(:ci_remove_legacy_predefined_variables, project)
+              # legacy variables
+              variables.append(key: 'CI_BUILD_NAME', value: job.name)
+              variables.append(key: 'CI_BUILD_STAGE', value: job.stage_name)
+              variables.append(key: 'CI_BUILD_TRIGGERED', value: 'true') if job.trigger_request
+              variables.append(key: 'CI_BUILD_MANUAL', value: 'true') if job.action?
+            end
           end
         end
 

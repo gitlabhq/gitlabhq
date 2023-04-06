@@ -120,9 +120,11 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
 
         it 'schedules a destruction of older deployments' do
           expect(DestroyPagesDeploymentsWorker).to(
-            receive(:perform_in).with(described_class::OLD_DEPLOYMENTS_DESTRUCTION_DELAY,
-                                      project.id,
-                                      instance_of(Integer))
+            receive(:perform_in).with(
+              described_class::OLD_DEPLOYMENTS_DESTRUCTION_DELAY,
+              project.id,
+              instance_of(Integer)
+            )
           )
 
           execute
@@ -364,10 +366,14 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
   context 'when retrying the job' do
     let(:stage) { create(:ci_stage, position: 1_000_000, name: 'deploy', pipeline: pipeline) }
     let!(:older_deploy_job) do
-      create(:generic_commit_status, :failed, pipeline: pipeline,
-                                              ref: build.ref,
-                                              ci_stage: stage,
-                                              name: 'pages:deploy')
+      create(
+        :generic_commit_status,
+        :failed,
+        pipeline: pipeline,
+        ref: build.ref,
+        ci_stage: stage,
+        name: 'pages:deploy'
+      )
     end
 
     before do

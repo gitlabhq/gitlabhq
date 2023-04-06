@@ -22,14 +22,16 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
         @from_user = create(:user)
         @from_namespace = @from_user.namespace
         avatar = fixture_file_upload("spec/fixtures/dk.png", "image/png")
-        @from_project = create(:project,
-                               :repository,
-                               creator_id: @from_user.id,
-                               namespace: @from_namespace,
-                               star_count: 107,
-                               avatar: avatar,
-                               description: 'wow such project',
-                               external_authorization_classification_label: 'classification-label')
+        @from_project = create(
+          :project,
+          :repository,
+          creator_id: @from_user.id,
+          namespace: @from_namespace,
+          star_count: 107,
+          avatar: avatar,
+          description: 'wow such project',
+          external_authorization_classification_label: 'classification-label'
+        )
         @to_user = create(:user)
         @to_namespace = @to_user.namespace
         @from_project.add_member(@to_user, :developer)
@@ -258,11 +260,13 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
       before do
         @group_owner = create(:user)
         @developer   = create(:user)
-        @project     = create(:project, :repository,
-                              creator_id: @group_owner.id,
-                              star_count: 777,
-                              description: 'Wow, such a cool project!',
-                              ci_config_path: 'debian/salsa-ci.yml')
+        @project     = create(
+          :project, :repository,
+          creator_id: @group_owner.id,
+          star_count: 777,
+          description: 'Wow, such a cool project!',
+          ci_config_path: 'debian/salsa-ci.yml'
+        )
         @group = create(:group)
         @group.add_member(@group_owner, GroupMember::OWNER)
         @group.add_member(@developer,   GroupMember::DEVELOPER)
@@ -297,9 +301,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
 
       context 'project already exists in group' do
         it 'fails due to validation, not transaction failure' do
-          existing_project = create(:project, :repository,
-                                    name: @project.name,
-                                    namespace: @group)
+          existing_project = create(:project, :repository, name: @project.name, namespace: @group)
           to_project = fork_project(@project, @group_owner, @opts)
           expect(existing_project.persisted?).to be_truthy
           expect(to_project.errors[:name]).to eq(['has already been taken'])

@@ -898,6 +898,59 @@ _An elephant at sunset_
     );
   });
 
+  it('correctly renders a table with checkboxes', () => {
+    expect(
+      serialize(
+        table(
+          // each table cell must contain at least one paragraph
+          tableRow(
+            tableHeader(paragraph('')),
+            tableHeader(paragraph('Item')),
+            tableHeader(paragraph('Description')),
+          ),
+          tableRow(
+            tableCell(taskList(taskItem(paragraph('')))),
+            tableCell(paragraph('Item 1')),
+            tableCell(paragraph('Description 1')),
+          ),
+          tableRow(
+            tableCell(taskList(taskItem(paragraph('some text')))),
+            tableCell(paragraph('Item 2')),
+            tableCell(paragraph('Description 2')),
+          ),
+        ),
+      ).trim(),
+    ).toBe(
+      `
+<table>
+<tr>
+<th>
+
+</th>
+<th>Item</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>
+
+* [ ] &nbsp;
+</td>
+<td>Item 1</td>
+<td>Description 1</td>
+</tr>
+<tr>
+<td>
+
+* [ ] some text
+</td>
+<td>Item 2</td>
+<td>Description 2</td>
+</tr>
+</table>
+    `.trim(),
+    );
+  });
+
   it('correctly serializes a table with line breaks', () => {
     expect(
       serialize(

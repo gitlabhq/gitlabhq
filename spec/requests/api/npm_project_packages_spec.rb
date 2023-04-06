@@ -363,8 +363,9 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
       end
 
       context 'when the lease to create a package is already taken' do
-        let(:params) { upload_params(package_name: package_name) }
-        let(:lease_key) { "packages:npm:create_package_service:packages:#{project.id}_#{package_name}" }
+        let(:version) { '1.0.1' }
+        let(:params) { upload_params(package_name: package_name, package_version: version) }
+        let(:lease_key) { "packages:npm:create_package_service:packages:#{project.id}_#{package_name}_#{version}" }
 
         before do
           stub_exclusive_lease_taken(lease_key, timeout: Packages::Npm::CreatePackageService::DEFAULT_LEASE_TIMEOUT)

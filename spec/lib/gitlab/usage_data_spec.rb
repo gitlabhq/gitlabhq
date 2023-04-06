@@ -713,7 +713,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         expect(subject[:ldap_enabled]).to eq(Gitlab.config.ldap.enabled)
         expect(subject[:gravatar_enabled]).to eq(Gitlab::CurrentSettings.gravatar_enabled?)
         expect(subject[:omniauth_enabled]).to eq(Gitlab::Auth.omniauth_enabled?)
-        expect(subject[:reply_by_email_enabled]).to eq(Gitlab::IncomingEmail.enabled?)
+        expect(subject[:reply_by_email_enabled]).to eq(Gitlab::Email::IncomingEmail.enabled?)
         expect(subject[:container_registry_enabled]).to eq(Gitlab.config.registry.enabled)
         expect(subject[:dependency_proxy_enabled]).to eq(Gitlab.config.dependency_proxy.enabled)
         expect(subject[:gitlab_shared_runners_enabled]).to eq(Gitlab.config.gitlab_ci.shared_runners_enabled)

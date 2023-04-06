@@ -1,19 +1,10 @@
 # frozen_string_literal: true
 
+# rubocop:disable Graphql/ResolverType (inherited from Resolvers::Analytics::CycleAnalytics::BaseCountResolver)
 module Resolvers
   module Analytics
     module CycleAnalytics
-      class DeploymentCountResolver < BaseResolver
-        type Types::Analytics::CycleAnalytics::MetricType, null: true
-
-        argument :from, Types::TimeType,
-          required: true,
-          description: 'Deployments finished after the date.'
-
-        argument :to, Types::TimeType,
-          required: true,
-          description: 'Deployments finished before the date.'
-
+      class DeploymentCountResolver < BaseCountResolver
         def resolve(**args)
           value = count(args)
           {
@@ -57,6 +48,7 @@ module Resolvers
     end
   end
 end
+# rubocop:enable Graphql/ResolverType
 
 mod = Resolvers::Analytics::CycleAnalytics::DeploymentCountResolver
 mod.prepend_mod_with('Resolvers::Analytics::CycleAnalytics::DeploymentCountResolver')

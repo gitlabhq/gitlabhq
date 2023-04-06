@@ -798,7 +798,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
             [
               [[{ if: '$CI_JOB_NAME == "rspec" && $VAR == null', when: 'on_failure' }]],
               [[{ if: '$VARIABLE != null',              when: 'delayed', start_in: '1 day' }, { if: '$CI_JOB_NAME   == "rspec"', when: 'on_failure' }]],
-              [[{ if: '$VARIABLE == "the wrong value"', when: 'delayed', start_in: '1 day' }, { if: '$CI_BUILD_NAME == "rspec"', when: 'on_failure' }]]
+              [[{ if: '$VARIABLE == "the wrong value"', when: 'delayed', start_in: '1 day' }, { if: '$CI_JOB_NAME == "rspec"', when: 'on_failure' }]]
             ]
           end
 
@@ -807,6 +807,30 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
 
             it 'correctly populates when:' do
               expect(seed_build.attributes).to include(when: 'on_failure')
+            end
+          end
+        end
+
+        context 'when FF `ci_remove_legacy_predefined_variables` is disabled' do
+          before do
+            stub_feature_flags(ci_remove_legacy_predefined_variables: false)
+          end
+
+          context 'with an explicit `when: on_failure`' do
+            where(:rule_set) do
+              [
+                [[{ if: '$CI_JOB_NAME == "rspec" && $VAR == null', when: 'on_failure' }]],
+                [[{ if: '$VARIABLE != null',              when: 'delayed', start_in: '1 day' }, { if: '$CI_JOB_NAME   == "rspec"', when: 'on_failure' }]],
+                [[{ if: '$VARIABLE == "the wrong value"', when: 'delayed', start_in: '1 day' }, { if: '$CI_BUILD_NAME == "rspec"', when: 'on_failure' }]]
+              ]
+            end
+
+            with_them do
+              it { is_expected.to be_included }
+
+              it 'correctly populates when:' do
+                expect(seed_build.attributes).to include(when: 'on_failure')
+              end
             end
           end
         end

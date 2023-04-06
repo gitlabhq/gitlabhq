@@ -118,7 +118,7 @@ module Packages
 
       # used by ExclusiveLeaseGuard
       def lease_key
-        "packages:npm:create_package_service:packages:#{project.id}_#{name}"
+        "packages:npm:create_package_service:packages:#{project.id}_#{name}_#{version}"
       end
 
       # used by ExclusiveLeaseGuard

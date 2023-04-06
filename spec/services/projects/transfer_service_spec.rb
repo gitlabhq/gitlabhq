@@ -667,10 +667,11 @@ RSpec.describe Projects::TransferService, feature_category: :projects do
       user_ids = [user.id, member_of_old_group.id, member_of_new_group.id].map { |id| [id] }
 
       expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
-        receive(:bulk_perform_in)
-          .with(1.hour,
-                user_ids,
-                batch_delay: 30.seconds, batch_size: 100)
+        receive(:bulk_perform_in).with(
+          1.hour,
+          user_ids,
+          batch_delay: 30.seconds, batch_size: 100
+        )
       )
 
       subject

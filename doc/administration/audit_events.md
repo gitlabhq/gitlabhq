@@ -357,6 +357,8 @@ The following user actions on a GitLab instance generate instance audit events:
 - Enabled Admin Mode. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362101) in GitLab 15.7.
 - All [group events](#group-events) and [project events](#project-events).
 - User was unblocked using the Admin Area or API. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115727) in GitLab 15.11.
+- User was banned using the Admin Area or API. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116103) in GitLab 15.11.
+- User was unbanned using the Admin Area or API. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116221) in GitLab 15.11.
 
 Instance events can also be accessed using the [Instance Audit Events API](../api/audit_events.md#instance-audit-events).
 

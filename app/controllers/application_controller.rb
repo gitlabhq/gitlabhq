@@ -89,7 +89,7 @@ class ApplicationController < ActionController::Base
     render_403
   end
 
-  rescue_from Gitlab::Auth::IpBlacklisted do
+  rescue_from Gitlab::Auth::IpBlocked do
     Gitlab::AuthLogger.error(
       message: 'Rack_Attack',
       env: :blocklist,

@@ -892,12 +892,12 @@ RSpec.describe ApplicationController, feature_category: :shared do
     end
   end
 
-  describe 'rescue_from Gitlab::Auth::IpBlacklisted' do
+  describe 'rescue_from Gitlab::Auth::IpBlocked' do
     controller(described_class) do
       skip_before_action :authenticate_user!
 
       def index
-        raise Gitlab::Auth::IpBlacklisted
+        raise Gitlab::Auth::IpBlocked
       end
     end
 

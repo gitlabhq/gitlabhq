@@ -101,7 +101,7 @@
             doc_href: help_page_path('integration/omniauth'))
 
           = feature_entry(_('Reply by email'),
-            enabled: Gitlab::IncomingEmail.enabled?,
+            enabled: Gitlab::Email::IncomingEmail.enabled?,
             doc_href: help_page_path('administration/reply_by_email'))
 
           = render_if_exists 'admin/dashboard/elastic_and_geo'

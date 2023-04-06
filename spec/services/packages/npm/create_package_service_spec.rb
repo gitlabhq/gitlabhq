@@ -16,8 +16,8 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
   end
 
   let(:package_name) { "@#{namespace.path}/my-app" }
-  let(:version_data) { params.dig('versions', '1.0.1') }
-  let(:lease_key) { "packages:npm:create_package_service:packages:#{project.id}_#{package_name}" }
+  let(:version_data) { params.dig('versions', version) }
+  let(:lease_key) { "packages:npm:create_package_service:packages:#{project.id}_#{package_name}_#{version}" }
   let(:service) { described_class.new(project, user, params) }
 
   subject { service.execute }
@@ -252,20 +252,44 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
 
     context 'when many of the same packages are created at the same time', :delete do
       it 'only creates one package' do
-        expect { package_creation_race(project, user, params) }.to change { Packages::Package.count }.by(1)
+        expect { create_packages(project, user, params) }.to change { Packages::Package.count }.by(1)
       end
     end
 
-    def package_creation_race(project, user, params)
+    context 'when many packages with different versions are created at the same time', :delete do
+      it 'creates all packages' do
+        expect { create_packages_with_versions(project, user, params) }.to change { Packages::Package.count }.by(5)
+      end
+    end
+
+    def create_packages(project, user, params)
+      with_threads do
+        described_class.new(project, user, params).execute
+      end
+    end
+
+    def create_packages_with_versions(project, user, params)
+      with_threads do |i|
+        # Modify the package's version
+        modified_params = Gitlab::Json.parse(params.to_json
+          .gsub(version, "1.0.#{i}")).with_indifferent_access
+
+        described_class.new(project, user, modified_params).execute
+      end
+    end
+
+    def with_threads(count: 5, &block)
+      return unless block
+
       # create a race condition - structure from https://blog.arkency.com/2015/09/testing-race-conditions/
       wait_for_it = true
 
-      threads = Array.new(5) do |_|
+      threads = Array.new(count) do |i|
         Thread.new do
           # A loop to make threads busy until we `join` them
           true while wait_for_it
 
-          described_class.new(project, user, params).execute
+          yield(i)
         end
       end
 

@@ -1,5 +1,37 @@
 # frozen_string_literal: true
 
+RSpec.shared_examples 'validation on Time arguments' do
+  context 'when `to` parameter is higher than `from`' do
+    let(:variables) do
+      {
+        path: full_path,
+        from: 1.day.ago.iso8601,
+        to: 2.days.ago.iso8601
+      }
+    end
+
+    it 'returns error' do
+      expect(result).to be_nil
+      expect(graphql_errors.first['message']).to include('`from` argument must be before `to` argument')
+    end
+  end
+
+  context 'when from and to parameter range is higher than 180 days' do
+    let(:variables) do
+      {
+        path: full_path,
+        from: Time.now,
+        to: 181.days.from_now
+      }
+    end
+
+    it 'returns error' do
+      expect(result).to be_nil
+      expect(graphql_errors.first['message']).to include('Max of 180 days timespan is allowed')
+    end
+  end
+end
+
 RSpec.shared_examples 'value stream analytics flow metrics issueCount examples' do
   let_it_be(:milestone) { create(:milestone, group: group) }
   let_it_be(:label) { create(:group_label, group: group) }
@@ -121,6 +153,8 @@ RSpec.shared_examples 'value stream analytics flow metrics issueCount examples' 
       expect(result).to eq(nil)
     end
   end
+
+  it_behaves_like 'validation on Time arguments'
 end
 
 RSpec.shared_examples 'value stream analytics flow metrics deploymentCount examples' do
@@ -202,6 +236,8 @@ RSpec.shared_examples 'value stream analytics flow metrics deploymentCount examp
       })
     end
   end
+
+  it_behaves_like 'validation on Time arguments'
 end
 
 RSpec.shared_examples 'value stream analytics flow metrics leadTime examples' do

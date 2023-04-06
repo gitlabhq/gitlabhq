@@ -8,9 +8,11 @@ RSpec.shared_context 'container repository delete tags service shared context' d
   let(:params) { { tags: tags } }
 
   before do
-    stub_container_registry_config(enabled: true,
-                                   api_url: 'http://registry.gitlab',
-                                   host_port: 'registry.gitlab')
+    stub_container_registry_config(
+      enabled: true,
+      api_url: 'http://registry.gitlab',
+      host_port: 'registry.gitlab'
+    )
 
     stub_container_registry_tags(
       repository: repository.path,

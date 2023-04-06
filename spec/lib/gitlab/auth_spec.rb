@@ -120,8 +120,8 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           end
         end
 
-        it 'raises an IpBlacklisted exception' do
-          expect { subject }.to raise_error(Gitlab::Auth::IpBlacklisted)
+        it 'raises an IpBlocked exception' do
+          expect { subject }.to raise_error(Gitlab::Auth::IpBlocked)
         end
       end
 

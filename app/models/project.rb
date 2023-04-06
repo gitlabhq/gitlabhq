@@ -1585,7 +1585,7 @@ class Project < ApplicationRecord
   end
 
   def new_issuable_address(author, address_type)
-    return unless Gitlab::IncomingEmail.supports_issue_creation? && author
+    return unless Gitlab::Email::IncomingEmail.supports_issue_creation? && author
 
     # check since this can come from a request parameter
     return unless %w(issue merge_request).include?(address_type)
@@ -1596,7 +1596,7 @@ class Project < ApplicationRecord
 
     # example: incoming+h5bp-html5-boilerplate-8-1234567890abcdef123456789-issue@localhost.com
     # example: incoming+h5bp-html5-boilerplate-8-1234567890abcdef123456789-merge-request@localhost.com
-    Gitlab::IncomingEmail.reply_address("#{full_path_slug}-#{project_id}-#{author.incoming_email_token}-#{suffix}")
+    Gitlab::Email::IncomingEmail.reply_address("#{full_path_slug}-#{project_id}-#{author.incoming_email_token}-#{suffix}")
   end
 
   def build_commit_note(commit)
@@ -2904,11 +2904,11 @@ class Project < ApplicationRecord
   end
 
   def service_desk_custom_address
-    return unless Gitlab::ServiceDeskEmail.enabled?
+    return unless Gitlab::Email::ServiceDeskEmail.enabled?
 
     key = service_desk_setting&.project_key || default_service_desk_suffix
 
-    Gitlab::ServiceDeskEmail.address_for_key("#{full_path_slug}-#{key}")
+    Gitlab::Email::ServiceDeskEmail.address_for_key("#{full_path_slug}-#{key}")
   end
 
   def default_service_desk_suffix

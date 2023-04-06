@@ -229,6 +229,7 @@ const defaultSerializerConfig = {
     [TableRow.name]: renderTableRow,
     [TaskItem.name]: preserveUnchanged((state, node) => {
       state.write(`[${node.attrs.checked ? 'x' : ' '}] `);
+      if (!node.textContent) state.write('&nbsp;');
       state.renderContent(node);
     }),
     [TaskList.name]: preserveUnchanged((state, node) => {

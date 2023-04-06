@@ -10,7 +10,7 @@ module Gitlab
           ALLOWED_KEYS = %i[inputs].freeze
 
           validations do
-            validates :config, type: Hash, allowed_keys: ALLOWED_KEYS
+            validates :config, allowed_keys: ALLOWED_KEYS
           end
 
           entry :inputs, ::Gitlab::Config::Entry::ComposableHash,

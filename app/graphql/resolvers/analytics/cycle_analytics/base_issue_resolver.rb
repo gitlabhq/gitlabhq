@@ -3,7 +3,7 @@
 module Resolvers
   module Analytics
     module CycleAnalytics
-      class BaseIssueResolver < BaseResolver
+      class BaseIssueResolver < BaseCountResolver
         type Types::Analytics::CycleAnalytics::MetricType, null: true
 
         argument :assignee_usernames, [GraphQL::Types::String],
@@ -21,14 +21,6 @@ module Resolvers
         argument :label_names, [GraphQL::Types::String],
           required: false,
           description: 'Labels applied to the issue.'
-
-        argument :from, Types::TimeType,
-          required: true,
-          description: 'Issues created after the date.'
-
-        argument :to, Types::TimeType,
-          required: true,
-          description: 'Issues created before the date.'
 
         def finder_params
           { project_id: object.project.id }

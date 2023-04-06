@@ -339,9 +339,12 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :projects 
     before do
       group.add_maintainer(group_maintainer)
 
-      create(:group_group_link, shared_group: subgroup_for_projects,
-                                shared_with_group: subgroup_for_access,
-                                group_access: share_max_access_level)
+      create(
+        :group_group_link,
+        shared_group: subgroup_for_projects,
+        shared_with_group: subgroup_for_access,
+        group_access: share_max_access_level
+      )
     end
 
     context 'membership is higher from group hierarchy' do
@@ -956,11 +959,11 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :projects 
         receive(:perform_async).and_call_original
       )
       expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
-        receive(:bulk_perform_in)
-          .with(1.hour,
-                array_including([user.id], [other_user.id]),
-                batch_delay: 30.seconds, batch_size: 100)
-          .and_call_original
+        receive(:bulk_perform_in).with(
+          1.hour,
+          array_including([user.id], [other_user.id]),
+          batch_delay: 30.seconds, batch_size: 100
+        ).and_call_original
       )
 
       project = create_project(user, opts)

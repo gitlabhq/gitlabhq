@@ -15738,11 +15738,11 @@ ALTER SEQUENCE epic_metrics_id_seq OWNED BY epic_metrics.id;
 CREATE TABLE epic_user_mentions (
     id bigint NOT NULL,
     epic_id integer NOT NULL,
-    note_id integer,
+    note_id_convert_to_bigint integer,
     mentioned_users_ids integer[],
     mentioned_projects_ids integer[],
     mentioned_groups_ids integer[],
-    note_id_convert_to_bigint bigint
+    note_id bigint
 );
 
 CREATE SEQUENCE epic_user_mentions_id_seq

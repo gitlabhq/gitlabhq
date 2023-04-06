@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ServiceDeskEmail do
+RSpec.describe Gitlab::Email::ServiceDeskEmail, feature_category: :service_desk do
   let(:setting_name) { :service_desk_email }
 
   it_behaves_like 'common email methods'

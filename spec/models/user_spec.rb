@@ -2095,7 +2095,7 @@ RSpec.describe User, feature_category: :user_profile do
     let_it_be(:incoming_email_token) { 'ilqx6jm1u945macft4eff0nw' }
 
     it 'returns incoming email token when supported' do
-      allow(Gitlab::IncomingEmail).to receive(:supports_issue_creation?).and_return(true)
+      allow(Gitlab::Email::IncomingEmail).to receive(:supports_issue_creation?).and_return(true)
 
       user = create(:user, incoming_email_token: incoming_email_token)
 
@@ -2103,7 +2103,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     it 'returns `nil` when not supported' do
-      allow(Gitlab::IncomingEmail).to receive(:supports_issue_creation?).and_return(false)
+      allow(Gitlab::Email::IncomingEmail).to receive(:supports_issue_creation?).and_return(false)
 
       user = create(:user, incoming_email_token: incoming_email_token)
 

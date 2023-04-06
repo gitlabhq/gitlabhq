@@ -18,7 +18,7 @@ module Gitlab
         request = ActionDispatch::Request.new(env)
 
         render_go_doc(request) || @app.call(env)
-      rescue Gitlab::Auth::IpBlacklisted
+      rescue Gitlab::Auth::IpBlocked
         Gitlab::AuthLogger.error(
           message: 'Rack_Attack',
           status: 403,

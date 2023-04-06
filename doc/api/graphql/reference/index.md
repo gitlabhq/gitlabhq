@@ -15484,11 +15484,11 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | ---- | ---- | ----------- |
 | <a id="groupvaluestreamanalyticsflowmetricscycletimeassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="groupvaluestreamanalyticsflowmetricscycletimeauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
-| <a id="groupvaluestreamanalyticsflowmetricscycletimefrom"></a>`from` | [`Time!`](#time) | Issues created after the date. |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimefrom"></a>`from` | [`Time!`](#time) | After the date. |
 | <a id="groupvaluestreamanalyticsflowmetricscycletimelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
 | <a id="groupvaluestreamanalyticsflowmetricscycletimemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
 | <a id="groupvaluestreamanalyticsflowmetricscycletimeprojectids"></a>`projectIds` | [`[ID!]`](#id) | Project IDs within the group hierarchy. |
-| <a id="groupvaluestreamanalyticsflowmetricscycletimeto"></a>`to` | [`Time!`](#time) | Issues created before the date. |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimeto"></a>`to` | [`Time!`](#time) | Before the date. |
 
 ##### `GroupValueStreamAnalyticsFlowMetrics.deploymentCount`
 
@@ -15500,9 +15500,9 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupvaluestreamanalyticsflowmetricsdeploymentcountfrom"></a>`from` | [`Time!`](#time) | Deployments finished after the date. |
+| <a id="groupvaluestreamanalyticsflowmetricsdeploymentcountfrom"></a>`from` | [`Time!`](#time) | After the date. |
 | <a id="groupvaluestreamanalyticsflowmetricsdeploymentcountprojectids"></a>`projectIds` | [`[ID!]`](#id) | Project IDs within the group hierarchy. |
-| <a id="groupvaluestreamanalyticsflowmetricsdeploymentcountto"></a>`to` | [`Time!`](#time) | Deployments finished before the date. |
+| <a id="groupvaluestreamanalyticsflowmetricsdeploymentcountto"></a>`to` | [`Time!`](#time) | Before the date. |
 
 ##### `GroupValueStreamAnalyticsFlowMetrics.issueCount`
 
@@ -15516,11 +15516,11 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | ---- | ---- | ----------- |
 | <a id="groupvaluestreamanalyticsflowmetricsissuecountassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="groupvaluestreamanalyticsflowmetricsissuecountauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
-| <a id="groupvaluestreamanalyticsflowmetricsissuecountfrom"></a>`from` | [`Time!`](#time) | Issues created after the date. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuecountfrom"></a>`from` | [`Time!`](#time) | After the date. |
 | <a id="groupvaluestreamanalyticsflowmetricsissuecountlabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
 | <a id="groupvaluestreamanalyticsflowmetricsissuecountmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
 | <a id="groupvaluestreamanalyticsflowmetricsissuecountprojectids"></a>`projectIds` | [`[ID!]`](#id) | Project IDs within the group hierarchy. |
-| <a id="groupvaluestreamanalyticsflowmetricsissuecountto"></a>`to` | [`Time!`](#time) | Issues created before the date. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuecountto"></a>`to` | [`Time!`](#time) | Before the date. |
 
 ##### `GroupValueStreamAnalyticsFlowMetrics.leadTime`
 
@@ -15534,11 +15534,11 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | ---- | ---- | ----------- |
 | <a id="groupvaluestreamanalyticsflowmetricsleadtimeassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="groupvaluestreamanalyticsflowmetricsleadtimeauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
-| <a id="groupvaluestreamanalyticsflowmetricsleadtimefrom"></a>`from` | [`Time!`](#time) | Issues created after the date. |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimefrom"></a>`from` | [`Time!`](#time) | After the date. |
 | <a id="groupvaluestreamanalyticsflowmetricsleadtimelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
 | <a id="groupvaluestreamanalyticsflowmetricsleadtimemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
 | <a id="groupvaluestreamanalyticsflowmetricsleadtimeprojectids"></a>`projectIds` | [`[ID!]`](#id) | Project IDs within the group hierarchy. |
-| <a id="groupvaluestreamanalyticsflowmetricsleadtimeto"></a>`to` | [`Time!`](#time) | Issues created before the date. |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimeto"></a>`to` | [`Time!`](#time) | Before the date. |
 
 ### `GroupWikiRepositoryRegistry`
 
@@ -19985,10 +19985,10 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | ---- | ---- | ----------- |
 | <a id="projectvaluestreamanalyticsflowmetricscycletimeassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="projectvaluestreamanalyticsflowmetricscycletimeauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
-| <a id="projectvaluestreamanalyticsflowmetricscycletimefrom"></a>`from` | [`Time!`](#time) | Issues created after the date. |
+| <a id="projectvaluestreamanalyticsflowmetricscycletimefrom"></a>`from` | [`Time!`](#time) | After the date. |
 | <a id="projectvaluestreamanalyticsflowmetricscycletimelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
 | <a id="projectvaluestreamanalyticsflowmetricscycletimemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
-| <a id="projectvaluestreamanalyticsflowmetricscycletimeto"></a>`to` | [`Time!`](#time) | Issues created before the date. |
+| <a id="projectvaluestreamanalyticsflowmetricscycletimeto"></a>`to` | [`Time!`](#time) | Before the date. |
 
 ##### `ProjectValueStreamAnalyticsFlowMetrics.deploymentCount`
 
@@ -20000,8 +20000,8 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectvaluestreamanalyticsflowmetricsdeploymentcountfrom"></a>`from` | [`Time!`](#time) | Deployments finished after the date. |
-| <a id="projectvaluestreamanalyticsflowmetricsdeploymentcountto"></a>`to` | [`Time!`](#time) | Deployments finished before the date. |
+| <a id="projectvaluestreamanalyticsflowmetricsdeploymentcountfrom"></a>`from` | [`Time!`](#time) | After the date. |
+| <a id="projectvaluestreamanalyticsflowmetricsdeploymentcountto"></a>`to` | [`Time!`](#time) | Before the date. |
 
 ##### `ProjectValueStreamAnalyticsFlowMetrics.issueCount`
 
@@ -20015,10 +20015,10 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | ---- | ---- | ----------- |
 | <a id="projectvaluestreamanalyticsflowmetricsissuecountassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="projectvaluestreamanalyticsflowmetricsissuecountauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
-| <a id="projectvaluestreamanalyticsflowmetricsissuecountfrom"></a>`from` | [`Time!`](#time) | Issues created after the date. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuecountfrom"></a>`from` | [`Time!`](#time) | After the date. |
 | <a id="projectvaluestreamanalyticsflowmetricsissuecountlabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
 | <a id="projectvaluestreamanalyticsflowmetricsissuecountmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
-| <a id="projectvaluestreamanalyticsflowmetricsissuecountto"></a>`to` | [`Time!`](#time) | Issues created before the date. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuecountto"></a>`to` | [`Time!`](#time) | Before the date. |
 
 ##### `ProjectValueStreamAnalyticsFlowMetrics.leadTime`
 
@@ -20032,10 +20032,10 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | ---- | ---- | ----------- |
 | <a id="projectvaluestreamanalyticsflowmetricsleadtimeassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="projectvaluestreamanalyticsflowmetricsleadtimeauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
-| <a id="projectvaluestreamanalyticsflowmetricsleadtimefrom"></a>`from` | [`Time!`](#time) | Issues created after the date. |
+| <a id="projectvaluestreamanalyticsflowmetricsleadtimefrom"></a>`from` | [`Time!`](#time) | After the date. |
 | <a id="projectvaluestreamanalyticsflowmetricsleadtimelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
 | <a id="projectvaluestreamanalyticsflowmetricsleadtimemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
-| <a id="projectvaluestreamanalyticsflowmetricsleadtimeto"></a>`to` | [`Time!`](#time) | Issues created before the date. |
+| <a id="projectvaluestreamanalyticsflowmetricsleadtimeto"></a>`to` | [`Time!`](#time) | Before the date. |
 
 ### `ProjectWikiRepositoryRegistry`
 

@@ -106,8 +106,8 @@ RSpec.describe 'issue move to another project', feature_category: :team_planning
     let(:service_desk_issue) { create(:issue, project: service_desk_project, author: ::User.support_bot) }
 
     before do
-      allow(Gitlab::IncomingEmail).to receive(:enabled?).and_return(true)
-      allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
+      allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)
+      allow(Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
 
       regular_project.add_reporter(user)
       service_desk_project.add_reporter(user)

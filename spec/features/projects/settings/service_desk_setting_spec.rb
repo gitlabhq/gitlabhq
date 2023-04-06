@@ -12,8 +12,8 @@ RSpec.describe 'Service Desk Setting', :js, :clean_gitlab_redis_cache, feature_c
     sign_in(user)
 
     allow_any_instance_of(Project).to receive(:present).with(current_user: user).and_return(presenter)
-    allow(::Gitlab::IncomingEmail).to receive(:enabled?) { true }
-    allow(::Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
+    allow(::Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }
+    allow(::Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?) { true }
   end
 
   it 'shows activation checkbox' do
@@ -24,7 +24,7 @@ RSpec.describe 'Service Desk Setting', :js, :clean_gitlab_redis_cache, feature_c
 
   context 'when service_desk_email is disabled' do
     before do
-      allow(::Gitlab::ServiceDeskEmail).to receive(:enabled?).and_return(false)
+      allow(::Gitlab::Email::ServiceDeskEmail).to receive(:enabled?).and_return(false)
 
       visit edit_project_path(project)
     end
@@ -43,8 +43,8 @@ RSpec.describe 'Service Desk Setting', :js, :clean_gitlab_redis_cache, feature_c
 
   context 'when service_desk_email is enabled' do
     before do
-      allow(::Gitlab::ServiceDeskEmail).to receive(:enabled?) { true }
-      allow(::Gitlab::ServiceDeskEmail).to receive(:address_for_key) { 'address-suffix@example.com' }
+      allow(::Gitlab::Email::ServiceDeskEmail).to receive(:enabled?) { true }
+      allow(::Gitlab::Email::ServiceDeskEmail).to receive(:address_for_key) { 'address-suffix@example.com' }
 
       visit edit_project_path(project)
     end

@@ -21,7 +21,7 @@ class EmailReceiverWorker # rubocop:disable Scalability/IdempotentWorker
   end
 
   def should_perform?
-    Gitlab::IncomingEmail.enabled?
+    Gitlab::Email::IncomingEmail.enabled?
   end
 
   private

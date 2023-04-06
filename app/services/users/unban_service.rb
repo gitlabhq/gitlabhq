@@ -17,3 +17,5 @@ module Users
     end
   end
 end
+
+Users::UnbanService.prepend_mod_with('Users::UnbanService')

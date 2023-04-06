@@ -10,7 +10,7 @@
     %ul.blob-commit-info
       = render 'projects/commits/commit', commit: @last_commit, project: @project, ref: @ref
 
-  #js-code-owners{ data: { blob_path: blob.path, project_path: @project.full_path, branch: @ref } }
+  #js-code-owners{ data: { blob_path: blob.path, project_path: @project.full_path, branch: @ref, branch_rules_path: project_settings_repository_path(project, anchor: 'js-branch-rules') } }
   = render "projects/blob/auxiliary_viewer", blob: blob
 
 - if project.forked?

@@ -9,7 +9,8 @@ module CloudProfilerAgent
   GoogleCloudProfiler = ::Google::Cloud::Profiler::V2
 
   PROFILE_TYPES = {
-    CPU: :cpu
+    CPU: :cpu,
+    WALL: :wall
   }.freeze
   # This regexp will ensure the service name is valid.
   # See https://cloud.google.com/ruby/docs/reference/google-cloud-profiler-v2/latest/Google-Cloud-Profiler-V2-Deployment#Google__Cloud__Profiler__V2__Deployment_target_instance_
@@ -66,6 +67,11 @@ module CloudProfilerAgent
       return if @thread&.alive?
 
       @thread = Thread.new do
+        logger.info(
+          gcp_ruby_status: "Created new agent thread",
+          **log_labels
+        )
+
         Looper.new(logger: logger, log_labels: log_labels).run do
           google_profile = create_google_profile
           google_profile = profile_app(google_profile)

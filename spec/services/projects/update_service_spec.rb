@@ -623,17 +623,19 @@ RSpec.describe Projects::UpdateService, feature_category: :projects do
     context 'when updating nested attributes for prometheus integration' do
       context 'prometheus integration exists' do
         let(:prometheus_integration_attributes) do
-          attributes_for(:prometheus_integration,
-                         project: project,
-                         properties: { api_url: "http://new.prometheus.com", manual_configuration: "0" }
-                        )
+          attributes_for(
+            :prometheus_integration,
+            project: project,
+            properties: { api_url: "http://new.prometheus.com", manual_configuration: "0" }
+          )
         end
 
         let!(:prometheus_integration) do
-          create(:prometheus_integration,
-                 project: project,
-                 properties: { api_url: "http://old.prometheus.com", manual_configuration: "0" }
-                )
+          create(
+            :prometheus_integration,
+            project: project,
+            properties: { api_url: "http://old.prometheus.com", manual_configuration: "0" }
+          )
         end
 
         it 'updates existing record' do
@@ -647,10 +649,11 @@ RSpec.describe Projects::UpdateService, feature_category: :projects do
       context 'prometheus integration does not exist' do
         context 'valid parameters' do
           let(:prometheus_integration_attributes) do
-            attributes_for(:prometheus_integration,
-                           project: project,
-                           properties: { api_url: "http://example.prometheus.com", manual_configuration: "0" }
-                          )
+            attributes_for(
+              :prometheus_integration,
+              project: project,
+              properties: { api_url: "http://example.prometheus.com", manual_configuration: "0" }
+            )
           end
 
           it 'creates new record' do
@@ -663,10 +666,11 @@ RSpec.describe Projects::UpdateService, feature_category: :projects do
 
         context 'invalid parameters' do
           let(:prometheus_integration_attributes) do
-            attributes_for(:prometheus_integration,
-                           project: project,
-                           properties: { api_url: nil, manual_configuration: "1" }
-                          )
+            attributes_for(
+              :prometheus_integration,
+              project: project,
+              properties: { api_url: nil, manual_configuration: "1" }
+            )
           end
 
           it 'does not create new record' do

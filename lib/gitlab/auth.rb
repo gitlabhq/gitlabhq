@@ -3,7 +3,7 @@
 module Gitlab
   module Auth
     MissingPersonalAccessTokenError = Class.new(StandardError)
-    IpBlacklisted = Class.new(StandardError)
+    IpBlocked = Class.new(StandardError)
 
     # Scopes used for GitLab API access
     API_SCOPE = :api
@@ -51,7 +51,7 @@ module Gitlab
 
         rate_limiter = Gitlab::Auth::IpRateLimiter.new(ip)
 
-        raise IpBlacklisted if !skip_rate_limit?(login: login) && rate_limiter.banned?
+        raise IpBlocked if !skip_rate_limit?(login: login) && rate_limiter.banned?
 
         # `user_with_password_for_git` should be the last check
         # because it's the most expensive, especially when LDAP

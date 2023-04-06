@@ -45,7 +45,7 @@ flowchart TB
 Product Analytics uses several tools:
 
 - [**Jitsu**](https://jitsu.com/docs) - A web and app event collection platform that provides a consistent API to collect user data and pass it through to Clickhouse.
-- [**Clickhouse**](https://clickhouse.com/docs) - A database suited to store, query, and retrieve analytical data.
+- [**Clickhouse**](https://clickhouse.com/docs/) - A database suited to store, query, and retrieve analytical data.
 - [**Cube.js**](https://cube.dev/docs/) - An analytical graphing library that provides an API to run queries against the data stored in Clickhouse.
 
 ## Enable product analytics

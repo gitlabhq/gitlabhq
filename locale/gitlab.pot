@@ -26349,6 +26349,9 @@ msgstr ""
 msgid "Manage applications that you've authorized to use your account."
 msgstr ""
 
+msgid "Manage branch rules"
+msgstr ""
+
 msgid "Manage git repositories with fine-grained access controls that keep your code secure."
 msgstr ""
 
@@ -39984,6 +39987,9 @@ msgid "SecurityReports|There was an error creating the issue."
 msgstr ""
 
 msgid "SecurityReports|There was an error creating the merge request."
+msgstr ""
+
+msgid "SecurityReports|There was an error creating the merge request. Please try again."
 msgstr ""
 
 msgid "SecurityReports|There was an error deleting the comment."
