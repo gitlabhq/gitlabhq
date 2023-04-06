@@ -116,7 +116,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     let(:expected_extension) { 'tar.gz' }
     let(:expected_filename) { "#{expected_prefix}.#{expected_extension}" }
     let(:expected_path) { File.join(storage_path, cache_key, "@v2", expected_filename) }
-    let(:expected_prefix) { "gitlab-git-test-#{ref}-#{TestEnv::BRANCH_SHA['master']}" }
+    let(:expected_prefix) { "gitlab-git-test-#{ref.tr('/', '-')}-#{expected_prefix_sha}" }
+    let(:expected_prefix_sha) { TestEnv::BRANCH_SHA['master'] }
 
     subject(:metadata) { repository.archive_metadata(ref, storage_path, 'gitlab-git-test', format, append_sha: append_sha, path: path) }
 
@@ -171,6 +172,111 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       with_them do
         it { expect(metadata['ArchivePrefix']).to eq(expected_prefix) }
         it { expect(metadata['ArchivePath']).to eq(expected_path) }
+      end
+    end
+
+    context 'when references are ambiguous' do
+      let_it_be(:ambiguous_project) { create(:project, :repository) }
+      let_it_be(:repository) { ambiguous_project.repository.raw }
+      let_it_be(:branch_merged_commit_id) { ambiguous_project.repository.find_branch('branch-merged').dereferenced_target.id }
+      let_it_be(:branch_master_commit_id) { ambiguous_project.repository.find_branch('master').dereferenced_target.id }
+      let_it_be(:tag_1_0_0_commit_id) { ambiguous_project.repository.find_tag('v1.0.0').dereferenced_target.id }
+
+      context 'when tag is ambiguous' do
+        before do
+          ambiguous_project.repository.add_tag(user, ref, 'master', 'foo')
+        end
+
+        after do
+          ambiguous_project.repository.rm_tag(user, ref)
+        end
+
+        where(:ref, :expected_commit_id, :desc) do
+          'refs/heads/branch-merged'    | ref(:branch_master_commit_id) | 'when tag looks like a branch'
+          'branch-merged'               | ref(:branch_master_commit_id) | 'when tag has the same name as a branch'
+          ref(:branch_merged_commit_id) | ref(:branch_merged_commit_id) | 'when tag looks like a commit id'
+          'v0.0.0'                      | ref(:branch_master_commit_id) | 'when tag looks like a normal tag'
+        end
+
+        with_them do
+          it 'selects the correct commit' do
+            expect(metadata['CommitId']).to eq(expected_commit_id)
+          end
+        end
+
+        context 'when resolve_ambiguous_archives is disabled' do
+          before do
+            stub_feature_flags(resolve_ambiguous_archives: false)
+          end
+
+          where(:ref, :expected_commit_id, :desc) do
+            'refs/heads/branch-merged'    | ref(:branch_merged_commit_id) | 'when tag looks like a branch (difference!)'
+            'branch-merged'               | ref(:branch_master_commit_id) | 'when tag has the same name as a branch'
+            ref(:branch_merged_commit_id) | ref(:branch_merged_commit_id) | 'when tag looks like a commit id'
+            'v0.0.0'                      | ref(:branch_master_commit_id) | 'when tag looks like a normal tag'
+          end
+
+          with_them do
+            it 'selects the correct commit' do
+              expect(metadata['CommitId']).to eq(expected_commit_id)
+            end
+          end
+        end
+      end
+
+      context 'when branch is ambiguous' do
+        before do
+          ambiguous_project.repository.add_branch(user, ref, 'master')
+        end
+
+        where(:ref, :expected_commit_id, :desc) do
+          'refs/tags/v1.0.0'            | ref(:branch_master_commit_id) | 'when branch looks like a tag'
+          'v1.0.0'                      | ref(:tag_1_0_0_commit_id)     | 'when branch has the same name as a tag'
+          ref(:branch_merged_commit_id) | ref(:branch_merged_commit_id) | 'when branch looks like a commit id'
+          'just-a-normal-branch'        | ref(:branch_master_commit_id) | 'when branch looks like a normal branch'
+        end
+
+        with_them do
+          it 'selects the correct commit' do
+            expect(metadata['CommitId']).to eq(expected_commit_id)
+          end
+        end
+
+        context 'when resolve_ambiguous_archives is disabled' do
+          before do
+            stub_feature_flags(resolve_ambiguous_archives: false)
+          end
+
+          where(:ref, :expected_commit_id, :desc) do
+            'refs/tags/v1.0.0'            | ref(:tag_1_0_0_commit_id)     | 'when branch looks like a tag (difference!)'
+            'v1.0.0'                      | ref(:tag_1_0_0_commit_id)     | 'when branch has the same name as a tag'
+            ref(:branch_merged_commit_id) | ref(:branch_merged_commit_id) | 'when branch looks like a commit id'
+            'just-a-normal-branch'        | ref(:branch_master_commit_id) | 'when branch looks like a normal branch'
+          end
+
+          with_them do
+            it 'selects the correct commit' do
+              expect(metadata['CommitId']).to eq(expected_commit_id)
+            end
+          end
+        end
+      end
+
+      context 'when ref is HEAD' do
+        let(:ref) { 'HEAD' }
+
+        it 'selects commit id from HEAD ref' do
+          expect(metadata['CommitId']).to eq(branch_master_commit_id)
+          expect(metadata['ArchivePrefix']).to eq(expected_prefix)
+        end
+      end
+
+      context 'when ref is not found' do
+        let(:ref) { 'unknown-ref-cannot-be-found' }
+
+        it 'returns empty metadata' do
+          expect(metadata).to eq({})
+        end
       end
     end
   end
