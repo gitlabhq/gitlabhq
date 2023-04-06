@@ -2,12 +2,25 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Processable::WaitingForResource do
+RSpec.describe Gitlab::Ci::Status::Processable::WaitingForResource, feature_category: :continuous_integration do
   let(:user) { create(:user) }
+  let(:processable) { create(:ci_build, :waiting_for_resource, :resource_group) }
 
-  subject do
-    processable = create(:ci_build, :waiting_for_resource, :resource_group)
-    described_class.new(Gitlab::Ci::Status::Core.new(processable, user))
+  subject { described_class.new(Gitlab::Ci::Status::Core.new(processable, user)) }
+
+  it 'fabricates status with correct details' do
+    expect(subject.has_action?).to eq false
+  end
+
+  context 'when resource is retained by a build' do
+    before do
+      processable.resource_group.assign_resource_to(create(:ci_build))
+    end
+
+    it 'fabricates status with correct details' do
+      expect(subject.has_action?).to eq true
+      expect(subject.action_path).to include 'jobs'
+    end
   end
 
   describe '#illustration' do

@@ -6,18 +6,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Jira DVCS connector **(FREE)**
 
+WARNING:
+The Jira DVCS connector for Jira Cloud was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/362168) in GitLab 15.1
+and is planned for removal in 16.0. Use the [GitLab for Jira Cloud app](../connect-app.md) instead.
+
 Use the Jira DVCS (distributed version control system) connector if you self-host
-your Jira instance, and you want to sync information
-between GitLab and Jira. If you use Jira Cloud, you should use the
-[GitLab for Jira Cloud app](../connect-app.md) unless you specifically need the
-DVCS connector.
+your Jira instance and want to sync information between GitLab and Jira.
+If you're using the Jira DVCS connector with Jira Cloud, [migrate to the GitLab for Jira Cloud app](#migrate-to-the-gitlab-for-jira-cloud-app).
 
 When you configure the Jira DVCS connector, make sure your GitLab and Jira instances
 are accessible.
 
 - **Self-managed GitLab**: Your GitLab instance must be accessible by Jira.
 - **Jira Server**: Your network must allow access to your instance.
-- **Jira Cloud**: Your instance must be accessible through the internet.
 
 NOTE:
 When using GitLab 15.0 and later (including GitLab.com) with Jira Server, you might experience a [session token bug in Jira](https://jira.atlassian.com/browse/JSWSERVER-21389). As a workaround, ensure Jira Server is version 9.1.0 and later or 8.20.11 and later.
@@ -153,10 +154,8 @@ can refresh the data manually from the Jira interface:
 
 ## Migrate to the GitLab for Jira Cloud app
 
-If you are using DVCS with Jira Cloud, you should consider migrating to the GitLab for Jira app.
-[DVCS for Jira Cloud will be deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/362168) in GitLab 16.0.
-
-To get started using the GitLab for Jira Cloud app, follow the guide [Install the GitLab for Jira Cloud app](../connect-app.md#install-the-gitlab-for-jira-cloud-app) .
+If you're using the Jira DVCS connector with Jira Cloud, migrate to the GitLab for Jira Cloud app.
+For more information, see [Install the GitLab for Jira Cloud app](../connect-app.md#install-the-gitlab-for-jira-cloud-app).
 
 ### Feature comparison of DVCS and GitLab for Jira Cloud app
 

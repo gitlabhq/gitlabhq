@@ -242,6 +242,8 @@ ul.related-merge-requests > li gl-emoji {
     }
 
     &:hover > a.anchor::after {
+      position: relative;
+      top: -3px;
       visibility: visible;
     }
   }

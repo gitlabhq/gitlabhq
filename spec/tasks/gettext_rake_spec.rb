@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 require 'rake_helper'
-require_relative "../../tooling/lib/tooling/gettext_extractor"
+require_relative '../../tooling/lib/tooling/gettext_extractor'
+require_relative '../support/matchers/abort_matcher'
 
 RSpec.describe 'gettext', :silence_stdout, feature_category: :internationalization do
   let(:locale_path) { Rails.root.join('tmp/gettext_spec') }
@@ -22,16 +23,26 @@ RSpec.describe 'gettext', :silence_stdout, feature_category: :internationalizati
   end
 
   describe ':compile' do
-    before do
-      allow(Rake::Task).to receive(:[]).and_call_original
+    let(:compile_command) do
+      [
+        "node", "./scripts/frontend/po_to_json.js",
+        "--locale-root", Rails.root.join('locale').to_s,
+        "--output-dir", Rails.root.join('app/assets/javascripts/locale').to_s
+      ]
     end
 
-    it 'creates a pot file and invokes the \'gettext:po_to_json\' task' do
-      expect(Rake::Task).to receive(:[]).with('gettext:po_to_json').and_return(double(invoke: true))
+    it 'creates a pot file and runs po-to-json conversion via node script' do
+      expect(Kernel).to receive(:system).with(*compile_command).and_return(true)
 
       expect { run_rake_task('gettext:compile') }
         .to change { File.exist?(pot_file_path) }
         .to be_truthy
+    end
+
+    it 'aborts with non-successful po-to-json conversion via node script' do
+      expect(Kernel).to receive(:system).with(*compile_command).and_return(false)
+
+      expect { run_rake_task('gettext:compile') }.to abort_execution
     end
   end
 

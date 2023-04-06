@@ -161,6 +161,11 @@
         opacity: 1;
       }
     }
+
+    &:focus button,
+    button:focus {
+      opacity: 1;
+    }
   }
 }
 

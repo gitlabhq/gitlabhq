@@ -16,6 +16,7 @@ export default {
     return {
       pinnedItemIds: this.changedPinnedItemIds,
       panelSupportsPins: this.supportsPins,
+      panelType: this.panelType,
     };
   },
   props: {

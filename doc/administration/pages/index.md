@@ -709,6 +709,15 @@ To set the maximum number of GitLab Pages custom domains for a project:
 1. Enter a value for **Maximum number of custom domains per project**. Use `0` for unlimited domains.
 1. Select **Save changes**.
 
+## Set maximum number of files per GitLab Pages website
+
+The total number of file entries (including directories and symlinks) is limited to `200,000` per GitLab Pages website.
+
+You can update the limit in your self-managed instance using the
+[GitLab Rails console](../operations/rails_console.md#starting-a-rails-console-session).
+
+For more information, see [GitLab application limits](../instance_limits.md#number-of-files-per-gitlab-pages-website).
+
 ## Running GitLab Pages on a separate server
 
 You can run the GitLab Pages daemon on a separate server to decrease the load on

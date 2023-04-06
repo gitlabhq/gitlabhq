@@ -1,19 +1,24 @@
 import { GlBadge } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
-import { CLICK_MENU_ITEM_ACTION, TRACKING_UNKNOWN_ID } from '~/super_sidebar/constants';
+import {
+  CLICK_MENU_ITEM_ACTION,
+  TRACKING_UNKNOWN_ID,
+  TRACKING_UNKNOWN_PANEL,
+} from '~/super_sidebar/constants';
 
 describe('NavItem component', () => {
   let wrapper;
 
   const findLink = () => wrapper.findByTestId('nav-item-link');
   const findPill = () => wrapper.findComponent(GlBadge);
-  const createWrapper = (item, props = {}) => {
+  const createWrapper = (item, props = {}, provide = {}) => {
     wrapper = shallowMountExtended(NavItem, {
       propsData: {
         item,
         ...props,
       },
+      provide,
     });
   };
 
@@ -55,25 +60,26 @@ describe('NavItem component', () => {
 
       expect(findLink().attributes('data-track-action')).toBeUndefined();
       expect(findLink().attributes('data-track-label')).toBeUndefined();
+      expect(findLink().attributes('data-track-property')).toBeUndefined();
       expect(findLink().attributes('data-track-extra')).toBeUndefined();
     });
 
-    it('adds appropriate data tracking labels on links with ID', () => {
-      const id = 'my-id';
-      createWrapper({ title: 'Foo', id });
+    it.each`
+      id           | panelType    | eventLabel             | eventProperty             | eventExtra
+      ${'abc'}     | ${'xyz'}     | ${'abc'}               | ${'nav_panel_xyz'}        | ${undefined}
+      ${undefined} | ${'xyz'}     | ${TRACKING_UNKNOWN_ID} | ${'nav_panel_xyz'}        | ${'{"title":"Foo"}'}
+      ${'abc'}     | ${undefined} | ${'abc'}               | ${TRACKING_UNKNOWN_PANEL} | ${'{"title":"Foo"}'}
+      ${undefined} | ${undefined} | ${TRACKING_UNKNOWN_ID} | ${TRACKING_UNKNOWN_PANEL} | ${'{"title":"Foo"}'}
+    `(
+      'adds appropriate data tracking labels for id=$id and panelType=$panelType',
+      ({ id, eventLabel, panelType, eventProperty, eventExtra }) => {
+        createWrapper({ title: 'Foo', id }, {}, { panelType });
 
-      expect(findLink().attributes('data-track-action')).toBe(CLICK_MENU_ITEM_ACTION);
-      expect(findLink().attributes('data-track-label')).toBe(id);
-      expect(findLink().attributes('data-track-extra')).toBeUndefined();
-    });
-
-    it('adds data tracking labels on links without id', () => {
-      const title = 'Foo';
-      createWrapper({ title });
-
-      expect(findLink().attributes('data-track-action')).toBe(CLICK_MENU_ITEM_ACTION);
-      expect(findLink().attributes('data-track-label')).toBe(TRACKING_UNKNOWN_ID);
-      expect(findLink().attributes('data-track-extra')).toBe(JSON.stringify({ title }));
-    });
+        expect(findLink().attributes('data-track-action')).toBe(CLICK_MENU_ITEM_ACTION);
+        expect(findLink().attributes('data-track-label')).toBe(eventLabel);
+        expect(findLink().attributes('data-track-property')).toBe(eventProperty);
+        expect(findLink().attributes('data-track-extra')).toBe(eventExtra);
+      },
+    );
   });
 });

@@ -20243,8 +20243,10 @@ CREATE VIEW postgres_foreign_keys AS
     referenced_cols.referenced_columns,
     pg_constraint.confdeltype AS on_delete_action,
     pg_constraint.confupdtype AS on_update_action,
-    (pg_constraint.coninhcount > 0) AS is_inherited
-   FROM ((((((pg_constraint
+    (pg_constraint.coninhcount > 0) AS is_inherited,
+    pg_constraint.convalidated AS is_valid,
+    partitioned_parent_oids.parent_oid
+   FROM (((((((pg_constraint
      JOIN pg_class constrained_table ON ((constrained_table.oid = pg_constraint.conrelid)))
      JOIN pg_class referenced_table ON ((referenced_table.oid = pg_constraint.confrelid)))
      JOIN pg_namespace constrained_namespace ON ((constrained_table.relnamespace = constrained_namespace.oid)))
@@ -20255,6 +20257,12 @@ CREATE VIEW postgres_foreign_keys AS
      CROSS JOIN LATERAL ( SELECT array_agg(pg_attribute.attname ORDER BY confkey.idx) AS array_agg
            FROM (unnest(pg_constraint.confkey) WITH ORDINALITY confkey(attnum, idx)
              JOIN pg_attribute ON (((pg_attribute.attnum = confkey.attnum) AND (pg_attribute.attrelid = referenced_table.oid))))) referenced_cols(referenced_columns))
+     LEFT JOIN LATERAL ( SELECT pg_depend.refobjid AS parent_oid
+           FROM pg_depend
+          WHERE ((pg_depend.objid = pg_constraint.oid) AND (pg_depend.deptype = 'P'::"char") AND (pg_depend.refobjid IN ( SELECT pg_constraint_1.oid
+                   FROM pg_constraint pg_constraint_1
+                  WHERE (pg_constraint_1.contype = 'f'::"char"))))
+         LIMIT 1) partitioned_parent_oids(parent_oid) ON (true))
   WHERE (pg_constraint.contype = 'f'::"char");
 
 CREATE VIEW postgres_index_bloat_estimates AS

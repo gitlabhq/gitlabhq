@@ -27,7 +27,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
 
     if project.licensed_feature_available?(:cycle_analytics_for_projects)
       push_licensed_feature(:cycle_analytics_for_projects)
-      push_frontend_feature_flag(:vsa_group_and_project_parity, @project.namespace)
+      push_frontend_feature_flag(:vsa_group_and_project_parity, @project)
     end
   end
 

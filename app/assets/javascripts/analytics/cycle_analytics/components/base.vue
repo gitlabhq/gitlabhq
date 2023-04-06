@@ -173,7 +173,7 @@ export default {
   <div>
     <h3>{{ $options.i18n.pageTitle }}</h3>
     <value-stream-filters
-      :group-path="filterBarNamespacePath"
+      :namespace-path="filterBarNamespacePath"
       :has-project-filter="false"
       :start-date="createdAfter"
       :end-date="createdBefore"

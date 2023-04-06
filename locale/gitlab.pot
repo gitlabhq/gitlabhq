@@ -48257,6 +48257,9 @@ msgstr ""
 msgid "View job"
 msgstr ""
 
+msgid "View job currently using resource"
+msgstr ""
+
 msgid "View job log"
 msgstr ""
 

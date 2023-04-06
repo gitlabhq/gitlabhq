@@ -27,13 +27,22 @@ module Projects
                         .transform_keys(&:underscore)
                         .permit(:name, :order_by, :sort, :order_by_type)
 
-        paginator = CandidateFinder
-                        .new(@experiment, find_params)
-                        .execute
-                        .keyset_paginate(cursor: params[:cursor], per_page: MAX_CANDIDATES_PER_PAGE)
+        finder = CandidateFinder.new(@experiment, find_params)
 
-        @candidates = paginator.records
-        @page_info = page_info(paginator)
+        respond_to do |format|
+          format.csv do
+            csv_data = ::Ml::CandidatesCsvPresenter.new(finder.execute).present
+
+            send_data(csv_data, type: 'text/csv; charset=utf-8', filename: 'candidates.csv')
+          end
+
+          format.html do
+            paginator = finder.execute.keyset_paginate(cursor: params[:cursor], per_page: MAX_CANDIDATES_PER_PAGE)
+
+            @candidates = paginator.records
+            @page_info = page_info(paginator)
+          end
+        end
       end
 
       def destroy

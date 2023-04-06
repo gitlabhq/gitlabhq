@@ -28,7 +28,7 @@ module Ml
       scope: :project,
       init: AtomicInternalId.project_init(self, :internal_id)
 
-    scope :including_relationships, -> { includes(:latest_metrics, :params, :user, :package) }
+    scope :including_relationships, -> { includes(:latest_metrics, :params, :user, :package, :project) }
     scope :by_name, ->(name) { where("ml_candidates.name LIKE ?", "%#{sanitize_sql_like(name)}%") } # rubocop:disable GitlabSecurity/SqlInjection
 
     scope :order_by_metric, ->(metric, direction) do

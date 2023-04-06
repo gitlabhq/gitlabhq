@@ -107,6 +107,9 @@ the warning that recommends setting the **NameID** format to `persistent`.
 
 For more information, see an [example configuration page](example_saml_config.md#google-workspace).
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+View a demo of [how to configure SAML with Google Workspaces and set up Group Sync](https://youtu.be/NKs0FSQVfCY).
+
 ### Set up Okta
 
 To set up SSO with Okta as your identity provider:

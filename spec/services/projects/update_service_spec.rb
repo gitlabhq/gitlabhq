@@ -326,7 +326,9 @@ RSpec.describe Projects::UpdateService, feature_category: :projects do
       it 'logs an error and creates a metric when wiki can not be created' do
         project.project_feature.update!(wiki_access_level: ProjectFeature::DISABLED)
 
-        expect_any_instance_of(ProjectWiki).to receive(:create_wiki_repository).and_raise(Wiki::CouldNotCreateWikiError)
+        expect_next_instance_of(ProjectWiki) do |project_wiki|
+          expect(project_wiki).to receive(:create_wiki_repository).and_raise(Wiki::CouldNotCreateWikiError)
+        end
         expect_any_instance_of(described_class).to receive(:log_error).with("Could not create wiki for #{project.full_name}")
 
         counter = double(:counter)

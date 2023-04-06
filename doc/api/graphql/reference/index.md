@@ -9727,6 +9727,29 @@ The edge type for [`ProjectMember`](#projectmember).
 | <a id="projectmemberedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="projectmemberedgenode"></a>`node` | [`ProjectMember`](#projectmember) | The item at the end of the edge. |
 
+#### `ProjectWikiRepositoryRegistryConnection`
+
+The connection type for [`ProjectWikiRepositoryRegistry`](#projectwikirepositoryregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectwikirepositoryregistryconnectionedges"></a>`edges` | [`[ProjectWikiRepositoryRegistryEdge]`](#projectwikirepositoryregistryedge) | A list of edges. |
+| <a id="projectwikirepositoryregistryconnectionnodes"></a>`nodes` | [`[ProjectWikiRepositoryRegistry]`](#projectwikirepositoryregistry) | A list of nodes. |
+| <a id="projectwikirepositoryregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ProjectWikiRepositoryRegistryEdge`
+
+The edge type for [`ProjectWikiRepositoryRegistry`](#projectwikirepositoryregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectwikirepositoryregistryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="projectwikirepositoryregistryedgenode"></a>`node` | [`ProjectWikiRepositoryRegistry`](#projectwikirepositoryregistry) | The item at the end of the edge. |
+
 #### `ProtectedEnvironmentApprovalRuleConnection`
 
 The connection type for [`ProtectedEnvironmentApprovalRule`](#protectedenvironmentapprovalrule).
@@ -14393,6 +14416,29 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="geonodepipelineartifactregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodepipelineartifactregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
+##### `GeoNode.projectWikiRepositoryRegistries`
+
+Find Project Wiki Repository registries on this Geo node. Ignored if `geo_project_wiki_repository_replication` feature flag is disabled.
+
+WARNING:
+**Introduced** in 15.10.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Returns [`ProjectWikiRepositoryRegistryConnection`](#projectwikirepositoryregistryconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="geonodeprojectwikirepositoryregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodeprojectwikirepositoryregistrieskeyword"></a>`keyword` | [`String`](#string) | Filters registries by their attributes using a keyword. |
+| <a id="geonodeprojectwikirepositoryregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
+| <a id="geonodeprojectwikirepositoryregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
+
 ##### `GeoNode.snippetRepositoryRegistries`
 
 Find snippet repository registries on this Geo node.
@@ -18611,8 +18657,7 @@ Returns [`[CiConfigVariable!]`](#ciconfigvariable).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectciconfigvariablesref"></a>`ref` | [`String`](#string) | Ref. |
-| <a id="projectciconfigvariablessha"></a>`sha` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.11. Use `ref`. |
+| <a id="projectciconfigvariablesref"></a>`ref` | [`String!`](#string) | Ref. |
 
 ##### `Project.ciTemplate`
 
@@ -19991,6 +20036,25 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | <a id="projectvaluestreamanalyticsflowmetricsleadtimelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
 | <a id="projectvaluestreamanalyticsflowmetricsleadtimemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
 | <a id="projectvaluestreamanalyticsflowmetricsleadtimeto"></a>`to` | [`Time!`](#time) | Issues created before the date. |
+
+### `ProjectWikiRepositoryRegistry`
+
+Represents the Geo replication and verification state of a project_wiki_repository.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectwikirepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the ProjectWikiRepositoryRegistry was created. |
+| <a id="projectwikirepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the ProjectWikiRepositoryRegistry. |
+| <a id="projectwikirepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the ProjectWikiRepositoryRegistry. |
+| <a id="projectwikirepositoryregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the ProjectWikiRepositoryRegistry. |
+| <a id="projectwikirepositoryregistryprojectwikirepositoryid"></a>`projectWikiRepositoryId` | [`ID!`](#id) | ID of the Project Wiki Repository. |
+| <a id="projectwikirepositoryregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the ProjectWikiRepositoryRegistry is resynced. |
+| <a id="projectwikirepositoryregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the ProjectWikiRepositoryRegistry. |
+| <a id="projectwikirepositoryregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the ProjectWikiRepositoryRegistry. |
+| <a id="projectwikirepositoryregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the ProjectWikiRepositoryRegistry is reverified. |
+| <a id="projectwikirepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the ProjectWikiRepositoryRegistry. |
 
 ### `PrometheusAlert`
 

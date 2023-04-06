@@ -15,7 +15,7 @@ function createComponent(props = {}) {
     propsData: {
       selectedProjects,
       groupId: currentGroup.id,
-      groupPath: currentGroup.fullPath,
+      namespacePath: currentGroup.fullPath,
       startDate,
       endDate,
       ...props,

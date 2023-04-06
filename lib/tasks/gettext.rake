@@ -7,7 +7,13 @@ namespace :gettext do
     # See: https://gitlab.com/gitlab-org/gitlab-foss/issues/33014#note_31218998
     FileUtils.touch(pot_file_path)
 
-    Rake::Task['gettext:po_to_json'].invoke
+    command = [
+      "node", "./scripts/frontend/po_to_json.js",
+      "--locale-root", Rails.root.join('locale').to_s,
+      "--output-dir", Rails.root.join('app/assets/javascripts/locale').to_s
+    ]
+
+    abort 'Error: Unable to convert gettext files to js.'.color(:red) unless Kernel.system(*command)
   end
 
   desc 'Regenerate gitlab.pot file'

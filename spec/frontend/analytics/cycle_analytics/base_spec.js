@@ -136,7 +136,7 @@ describe('Value stream analytics component', () => {
 
   it('passes the paths to the filter bar', () => {
     expect(findFilters().props()).toEqual({
-      groupPath,
+      namespacePath: groupPath,
       endDate: createdBefore,
       hasDateRangeFilter: true,
       hasProjectFilter: false,

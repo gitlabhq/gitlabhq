@@ -128,13 +128,14 @@ Host gitlab.com
 Some settings for [GitLab Pages](../project/pages/index.md) differ from the
 [defaults for self-managed instances](../../administration/pages/index.md):
 
-| Setting                      | GitLab.com             |
-|------------------------------|------------------------|
-| Domain name                  | `gitlab.io`            |
-| IP address                   | `35.185.44.232`        |
-| Support for custom domains   | **{check-circle}** Yes |
-| Support for TLS certificates | **{check-circle}** Yes |
-| Maximum site size            | 1 GB                   |
+| Setting                                           | GitLab.com             |
+|---------------------------------------------------|------------------------|
+| Domain name                                       | `gitlab.io`            |
+| IP address                                        | `35.185.44.232`        |
+| Support for custom domains                        | **{check-circle}** Yes |
+| Support for TLS certificates                      | **{check-circle}** Yes |
+| Maximum site size                                 | 1 GB                   |
+| Number of custom domains per GitLab Pages website | 150                    |
 
 The maximum size of your Pages site depends on the maximum artifact size,
 which is part of [GitLab CI/CD](#gitlab-cicd).

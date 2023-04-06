@@ -15,6 +15,12 @@ module Tooling
         files.select { |path| path =~ %r{\A(ee/)?config/feature_flags/} }.map { |path| Found.new(path) }
       end
 
+      # TODO: Move this to gitlab-dangerfiles helper
+      # https://gitlab.com/gitlab-org/ruby/gems/gitlab-dangerfiles/-/blob/master/lib/danger/plugins/internal/helper.rb
+      def stage_label
+        helper.mr_labels.find { |label| label.start_with?("devops::") }
+      end
+
       class Found
         ATTRIBUTES = %w[name introduced_by_url rollout_issue_url milestone type group default_enabled].freeze
 

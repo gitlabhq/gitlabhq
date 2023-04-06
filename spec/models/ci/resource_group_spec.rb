@@ -165,4 +165,23 @@ RSpec.describe Ci::ResourceGroup do
       end
     end
   end
+
+  describe '#current_processable' do
+    subject { resource_group.current_processable }
+
+    let(:build) { create(:ci_build) }
+    let(:resource_group) { create(:ci_resource_group) }
+
+    context 'when resource is retained by a build' do
+      before do
+        resource_group.assign_resource_to(build)
+      end
+
+      it { is_expected.to eq(build) }
+    end
+
+    context 'when resource is not retained by a build' do
+      it { is_expected.to be_nil }
+    end
+  end
 end
