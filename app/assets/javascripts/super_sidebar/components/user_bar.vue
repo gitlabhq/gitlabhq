@@ -42,13 +42,14 @@ export default {
       false,
     ),
     todoList: __('To-Do list'),
+    stopImpersonating: __('Stop impersonating'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
     GlModal: GlModalDirective,
     SafeHtml,
   },
-  inject: ['rootPath'],
+  inject: ['rootPath', 'isImpersonating'],
   props: {
     sidebarData: {
       type: Object,
@@ -114,6 +115,19 @@ export default {
       <search-modal />
 
       <user-menu :data="sidebarData" />
+
+      <gl-button
+        v-if="isImpersonating"
+        v-gl-tooltip
+        :href="sidebarData.stop_impersonation_path"
+        :title="$options.i18n.stopImpersonating"
+        :aria-label="$options.i18n.stopImpersonating"
+        icon="incognito"
+        variant="confirm"
+        category="tertiary"
+        data-method="delete"
+        data-testid="stop-impersonation-btn"
+      />
     </div>
     <div class="gl-display-flex gl-justify-content-space-between gl-px-3 gl-py-2 gl-gap-2">
       <counter

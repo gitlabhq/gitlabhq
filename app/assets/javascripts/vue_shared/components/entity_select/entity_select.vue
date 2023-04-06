@@ -13,6 +13,11 @@ export default {
     GlCollapsibleListbox,
   },
   props: {
+    block: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     label: {
       type: String,
       required: true,
@@ -176,6 +181,7 @@ export default {
     <gl-collapsible-listbox
       ref="listbox"
       v-model="selected"
+      :block="block"
       :header-text="headerText"
       :reset-button-label="resetButtonLabel"
       :toggle-text="toggleText"

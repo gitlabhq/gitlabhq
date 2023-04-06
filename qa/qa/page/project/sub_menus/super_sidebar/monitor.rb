@@ -8,14 +8,6 @@ module QA
           module Monitor
             extend QA::Page::PageConcern
 
-            def self.included(base)
-              super
-
-              base.class_eval do
-                include QA::Page::Project::SubMenus::SuperSidebar::Common
-              end
-            end
-
             def go_to_metrics
               open_monitor_submenu('Metrics')
             end

@@ -103,6 +103,7 @@ export const sidebarData = {
   pinned_items: [],
   panel_type: 'your_work',
   update_pins_url: 'path/to/pins',
+  stop_impersonation_path: '/admin/impersonation',
 };
 
 export const userMenuMockStatus = {

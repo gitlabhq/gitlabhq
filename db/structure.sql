@@ -18623,7 +18623,10 @@ CREATE TABLE namespace_root_storage_statistics (
     dependency_proxy_size bigint DEFAULT 0 NOT NULL,
     notification_level smallint DEFAULT 100 NOT NULL,
     container_registry_size bigint DEFAULT 0 NOT NULL,
-    registry_size_estimated boolean DEFAULT false NOT NULL
+    registry_size_estimated boolean DEFAULT false NOT NULL,
+    public_forks_storage_size bigint DEFAULT 0 NOT NULL,
+    internal_forks_storage_size bigint DEFAULT 0 NOT NULL,
+    private_forks_storage_size bigint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE namespace_settings (
@@ -21739,6 +21742,24 @@ CREATE SEQUENCE resource_label_events_id_seq
     CACHE 1;
 
 ALTER SEQUENCE resource_label_events_id_seq OWNED BY resource_label_events.id;
+
+CREATE TABLE resource_link_events (
+    id bigint NOT NULL,
+    action smallint NOT NULL,
+    user_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    child_work_item_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE resource_link_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE resource_link_events_id_seq OWNED BY resource_link_events.id;
 
 CREATE TABLE resource_milestone_events (
     id bigint NOT NULL,
@@ -25341,6 +25362,8 @@ ALTER TABLE ONLY resource_iteration_events ALTER COLUMN id SET DEFAULT nextval('
 
 ALTER TABLE ONLY resource_label_events ALTER COLUMN id SET DEFAULT nextval('resource_label_events_id_seq'::regclass);
 
+ALTER TABLE ONLY resource_link_events ALTER COLUMN id SET DEFAULT nextval('resource_link_events_id_seq'::regclass);
+
 ALTER TABLE ONLY resource_milestone_events ALTER COLUMN id SET DEFAULT nextval('resource_milestone_events_id_seq'::regclass);
 
 ALTER TABLE ONLY resource_state_events ALTER COLUMN id SET DEFAULT nextval('resource_state_events_id_seq'::regclass);
@@ -27702,6 +27725,9 @@ ALTER TABLE ONLY resource_iteration_events
 
 ALTER TABLE ONLY resource_label_events
     ADD CONSTRAINT resource_label_events_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY resource_link_events
+    ADD CONSTRAINT resource_link_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY resource_milestone_events
     ADD CONSTRAINT resource_milestone_events_pkey PRIMARY KEY (id);
@@ -31928,6 +31954,12 @@ CREATE INDEX index_resource_label_events_on_merge_request_id_label_id_action ON 
 
 CREATE INDEX index_resource_label_events_on_user_id ON resource_label_events USING btree (user_id);
 
+CREATE INDEX index_resource_link_events_on_child_work_item_id ON resource_link_events USING btree (child_work_item_id);
+
+CREATE INDEX index_resource_link_events_on_issue_id ON resource_link_events USING btree (issue_id);
+
+CREATE INDEX index_resource_link_events_on_user_id ON resource_link_events USING btree (user_id);
+
 CREATE INDEX index_resource_milestone_events_created_at ON resource_milestone_events USING btree (created_at);
 
 CREATE INDEX index_resource_milestone_events_on_issue_id ON resource_milestone_events USING btree (issue_id);
@@ -34950,6 +34982,9 @@ ALTER TABLE ONLY namespace_bans
 ALTER TABLE ONLY gitlab_subscriptions
     ADD CONSTRAINT fk_bd0c4019c3 FOREIGN KEY (hosted_plan_id) REFERENCES plans(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY resource_link_events
+    ADD CONSTRAINT fk_bd4ae15ce4 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY metrics_users_starred_dashboards
     ADD CONSTRAINT fk_bd6ae32fac FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -35309,6 +35344,9 @@ ALTER TABLE ONLY audit_events_external_audit_event_destinations
 
 ALTER TABLE ONLY operations_user_lists
     ADD CONSTRAINT fk_rails_0c716e079b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY resource_link_events
+    ADD CONSTRAINT fk_rails_0cea73eba5 FOREIGN KEY (child_work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY geo_node_statuses
     ADD CONSTRAINT fk_rails_0ecc699c2a FOREIGN KEY (geo_node_id) REFERENCES geo_nodes(id) ON DELETE CASCADE;
@@ -36695,6 +36733,9 @@ ALTER TABLE ONLY merge_request_reviewers
 
 ALTER TABLE ONLY ci_running_builds
     ADD CONSTRAINT fk_rails_da45cfa165_p FOREIGN KEY (partition_id, build_id) REFERENCES ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY resource_link_events
+    ADD CONSTRAINT fk_rails_da5dd8a56f FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY jira_imports
     ADD CONSTRAINT fk_rails_da617096ce FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;

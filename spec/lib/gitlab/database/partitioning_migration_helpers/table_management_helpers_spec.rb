@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers do
+RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers, feature_category: :database do
   include Database::PartitioningHelpers
   include Database::TriggerHelpers
   include Database::TableSchemaHelpers
@@ -98,7 +98,8 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
           migration.prepare_constraint_for_list_partitioning(table_name: source_table,
                                                              partitioning_column: partition_column,
                                                              parent_table_name: partitioned_table,
-                                                             initial_partitioning_value: min_date)
+                                                             initial_partitioning_value: min_date,
+                                                             async: false)
         end
       end
     end

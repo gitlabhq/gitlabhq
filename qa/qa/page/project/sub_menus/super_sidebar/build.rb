@@ -8,14 +8,6 @@ module QA
           module Build
             extend QA::Page::PageConcern
 
-            def self.included(base)
-              super
-
-              base.class_eval do
-                include QA::Page::Project::SubMenus::SuperSidebar::Common
-              end
-            end
-
             def go_to_pipelines
               open_build_submenu('Pipelines')
             end

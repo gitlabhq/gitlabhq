@@ -252,7 +252,7 @@ module Gitlab
           create_sync_trigger(source_table_name, trigger_name, function_name)
         end
 
-        def prepare_constraint_for_list_partitioning(table_name:, partitioning_column:, parent_table_name:, initial_partitioning_value:)
+        def prepare_constraint_for_list_partitioning(table_name:, partitioning_column:, parent_table_name:, initial_partitioning_value:, async: false)
           validate_not_in_transaction!(:prepare_constraint_for_list_partitioning)
 
           Gitlab::Database::Partitioning::ConvertTableToFirstListPartition
@@ -261,7 +261,7 @@ module Gitlab
                  parent_table_name: parent_table_name,
                  partitioning_column: partitioning_column,
                  zero_partition_value: initial_partitioning_value
-                ).prepare_for_partitioning
+                ).prepare_for_partitioning(async: async)
         end
 
         def revert_preparing_constraint_for_list_partitioning(table_name:, partitioning_column:, parent_table_name:, initial_partitioning_value:)

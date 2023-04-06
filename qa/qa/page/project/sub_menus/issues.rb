@@ -27,7 +27,7 @@ module QA
             end
           end
 
-          def go_to_boards
+          def go_to_issue_boards
             hover_issues do
               within_submenu do
                 click_element(:sidebar_menu_item_link, menu_item: 'Boards')

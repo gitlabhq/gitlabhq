@@ -331,6 +331,23 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         end
       end
     end
+
+    describe 'impersonation data' do
+      it 'sets is_impersonating to `false` when not impersonating' do
+        expect(subject[:is_impersonating]).to be(false)
+      end
+
+      it 'passes the stop_impersonation_path property' do
+        expect(subject[:stop_impersonation_path]).to eq(admin_impersonation_path)
+      end
+
+      describe 'when impersonating' do
+        it 'sets is_impersonating to `true`' do
+          expect(helper).to receive(:session).and_return({ impersonator_id: 1 })
+          expect(subject[:is_impersonating]).to be(true)
+        end
+      end
+    end
   end
 
   describe '#super_sidebar_nav_panel' do

@@ -20,6 +20,8 @@ export const initProjectSelects = () => {
       orderBy,
       selected: initialSelection,
     } = el.dataset;
+    const block = parseBoolean(el.dataset.block);
+    const withShared = parseBoolean(el.dataset.withShared);
     const includeSubgroups = parseBoolean(el.dataset.includeSubgroups);
     const membership = parseBoolean(el.dataset.membership);
     const hasHtmlLabel = parseBoolean(el.dataset.hasHtmlLabel);
@@ -37,6 +39,8 @@ export const initProjectSelects = () => {
             groupId,
             userId,
             orderBy,
+            block,
+            withShared,
             includeSubgroups,
             membership,
             initialSelection,

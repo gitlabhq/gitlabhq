@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import { initStatusTriggers } from '../header';
 import createStore from './components/global_search/store';
 import {
@@ -29,6 +29,7 @@ export const initSuperSidebar = () => {
   const searchData = convertObjectPropsToCamelCase(sidebarData.search);
 
   const { searchPath, issuesPath, mrPath, autocompletePath, searchContext } = searchData;
+  const isImpersonating = parseBoolean(sidebarData.is_impersonating);
 
   return new Vue({
     el,
@@ -37,6 +38,7 @@ export const initSuperSidebar = () => {
     provide: {
       rootPath,
       toggleNewNavEndpoint,
+      isImpersonating,
     },
     store: createStore({
       searchPath,

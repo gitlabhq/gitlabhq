@@ -87,7 +87,9 @@ module SidebarsHelper
       search: search_data,
       pinned_items: user.pinned_nav_items[panel_type] || [],
       panel_type: panel_type,
-      update_pins_url: pins_url
+      update_pins_url: pins_url,
+      is_impersonating: impersonating?,
+      stop_impersonation_path: admin_impersonation_path
     }
   end
 
@@ -322,6 +324,10 @@ module SidebarsHelper
     else
       count.to_s
     end
+  end
+
+  def impersonating?
+    !!session[:impersonator_id]
   end
 end
 

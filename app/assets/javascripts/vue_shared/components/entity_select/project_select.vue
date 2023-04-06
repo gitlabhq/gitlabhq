@@ -20,6 +20,11 @@ export default {
     SafeHtml,
   },
   props: {
+    block: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     label: {
       type: String,
       required: true,
@@ -46,6 +51,11 @@ export default {
       type: String,
       required: false,
       default: null,
+    },
+    withShared: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
     includeSubgroups: {
       type: Boolean,
@@ -86,7 +96,7 @@ export default {
           if (this.groupId) {
             return Api.groupProjects(this.groupId, searchString, {
               ...commonParams,
-              with_shared: true,
+              with_shared: this.withShared,
               include_subgroups: this.includeSubgroups,
               simple: true,
             });
@@ -99,7 +109,7 @@ export default {
               this.userId,
               searchString,
               {
-                with_shared: true,
+                with_shared: this.withShared,
                 include_subgroups: this.includeSubgroups,
               },
               (res) => ({ data: res }),
@@ -154,6 +164,7 @@ export default {
     :default-toggle-text="$options.i18n.searchForProject"
     :fetch-items="fetchProjects"
     :fetch-initial-selection-text="fetchProjectName"
+    :block="block"
     clearable
   >
     <template v-if="hasHtmlLabel" #label>

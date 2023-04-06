@@ -60,6 +60,7 @@
     "@gitlab/visual-review-tools": "1.7.3",
     "@gitlab/web-ide": "0.0.1-dev-20230323132525",
     "@mattiasbuelens/web-streams-adapter": "^0.1.0",
+    "@popperjs/core": "^2.11.2",
     "@rails/actioncable": "6.1.4-7",
     "@rails/ujs": "6.1.4-7",
     "@sourcegraph/code-host-integration": "0.0.84",

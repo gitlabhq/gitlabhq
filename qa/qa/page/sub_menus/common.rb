@@ -15,36 +15,39 @@ module QA
           end
         end
 
-        def within_sidebar
+        def within_sidebar(&block)
           wait_for_requests
 
-          within_element(sidebar_element) do
-            yield
-          end
+          within_element(sidebar_element, &block)
         end
 
-        def within_submenu(element = nil)
+        def within_submenu(element = nil, &block)
           if element
-            within_element(element) do
-              yield
-            end
+            within_element(element, &block)
           else
-            within_submenu_without_element do
-              yield
-            end
+            within_submenu_without_element(&block)
           end
         end
 
         private
 
-        def within_submenu_without_element
-          if has_css?('.fly-out-list')
-            within('.fly-out-list') do
-              yield
-            end
-          else
-            yield
+        # Implementation for super-sidebar, will replace within_submenu
+        #
+        # @param [String] parent_menu_name
+        # @param [String] parent_section_id
+        # @param [String] sub_menu
+        # @return [void]
+        def open_submenu(parent_menu_name, parent_section_id, sub_menu)
+          click_element(:sidebar_menu_link, menu_item: parent_menu_name)
+
+          # TODO: it's not possible to add qa-selectors to sub-menu container
+          within(parent_section_id) do
+            click_element(:sidebar_menu_link, menu_item: sub_menu)
           end
+        end
+
+        def within_submenu_without_element(&block)
+          has_css?('.fly-out-list') ? within('.fly-out-list', &block) : yield
         end
 
         def sidebar_element

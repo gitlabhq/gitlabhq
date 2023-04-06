@@ -5,7 +5,13 @@ module QA
     module Group
       class Menu < Page::Base
         include SubMenus::Common
-        include SubMenus::SuperSidebar::Settings if Runtime::Env.super_sidebar_enabled?
+
+        if Runtime::Env.super_sidebar_enabled?
+          prepend Page::SubMenus::SuperSidebar::Manage
+          prepend Page::SubMenus::SuperSidebar::Plan
+          prepend SubMenus::SuperSidebar::Settings
+          prepend SubMenus::SuperSidebar::Build
+        end
 
         def click_group_members_item
           hover_group_information do
@@ -16,6 +22,8 @@ module QA
         end
 
         def click_subgroup_members_item
+          return go_to_members if Runtime::Env.super_sidebar_enabled?
+
           hover_subgroup_information do
             within_submenu do
               click_element(:sidebar_menu_item_link, menu_item: 'Members')

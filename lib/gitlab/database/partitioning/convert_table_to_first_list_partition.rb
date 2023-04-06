@@ -8,6 +8,8 @@ module Gitlab
 
         SQL_STATEMENT_SEPARATOR = ";\n\n"
 
+        PARTITIONING_CONSTRAINT_NAME = 'partitioning_constraint'
+
         attr_reader :partitioning_column, :table_name, :parent_table_name, :zero_partition_value
 
         def initialize(
@@ -23,10 +25,10 @@ module Gitlab
           @lock_tables = Array.wrap(lock_tables)
         end
 
-        def prepare_for_partitioning
+        def prepare_for_partitioning(async: false)
           assert_existing_constraints_partitionable
 
-          add_partitioning_check_constraint
+          add_partitioning_check_constraint(async: async)
         end
 
         def revert_preparation_for_partitioning
@@ -121,16 +123,17 @@ module Gitlab
           constraints_on_column = Gitlab::Database::PostgresConstraint
                                     .by_table_identifier(table_identifier)
                                     .check_constraints
-                                    .valid
                                     .including_column(partitioning_column)
 
-          constraints_on_column.to_a.find do |constraint|
-            constraint.definition == "CHECK ((#{partitioning_column} = #{zero_partition_value}))"
+          check_body = "CHECK ((#{partitioning_column} = #{zero_partition_value}))"
+
+          constraints_on_column.find do |constraint|
+            constraint.definition.start_with?(check_body)
           end
         end
 
         def assert_partitioning_constraint_present
-          return if partitioning_constraint
+          return if partitioning_constraint&.constraint_valid?
 
           raise UnableToPartition, <<~MSG
             Table #{table_name} is not ready for partitioning.
@@ -138,14 +141,43 @@ module Gitlab
           MSG
         end
 
-        def add_partitioning_check_constraint
-          return if partitioning_constraint.present?
+        def add_partitioning_check_constraint(async: false)
+          return validate_partitioning_constraint_synchronously if partitioning_constraint.present?
 
           check_body = "#{partitioning_column} = #{connection.quote(zero_partition_value)}"
           # Any constraint name would work. The constraint is found based on its definition before partitioning
-          migration_context.add_check_constraint(table_name, check_body, 'partitioning_constraint')
+          migration_context.add_check_constraint(
+            table_name, check_body, PARTITIONING_CONSTRAINT_NAME,
+            validate: !async
+          )
 
-          raise UnableToPartition, 'Error adding partitioning constraint' unless partitioning_constraint.present?
+          if async
+            migration_context.prepare_async_check_constraint_validation(
+              table_name, name: PARTITIONING_CONSTRAINT_NAME
+            )
+          end
+
+          return if partitioning_constraint.present?
+
+          raise UnableToPartition, <<~MSG
+            Error adding partitioning constraint `#{PARTITIONING_CONSTRAINT_NAME}` for `#{table_name}`
+          MSG
+        end
+
+        def validate_partitioning_constraint_synchronously
+          if partitioning_constraint.constraint_valid?
+            return Gitlab::AppLogger.info <<~MSG
+              Nothing to do, the partitioning constraint exists and is valid for `#{table_name}`
+            MSG
+          end
+
+          # Async validations are executed only on .com, we need to validate synchronously for self-managed
+          migration_context.validate_check_constraint(table_name, partitioning_constraint.name)
+          return if partitioning_constraint.constraint_valid?
+
+          raise UnableToPartition, <<~MSG
+            Error validating partitioning constraint `#{partitioning_constraint.name}` for `#{table_name}`
+          MSG
         end
 
         def create_parent_table

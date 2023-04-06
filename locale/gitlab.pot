@@ -42294,6 +42294,9 @@ msgstr ""
 msgid "Stop Terminal"
 msgstr ""
 
+msgid "Stop impersonating"
+msgstr ""
+
 msgid "Stop impersonation"
 msgstr ""
 

@@ -2,20 +2,20 @@
 
 module QA
   module Page
-    module Project
+    module Group
       module SubMenus
         module SuperSidebar
-          module Secure
+          module Build
             extend QA::Page::PageConcern
 
-            def go_to_security_configuration
-              open_secure_submenu('Security configuration')
+            def go_to_runners
+              open_build_submenu("Runners")
             end
 
             private
 
-            def open_secure_submenu(sub_menu)
-              open_submenu('Secure', '#secure', sub_menu)
+            def open_build_submenu(sub_menu)
+              open_submenu("Build", "#build", sub_menu)
             end
           end
         end
