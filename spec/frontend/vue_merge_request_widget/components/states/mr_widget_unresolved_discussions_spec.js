@@ -40,7 +40,7 @@ describe('UnresolvedDiscussions', () => {
       expect(text).toContain('all threads must be resolved.');
 
       expect(wrapper.element.innerText).toContain('Jump to first unresolved thread');
-      expect(wrapper.element.innerText).toContain('Create issue to resolve all threads');
+      expect(wrapper.element.innerText).toContain('Resolve all with new issue');
       expect(wrapper.element.querySelector('.js-create-issue').getAttribute('href')).toEqual(
         TEST_HOST,
       );
@@ -54,7 +54,7 @@ describe('UnresolvedDiscussions', () => {
       expect(text).toContain('all threads must be resolved.');
 
       expect(wrapper.element.innerText).toContain('Jump to first unresolved thread');
-      expect(wrapper.element.innerText).not.toContain('Create issue to resolve all threads');
+      expect(wrapper.element.innerText).not.toContain('Resolve all with new issue');
       expect(wrapper.element.querySelector('.js-create-issue')).toEqual(null);
     });
   });

@@ -58,7 +58,7 @@ export default {
         variant="confirm"
         category="secondary"
       >
-        {{ s__('mrWidget|Create issue to resolve all threads') }}
+        {{ s__('mrWidget|Resolve all with new issue') }}
       </gl-button>
     </template>
   </state-container>

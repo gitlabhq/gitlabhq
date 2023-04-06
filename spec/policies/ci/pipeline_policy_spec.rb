@@ -20,8 +20,7 @@ RSpec.describe Ci::PipelinePolicy, :models do
 
       context 'when no one can push or merge to the branch' do
         before do
-          create(:protected_branch, :no_one_can_push,
-                 name: pipeline.ref, project: project)
+          create(:protected_branch, :no_one_can_push, name: pipeline.ref, project: project)
         end
 
         it 'does not include ability to update pipeline' do
@@ -31,8 +30,7 @@ RSpec.describe Ci::PipelinePolicy, :models do
 
       context 'when developers can push to the branch' do
         before do
-          create(:protected_branch, :developers_can_merge,
-                 name: pipeline.ref, project: project)
+          create(:protected_branch, :developers_can_merge, name: pipeline.ref, project: project)
         end
 
         it 'includes ability to update pipeline' do
@@ -42,8 +40,7 @@ RSpec.describe Ci::PipelinePolicy, :models do
 
       context 'when no one can create the tag' do
         before do
-          create(:protected_tag, :no_one_can_create,
-                 name: pipeline.ref, project: project)
+          create(:protected_tag, :no_one_can_create, name: pipeline.ref, project: project)
 
           pipeline.update!(tag: true)
         end
@@ -55,8 +52,7 @@ RSpec.describe Ci::PipelinePolicy, :models do
 
       context 'when no one can create the tag but it is not a tag' do
         before do
-          create(:protected_tag, :no_one_can_create,
-                 name: pipeline.ref, project: project)
+          create(:protected_tag, :no_one_can_create, name: pipeline.ref, project: project)
         end
 
         it 'includes ability to update pipeline' do
@@ -119,8 +115,7 @@ RSpec.describe Ci::PipelinePolicy, :models do
 
         before do
           project.add_developer(user)
-          create(:protected_branch, :developers_can_merge,
-                 name: pipeline.ref, project: project)
+          create(:protected_branch, :developers_can_merge, name: pipeline.ref, project: project)
         end
 
         it 'is enabled' do
@@ -133,8 +128,7 @@ RSpec.describe Ci::PipelinePolicy, :models do
 
         before do
           project.add_developer(user)
-          create(:protected_branch, :developers_can_merge,
-                 name: pipeline.ref, project: project)
+          create(:protected_branch, :developers_can_merge, name: pipeline.ref, project: project)
         end
 
         it 'is disabled' do

@@ -1,0 +1,4 @@
+<%= sprintf(s_("Achievements|%{namespace_full_path} awarded you the %{achievement_name} achievement!"),
+  { namespace_full_path: @achievement.namespace.full_path, achievement_name: @achievement.name }) %>
+
+<%= s_("Achievements|View your achievements on your profile.") %>

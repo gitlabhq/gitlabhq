@@ -151,7 +151,7 @@ usually a good idea.
 
 ## Quarantined tests
 
-When a test fails in `master`,
+When we have a flaky test in `master`, quarantine the test after the first failure and
 create [a ~"failure::flaky-test" issue](https://about.gitlab.com/handbook/engineering/workflow/#broken-master).
 
 If the test cannot be fixed in a timely fashion, there is an impact on the

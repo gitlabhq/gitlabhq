@@ -18,7 +18,7 @@ Users can sign in to GitLab through their SAML identity provider.
 
 You can configure SAML SSO for the top-level group only.
 
-## Set up identity provider
+## Set up your identity provider
 
 The SAML standard means that you can use a wide range of identity providers with GitLab. Your identity provider might have relevant documentation. It can be generic SAML documentation or specifically targeted for GitLab.
 
@@ -34,7 +34,7 @@ If you have any questions on configuring the SAML app, contact your provider's s
 If you are having issues setting up your identity provider, see the
 [troubleshooting documentation](#troubleshooting).
 
-### Set up Azure
+### Azure
 
 To set up SSO with Azure as your identity provider:
 
@@ -67,7 +67,7 @@ View a demo of [SCIM provisioning on Azure using SAML SSO for groups](https://yo
 
 For more information, see an [example configuration page](example_saml_config.md#azure-active-directory).
 
-### Set up Google Workspace
+### Google Workspace
 
 To set up Google Workspace as your identity provider:
 
@@ -110,7 +110,7 @@ For more information, see an [example configuration page](example_saml_config.md
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 View a demo of [how to configure SAML with Google Workspaces and set up Group Sync](https://youtu.be/NKs0FSQVfCY).
 
-### Set up Okta
+### Okta
 
 To set up SSO with Okta as your identity provider:
 
@@ -145,7 +145,7 @@ For a demo of the Okta SAML setup including SCIM, see [Demo: Okta Group SAML & S
 
 For more information, see an [example configuration page](example_saml_config.md#okta)
 
-### Set up OneLogin
+### OneLogin
 
 OneLogin supports its own [GitLab (SaaS) application](https://onelogin.service-now.com/support?id=kb_article&sys_id=92e4160adbf16cd0ca1c400e0b961923&kb_category=50984e84db738300d5505eea4b961913).
 
@@ -173,7 +173,7 @@ To set up OneLogin as your identity provider:
 1. Make sure the identity provider is set to have provider-initiated calls
    to link existing GitLab accounts.
 
-### Set up identity provider using metadata
+### Use metadata
 
 To configure some identity providers, you need a GitLab metadata URL.
 To find this URL:
@@ -200,7 +200,7 @@ users cannot access any of the SAML groups. To mitigate this, you can disable
 
 To change identity providers:
 
-1. [Configure](#set-up-identity-provider) the group with the new identity provider.
+1. [Configure](#set-up-your-identity-provider) the group with the new identity provider.
 1. Optional. If the **NameID** is not identical, [change the **NameID** for users](#change-nameid-for-one-or-more-users).
 
 #### Change email domains
@@ -231,7 +231,7 @@ After you set up your identity provider to work with GitLab, you must configure 
 1. Select **Save changes**.
 
 NOTE:
-The certificate [fingerprint algorithm](../../../integration/saml.md#configure-saml-on-your-idp) must be in SHA1. When configuring the identity provider (such as [Google Workspace](#set-up-google-workspace)), use a secure signature algorithm.
+The certificate [fingerprint algorithm](../../../integration/saml.md#configure-saml-on-your-idp) must be in SHA1. When configuring the identity provider (such as [Google Workspace](#google-workspace)), use a secure signature algorithm.
 
 If you are having issues configuring GitLab, see the [troubleshooting documentation](#troubleshooting).
 
@@ -424,7 +424,7 @@ The **NameID** should not be an email address or username because:
   sign in.
 
 For more information on the recommended value and format for specific identity
-providers, see the [set up identity provider documentation](#set-up-identity-provider).
+providers, see [set up your identity provider](#set-up-your-identity-provider).
 
 WARNING:
 After users have signed into GitLab using SSO SAML, changing the **NameID** value

@@ -116,7 +116,7 @@ For each attribute:
 1. Select the required settings.
 1. Select **Ok**.
 
-If your SAML configuration differs from [the recommended SAML settings](index.md#set-up-azure), select the mapping
+If your SAML configuration differs from [the recommended SAML settings](index.md#azure), select the mapping
 attributes and modify them accordingly. In particular, the `objectId` source attribute must map to the `externalId`
 target attribute.
 
@@ -133,7 +133,7 @@ Prerequisites:
   product tier is required to use SCIM on Okta.
 - [GitLab is configured](#configure-gitlab).
 - SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/) set up as
-  described in the [Okta setup notes](index.md#set-up-okta).
+  described in the [Okta setup notes](index.md#okta).
 - Your Okta SAML setup matches the [configuration steps exactly](index.md), especially the NameID configuration.
 
 To configure Okta for SCIM:

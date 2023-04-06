@@ -141,6 +141,7 @@ mutation achievementsUpdate($file: Upload!) {
 ## Award an achievement
 
 You can award an achievement to a user to recognize their contributions.
+The user receives an email notification when they are awarded an achievement.
 
 Prerequisites:
 

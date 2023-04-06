@@ -32,8 +32,15 @@ RSpec.describe Achievements::AwardService, feature_category: :user_profile do
 
     context 'when user has permission' do
       let(:current_user) { maintainer }
+      let(:notification_service) { instance_double(NotificationService) }
+      let(:mail_message) { instance_double(ActionMailer::MessageDelivery) }
 
-      it 'creates an achievement' do
+      it 'creates an achievement and sends an e-mail' do
+        allow(NotificationService).to receive(:new).and_return(notification_service)
+        expect(notification_service).to receive(:new_achievement_email).with(recipient, achievement)
+          .and_return(mail_message)
+        expect(mail_message).to receive(:deliver_later)
+
         expect(response).to be_success
       end
 

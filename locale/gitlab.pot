@@ -2169,7 +2169,22 @@ msgstr ""
 msgid "AccountValidation|Verification is required to discourage and reduce the abuse on GitLab infrastructure. If you verify with a credit or debit card, %{strong_start}GitLab will not charge your card, it will only be used for validation.%{strong_end} %{learn_more_link}"
 msgstr ""
 
+msgid "Achievements|%{namespace_full_path} awarded you the %{achievement_name} achievement"
+msgstr ""
+
+msgid "Achievements|%{namespace_full_path} awarded you the %{achievement_name} achievement!"
+msgstr ""
+
+msgid "Achievements|%{namespace_link} awarded you the %{bold_start}%{achievement_name}%{bold_end} achievement!"
+msgstr ""
+
 msgid "Achievements|Awarded %{timeAgo} by %{namespace}"
+msgstr ""
+
+msgid "Achievements|View your achievements on your %{link_start}profile%{link_end}."
+msgstr ""
+
+msgid "Achievements|View your achievements on your profile."
 msgstr ""
 
 msgid "Acknowledge"
@@ -12159,9 +12174,6 @@ msgid "Create group label"
 msgstr ""
 
 msgid "Create issue"
-msgstr ""
-
-msgid "Create issue to resolve all threads"
 msgstr ""
 
 msgid "Create label"
@@ -31531,9 +31543,6 @@ msgstr ""
 msgid "PerformanceBar|First Contentful Paint"
 msgstr ""
 
-msgid "PerformanceBar|Flamegraph with mode:"
-msgstr ""
-
 msgid "PerformanceBar|Frontend resources"
 msgstr ""
 
@@ -35621,9 +35630,6 @@ msgstr ""
 msgid "ProtectedEnvironment|Allowed to deploy"
 msgstr ""
 
-msgid "ProtectedEnvironment|Allowed to deploy and approve"
-msgstr ""
-
 msgid "ProtectedEnvironment|Allowed to deploy to %{project} / %{environment}"
 msgstr ""
 
@@ -37343,6 +37349,9 @@ msgid "Reset to project defaults"
 msgstr ""
 
 msgid "Resolve"
+msgstr ""
+
+msgid "Resolve all with new issue"
 msgstr ""
 
 msgid "Resolve any conflicts. %{linkStart}How do I fix them?%{linkEnd}"
@@ -48676,6 +48685,9 @@ msgstr ""
 msgid "Vulnerability|Additional Info"
 msgstr ""
 
+msgid "Vulnerability|Assert:"
+msgstr ""
+
 msgid "Vulnerability|Bug Bounty"
 msgstr ""
 
@@ -52524,9 +52536,6 @@ msgid_plural "mrWidget|Closes issues"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "mrWidget|Create issue to resolve all threads"
-msgstr ""
-
 msgid "mrWidget|Delete source branch"
 msgstr ""
 
@@ -52605,6 +52614,9 @@ msgid "mrWidget|Refreshing now"
 msgstr ""
 
 msgid "mrWidget|Remove from merge train"
+msgstr ""
+
+msgid "mrWidget|Resolve all with new issue"
 msgstr ""
 
 msgid "mrWidget|Resolve conflicts"

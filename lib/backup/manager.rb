@@ -422,6 +422,12 @@ module Backup
       end
     end
 
+    def puts_available_timestamps
+      available_timestamps.each do |available_timestamp|
+        puts_time " " + available_timestamp
+      end
+    end
+
     def unpack(source_backup_id)
       if source_backup_id.blank? && non_tarred_backup?
         puts_time "Non tarred backup found in #{backup_path}, using that"
@@ -437,7 +443,7 @@ module Backup
         elsif backup_file_list.many? && source_backup_id.nil?
           puts_time 'Found more than one backup:'
           # print list of available backups
-          puts_time " " + available_timestamps.join("\n ")
+          puts_available_timestamps
 
           if incremental?
             puts_time 'Please specify which one you want to create an incremental backup for:'

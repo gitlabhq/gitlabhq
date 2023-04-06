@@ -735,10 +735,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   it_behaves_like 'clusterable policies' do
     let(:clusterable) { create(:group, :crm_enabled) }
     let(:cluster) do
-      create(:cluster,
-             :provided_by_gcp,
-             :group,
-             groups: [clusterable])
+      create(:cluster, :provided_by_gcp, :group, groups: [clusterable])
     end
   end
 

@@ -1,5 +1,5 @@
 <script>
-import { GlLink } from '@gitlab/ui';
+import { GlLink, GlPopover } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { glEmojiTag } from '~/emoji';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
@@ -11,6 +11,7 @@ import RequestSelector from './request_selector.vue';
 
 export default {
   components: {
+    GlPopover,
     AddRequest,
     DetailedMetric,
     GlLink,
@@ -153,6 +154,7 @@ export default {
     this.currentRequest = this.requestId;
   },
   methods: {
+    glEmojiTag,
     changeCurrentRequest(newRequestId) {
       this.currentRequest = newRequestId;
       this.$emit('change-request', newRequestId);
@@ -183,8 +185,17 @@ export default {
           class="current-host"
           :class="{ canary: currentRequest.details.host.canary }"
         >
-          <span v-safe-html:[$options.safeHtmlConfig]="birdEmoji"></span>
-          {{ currentRequest.details.host.hostname }}
+          <span id="canary-emoji" v-safe-html:[$options.safeHtmlConfig]="birdEmoji"></span>
+          <gl-popover placement="bottom" target="canary-emoji" content="Canary" />
+          <span
+            id="host-emoji"
+            v-safe-html:[$options.safeHtmlConfig]="glEmojiTag('computer')"
+          ></span>
+          <gl-popover
+            placement="bottom"
+            target="host-emoji"
+            :content="currentRequest.details.host.hostname"
+          />
         </span>
       </div>
       <detailed-metric
@@ -220,7 +231,11 @@ export default {
         }}</gl-link>
       </div>
       <div v-if="showFlamegraphButtons" id="peek-flamegraph" class="view">
-        <span class="gl-text-white-200">{{ s__('PerformanceBar|Flamegraph with mode:') }}</span>
+        <span id="flamegraph-emoji" class="gl-text-white-200">
+          <span v-safe-html:[$options.safeHtmlConfig]="glEmojiTag('fire')"></span>
+          <span v-safe-html:[$options.safeHtmlConfig]="glEmojiTag('bar_chart')"></span>
+        </span>
+        <gl-popover placement="bottom" target="flamegraph-emoji" content="Flamegraph" />
         <gl-link class="gl-text-blue-200" :href="flamegraphPath('wall', currentRequestId)">{{
           s__('PerformanceBar|wall')
         }}</gl-link>

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'email_spec'
 
-RSpec.describe Emails::Profile do
+RSpec.describe Emails::Profile, feature_category: :user_profile do
   include EmailSpec::Matchers
   include_context 'gitlab email notification'
 
@@ -539,6 +539,33 @@ RSpec.describe Emails::Profile do
 
     it 'includes a link to the email address page' do
       is_expected.to have_body_text /#{profile_emails_path}/
+    end
+  end
+
+  describe 'awarded a new achievement' do
+    let(:user) { build(:user) }
+    let(:achievement) { build(:achievement) }
+
+    subject { Notify.new_achievement_email(user, achievement) }
+
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
+
+    it 'is sent to the user' do
+      is_expected.to deliver_to user.email
+    end
+
+    it 'has the correct subject' do
+      is_expected.to have_subject("#{achievement.namespace.full_path} awarded you the #{achievement.name} achievement")
+    end
+
+    it 'includes a link to the profile page' do
+      is_expected.to have_body_text(group_url(achievement.namespace))
+    end
+
+    it 'includes a link to the awarding group' do
+      is_expected.to have_body_text(user_url(user))
     end
   end
 end

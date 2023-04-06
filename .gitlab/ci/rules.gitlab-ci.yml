@@ -1128,7 +1128,7 @@
     - <<: *if-not-canonical-namespace
       when: never
     - <<: *if-merge-request-targeting-stable-branch
-      when: on_failure
+      when: always
 
 ###############
 # Pages rules #

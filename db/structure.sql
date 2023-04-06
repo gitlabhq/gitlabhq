@@ -22746,7 +22746,7 @@ ALTER SEQUENCE subscriptions_id_seq OWNED BY subscriptions.id;
 
 CREATE TABLE suggestions (
     id bigint NOT NULL,
-    note_id integer NOT NULL,
+    note_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     relative_order smallint NOT NULL,
     applied boolean DEFAULT false NOT NULL,
     commit_id character varying,
@@ -22755,7 +22755,7 @@ CREATE TABLE suggestions (
     lines_above integer DEFAULT 0 NOT NULL,
     lines_below integer DEFAULT 0 NOT NULL,
     outdated boolean DEFAULT false NOT NULL,
-    note_id_convert_to_bigint bigint DEFAULT 0 NOT NULL
+    note_id bigint NOT NULL
 );
 
 CREATE SEQUENCE suggestions_id_seq
@@ -31260,8 +31260,6 @@ CREATE INDEX index_namespaces_on_updated_at ON namespaces USING btree (updated_a
 
 CREATE INDEX index_namespaces_public_groups_name_id ON namespaces USING btree (name, id) WHERE (((type)::text = 'Group'::text) AND (visibility_level = 20));
 
-CREATE INDEX index_namespaces_storage_limit_exclusions_on_namespace_id ON namespaces_storage_limit_exclusions USING btree (namespace_id);
-
 CREATE INDEX index_namespaces_sync_events_on_namespace_id ON namespaces_sync_events USING btree (namespace_id);
 
 CREATE INDEX index_next_over_limit_check_at_asc_order ON namespace_details USING btree (next_over_limit_check_at NULLS FIRST);
@@ -32871,6 +32869,8 @@ CREATE UNIQUE INDEX uniq_pkgs_debian_project_distributions_project_id_and_codena
 CREATE UNIQUE INDEX uniq_pkgs_debian_project_distributions_project_id_and_suite ON packages_debian_project_distributions USING btree (project_id, suite);
 
 CREATE UNIQUE INDEX unique_ci_builds_token_encrypted_and_partition_id ON ci_builds USING btree (token_encrypted, partition_id) WHERE (token_encrypted IS NOT NULL);
+
+CREATE UNIQUE INDEX unique_idx_namespaces_storage_limit_exclusions_on_namespace_id ON namespaces_storage_limit_exclusions USING btree (namespace_id);
 
 CREATE UNIQUE INDEX unique_index_ci_build_pending_states_on_partition_id_build_id ON ci_build_pending_states USING btree (partition_id, build_id);
 

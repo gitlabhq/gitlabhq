@@ -134,7 +134,7 @@ module Ci
       belonging_to_group(group_self_and_ancestors_ids)
     }
 
-    scope :belonging_to_parent_group_of_project, -> (project_id) {
+    scope :belonging_to_parent_groups_of_project, -> (project_id) {
       raise ArgumentError, "only 1 project_id allowed for performance reasons" unless project_id.is_a?(Integer)
 
       project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
@@ -148,7 +148,7 @@ module Ci
       from_union(
         [
           belonging_to_project(project_id),
-          project.group_runners_enabled? ? belonging_to_parent_group_of_project(project_id) : nil,
+          project.group_runners_enabled? ? belonging_to_parent_groups_of_project(project_id) : nil,
           project.shared_runners
         ].compact,
         remove_duplicates: false

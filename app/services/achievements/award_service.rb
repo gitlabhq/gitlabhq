@@ -22,6 +22,7 @@ module Achievements
         awarded_by_user: current_user)
       return error_awarding(user_achievement) unless user_achievement.persisted?
 
+      NotificationService.new.new_achievement_email(recipient, achievement).deliver_later
       ServiceResponse.success(payload: user_achievement)
     rescue ActiveRecord::RecordNotFound => e
       error(e.message)

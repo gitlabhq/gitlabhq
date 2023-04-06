@@ -52,6 +52,9 @@ cache:
     - gitlab-terraform plan-json
   resource_group: ${TF_STATE_NAME}
   artifacts:
+    # The next line, which disables public access to pipeline artifacts, may not be available everywhere.
+    # See: https://docs.gitlab.com/ee/ci/yaml/#artifactspublic
+    public: false
     paths:
       - ${TF_ROOT}/plan.cache
     reports:

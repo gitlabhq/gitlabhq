@@ -177,6 +177,19 @@ module Emails
         mail_with_locale(to: @user.notification_email_or_default, subject: subject(_("New email address added")))
       end
     end
+
+    def new_achievement_email(user, achievement)
+      return unless user&.active?
+
+      @user = user
+      @achievement = achievement
+
+      Gitlab::I18n.with_locale(@user.preferred_language) do
+        email_with_layout(
+          to: @user.notification_email_or_default,
+          subject: subject(s_("Achievements|%{namespace_full_path} awarded you the %{achievement_name} achievement") % { namespace_full_path: @achievement.namespace.full_path, achievement_name: @achievement.name }))
+      end
+    end
   end
 end
 

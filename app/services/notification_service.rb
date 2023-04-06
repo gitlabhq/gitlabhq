@@ -810,6 +810,10 @@ class NotificationService
     end
   end
 
+  def new_achievement_email(user, achievement)
+    mailer.new_achievement_email(user, achievement)
+  end
+
   protected
 
   def new_resource_email(target, current_user, method)
