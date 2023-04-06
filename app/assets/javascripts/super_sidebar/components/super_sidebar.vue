@@ -2,6 +2,7 @@
 import { GlButton, GlCollapse } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { isCollapsed, toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
+import { SIDEBAR_VISIBILITY_CLASS } from '../constants';
 import UserBar from './user_bar.vue';
 import SidebarPortalTarget from './sidebar_portal_target.vue';
 import ContextSwitcherToggle from './context_switcher_toggle.vue';
@@ -10,6 +11,7 @@ import HelpCenter from './help_center.vue';
 import SidebarMenu from './sidebar_menu.vue';
 
 export default {
+  SIDEBAR_VISIBILITY_CLASS,
   components: {
     GlButton,
     GlCollapse,
@@ -32,7 +34,7 @@ export default {
   data() {
     return {
       contextSwitcherOpen: false,
-      isCollapased: isCollapsed(),
+      isCollapsed: isCollapsed(),
     };
   },
   computed: {
@@ -57,10 +59,10 @@ export default {
     <aside
       id="super-sidebar"
       class="super-sidebar"
-      :class="{ 'gl-visibility-hidden': isCollapased }"
+      :class="{ [$options.SIDEBAR_VISIBILITY_CLASS]: isCollapsed }"
       data-testid="super-sidebar"
       data-qa-selector="navbar"
-      :inert="isCollapased"
+      :inert="isCollapsed"
       tabindex="-1"
     >
       <gl-button

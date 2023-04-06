@@ -201,7 +201,7 @@ export default {
     <span v-if="isReadonlyWithNoDates" class="gl-text-secondary gl-ml-4">
       {{ $options.i18n.none }}
     </span>
-    <div v-else class="gl-display-flex gl-flex-wrap-wrap gl-gap-5">
+    <div v-else class="gl-display-flex gl-flex-wrap gl-gap-5">
       <gl-form-group
         class="gl-display-flex gl-align-items-center gl-m-0"
         :class="{ 'gl-ml-n3': isReadonlyWithOnlyDueDate }"

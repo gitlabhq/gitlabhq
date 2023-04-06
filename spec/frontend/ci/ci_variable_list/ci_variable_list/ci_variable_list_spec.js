@@ -1,5 +1,7 @@
 import $ from 'jquery';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlPipelineSchedulesEdit from 'test_fixtures/pipeline_schedules/edit.html';
+import htmlPipelineSchedulesEditWithVariables from 'test_fixtures/pipeline_schedules/edit_with_variables.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import VariableList from '~/ci/ci_variable_list/ci_variable_list';
 
 const HIDE_CLASS = 'hide';
@@ -11,7 +13,7 @@ describe('VariableList', () => {
   describe('with only key/value inputs', () => {
     describe('with no variables', () => {
       beforeEach(() => {
-        loadHTMLFixture('pipeline_schedules/edit.html');
+        setHTMLFixture(htmlPipelineSchedulesEdit);
         $wrapper = $('.js-ci-variable-list-section');
 
         variableList = new VariableList({
@@ -69,7 +71,7 @@ describe('VariableList', () => {
 
     describe('with persisted variables', () => {
       beforeEach(() => {
-        loadHTMLFixture('pipeline_schedules/edit_with_variables.html');
+        setHTMLFixture(htmlPipelineSchedulesEditWithVariables);
         $wrapper = $('.js-ci-variable-list-section');
 
         variableList = new VariableList({
@@ -106,7 +108,7 @@ describe('VariableList', () => {
 
   describe('toggleEnableRow method', () => {
     beforeEach(() => {
-      loadHTMLFixture('pipeline_schedules/edit_with_variables.html');
+      setHTMLFixture(htmlPipelineSchedulesEditWithVariables);
       $wrapper = $('.js-ci-variable-list-section');
 
       variableList = new VariableList({

@@ -1253,8 +1253,11 @@ lib/gitlab/checks/** @proglottis @toon
 /app/models/generic_commit_status.rb
 /app/models/namespace_ci_cd_setting.rb
 /app/models/project_ci_cd_setting.rb
+/app/models/projects/build_artifacts_size_refresh.rb
 /app/presenters/commit_status_presenter.rb
 /app/presenters/generic_commit_status_presenter.rb
+/app/services/projects/refresh_build_artifacts_size_statistics_service.rb
+/app/uploaders/job_artifact_uploader.rb
 /app/validators/json_schemas/build_metadata_id_tokens.json
 /app/views/projects/artifacts/
 /app/views/projects/generic_commit_statuses/
@@ -1273,6 +1276,7 @@ lib/gitlab/checks/** @proglottis @toon
 /app/workers/pipeline_notification_worker.rb
 /app/workers/pipeline_process_worker.rb
 /app/workers/pipeline_schedule_worker.rb
+/app/workers/projects/refresh_build_artifacts_size_statistics_worker.rb
 /app/workers/run_pipeline_schedule_worker.rb
 /app/workers/stuck_ci_jobs_worker.rb
 /app/workers/update_external_pull_requests_worker.rb

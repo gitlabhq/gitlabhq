@@ -10,6 +10,8 @@ export const portalState = Vue.observable({
   ready: false,
 });
 
+export const SIDEBAR_VISIBILITY_CLASS = 'gl-visibility-hidden';
+
 export const MAX_FREQUENT_PROJECTS_COUNT = 5;
 export const MAX_FREQUENT_GROUPS_COUNT = 3;
 

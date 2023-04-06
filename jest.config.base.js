@@ -88,6 +88,9 @@ module.exports = (path, options = {}) => {
   }
 
   const TEST_FIXTURES_PATTERN = 'test_fixtures(/.*)$';
+  const TEST_FIXTURES_HOME = '/tmp/tests/frontend/fixtures';
+  const TEST_FIXTURES_HOME_EE = '/tmp/tests/frontend/fixtures-ee';
+  const TEST_FIXTURES_RAW_LOADER_PATTERN = `${TEST_FIXTURES_HOME}.*\\.html$`;
 
   const moduleNameMapper = {
     '^~(/.*)\\?(worker|raw)$': '<rootDir>/app/assets/javascripts$1',
@@ -103,7 +106,7 @@ module.exports = (path, options = {}) => {
     '^any_else_ce(/.*)$': '<rootDir>/app/assets/javascripts$1',
     '^helpers(/.*)$': '<rootDir>/spec/frontend/__helpers__$1',
     '^vendor(/.*)$': '<rootDir>/vendor/assets/javascripts$1',
-    [TEST_FIXTURES_PATTERN]: '<rootDir>/tmp/tests/frontend/fixtures$1',
+    [TEST_FIXTURES_PATTERN]: `<rootDir>${TEST_FIXTURES_HOME}$1`,
     '^test_fixtures_static(/.*)$': '<rootDir>/spec/frontend/fixtures/static$1',
     '\\.(jpg|jpeg|png|svg|css)$': '<rootDir>/spec/frontend/__mocks__/file_mock.js',
     '\\.svg\\?url$': '<rootDir>/spec/frontend/__mocks__/file_mock.js',
@@ -132,7 +135,7 @@ module.exports = (path, options = {}) => {
       '^ee_else_ce_jest/(.*)$': specDirEE,
       '^any_else_ce(/.*)$': rootDirEE,
       '^jh_else_ee(/.*)$': rootDirEE,
-      [TEST_FIXTURES_PATTERN]: '<rootDir>/tmp/tests/frontend/fixtures-ee$1',
+      [TEST_FIXTURES_PATTERN]: `<rootDir>${TEST_FIXTURES_HOME_EE}$1`,
       ...extModuleNameMapperEE,
     });
 
@@ -216,7 +219,7 @@ module.exports = (path, options = {}) => {
     globals,
     clearMocks: true,
     testMatch,
-    moduleFileExtensions: ['js', 'json', 'vue', 'gql', 'graphql', 'yaml', 'yml'],
+    moduleFileExtensions: ['js', 'json', 'vue', 'gql', 'graphql', 'yaml', 'yml', 'html'],
     moduleNameMapper,
     collectCoverageFrom,
     coverageDirectory: coverageDirectory(),
@@ -238,6 +241,7 @@ module.exports = (path, options = {}) => {
       'spec/frontend/editor/schema/ci/yaml_tests/.+\\.(yml|yaml)$':
         './spec/frontend/__helpers__/yaml_transformer.js',
       '^.+\\.(md|zip|png|yml|yaml|sh|ps1)$': './spec/frontend/__helpers__/raw_transformer.js',
+      [TEST_FIXTURES_RAW_LOADER_PATTERN]: './spec/frontend/__helpers__/raw_transformer.js',
     },
     transformIgnorePatterns: [`node_modules/(?!(${transformIgnoreNodeModules.join('|')}))`],
     fakeTimers: {

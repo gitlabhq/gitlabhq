@@ -73,37 +73,67 @@ describe('Super Sidebar Collapsed State Manager', () => {
       },
     );
 
-    describe('focus', () => {
-      it.each`
-        collapsed | isUserAction
-        ${false}  | ${true}
-        ${false}  | ${false}
-        ${true}   | ${true}
-        ${true}   | ${false}
-      `(
-        'when collapsed is $collapsed, isUserAction is $isUserAction',
-        ({ collapsed, isUserAction }) => {
-          const sidebar = findSidebar();
-          const toggle = findToggle();
-          jest.spyOn(toggle, 'focus');
-          jest.spyOn(sidebar, 'focus');
-          toggleSuperSidebarCollapsed(collapsed, false, isUserAction);
+    describe('toggling the super sidebar', () => {
+      let sidebar;
+      let toggle;
 
-          if (isUserAction) {
-            if (collapsed) {
-              jest.runAllTimers();
-              expect(sidebar.classList).toContain('gl-visibility-hidden');
-              expect(toggle.focus).toHaveBeenCalled();
-            } else {
-              expect(sidebar.classList).not.toContain('gl-visibility-hidden');
-              expect(sidebar.focus).toHaveBeenCalled();
-            }
-          } else {
+      beforeEach(() => {
+        sidebar = findSidebar();
+        toggle = findToggle();
+        jest.spyOn(toggle, 'focus');
+        jest.spyOn(sidebar, 'focus');
+      });
+
+      afterEach(() => {
+        sidebar = null;
+        toggle = null;
+      });
+
+      describe('collapsing the sidebar', () => {
+        const collapse = true;
+
+        describe('on user action', () => {
+          it('hides the sidebar, then focuses the toggle', () => {
+            toggleSuperSidebarCollapsed(collapse, false, true);
+            jest.runAllTimers();
+
+            expect(sidebar.classList).toContain('gl-visibility-hidden');
+            expect(toggle.focus).toHaveBeenCalled();
+          });
+        });
+
+        describe('on programmatic toggle', () => {
+          it('hides the sidebar, but does not focus the toggle', () => {
+            toggleSuperSidebarCollapsed(collapse, false, false);
+            jest.runAllTimers();
+
+            expect(sidebar.classList).toContain('gl-visibility-hidden');
             expect(toggle.focus).not.toHaveBeenCalled();
+          });
+        });
+      });
+
+      describe('expanding the sidebar', () => {
+        const collapse = false;
+
+        describe('on user action', () => {
+          it('shows the sidebar, then focuses it', () => {
+            toggleSuperSidebarCollapsed(collapse, false, true);
+
+            expect(sidebar.classList).not.toContain('gl-visibility-hidden');
+            expect(sidebar.focus).toHaveBeenCalled();
+          });
+        });
+
+        describe('on programmatic toggle', () => {
+          it('shows the sidebar, but does not focus it', () => {
+            toggleSuperSidebarCollapsed(collapse, false, false);
+
+            expect(sidebar.classList).not.toContain('gl-visibility-hidden');
             expect(sidebar.focus).not.toHaveBeenCalled();
-          }
-        },
-      );
+          });
+        });
+      });
     });
   });
 

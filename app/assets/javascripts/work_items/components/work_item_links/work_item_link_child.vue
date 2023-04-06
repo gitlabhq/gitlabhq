@@ -279,9 +279,9 @@ export default {
         class="item-body work-item-link-child gl-relative gl-display-flex gl-flex-grow-1 gl-overflow-break-word gl-min-w-0 gl-pl-3 gl-pr-2 gl-py-2 gl-rounded-base"
         data-testid="links-child"
       >
-        <div class="item-contents gl-display-flex gl-flex-grow-1 gl-flex-wrap-wrap gl-min-w-0">
+        <div class="item-contents gl-display-flex gl-flex-grow-1 gl-flex-wrap gl-min-w-0">
           <div
-            class="gl-display-flex gl-flex-grow-1 gl-flex-wrap-wrap flex-xl-nowrap gl-align-items-center gl-justify-content-space-between gl-gap-3 gl-min-w-0"
+            class="gl-display-flex gl-flex-grow-1 gl-flex-wrap flex-xl-nowrap gl-align-items-center gl-justify-content-space-between gl-gap-3 gl-min-w-0"
           >
             <div class="item-title gl-display-flex gl-gap-3 gl-min-w-0">
               <span
@@ -328,10 +328,7 @@ export default {
               class="gl-ml-6 ml-xl-0"
             />
           </div>
-          <div
-            v-if="labels.length"
-            class="gl-display-flex gl-flex-wrap-wrap gl-flex-basis-full gl-ml-6"
-          >
+          <div v-if="labels.length" class="gl-display-flex gl-flex-wrap gl-flex-basis-full gl-ml-6">
             <gl-label
               v-for="label in labels"
               :key="label.id"

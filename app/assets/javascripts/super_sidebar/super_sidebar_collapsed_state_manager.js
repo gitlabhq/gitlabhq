@@ -1,6 +1,7 @@
 import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/dist/utils';
 import { debounce } from 'lodash';
 import { setCookie, getCookie } from '~/lib/utils/common_utils';
+import { SIDEBAR_VISIBILITY_CLASS } from './constants';
 
 export const SIDEBAR_COLLAPSED_CLASS = 'page-with-super-sidebar-collapsed';
 export const SIDEBAR_COLLAPSED_COOKIE = 'super_sidebar_collapsed';
@@ -20,6 +21,22 @@ export const isDesktopBreakpoint = () => bp.windowWidth() >= breakpoints.xl;
 
 export const getCollapsedCookie = () => getCookie(SIDEBAR_COLLAPSED_COOKIE) === 'true';
 
+const show = (sidebar, isUserAction) => {
+  sidebar.classList.remove(SIDEBAR_VISIBILITY_CLASS);
+  if (isUserAction) {
+    sidebar.focus();
+  }
+};
+
+const hide = (sidebar, toggle, isUserAction) => {
+  setTimeout(() => {
+    sidebar.classList.add(SIDEBAR_VISIBILITY_CLASS);
+    if (isUserAction) {
+      toggle.focus();
+    }
+  }, SIDEBAR_TRANSITION_DURATION);
+};
+
 export const toggleSuperSidebarCollapsed = (collapsed, saveCookie, isUserAction) => {
   const page = findPage();
   const toggle = findToggle();
@@ -28,16 +45,10 @@ export const toggleSuperSidebarCollapsed = (collapsed, saveCookie, isUserAction)
   page.classList.toggle(SIDEBAR_COLLAPSED_CLASS, collapsed);
   sidebar.inert = collapsed;
 
-  if (isUserAction) {
-    if (collapsed) {
-      setTimeout(() => {
-        sidebar.classList.add('gl-visibility-hidden');
-        toggle.focus();
-      }, SIDEBAR_TRANSITION_DURATION);
-    } else {
-      sidebar.classList.remove('gl-visibility-hidden');
-      sidebar.focus();
-    }
+  if (collapsed) {
+    hide(sidebar, toggle, isUserAction);
+  } else {
+    show(sidebar, isUserAction);
   }
 
   if (saveCookie && isDesktopBreakpoint()) {
