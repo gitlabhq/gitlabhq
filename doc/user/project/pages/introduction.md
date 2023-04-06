@@ -271,7 +271,7 @@ This problem most likely results from a missing `index.html` file in the public 
 a 404 is encountered, confirm that the public directory contains an `index.html` file. If the file contains a different name
 such as `test.html`, the Pages site can still be accessed, but the full path would be needed. For example: `https//group-name.pages.example.com/project-name/test.html`.
 
-The contents of the public directory can be confirmed by [browsing the artifacts](../../../ci/pipelines/job_artifacts.md#download-job-artifacts) from the latest pipeline.
+The contents of the public directory can be confirmed by [browsing the artifacts](../../../ci/jobs/job_artifacts.md#download-job-artifacts) from the latest pipeline.
 
 Files listed under the public directory can be accessed through the Pages URL for the project.
 

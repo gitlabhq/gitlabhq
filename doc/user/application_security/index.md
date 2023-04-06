@@ -577,7 +577,7 @@ Debug logging can be a serious security risk. The output may contain the content
 environment variables and other secrets available to the job. The output is uploaded
 to the GitLab server and visible in job logs.
 
-This message is often followed by the [error `No files to upload`](../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload),
+This message is often followed by the [error `No files to upload`](../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload),
 and preceded by other errors or warnings that indicate why the JSON report wasn't generated. Check
 the entire job log for such messages. If you don't find these messages, retry the failed job after
 setting `SECURE_LOG_LEVEL: "debug"` as a [custom CI/CD variable](../../ci/variables/index.md#for-a-project).

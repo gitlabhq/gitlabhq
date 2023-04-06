@@ -148,7 +148,7 @@ Each fuzzing step outputs these artifacts:
     previous jobs.
 
 You can download the JSON report file from the CI/CD pipelines page. For more information, see
-[Downloading artifacts](../../../ci/pipelines/job_artifacts.md#download-job-artifacts).
+[Downloading artifacts](../../../ci/jobs/job_artifacts.md#download-job-artifacts).
 
 ## Corpus registry
 

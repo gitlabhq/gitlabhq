@@ -702,7 +702,7 @@ For more information, see [Security scanner integration](../../../development/in
 
 In addition to the [JSON report file](#reports-json-format), the [Container Scanning](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning) tool outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM) for the scanned image. This CycloneDX SBOM is named `gl-sbom-report.cdx.json` and is saved in the same directory as the `JSON report file`. This feature is only supported when the `Trivy` analyzer is used.
 
-You can download CycloneDX SBOMs [the same way as other job artifacts](../../../ci/pipelines/job_artifacts.md#download-job-artifacts).
+You can download CycloneDX SBOMs [the same way as other job artifacts](../../../ci/jobs/job_artifacts.md#download-job-artifacts).
 
 ## Security Dashboard
 
@@ -782,7 +782,7 @@ To prevent the error, ensure the Docker version that the runner is using is
 
 ### Getting warning message `gl-container-scanning-report.json: no matching files`
 
-For information on this, see the [general Application Security troubleshooting section](../../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload).
+For information on this, see the [general Application Security troubleshooting section](../../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload).
 
 ## Changes
 

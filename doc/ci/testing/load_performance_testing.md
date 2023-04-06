@@ -161,7 +161,7 @@ For example:
 
 1. In the `review` job:
    1. Capture the dynamic URL and save it into a `.env` file, for example, `echo "ENVIRONMENT_URL=$CI_ENVIRONMENT_URL" >> review.env`.
-   1. Set the `.env` file to be a [job artifact](../pipelines/job_artifacts.md).
+   1. Set the `.env` file to be a [job artifact](../jobs/job_artifacts.md).
 1. In the `load_performance` job:
    1. Set it to depend on the review job, so it inherits the environment file.
    1. Set the `K6_DOCKER_OPTIONS` variable with the [Docker CLI option for environment files](https://docs.docker.com/engine/reference/commandline/run/#set-environment-variables--e---env---env-file), for example `--env-file review.env`.

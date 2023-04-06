@@ -260,7 +260,7 @@ code_quality:
 ```
 
 The full JSON file is available as a
-[downloadable artifact](../pipelines/job_artifacts.md#download-job-artifacts) of the `code_quality`
+[downloadable artifact](../jobs/job_artifacts.md#download-job-artifacts) of the `code_quality`
 job.
 
 ### Download output in JSON and HTML format
@@ -287,7 +287,7 @@ code_quality_html:
 ```
 
 Both the JSON and HTML files are available as
-[downloadable artifacts](../pipelines/job_artifacts.md#download-job-artifacts) of the `code_quality`
+[downloadable artifacts](../jobs/job_artifacts.md#download-job-artifacts) of the `code_quality`
 job.
 
 ### Download output in only HTML format
@@ -311,7 +311,7 @@ code_quality:
 ```
 
 The HTML file is available as a
-[downloadable artifact](../pipelines/job_artifacts.md#download-job-artifacts) of the `code_quality`
+[downloadable artifact](../jobs/job_artifacts.md#download-job-artifacts) of the `code_quality`
 job.
 
 ## Use Code Quality with merge request pipelines

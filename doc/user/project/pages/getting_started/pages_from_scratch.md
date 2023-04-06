@@ -423,7 +423,7 @@ Now GitLab CI/CD not only builds the website, but also:
 - **Continuously deploys** every push to the `main` branch.
 
 To view the HTML and other assets that were created for the site,
-[download the job artifacts](../../../../ci/pipelines/job_artifacts.md#download-job-artifacts).
+[download the job artifacts](../../../../ci/jobs/job_artifacts.md#download-job-artifacts).
 
 ## Related topics
 

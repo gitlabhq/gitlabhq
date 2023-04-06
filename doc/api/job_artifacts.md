@@ -295,7 +295,7 @@ If the artifacts were deleted successfully, a response with status `204 No Conte
 
 Delete artifacts of a project that can be deleted.
 
-By default, [artifacts from the most recent successful pipeline of each ref are kept](../ci/pipelines/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
+By default, [artifacts from the most recent successful pipeline of each ref are kept](../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
 
 ```plaintext
 DELETE /projects/:id/artifacts

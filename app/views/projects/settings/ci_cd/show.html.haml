@@ -57,7 +57,7 @@
       %p
         = _("A job artifact is an archive of files and directories saved by a job when it finishes.")
     .settings-content
-      #js-artifacts-settings-app{ data: { full_path: @project.full_path, help_page_path: help_page_path('ci/pipelines/job_artifacts', anchor: 'keep-artifacts-from-most-recent-successful-jobs') } }
+      #js-artifacts-settings-app{ data: { full_path: @project.full_path, help_page_path: help_page_path('ci/jobs/job_artifacts', anchor: 'keep-artifacts-from-most-recent-successful-jobs') } }
 
 %section.settings.no-animate#js-cicd-variables-settings{ class: ('expanded' if expanded), data: { qa_selector: 'variables_settings_content' } }
   .settings-header

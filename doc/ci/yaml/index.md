@@ -733,7 +733,7 @@ test_job_2:
 
 ### `artifacts`
 
-Use `artifacts` to specify which files to save as [job artifacts](../pipelines/job_artifacts.md).
+Use `artifacts` to specify which files to save as [job artifacts](../jobs/job_artifacts.md).
 Job artifacts are a list of files and directories that are
 attached to the job when it [succeeds, fails, or always](#artifactswhen).
 
@@ -751,7 +751,7 @@ artifacts from the jobs defined in the `needs` configuration.
 Job artifacts are only collected for successful jobs by default, and
 artifacts are restored after [caches](#cache).
 
-[Read more about artifacts](../pipelines/job_artifacts.md).
+[Read more about artifacts](../jobs/job_artifacts.md).
 
 #### `artifacts:paths`
 
@@ -790,7 +790,7 @@ This example creates an artifact with `.config` and all the files in the `binari
 **Related topics**:
 
 - To restrict which jobs a specific job fetches artifacts from, see [`dependencies`](#dependencies).
-- [Create job artifacts](../pipelines/job_artifacts.md#create-job-artifacts).
+- [Create job artifacts](../jobs/job_artifacts.md#create-job-artifacts).
 
 #### `artifacts:exclude`
 
@@ -829,7 +829,7 @@ subdirectories of `binaries/`.
 
 **Related topics**:
 
-- [Exclude files from job artifacts](../pipelines/job_artifacts.md#without-excluded-files).
+- [Exclude files from job artifacts](../jobs/job_artifacts.md#without-excluded-files).
 
 #### `artifacts:expire_in`
 
@@ -839,11 +839,11 @@ subdirectories of `binaries/`.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276583) in GitLab 13.9, keeping latest job artifacts can be disabled instance-wide.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321323) in GitLab 13.12, the latest pipeline artifacts are kept regardless of expiry time.
 
-Use `expire_in` to specify how long [job artifacts](../pipelines/job_artifacts.md) are stored before
+Use `expire_in` to specify how long [job artifacts](../jobs/job_artifacts.md) are stored before
 they expire and are deleted. The `expire_in` setting does not affect:
 
 - Artifacts from the latest job, unless keeping the latest job artifacts is disabled
-  [at the project level](../pipelines/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
+  [at the project level](../jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
   or [instance-wide](../../user/admin_area/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
 - [Pipeline artifacts](../pipelines/pipeline_artifacts.md). You can't specify an expiration date for
   pipeline artifacts. See [When pipeline artifacts are deleted](../pipelines/pipeline_artifacts.md#when-pipeline-artifacts-are-deleted)
@@ -890,7 +890,7 @@ job:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15018) in GitLab 12.5.
 
 Use the `artifacts:expose_as` keyword to
-[expose job artifacts in the merge request UI](../pipelines/job_artifacts.md#link-to-job-artifacts-in-the-merge-request-ui).
+[expose job artifacts in the merge request UI](../jobs/job_artifacts.md#link-to-job-artifacts-in-the-merge-request-ui).
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -916,7 +916,7 @@ test:
 - A maximum of 10 job artifacts per merge request can be exposed.
 - Glob patterns are unsupported.
 - If a directory is specified and there is more than one file in the directory,
-  the link is to the job [artifacts browser](../pipelines/job_artifacts.md#download-job-artifacts).
+  the link is to the job [artifacts browser](../jobs/job_artifacts.md#download-job-artifacts).
 - If [GitLab Pages](../../administration/pages/index.md) is enabled, GitLab automatically
   renders the artifacts when the artifacts is a single file with one of these extensions:
   - `.html` or `.htm`
@@ -927,7 +927,7 @@ test:
 
 **Related topics**:
 
-- [Expose job artifacts in the merge request UI](../pipelines/job_artifacts.md#link-to-job-artifacts-in-the-merge-request-ui).
+- [Expose job artifacts in the merge request UI](../jobs/job_artifacts.md#link-to-job-artifacts-in-the-merge-request-ui).
 
 #### `artifacts:name`
 
@@ -958,7 +958,7 @@ job:
 
 **Related topics**:
 
-- [Use CI/CD variables to define the artifacts name](../pipelines/job_artifacts.md#with-cicd-variables-to-define-the-artifacts-name).
+- [Use CI/CD variables to define the artifacts name](../jobs/job_artifacts.md#with-cicd-variables-to-define-the-artifacts-name).
 
 #### `artifacts:public`
 
@@ -1053,7 +1053,7 @@ job:
 
 **Related topics**:
 
-- [Add untracked files to artifacts](../pipelines/job_artifacts.md#with-untracked-files).
+- [Add untracked files to artifacts](../jobs/job_artifacts.md#with-untracked-files).
 
 #### `artifacts:when`
 
@@ -1626,7 +1626,7 @@ the [stage](#stages) precedence.
 
 - The job status does not matter. If a job fails or it's a manual job that isn't triggered, no error occurs.
 - If the artifacts of a dependent job are [expired](#artifactsexpire_in) or
-  [deleted](../pipelines/job_artifacts.md#delete-job-log-and-artifacts), then the job fails.
+  [deleted](../jobs/job_artifacts.md#delete-job-log-and-artifacts), then the job fails.
 
 ### `environment`
 

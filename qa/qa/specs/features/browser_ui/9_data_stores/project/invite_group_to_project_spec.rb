@@ -55,6 +55,11 @@ module QA
           end
         end
 
+        after do
+          project.remove_via_api!
+          group.remove_via_api!
+        end
+
         it_behaves_like 'invites group to project'
       end
 
@@ -71,6 +76,11 @@ module QA
             project.visibility = :private
             project.description = 'test group project'
           end
+        end
+
+        after do
+          project.remove_via_api!
+          group.remove_via_api!
         end
 
         it_behaves_like 'invites group to project'

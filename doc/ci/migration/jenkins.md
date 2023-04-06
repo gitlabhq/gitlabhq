@@ -178,7 +178,7 @@ rspec:
 Artifacts may work a bit differently than you've used them with Jenkins. In GitLab, any job can define
 a set of artifacts to be saved by using the `artifacts` keyword. This can be configured to point to a file
 or set of files that can then be persisted from job to job. Read more on our detailed
-[artifacts documentation](../pipelines/job_artifacts.md):
+[artifacts documentation](../jobs/job_artifacts.md):
 
 ```yaml
 pdf:

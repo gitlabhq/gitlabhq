@@ -61,7 +61,7 @@ export default {
     <a
       href="#"
       class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-py-3 gl-px-0 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-text-decoration-none!"
-      @click="expanded = !expanded"
+      @click.prevent="expanded = !expanded"
     >
       <div class="gl-flex-shrink-0 gl-w-6 gl-mx-3">
         <gl-icon name="thumbtack" class="gl-ml-2" />

@@ -32,4 +32,4 @@ For every change pushed to your repository, GitLab CI/CD runs a new pipeline
 that immediately publishes your changes to the Pages site.
 
 To view the HTML and other assets that were created for the site,
-[download the job artifacts](../../../../ci/pipelines/job_artifacts.md#download-job-artifacts).
+[download the job artifacts](../../../../ci/jobs/job_artifacts.md#download-job-artifacts).

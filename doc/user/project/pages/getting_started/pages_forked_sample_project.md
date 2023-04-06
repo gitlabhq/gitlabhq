@@ -65,4 +65,4 @@ you can rename it to `<namespace>.gitlab.io`, where `<namespace>` is your GitLab
 
 ## Related topics
 
-- [Download the job artifacts](../../../../ci/pipelines/job_artifacts.md#download-job-artifacts)
+- [Download the job artifacts](../../../../ci/jobs/job_artifacts.md#download-job-artifacts)

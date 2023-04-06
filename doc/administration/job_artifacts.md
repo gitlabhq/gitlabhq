@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Jobs artifacts administration **(FREE SELF)**
 
 This is the administration documentation. To learn how to use job artifacts in your GitLab CI/CD pipeline,
-see the [job artifacts configuration documentation](../ci/pipelines/job_artifacts.md).
+see the [job artifacts configuration documentation](../ci/jobs/job_artifacts.md).
 
 An artifact is a list of files and directories attached to a job after it
 finishes. This feature is enabled by default in all GitLab installations.
@@ -419,7 +419,7 @@ reasons are:
   to remove these. This script should always find work to do, as it also removes empty directories (see above).
 - [Artifact housekeeping was changed significantly](#artifacts-housekeeping-disabled-in-gitlab-146-to-152),
   and you might need to enable a feature flag to used the updated system.
-- The [keep latest artifacts from most recent success jobs](../ci/pipelines/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
+- The [keep latest artifacts from most recent success jobs](../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
   feature is enabled.
 
 In these and other cases, identify the projects most responsible
@@ -463,7 +463,7 @@ To check if the feature flags are enabled:
    ```
 
 These changes include switching artifacts from `unlocked` to `locked` if
-they [should be retained](../ci/pipelines/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
+they [should be retained](../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
 
 Artifacts created before this feature was introduced have a status of `unknown`. After they expire,
 these artifacts are not processed by the new housekeeping jobs.
@@ -675,7 +675,7 @@ If you need to manually remove job artifacts associated with multiple jobs while
 
    NOTE:
    This step also erases artifacts that users have chosen to
-   ["keep"](../ci/pipelines/job_artifacts.md#download-job-artifacts).
+   ["keep"](../ci/jobs/job_artifacts.md#download-job-artifacts).
 
    ```ruby
    builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.week.ago)

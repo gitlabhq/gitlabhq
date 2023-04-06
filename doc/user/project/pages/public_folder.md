@@ -146,7 +146,7 @@ module.exports = {
 ## Should you commit the `public` folder?
 
 Not necessarily. However, when the GitLab Pages deploy pipeline runs, it looks
-for an [artifact](../../../ci/pipelines/job_artifacts.md) of that name.
+for an [artifact](../../../ci/jobs/job_artifacts.md) of that name.
 If you set up a job that creates the `public` folder before deploy, such as by
 running `npm run build`, committing the folder isn't required.
 

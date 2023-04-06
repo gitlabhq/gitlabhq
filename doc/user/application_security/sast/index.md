@@ -662,7 +662,7 @@ To download the report file, you can either:
 - Download the file from the CI/CD pipelines page.
 - In the pipelines tab on merge requests, set [`artifacts: paths`](../../../ci/yaml/index.md#artifactspaths) to `gl-sast-report.json`.
 
-For information, see [Download job artifacts](../../../ci/pipelines/job_artifacts.md#download-job-artifacts).
+For information, see [Download job artifacts](../../../ci/jobs/job_artifacts.md#download-job-artifacts).
 
 For details of the report file's schema, see
 [SAST report file schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/sast-report-format.json).
@@ -817,7 +817,7 @@ affected. Read more in
 
 ### Getting warning message `gl-sast-report.json: no matching files`
 
-For information on this, see the [general Application Security troubleshooting section](../../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload).
+For information on this, see the [general Application Security troubleshooting section](../../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload).
 
 ### Error: `sast is used for configuration only, and its script should not be executed`
 

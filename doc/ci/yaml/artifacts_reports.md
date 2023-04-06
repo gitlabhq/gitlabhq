@@ -209,7 +209,7 @@ The exceptions to the [original dotenv rules](https://github.com/motdotla/dotenv
 - The `.env` file can't have empty lines or comments (starting with `#`).
 - Key values in the `env` file cannot have spaces or newline characters (`\n`), including when using single or double quotes.
 - Quote escaping during parsing (`key = 'value'` -> `{key: "value"}`) is not supported.
-- Only UTF-8 encoding is [supported](../pipelines/job_artifacts.md#error-message-fatal-invalid-argument-when-uploading-a-dotenv-artifact-on-a-windows-runner).
+- Only UTF-8 encoding is [supported](../jobs/job_artifacts_troubleshooting.md#error-message-fatal-invalid-argument-when-uploading-a-dotenv-artifact-on-a-windows-runner).
 
 ## `artifacts:reports:junit`
 

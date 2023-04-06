@@ -555,7 +555,7 @@ visible in job logs.
 
 ### Warning: `gl-secret-detection-report.json: no matching files`
 
-For information on this, see the [general Application Security troubleshooting section](../../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload).
+For information on this, see the [general Application Security troubleshooting section](../../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload).
 
 ### Error: `Couldn't run the gitleaks command: exit status 2`
 

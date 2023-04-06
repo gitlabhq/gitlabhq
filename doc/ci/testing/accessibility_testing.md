@@ -68,7 +68,7 @@ The `a11y` job in your CI/CD pipeline generates these files:
   file is named `gl-accessibility.json`. In GitLab versions 12.10 and earlier, this file
   is named [`accessibility.json`](https://gitlab.com/gitlab-org/ci-cd/accessibility/-/merge_requests/9).
 
-You can [view job artifacts in your browser](../pipelines/job_artifacts.md#download-job-artifacts).
+You can [view job artifacts in your browser](../jobs/job_artifacts.md#download-job-artifacts).
 
 NOTE:
 For GitLab versions earlier than 12.9, use `include:remote` and
