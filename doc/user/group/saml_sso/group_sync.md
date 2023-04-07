@@ -134,7 +134,7 @@ To enable global group memberships lock:
 
 After a group sync, users who are not members of a mapped SAML group are removed from the group.
 On GitLab.com, users in the top-level group are assigned the
-[default membership role](index.md#role) instead of being removed.
+default membership role instead of being removed.
 
 For example, in the following diagram:
 

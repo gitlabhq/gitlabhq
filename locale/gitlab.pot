@@ -21378,6 +21378,9 @@ msgstr ""
 msgid "Hide marketing-related entries from the Help page"
 msgstr ""
 
+msgid "Hide password"
+msgstr ""
+
 msgid "Hide payload"
 msgstr ""
 
@@ -40904,6 +40907,9 @@ msgid "Show one file at a time"
 msgstr ""
 
 msgid "Show open epics"
+msgstr ""
+
+msgid "Show password"
 msgstr ""
 
 msgid "Show project milestones"

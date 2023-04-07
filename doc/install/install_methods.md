@@ -20,6 +20,10 @@ or use one of the following methods.
 | [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit#documentation) | A set of automation tools. | Use to deploy a [reference architecture](../administration/reference_architectures/index.md) on most major cloud providers. Has some [limitations](https://gitlab.com/gitlab-org/gitlab-environment-toolkit#missing-features-to-be-aware-of) and manual setup for production environments. |
 | [GitLab Operator](https://docs.gitlab.com/operator/)   | An installation and management method that follows the [Kubernetes Operator pattern](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/). | Use to run GitLab in an [OpenShift](openshift_and_gitlab/index.md) environment. |
 
+## Cloud providers
+
+See [Cloud providers](cloud_providers.md).
+
 ## Unsupported Linux distributions and Unix-like operating systems
 
 - Arch Linux

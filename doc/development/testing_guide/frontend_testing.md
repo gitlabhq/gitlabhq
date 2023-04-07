@@ -819,10 +819,10 @@ often using fixtures to validate correct integration with the backend code.
 
 ### Use fixtures
 
-To import a JSON fixture, `import` it using the `test_fixtures` alias.
+To import a JSON or HTML fixture, `import` it using the `test_fixtures` alias.
 
 ```javascript
-import responseBody from 'test_fixtures/some/fixture.json' // loads spec/frontend/fixtures/some/fixture.json
+import responseBody from 'test_fixtures/some/fixture.json' // loads tmp/tests/frontend/fixtures-ee/some/fixture.json
 
 it('makes a request', () => {
   axiosMock.onGet(endpoint).reply(200, responseBody);
@@ -830,23 +830,6 @@ it('makes a request', () => {
   myButton.click();
 
   // ...
-});
-```
-
-For other fixtures, Jest uses `spec/frontend/__helpers__/fixtures.js` to import them in tests.
-
-The following are examples of tests that work for Jest:
-
-```javascript
-it('uses some HTML element', () => {
-  loadHTMLFixture('some/page.html'); // loads spec/frontend/fixtures/some/page.html and adds it to the DOM
-
-  const element = document.getElementById('#my-id');
-
-  // ...
-
-  // Jest does not clean up the DOM automatically
-  resetHTMLFixture();
 });
 ```
 

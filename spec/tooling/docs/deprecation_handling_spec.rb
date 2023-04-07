@@ -17,7 +17,7 @@ RSpec.describe Docs::DeprecationHandling do
     allow(YAML).to receive(:load_file) do |file_name|
       {
         'title' => file_name[/[a-z]*\.yml/],
-        'announcement_milestone' => file_name[/\d+-\d+/].tr('-', '.')
+        'removal_milestone' => file_name[/\d+-\d+/].tr('-', '.')
       }
     end
   end

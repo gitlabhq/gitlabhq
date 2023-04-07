@@ -222,7 +222,10 @@ After you set up your identity provider to work with GitLab, you must configure 
    - In the **Identity provider single sign-on URL** field, enter the SSO URL from your identity provider.
    - In the **Certificate fingerprint** field, enter the fingerprint for the SAML token signing certificate.
 1. In the **Default membership role** field, select the role to assign to new users.
-   The default role is **Guest**.
+   The default role is **Guest**. In [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/214523)
+   and later, group owners can set a default membership role other than **Guest**.
+   To do so, [configure the SAML SSO for the group](#configure-gitlab). That role
+   becomes the starting role of all users added to the group.
 1. Select the **Enable SAML authentication for this group** checkbox.
 1. Optional. Select:
    - **Enforce SSO-only authentication for web activity for this group**.
@@ -267,15 +270,24 @@ For more information, see the [attributes available for self-managed GitLab inst
 
 To link SAML to your existing GitLab.com account:
 
-1. Sign in to your GitLab.com account. [Reset your password](https://gitlab.com/users/password/new) if necessary.
-1. Locate and visit the **GitLab single sign-on URL** for the group you're signing in to. A group owner can find this on the group's **Settings > SAML SSO** page. If the sign-in URL is configured, users can connect to the GitLab app from the identity provider.
-1. Optional. Select the **Remember me** checkbox to stay signed in to GitLab for 2 weeks. You may still be asked to re-authenticate with your SAML provider
-   more frequently.
+1. Sign in to your GitLab.com account. [Reset your password](https://gitlab.com/users/password/new)
+   if necessary.
+1. Locate and visit the **GitLab single sign-on URL** for the group you're signing
+   in to. A group owner can find this on the group's **Settings > SAML SSO** page.
+   If the sign-in URL is configured, users can connect to the GitLab app from the identity provider.
+1. Optional. Select the **Remember me** checkbox to stay signed in to GitLab for 2 weeks.
+   You may still be asked to re-authenticate with your SAML provider more frequently.
 1. Select **Authorize**.
 1. Enter your credentials on the identity provider if prompted.
-1. You are then redirected back to GitLab.com and should now have access to the group. In the future, you can use SAML to sign in to GitLab.com.
+1. You are then redirected back to GitLab.com and should now have access to the group.
+   In the future, you can use SAML to sign in to GitLab.com.
 
-On subsequent visits, you should be able to go [sign in to GitLab.com with SAML](#sign-in-to-gitlabcom-with-saml) or by visiting links directly. If the **enforce SSO** option is turned on, you are then redirected to sign in through the identity provider.
+If a user is already a member of the group, linking the SAML identity does not
+change their role.
+
+On subsequent visits, you should be able to [sign in to GitLab.com with SAML](#sign-in-to-gitlabcom-with-saml)
+or by visiting links directly. If the **enforce SSO** option is turned on, you
+are then redirected to sign in through the identity provider.
 
 ### Sign in to GitLab.com with SAML
 
@@ -357,18 +369,6 @@ bypassed for users:
 - That are provisioned with SAML or SCIM.
 - That have an email address that belongs to the verified domain.
 
-### Role
-
-Starting from [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/214523), group owners can set a
-"Default membership role" other than Guest. To do so, [configure the SAML SSO for the group](#configure-gitlab).
-That role becomes the starting access level of all users added to the group.
-
-Existing members with appropriate privileges can promote or demote users, as needed.
-
-If a user is already a member of the group, linking the SAML identity does not change their role.
-
-Users given a "minimal access" role have [specific restrictions](../../permissions.md#users-with-minimal-access).
-
 ### Block user access
 
 To rescind a user's access to the group when only SAML SSO is configured, either:
@@ -376,7 +376,9 @@ To rescind a user's access to the group when only SAML SSO is configured, either
 - Remove (in order) the user from:
   1. The user data store on the identity provider or the list of users on the specific app.
   1. The GitLab.com group.
-- Use [Group Sync](group_sync.md#automatic-member-removal) at the top-level of your group with the [default role](#role) set to [minimal access](../../permissions.md#users-with-minimal-access) to automatically block access to all resources in the group.
+- Use [Group Sync](group_sync.md#automatic-member-removal) at the top-level of
+  your group with the default role set to [minimal access](../../permissions.md#users-with-minimal-access)
+  to automatically block access to all resources in the group.
 
 To rescind a user's access to the group when also using SCIM, refer to [Remove access](scim_setup.md#remove-access).
 
