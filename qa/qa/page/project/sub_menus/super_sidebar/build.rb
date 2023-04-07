@@ -39,7 +39,7 @@ module QA
             private
 
             def open_build_submenu(sub_menu)
-              open_submenu('Build', '#build', sub_menu)
+              open_submenu('Build', sub_menu)
             end
           end
         end

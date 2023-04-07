@@ -27,7 +27,7 @@ module QA
             private
 
             def open_operate_submenu(sub_menu)
-              open_submenu('Operate', '#operate', sub_menu)
+              open_submenu('Operate', sub_menu)
             end
           end
         end

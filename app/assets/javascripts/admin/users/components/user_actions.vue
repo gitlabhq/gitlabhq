@@ -1,10 +1,9 @@
 <script>
 import {
   GlButton,
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownSectionHeader,
-  GlDropdownDivider,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlDisclosureDropdownGroup,
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { convertArrayToCamelCase } from '~/lib/utils/common_utils';
@@ -17,10 +16,9 @@ import Actions from './actions';
 export default {
   components: {
     GlButton,
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownSectionHeader,
-    GlDropdownDivider,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
+    GlDisclosureDropdownGroup,
     ...Actions,
   },
   directives: {
@@ -107,12 +105,12 @@ export default {
     </div>
 
     <div v-if="hasDropdownActions" class="gl-p-2">
-      <gl-dropdown
-        :text="$options.i18n.userAdministration"
+      <gl-disclosure-dropdown
+        :toggle-text="$options.i18n.userAdministration"
         data-testid="dropdown-toggle"
         data-qa-selector="user_actions_dropdown_toggle"
         :data-qa-username="user.username"
-        left
+        placement="left"
       >
         <template v-for="action in dropdownSafeActions">
           <component
@@ -125,28 +123,32 @@ export default {
           >
             {{ $options.i18n[action] }}
           </component>
-          <gl-dropdown-item v-else-if="isLdapAction(action)" :key="action" :data-testid="action">
-            {{ $options.i18n[action] }}
-          </gl-dropdown-item>
-        </template>
-
-        <gl-dropdown-divider v-if="hasDeleteActions" />
-
-        <template v-for="action in dropdownDeleteActions">
-          <component
-            :is="getActionComponent(action)"
-            v-if="getActionComponent(action)"
+          <gl-disclosure-dropdown-item
+            v-else-if="isLdapAction(action)"
             :key="action"
-            :paths="userPaths"
-            :username="user.name"
-            :user-id="user.id"
-            :user-deletion-obstacles="obstaclesForUserDeletion"
-            :data-testid="`delete-${action}`"
+            :data-testid="action"
           >
             {{ $options.i18n[action] }}
-          </component>
+          </gl-disclosure-dropdown-item>
         </template>
-      </gl-dropdown>
+
+        <gl-disclosure-dropdown-group v-if="hasDeleteActions" bordered>
+          <template v-for="action in dropdownDeleteActions">
+            <component
+              :is="getActionComponent(action)"
+              v-if="getActionComponent(action)"
+              :key="action"
+              :paths="userPaths"
+              :username="user.name"
+              :user-id="user.id"
+              :user-deletion-obstacles="obstaclesForUserDeletion"
+              :data-testid="`delete-${action}`"
+            >
+              {{ $options.i18n[action] }}
+            </component>
+          </template>
+        </gl-disclosure-dropdown-group>
+      </gl-disclosure-dropdown>
     </div>
   </div>
 </template>

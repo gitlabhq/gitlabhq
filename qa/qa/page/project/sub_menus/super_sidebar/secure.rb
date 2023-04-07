@@ -15,7 +15,7 @@ module QA
             private
 
             def open_secure_submenu(sub_menu)
-              open_submenu('Secure', '#secure', sub_menu)
+              open_submenu('Secure', sub_menu)
             end
           end
         end

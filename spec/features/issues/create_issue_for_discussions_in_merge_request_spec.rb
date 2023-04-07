@@ -20,6 +20,7 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
 
   before do
     stub_feature_flags(moved_mr_sidebar: false)
+    stub_feature_flags(hide_create_issue_resolve_all: false)
   end
 
   describe 'as a user with access to the project' do

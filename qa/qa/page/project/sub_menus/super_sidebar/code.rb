@@ -39,7 +39,7 @@ module QA
             private
 
             def open_code_submenu(sub_menu)
-              open_submenu('Code', '#code', sub_menu)
+              open_submenu('Code', sub_menu)
             end
           end
         end

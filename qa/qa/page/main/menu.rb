@@ -5,6 +5,7 @@ module QA
     module Main
       class Menu < Page::Base
         prepend Mobile::Page::Main::Menu if Runtime::Env.mobile_layout?
+        prepend SubMenus::CreateNewMenu if Runtime::Env.super_sidebar_enabled?
 
         if QA::Runtime::Env.super_sidebar_enabled?
           # Define alternative navbar (super sidebar) which does not yet implement all the same elements

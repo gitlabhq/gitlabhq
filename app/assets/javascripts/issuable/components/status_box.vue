@@ -125,8 +125,13 @@ export default {
 </script>
 
 <template>
-  <gl-badge class="issuable-status-badge gl-mr-3" :class="badgeClass" :variant="badgeVariant">
-    <gl-icon :name="badgeIcon" />
+  <gl-badge
+    class="issuable-status-badge gl-mr-3"
+    :class="badgeClass"
+    :variant="badgeVariant"
+    :aria-label="badgeText"
+  >
+    <gl-icon :name="badgeIcon" class="gl-badge-icon" />
     <span class="gl-display-none gl-sm-display-block gl-ml-2">{{ badgeText }}</span>
   </gl-badge>
 </template>

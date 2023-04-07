@@ -31,18 +31,26 @@ module QA
 
         private
 
+        # Opens the new item menu and yields to the block
+        #
+        # @return [void]
+        def within_new_item_menu
+          click_element(:new_menu_toggle)
+
+          yield
+        end
+
         # Implementation for super-sidebar, will replace within_submenu
         #
         # @param [String] parent_menu_name
         # @param [String] parent_section_id
         # @param [String] sub_menu
         # @return [void]
-        def open_submenu(parent_menu_name, parent_section_id, sub_menu)
-          click_element(:sidebar_menu_link, menu_item: parent_menu_name)
+        def open_submenu(parent_menu_name, sub_menu)
+          click_element(:nav_item_link, menu_item: parent_menu_name)
 
-          # TODO: it's not possible to add qa-selectors to sub-menu container
-          within(parent_section_id) do
-            click_element(:sidebar_menu_link, menu_item: sub_menu)
+          within_element(:menu_section, section: parent_menu_name) do
+            click_element(:nav_item_link, submenu_item: sub_menu)
           end
         end
 

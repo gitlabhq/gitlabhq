@@ -106,6 +106,7 @@ export default {
         return {
           'aria-controls': this.itemId,
           'aria-expanded': String(this.expanded),
+          'data-qa-menu-item': this.item.title,
         };
       }
       return {
@@ -113,6 +114,7 @@ export default {
         ...this.trackingProps,
         href: this.item.link,
         'aria-current': this.isActive ? 'page' : null,
+        'data-qa-submenu-item': this.item.title,
       };
     },
     computedLinkClasses() {
@@ -146,9 +148,8 @@ export default {
       v-bind="linkProps"
       class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-px-0 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-text-decoration-none!"
       :class="computedLinkClasses"
-      data-qa-selector="sidebar_menu_link"
+      data-qa-selector="nav_item_link"
       data-testid="nav-item-link"
-      :data-qa-menu-item="item.title"
       @click="click"
     >
       <div
@@ -201,6 +202,8 @@ export default {
       v-if="isSection"
       :id="itemId"
       v-model="expanded"
+      data-qa-selector="menu_section"
+      :data-qa-section="item.title"
       :aria-label="item.title"
       class="gl-list-style-none gl-p-0"
       tag="ul"

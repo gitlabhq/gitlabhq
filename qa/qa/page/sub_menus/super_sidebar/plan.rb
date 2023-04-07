@@ -7,14 +7,6 @@ module QA
         module Plan
           extend QA::Page::PageConcern
 
-          def self.included(base)
-            super
-
-            base.class_eval do
-              include QA::Page::SubMenus::Common
-            end
-          end
-
           def go_to_issue_boards
             open_plan_submenu("Issue boards")
           end
@@ -30,7 +22,7 @@ module QA
           private
 
           def open_plan_submenu(sub_menu)
-            open_submenu("Plan", "#plan", sub_menu)
+            open_submenu("Plan", sub_menu)
           end
         end
       end

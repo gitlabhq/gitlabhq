@@ -4,9 +4,21 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Register a shared runner **(FREE)**
+# Generate runner tokens **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383139) in GitLab 15.10. [Deployed behind the `create_runner_workflow_for_admin` flag](../../administration/feature_flags.md), disabled by default.
+To register a runner, you can use either:
+
+- An authentication token assigned to the runner when you create the runner in the UI. The runner uses the token to authenticate with GitLab when picking up jobs from the job queue.
+- A registration token (deprecated).
+
+## Generate an authentication token
+
+Registration with an authentication token is only available for shared runners. Support for project and group
+runners is proposed in this [epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
+
+### For a shared runner
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383139) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_admin` [flag](../../administration/feature_flags.md), disabled by default.
 
 FLAG:
 On self-managed GitLab, this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `create_runner_workflow_for_admin`.
@@ -14,9 +26,9 @@ On GitLab.com, this feature is available but can be configured by GitLab.com adm
 
 Prerequisites:
 
-- You must be an administrator to register a shared runner.
+- You must be an administrator.
 
-To register a [shared runner](../runners/runners_scope.md#shared-runners):
+To generate an authentication token for a shared runner:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **CI/CD > Runners**.
@@ -31,3 +43,32 @@ To register a [shared runner](../runners/runners_scope.md#shared-runners):
 NOTE:
 The token only displays in the UI for a short period of time during registration,
 and is then saved in `config.toml`.
+
+## Generate a registration token (deprecated)
+
+WARNING:
+The ability to pass a runner registration token was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is
+planned for removal in 17.0, along with support for certain configuration arguments. This change is a breaking change. GitLab plans to introduce a new
+[GitLab Runner token architecture](../../architecture/blueprints/runner_tokens/index.md), which introduces
+a new method for registering runners and eliminates the legacy
+[runner registration token](../../security/token_overview.md#runner-registration-tokens-deprecated).
+
+### For a shared runner
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **CI/CD > Runners**.
+1. Select **Register an instance runner**.
+1. Copy the registration token.
+
+### For a group runner
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **CI/CD > Runners**.
+1. Copy the registration token.
+
+### For a project runner
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand the **Runners** section.
+1. Copy the registration token.

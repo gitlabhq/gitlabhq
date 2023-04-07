@@ -1,3 +1,5 @@
+import { parseBoolean } from '~/lib/utils/common_utils';
+
 export default class SidebarStore {
   constructor(options) {
     if (!SidebarStore.singleton) {
@@ -12,7 +14,7 @@ export default class SidebarStore {
     const { currentUser, rootPath, editable, timeTrackingLimitToHours } = options;
     this.currentUser = currentUser;
     this.rootPath = rootPath;
-    this.editable = editable;
+    this.editable = parseBoolean(editable);
     this.timeEstimate = 0;
     this.totalTimeSpent = 0;
     this.humanTimeEstimate = '';

@@ -27,10 +27,6 @@ module QA
           element :new_menu_toggle
         end
 
-        view 'app/helpers/nav/new_dropdown_helper.rb' do
-          element :new_issue_link
-        end
-
         view 'app/views/projects/_last_push.html.haml' do
           element :create_merge_request_button
         end
@@ -115,11 +111,6 @@ module QA
           within_element(:file_tree_table) do
             click_on commit_msg
           end
-        end
-
-        def go_to_new_issue
-          click_element(:new_menu_toggle)
-          click_element(:new_issue_link)
         end
 
         def has_create_merge_request_button?

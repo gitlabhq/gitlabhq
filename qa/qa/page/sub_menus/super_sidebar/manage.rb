@@ -7,14 +7,6 @@ module QA
         module Manage
           extend QA::Page::PageConcern
 
-          def self.included(base)
-            super
-
-            base.class_eval do
-              include QA::Page::SubMenus::Common
-            end
-          end
-
           def go_to_activity
             open_manage_submenu('Activity')
           end
@@ -34,7 +26,7 @@ module QA
           private
 
           def open_manage_submenu(sub_menu)
-            open_submenu('Manage', '#manage', sub_menu)
+            open_submenu('Manage', sub_menu)
           end
         end
       end

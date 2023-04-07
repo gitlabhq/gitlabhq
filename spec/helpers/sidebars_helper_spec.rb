@@ -174,25 +174,41 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     end
 
     it 'returns "Create new" menu groups without headers', :use_clean_rails_memory_store_caching do
-      extra_attrs = { "data-track-action": "click_link", "data-track-property": "nav_create_menu" }
+      extra_attrs = ->(id) {
+        {
+          "data-track-label": id,
+          "data-track-action": "click_link",
+          "data-track-property": "nav_create_menu",
+          "data-qa-selector": 'create_menu_item',
+          "data-qa-create-menu-item": id
+        }
+      }
 
       expect(subject[:create_new_menu_groups]).to eq([
         {
           name: "",
           items: [
             { href: "/projects/new", text: "New project/repository",
-              extraAttrs: extra_attrs.merge("data-track-label": "general_new_project") },
+              extraAttrs: extra_attrs.call("general_new_project") },
             { href: "/groups/new", text: "New group",
-              extraAttrs: extra_attrs.merge("data-track-label": "general_new_group") },
+              extraAttrs: extra_attrs.call("general_new_group") },
             { href: "/-/snippets/new", text: "New snippet",
-              extraAttrs: extra_attrs.merge("data-track-label": "general_new_snippet") }
+              extraAttrs: extra_attrs.call("general_new_snippet") }
           ]
         }
       ])
     end
 
     it 'returns "Create new" menu groups with headers', :use_clean_rails_memory_store_caching do
-      extra_attrs = { "data-track-action": "click_link", "data-track-property": "nav_create_menu" }
+      extra_attrs = ->(id) {
+        {
+          "data-track-label": id,
+          "data-track-action": "click_link",
+          "data-track-property": "nav_create_menu",
+          "data-qa-selector": 'create_menu_item',
+          "data-qa-create-menu-item": id
+        }
+      }
 
       allow(group).to receive(:persisted?).and_return(true)
       allow(helper).to receive(:can?).and_return(true)
@@ -202,22 +218,22 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           name: "In this group",
           items: array_including(
             { href: "/projects/new", text: "New project/repository",
-              extraAttrs: extra_attrs.merge("data-track-label": "new_project") },
+              extraAttrs: extra_attrs.call("new_project") },
             { href: "/groups/new#create-group-pane", text: "New subgroup",
-              extraAttrs: extra_attrs.merge("data-track-label": "new_subgroup") },
+              extraAttrs: extra_attrs.call("new_subgroup") },
             { href: "", text: "Invite members",
-              extraAttrs: extra_attrs.merge("data-track-label": "invite") }
+              extraAttrs: extra_attrs.call("invite") }
           )
         ),
         a_hash_including(
           name: "In GitLab",
           items: array_including(
             { href: "/projects/new", text: "New project/repository",
-              extraAttrs: extra_attrs.merge("data-track-label": "general_new_project") },
+              extraAttrs: extra_attrs.call("general_new_project") },
             { href: "/groups/new", text: "New group",
-              extraAttrs: extra_attrs.merge("data-track-label": "general_new_group") },
+              extraAttrs: extra_attrs.call("general_new_group") },
             { href: "/-/snippets/new", text: "New snippet",
-              extraAttrs: extra_attrs.merge("data-track-label": "general_new_snippet") }
+              extraAttrs: extra_attrs.call("general_new_snippet") }
           )
         )
       )

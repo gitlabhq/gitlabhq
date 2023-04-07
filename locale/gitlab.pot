@@ -52557,6 +52557,9 @@ msgstr ""
 msgid "mrWidget|GitLab %{linkStart}CI/CD can automatically build, test, and deploy your application.%{linkEnd} It only takes a few minutes to get started, and we can help you create a pipeline configuration file."
 msgstr ""
 
+msgid "mrWidget|Go to first unresolved thread"
+msgstr ""
+
 msgid "mrWidget|Hide %{widget} details"
 msgstr ""
 
@@ -52564,9 +52567,6 @@ msgid "mrWidget|If the %{type} branch exists in your local repository, you can m
 msgstr ""
 
 msgid "mrWidget|If the last pipeline ran in the fork project, it may be inaccurate. Before merge, we advise running a pipeline in this project."
-msgstr ""
-
-msgid "mrWidget|Jump to first unresolved thread"
 msgstr ""
 
 msgid "mrWidget|Learn more"

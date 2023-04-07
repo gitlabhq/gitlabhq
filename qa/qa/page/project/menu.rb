@@ -14,6 +14,7 @@ module QA
         include SubMenus::Repository
         include SubMenus::Settings
         include SubMenus::Packages
+        include SubMenus::CreateNewMenu
 
         if Runtime::Env.super_sidebar_enabled?
           include Page::SubMenus::SuperSidebar::Manage

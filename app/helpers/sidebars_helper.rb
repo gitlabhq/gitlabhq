@@ -155,7 +155,9 @@ module SidebarsHelper
             extraAttrs: {
               'data-track-label': item[:id],
               'data-track-action': 'click_link',
-              'data-track-property': 'nav_create_menu'
+              'data-track-property': 'nav_create_menu',
+              'data-qa-selector': 'create_menu_item',
+              'data-qa-create-menu-item': item[:id]
             }
           }
         end

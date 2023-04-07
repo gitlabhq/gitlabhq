@@ -445,7 +445,7 @@ module IssuablesHelper
       toggleSubscriptionEndpoint: issuable[:toggle_subscription_path],
       moveIssueEndpoint: issuable[:move_issue_path],
       projectsAutocompleteEndpoint: issuable[:projects_autocomplete_path],
-      editable: issuable.dig(:current_user, :can_edit),
+      editable: issuable.dig(:current_user, :can_edit).to_s,
       currentUser: issuable[:current_user],
       rootPath: root_path,
       fullPath: issuable[:project_full_path],
