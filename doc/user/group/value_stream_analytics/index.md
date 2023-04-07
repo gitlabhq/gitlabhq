@@ -210,7 +210,7 @@ The table shows a list of related workflow items for the selected stage. Based o
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210315) in GitLab 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323982) in GitLab 13.12.
 
-The **Overview** page in value stream analytics dispays key metrics and DORA metrics of group performance.
+The **Overview** page in value stream analytics displays key metrics and DORA metrics of group performance.
 
 ### Key metrics
 
