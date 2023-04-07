@@ -187,16 +187,15 @@ Open an issue if you notice that using absolute times breaks a layout.
 
 ## Web IDE
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370139) in GitLab 15.7 [with a flag](../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370139) in GitLab 15.7 [with a flag](../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/371084) in GitLab 15.7.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115741) in GitLab 15.11.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `vscode_web_ide`. On GitLab.com, this feature is available.
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `vscode_web_ide`. On GitLab.com, this feature is available.
 
 The [Web IDE Beta](../project/web_ide_beta/index.md) is
-the default editing environment when the `vscode_web_ide` feature
-flag is enabled.
-
-To stop using the Web IDE Beta:
+the default editing environment. To stop using the Web IDE Beta:
 
 1. In the **Web IDE** section, select the **Opt out of the Web IDE Beta** checkbox.
 1. Select **Save changes**.

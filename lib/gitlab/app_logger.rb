@@ -7,7 +7,7 @@ module Gitlab
     end
 
     def self.primary_logger
-      Gitlab::AppTextLogger
+      Gitlab::AppJsonLogger
     end
   end
 end

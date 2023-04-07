@@ -2,11 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::AppLogger do
+RSpec.describe Gitlab::AppLogger, feature_category: :shared do
   subject { described_class }
 
-  it 'logs info to only the AppJsonLogger when unstructured logs are disabled' do
-    expect_any_instance_of(Gitlab::AppTextLogger).not_to receive(:info).and_call_original
+  specify { expect(described_class.primary_logger).to be Gitlab::AppJsonLogger }
+
+  it 'logs to AppJsonLogger' do
     expect_any_instance_of(Gitlab::AppJsonLogger).to receive(:info).and_call_original
 
     subject.info('Hello World!')

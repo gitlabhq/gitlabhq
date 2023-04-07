@@ -58,21 +58,11 @@ GitLab shows the Code Owners at the top of the page.
 ## Set up Code Owners
 
 1. Create a `CODEOWNERS` file in your [preferred location](#code-owners-file).
-1. In the file, enter text that follows one of these patterns:
-
-   ```plaintext
-   # Code Owners for a file
-   filename @username1 @username2
-
-   # Code Owners for a directory
-   directoryname/ @username1 @username2
-
-   # All group members as Code Owners for a file
-   filename @groupname
-
-   # All group members as Code Owners for a directory
-   directoryname/ @groupname
-   ```
+1. Define some rules in the file following the [Code Owners syntax reference](#code-owners-syntax-reference).
+   Some suggestions:
+   - Configure [All eligible approvers](merge_requests/approvals/rules.md#code-owners-as-eligible-approvers) approval rule.
+   - [Require Code Owner approval](protected_branches.md#require-code-owner-approval-on-a-protected-branch) on a protected branch.
+1. Commit your changes, and push them up to GitLab.
 
 ### Code Owners file
 
@@ -87,11 +77,6 @@ all others are ignored:
 1. In the root directory: `./CODEOWNERS`.
 1. In the `docs` directory: `./docs/CODEOWNERS`.
 1. In the `.gitlab` directory: `./.gitlab/CODEOWNERS`.
-
-### Make Code Owners eligible approvers or require their approval of MRs
-
-- [Add Code Owners as merge request approvers](merge_requests/approvals/rules.md#code-owners-as-eligible-approvers).
-- Set up [Code Owner approval on a protected branch](protected_branches.md#require-code-owner-approval-on-a-protected-branch).
 
 ### Groups as Code Owners
 
@@ -427,6 +412,203 @@ data-models/ @data-science-team
 # This section is combined with the previously defined [Documentation] section:
 [DOCUMENTATION]
 README.md  @docs
+```
+
+## Code Owners syntax reference
+
+### Comments
+
+Lines beginning with `#` are ignored:
+
+```codeowners
+# This is a comment
+```
+
+### Sections
+
+Sections are groups of entries. A section begins with a section heading in square brackets, followed by the entries.
+
+```codeowners
+[Section name]
+/path/of/protected/file.rb @username
+/path/of/protected/dir/ @group
+```
+
+### Section headings
+
+Section headings must always have a name. They can also be made optional, or require a number of approvals. A list of default owners can be added to the section heading line.
+
+```codeowners
+# Required section
+[Section name]
+
+# Optional section
+^[Section name]
+
+# Section requiring 5 approvals
+[Section name][5]
+
+# Section with @username as default owner
+[Section name] @username
+
+# Section with @group and @subgroup as default owners and requiring 2 approvals
+[Section name][2] @group @subgroup
+```
+
+### Section names
+
+Sections names are defined between square brackets.
+Section names are not case-sensitive. [Sections with duplicate names are combined](#sections-with-duplicate-names).
+
+```codeowners
+[Section name]
+```
+
+### Required sections
+
+Required sections do not include `^` before the [section name](#section-names).
+
+```codeowners
+[Required section]
+```
+
+### Optional sections
+
+Optional sections include a `^` before the [section name](#section-names).
+
+```codeowners
+^[Optional section]
+```
+
+### Sections requiring multiple approvals
+
+Sections requiring multiple approvals include the number of approvals in square brackets after the [section name](#section-names).
+
+```codeowners
+[Section requiring 5 approvals][5]
+```
+
+NOTE:
+Optional sections ignore the number of approvals required.
+
+### Sections with default owners
+
+You can define a default owner for the entries in a section by appending the owners to the [section heading](#section-headings).
+
+```codeowners
+# Section with @username as default owner
+[Section name] @username
+
+# Section with @group and @subgroup as default owners and requiring 2 approvals
+[Section name][2] @group @subgroup
+```
+
+### Code Owner entries
+
+Each Code Owner entry includes a path followed by one or more owners.
+
+```codeowners
+README.md @username1
+```
+
+NOTE:
+If an entry is duplicated in a section, [the last entry is used from each section.](#define-more-specific-owners-for-more-specifically-defined-files-or-directories)
+
+### Relative paths
+
+If a path does not start with a `/`, the path is treated as if it starts with a [globstar](#globstar-paths).
+`README.md` is treated the same way as `/**/README.md`
+
+```codeowners
+# This will match /README.md, /internal/README.md, /app/lib/README.md
+README.md @username
+
+# This will match /internal/README.md, /docs/internal/README.md, /docs/api/internal/README.md
+internal/README.md
+```
+
+### Absolute paths
+
+If a path starts with a `/` it matches the root of the repository.
+
+```codeowners
+# Matches only the file named `README.md` in the root of the repository.
+/README.md
+
+# Matches only the file named `README.md` inside the `/docs` directory.
+/docs/README.md
+```
+
+### Directory paths
+
+If a path ends with `/`, the path matches any file in the directory.
+
+```codeowners
+# This is the same as `/docs/**/*`
+/docs/
+```
+
+### Wildcard paths
+
+Wildcards can be used to match one of more characters of a path.
+
+```codeowners
+# Any markdown files in the docs directory
+/docs/*.md @username
+
+# /docs/index file of any filetype
+# For example: /docs/index.md, /docs/index.html, /docs/index.xml
+/docs/index.* @username
+
+# Any file in the docs directory with 'spec' in the name.
+# For example: /docs/qa_specs.rb, /docs/spec_helpers.rb, /docs/runtime.spec
+/docs/*spec* @username
+
+# README.md files one level deep within the docs directory
+# For example: /docs/api/README.md
+/docs/*/README.md @username
+```
+
+### Globstar paths
+
+Globstars (`**`) can be used to match zero or more directories and subdirectories.
+
+```codeowners
+# This will match /docs/index.md, /docs/api/index.md, /docs/api/graphql/index.md
+/docs/**/index.md
+```
+
+### Entry owners
+
+Entries must be followed by one or more owner, these can be groups, subgroups,
+and users. Order of owners is not important.
+
+```codeowners
+/path/to/entry.rb @group
+/path/to/entry.rb @group/subgroup
+/path/to/entry.rb @user
+/path/to/entry.rb @group @group/subgroup @user
+```
+
+### Groups as entry owners
+
+Groups and subgroups can be owners of an entry.
+Each entry can be owned by [one or more owners](#entry-owners).
+For more details see the [Groups as Code Owners section](#groups-as-code-owners).
+
+```codeowners
+/path/to/entry.rb @group
+/path/to/entry.rb @group/subgroup
+/path/to/entry.rb @group @group/subgroup
+```
+
+### Users as entry owners
+
+Users can be owners of an entry. Each entry can be owned by [one or more owners](#entry-owners).
+
+```codeowners
+/path/to/entry.rb @username1
+/path/to/entry.rb @username1 @username2
 ```
 
 ## Technical Resources

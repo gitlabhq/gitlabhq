@@ -1284,7 +1284,6 @@ RSpec/MissingFeatureCategory:
     - 'ee/spec/models/protected_environments/deploy_access_level_spec.rb'
     - 'ee/spec/models/push_rule_spec.rb'
     - 'ee/spec/models/remote_mirror_spec.rb'
-    - 'ee/spec/models/repository_spec.rb'
     - 'ee/spec/models/requirements_management/requirement_spec.rb'
     - 'ee/spec/models/saml_group_link_spec.rb'
     - 'ee/spec/models/saml_provider_spec.rb'

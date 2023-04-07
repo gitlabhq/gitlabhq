@@ -151,7 +151,7 @@ Layout/FirstHashElementIndentation:
     - 'qa/qa/specs/features/api/1_manage/migration/gitlab_migration_release_spec.rb'
     - 'qa/qa/specs/features/api/3_create/repository/commit_to_templated_project_spec.rb'
     - 'qa/qa/specs/features/api/5_package/container_registry_spec.rb'
-    - 'qa/qa/specs/features/browser_ui/3_create/web_ide/open_web_ide_from_diff_tab_spec.rb'
+    - 'qa/qa/specs/features/browser_ui/3_create/web_ide_old/open_web_ide_from_diff_tab_spec.rb'
     - 'qa/qa/specs/features/browser_ui/5_package/container_registry/container_registry_spec.rb'
     - 'qa/qa/specs/features/browser_ui/5_package/container_registry/online_garbage_collection_spec.rb'
     - 'qa/qa/specs/features/browser_ui/5_package/dependency_proxy/dependency_proxy_spec.rb'

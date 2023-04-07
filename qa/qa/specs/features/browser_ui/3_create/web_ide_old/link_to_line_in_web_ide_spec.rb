@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
-# TODO: remove this test when 'vscode_web_ide' feature flag is default enabled
+# TODO: remove this test when coverage is replaced or deemed irrelevant
 module QA
   RSpec.describe 'Create', :skip_live_env, product_group: :editor do
+    before do
+      skip("Skipped but kept as reference. https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115741#note_1330720944")
+    end
+
     describe 'Link to line in Web IDE' do
       let(:user) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1) }
       let(:project) do

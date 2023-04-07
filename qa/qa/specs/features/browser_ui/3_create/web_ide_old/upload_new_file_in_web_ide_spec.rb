@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
-# TODO: remove this test when 'vscode_web_ide' feature flag is default enabled
+# TODO: remove this test when coverage is replaced or deemed irrelevant
 module QA
   RSpec.describe 'Create', :skip_live_env, product_group: :editor do
+    before do
+      skip("Skipped but kept as reference. https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115741#note_1330720944")
+    end
+
     describe 'Upload a file in Web IDE' do
       let(:file_path) { File.join(Runtime::Path.fixtures_path, 'web_ide', file_name) }
 

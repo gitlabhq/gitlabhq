@@ -33,7 +33,7 @@ RSpec/HooksBeforeExamples:
     - 'qa/qa/specs/features/browser_ui/1_manage/user/follow_user_activity_spec.rb'
     - 'qa/qa/specs/features/browser_ui/1_manage/user/user_inherited_access_spec.rb'
     - 'qa/qa/specs/features/browser_ui/3_create/merge_request/revert/revert_commit_spec.rb'
-    - 'qa/qa/specs/features/browser_ui/3_create/web_ide/open_fork_in_web_ide_spec.rb'
+    - 'qa/qa/specs/features/browser_ui/3_create/web_ide_old/open_fork_in_web_ide_spec.rb'
     - 'qa/qa/specs/features/ee/api/1_manage/user/minimal_access_user_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/1_manage/group/group_saml_enforced_sso_git_access_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/1_manage/group/group_saml_enforced_sso_new_account_spec.rb'

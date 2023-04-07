@@ -20313,6 +20313,18 @@ Returns [`[String!]`](#string).
 | <a id="repositorybranchnamesoffset"></a>`offset` | [`Int!`](#int) | Number of branch names to skip. |
 | <a id="repositorybranchnamessearchpattern"></a>`searchPattern` | [`String!`](#string) | Pattern to search for branch names by. |
 
+##### `Repository.codeOwnersPath`
+
+Path to CODEOWNERS file in a ref.
+
+Returns [`String`](#string).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="repositorycodeownerspathref"></a>`ref` | [`String`](#string) | Name of the ref. |
+
 ##### `Repository.paginatedTree`
 
 Paginated tree of the repository.

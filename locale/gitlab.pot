@@ -48739,6 +48739,9 @@ msgstr ""
 msgid "Vulnerability|Evidence"
 msgstr ""
 
+msgid "Vulnerability|Evidence:"
+msgstr ""
+
 msgid "Vulnerability|External Security Report"
 msgstr ""
 

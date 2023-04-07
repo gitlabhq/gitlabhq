@@ -28,3 +28,5 @@ module Types
                                         description: 'Tree of the repository.'
   end
 end
+
+Types::RepositoryType.prepend_mod

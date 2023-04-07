@@ -55,66 +55,25 @@ within the MR.
 
 ## Merge request guidelines for contributors
 
-### Getting started
+For a walkthrough of the contribution process, see [Tutorial: Make a GitLab contribution](first_contribution.md).
 
-Merge requests should be submitted to the appropriate project at GitLab.com, for example
-[GitLab](https://gitlab.com/gitlab-org/gitlab/-/merge_requests),
-[GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests), or
-[Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests).
+### Best practices
 
-To start developing GitLab locally, download the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit)
-and see the [Development section](../../index.md) for the required guidelines.
+- If the change is non-trivial, we encourage you to start a discussion with
+  [a product manager or a member of the team](https://about.gitlab.com/handbook/product/categories/).
+  You can do this by tagging them in an MR before submitting the code for review. Talking
+  to team members can be helpful when making design decisions. Communicating the
+  intent behind your changes can also help expedite merge request reviews.
 
-NOTE:
-Consider placing your code behind a feature flag if you think it might affect production availability.
-Not sure? Read [When to use feature flags](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags).
+- Consider placing your code behind a feature flag if you think it might affect production availability.
+  Not sure? Read [When to use feature flags](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags).
 
-If the change is non-trivial, we encourage you to
-start a discussion with [a product manager or a member of the team](https://about.gitlab.com/handbook/product/categories/).
-You can do
-this by tagging them in an MR before submitting the code for review. Talking
-to team members can be helpful when making design decisions. Communicating the
-intent behind your changes can also help expedite merge request reviews.
-
-### Creating a merge request
-
-To create a merge request:
-
-1. [Read about](https://gitlab.com/gitlab-community/meta) and [request access](https://gitlab.com/gitlab-community/meta#request-access-to-community-forks)
-   to the GitLab Community forks. In some cases, you will want to set up the
-   [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit) to
-   [develop against the GitLab community fork](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#develop-in-your-own-gitlab-fork).
-1. Create a feature branch in the [GitLab community fork](https://gitlab.com/gitlab-community/gitlab)
-   (don't work off the [default branch](../../user/project/repository/branches/default.md)).
-1. Follow the [commit messages guidelines](#commit-messages-guidelines).
-1. If you have multiple commits, combine them into a few logically organized commits.
-1. Push the commits to your working branch in the fork.
-1. Submit a merge request (MR) against the default branch of the upstream project.
-1. The MR title should describe the change you want to make.
-1. The MR description should give a reason for your change.
-   1. If you are contributing code, fill in the description according to the default
-      template already provided in the "Description" field.
-   1. If you are contributing documentation, choose `Documentation` from the
-      "Choose a template" menu and fill in the description according to the template.
-   1. Use the syntax `Solves #XXX`, `Closes #XXX`, or `Refs #XXX` to mention the issues your merge
-      request addresses. Referenced issues do not [close automatically](../../user/project/issues/managing_issues.md#closing-issues-automatically).
-      You must close them manually once the merge request is merged.
-1. If you're allowed to, set a relevant milestone and [labels](issue_workflow.md).
-   MR labels should generally match the corresponding issue (if there is one).
-   The group label should reflect the group that executed or coached the work,
-   not necessarily the group that owns the feature.
-1. Read and adhere to
-   [The responsibility of the merge request author](../code_review.md#the-responsibility-of-the-merge-request-author).
-1. Read and follow
-   [Having your merge request reviewed](../code_review.md#having-your-merge-request-reviewed).
-1. Make sure the merge request meets the [Definition of done](#definition-of-done).
-
-If you would like quick feedback on your merge request feel free to mention someone
-from the [core team](https://about.gitlab.com/community/core-team/) or one of the
-[merge request coaches](https://about.gitlab.com/company/team/). When having your code reviewed
-and when reviewing merge requests, please keep the [code review guidelines](../code_review.md)
-in mind. And if your code also makes changes to the database, or does expensive queries,
-check the [database review guidelines](../database_review.md).
+- If you would like quick feedback on your merge request feel free to mention someone
+  from the [core team](https://about.gitlab.com/community/core-team/) or one of the
+  [merge request coaches](https://about.gitlab.com/company/team/). When having your code reviewed
+  and when reviewing merge requests, please keep the [code review guidelines](../code_review.md)
+  in mind. And if your code also makes changes to the database, or does expensive queries,
+  check the [database review guidelines](../database_review.md).
 
 ### Keep it simple
 
@@ -381,3 +340,8 @@ issue) that are incremental improvements, such as:
 
 Tag a merge request with ~"Stuff that should Just Work" to track work in
 this area.
+
+## Related topics
+
+- [The responsibility of the merge request author](../code_review.md#the-responsibility-of-the-merge-request-author)
+- [Having your merge request reviewed](../code_review.md#having-your-merge-request-reviewed)

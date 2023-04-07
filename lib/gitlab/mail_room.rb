@@ -129,7 +129,7 @@ module Gitlab
       end
 
       def load_yaml
-        @yaml ||= YAML.load_file(config_file)[rails_env].deep_symbolize_keys
+        @yaml ||= YAML.safe_load_file(config_file, aliases: true)[rails_env].deep_symbolize_keys
       end
 
       def application_secrets_file

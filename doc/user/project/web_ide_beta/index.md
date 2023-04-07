@@ -6,10 +6,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Web IDE Beta **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/371084) in GitLab 15.7.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115741) in GitLab 15.11.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `vscode_web_ide`. On GitLab.com, this feature is available. The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `vscode_web_ide`. On GitLab.com, this feature is available.
 
 As announced in [this blog post](https://about.gitlab.com/blog/2022/05/23/the-future-of-the-gitlab-web-ide/),
 the current implementation of the [Web IDE](../web_ide/index.md) is being replaced
@@ -17,15 +19,6 @@ with an implementation powered by Visual Studio Code. This effort is still under
 development. For updates, see [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7683).
 
 To pair the Web IDE Beta with a Remote Development environment, see [Remote Development](../remote_development/index.md).
-
-## Enable the Web IDE Beta
-
-To use the Web IDE Beta on a self-managed GitLab instance,
-ensure that the `vscode_web_ide` feature flag
-[is enabled](../../../administration/feature_flags.md).
-
-On GitLab.com, this feature is available by default. However, you can
-[stop using it if you choose](#stop-using-the-web-ide-beta).
 
 ## Use the Web IDE Beta
 

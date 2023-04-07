@@ -971,6 +971,7 @@ Gitlab/NamespacedClass:
     - 'ee/app/presenters/epic_presenter.rb'
     - 'ee/app/presenters/iteration_presenter.rb'
     - 'ee/app/presenters/merge_request_approver_presenter.rb'
+    - 'ee/app/presenters/repository_presenter.rb'
     - 'ee/app/presenters/subscription_presenter.rb'
     - 'ee/app/presenters/vulnerability_presenter.rb'
     - 'ee/app/serializers/audit_event_entity.rb'
