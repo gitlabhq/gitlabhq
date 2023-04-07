@@ -29842,6 +29842,9 @@ msgstr ""
 msgid "Notify|Verification for custom email %{email} for %{project_name} triggered"
 msgstr ""
 
+msgid "Notify|Verify custom email address %{email} for %{project_name}"
+msgstr ""
+
 msgid "Notify|You don't have access to the project."
 msgstr ""
 

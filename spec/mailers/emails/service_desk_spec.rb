@@ -327,6 +327,28 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     end
   end
 
+  describe '.service_desk_custom_email_verification_email' do
+    subject { Notify.service_desk_custom_email_verification_email(service_desk_setting) }
+
+    it_behaves_like 'a custom email verification process email'
+
+    it 'uses service bot name and custom email as sender' do
+      expect_sender(User.support_bot, sender_email: service_desk_setting.custom_email)
+    end
+
+    it 'forcibly uses SMTP delivery method and has correct settings' do
+      expect_service_desk_custom_email_delivery_options(service_desk_setting)
+    end
+
+    it 'uses verification email address as recipient' do
+      expect(subject.to).to eq([service_desk_setting.custom_email_address_for_verification])
+    end
+
+    it 'contains verification token' do
+      is_expected.to have_body_text("Verification token: #{verification.token}")
+    end
+  end
+
   describe '.service_desk_verification_triggered_email' do
     before do
       service_desk_setting.custom_email_verification.triggerer = user

@@ -213,6 +213,14 @@ class NotifyPreview < ActionMailer::Preview
     Notify.service_desk_thank_you_email(issue.id).message
   end
 
+  def service_desk_custom_email_verification_email
+    cleanup do
+      setup_service_desk_custom_email_objects
+
+      Notify.service_desk_custom_email_verification_email(service_desk_setting).message
+    end
+  end
+
   def service_desk_verification_triggered_email
     cleanup do
       setup_service_desk_custom_email_objects
