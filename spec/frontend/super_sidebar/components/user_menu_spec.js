@@ -171,7 +171,7 @@ describe('UserMenu component', () => {
     let item;
 
     const setItem = ({ has_start_trial } = {}) => {
-      createWrapper({ trial: { has_start_trial } });
+      createWrapper({ trial: { has_start_trial, url: '' } });
       item = wrapper.findByTestId('start-trial-item');
     };
 
@@ -186,6 +186,15 @@ describe('UserMenu component', () => {
       it('does render the start trial menu item', () => {
         setItem({ has_start_trial: true });
         expect(item.exists()).toBe(true);
+      });
+    });
+
+    it('has Snowplow tracking attributes', () => {
+      setItem({ has_start_trial: true });
+      expect(item.find('a').attributes()).toMatchObject({
+        'data-track-property': 'nav_user_menu',
+        'data-track-action': 'click_link',
+        'data-track-label': 'start_trial',
       });
     });
   });
@@ -230,17 +239,30 @@ describe('UserMenu component', () => {
         expect(item.exists()).toBe(true);
       });
 
-      it('tracks the Sentry event', () => {
-        setItem({ show_buy_pipeline_minutes: true });
-        showDropdown();
-        expect(trackingSpy).toHaveBeenCalledWith(
-          undefined,
-          userMenuMockPipelineMinutes.tracking_attrs['track-action'],
-          {
-            label: userMenuMockPipelineMinutes.tracking_attrs['track-label'],
-            property: userMenuMockPipelineMinutes.tracking_attrs['track-property'],
-          },
-        );
+      describe('Snowplow tracking attributes to track item click', () => {
+        beforeEach(() => {
+          setItem({ show_buy_pipeline_minutes: true });
+        });
+
+        it('has attributes to track item click in scope of new nav', () => {
+          expect(item.find('a').attributes()).toMatchObject({
+            'data-track-property': 'nav_user_menu',
+            'data-track-action': 'click_link',
+            'data-track-label': 'buy_pipeline_minutes',
+          });
+        });
+
+        it('tracks the click on the item', () => {
+          item.vm.$emit('action');
+          expect(trackingSpy).toHaveBeenCalledWith(
+            undefined,
+            userMenuMockPipelineMinutes.tracking_attrs['track-action'],
+            {
+              label: userMenuMockPipelineMinutes.tracking_attrs['track-label'],
+              property: userMenuMockPipelineMinutes.tracking_attrs['track-property'],
+            },
+          );
+        });
       });
 
       describe('Callout & notification dot', () => {
@@ -320,32 +342,70 @@ describe('UserMenu component', () => {
   });
 
   describe('Edit profile item', () => {
-    it('should render a link to the profile page', () => {
+    let item;
+
+    beforeEach(() => {
       createWrapper();
-      const item = wrapper.findByTestId('edit-profile-item');
+      item = wrapper.findByTestId('edit-profile-item');
+    });
+
+    it('should render a link to the profile page', () => {
       expect(item.text()).toBe(UserMenu.i18n.editProfile);
       expect(item.find('a').attributes('href')).toBe(userMenuMockData.settings.profile_path);
+    });
+
+    it('has Snowplow tracking attributes', () => {
+      expect(item.find('a').attributes()).toMatchObject({
+        'data-track-property': 'nav_user_menu',
+        'data-track-action': 'click_link',
+        'data-track-label': 'user_edit_profile',
+      });
     });
   });
 
   describe('Preferences item', () => {
-    it('should render a link to the profile page', () => {
+    let item;
+
+    beforeEach(() => {
       createWrapper();
-      const item = wrapper.findByTestId('preferences-item');
+      item = wrapper.findByTestId('preferences-item');
+    });
+
+    it('should render a link to the profile page', () => {
       expect(item.text()).toBe(UserMenu.i18n.preferences);
       expect(item.find('a').attributes('href')).toBe(
         userMenuMockData.settings.profile_preferences_path,
       );
     });
+
+    it('has Snowplow tracking attributes', () => {
+      expect(item.find('a').attributes()).toMatchObject({
+        'data-track-property': 'nav_user_menu',
+        'data-track-action': 'click_link',
+        'data-track-label': 'user_preferences',
+      });
+    });
   });
 
   describe('GitLab Next item', () => {
     describe('on gitlab.com', () => {
-      it('should render a link to switch to GitLab Next', () => {
+      let item;
+
+      beforeEach(() => {
         createWrapper({ gitlab_com_but_not_canary: true });
-        const item = wrapper.findByTestId('gitlab-next-item');
+        item = wrapper.findByTestId('gitlab-next-item');
+      });
+      it('should render a link to switch to GitLab Next', () => {
         expect(item.text()).toBe(UserMenu.i18n.gitlabNext);
         expect(item.find('a').attributes('href')).toBe(userMenuMockData.canary_toggle_com_url);
+      });
+
+      it('has Snowplow tracking attributes', () => {
+        expect(item.find('a').attributes()).toMatchObject({
+          'data-track-property': 'nav_user_menu',
+          'data-track-action': 'click_link',
+          'data-track-label': 'switch_to_canary',
+        });
       });
     });
 
@@ -368,10 +428,23 @@ describe('UserMenu component', () => {
   });
 
   describe('Feedback item', () => {
-    it('should render feedback item with a link to a new GitLab issue', () => {
+    let item;
+
+    beforeEach(() => {
       createWrapper();
-      const feedbackItem = wrapper.findByTestId('feedback-item');
-      expect(feedbackItem.find('a').attributes('href')).toBe(UserMenu.feedbackUrl);
+      item = wrapper.findByTestId('feedback-item');
+    });
+
+    it('should render feedback item with a link to a new GitLab issue', () => {
+      expect(item.find('a').attributes('href')).toBe(UserMenu.feedbackUrl);
+    });
+
+    it('has Snowplow tracking attributes', () => {
+      expect(item.find('a').attributes()).toMatchObject({
+        'data-track-property': 'nav_user_menu',
+        'data-track-action': 'click_link',
+        'data-track-label': 'provide_nav_beta_feedback',
+      });
     });
   });
 
@@ -397,6 +470,15 @@ describe('UserMenu component', () => {
           userMenuMockData.sign_out_link,
         );
         expect(findSignOutGroup().find('a').attributes('data-method')).toBe('post');
+      });
+
+      it('should track Snowplow event on sign out', () => {
+        findSignOutGroup().vm.$emit('action');
+
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_link', {
+          label: 'user_sign_out',
+          property: 'nav_user_menu',
+        });
       });
     });
   });

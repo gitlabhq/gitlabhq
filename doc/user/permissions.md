@@ -23,6 +23,7 @@ The available roles are:
 - Developer
 - Maintainer
 - Owner
+- Minimal Access (available for the top-level group only)
 
 A user assigned the Guest role has the least permissions,
 and the Owner has the most.
@@ -423,28 +424,28 @@ nested groups if you have membership in one of its parents.
 For more information, see
 [subgroup memberships](group/subgroups/index.md#subgroup-membership).
 
-## Users with minimal access **(PREMIUM)**
+## Users with Minimal Access **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in GitLab 13.4.
-> - Support for inviting users with minimal access role [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106438) in GitLab 15.9.
+> - Support for inviting users with Minimal Access role [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106438) in GitLab 15.9.
 
-Owners can add members with a "minimal access" role to a root group. Such users do not:
+Users with the Minimal Access role:
 
 - Count as licensed seats on self-managed Ultimate subscriptions or any GitLab.com subscriptions.
 - Automatically have access to projects and subgroups in that root group.
 
-Owners must explicitly add these "minimal access" users to the specific subgroups and
+Owners must explicitly add these users to the specific subgroups and
 projects.
 
-You can use minimal access to give the same member more than one role in a group:
+You can use the Minimal Access role to give the same member more than one role in a group:
 
-1. Add the member to the root group with a minimal access role.
+1. Add the member to the root group with a Minimal Access role.
 1. Invite the member as a direct member with a specific role in any subgroup or project in that group.
 
-Because of an [outstanding issue](https://gitlab.com/gitlab-org/gitlab/-/issues/267996), when minimal access users:
+Because of an [outstanding issue](https://gitlab.com/gitlab-org/gitlab/-/issues/267996), when a user with the Minimal Access role:
 
-- Sign in with standard web authentication, they receive a `404` error when accessing the parent group.
-- Sign in with Group SSO, they receive a `404` error immediately because they are redirected to the parent group page.
+- Signs in with standard web authentication, they receive a `404` error when accessing the parent group.
+- Signs in with Group SSO, they receive a `404` error immediately because they are redirected to the parent group page.
 
 To work around the issue, give these users the Guest role or higher to any project or subgroup within the parent group.
 
@@ -538,8 +539,4 @@ the Owner role:
 ### Known issues
 
 - Additional permissions can only be applied to users with the Guest role.
-- There is no visual distinction in the UI between the Guest role and the Guest role with additional permission. For more information, see [issue 384099](https://gitlab.com/gitlab-org/gitlab/-/issues/384099).
 - If a user with a custom role is shared with a group or project, their custom role is not transferred over with them. The user has the regular Guest role in the new group or project.
-- If a custom role is deleted, the users associated with that custom role are also removed from the group. For more information, see [issue 370352](https://gitlab.com/gitlab-org/gitlab/-/issues/370352).
-- The API endpoint for associating a custom role with a user only works for users with the Guest role in a group. A project member can be associated with a custom role, but not through the API yet. For more information, see [issue 385495](https://gitlab.com/gitlab-org/gitlab/-/issues/385495).
-- The only way to remove a custom role from a user's membership to a Group is to delete the custom role, which deletes the user membership entirely. See [issue 387769](https://gitlab.com/gitlab-org/gitlab/-/issues/387769).

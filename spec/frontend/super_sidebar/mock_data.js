@@ -140,6 +140,7 @@ export const userMenuMockData = {
   status: userMenuMockStatus,
   trial: {
     has_start_trial: false,
+    url: invalidUrl,
   },
   settings: {
     profile_path: invalidUrl,

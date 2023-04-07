@@ -202,15 +202,19 @@ It's possible to have both branch pipelines and merge request pipelines in the
 **Pipelines** tab of a single merge request. This might be [by configuration](../yaml/workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines),
 or [by accident](#two-pipelines-when-pushing-to-a-branch).
 
-If both types of pipelines are in one merge request, the merge request's pipeline
-is not considered successful if:
-
-- The branch pipeline succeeds.
-- The merge request pipeline fails.
-
 When using the [merge when pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md)
 feature and both pipelines types are present, the merge request pipelines are checked,
 not the branch pipelines.
+
+Therefore, the MR pipeline result is marked as unsuccessful if the
+**merge request pipeline** fails, independently of the **branch pipeline** result.
+
+However:
+
+- These conditions are not enforced.
+- A race condition determines which pipeline's result is used to either block or pass merge requests.
+
+This bug is tracked on [issue 384927](https://gitlab.com/gitlab-org/gitlab/-/issues/384927).
 
 ### `An error occurred while trying to run a new pipeline for this merge request.`
 

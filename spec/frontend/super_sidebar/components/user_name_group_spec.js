@@ -41,10 +41,12 @@ describe('UserNameGroup component', () => {
   });
 
   it('passes the item to the disclosure dropdown item', () => {
-    expect(findGlDisclosureDropdownItem().props('item')).toEqual({
-      text: userMenuMockData.name,
-      href: userMenuMockData.link_to_profile,
-    });
+    expect(findGlDisclosureDropdownItem().props('item')).toEqual(
+      expect.objectContaining({
+        text: userMenuMockData.name,
+        href: userMenuMockData.link_to_profile,
+      }),
+    );
   });
 
   it("renders user's name", () => {
@@ -95,6 +97,18 @@ describe('UserNameGroup component', () => {
       it("sets the tooltip's target to the status container", () => {
         expect(findGlTooltip().props('target')?.()).toBe(findUserStatus().element);
       });
+    });
+  });
+
+  describe('Tracking', () => {
+    it('sets the tracking attributes', () => {
+      expect(findGlDisclosureDropdownItem().find('a').attributes()).toEqual(
+        expect.objectContaining({
+          'data-track-property': 'nav_user_menu',
+          'data-track-action': 'click_link',
+          'data-track-label': 'user_profile',
+        }),
+      );
     });
   });
 });

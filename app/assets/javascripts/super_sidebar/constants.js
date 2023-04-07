@@ -20,3 +20,8 @@ export const TRACKING_UNKNOWN_PANEL = 'nav_panel_unknown';
 export const CLICK_MENU_ITEM_ACTION = 'click_menu_item';
 
 export const PANELS_WITH_PINS = ['group', 'project'];
+
+export const USER_MENU_TRACKING_DEFAULTS = {
+  'data-track-property': 'nav_user_menu',
+  'data-track-action': 'click_link',
+};

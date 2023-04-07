@@ -37,7 +37,7 @@ export function initStatusTriggers() {
       const buttonWithinTopNav = topNavbar && topNavbar.contains(setStatusModalTriggerEl);
       Tracking.event(undefined, 'click_button', {
         label: 'user_edit_status',
-        property: buttonWithinTopNav ? 'navigation_top' : undefined,
+        property: buttonWithinTopNav ? 'navigation_top' : 'nav_user_menu',
       });
 
       import(

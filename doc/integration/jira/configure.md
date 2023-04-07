@@ -59,6 +59,28 @@ To configure your project:
 Your GitLab project can now interact with all Jira projects in your instance and the project now
 displays a Jira link that opens the Jira project.
 
+## Create a Jira Cloud API token
+
+To [integrate with Jira](index.md) in Atlassian Cloud, you must create an API token.
+
+To create a Jira Cloud API token:
+
+1. Sign in to [Atlassian](https://id.atlassian.com/manage-profile/security/api-tokens)
+   from an account with **write** access to Jira projects.
+
+   The link opens the **API tokens** page. Alternatively, from your Atlassian
+   profile, select **Account Settings > Security > Create and manage API tokens**.
+
+1. Select **Create API token**.
+1. In the dialog, enter a label for your token and select **Create**.
+
+To copy the API token, select **Copy** and paste the token somewhere safe.
+
+To configure GitLab, you need:
+
+- The newly created token
+- The email address you used when you created the token
+
 ## Migrate from Jira Server to Jira Cloud in GitLab
 
 To migrate from Jira Server to Jira Cloud in GitLab and maintain your Jira integration:
@@ -68,7 +90,7 @@ To migrate from Jira Server to Jira Cloud in GitLab and maintain your Jira integ
 1. Select **Jira**.
 1. In **Web URL**, enter the new Jira site URL (for example, `https://myjirasite.atlassian.net`).
 1. In **Username or Email**, enter the username or email registered on your Jira profile.
-1. [Create an API token](jira_cloud_configuration.md), and copy that value.
+1. [Create an API token](#create-a-jira-cloud-api-token), and copy that value.
 1. In **Password or API token**, paste the API token value.
 1. Optional. Select **Test settings** to check if the connection is working.
 1. Select **Save changes**.

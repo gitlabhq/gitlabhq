@@ -1,8 +1,8 @@
 <script>
 import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem, GlTooltip } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-
 import { s__ } from '~/locale';
+import { USER_MENU_TRACKING_DEFAULTS } from '../constants';
 
 export default {
   i18n: {
@@ -31,7 +31,13 @@ export default {
       };
       if (this.user.has_link_to_profile) {
         item.href = this.user.link_to_profile;
+
+        item.extraAttrs = {
+          ...USER_MENU_TRACKING_DEFAULTS,
+          'data-track-label': 'user_profile',
+        };
       }
+
       return item;
     },
   },

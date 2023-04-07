@@ -317,6 +317,13 @@ On GitLab SaaS an email notification is sent to the namespace owners when:
 - The available CI/CD minutes are below 5% of the quota.
 - All CI/CD minutes have been used.
 
+### Special quota limits
+
+In some cases, the quota limit is replaced by one of the following labels:
+
+- **Unlimited minutes**: For namespaces with unlimited CI/CD minutes
+- **Not supported minutes**: For namespaces where active shared runners are not enabled
+
 ## Reduce consumption of CI/CD minutes
 
 If your project consumes too many CI/CD minutes, there are some strategies you can

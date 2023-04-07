@@ -54,6 +54,11 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::BackfillPartition
       allow(backfill_job).to receive(:sleep)
     end
 
+    after do
+      connection.drop_table source_table
+      connection.drop_table destination_table
+    end
+
     let(:source_model) { Class.new(ActiveRecord::Base) }
     let(:destination_model) { Class.new(ActiveRecord::Base) }
     let(:timestamp) { Time.utc(2020, 1, 2).round }
@@ -82,7 +87,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::BackfillPartition
     end
 
     it 'breaks the assigned batch into smaller batches' do
-      expect_next_instance_of(described_class::BulkCopy) do |bulk_copy|
+      expect_next_instance_of(Gitlab::Database::PartitioningMigrationHelpers::BulkCopy) do |bulk_copy|
         expect(bulk_copy).to receive(:copy_between).with(source1.id, source2.id)
         expect(bulk_copy).to receive(:copy_between).with(source3.id, source3.id)
       end
