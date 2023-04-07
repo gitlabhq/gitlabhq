@@ -78,13 +78,13 @@ their own. To do this:
    it can't be changed at the project level.
 1. Select **Save changes**.
 
-Depending on your version of GitLab, [code owners](../../code_owners.md) who commit
+Depending on your version of GitLab, [code owners](../../codeowners/index.md) who commit
 to a merge request may or may not be able to approve the work:
 
-- In GitLab 13.10 and earlier, [code owners](../../code_owners.md) who commit
+- In GitLab 13.10 and earlier, code owners who commit
   to a merge request can approve it, even if the merge request affects files they own.
 - In [GitLab 13.11 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/331548),
-  [code owners](../../code_owners.md) who commit
+  code owners who commit
   to a merge request cannot approve it, when the merge request affects files they own.
 
 For more information, see the [official Git documentation](https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History).

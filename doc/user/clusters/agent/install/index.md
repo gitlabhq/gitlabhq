@@ -140,7 +140,7 @@ To see the full list of customizations available, see the Helm chart's [default 
 
 ##### Use the agent when KAS is behind a self-signed certificate
 
-When [KAS]((../../../../administration/clusters/kas.md) is behind a self-signed certificate,
+When [KAS](../../../../administration/clusters/kas.md) is behind a self-signed certificate,
 you can set the value of `config.caCert` to the certificate. For example:
 
 ```shell

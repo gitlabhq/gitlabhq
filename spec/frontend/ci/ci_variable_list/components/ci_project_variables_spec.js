@@ -4,6 +4,16 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 
 import ciProjectVariables from '~/ci/ci_variable_list/components/ci_project_variables.vue';
 import ciVariableShared from '~/ci/ci_variable_list/components/ci_variable_shared.vue';
+import {
+  ADD_MUTATION_ACTION,
+  DELETE_MUTATION_ACTION,
+  UPDATE_MUTATION_ACTION,
+} from '~/ci/ci_variable_list/constants';
+import getProjectEnvironments from '~/ci/ci_variable_list/graphql/queries/project_environments.query.graphql';
+import getProjectVariables from '~/ci/ci_variable_list/graphql/queries/project_variables.query.graphql';
+import addProjectVariable from '~/ci/ci_variable_list/graphql/mutations/project_add_variable.mutation.graphql';
+import deleteProjectVariable from '~/ci/ci_variable_list/graphql/mutations/project_delete_variable.mutation.graphql';
+import updateProjectVariable from '~/ci/ci_variable_list/graphql/mutations/project_update_variable.mutation.graphql';
 
 const mockProvide = {
   projectFullPath: '/namespace/project',
@@ -33,8 +43,21 @@ describe('Ci Project Variable wrapper', () => {
       entity: 'project',
       fullPath: mockProvide.projectFullPath,
       hideEnvironmentScope: false,
-      mutationData: wrapper.vm.$options.mutationData,
-      queryData: wrapper.vm.$options.queryData,
+      mutationData: {
+        [ADD_MUTATION_ACTION]: addProjectVariable,
+        [UPDATE_MUTATION_ACTION]: updateProjectVariable,
+        [DELETE_MUTATION_ACTION]: deleteProjectVariable,
+      },
+      queryData: {
+        ciVariables: {
+          lookup: expect.any(Function),
+          query: getProjectVariables,
+        },
+        environments: {
+          lookup: expect.any(Function),
+          query: getProjectEnvironments,
+        },
+      },
       refetchAfterMutation: false,
     });
   });

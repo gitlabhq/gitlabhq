@@ -1056,6 +1056,7 @@ unencoded
 unencoder
 unencodes
 unencrypted
+unescaped
 unfollow
 unfollowed
 unfollows
@@ -1075,6 +1076,7 @@ unoptimize
 unoptimized
 unoptimizes
 unoptimizing
+unparsable
 unpatched
 unpause
 unprioritized

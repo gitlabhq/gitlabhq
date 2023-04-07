@@ -6,9 +6,10 @@ description: Read through the GitLab installation methods.
 type: index
 ---
 
-# Installation methods
+# Installation methods **(FREE SELF)**
 
-You can install GitLab by using any of the following methods.
+You can install GitLab on several [cloud providers](cloud_providers.md),
+or use one of the following methods.
 
 | Installation method                                            | Description | When to choose |
 |----------------------------------------------------------------|-------------|----------------|
@@ -18,16 +19,6 @@ You can install GitLab by using any of the following methods.
 | [Source](installation.md)                                      | GitLab and its components from scratch. | Use if none of the previous methods are available for your platform. Can use for unsupported systems like \*BSD.|
 | [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit#documentation) | A set of automation tools. | Use to deploy a [reference architecture](../administration/reference_architectures/index.md) on most major cloud providers. Has some [limitations](https://gitlab.com/gitlab-org/gitlab-environment-toolkit#missing-features-to-be-aware-of) and manual setup for production environments. |
 | [GitLab Operator](https://docs.gitlab.com/operator/)   | An installation and management method that follows the [Kubernetes Operator pattern](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/). | Use to run GitLab in an [OpenShift](openshift_and_gitlab/index.md) environment. |
-
-## Cloud providers
-
-You can install GitLab on several cloud providers.
-
-| Cloud provider                                                | Description |
-|---------------------------------------------------------------|-------------|
-| [AWS](aws/index.md)                                           | Install GitLab on AWS using the community AMIs provided by GitLab. |
-| [Google Cloud Platform (GCP)](google_cloud_platform/index.md) | Install GitLab on a VM in GCP. |
-| [Azure](azure/index.md)                                       | Install GitLab from Azure Marketplace. |
 
 ## Unsupported Linux distributions and Unix-like operating systems
 

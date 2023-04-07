@@ -4,6 +4,15 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 
 import ciGroupVariables from '~/ci/ci_variable_list/components/ci_group_variables.vue';
 import ciVariableShared from '~/ci/ci_variable_list/components/ci_variable_shared.vue';
+import {
+  ADD_MUTATION_ACTION,
+  DELETE_MUTATION_ACTION,
+  UPDATE_MUTATION_ACTION,
+} from '~/ci/ci_variable_list/constants';
+import getGroupVariables from '~/ci/ci_variable_list/graphql/queries/group_variables.query.graphql';
+import addGroupVariable from '~/ci/ci_variable_list/graphql/mutations/group_add_variable.mutation.graphql';
+import deleteGroupVariable from '~/ci/ci_variable_list/graphql/mutations/group_delete_variable.mutation.graphql';
+import updateGroupVariable from '~/ci/ci_variable_list/graphql/mutations/group_update_variable.mutation.graphql';
 
 const mockProvide = {
   glFeatures: {
@@ -37,8 +46,17 @@ describe('Ci Group Variable wrapper', () => {
         entity: 'group',
         fullPath: mockProvide.groupPath,
         hideEnvironmentScope: false,
-        mutationData: wrapper.vm.$options.mutationData,
-        queryData: wrapper.vm.$options.queryData,
+        mutationData: {
+          [ADD_MUTATION_ACTION]: addGroupVariable,
+          [UPDATE_MUTATION_ACTION]: updateGroupVariable,
+          [DELETE_MUTATION_ACTION]: deleteGroupVariable,
+        },
+        queryData: {
+          ciVariables: {
+            lookup: expect.any(Function),
+            query: getGroupVariables,
+          },
+        },
         refetchAfterMutation: false,
       });
     });

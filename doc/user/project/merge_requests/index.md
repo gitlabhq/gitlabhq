@@ -84,7 +84,7 @@ To filter the list of merge requests:
    - User filters: Type (or select from the dropdown list) any of these filters to display a list of users:
      - **Approved-By**, for merge requests already approved by a user. **(PREMIUM)**.
      - **Approver**, for merge requests that this user is eligible to approve.
-       (For more information, read about [Code owners](../code_owners.md)). **(PREMIUM)**
+       (For more information, read about [Code owners](../codeowners/index.md)). **(PREMIUM)**
      - **Reviewer**, for merge requests reviewed by this user.
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:

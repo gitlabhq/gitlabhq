@@ -16,7 +16,7 @@ approve merge requests, these approvals are [optional](#optional-approvals).
 flexibility:
 
 - Create required [rules](rules.md) about the number and type of approvers before work can merge.
-- Specify a list of users who act as [code owners](../../code_owners.md) for specific files,
+- Specify a list of users who act as [code owners](../../codeowners/index.md) for specific files,
   and require their approval before work can merge.
 
 You can configure merge request approvals on a per-project basis, and some approvals can be configured
@@ -35,7 +35,7 @@ required approvals before work can merge into your project. You can also extend 
 rules to define what types of users can approve work. Some examples of rules you can create include:
 
 - Users with specific permissions can always approve work.
-- [Code owners](../../code_owners.md) can approve work for files they own.
+- [Code owners](../../codeowners/index.md) can approve work for files they own.
 - Users with specific permissions can approve work,
   [even if they don't have merge rights](rules.md#merge-request-approval-segregation-of-duties)
   to the repository.

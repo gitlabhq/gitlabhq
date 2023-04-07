@@ -161,7 +161,7 @@ approve in these ways:
 
 > Moved to GitLab Premium in 13.9.
 
-If you add [code owners](../../code_owners.md) to your repository, the owners of files
+If you add [code owners](../../codeowners/index.md) to your repository, the owners of files
 become eligible approvers in the project. To enable this merge request approval rule:
 
 1. Go to your project and select **Settings > Merge requests**.

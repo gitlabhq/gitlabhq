@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem, GlTruncate } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlTruncate, GlSearchBoxByType } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
@@ -31,6 +31,7 @@ const projects = [
 const MockGlDropdown = stubComponent(GlDropdown, {
   template: `
   <div>
+    <slot name="header"></slot>
     <div data-testid="vsa-highlighted-items">
       <slot name="highlighted-items"></slot>
     </div>
@@ -112,6 +113,8 @@ describe('ProjectsDropdownFilter component', () => {
 
   const selectedIds = () => wrapper.vm.selectedProjects.map(({ id }) => id);
 
+  const findSearchBoxByType = () => wrapper.findComponent(GlSearchBoxByType);
+
   describe('queryParams are applied when fetching data', () => {
     beforeEach(() => {
       createComponent({
@@ -123,9 +126,7 @@ describe('ProjectsDropdownFilter component', () => {
     });
 
     it('applies the correct queryParams when making an api call', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ searchTerm: 'gitlab' });
+      findSearchBoxByType().vm.$emit('input', 'gitlab');
 
       expect(spyQuery).toHaveBeenCalledTimes(1);
 
@@ -144,6 +145,7 @@ describe('ProjectsDropdownFilter component', () => {
 
   describe('highlighted items', () => {
     const blockDefaultProps = { multiSelect: true };
+
     beforeEach(() => {
       createComponent(blockDefaultProps);
     });
@@ -151,6 +153,7 @@ describe('ProjectsDropdownFilter component', () => {
     describe('with no project selected', () => {
       it('does not render the highlighted items', async () => {
         await createWithMockDropdown(blockDefaultProps);
+
         expect(findSelectedDropdownItems().length).toBe(0);
       });
 
@@ -188,8 +191,7 @@ describe('ProjectsDropdownFilter component', () => {
 
         expect(findSelectedProjectsLabel().text()).toBe('2 projects selected');
 
-        findClearAllButton().trigger('click');
-        await nextTick();
+        await findClearAllButton().trigger('click');
 
         expect(findSelectedProjectsLabel().text()).toBe('Select projects');
       });
@@ -201,9 +203,7 @@ describe('ProjectsDropdownFilter component', () => {
       await createWithMockDropdown({ multiSelect: true });
 
       selectDropdownItemAtIndex(0);
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ searchTerm: 'this is a very long search string' });
+      findSearchBoxByType().vm.$emit('input', 'this is a very long search string');
     });
 
     it('renders the highlighted items', async () => {
@@ -351,17 +351,19 @@ describe('ProjectsDropdownFilter component', () => {
 
       it('should remove from selection when clicked again', () => {
         selectDropdownItemAtIndex(0);
+
         expect(selectedIds()).toEqual([projects[0].id]);
 
         selectDropdownItemAtIndex(0);
+
         expect(selectedIds()).toEqual([]);
       });
 
       it('renders the correct placeholder text when multiple projects are selected', async () => {
         selectDropdownItemAtIndex(0);
         selectDropdownItemAtIndex(1);
-
         await nextTick();
+
         expect(findDropdownButton().text()).toBe('2 projects selected');
       });
     });

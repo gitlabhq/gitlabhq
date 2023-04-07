@@ -172,7 +172,7 @@ If you have a review in progress, you can also add a comment from the **Overview
 
 When editing the **Reviewers** field in a new or existing merge request, GitLab
 displays the name of the matching [approval rule](../approvals/rules.md)
-below the name of each suggested reviewer. [Code Owners](../../code_owners.md) are displayed as `Codeowner` without group detail.
+below the name of each suggested reviewer. [Code Owners](../../codeowners/index.md) are displayed as `Codeowner` without group detail.
 
 This example shows reviewers and approval rules when creating a new merge request:
 
