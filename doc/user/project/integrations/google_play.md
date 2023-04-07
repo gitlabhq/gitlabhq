@@ -6,10 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Google Play **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111621) in GitLab 15.10 [with a flag](../../../administration/feature_flags.md) named `google_play_integration`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `google_play_integration`. On GitLab.com, this feature is not available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111621) in GitLab 15.10 [with a flag](../../../administration/feature_flags.md) named `google_play_integration`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/389611) in GitLab 15.11. Feature flag `google_play_integration` removed.
 
 With the Google Play integration, you can configure your CI/CD pipelines to connect to the [Google Play Console](https://play.google.com/console) to build and release apps for Android devices.
 

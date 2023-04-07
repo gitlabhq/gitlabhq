@@ -29,6 +29,12 @@ module Gitlab
     WRITE_REGISTRY_SCOPE = :write_registry
     REGISTRY_SCOPES = [READ_REGISTRY_SCOPE, WRITE_REGISTRY_SCOPE].freeze
 
+    # Scopes used for GitLab Observability access which is outside of the GitLab app itself.
+    # Hence the lack of ability mapping in `abilities_for_scopes`.
+    READ_OBSERVABILITY_SCOPE = :read_observability
+    WRITE_OBSERVABILITY_SCOPE = :write_observability
+    OBSERVABILITY_SCOPES = [READ_OBSERVABILITY_SCOPE, WRITE_OBSERVABILITY_SCOPE].freeze
+
     # Scopes used for GitLab as admin
     SUDO_SCOPE = :sudo
     ADMIN_MODE_SCOPE = :admin_mode
@@ -364,14 +370,8 @@ module Gitlab
         ]
       end
 
-      def available_scopes_for(current_user)
-        scopes = non_admin_available_scopes
-
-        if current_user.admin? # rubocop: disable Cop/UserAdmin
-          scopes += Feature.enabled?(:admin_mode_for_api) ? ADMIN_SCOPES : [SUDO_SCOPE]
-        end
-
-        scopes
+      def available_scopes_for(resource)
+        available_scopes_for_resource(resource) - unavailable_scopes_for_resource(resource)
       end
 
       def all_available_scopes
@@ -390,13 +390,40 @@ module Gitlab
       end
 
       def resource_bot_scopes
-        Gitlab::Auth::API_SCOPES + Gitlab::Auth::REPOSITORY_SCOPES + Gitlab::Auth.registry_scopes - [:read_user]
+        non_admin_available_scopes - [READ_USER_SCOPE]
       end
 
       private
 
+      def available_scopes_for_resource(resource)
+        case resource
+        when User
+          scopes = non_admin_available_scopes
+
+          if resource.admin? # rubocop: disable Cop/UserAdmin
+            scopes += Feature.enabled?(:admin_mode_for_api) ? ADMIN_SCOPES : [SUDO_SCOPE]
+          end
+
+          scopes
+        when Project, Group
+          resource_bot_scopes
+        else
+          []
+        end
+      end
+
+      def unavailable_scopes_for_resource(resource)
+        unavailable_observability_scopes_for_resource(resource)
+      end
+
+      def unavailable_observability_scopes_for_resource(resource)
+        return [] if resource.is_a?(Group) && Gitlab::Observability.enabled?(resource)
+
+        OBSERVABILITY_SCOPES
+      end
+
       def non_admin_available_scopes
-        API_SCOPES + REPOSITORY_SCOPES + registry_scopes
+        API_SCOPES + REPOSITORY_SCOPES + registry_scopes + OBSERVABILITY_SCOPES
       end
 
       def find_build_by_token(token)

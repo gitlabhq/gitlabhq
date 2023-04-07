@@ -52,7 +52,7 @@ module Gitlab
       end
 
       def parse_yaml
-        YAML.load_file(@config)
+        YAML.safe_load_file(@config, aliases: true, permitted_classes: [Symbol])
       end
     end
   end

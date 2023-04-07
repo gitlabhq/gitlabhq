@@ -12,6 +12,7 @@ class RepositoryImportWorker # rubocop:disable Scalability/IdempotentWorker
   # Do not retry on Import/Export until https://gitlab.com/gitlab-org/gitlab/-/issues/16812 is solved.
   sidekiq_options retry: false, dead: false
   sidekiq_options status_expiration: Gitlab::Import::StuckImportJob::IMPORT_JOBS_EXPIRATION
+  worker_resource_boundary :memory
 
   # technical debt: https://gitlab.com/gitlab-org/gitlab/issues/33991
   sidekiq_options memory_killer_memory_growth_kb: ENV.fetch('MEMORY_KILLER_REPOSITORY_IMPORT_WORKER_MEMORY_GROWTH_KB', 50).to_i

@@ -12,6 +12,7 @@ module BulkImports
     sidekiq_options retry: false, dead: false
     worker_has_external_dependencies!
     deduplicate :until_executing
+    worker_resource_boundary :memory
 
     def perform(pipeline_tracker_id, stage, entity_id)
       @entity = ::BulkImports::Entity.find(entity_id)

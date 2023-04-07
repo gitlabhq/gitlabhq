@@ -1670,9 +1670,7 @@ class Project < ApplicationRecord
   end
 
   def disabled_integrations
-    disabled_integrations = []
-    disabled_integrations << 'google_play' unless Feature.enabled?(:google_play_integration, self)
-    disabled_integrations
+    []
   end
 
   def find_or_initialize_integration(name)

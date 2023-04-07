@@ -14,7 +14,7 @@ RSpec.shared_examples 'GET resource access tokens available' do
   it 'lists all available scopes' do
     get_access_tokens
 
-    expect(assigns(:scopes)).to eq(Gitlab::Auth.resource_bot_scopes)
+    expect(assigns(:scopes)).to eq(Gitlab::Auth.available_scopes_for(resource))
   end
 
   it 'returns for json response' do

@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
 import ReviewerAvatarLink from '~/sidebar/components/reviewers/reviewer_avatar_link.vue';
@@ -21,7 +22,10 @@ const userDataMock = () => ({
 describe('UncollapsedReviewerList component', () => {
   let wrapper;
 
-  const reviewerApprovalIcons = () => wrapper.findAll('[data-testid="re-approved"]');
+  const findAllRerequestButtons = () => wrapper.findAll('[data-testid="re-request-button"]');
+  const findAllRerequestSuccessIcons = () => wrapper.findAll('[data-testid="re-request-success"]');
+  const findAllReviewerApprovalIcons = () => wrapper.findAll('[data-testid="re-approved"]');
+  const findAllReviewerAvatarLinks = () => wrapper.findAllComponents(ReviewerAvatarLink);
 
   function createComponent(props = {}, glFeatures = {}) {
     const propsData = {
@@ -38,6 +42,13 @@ describe('UncollapsedReviewerList component', () => {
     });
   }
 
+  const callRerequestCallback = async () => {
+    const payload = wrapper.emitted('request-review')[0][0];
+    // Call payload which is normally called by a parent component
+    payload.callback(payload.userId, true);
+    await nextTick();
+  };
+
   describe('single reviewer', () => {
     const user = userDataMock();
 
@@ -48,27 +59,24 @@ describe('UncollapsedReviewerList component', () => {
     });
 
     it('only has one user', () => {
-      expect(wrapper.findAllComponents(ReviewerAvatarLink).length).toBe(1);
+      expect(findAllReviewerAvatarLinks()).toHaveLength(1);
     });
 
     it('shows one user with avatar, and author name', () => {
-      expect(wrapper.text()).toContain(user.name);
+      expect(wrapper.text()).toBe(user.name);
     });
 
     it('renders re-request loading icon', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      await wrapper.setData({ loadingStates: { 1: 'loading' } });
+      await findAllRerequestButtons().at(0).vm.$emit('click');
 
-      expect(wrapper.find('[data-testid="re-request-button"]').props('loading')).toBe(true);
+      expect(findAllRerequestButtons().at(0).props('loading')).toBe(true);
     });
 
     it('renders re-request success icon', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      await wrapper.setData({ loadingStates: { 1: 'success' } });
+      await findAllRerequestButtons().at(0).vm.$emit('click');
+      await callRerequestCallback();
 
-      expect(wrapper.find('[data-testid="re-request-success"]').exists()).toBe(true);
+      expect(findAllRerequestSuccessIcons().at(0).exists()).toBe(true);
     });
   });
 
@@ -92,7 +100,7 @@ describe('UncollapsedReviewerList component', () => {
     });
 
     it('has both users', () => {
-      expect(wrapper.findAllComponents(ReviewerAvatarLink).length).toBe(2);
+      expect(findAllReviewerAvatarLinks()).toHaveLength(2);
     });
 
     it('shows both users with avatar, and author name', () => {
@@ -101,34 +109,30 @@ describe('UncollapsedReviewerList component', () => {
     });
 
     it('renders approval icon', () => {
-      expect(reviewerApprovalIcons().length).toBe(1);
+      expect(findAllReviewerApprovalIcons()).toHaveLength(1);
     });
 
     it('shows that hello-world approved', () => {
-      const icon = reviewerApprovalIcons().at(0);
+      const icon = findAllReviewerApprovalIcons().at(0);
 
-      expect(icon.attributes('title')).toEqual('Approved by @hello-world');
+      expect(icon.attributes('title')).toBe('Approved by @hello-world');
     });
 
     it('renders re-request loading icon', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      await wrapper.setData({ loadingStates: { 2: 'loading' } });
+      await findAllRerequestButtons().at(1).vm.$emit('click');
 
-      expect(wrapper.findAll('[data-testid="re-request-button"]').length).toBe(2);
-      expect(wrapper.findAll('[data-testid="re-request-button"]').at(1).props('loading')).toBe(
-        true,
-      );
+      const allRerequestButtons = findAllRerequestButtons();
+
+      expect(allRerequestButtons).toHaveLength(2);
+      expect(allRerequestButtons.at(1).props('loading')).toBe(true);
     });
 
     it('renders re-request success icon', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      await wrapper.setData({ loadingStates: { 2: 'success' } });
+      await findAllRerequestButtons().at(1).vm.$emit('click');
+      await callRerequestCallback();
 
-      expect(wrapper.findAll('[data-testid="re-request-button"]').length).toBe(1);
-      expect(wrapper.findAll('[data-testid="re-request-success"]').length).toBe(1);
-      expect(wrapper.find('[data-testid="re-request-success"]').exists()).toBe(true);
+      expect(findAllRerequestButtons()).toHaveLength(1);
+      expect(findAllRerequestSuccessIcons()).toHaveLength(1);
     });
   });
 });

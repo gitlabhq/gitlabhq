@@ -246,12 +246,12 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
             if Gitlab.ee?
               [
                 %w[cronjob:clusters_integrations_check_prometheus_health incident_management_close_incident status_page_publish],
-                %w[project_export projects_import_export_parallel_project_export projects_import_export_relation_export project_template_export]
+                %w[bulk_imports_pipeline bulk_imports_relation_export project_export projects_import_export_parallel_project_export projects_import_export_relation_export repository_import project_template_export]
               ]
             else
               [
                 %w[cronjob:clusters_integrations_check_prometheus_health incident_management_close_incident],
-                %w[project_export projects_import_export_parallel_project_export projects_import_export_relation_export]
+                %w[bulk_imports_pipeline bulk_imports_relation_export project_export projects_import_export_parallel_project_export projects_import_export_relation_export repository_import]
               ]
             end
 
