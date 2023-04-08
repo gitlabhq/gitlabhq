@@ -15,8 +15,8 @@ exports[`Resizable Skeleton Loader default setup renders the bars, labels, and g
     </title>
     <rect
       clip-path="url(#null-idClip)"
+      fill="url(#null-idGradient)"
       height="130"
-      style="fill: url(#null-idGradient);"
       width="400"
       x="0"
       y="0"
@@ -234,8 +234,8 @@ exports[`Resizable Skeleton Loader with custom settings renders the correct posi
     </title>
     <rect
       clip-path="url(#-idClip)"
+      fill="url(#-idGradient)"
       height="130"
-      style="fill: url(#-idGradient);"
       width="400"
       x="0"
       y="0"
