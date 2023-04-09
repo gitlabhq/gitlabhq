@@ -1,5 +1,6 @@
 import $ from 'jquery';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlSnippetsShow from 'test_fixtures/snippets/show.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import initCopyAsGFM, { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
@@ -11,8 +12,6 @@ jest.mock('~/lib/utils/common_utils', () => ({
 }));
 
 describe('ShortcutsIssuable', () => {
-  const snippetShowFixtureName = 'snippets/show.html';
-
   beforeAll(() => {
     initCopyAsGFM();
 
@@ -24,7 +23,7 @@ describe('ShortcutsIssuable', () => {
     const FORM_SELECTOR = '.js-main-target-form .js-vue-comment-form';
 
     beforeEach(() => {
-      loadHTMLFixture(snippetShowFixtureName);
+      setHTMLFixture(htmlSnippetsShow);
       $('body').append(
         `<div class="js-main-target-form">
           <textarea class="js-vue-comment-form"></textarea>

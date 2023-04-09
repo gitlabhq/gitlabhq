@@ -1,5 +1,6 @@
 import $ from 'jquery';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlSnippetsShow from 'test_fixtures/snippets/show.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import '~/behaviors/quick_submit';
 
 describe('Quick Submit behavior', () => {
@@ -8,7 +9,7 @@ describe('Quick Submit behavior', () => {
   const keydownEvent = (options = { keyCode: 13, metaKey: true }) => $.Event('keydown', options);
 
   beforeEach(() => {
-    loadHTMLFixture('snippets/show.html');
+    setHTMLFixture(htmlSnippetsShow);
 
     testContext = {};
 
