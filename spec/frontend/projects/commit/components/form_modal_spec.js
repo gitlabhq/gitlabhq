@@ -1,9 +1,9 @@
 import { GlModal, GlForm, GlFormCheckbox, GlSprintf } from '@gitlab/ui';
 import { within } from '@testing-library/dom';
-import { shallowMount, mount, createWrapper } from '@vue/test-utils';
+import { createWrapper } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
@@ -21,21 +21,24 @@ describe('CommitFormModal', () => {
   let store;
   let axiosMock;
 
-  const createComponent = (method, state = {}, provide = {}, propsData = {}) => {
+  const createComponent = ({
+    method = shallowMountExtended,
+    state = {},
+    provide = {},
+    propsData = {},
+  } = {}) => {
     store = createStore({ ...mockData.mockModal, ...state });
-    wrapper = extendedWrapper(
-      method(CommitFormModal, {
-        provide: {
-          ...provide,
-        },
-        propsData: { ...mockData.modalPropsData, ...propsData },
-        store,
-        attrs: {
-          static: true,
-          visible: true,
-        },
-      }),
-    );
+    wrapper = method(CommitFormModal, {
+      provide: {
+        ...provide,
+      },
+      propsData: { ...mockData.modalPropsData, ...propsData },
+      store,
+      attrs: {
+        static: true,
+        visible: true,
+      },
+    });
   };
 
   const findModal = () => wrapper.findComponent(GlModal);
@@ -62,13 +65,13 @@ describe('CommitFormModal', () => {
     it('Listens for opening of modal on mount', () => {
       jest.spyOn(eventHub, '$on');
 
-      createComponent(shallowMount);
+      createComponent();
 
       expect(eventHub.$on).toHaveBeenCalledWith(mockData.modalPropsData.openModal, wrapper.vm.show);
     });
 
     it('Shows modal', () => {
-      createComponent(shallowMount);
+      createComponent();
       const rootEmit = jest.spyOn(wrapper.vm.$root, '$emit');
 
       wrapper.vm.show();
@@ -77,25 +80,25 @@ describe('CommitFormModal', () => {
     });
 
     it('Clears the modal state once modal is hidden', () => {
-      createComponent(shallowMount);
+      createComponent();
       jest.spyOn(store, 'dispatch').mockImplementation();
-      wrapper.vm.checked = false;
+      findCheckBox().vm.$emit('input', false);
 
       findModal().vm.$emit('hidden');
 
       expect(store.dispatch).toHaveBeenCalledWith('clearModal');
       expect(store.dispatch).toHaveBeenCalledWith('setSelectedBranch', '');
-      expect(wrapper.vm.checked).toBe(true);
+      expect(findCheckBox().attributes('checked')).toBe('true');
     });
 
     it('Shows the checkbox for new merge request', () => {
-      createComponent(shallowMount);
+      createComponent();
 
       expect(findCheckBox().exists()).toBe(true);
     });
 
     it('Shows the prepended text', () => {
-      createComponent(shallowMount, {}, { prependedText: '_prepended_text_' });
+      createComponent({ provide: { prependedText: '_prepended_text_' } });
 
       expect(findPrependedText().exists()).toBe(true);
       expect(findPrependedText().findComponent(GlSprintf).attributes('message')).toBe(
@@ -104,25 +107,25 @@ describe('CommitFormModal', () => {
     });
 
     it('Does not show prepended text', () => {
-      createComponent(shallowMount);
+      createComponent();
 
       expect(findPrependedText().exists()).toBe(false);
     });
 
     it('Does not show extra message text', () => {
-      createComponent(shallowMount);
+      createComponent();
 
       expect(findModal().find('[data-testid="appended-text"]').exists()).toBe(false);
     });
 
     it('Does not show the checkbox for new merge request', () => {
-      createComponent(shallowMount, { pushCode: false });
+      createComponent({ state: { pushCode: false } });
 
       expect(findCheckBox().exists()).toBe(false);
     });
 
     it('Shows the branch in fork message', () => {
-      createComponent(shallowMount, { pushCode: false });
+      createComponent({ state: { pushCode: false } });
 
       expect(findAppendedText().exists()).toBe(true);
       expect(findAppendedText().findComponent(GlSprintf).attributes('message')).toContain(
@@ -131,7 +134,7 @@ describe('CommitFormModal', () => {
     });
 
     it('Shows the branch collaboration message', () => {
-      createComponent(shallowMount, { pushCode: false, branchCollaboration: true });
+      createComponent({ state: { pushCode: false, branchCollaboration: true } });
 
       expect(findAppendedText().exists()).toBe(true);
       expect(findAppendedText().findComponent(GlSprintf).attributes('message')).toContain(
@@ -142,17 +145,13 @@ describe('CommitFormModal', () => {
 
   describe('Taking action on the form', () => {
     beforeEach(() => {
-      createComponent(mount);
+      createComponent({ method: mountExtended });
     });
 
-    it('Action primary button dispatches submit action', () => {
-      const submitSpy = jest.spyOn(findForm().element, 'submit');
-
+    it('Action primary button dispatches submit action', async () => {
       getByText(mockData.modalPropsData.i18n.actionPrimaryText).trigger('click');
 
-      expect(submitSpy).toHaveBeenCalled();
-
-      submitSpy.mockRestore();
+      expect(wrapper.vm.$refs.form.$el.submit).toHaveBeenCalled();
     });
 
     it('Changes the start_branch input value', async () => {
@@ -164,7 +163,7 @@ describe('CommitFormModal', () => {
     });
 
     it('Changes the target_project_id input value', async () => {
-      createComponent(shallowMount, {}, {}, { isCherryPick: true });
+      createComponent({ propsData: { isCherryPick: true } });
       findProjectsDropdown().vm.$emit('input', '_changed_project_value_');
 
       await nextTick();
@@ -174,11 +173,8 @@ describe('CommitFormModal', () => {
   });
 
   it('action primary button triggers Redis HLL tracking api call', async () => {
-    createComponent(mount, {}, {}, { primaryActionEventName: 'test_event' });
-
+    createComponent({ method: mountExtended, propsData: { primaryActionEventName: 'test_event' } });
     await nextTick();
-
-    jest.spyOn(findForm().element, 'submit');
 
     getByText(mockData.modalPropsData.i18n.actionPrimaryText).trigger('click');
 

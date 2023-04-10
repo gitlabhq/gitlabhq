@@ -55,6 +55,7 @@ records should use stubs/doubles as much as possible.
 | `lib/` | `spec/lib/` | RSpec | |
 | `lib/tasks/` | `spec/tasks/` | RSpec | |
 | `rubocop/` | `spec/rubocop/` | RSpec | |
+| `spec/support/` | `spec/support_specs/` | RSpec | |
 
 ### Frontend unit tests
 

@@ -422,7 +422,7 @@ Parameters:
 | `merge_request_iid`     | integer        | yes      | The IID of a project merge request                                                                                           |
 | `body`                  | string         | yes      | The content of a note. Limited to 1,000,000 characters.                                                                      |
 | `created_at`            | string         | no       | Date time string, ISO 8601 formatted. Example: `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
-| `merge_request_diff_sha`| string         | no       | Required for the `/merge` [quick action](../user/project/quick_actions.md). The SHA of the head commit, which ensures the merge request wasn't updated after the API request was sent. |
+| `merge_request_diff_head_sha`| string         | no       | Required for the `/merge` [quick action](../user/project/quick_actions.md). The SHA of the head commit, which ensures the merge request wasn't updated after the API request was sent. |
 
 ### Modify existing merge request note
 
