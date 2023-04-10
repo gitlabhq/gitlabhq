@@ -63,15 +63,17 @@ class RunPipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
   end
 
   def track_error(schedule, error)
-    Gitlab::ErrorTracking
-      .track_and_raise_for_dev_exception(error,
-                       issue_url: 'https://gitlab.com/gitlab-org/gitlab-foss/issues/41231',
-                       schedule_id: schedule.id)
+    Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
+      error,
+      issue_url: 'https://gitlab.com/gitlab-org/gitlab-foss/issues/41231',
+      schedule_id: schedule.id
+    )
   end
 
   def failed_creation_counter
-    @failed_creation_counter ||=
-      Gitlab::Metrics.counter(:pipeline_schedule_creation_failed_total,
-                              "Counter of failed attempts of pipeline schedule creation")
+    @failed_creation_counter ||= Gitlab::Metrics.counter(
+      :pipeline_schedule_creation_failed_total,
+      "Counter of failed attempts of pipeline schedule creation"
+    )
   end
 end
