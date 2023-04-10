@@ -5,7 +5,7 @@ module Terraform
     include EachBatch
     include FileStoreMounter
 
-    belongs_to :terraform_state, class_name: 'Terraform::State', optional: false
+    belongs_to :terraform_state, class_name: 'Terraform::State', optional: false, touch: true
     belongs_to :created_by_user, class_name: 'User', optional: true
     belongs_to :build, class_name: 'Ci::Build', optional: true, foreign_key: :ci_build_id
 

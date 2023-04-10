@@ -8,6 +8,8 @@ module Terraform
     HEX_REGEXP = %r{\A\h+\z}.freeze
     UUID_LENGTH = 32
 
+    self.locking_column = :activerecord_lock_version
+
     belongs_to :project
     belongs_to :locked_by_user, class_name: 'User'
 

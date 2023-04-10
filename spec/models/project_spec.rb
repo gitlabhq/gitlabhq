@@ -7460,6 +7460,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     context 'when feature flag `group_protected_branches` enabled' do
       before do
         stub_feature_flags(group_protected_branches: true)
+        stub_feature_flags(allow_protected_branches_for_group: true)
       end
 
       it 'return all protected branches' do
@@ -7470,6 +7471,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     context 'when feature flag `group_protected_branches` disabled' do
       before do
         stub_feature_flags(group_protected_branches: false)
+        stub_feature_flags(allow_protected_branches_for_group: false)
       end
 
       it 'return only project-level protected branches' do

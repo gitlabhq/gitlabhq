@@ -10,7 +10,7 @@ RSpec.describe API::Terraform::StateVersion, feature_category: :infrastructure_a
   let_it_be(:maintainer) { create(:user, maintainer_projects: [project]) }
   let_it_be(:user_without_access) { create(:user) }
 
-  let_it_be(:state) { create(:terraform_state, project: project) }
+  let_it_be_with_reload(:state) { create(:terraform_state, project: project) }
 
   let!(:versions) { create_list(:terraform_state_version, 3, terraform_state: state) }
 

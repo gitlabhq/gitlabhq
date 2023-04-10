@@ -472,6 +472,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
         request
 
         expect(response).to have_gitlab_http_status(:conflict)
+        expect(Gitlab::Json.parse(response.body)).to include('Who' => current_user.username)
       end
     end
 

@@ -45,7 +45,7 @@ class ProtectedBranch < ApplicationRecord
   end
 
   def self.allow_force_push?(project, ref_name)
-    if Feature.enabled?(:group_protected_branches, project.group)
+    if allow_protected_branches_for_group?(project.group)
       protected_branches = project.all_protected_branches.matching(ref_name)
 
       project_protected_branches, group_protected_branches = protected_branches.partition(&:project_id)
@@ -58,6 +58,10 @@ class ProtectedBranch < ApplicationRecord
     else
       project.protected_branches.allowing_force_push.matching(ref_name).any?
     end
+  end
+
+  def self.allow_protected_branches_for_group?(group)
+    Feature.enabled?(:group_protected_branches, group) || Feature.enabled?(:allow_protected_branches_for_group, group)
   end
 
   def self.any_protected?(project, ref_names)
