@@ -119,7 +119,7 @@ using GitLab CI/CD with various:
 
 You can change the default behavior of GitLab CI/CD for:
 
-- An entire GitLab instance in the [CI/CD administration settings](../administration/index.md#cicd-settings).
+- An entire GitLab instance in the [CI/CD administration settings](../administration/cicd.md).
 - Specific projects in the [pipelines settings](pipelines/settings.md).
 
 See also:

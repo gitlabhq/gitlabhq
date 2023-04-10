@@ -117,7 +117,7 @@ If you're running Geo, see also the [Geo Health check Rake task](../geo/replicat
 
 You may also have a look at our troubleshooting guides for:
 
-- [GitLab](../index.md#troubleshooting)
+- [GitLab](../troubleshooting/index.md)
 - [Omnibus GitLab](https://docs.gitlab.com/omnibus/index.html#troubleshooting)
 
 Additionally you should also [verify database values can be decrypted using the current secrets](check.md#verify-database-values-can-be-decrypted-using-the-current-secrets).

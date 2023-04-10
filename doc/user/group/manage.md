@@ -653,6 +653,25 @@ To view the merge request approval settings for a group:
 
 Support for group-level settings for merge request approval rules is tracked in this [epic](https://gitlab.com/groups/gitlab-org/-/epics/4367).
 
+## Group Code Suggestions **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/405126) in GitLab 15.11.
+
+WARNING:
+This feature is in [Open Beta](/ee/policy/alpha-beta-support.md#open-beta-features). Code Suggestions is a generative AI feature that suggests code for developers. Due to high demand, we expect this feature will have unscheduled downtime and delays in code suggestions appearing in VS Code. We strongly encourage beta users to read about the [known limitations](../project/repository/code_suggestions.md#known-limitations). We look forward to hearing your feedback.
+
+This setting enables users in the group to access [Code Suggestions](../project/repository/code_suggestions.md).
+This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
+that belong to the group.
+
+To enable Code Suggestions for a group:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Permissions and group features** section.
+1. Find the **Code Suggestions** settings.
+1. Select **Save changes**.
+
 ## Group activity analytics **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/alpha-beta-support.md#beta-features).

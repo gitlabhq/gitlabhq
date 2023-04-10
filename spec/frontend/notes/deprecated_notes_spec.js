@@ -1,9 +1,11 @@
 /* eslint-disable import/no-commonjs, no-new */
 
 import MockAdapter from 'axios-mock-adapter';
+import htmlPipelineSchedulesEditSnippets from 'test_fixtures/snippets/show.html';
+import htmlPipelineSchedulesEditCommit from 'test_fixtures/commit/show.html';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
@@ -19,7 +21,6 @@ const Notes = require('~/deprecated_notes').default;
 
 const FLASH_TYPE_ALERT = 'alert';
 const NOTES_POST_PATH = /(.*)\/notes\?html=true$/;
-const fixture = 'snippets/show.html';
 let mockAxios;
 
 window.project_uploads_path = `${TEST_HOST}/uploads`;
@@ -36,7 +37,7 @@ function wrappedDiscussionNote(note) {
 // eslint-disable-next-line jest/no-disabled-tests
 describe.skip('Old Notes (~/deprecated_notes.js)', () => {
   beforeEach(() => {
-    loadHTMLFixture(fixture);
+    setHTMLFixture(htmlPipelineSchedulesEditSnippets);
 
     // Re-declare this here so that test_setup.js#beforeEach() doesn't
     // overwrite it.
@@ -671,7 +672,7 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
     let $notesContainer;
 
     beforeEach(() => {
-      loadHTMLFixture('commit/show.html');
+      setHTMLFixture(htmlPipelineSchedulesEditCommit);
       mockAxios.onPost(NOTES_POST_PATH).reply(HTTP_STATUS_OK, note);
 
       new Notes('', []);

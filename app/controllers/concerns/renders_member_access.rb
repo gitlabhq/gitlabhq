@@ -15,7 +15,8 @@ module RendersMemberAccess
 
     method_name = "max_member_access_for_#{klass.name.underscore}_ids"
 
-    current_user.public_send(method_name, collection.ids) # rubocop:disable GitlabSecurity/PublicSend
+    collection_ids = collection.try(:map, &:id) || collection.ids
+    current_user.public_send(method_name, collection_ids) # rubocop:disable GitlabSecurity/PublicSend
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end
