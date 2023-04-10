@@ -13,6 +13,7 @@ class NamespaceSetting < ApplicationRecord
   enum enabled_git_access_protocol: { all: 0, ssh: 1, http: 2 }, _suffix: true
 
   validates :enabled_git_access_protocol, inclusion: { in: enabled_git_access_protocols.keys }
+  validates :code_suggestions, allow_nil: false, inclusion: { in: [true, false] }
 
   validate :allow_mfa_for_group
   validate :allow_resource_access_token_creation_for_group

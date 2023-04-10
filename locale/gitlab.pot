@@ -10407,6 +10407,18 @@ msgstr ""
 msgid "CodeQuality|New code quality degradations on this line"
 msgstr ""
 
+msgid "CodeSuggestions|%{link_start}What are code suggestions?%{link_end}"
+msgstr ""
+
+msgid "CodeSuggestions|By enabling this feature, you accept the %{link_start}Testing Terms of Use%{link_end}."
+msgstr ""
+
+msgid "CodeSuggestions|Code Suggestions"
+msgstr ""
+
+msgid "CodeSuggestions|Projects in this group can use Code Suggestions in VS Code"
+msgstr ""
+
 msgid "Cohorts|Inactive users"
 msgstr ""
 
@@ -51231,6 +51243,9 @@ msgid "authored"
 msgstr ""
 
 msgid "banned user already exists"
+msgstr ""
+
+msgid "beta"
 msgstr ""
 
 msgid "blocks"

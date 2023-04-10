@@ -25,3 +25,8 @@ export const USER_MENU_TRACKING_DEFAULTS = {
   'data-track-property': 'nav_user_menu',
   'data-track-action': 'click_link',
 };
+
+export const HELP_MENU_TRACKING_DEFAULTS = {
+  'data-track-property': 'nav_help_menu',
+  'data-track-action': 'click_link',
+};
