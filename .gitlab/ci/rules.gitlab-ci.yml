@@ -871,8 +871,6 @@
 
 .build-images:rules:build-assets-image-as-if-foss:
   rules:
-    - <<: *if-not-canonical-namespace
-      when: never
     - <<: *if-not-ee
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
@@ -1371,6 +1369,11 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
+      changes: *ci-build-images-patterns
+      when: manual
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+      changes: *code-qa-patterns
       when: manual
       allow_failure: true
 

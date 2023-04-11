@@ -14,3 +14,8 @@ export const EMPTY_STATE_DESCRIPTION_LABEL = s__(
   'MlExperimentTracking|No candidates logged for the query. Create new candidates using the MLflow client.',
 );
 export const EMPTY_STATE_TITLE_LABEL = s__('MlExperimentTracking|No candidates');
+export const DELETE_EXPERIMENT_CONFIRMATION_MESSAGE = s__(
+  'MlExperimentTracking|Deleting this experiment will also delete its candidates and their associated metadata.',
+);
+export const DELETE_EXPERIMENT_PRIMARY_ACTION_LABEL = s__('MlExperimentTracking|Delete experiment');
+export const DELETE_EXPERIMENT_MODAL_TITLE = s__('MLExperimentTracking|Delete experiment?');

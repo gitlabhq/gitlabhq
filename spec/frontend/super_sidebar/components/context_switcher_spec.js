@@ -100,7 +100,7 @@ describe('ContextSwitcher component', () => {
 
     it('passes the placeholder to the search box', () => {
       expect(findSearchBox().props('placeholder')).toBe(
-        s__('Navigation|Search for projects or groups'),
+        s__('Navigation|Search your projects or groups'),
       );
     });
 

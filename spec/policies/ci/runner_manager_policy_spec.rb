@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnerMachinePolicy, feature_category: :runner_fleet do
+RSpec.describe Ci::RunnerManagerPolicy, feature_category: :runner_fleet do
   let_it_be(:owner) { create(:user) }
 
-  describe 'ability :read_runner_machine' do
+  describe 'ability :read_runner_manager' do
     let_it_be(:guest) { create(:user) }
     let_it_be(:developer) { create(:user) }
     let_it_be(:maintainer) { create(:user) }
@@ -14,13 +14,13 @@ RSpec.describe Ci::RunnerMachinePolicy, feature_category: :runner_fleet do
     let_it_be_with_reload(:subgroup) { create(:group, name: 'subgroup', path: 'subgroup', parent: group) }
     let_it_be_with_reload(:project) { create(:project, group: subgroup) }
 
-    let_it_be(:instance_runner) { create(:ci_runner, :instance, :with_runner_machine) }
-    let_it_be(:group_runner) { create(:ci_runner, :group, :with_runner_machine, groups: [group]) }
-    let_it_be(:project_runner) { create(:ci_runner, :project, :with_runner_machine, projects: [project]) }
+    let_it_be(:instance_runner) { create(:ci_runner, :instance, :with_runner_manager) }
+    let_it_be(:group_runner) { create(:ci_runner, :group, :with_runner_manager, groups: [group]) }
+    let_it_be(:project_runner) { create(:ci_runner, :project, :with_runner_manager, projects: [project]) }
 
-    let(:runner_machine) { runner.runner_machines.first }
+    let(:runner_manager) { runner.runner_managers.first }
 
-    subject(:policy) { described_class.new(user, runner_machine) }
+    subject(:policy) { described_class.new(user, runner_manager) }
 
     before_all do
       group.add_guest(guest)
@@ -29,18 +29,18 @@ RSpec.describe Ci::RunnerMachinePolicy, feature_category: :runner_fleet do
       group.add_owner(owner)
     end
 
-    shared_examples 'a policy allowing reading instance runner machine depending on runner sharing' do
+    shared_examples 'a policy allowing reading instance runner manager depending on runner sharing' do
       context 'with instance runner' do
         let(:runner) { instance_runner }
 
-        it { expect_allowed :read_runner_machine }
+        it { expect_allowed :read_runner_manager }
 
         context 'with shared runners disabled on projects' do
           before do
             project.update!(shared_runners_enabled: false)
           end
 
-          it { expect_allowed :read_runner_machine }
+          it { expect_allowed :read_runner_manager }
         end
 
         context 'with shared runners disabled for groups and projects' do
@@ -49,32 +49,32 @@ RSpec.describe Ci::RunnerMachinePolicy, feature_category: :runner_fleet do
             project.update!(shared_runners_enabled: false)
           end
 
-          it { expect_disallowed :read_runner_machine }
+          it { expect_disallowed :read_runner_manager }
         end
       end
     end
 
-    shared_examples 'a policy allowing reading group runner machine depending on runner sharing' do
+    shared_examples 'a policy allowing reading group runner manager depending on runner sharing' do
       context 'with group runner' do
         let(:runner) { group_runner }
 
-        it { expect_allowed :read_runner_machine }
+        it { expect_allowed :read_runner_manager }
 
         context 'with sharing of group runners disabled' do
           before do
             project.update!(group_runners_enabled: false)
           end
 
-          it { expect_disallowed :read_runner_machine }
+          it { expect_disallowed :read_runner_manager }
         end
       end
     end
 
-    shared_examples 'does not allow reading runners machines on any scope' do
+    shared_examples 'does not allow reading runners managers on any scope' do
       context 'with instance runner' do
         let(:runner) { instance_runner }
 
-        it { expect_disallowed :read_runner_machine }
+        it { expect_disallowed :read_runner_manager }
 
         context 'with shared runners disabled for groups and projects' do
           before do
@@ -82,94 +82,94 @@ RSpec.describe Ci::RunnerMachinePolicy, feature_category: :runner_fleet do
             project.update!(shared_runners_enabled: false)
           end
 
-          it { expect_disallowed :read_runner_machine }
+          it { expect_disallowed :read_runner_manager }
         end
       end
 
       context 'with group runner' do
         let(:runner) { group_runner }
 
-        it { expect_disallowed :read_runner_machine }
+        it { expect_disallowed :read_runner_manager }
 
         context 'with sharing of group runners disabled' do
           before do
             project.update!(group_runners_enabled: false)
           end
 
-          it { expect_disallowed :read_runner_machine }
+          it { expect_disallowed :read_runner_manager }
         end
       end
 
       context 'with project runner' do
         let(:runner) { project_runner }
 
-        it { expect_disallowed :read_runner_machine }
+        it { expect_disallowed :read_runner_manager }
       end
     end
 
     context 'without access' do
       let_it_be(:user) { create(:user) }
 
-      it_behaves_like 'does not allow reading runners machines on any scope'
+      it_behaves_like 'does not allow reading runners managers on any scope'
     end
 
     context 'with guest access' do
       let(:user) { guest }
 
-      it_behaves_like 'does not allow reading runners machines on any scope'
+      it_behaves_like 'does not allow reading runners managers on any scope'
     end
 
     context 'with developer access' do
       let(:user) { developer }
 
-      it_behaves_like 'a policy allowing reading instance runner machine depending on runner sharing'
+      it_behaves_like 'a policy allowing reading instance runner manager depending on runner sharing'
 
-      it_behaves_like 'a policy allowing reading group runner machine depending on runner sharing'
+      it_behaves_like 'a policy allowing reading group runner manager depending on runner sharing'
 
       context 'with project runner' do
         let(:runner) { project_runner }
 
-        it { expect_disallowed :read_runner_machine }
+        it { expect_disallowed :read_runner_manager }
       end
     end
 
     context 'with maintainer access' do
       let(:user) { maintainer }
 
-      it_behaves_like 'a policy allowing reading instance runner machine depending on runner sharing'
+      it_behaves_like 'a policy allowing reading instance runner manager depending on runner sharing'
 
-      it_behaves_like 'a policy allowing reading group runner machine depending on runner sharing'
+      it_behaves_like 'a policy allowing reading group runner manager depending on runner sharing'
 
       context 'with project runner' do
         let(:runner) { project_runner }
 
-        it { expect_allowed :read_runner_machine }
+        it { expect_allowed :read_runner_manager }
       end
     end
 
     context 'with owner access' do
       let(:user) { owner }
 
-      it_behaves_like 'a policy allowing reading instance runner machine depending on runner sharing'
+      it_behaves_like 'a policy allowing reading instance runner manager depending on runner sharing'
 
       context 'with group runner' do
         let(:runner) { group_runner }
 
-        it { expect_allowed :read_runner_machine }
+        it { expect_allowed :read_runner_manager }
 
         context 'with sharing of group runners disabled' do
           before do
             project.update!(group_runners_enabled: false)
           end
 
-          it { expect_allowed :read_runner_machine }
+          it { expect_allowed :read_runner_manager }
         end
       end
 
       context 'with project runner' do
         let(:runner) { project_runner }
 
-        it { expect_allowed :read_runner_machine }
+        it { expect_allowed :read_runner_manager }
       end
     end
   end

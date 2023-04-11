@@ -78,6 +78,16 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
     end
   end
 
+  describe '#experiment_as_data' do
+    subject { Gitlab::Json.parse(helper.experiment_as_data(experiment)) }
+
+    it do
+      is_expected.to eq(
+        { 'name' => experiment.name, 'path' => "/#{project.full_path}/-/ml/experiments/#{experiment.iid}" }
+      )
+    end
+  end
+
   describe '#show_candidate_view_model' do
     let(:candidate) { candidate0 }
 

@@ -39,7 +39,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it { is_expected.to have_many(:pages_deployments).with_foreign_key(:ci_build_id) }
 
   it { is_expected.to have_one(:deployment) }
-  it { is_expected.to have_one(:runner_machine).through(:runner_machine_build) }
+  it { is_expected.to have_one(:runner_manager).through(:runner_manager_build) }
   it { is_expected.to have_one(:runner_session).with_foreign_key(:build_id) }
   it { is_expected.to have_one(:trace_metadata).with_foreign_key(:build_id) }
   it { is_expected.to have_one(:runtime_metadata).with_foreign_key(:build_id) }
@@ -2036,14 +2036,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe '#runner_machine' do
+  describe '#runner_manager' do
     let_it_be(:runner) { create(:ci_runner) }
-    let_it_be(:runner_machine) { create(:ci_runner_machine, runner: runner) }
-    let_it_be(:build) { create(:ci_build, runner_machine: runner_machine) }
+    let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner) }
+    let_it_be(:build) { create(:ci_build, runner_manager: runner_manager) }
 
-    subject(:build_runner_machine) { described_class.find(build.id).runner_machine }
+    subject(:build_runner_manager) { described_class.find(build.id).runner_manager }
 
-    it { is_expected.to eq(runner_machine) }
+    it { is_expected.to eq(runner_manager) }
   end
 
   describe '#tag_list' do

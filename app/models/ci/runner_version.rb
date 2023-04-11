@@ -19,7 +19,7 @@ module Ci
       recommended: 'Upgrade is available and recommended for the runner.'
     }.freeze
 
-    has_many :runner_machines, inverse_of: :runner_version, foreign_key: :version, class_name: 'Ci::RunnerMachine'
+    has_many :runner_managers, inverse_of: :runner_version, foreign_key: :version, class_name: 'Ci::RunnerManager'
 
     # This scope returns all versions that might need recalculating. For instance, once a version is considered
     # :recommended, it normally doesn't change status even if the instance is upgraded

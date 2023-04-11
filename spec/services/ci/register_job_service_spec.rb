@@ -14,9 +14,9 @@ module Ci
     let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
     describe '#execute' do
-      subject(:execute) { described_class.new(runner, runner_machine).execute }
+      subject(:execute) { described_class.new(runner, runner_manager).execute }
 
-      let(:runner_machine) { nil }
+      let(:runner_manager) { nil }
 
       context 'checks database loadbalancing stickiness' do
         let(:runner) { shared_runner }
@@ -28,7 +28,7 @@ module Ci
         it 'result is valid if replica did caught-up', :aggregate_failures do
           expect(ApplicationRecord.sticking).to receive(:all_caught_up?).with(:runner, runner.id) { true }
 
-          expect { execute }.not_to change { Ci::RunnerMachineBuild.count }.from(0)
+          expect { execute }.not_to change { Ci::RunnerManagerBuild.count }.from(0)
           expect(execute).to be_valid
           expect(execute.build).to be_nil
           expect(execute.build_json).to be_nil
@@ -46,9 +46,9 @@ module Ci
 
       shared_examples 'handles runner assignment' do
         context 'runner follows tag list' do
-          subject(:build) { build_on(project_runner, runner_machine: project_runner_machine) }
+          subject(:build) { build_on(project_runner, runner_manager: project_runner_manager) }
 
-          let(:project_runner_machine) { nil }
+          let(:project_runner_manager) { nil }
 
           context 'when job has tag' do
             before do
@@ -62,19 +62,19 @@ module Ci
                 project_runner.update!(tag_list: ["linux"])
               end
 
-              context 'with no runner machine specified' do
+              context 'with no runner manager specified' do
                 it 'picks build' do
                   expect(build).to eq(pending_job)
-                  expect(pending_job.runner_machine).to be_nil
+                  expect(pending_job.runner_manager).to be_nil
                 end
               end
 
-              context 'with runner machine specified' do
-                let(:project_runner_machine) { create(:ci_runner_machine, runner: project_runner) }
+              context 'with runner manager specified' do
+                let(:project_runner_manager) { create(:ci_runner_machine, runner: project_runner) }
 
-                it 'picks build and assigns runner machine' do
+                it 'picks build and assigns runner manager' do
                   expect(build).to eq(pending_job)
-                  expect(pending_job.runner_machine).to eq(project_runner_machine)
+                  expect(pending_job.runner_manager).to eq(project_runner_manager)
                 end
               end
             end
@@ -123,27 +123,27 @@ module Ci
           end
 
           context 'for project runner' do
-            subject(:build) { build_on(project_runner, runner_machine: project_runner_machine) }
+            subject(:build) { build_on(project_runner, runner_manager: project_runner_manager) }
 
-            let(:project_runner_machine) { nil }
+            let(:project_runner_manager) { nil }
 
-            context 'with no runner machine specified' do
+            context 'with no runner manager specified' do
               it 'does not pick a build' do
                 expect(build).to be_nil
                 expect(pending_job.reload).to be_failed
                 expect(pending_job.queuing_entry).to be_nil
-                expect(Ci::RunnerMachineBuild.all).to be_empty
+                expect(Ci::RunnerManagerBuild.all).to be_empty
               end
             end
 
-            context 'with runner machine specified' do
-              let(:project_runner_machine) { create(:ci_runner_machine, runner: project_runner) }
+            context 'with runner manager specified' do
+              let(:project_runner_manager) { create(:ci_runner_machine, runner: project_runner) }
 
               it 'does not pick a build' do
                 expect(build).to be_nil
                 expect(pending_job.reload).to be_failed
                 expect(pending_job.queuing_entry).to be_nil
-                expect(Ci::RunnerMachineBuild.all).to be_empty
+                expect(Ci::RunnerManagerBuild.all).to be_empty
               end
             end
           end
@@ -164,7 +164,7 @@ module Ci
               pending_job.update!(user: user)
             end
 
-            context 'with no runner machine specified' do
+            context 'with no runner manager specified' do
               it 'does not pick the build and drops the build' do
                 expect(build_on(shared_runner)).to be_falsey
 
@@ -172,13 +172,13 @@ module Ci
               end
             end
 
-            context 'with runner machine specified' do
-              let(:runner_machine) { create(:ci_runner_machine, runner: runner) }
+            context 'with runner manager specified' do
+              let(:runner_manager) { create(:ci_runner_machine, runner: runner) }
 
               it 'does not pick the build and does not create join record' do
-                expect(build_on(shared_runner, runner_machine: runner_machine)).to be_falsey
+                expect(build_on(shared_runner, runner_manager: runner_manager)).to be_falsey
 
-                expect(Ci::RunnerMachineBuild.all).to be_empty
+                expect(Ci::RunnerManagerBuild.all).to be_empty
               end
             end
           end
@@ -1037,8 +1037,8 @@ module Ci
       end
     end
 
-    def build_on(runner, runner_machine: nil, params: {})
-      described_class.new(runner, runner_machine).execute(params).build
+    def build_on(runner, runner_manager: nil, params: {})
+      described_class.new(runner, runner_manager).execute(params).build
     end
   end
 end

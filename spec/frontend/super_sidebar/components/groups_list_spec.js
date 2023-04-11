@@ -22,7 +22,7 @@ describe('GroupsList component', () => {
       expect(findViewAllLink().props('item')).toEqual({
         icon: 'group',
         link: viewAllLink,
-        title: s__('Navigation|View all groups'),
+        title: s__('Navigation|View all your groups'),
       });
     });
   };

@@ -1085,10 +1085,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/at.js/-/at.js-1.5.7.tgz#1ee6f838cc4410a1d797770934df91d90df8179e"
   integrity sha512-c6ySRK/Ma7lxwpIVbSAF3P+xiTLrNTGTLRx4/pHK111AdFxwgUwrYF6aVZFXvmG65jHOJHoa0eQQ21RW6rm0Rg==
 
-"@gitlab/eslint-plugin@18.3.0":
-  version "18.3.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-18.3.0.tgz#1bb7bdfc39ccd4a6b2826608cede2d348cc76c48"
-  integrity sha512-cPWPDty+7KPyBeYaJZ/EJ9oAWQVj4onea7mHPdZnGtqtL3NcPU8VT0kIXPCk2bcYG2KhA58J+t6nF7NJ/MVPfg==
+"@gitlab/eslint-plugin@18.3.2":
+  version "18.3.2"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-18.3.2.tgz#dc4d5b487e26a1473106c1a3e34ae3ea219d4dd1"
+  integrity sha512-Lz0RnEW5isZ/jkeHcr2k6NqaHISwgKeWN/vkWUU5J4Ax7oYPR0CgA2KO/dEnOvIPmGfbnUKowsekBmmy5SUQHA==
   dependencies:
     "@babel/core" "^7.17.0"
     "@babel/eslint-parser" "^7.17.0"
@@ -1097,7 +1097,7 @@
     eslint-config-prettier "^6.10.0"
     eslint-plugin-babel "^5.3.0"
     eslint-plugin-import "^2.26.0"
-    eslint-plugin-jest "^27.0.4"
+    eslint-plugin-jest "^27.2.1"
     eslint-plugin-promise "^6.0.1"
     eslint-plugin-unicorn "^40.1.0"
     eslint-plugin-vue "^9.3.0"
@@ -5590,10 +5590,10 @@ eslint-plugin-import@^2.26.0, eslint-plugin-import@^2.27.5:
     semver "^6.3.0"
     tsconfig-paths "^3.14.1"
 
-eslint-plugin-jest@^27.0.4:
-  version "27.0.4"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-27.0.4.tgz#ab9c7b3f48bfade4762c24c415a5d9bbc0174a61"
-  integrity sha512-BuvY78pHMpMJ6Cio7sKg6jrqEcnRYPUc4Nlihku4vKx3FjlmMINSX4vcYokZIe+8TKcyr1aI5Kq7vYwgJNdQSA==
+eslint-plugin-jest@^27.2.1:
+  version "27.2.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-27.2.1.tgz#b85b4adf41c682ea29f1f01c8b11ccc39b5c672c"
+  integrity sha512-l067Uxx7ZT8cO9NJuf+eJHvt6bqJyz2Z29wykyEdz/OtmcELQl2MQGQLX8J94O1cSJWAwUSEvCjwjA7KEK3Hmg==
   dependencies:
     "@typescript-eslint/utils" "^5.10.0"
 

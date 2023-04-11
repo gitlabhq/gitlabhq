@@ -6,7 +6,7 @@ module Ci
   class RegisterJobService
     include ::Gitlab::Ci::Artifacts::Logger
 
-    attr_reader :runner, :runner_machine, :metrics
+    attr_reader :runner, :runner_manager, :metrics
 
     TEMPORARY_LOCK_TIMEOUT = 3.seconds
 
@@ -18,9 +18,9 @@ module Ci
     # affect 5% of the worst case scenarios.
     MAX_QUEUE_DEPTH = 45
 
-    def initialize(runner, runner_machine)
+    def initialize(runner, runner_manager)
       @runner = runner
-      @runner_machine = runner_machine
+      @runner_manager = runner_manager
       @metrics = ::Gitlab::Ci::Queue::Metrics.new(runner)
     end
 
@@ -255,7 +255,7 @@ module Ci
         @metrics.increment_queue_operation(:runner_pre_assign_checks_success)
 
         build.run!
-        build.runner_machine = runner_machine if runner_machine
+        build.runner_manager = runner_manager if runner_manager
       end
 
       !failure_reason

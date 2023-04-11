@@ -2,40 +2,40 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnerMachineBuild, model: true, feature_category: :runner_fleet do
+RSpec.describe Ci::RunnerManagerBuild, model: true, feature_category: :runner_fleet do
   let_it_be(:runner) { create(:ci_runner) }
-  let_it_be(:runner_machine) { create(:ci_runner_machine, runner: runner) }
-  let_it_be(:build) { create(:ci_build, runner_machine: runner_machine) }
+  let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner) }
+  let_it_be(:build) { create(:ci_build, runner_manager: runner_manager) }
 
   it { is_expected.to belong_to(:build) }
-  it { is_expected.to belong_to(:runner_machine) }
+  it { is_expected.to belong_to(:runner_manager) }
 
   describe 'partitioning' do
     context 'with build' do
       let(:build) { FactoryBot.build(:ci_build, partition_id: ci_testing_partition_id) }
-      let(:runner_machine_build) { FactoryBot.build(:ci_runner_machine_build, build: build) }
+      let(:runner_manager_build) { FactoryBot.build(:ci_runner_machine_build, build: build) }
 
       it 'sets partition_id to the current partition value' do
-        expect { runner_machine_build.valid? }.to change { runner_machine_build.partition_id }
+        expect { runner_manager_build.valid? }.to change { runner_manager_build.partition_id }
           .to(ci_testing_partition_id)
       end
 
       context 'when it is already set' do
-        let(:runner_machine_build) { FactoryBot.build(:ci_runner_machine_build, partition_id: 125) }
+        let(:runner_manager_build) { FactoryBot.build(:ci_runner_machine_build, partition_id: 125) }
 
         it 'does not change the partition_id value' do
-          expect { runner_machine_build.valid? }.not_to change { runner_machine_build.partition_id }
+          expect { runner_manager_build.valid? }.not_to change { runner_manager_build.partition_id }
         end
       end
     end
 
     context 'without build' do
-      let(:runner_machine_build) { FactoryBot.build(:ci_runner_machine_build, build: nil) }
+      let(:runner_manager_build) { FactoryBot.build(:ci_runner_machine_build, build: nil) }
 
       it { is_expected.to validate_presence_of(:partition_id) }
 
       it 'does not change the partition_id value' do
-        expect { runner_machine_build.valid? }.not_to change { runner_machine_build.partition_id }
+        expect { runner_manager_build.valid? }.not_to change { runner_manager_build.partition_id }
       end
     end
   end
@@ -52,10 +52,10 @@ RSpec.describe Ci::RunnerMachineBuild, model: true, feature_category: :runner_fl
     it { expect(partitioning_strategy.active_partition).to be_present }
   end
 
-  context 'loose foreign key on p_ci_runner_machine_builds.runner_machine_id' do # rubocop:disable RSpec/ContextWording
+  context 'loose foreign key on p_ci_runner_manager_builds.runner_manager_id' do # rubocop:disable RSpec/ContextWording
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:ci_runner_machine) }
-      let!(:model) { create(:ci_runner_machine_build, runner_machine: parent) }
+      let!(:model) { create(:ci_runner_machine_build, runner_manager: parent) }
     end
   end
 
@@ -69,7 +69,7 @@ RSpec.describe Ci::RunnerMachineBuild, model: true, feature_category: :runner_fl
     end
 
     context 'with valid build_ids' do
-      let(:build2) { create(:ci_build, runner_machine: runner_machine) }
+      let(:build2) { create(:ci_build, runner_manager: runner_manager) }
       let(:build_id) { [build, build2] }
 
       it { is_expected.to eq(described_class.where(build_id: build_id)) }
@@ -82,13 +82,13 @@ RSpec.describe Ci::RunnerMachineBuild, model: true, feature_category: :runner_fl
     end
   end
 
-  describe '.pluck_runner_machine_id_and_build_id' do
-    subject { scope.pluck_build_id_and_runner_machine_id }
+  describe '.pluck_runner_manager_id_and_build_id' do
+    subject { scope.pluck_build_id_and_runner_manager_id }
 
     context 'with default scope' do
       let(:scope) { described_class }
 
-      it { is_expected.to eq({ build.id => runner_machine.id }) }
+      it { is_expected.to eq({ build.id => runner_manager.id }) }
     end
 
     context 'with scope excluding build' do

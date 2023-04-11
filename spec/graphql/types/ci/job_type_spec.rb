@@ -40,7 +40,7 @@ RSpec.describe Types::Ci::JobType, feature_category: :continuous_integration do
       refPath
       retryable
       retried
-      runnerMachine
+      runnerManager
       scheduledAt
       schedulingType
       shortSha

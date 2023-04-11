@@ -39,7 +39,7 @@ export default {
     viewAllItem() {
       return {
         link: this.viewAllLink,
-        title: s__('Navigation|View all projects'),
+        title: s__('Navigation|View all your projects'),
         icon: 'project',
       };
     },

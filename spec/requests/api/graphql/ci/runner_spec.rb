@@ -10,7 +10,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
   let_it_be(:group) { create(:group) }
 
   let_it_be(:active_instance_runner) do
-    create(:ci_runner, :instance, :with_runner_machine,
+    create(:ci_runner, :instance, :with_runner_manager,
       description: 'Runner 1',
       creator: user,
       contacted_at: 2.hours.ago,
@@ -59,7 +59,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
 
   let_it_be(:project1) { create(:project) }
   let_it_be(:active_project_runner) do
-    create(:ci_runner, :project, :with_runner_machine, projects: [project1])
+    create(:ci_runner, :project, :with_runner_manager, projects: [project1])
   end
 
   shared_examples 'runner details fetch' do
@@ -121,8 +121,8 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
           'deleteRunner' => true,
           'assignRunner' => true
         },
-        machines: a_hash_including(
-          "count" => runner.runner_machines.count,
+        managers: a_hash_including(
+          "count" => runner.runner_managers.count,
           "nodes" => an_instance_of(Array),
           "pageInfo" => anything
         )
@@ -625,12 +625,12 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
         context 'with runner created in last hour' do
           let(:created_at) { (Ci::Runner::REGISTRATION_AVAILABILITY_TIME - 1.second).ago }
 
-          context 'with no runner machine registed yet' do
+          context 'with no runner manager registered yet' do
             it_behaves_like 'an ephemeral_authentication_token'
           end
 
-          context 'with first runner machine already registed' do
-            let!(:runner_machine) { create(:ci_runner_machine, runner: runner) }
+          context 'with first runner manager already registered' do
+            let!(:runner_manager) { create(:ci_runner_machine, runner: runner) }
 
             it_behaves_like 'a protected ephemeral_authentication_token'
           end

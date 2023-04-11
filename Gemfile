@@ -451,23 +451,23 @@ end
 
 group :test do
   gem 'fuubar', '~> 2.2.0'
-  gem 'rspec-retry', '~> 0.6.1'
+  gem 'rspec-retry', '~> 0.6.2'
   gem 'rspec_profiling', '~> 0.0.6'
   gem 'rspec-benchmark', '~> 0.6.0'
   gem 'rspec-parameterized', '~> 1.0', require: false
 
   gem 'capybara', '~> 3.39'
-  gem 'capybara-screenshot', '~> 1.0.22'
-  gem 'selenium-webdriver', '~> 3.142'
+  gem 'capybara-screenshot', '~> 1.0.26'
+  gem 'selenium-webdriver', '~> 3.142', '>= 3.142.7'
 
   gem 'graphlyte', '~> 1.0.0'
 
   gem 'shoulda-matchers', '~> 5.1.0', require: false
   gem 'email_spec', '~> 2.2.0'
-  gem 'webmock', '~> 3.9.1'
+  gem 'webmock', '~> 3.18.1'
   gem 'rails-controller-testing'
   gem 'concurrent-ruby', '~> 1.1'
-  gem 'test-prof', '~> 1.0.7'
+  gem 'test-prof', '~> 1.2.1'
   gem 'rspec_junit_formatter'
   gem 'guard-rspec'
   gem 'axe-core-rspec'

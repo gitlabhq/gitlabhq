@@ -24,6 +24,15 @@ module Projects
         Gitlab::Json.generate(data)
       end
 
+      def experiment_as_data(experiment)
+        data = {
+          name: experiment.name,
+          path: link_to_experiment(experiment.project, experiment)
+        }
+
+        Gitlab::Json.generate(data)
+      end
+
       def candidates_table_items(candidates)
         items = candidates.map do |candidate|
           {

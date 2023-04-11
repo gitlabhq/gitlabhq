@@ -131,29 +131,29 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               let(:args) { { system_id: 's_some_system_id' } }
 
               it 'creates respective ci_runner_machines record', :freeze_time do
-                expect { request }.to change { runner.runner_machines.reload.count }.from(0).to(1)
+                expect { request }.to change { runner.runner_managers.reload.count }.from(0).to(1)
 
-                machine = runner.runner_machines.last
-                expect(machine.system_xid).to eq args[:system_id]
-                expect(machine.runner).to eq runner
-                expect(machine.contacted_at).to eq Time.current
+                runner_manager = runner.runner_managers.last
+                expect(runner_manager.system_xid).to eq args[:system_id]
+                expect(runner_manager.runner).to eq runner
+                expect(runner_manager.contacted_at).to eq Time.current
               end
             end
 
             context 'when ci_runner_machines with same system_xid already exists', :freeze_time do
               let(:args) { { system_id: 's_existing_system_id' } }
-              let!(:runner_machine) do
+              let!(:runner_manager) do
                 create(:ci_runner_machine, runner: runner, system_xid: args[:system_id], contacted_at: 1.hour.ago)
               end
 
               it 'does not create new ci_runner_machines record' do
-                expect { request }.not_to change { Ci::RunnerMachine.count }
+                expect { request }.not_to change { Ci::RunnerManager.count }
               end
 
               it 'updates the contacted_at field' do
                 request
 
-                expect(runner_machine.reload.contacted_at).to eq Time.current
+                expect(runner_manager.reload.contacted_at).to eq Time.current
               end
             end
           end
@@ -167,10 +167,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               let(:args) { { system_id: 's_some_system_id' } }
 
               it 'does not create respective ci_runner_machines record', :freeze_time, :aggregate_failures do
-                expect { request }.not_to change { runner.runner_machines.reload.count }
+                expect { request }.not_to change { runner.runner_managers.reload.count }
 
                 expect(response).to have_gitlab_http_status(:created)
-                expect(runner.runner_machines).to be_empty
+                expect(runner.runner_managers).to be_empty
               end
             end
           end

@@ -26322,6 +26322,9 @@ msgstr ""
 msgid "MD5"
 msgstr ""
 
+msgid "MLExperimentTracking|Delete experiment?"
+msgstr ""
+
 msgid "MR widget|Back to the merge request"
 msgstr ""
 
@@ -28184,6 +28187,12 @@ msgstr ""
 msgid "MlExperimentTracking|Created at"
 msgstr ""
 
+msgid "MlExperimentTracking|Delete experiment"
+msgstr ""
+
+msgid "MlExperimentTracking|Deleting this experiment will also delete its candidates and their associated metadata."
+msgstr ""
+
 msgid "MlExperimentTracking|Details"
 msgstr ""
 
@@ -28714,7 +28723,7 @@ msgstr ""
 msgid "Navigation|Retrieving search results"
 msgstr ""
 
-msgid "Navigation|Search for projects or groups"
+msgid "Navigation|Search your projects or groups"
 msgstr ""
 
 msgid "Navigation|Secure"
@@ -28732,10 +28741,10 @@ msgstr ""
 msgid "Navigation|Unpin item"
 msgstr ""
 
-msgid "Navigation|View all groups"
+msgid "Navigation|View all your groups"
 msgstr ""
 
-msgid "Navigation|View all projects"
+msgid "Navigation|View all your projects"
 msgstr ""
 
 msgid "Navigation|Your pinned items appear here."
@@ -36380,6 +36389,9 @@ msgid "Relate to %{issuable_type} %{add_related_issue_link}"
 msgstr ""
 
 msgid "Related"
+msgstr ""
+
+msgid "Related branches"
 msgstr ""
 
 msgid "Related feature flags"

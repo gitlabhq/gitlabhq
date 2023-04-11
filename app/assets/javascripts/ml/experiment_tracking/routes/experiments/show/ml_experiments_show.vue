@@ -12,6 +12,7 @@ import { queryToObject, setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import KeysetPagination from '~/vue_shared/components/incubation/pagination.vue';
 import IncubationAlert from '~/vue_shared/components/incubation/incubation_alert.vue';
+import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
 import {
   LIST_KEY_CREATED_AT,
   BASE_SORT_FIELDS,
@@ -30,8 +31,13 @@ export default {
     IncubationAlert,
     RegistrySearch,
     KeysetPagination,
+    DeleteButton,
   },
   props: {
+    experiment: {
+      type: Object,
+      required: true,
+    },
     candidates: {
       type: Array,
       required: true,
@@ -156,6 +162,21 @@ export default {
       :feature-name="$options.constants.FEATURE_NAME"
       :link-to-feedback-issue="$options.constants.FEATURE_FEEDBACK_ISSUE"
     />
+
+    <div class="detail-page-header gl-flex-wrap-wrap">
+      <div class="detail-page-header-body">
+        <h1 class="page-title gl-font-size-h-display flex-fill">
+          {{ experiment.name }}
+        </h1>
+
+        <delete-button
+          :delete-path="experiment.path"
+          :delete-confirmation-text="$options.i18n.DELETE_EXPERIMENT_CONFIRMATION_MESSAGE"
+          :action-primary-text="$options.i18n.DELETE_EXPERIMENT_PRIMARY_ACTION_LABEL"
+          :modal-title="$options.i18n.DELETE_EXPERIMENT_MODAL_TITLE"
+        />
+      </div>
+    </div>
 
     <registry-search
       :filters="filters"

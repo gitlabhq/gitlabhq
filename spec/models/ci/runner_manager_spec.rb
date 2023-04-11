@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model do
+RSpec.describe Ci::RunnerManager, feature_category: :runner_fleet, type: :model do
   it_behaves_like 'having unique enum values'
 
   it_behaves_like 'it has loose foreign keys' do
@@ -11,8 +11,8 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
 
   it { is_expected.to belong_to(:runner) }
   it { is_expected.to belong_to(:runner_version).with_foreign_key(:version) }
-  it { is_expected.to have_many(:runner_machine_builds) }
-  it { is_expected.to have_many(:builds).through(:runner_machine_builds) }
+  it { is_expected.to have_many(:runner_manager_builds) }
+  it { is_expected.to have_many(:builds).through(:runner_manager_builds) }
 
   describe 'validation' do
     it { is_expected.to validate_presence_of(:runner) }
@@ -26,17 +26,17 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
 
     context 'when runner has config' do
       it 'is valid' do
-        runner_machine = build(:ci_runner_machine, config: { gpus: "all" })
+        runner_manager = build(:ci_runner_machine, config: { gpus: "all" })
 
-        expect(runner_machine).to be_valid
+        expect(runner_manager).to be_valid
       end
     end
 
     context 'when runner has an invalid config' do
       it 'is invalid' do
-        runner_machine = build(:ci_runner_machine, config: { test: 1 })
+        runner_manager = build(:ci_runner_machine, config: { test: 1 })
 
-        expect(runner_machine).not_to be_valid
+        expect(runner_manager).not_to be_valid
       end
     end
   end
@@ -44,16 +44,16 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
   describe '.stale', :freeze_time do
     subject { described_class.stale.ids }
 
-    let!(:runner_machine1) { create(:ci_runner_machine, :stale) }
-    let!(:runner_machine2) { create(:ci_runner_machine, :stale, contacted_at: nil) }
-    let!(:runner_machine3) { create(:ci_runner_machine, created_at: 6.months.ago, contacted_at: Time.current) }
-    let!(:runner_machine4) { create(:ci_runner_machine, created_at: 5.days.ago) }
-    let!(:runner_machine5) do
+    let!(:runner_manager1) { create(:ci_runner_machine, :stale) }
+    let!(:runner_manager2) { create(:ci_runner_machine, :stale, contacted_at: nil) }
+    let!(:runner_manager3) { create(:ci_runner_machine, created_at: 6.months.ago, contacted_at: Time.current) }
+    let!(:runner_manager4) { create(:ci_runner_machine, created_at: 5.days.ago) }
+    let!(:runner_manager5) do
       create(:ci_runner_machine, created_at: (7.days - 1.second).ago, contacted_at: (7.days - 1.second).ago)
     end
 
-    it 'returns stale runner machines' do
-      is_expected.to match_array([runner_machine1.id, runner_machine2.id])
+    it 'returns stale runner managers' do
+      is_expected.to match_array([runner_manager1.id, runner_manager2.id])
     end
   end
 
@@ -70,20 +70,20 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
   end
 
   describe '#status', :freeze_time do
-    let(:runner_machine) { build(:ci_runner_machine, created_at: 8.days.ago) }
+    let(:runner_manager) { build(:ci_runner_machine, created_at: 8.days.ago) }
 
-    subject { runner_machine.status }
+    subject { runner_manager.status }
 
     context 'if never connected' do
       before do
-        runner_machine.contacted_at = nil
+        runner_manager.contacted_at = nil
       end
 
       it { is_expected.to eq(:stale) }
 
       context 'if created recently' do
         before do
-          runner_machine.created_at = 1.day.ago
+          runner_manager.created_at = 1.day.ago
         end
 
         it { is_expected.to eq(:never_contacted) }
@@ -92,7 +92,7 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
 
     context 'if contacted 1s ago' do
       before do
-        runner_machine.contacted_at = 1.second.ago
+        runner_manager.contacted_at = 1.second.ago
       end
 
       it { is_expected.to eq(:online) }
@@ -100,7 +100,7 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
 
     context 'if contacted recently' do
       before do
-        runner_machine.contacted_at = 2.hours.ago
+        runner_manager.contacted_at = 2.hours.ago
       end
 
       it { is_expected.to eq(:offline) }
@@ -108,7 +108,7 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
 
     context 'if contacted long time ago' do
       before do
-        runner_machine.contacted_at = 7.days.ago
+        runner_manager.contacted_at = 7.days.ago
       end
 
       it { is_expected.to eq(:stale) }
@@ -116,7 +116,7 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
   end
 
   describe '#heartbeat', :freeze_time do
-    let(:runner_machine) { create(:ci_runner_machine, version: '15.0.0') }
+    let(:runner_manager) { create(:ci_runner_machine, version: '15.0.0') }
     let(:executor) { 'shell' }
     let(:values) do
       {
@@ -129,12 +129,12 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
     end
 
     subject(:heartbeat) do
-      runner_machine.heartbeat(values)
+      runner_manager.heartbeat(values)
     end
 
     context 'when database was updated recently' do
       before do
-        runner_machine.contacted_at = Time.current
+        runner_manager.contacted_at = Time.current
       end
 
       context 'when version is changed' do
@@ -155,7 +155,7 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
 
           heartbeat
 
-          expect(runner_machine.runner_version).to be_nil
+          expect(runner_manager.runner_version).to be_nil
         end
 
         context 'when fetching runner releases is disabled' do
@@ -186,11 +186,11 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
           let(:version) { '15.0.1' }
 
           before do
-            runner_machine.cache_attributes(version: version)
+            runner_manager.cache_attributes(version: version)
           end
 
           it 'does not lose cached version value' do
-            expect { heartbeat }.not_to change { runner_machine.version }.from(version)
+            expect { heartbeat }.not_to change { runner_manager.version }.from(version)
           end
         end
       end
@@ -198,7 +198,7 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
 
     context 'when database was not updated recently' do
       before do
-        runner_machine.contacted_at = 2.hours.ago
+        runner_manager.contacted_at = 2.hours.ago
 
         allow(Ci::Runners::ProcessRunnerVersionUpdateWorker).to receive(:perform_async).with(version)
       end
@@ -206,13 +206,13 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
       context 'when version is changed' do
         let(:version) { '15.0.1' }
 
-        context 'with invalid runner_machine' do
+        context 'with invalid runner_manager' do
           before do
-            runner_machine.runner = nil
+            runner_manager.runner = nil
           end
 
           it 'still updates redis cache and database' do
-            expect(runner_machine).to be_invalid
+            expect(runner_manager).to be_invalid
 
             expect_redis_update
             does_db_update
@@ -231,8 +231,8 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
         end
       end
 
-      context 'with unchanged runner_machine version' do
-        let(:version) { runner_machine.version }
+      context 'with unchanged runner_manager version' do
+        let(:version) { runner_manager.version }
 
         it 'does not schedule ci_runner_versions update' do
           heartbeat
@@ -249,7 +249,7 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
 
               heartbeat
 
-              expect(runner_machine.reload.read_attribute(:executor_type)).to eq(expected_executor_type)
+              expect(runner_manager.reload.read_attribute(:executor_type)).to eq(expected_executor_type)
             end
 
             def expected_executor_type
@@ -266,7 +266,7 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
 
             heartbeat
 
-            expect(runner_machine.reload.read_attribute(:executor_type)).to eq('unknown')
+            expect(runner_manager.reload.read_attribute(:executor_type)).to eq('unknown')
           end
         end
       end
@@ -276,16 +276,16 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
       values_json = values == anything ? anything : Gitlab::Json.dump(values)
 
       Gitlab::Redis::Cache.with do |redis|
-        redis_key = runner_machine.send(:cache_attribute_key)
+        redis_key = runner_manager.send(:cache_attribute_key)
         expect(redis).to receive(:set).with(redis_key, values_json, any_args).and_call_original
       end
     end
 
     def does_db_update
-      expect { heartbeat }.to change { runner_machine.reload.read_attribute(:contacted_at) }
-                          .and change { runner_machine.reload.read_attribute(:architecture) }
-                          .and change { runner_machine.reload.read_attribute(:config) }
-                          .and change { runner_machine.reload.read_attribute(:executor_type) }
+      expect { heartbeat }.to change { runner_manager.reload.read_attribute(:contacted_at) }
+                          .and change { runner_manager.reload.read_attribute(:architecture) }
+                          .and change { runner_manager.reload.read_attribute(:config) }
+                          .and change { runner_manager.reload.read_attribute(:executor_type) }
     end
   end
 end

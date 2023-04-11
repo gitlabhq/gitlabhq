@@ -70,7 +70,7 @@ module Ci
 
     TAG_LIST_MAX_LENGTH = 50
 
-    has_many :runner_machines, inverse_of: :runner
+    has_many :runner_managers, inverse_of: :runner
     has_many :builds
     has_many :runner_projects, inverse_of: :runner, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_many :projects, through: :runner_projects, disable_joins: true
@@ -496,14 +496,14 @@ module Ci
       end
     end
 
-    def ensure_machine(system_xid, &blk)
-      RunnerMachine.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s, &blk) # rubocop: disable Performance/ActiveRecordSubtransactionMethods
+    def ensure_manager(system_xid, &blk)
+      RunnerManager.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s, &blk) # rubocop: disable Performance/ActiveRecordSubtransactionMethods
     end
 
     def registration_available?
       authenticated_user_registration_type? &&
         created_at > REGISTRATION_AVAILABILITY_TIME.ago &&
-        !runner_machines.any?
+        !runner_managers.any?
     end
 
     private

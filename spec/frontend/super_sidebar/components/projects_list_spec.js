@@ -22,7 +22,7 @@ describe('ProjectsList component', () => {
       expect(findViewAllLink().props('item')).toEqual({
         icon: 'project',
         link: viewAllLink,
-        title: s__('Navigation|View all projects'),
+        title: s__('Navigation|View all your projects'),
       });
     });
   };

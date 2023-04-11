@@ -91,13 +91,13 @@ module CycleAnalyticsHelpers
     wait_for_requests
   end
 
-  def create_value_stream_group_aggregation(group)
-    aggregation = Analytics::CycleAnalytics::Aggregation.safe_create_for_namespace(group)
+  def create_value_stream_aggregation(group_or_project_namespace)
+    aggregation = Analytics::CycleAnalytics::Aggregation.safe_create_for_namespace(group_or_project_namespace)
     Analytics::CycleAnalytics::AggregatorService.new(aggregation: aggregation).execute
   end
 
   def select_group_and_custom_value_stream(group, custom_value_stream_name)
-    create_value_stream_group_aggregation(group)
+    create_value_stream_aggregation(group)
 
     select_group(group)
     select_value_stream(custom_value_stream_name)

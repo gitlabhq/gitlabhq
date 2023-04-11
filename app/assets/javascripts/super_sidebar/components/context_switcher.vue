@@ -13,7 +13,7 @@ export default {
   i18n: {
     contextNavigation: s__('Navigation|Context navigation'),
     switchTo: s__('Navigation|Switch to...'),
-    searchPlaceholder: s__('Navigation|Search for projects or groups'),
+    searchPlaceholder: s__('Navigation|Search your projects or groups'),
     searchingLabel: s__('Navigation|Retrieving search results'),
     searchError: s__('Navigation|There was an error fetching search results.'),
   },

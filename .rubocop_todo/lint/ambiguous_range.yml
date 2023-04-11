@@ -4,7 +4,7 @@ Lint/AmbiguousRange:
   Details: grace period
   Exclude:
     - 'app/models/ci/runner.rb'
-    - 'app/models/ci/runner_machine.rb'
+    - 'app/models/ci/runner_manager.rb'
     - 'app/services/clusters/agent_tokens/track_usage_service.rb'
     - 'lib/gitlab/seeders/ci/runner/runner_fleet_pipeline_seeder.rb'
     - 'spec/lib/gitlab/database/reindexing/reindex_concurrently_spec.rb'

@@ -39,7 +39,7 @@ module Types
       field :edit_admin_url, GraphQL::Types::String, null: true,
                                                      description: 'Admin form URL of the runner. Only available for administrators.'
       field :ephemeral_authentication_token, GraphQL::Types::String, null: true,
-            description: 'Ephemeral authentication token used for runner machine registration. Only available for the creator of the runner for a limited time during registration.',
+            description: 'Ephemeral authentication token used for runner manager registration. Only available for the creator of the runner for a limited time during registration.',
             authorize: :read_ephemeral_token,
             alpha: { milestone: '15.9' }
       field :executor_name, GraphQL::Types::String, null: true,
@@ -65,12 +65,12 @@ module Types
                                                          resolver: ::Resolvers::Ci::RunnerJobsResolver
       field :locked, GraphQL::Types::Boolean, null: true,
                                               description: 'Indicates the runner is locked.'
-      field :machines, ::Types::Ci::RunnerMachineType.connection_type, null: true,
-            description: 'Machines associated with the runner configuration.',
-            method: :runner_machines,
-            alpha: { milestone: '15.10' }
       field :maintenance_note, GraphQL::Types::String, null: true,
                                                        description: 'Runner\'s maintenance notes.'
+      field :managers, ::Types::Ci::RunnerManagerType.connection_type, null: true,
+            description: 'Machines associated with the runner configuration.',
+            method: :runner_managers,
+            alpha: { milestone: '15.10' }
       field :maximum_timeout, GraphQL::Types::Int, null: true,
                                                    description: 'Maximum timeout (in seconds) for jobs processed by the runner.'
       field :owner_project, ::Types::ProjectType, null: true,

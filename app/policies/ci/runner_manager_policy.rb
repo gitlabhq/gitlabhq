@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class RunnerMachinePolicy < BasePolicy
+  class RunnerManagerPolicy < BasePolicy
     with_options scope: :subject, score: 0
 
     condition(:can_read_runner, scope: :subject) do
@@ -12,7 +12,7 @@ module Ci
 
     rule { can_read_runner }.policy do
       enable :read_builds
-      enable :read_runner_machine
+      enable :read_runner_manager
     end
   end
 end

@@ -338,12 +338,12 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
     end
   end
 
-  describe '.jobs.runnerMachine' do
+  describe '.jobs.runnerManager' do
     let_it_be(:admin) { create(:admin) }
-    let_it_be(:runner_machine) { create(:ci_runner_machine, created_at: Time.current, contacted_at: Time.current) }
+    let_it_be(:runner_manager) { create(:ci_runner_machine, created_at: Time.current, contacted_at: Time.current) }
     let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
     let_it_be(:build) do
-      create(:ci_build, pipeline: pipeline, name: 'my test job', runner_machine: runner_machine)
+      create(:ci_build, pipeline: pipeline, name: 'my test job', runner_manager: runner_manager)
     end
 
     let(:query) do
@@ -355,8 +355,8 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
                 nodes {
                   id
                   name
-                  runnerMachine {
-                    #{all_graphql_fields_for('CiRunnerMachine', excluded: [:runner], max_depth: 1)}
+                  runnerManager {
+                    #{all_graphql_fields_for('CiRunnerManager', excluded: [:runner], max_depth: 1)}
                   }
                 }
               }
@@ -368,19 +368,19 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
 
     let(:jobs_graphql_data) { graphql_data_at(:project, :pipeline, :jobs, :nodes) }
 
-    it 'returns the runner machine in each job of a pipeline' do
+    it 'returns the runner manager in each job of a pipeline' do
       post_graphql(query, current_user: admin)
 
       expect(jobs_graphql_data).to contain_exactly(
         a_graphql_entity_for(
           build,
           name: build.name,
-          runner_machine: a_graphql_entity_for(
-            runner_machine,
-            system_id: runner_machine.system_xid,
-            created_at: runner_machine.created_at.iso8601,
-            contacted_at: runner_machine.contacted_at.iso8601,
-            status: runner_machine.status.to_s.upcase
+          runner_manager: a_graphql_entity_for(
+            runner_manager,
+            system_id: runner_manager.system_xid,
+            created_at: runner_manager.created_at.iso8601,
+            contacted_at: runner_manager.contacted_at.iso8601,
+            status: runner_manager.status.to_s.upcase
           )
         )
       )
@@ -393,8 +393,8 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
         post_graphql(query, current_user: admin)
       end
 
-      runner_machine2 = create(:ci_runner_machine)
-      create(:ci_build, pipeline: pipeline, name: 'my test job2', runner_machine: runner_machine2)
+      runner_manager2 = create(:ci_runner_machine)
+      create(:ci_build, pipeline: pipeline, name: 'my test job2', runner_manager: runner_manager2)
 
       expect { post_graphql(query, current_user: admin2) }.not_to exceed_all_query_limit(control)
     end

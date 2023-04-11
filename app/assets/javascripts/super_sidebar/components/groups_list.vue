@@ -39,7 +39,7 @@ export default {
     viewAllItem() {
       return {
         link: this.viewAllLink,
-        title: s__('Navigation|View all groups'),
+        title: s__('Navigation|View all your groups'),
         icon: 'group',
       };
     },

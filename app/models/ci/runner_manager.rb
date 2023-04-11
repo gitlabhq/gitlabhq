@@ -1,19 +1,22 @@
 # frozen_string_literal: true
 
 module Ci
-  class RunnerMachine < Ci::ApplicationRecord
+  class RunnerManager < Ci::ApplicationRecord
     include FromUnion
     include RedisCacheable
     include Ci::HasRunnerExecutor
+
+    # For legacy reasons, the table name is ci_runner_machines in the database
+    self.table_name = 'ci_runner_machines'
 
     # The `UPDATE_CONTACT_COLUMN_EVERY` defines how often the Runner Machine DB entry can be updated
     UPDATE_CONTACT_COLUMN_EVERY = (40.minutes)..(55.minutes)
 
     belongs_to :runner
 
-    has_many :runner_machine_builds, inverse_of: :runner_machine, class_name: 'Ci::RunnerMachineBuild'
-    has_many :builds, through: :runner_machine_builds, class_name: 'Ci::Build'
-    belongs_to :runner_version, inverse_of: :runner_machines, primary_key: :version, foreign_key: :version,
+    has_many :runner_manager_builds, inverse_of: :runner_manager, class_name: 'Ci::RunnerManagerBuild'
+    has_many :builds, through: :runner_manager_builds, class_name: 'Ci::Build'
+    belongs_to :runner_version, inverse_of: :runner_managers, primary_key: :version, foreign_key: :version,
       class_name: 'Ci::RunnerVersion'
 
     validates :runner, presence: true
@@ -27,7 +30,7 @@ module Ci
 
     cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at, :executor_type
 
-    # The `STALE_TIMEOUT` constant defines the how far past the last contact or creation date a runner machine
+    # The `STALE_TIMEOUT` constant defines the how far past the last contact or creation date a runner manager
     # will be considered stale
     STALE_TIMEOUT = 7.days
 

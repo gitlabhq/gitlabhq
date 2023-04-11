@@ -25,8 +25,8 @@ module Types
                                                    description: 'References to builds that must complete before the jobs run.'
       field :pipeline, Types::Ci::PipelineType, null: true,
                                                 description: 'Pipeline the job belongs to.'
-      field :runner_machine, ::Types::Ci::RunnerMachineType, null: true,
-            description: 'Runner machine assigned to the job.',
+      field :runner_manager, ::Types::Ci::RunnerManagerType, null: true,
+            description: 'Runner manager assigned to the job.',
             alpha: { milestone: '15.11' }
       field :stage, Types::Ci::StageType, null: true,
                                           description: 'Stage of the job.'
@@ -172,17 +172,16 @@ module Types
         ::Gitlab::Graphql::Loaders::BatchModelLoader.new(::Ci::Stage, object.stage_id).find
       end
 
-      def runner_machine
-        BatchLoader::GraphQL.for(object.id).batch(key: :runner_machines) do |build_ids, loader|
-          plucked_build_to_machine_ids = ::Ci::RunnerMachineBuild.for_build(build_ids).pluck_build_id_and_runner_machine_id
-          runner_machines = ::Ci::RunnerMachine.id_in(plucked_build_to_machine_ids.values.uniq)
-          Preloaders::RunnerMachinePolicyPreloader.new(runner_machines, current_user).execute
-          runner_machines_by_id = runner_machines.index_by(&:id)
+      def runner_manager
+        BatchLoader::GraphQL.for(object.id).batch(key: :runner_managers) do |build_ids, loader|
+          plucked_build_to_runner_manager_ids =
+            ::Ci::RunnerManagerBuild.for_build(build_ids).pluck_build_id_and_runner_manager_id
+          runner_managers = ::Ci::RunnerManager.id_in(plucked_build_to_runner_manager_ids.values.uniq)
+          Preloaders::RunnerManagerPolicyPreloader.new(runner_managers, current_user).execute
+          runner_managers_by_id = runner_managers.index_by(&:id)
 
           build_ids.each do |build_id|
-            runner_machine_id = plucked_build_to_machine_ids[build_id]
-
-            loader.call(build_id, runner_machines_by_id[runner_machine_id])
+            loader.call(build_id, runner_managers_by_id[plucked_build_to_runner_manager_ids[build_id]])
           end
         end
       end

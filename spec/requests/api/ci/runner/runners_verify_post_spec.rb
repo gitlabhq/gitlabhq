@@ -113,8 +113,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           context 'when system_id is provided' do
             let(:params) { { token: runner.token, system_id: 's_some_system_id' } }
 
-            it 'creates a runner_machine' do
-              expect { verify }.to change { Ci::RunnerMachine.count }.by(1)
+            it 'creates a runner_manager' do
+              expect { verify }.to change { Ci::RunnerManager.count }.by(1)
             end
           end
         end
@@ -138,8 +138,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           context 'when system_id is provided' do
             let(:params) { { token: runner.token, system_id: 's_some_system_id' } }
 
-            it 'does not create a runner_machine', :aggregate_failures do
-              expect { verify }.not_to change { Ci::RunnerMachine.count }
+            it 'does not create a runner_manager', :aggregate_failures do
+              expect { verify }.not_to change { Ci::RunnerManager.count }
 
               expect(response).to have_gitlab_http_status(:ok)
             end

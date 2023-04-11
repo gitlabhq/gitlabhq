@@ -174,7 +174,7 @@ module API
           end
 
           new_update = current_runner.ensure_runner_queue_value
-          result = ::Ci::RegisterJobService.new(current_runner, current_runner_machine).execute(runner_params)
+          result = ::Ci::RegisterJobService.new(current_runner, current_runner_manager).execute(runner_params)
 
           if result.valid?
             if result.build_json
