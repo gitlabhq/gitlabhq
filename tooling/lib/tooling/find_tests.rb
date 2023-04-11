@@ -7,9 +7,9 @@ module Tooling
   class FindTests
     include Helpers::FileHandler
 
-    def initialize(changes_file, matching_tests_paths)
-      @matching_tests_paths = matching_tests_paths
-      @changed_files        = read_array_from_file(changes_file)
+    def initialize(changed_files_pathname, predictive_tests_pathname)
+      @predictive_tests_pathname = predictive_tests_pathname
+      @changed_files             = read_array_from_file(changed_files_pathname)
     end
 
     def execute
@@ -21,11 +21,11 @@ module Tooling
         end
       end
 
-      write_array_to_file(matching_tests_paths, tff.test_files.uniq)
+      write_array_to_file(predictive_tests_pathname, tff.test_files.uniq)
     end
 
     private
 
-    attr_reader :changed_files, :matching_tests, :matching_tests_paths
+    attr_reader :changed_files, :matching_tests, :predictive_tests_pathname
   end
 end

@@ -49,6 +49,12 @@ compile-production-assets:
   after_script:
     - rm -f /etc/apt/sources.list.d/google*.list  # We don't need to update Chrome here
 
+compile-production-assets as-if-foss:
+  extends:
+    - compile-production-assets
+    - .as-if-foss
+    - .frontend:rules:compile-production-assets-as-if-foss
+
 compile-test-assets:
   extends:
     - .compile-assets-base

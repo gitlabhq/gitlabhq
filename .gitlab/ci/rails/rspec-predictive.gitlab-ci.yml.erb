@@ -1,0 +1,153 @@
+# RSpec preditive pipeline loaded dynamically by script: scripts/generate_rspec_pipeline.rb
+
+include:
+  - local: .gitlab/ci/rails/shared.gitlab-ci.yml
+
+default:
+  image: $DEFAULT_CI_IMAGE
+  tags:
+    - gitlab-org
+  # Default job timeout set to 90m https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/10520
+  timeout: 90m
+  interruptible: true
+
+stages:
+  - test
+
+dont-interrupt-me:
+  extends: .rules:dont-interrupt
+  stage: .pre
+  interruptible: false
+  script:
+    - echo "This jobs makes sure this pipeline won't be interrupted! See https://docs.gitlab.com/ee/ci/yaml/#interruptible."
+
+.base-predictive:
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: detect-tests
+    - pipeline: $PARENT_PIPELINE_ID
+      job: setup-test-env
+    - pipeline: $PARENT_PIPELINE_ID
+      job: retrieve-tests-metadata
+    - pipeline: $PARENT_PIPELINE_ID
+      job: compile-test-assets
+  rules:
+    - when: always
+  variables:
+    RSPEC_TESTS_MAPPING_ENABLED: "true"
+
+<% if test_suite_prefix.nil? %>
+.base-rspec-predictive:
+  extends:
+    - .rspec-base-pg12
+    - .base-predictive
+  variables:
+    # We're using the FOSS one here because we want to exclude EE-only ones
+    # For EE-only ones, we have EE-only jobs.
+    RSPEC_TESTS_FILTER_FILE: "${RSPEC_MATCHING_TESTS_FOSS_PATH}"
+
+<% if rspec_files_per_test_level.dig(:migration, :files).size > 0 %>
+rspec migration predictive:
+  extends:
+    - .base-rspec-predictive
+    - .rspec-base-migration
+<% if rspec_files_per_test_level.dig(:migration, :parallelization) > 1 %>
+  parallel: <%= rspec_files_per_test_level.dig(:migration, :parallelization) %>
+<% end %>
+<% end %>
+
+<% if rspec_files_per_test_level.dig(:background_migration, :files).size > 0 %>
+rspec background_migration predictive:
+  extends:
+    - .base-rspec-predictive
+    - .rspec-base-migration
+<% if rspec_files_per_test_level.dig(:background_migration, :parallelization) > 1 %>
+  parallel: <%= rspec_files_per_test_level.dig(:background_migration, :parallelization) %>
+<% end %>
+<% end %>
+
+<% if rspec_files_per_test_level.dig(:unit, :files).size > 0 %>
+rspec unit predictive:
+  extends:
+    - .base-rspec-predictive
+<% if rspec_files_per_test_level.dig(:unit, :parallelization) > 1 %>
+  parallel: <%= rspec_files_per_test_level.dig(:unit, :parallelization) %>
+<% end %>
+<% end %>
+
+<% if rspec_files_per_test_level.dig(:integration, :files).size > 0 %>
+rspec integration predictive:
+  extends:
+    - .base-rspec-predictive
+<% if rspec_files_per_test_level.dig(:integration, :parallelization) > 1 %>
+  parallel: <%= rspec_files_per_test_level.dig(:integration, :parallelization) %>
+<% end %>
+<% end %>
+
+<% if rspec_files_per_test_level.dig(:system, :files).size > 0 %>
+rspec system predictive:
+  extends:
+    - .base-rspec-predictive
+<% if rspec_files_per_test_level.dig(:system, :parallelization) > 1 %>
+  parallel: <%= rspec_files_per_test_level.dig(:system, :parallelization) %>
+<% end %>
+<% end %>
+
+<% end %>
+
+<% if test_suite_prefix == 'ee/' %>
+.base-rspec-ee-predictive:
+  extends:
+    - .rspec-ee-base-pg12
+    - .base-predictive
+  variables:
+    RSPEC_TESTS_FILTER_FILE: "${RSPEC_MATCHING_TESTS_EE_PATH}"
+
+<% if rspec_files_per_test_level.dig(:migration, :files).size > 0 %>
+rspec-ee migration predictive:
+  extends:
+    - .base-rspec-ee-predictive
+    - .rspec-base-migration
+<% if rspec_files_per_test_level.dig(:migration, :parallelization) > 1 %>
+  parallel: <%= rspec_files_per_test_level.dig(:migration, :parallelization) %>
+<% end %>
+<% end %>
+
+<% if rspec_files_per_test_level.dig(:background_migration, :files).size > 0 %>
+rspec-ee background_migration predictive:
+  extends:
+    - .base-rspec-ee-predictive
+    - .rspec-base-migration
+<% if rspec_files_per_test_level.dig(:background_migration, :parallelization) > 1 %>
+  parallel: <%= rspec_files_per_test_level.dig(:background_migration, :parallelization) %>
+<% end %>
+<% end %>
+
+<% if rspec_files_per_test_level.dig(:unit, :files).size > 0 %>
+rspec-ee unit predictive:
+  extends:
+    - .base-rspec-ee-predictive
+<% if rspec_files_per_test_level.dig(:unit, :parallelization) > 1 %>
+  parallel: <%= rspec_files_per_test_level.dig(:unit, :parallelization) %>
+<% end %>
+<% end %>
+
+<% if rspec_files_per_test_level.dig(:integration, :files).size > 0 %>
+rspec-ee integration predictive:
+  extends:
+    - .base-rspec-ee-predictive
+<% if rspec_files_per_test_level.dig(:integration, :parallelization) > 1 %>
+  parallel: <%= rspec_files_per_test_level.dig(:integration, :parallelization) %>
+<% end %>
+<% end %>
+
+<% if rspec_files_per_test_level.dig(:system, :files).size > 0 %>
+rspec-ee system predictive:
+  extends:
+    - .base-rspec-ee-predictive
+<% if rspec_files_per_test_level.dig(:system, :parallelization) > 1 %>
+  parallel: <%= rspec_files_per_test_level.dig(:system, :parallelization) %>
+<% end %>
+<% end %>
+
+<% end %>

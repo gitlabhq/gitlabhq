@@ -22502,6 +22502,19 @@ Represents an assignees widget.
 | <a id="workitemwidgetassigneescaninvitemembers"></a>`canInviteMembers` | [`Boolean!`](#boolean) | Indicates whether the current user can invite members to the work item's project. |
 | <a id="workitemwidgetassigneestype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
+### `WorkItemWidgetAwardEmoji`
+
+Represents the award emoji widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetawardemojiawardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | Award emoji on the work item. (see [Connections](#connections)) |
+| <a id="workitemwidgetawardemojidownvotes"></a>`downvotes` | [`Int!`](#int) | Number of downvotes the work item has received. |
+| <a id="workitemwidgetawardemojitype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+| <a id="workitemwidgetawardemojiupvotes"></a>`upvotes` | [`Int!`](#int) | Number of upvotes the work item has received. |
+
 ### `WorkItemWidgetCurrentUserTodos`
 
 Represents a todos widget.
@@ -25008,6 +25021,7 @@ Type of a work item widget.
 | Value | Description |
 | ----- | ----------- |
 | <a id="workitemwidgettypeassignees"></a>`ASSIGNEES` | Assignees widget. |
+| <a id="workitemwidgettypeaward_emoji"></a>`AWARD_EMOJI` | Award Emoji widget. |
 | <a id="workitemwidgettypecurrent_user_todos"></a>`CURRENT_USER_TODOS` | Current User Todos widget. |
 | <a id="workitemwidgettypedescription"></a>`DESCRIPTION` | Description widget. |
 | <a id="workitemwidgettypehealth_status"></a>`HEALTH_STATUS` | Health Status widget. |
@@ -26381,6 +26395,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 Implementations:
 
 - [`WorkItemWidgetAssignees`](#workitemwidgetassignees)
+- [`WorkItemWidgetAwardEmoji`](#workitemwidgetawardemoji)
 - [`WorkItemWidgetCurrentUserTodos`](#workitemwidgetcurrentusertodos)
 - [`WorkItemWidgetDescription`](#workitemwidgetdescription)
 - [`WorkItemWidgetHealthStatus`](#workitemwidgethealthstatus)

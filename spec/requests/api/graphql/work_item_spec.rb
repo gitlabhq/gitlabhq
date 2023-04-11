@@ -486,6 +486,48 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           end
         end
       end
+
+      describe 'award emoji widget' do
+        let_it_be(:emoji) { create(:award_emoji, name: 'star', awardable: work_item) }
+        let_it_be(:upvote) { create(:award_emoji, :upvote, awardable: work_item) }
+        let_it_be(:downvote) { create(:award_emoji, :downvote, awardable: work_item) }
+
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetAwardEmoji {
+                upvotes
+                downvotes
+                awardEmoji {
+                  nodes {
+                    name
+                  }
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        it 'returns widget information' do
+          expect(work_item_data).to include(
+            'id' => work_item.to_gid.to_s,
+            'widgets' => include(
+              hash_including(
+                'type' => 'AWARD_EMOJI',
+                'upvotes' => work_item.upvotes,
+                'downvotes' => work_item.downvotes,
+                'awardEmoji' => {
+                  'nodes' => match_array(
+                    [emoji, upvote, downvote].map { |e| { 'name' => e.name } }
+                  )
+                }
+              )
+            )
+          )
+        end
+      end
     end
 
     context 'when an Issue Global ID is provided' do

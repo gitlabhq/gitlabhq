@@ -6,23 +6,25 @@ require_relative '../../../../../tooling/lib/tooling/mappings/js_to_system_specs
 RSpec.describe Tooling::Mappings::JsToSystemSpecsMappings, feature_category: :tooling do
   # We set temporary folders, and those readers give access to those folder paths
   attr_accessor :js_base_folder, :system_specs_base_folder
-  attr_accessor :changes_file, :matching_tests_paths
+  attr_accessor :changed_files_file, :predictive_tests_file
+
+  let(:changed_files_pathname)        { changed_files_file.path    }
+  let(:predictive_tests_pathname)     { predictive_tests_file.path }
+  let(:changed_files_content)         { "changed_file1 changed_file2" }
+  let(:predictive_tests_content) { "previously_matching_spec.rb" }
 
   let(:instance) do
     described_class.new(
-      changes_file,
-      matching_tests_paths,
+      changed_files_pathname,
+      predictive_tests_pathname,
       system_specs_base_folder: system_specs_base_folder,
       js_base_folder: js_base_folder
     )
   end
 
-  let(:changes_file_content)         { "changed_file1 changed_file2" }
-  let(:matching_tests_paths_content) { "previously_matching_spec.rb" }
-
   around do |example|
-    self.changes_file         = Tempfile.new('changes')
-    self.matching_tests_paths = Tempfile.new('matching_tests')
+    self.changed_files_file    = Tempfile.new('changed_files_file')
+    self.predictive_tests_file = Tempfile.new('predictive_tests_file')
 
     Dir.mktmpdir do |tmp_js_base_folder|
       Dir.mktmpdir do |tmp_system_specs_base_folder|
@@ -34,10 +36,10 @@ RSpec.describe Tooling::Mappings::JsToSystemSpecsMappings, feature_category: :to
         begin
           example.run
         ensure
-          changes_file.close
-          matching_tests_paths.close
-          changes_file.unlink
-          matching_tests_paths.unlink
+          changed_files_file.close
+          predictive_tests_file.close
+          changed_files_file.unlink
+          predictive_tests_file.unlink
         end
       end
     end
@@ -45,22 +47,22 @@ RSpec.describe Tooling::Mappings::JsToSystemSpecsMappings, feature_category: :to
 
   before do
     # We write into the temp files initially, to later check how the code modified those files
-    File.write(changes_file, changes_file_content)
-    File.write(matching_tests_paths, matching_tests_paths_content)
+    File.write(changed_files_pathname, changed_files_content)
+    File.write(predictive_tests_pathname, predictive_tests_content)
   end
 
   describe '#execute' do
     subject { instance.execute }
 
     before do
-      File.write(changes_file, changed_files.join(' '))
+      File.write(changed_files_pathname, changed_files.join(' '))
     end
 
     context 'when no JS files were changed' do
       let(:changed_files) { [] }
 
       it 'does not change the output file' do
-        expect { subject }.not_to change { File.read(matching_tests_paths) }
+        expect { subject }.not_to change { File.read(predictive_tests_pathname) }
       end
     end
 
@@ -69,7 +71,7 @@ RSpec.describe Tooling::Mappings::JsToSystemSpecsMappings, feature_category: :to
 
       context 'when the JS files are not present on disk' do
         it 'does not change the output file' do
-          expect { subject }.not_to change { File.read(matching_tests_paths) }
+          expect { subject }.not_to change { File.read(predictive_tests_pathname) }
         end
       end
 
@@ -81,7 +83,7 @@ RSpec.describe Tooling::Mappings::JsToSystemSpecsMappings, feature_category: :to
 
         context 'when no system specs match the JS keyword' do
           it 'does not change the output file' do
-            expect { subject }.not_to change { File.read(matching_tests_paths) }
+            expect { subject }.not_to change { File.read(predictive_tests_pathname) }
           end
         end
 
@@ -92,9 +94,9 @@ RSpec.describe Tooling::Mappings::JsToSystemSpecsMappings, feature_category: :to
           end
 
           it 'adds the new specs to the output file' do
-            expect { subject }.to change { File.read(matching_tests_paths) }
-              .from(matching_tests_paths_content)
-              .to("#{matching_tests_paths_content} #{system_specs_base_folder}/confidential_issues/issues_spec.rb")
+            expect { subject }.to change { File.read(predictive_tests_pathname) }
+              .from(predictive_tests_content)
+              .to("#{predictive_tests_content} #{system_specs_base_folder}/confidential_issues/issues_spec.rb")
           end
         end
       end
@@ -108,7 +110,7 @@ RSpec.describe Tooling::Mappings::JsToSystemSpecsMappings, feature_category: :to
       File.write("#{js_base_folder}/index.js", "index.js")
       File.write("#{js_base_folder}/index-with-ee-in-it.js", "index-with-ee-in-it.js")
       File.write("#{js_base_folder}/index-with-jh-in-it.js", "index-with-jh-in-it.js")
-      File.write(changes_file, changed_files.join(' '))
+      File.write(changed_files_pathname, changed_files.join(' '))
     end
 
     context 'when no files were changed' do
@@ -148,7 +150,7 @@ RSpec.describe Tooling::Mappings::JsToSystemSpecsMappings, feature_category: :to
   end
 
   describe '#construct_js_keywords' do
-    subject { described_class.new(changes_file, matching_tests_paths).construct_js_keywords(js_files) }
+    subject { described_class.new(changed_files_file, predictive_tests_file).construct_js_keywords(js_files) }
 
     let(:js_files) do
       %w[

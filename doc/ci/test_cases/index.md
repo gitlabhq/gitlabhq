@@ -16,6 +16,12 @@ Test cases in GitLab can help your teams create testing scenarios in their exist
 Now your Implementation and Testing teams can collaborate better, as they no longer have to
 use external test planning tools, which require additional overhead, context switching, and expense.
 
+NOTE:
+[Requirements](../../user/project/requirements/index.md) and test cases are being
+[migrated to work items](https://gitlab.com/groups/gitlab-org/-/epics/5171).
+[Issue 323790](https://gitlab.com/gitlab-org/gitlab/-/issues/323790) proposes to link requirements to test cases.
+For more information, see [Product Stage Direction - Plan](https://about.gitlab.com/direction/plan/).
+
 ## Create a test case
 
 Prerequisite:

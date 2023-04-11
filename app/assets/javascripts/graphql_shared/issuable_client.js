@@ -8,6 +8,7 @@ import typeDefs from '~/work_items/graphql/typedefs.graphql';
 import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
 import getWorkItemLinksQuery from '~/work_items/graphql/work_item_links.query.graphql';
 import { findHierarchyWidgetChildren } from '~/work_items/utils';
+import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 
 export const config = {
   typeDefs,
@@ -208,6 +209,13 @@ export const resolvers = {
         draftData.issueState = { issueType, isDirty };
       });
       cache.writeQuery({ query: getIssueStateQuery, data });
+    },
+    setActiveBoardItem(_, { boardItem }, { cache }) {
+      cache.writeQuery({
+        query: activeBoardItemQuery,
+        data: { activeBoardItem: boardItem },
+      });
+      return boardItem;
     },
   },
 };

@@ -20,7 +20,8 @@ module Types
         ::Types::WorkItems::Widgets::MilestoneType,
         ::Types::WorkItems::Widgets::NotesType,
         ::Types::WorkItems::Widgets::NotificationsType,
-        ::Types::WorkItems::Widgets::CurrentUserTodosType
+        ::Types::WorkItems::Widgets::CurrentUserTodosType,
+        ::Types::WorkItems::Widgets::AwardEmojiType
       ].freeze
 
       def self.ce_orphan_types
@@ -50,6 +51,8 @@ module Types
           ::Types::WorkItems::Widgets::NotificationsType
         when ::WorkItems::Widgets::CurrentUserTodos
           ::Types::WorkItems::Widgets::CurrentUserTodosType
+        when ::WorkItems::Widgets::AwardEmoji
+          ::Types::WorkItems::Widgets::AwardEmojiType
         else
           raise "Unknown GraphQL type for widget #{object}"
         end

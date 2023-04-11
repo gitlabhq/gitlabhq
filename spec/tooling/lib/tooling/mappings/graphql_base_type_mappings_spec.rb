@@ -6,11 +6,17 @@ require_relative '../../../../../tooling/lib/tooling/mappings/graphql_base_type_
 RSpec.describe Tooling::Mappings::GraphqlBaseTypeMappings, feature_category: :tooling do
   # We set temporary folders, and those readers give access to those folder paths
   attr_accessor :foss_folder, :ee_folder, :jh_folder
-  attr_accessor :changes_file, :matching_tests_paths
+  attr_accessor :changed_files_file, :predictive_tests_file
+
+  let(:changed_files_pathname)           { changed_files_file.path }
+  let(:predictive_tests_pathname)        { predictive_tests_file.path }
+  let(:instance)                         { described_class.new(changed_files_pathname, predictive_tests_pathname) }
+  let(:changed_files_content)            { "changed_file1 changed_file2" }
+  let(:predictive_tests_initial_content) { "previously_matching_spec.rb" }
 
   around do |example|
-    self.changes_file         = Tempfile.new('changes')
-    self.matching_tests_paths = Tempfile.new('matching_tests')
+    self.changed_files_file    = Tempfile.new('changed_files_file')
+    self.predictive_tests_file = Tempfile.new('predictive_tests_file')
 
     Dir.mktmpdir('FOSS') do |foss_folder|
       Dir.mktmpdir('EE') do |ee_folder|
@@ -24,19 +30,15 @@ RSpec.describe Tooling::Mappings::GraphqlBaseTypeMappings, feature_category: :to
           begin
             example.run
           ensure
-            changes_file.close
-            matching_tests_paths.close
-            changes_file.unlink
-            matching_tests_paths.unlink
+            changed_files_file.close
+            predictive_tests_file.close
+            changed_files_file.unlink
+            predictive_tests_file.unlink
           end
         end
       end
     end
   end
-
-  let(:instance) { described_class.new(changes_file, matching_tests_paths) }
-  let(:changes_file_content)                 { "changed_file1 changed_file2" }
-  let(:matching_tests_paths_initial_content) { "previously_matching_spec.rb" }
 
   before do
     stub_const("Tooling::Mappings::GraphqlBaseTypeMappings::GRAPHQL_TYPES_FOLDERS", {
@@ -46,23 +48,23 @@ RSpec.describe Tooling::Mappings::GraphqlBaseTypeMappings, feature_category: :to
     })
 
     # We write into the temp files initially, to later check how the code modified those files
-    File.write(changes_file, changes_file_content)
-    File.write(matching_tests_paths, matching_tests_paths_initial_content)
+    File.write(changed_files_pathname, changed_files_content)
+    File.write(predictive_tests_pathname, predictive_tests_initial_content)
   end
 
   describe '#execute' do
     subject { instance.execute }
 
     context 'when no GraphQL files were changed' do
-      let(:changes_file_content) { '' }
+      let(:changed_files_content) { '' }
 
       it 'does not change the output file' do
-        expect { subject }.not_to change { File.read(matching_tests_paths) }
+        expect { subject }.not_to change { File.read(predictive_tests_pathname) }
       end
     end
 
     context 'when some GraphQL files were changed' do
-      let(:changes_file_content) do
+      let(:changed_files_content) do
         [
           "#{foss_folder}/my_graphql_file.rb",
           "#{foss_folder}/my_other_graphql_file.rb"
@@ -76,7 +78,7 @@ RSpec.describe Tooling::Mappings::GraphqlBaseTypeMappings, feature_category: :to
         end
 
         it 'does not change the output file' do
-          expect { subject }.not_to change { File.read(matching_tests_paths) }
+          expect { subject }.not_to change { File.read(predictive_tests_pathname) }
         end
       end
 
@@ -92,9 +94,9 @@ RSpec.describe Tooling::Mappings::GraphqlBaseTypeMappings, feature_category: :to
         end
 
         it 'writes the correct specs in the output' do
-          expect { subject }.to change { File.read(matching_tests_paths) }
-                            .from(matching_tests_paths_initial_content)
-                            .to("#{matching_tests_paths_initial_content} spec/my_graphql_file_spec.rb")
+          expect { subject }.to change { File.read(predictive_tests_pathname) }
+                            .from(predictive_tests_initial_content)
+                            .to("#{predictive_tests_initial_content} spec/my_graphql_file_spec.rb")
         end
       end
     end
@@ -110,7 +112,7 @@ RSpec.describe Tooling::Mappings::GraphqlBaseTypeMappings, feature_category: :to
     end
 
     context 'when no files were changed' do
-      let(:changes_file_content) { '' }
+      let(:changed_files_content) { '' }
 
       it 'returns an empty array' do
         expect(subject).to match_array([])
@@ -118,7 +120,7 @@ RSpec.describe Tooling::Mappings::GraphqlBaseTypeMappings, feature_category: :to
     end
 
     context 'when GraphQL files were changed' do
-      let(:changes_file_content) do
+      let(:changed_files_content) do
         [
           "#{foss_folder}/my_graphql_file.rb",
           "#{foss_folder}/my_other_graphql_file.rb",
@@ -135,7 +137,7 @@ RSpec.describe Tooling::Mappings::GraphqlBaseTypeMappings, feature_category: :to
     end
 
     context 'when files are deleted' do
-      let(:changes_file_content) { "#{foss_folder}/deleted.rb" }
+      let(:changed_files_content) { "#{foss_folder}/deleted.rb" }
 
       it 'returns an empty array' do
         expect(subject).to match_array([])

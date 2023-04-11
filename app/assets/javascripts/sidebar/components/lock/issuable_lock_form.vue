@@ -1,8 +1,9 @@
 <script>
 import { GlIcon, GlTooltipDirective, GlOutsideDirective as Outside } from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
-import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { createAlert } from '~/alert';
 import toast from '~/vue_shared/plugins/global_toast';
@@ -45,10 +46,8 @@ export default {
   },
   computed: {
     ...mapGetters(['getNoteableData']),
-    isMergeRequest() {
-      return (
-        this.getNoteableData.targetType === TYPE_MERGE_REQUEST && this.glFeatures.movedMrSidebar
-      );
+    isMovedMrSidebar() {
+      return this.glFeatures.movedMrSidebar;
     },
     issuableDisplayName() {
       const isInIssuePage = this.getNoteableData.targetType === TYPE_ISSUE;
@@ -60,7 +59,6 @@ export default {
     lockStatus() {
       return this.isLocked ? this.$options.locked : this.$options.unlocked;
     },
-
     tooltipLabel() {
       return this.isLocked ? __('Locked') : __('Unlocked');
     },
@@ -89,8 +87,13 @@ export default {
         fullPath: this.fullPath,
       })
         .then(() => {
-          if (this.isMergeRequest) {
-            toast(this.isLocked ? __('Merge request locked.') : __('Merge request unlocked.'));
+          if (this.isMovedMrSidebar) {
+            toast(
+              sprintf(__('%{issuableDisplayName} %{lockStatus}.'), {
+                issuableDisplayName: capitalizeFirstCharacter(this.issuableDisplayName),
+                lockStatus: this.isLocked ? __('locked') : __('unlocked'),
+              }),
+            );
           }
         })
         .catch(() => {
@@ -113,14 +116,14 @@ export default {
 </script>
 
 <template>
-  <li v-if="isMergeRequest" class="gl-dropdown-item">
-    <button type="button" class="dropdown-item" @click="toggleLocked">
+  <li v-if="isMovedMrSidebar" class="gl-dropdown-item">
+    <button type="button" class="dropdown-item" data-testid="issuable-lock" @click="toggleLocked">
       <span class="gl-dropdown-item-text-wrapper">
         <template v-if="isLocked">
-          {{ __('Unlock merge request') }}
+          {{ sprintf(__('Unlock %{issuableType}'), { issuableType: issuableDisplayName }) }}
         </template>
         <template v-else>
-          {{ __('Lock merge request') }}
+          {{ sprintf(__('Lock %{issuableType}'), { issuableType: issuableDisplayName }) }}
         </template>
       </span>
     </button>

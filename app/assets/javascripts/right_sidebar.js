@@ -56,8 +56,10 @@ Sidebar.prototype.addEventListeners = function () {
     const layoutPage = document.querySelector('.layout-page');
     const rightSidebar = document.querySelector('.js-right-sidebar');
 
-    updateSidebarClasses(layoutPage, rightSidebar);
-    window.addEventListener('resize', () => updateSidebarClasses(layoutPage, rightSidebar));
+    if (rightSidebar.classList.contains('right-sidebar-merge-requests')) {
+      updateSidebarClasses(layoutPage, rightSidebar);
+      window.addEventListener('resize', () => updateSidebarClasses(layoutPage, rightSidebar));
+    }
   }
 };
 

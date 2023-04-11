@@ -3,57 +3,66 @@
 require_relative '../../../../tooling/lib/tooling/find_changes'
 require_relative '../../../support/helpers/stub_env'
 require 'json'
+require 'tempfile'
 
 RSpec.describe Tooling::FindChanges, feature_category: :tooling do
   include StubENV
 
+  attr_accessor :changed_files_file, :predictive_tests_file, :frontend_fixtures_mapping_file
+
   let(:instance) do
-    described_class.new(
-      output_file: output_file,
-      matched_tests_file: matched_tests_file,
-      frontend_fixtures_mapping_path: frontend_fixtures_mapping_path
-    )
+    described_class.new(changed_files_pathname, predictive_tests_pathname, frontend_fixtures_mapping_pathname)
   end
 
-  let(:gitlab_client)                  { double('GitLab') } # rubocop:disable RSpec/VerifiedDoubles
-  let(:output_file)                    { 'output.txt' }
-  let(:output_file_content)            { 'first_file second_file' }
-  let(:matched_tests_file)             { 'matched_tests.txt' }
-  let(:frontend_fixtures_mapping_path) { 'frontend_fixtures_mapping.json' }
-  let(:file_changes)                   { ['file1.rb', 'file2.rb'] }
+  let(:changed_files_pathname)             { changed_files_file.path }
+  let(:predictive_tests_pathname)          { predictive_tests_file.path }
+  let(:frontend_fixtures_mapping_pathname) { frontend_fixtures_mapping_file.path }
+  let(:gitlab_client)                      { double('GitLab') } # rubocop:disable RSpec/VerifiedDoubles
+
+  around do |example|
+    self.changed_files_file             = Tempfile.new('changed_files_file')
+    self.predictive_tests_file          = Tempfile.new('predictive_tests_file')
+    self.frontend_fixtures_mapping_file = Tempfile.new('frontend_fixtures_mapping_file')
+
+    # See https://ruby-doc.org/stdlib-1.9.3/libdoc/tempfile/rdoc/
+    #     Tempfile.html#class-Tempfile-label-Explicit+close
+    begin
+      example.run
+    ensure
+      frontend_fixtures_mapping_file.close
+      frontend_fixtures_mapping_file.unlink
+      predictive_tests_file.close
+      predictive_tests_file.unlink
+      changed_files_file.close
+      changed_files_file.unlink
+    end
+  end
 
   before do
     stub_env(
       'CI_API_V4_URL' => 'gitlab_api_url',
       'CI_MERGE_REQUEST_IID' => '1234',
       'CI_MERGE_REQUEST_PROJECT_PATH' => 'dummy-project',
-      'PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE' => 'dummy-token',
-      'RSPEC_TESTS_MAPPING_PATH' => '/tmp/does-not-exist.out'
+      'PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE' => 'dummy-token'
     )
 
     allow(instance).to receive(:gitlab).and_return(gitlab_client)
-    allow(File).to receive(:exist?).and_call_original
-    allow(File).to receive(:read).and_call_original
-    allow(File).to receive(:write)
   end
 
   describe '#execute' do
     subject { instance.execute }
 
-    context 'when there is no output file' do
-      let(:output_file) { nil }
+    context 'when there is no changed files file' do
+      let(:changed_files_pathname) { nil }
 
       it 'raises an ArgumentError' do
-        expect { subject }.to raise_error(ArgumentError, "An path to an output file must be given as first argument.")
+        expect { subject }.to raise_error(
+          ArgumentError, "A path to the changed files file must be given as first argument."
+        )
       end
     end
 
-    context 'when an output file is provided' do
-      before do
-        allow(File).to receive(:exist?).with(output_file).and_return(true)
-        allow(File).to receive(:read).with(output_file).and_return(output_file_content)
-      end
-
+    context 'when an changed files file is provided' do
       it 'does not call GitLab API to retrieve the MR diff' do
         expect(gitlab_client).not_to receive(:merge_request_changes)
 
@@ -61,53 +70,48 @@ RSpec.describe Tooling::FindChanges, feature_category: :tooling do
       end
 
       context 'when there are no file changes' do
-        let(:output_file_content) { '' }
-
-        it 'writes an empty string to output file' do
-          expect(File).to receive(:write).with(output_file, '')
-
-          subject
+        it 'writes an empty string to changed files file' do
+          expect { subject }.not_to change { File.read(changed_files_pathname) }
         end
       end
 
       context 'when there are file changes' do
-        let(:output_file_content) { 'first_file_changed second_file_changed' }
+        before do
+          File.write(changed_files_pathname, changed_files_file_content)
+        end
 
-        it 'writes file changes to output file' do
-          expect(File).to receive(:write).with(output_file, output_file_content)
+        let(:changed_files_file_content) { 'first_file_changed second_file_changed' }
 
-          subject
+        # This is because we don't have frontend fixture mappings: we will just write the same data that we read.
+        it 'does not change the changed files file' do
+          expect { subject }.not_to change { File.read(changed_files_pathname) }
         end
       end
 
       context 'when there is no matched tests file' do
-        let(:matched_tests_file) { '' }
+        let(:predictive_tests_pathname) { nil }
 
-        it 'does not add frontend fixtures mapping to the output file' do
-          expect(File).to receive(:write).with(output_file, output_file_content)
-
-          subject
+        it 'does not add frontend fixtures mapping to the changed files file' do
+          expect { subject }.not_to change { File.read(changed_files_pathname) }
         end
       end
 
       context 'when there is no frontend fixture files' do
-        let(:frontend_fixtures_mapping_path) { '' }
+        let(:frontend_fixtures_mapping_pathname) { nil }
 
-        it 'does not add frontend fixtures mapping to the output file' do
-          expect(File).to receive(:write).with(output_file, output_file_content)
-
-          subject
+        it 'does not add frontend fixtures mapping to the changed files file' do
+          expect { subject }.not_to change { File.read(changed_files_pathname) }
         end
       end
 
       context 'when the matched tests file and frontend fixture files are provided' do
         before do
-          allow(File).to receive(:exist?).with(matched_tests_file).and_return(true)
-          allow(File).to receive(:exist?).with(frontend_fixtures_mapping_path).and_return(true)
-
-          allow(File).to receive(:read).with(matched_tests_file).and_return(matched_tests)
-          allow(File).to receive(:read).with(frontend_fixtures_mapping_path).and_return(frontend_fixtures_mapping_json)
+          File.write(predictive_tests_pathname, matched_tests)
+          File.write(frontend_fixtures_mapping_pathname, frontend_fixtures_mapping_json)
+          File.write(changed_files_pathname, changed_files_file_content)
         end
+
+        let(:changed_files_file_content) { '' }
 
         context 'when there are no mappings for the matched tests' do
           let(:matched_tests) { 'match_spec1 match_spec_2' }
@@ -115,10 +119,8 @@ RSpec.describe Tooling::FindChanges, feature_category: :tooling do
             { other_spec: ['other_mapping'] }.to_json
           end
 
-          it 'does not add frontend fixtures mapping to the output file' do
-            expect(File).to receive(:write).with(output_file, output_file_content)
-
-            subject
+          it 'does not change the changed files file' do
+            expect { subject }.not_to change { File.read(changed_files_pathname) }
           end
         end
 
@@ -129,10 +131,20 @@ RSpec.describe Tooling::FindChanges, feature_category: :tooling do
             { match_spec1: spec_mappings }.to_json
           end
 
-          it 'adds the frontend fixtures mappings to the output file' do
-            expect(File).to receive(:write).with(output_file, "#{output_file_content} #{spec_mappings.join(' ')}")
+          context 'when the changed files file is initially empty' do
+            it 'adds the frontend fixtures mappings to the changed files file' do
+              expect { subject }.to change { File.read(changed_files_pathname) }.from('').to(spec_mappings.join(' '))
+            end
+          end
 
-            subject
+          context 'when the changed files file is initially not empty' do
+            let(:changed_files_file_content) { 'initial_content1 initial_content2' }
+
+            it 'adds the frontend fixtures mappings to the changed files file' do
+              expect { subject }.to change { File.read(changed_files_pathname) }
+                .from(changed_files_file_content)
+                .to("#{changed_files_file_content} #{spec_mappings.join(' ')}")
+            end
           end
         end
       end
@@ -155,15 +167,9 @@ RSpec.describe Tooling::FindChanges, feature_category: :tooling do
     end
 
     context 'when a file is passed as an argument' do
-      let(:output_file) { 'output_file.out' }
+      let(:changed_files_pathname) { 'does-not-exist.out' }
 
-      it 'does not read the output file' do
-        expect(File).not_to receive(:read).with(output_file)
-
-        subject
-      end
-
-      it 'calls GitLab API anyways' do
+      it 'calls GitLab API' do
         expect(gitlab_client).to receive(:merge_request_changes)
         .with('dummy-project', '1234')
 

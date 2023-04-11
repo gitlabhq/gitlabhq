@@ -100,6 +100,7 @@ identifying abstract concepts and are subject to changes as we refine the design
 - **Catalog resource** is the single item displayed in the catalog. A components repository is a catalog resource.
 - **Version** is a specific revision of catalog resource. It maps to the released tag in the project,
   which allows components to be pinned to a specific revision.
+- **Steps** is a collection of instructions for how jobs can be executed.
 
 ## Definition of pipeline component
 

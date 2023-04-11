@@ -71,3 +71,10 @@ build-assets-image:
       # The `cached-assets-hash.txt` file is used in `review-build-cng-env` (`.gitlab/ci/review-apps/main.gitlab-ci.yml`)
       # to pass the assets image tag to the CNG downstream pipeline.
       - cached-assets-hash.txt
+
+build-assets-image as-if-foss:
+  extends:
+    - build-assets-image
+    - .as-if-foss
+    - .build-images:rules:build-assets-image-as-if-foss
+  needs: ["compile-production-assets as-if-foss"]

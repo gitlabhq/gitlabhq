@@ -1,9 +1,0 @@
-#!/usr/bin/env ruby
-# frozen_string_literal: true
-
-require_relative '../lib/tooling/find_tests'
-
-changes_file         = ARGV.shift
-matching_tests_paths = ARGV.shift
-
-Tooling::FindTests.new(changes_file, matching_tests_paths).execute

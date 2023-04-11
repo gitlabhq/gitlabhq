@@ -4,6 +4,9 @@
 default:
   interruptible: true
 
+workflow:
+  name: $PIPELINE_NAME
+
 include:
   - local: .gitlab/ci/package-and-test/rules.gitlab-ci.yml
   - local: .gitlab/ci/package-and-test/variables.gitlab-ci.yml
@@ -54,13 +57,6 @@ stages:
   stage: test
   tags:
     - e2e
-  needs:
-    - job: trigger-omnibus
-      optional: true
-    - job: download-knapsack-report
-      artifacts: true
-      optional: true
-    - job: check-release-set
   variables:
     QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
@@ -128,12 +124,20 @@ trigger-omnibus-env:
       echo "OMNIBUS_GITLAB_CACHE_EDITION=${OMNIBUS_GITLAB_CACHE_EDITION:-GITLAB}" >> $BUILD_ENV
       echo "OMNIBUS_GITLAB_BUILD_ON_ALL_OS=${OMNIBUS_GITLAB_BUILD_ON_ALL_OS:-false}" >> $BUILD_ENV
       echo "GITLAB_ASSETS_TAG=$(assets_image_tag)" >> $BUILD_ENV
-      echo "EE=$([[ $FOSS_ONLY == 'true' ]] && echo 'false' || echo 'true')" >> $BUILD_ENV
+      echo "EE=$([[ $FOSS_ONLY == '1' ]] && echo 'false' || echo 'true')" >> $BUILD_ENV
       echo "Built environment file for omnibus build:"
       cat $BUILD_ENV
   artifacts:
     reports:
       dotenv: $BUILD_ENV
+
+trigger-omnibus-env-ce:
+  extends:
+    - trigger-omnibus-env
+    - .rules:omnibus-build-ce
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: build-assets-image as-if-foss
 
 trigger-omnibus:
   extends: .rules:omnibus-build
@@ -165,6 +169,16 @@ trigger-omnibus:
   trigger:
     project: gitlab-org/build/omnibus-gitlab-mirror
     strategy: depend
+
+trigger-omnibus-ce:
+  extends:
+    - trigger-omnibus
+    - .rules:omnibus-build-ce
+  variables:
+    # Override gitlab repository so that omnibus doesn't use foss repository for CE build
+    GITLAB_ALTERNATIVE_REPO: $CI_PROJECT_URL
+  needs:
+    - trigger-omnibus-env-ce
 
 download-knapsack-report:
   extends:

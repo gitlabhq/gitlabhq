@@ -1,7 +1,7 @@
 import { GlFormCheckbox } from '@gitlab/ui';
-import mockGetJobArtifactsResponse from 'test_fixtures/graphql/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
+import mockGetJobArtifactsResponse from 'test_fixtures/graphql/ci/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import JobCheckbox from '~/artifacts/components/job_checkbox.vue';
+import JobCheckbox from '~/ci/artifacts/components/job_checkbox.vue';
 
 describe('JobCheckbox component', () => {
   let wrapper;

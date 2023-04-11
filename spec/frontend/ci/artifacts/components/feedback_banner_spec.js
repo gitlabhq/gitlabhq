@@ -1,12 +1,12 @@
 import { GlBanner } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import FeedbackBanner from '~/artifacts/components/feedback_banner.vue';
+import FeedbackBanner from '~/ci/artifacts/components/feedback_banner.vue';
 import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import {
   I18N_FEEDBACK_BANNER_TITLE,
   I18N_FEEDBACK_BANNER_BUTTON,
   FEEDBACK_URL,
-} from '~/artifacts/constants';
+} from '~/ci/artifacts/constants';
 
 const mockBannerImagePath = 'banner/image/path';
 

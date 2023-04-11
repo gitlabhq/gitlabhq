@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlButton, GlSprintf, GlLink, GlFormCheckbox } from '@gitlab/ui';
 import { mapGetters, mapActions, mapState } from 'vuex';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -20,6 +20,7 @@ export default {
     GlButton,
     GlSprintf,
     GlLink,
+    GlFormCheckbox,
   },
   mixins: [issuableStateMixin, resolvable, glFeaturesFlagMixin()],
   props: {
@@ -372,12 +373,14 @@ export default {
           <p v-if="showResolveDiscussionToggle">
             <label>
               <template v-if="discussionResolved">
-                <input v-model="isUnresolving" type="checkbox" class="js-unresolve-checkbox" />
-                {{ __('Unresolve thread') }}
+                <gl-form-checkbox v-model="isUnresolving" class="js-unresolve-checkbox">
+                  {{ __('Unresolve thread') }}
+                </gl-form-checkbox>
               </template>
               <template v-else>
-                <input v-model="isResolving" type="checkbox" class="js-resolve-checkbox" />
-                {{ __('Resolve thread') }}
+                <gl-form-checkbox v-model="isResolving" class="js-resolve-checkbox">
+                  {{ __('Resolve thread') }}
+                </gl-form-checkbox>
               </template>
             </label>
           </p>

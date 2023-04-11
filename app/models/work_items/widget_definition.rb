@@ -30,7 +30,8 @@ module WorkItems
       requirement_legacy: 12, # EE-only
       test_reports: 13, # EE-only
       notifications: 14,
-      current_user_todos: 15
+      current_user_todos: 15,
+      award_emoji: 16
     }
 
     def self.available_widgets

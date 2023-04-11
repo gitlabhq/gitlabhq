@@ -1,15 +1,15 @@
 import { GlModal } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import getJobArtifactsResponse from 'test_fixtures/graphql/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
+import getJobArtifactsResponse from 'test_fixtures/graphql/ci/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
 import waitForPromises from 'helpers/wait_for_promises';
-import ArtifactsTableRowDetails from '~/artifacts/components/artifacts_table_row_details.vue';
-import ArtifactRow from '~/artifacts/components/artifact_row.vue';
-import ArtifactDeleteModal from '~/artifacts/components/artifact_delete_modal.vue';
+import ArtifactsTableRowDetails from '~/ci/artifacts/components/artifacts_table_row_details.vue';
+import ArtifactRow from '~/ci/artifacts/components/artifact_row.vue';
+import ArtifactDeleteModal from '~/ci/artifacts/components/artifact_delete_modal.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import destroyArtifactMutation from '~/artifacts/graphql/mutations/destroy_artifact.mutation.graphql';
-import { I18N_DESTROY_ERROR, I18N_MODAL_TITLE } from '~/artifacts/constants';
+import destroyArtifactMutation from '~/ci/artifacts/graphql/mutations/destroy_artifact.mutation.graphql';
+import { I18N_DESTROY_ERROR, I18N_MODAL_TITLE } from '~/ci/artifacts/constants';
 import { createAlert } from '~/alert';
 
 jest.mock('~/alert');

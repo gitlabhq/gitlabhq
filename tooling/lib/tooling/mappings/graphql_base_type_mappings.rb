@@ -25,9 +25,9 @@ module Tooling
         'jh' => GRAPHQL_TYPES_FOLDERS_JH
       }.freeze
 
-      def initialize(changes_file, matching_tests_paths)
-        @matching_tests_paths = matching_tests_paths
-        @changed_files        = read_array_from_file(changes_file)
+      def initialize(changed_files_pathname, predictive_tests_pathname)
+        @predictive_tests_pathname = predictive_tests_pathname
+        @changed_files             = read_array_from_file(changed_files_pathname)
       end
 
       def execute
@@ -46,7 +46,7 @@ module Tooling
           end
         end.compact.uniq
 
-        write_array_to_file(matching_tests_paths, matching_graphql_tests)
+        write_array_to_file(predictive_tests_pathname, matching_graphql_tests)
       end
 
       def filter_files
@@ -113,7 +113,7 @@ module Tooling
 
       private
 
-      attr_reader :changed_files, :matching_tests_paths
+      attr_reader :changed_files, :predictive_tests_pathname
     end
   end
 end

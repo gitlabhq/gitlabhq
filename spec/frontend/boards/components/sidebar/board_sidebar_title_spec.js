@@ -1,6 +1,7 @@
 import { GlAlert, GlFormInput, GlForm, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import waitForPromises from 'helpers/wait_for_promises';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
 import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
 import { createStore } from '~/boards/stores';
@@ -21,7 +22,7 @@ const TEST_ISSUE_B = {
   webUrl: 'webUrl',
 };
 
-describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
+describe('BoardSidebarTitle', () => {
   let wrapper;
   let store;
 
@@ -39,6 +40,10 @@ describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
       store,
       provide: {
         canUpdate: true,
+        isApolloBoard: false,
+      },
+      propsData: {
+        activeItem: item,
       },
       stubs: {
         'board-editable-item': BoardEditableItem,
@@ -86,7 +91,8 @@ describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
       await nextTick();
     });
 
-    it('collapses sidebar and renders new title', () => {
+    it('collapses sidebar and renders new title', async () => {
+      await waitForPromises();
       expect(findCollapsed().isVisible()).toBe(true);
       expect(findTitle().text()).toContain(TEST_TITLE);
     });

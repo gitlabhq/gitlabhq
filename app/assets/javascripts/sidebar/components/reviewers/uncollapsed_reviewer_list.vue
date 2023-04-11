@@ -58,6 +58,9 @@ export default {
     approvedByTooltipTitle(user) {
       return sprintf(s__('MergeRequest|Approved by @%{username}'), user);
     },
+    reviewedButNotApprovedTooltip(user) {
+      return sprintf(s__('MergeRequest|Reviewed by @%{username} but not yet approved'), user);
+    },
     toggleShowLess() {
       this.showLess = !this.showLess;
     },
@@ -105,6 +108,19 @@ export default {
           {{ user.name }}
         </div>
       </reviewer-avatar-link>
+      <gl-button
+        v-if="user.mergeRequestInteraction.canUpdate && user.mergeRequestInteraction.reviewed"
+        v-gl-tooltip.left
+        :title="$options.i18n.reRequestReview"
+        :aria-label="$options.i18n.reRequestReview"
+        :loading="loadingStates[user.id] === $options.LOADING_STATE"
+        class="float-right gl-text-gray-500! gl-mr-2"
+        size="small"
+        icon="redo"
+        variant="link"
+        data-testid="re-request-button"
+        @click="reRequestReview(user.id)"
+      />
       <gl-icon
         v-if="user.mergeRequestInteraction.approved"
         v-gl-tooltip.left
@@ -112,27 +128,16 @@ export default {
         :title="approvedByTooltipTitle(user)"
         name="status-success"
         class="float-right gl-my-2 gl-ml-auto gl-text-green-500 gl-flex-shrink-0"
-        data-testid="re-approved"
+        data-testid="approved"
       />
       <gl-icon
-        v-if="loadingStates[user.id] === $options.SUCCESS_STATE"
-        :size="24"
-        name="check"
-        class="float-right gl-py-2 gl-mr-2 gl-text-green-500"
-        data-testid="re-request-success"
-      />
-      <gl-button
-        v-else-if="user.mergeRequestInteraction.canUpdate && user.mergeRequestInteraction.reviewed"
+        v-else-if="user.mergeRequestInteraction.reviewed"
         v-gl-tooltip.left
-        :title="$options.i18n.reRequestReview"
-        :aria-label="$options.i18n.reRequestReview"
-        :loading="loadingStates[user.id] === $options.LOADING_STATE"
-        class="float-right gl-text-gray-500!"
-        size="small"
-        icon="redo"
-        variant="link"
-        data-testid="re-request-button"
-        @click="reRequestReview(user.id)"
+        :size="16"
+        :title="reviewedButNotApprovedTooltip(user)"
+        name="dotted-circle"
+        class="float-right gl-my-2 gl-ml-auto gl-text-gray-400 gl-flex-shrink-0"
+        data-testid="reviewed-not-approved"
       />
     </div>
   </div>

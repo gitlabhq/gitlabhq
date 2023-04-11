@@ -1,10 +1,10 @@
 import { GlBadge, GlButton, GlFriendlyWrap, GlFormCheckbox } from '@gitlab/ui';
-import mockGetJobArtifactsResponse from 'test_fixtures/graphql/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
+import mockGetJobArtifactsResponse from 'test_fixtures/graphql/ci/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import ArtifactRow from '~/artifacts/components/artifact_row.vue';
-import { BULK_DELETE_FEATURE_FLAG } from '~/artifacts/constants';
+import ArtifactRow from '~/ci/artifacts/components/artifact_row.vue';
+import { BULK_DELETE_FEATURE_FLAG } from '~/ci/artifacts/constants';
 
 describe('ArtifactRow component', () => {
   let wrapper;

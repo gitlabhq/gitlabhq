@@ -7,10 +7,10 @@ require_relative '../../../../lib/gitlab_edition'
 module Tooling
   module Mappings
     class PartialToViewsMappings < Base
-      def initialize(changes_file, output_file, view_base_folder: 'app/views')
-        @output_file       = output_file
-        @changed_files     = read_array_from_file(changes_file)
-        @view_base_folders = folders_for_available_editions(view_base_folder)
+      def initialize(changed_files_pathname, views_with_partials_pathname, view_base_folder: 'app/views')
+        @views_with_partials_pathname = views_with_partials_pathname
+        @changed_files             = read_array_from_file(changed_files_pathname)
+        @view_base_folders         = folders_for_available_editions(view_base_folder)
       end
 
       def execute
@@ -28,7 +28,7 @@ module Tooling
           end
         end
 
-        write_array_to_file(output_file, views_including_modified_partials)
+        write_array_to_file(views_with_partials_pathname, views_including_modified_partials)
       end
 
       def filter_files
@@ -99,7 +99,7 @@ module Tooling
 
       private
 
-      attr_reader :changed_files, :output_file, :view_base_folders
+      attr_reader :changed_files, :views_with_partials_pathname, :view_base_folders
     end
   end
 end

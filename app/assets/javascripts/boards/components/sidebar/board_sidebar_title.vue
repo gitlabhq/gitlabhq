@@ -19,6 +19,13 @@ export default {
   directives: {
     autofocusonshow,
   },
+  inject: ['isApolloBoard'],
+  props: {
+    activeItem: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       title: '',
@@ -27,7 +34,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({ item: 'activeBoardItem' }),
+    ...mapGetters(['activeBoardItem']),
+    item() {
+      return this.isApolloBoard ? this.activeItem : this.activeBoardItem;
+    },
     pendingChangesStorageKey() {
       return this.getPendingChangesKey(this.item);
     },

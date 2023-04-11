@@ -1,5 +1,5 @@
-import getJobArtifactsQuery from '~/artifacts/graphql/queries/get_job_artifacts.query.graphql';
-import { removeArtifactFromStore } from '~/artifacts/graphql/cache_update';
+import getJobArtifactsQuery from '~/ci/artifacts/graphql/queries/get_job_artifacts.query.graphql';
+import { removeArtifactFromStore } from '~/ci/artifacts/graphql/cache_update';
 
 describe('Artifact table cache updates', () => {
   let store;

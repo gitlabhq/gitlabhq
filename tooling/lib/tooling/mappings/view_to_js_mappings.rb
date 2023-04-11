@@ -14,12 +14,12 @@ module Tooling
       RAILS_PARTIAL_INVOCATION_REGEXP = %r{(?:render|render_if_exists)(?: |\()(?:partial: ?)?['"]([\w/-]+)['"]}.freeze
 
       def initialize(
-        changes_file, matching_tests_paths,
+        changed_files_pathname, predictive_tests_pathname,
         view_base_folder: 'app/views', js_base_folder: 'app/assets/javascripts')
-        @changed_files        = read_array_from_file(changes_file)
-        @matching_tests_paths = matching_tests_paths
-        @view_base_folders    = folders_for_available_editions(view_base_folder)
-        @js_base_folders      = folders_for_available_editions(js_base_folder)
+        @changed_files             = read_array_from_file(changed_files_pathname)
+        @predictive_tests_pathname = predictive_tests_pathname
+        @view_base_folders         = folders_for_available_editions(view_base_folder)
+        @js_base_folders           = folders_for_available_editions(js_base_folder)
       end
 
       def execute
@@ -40,7 +40,7 @@ module Tooling
           end
         end
 
-        write_array_to_file(matching_tests_paths, matching_js_files)
+        write_array_to_file(predictive_tests_pathname, matching_js_files)
       end
 
       # Keep the files that are in the @view_base_folders folder
@@ -76,7 +76,7 @@ module Tooling
 
       private
 
-      attr_reader :changed_files, :matching_tests_paths
+      attr_reader :changed_files, :predictive_tests_pathname
     end
   end
 end

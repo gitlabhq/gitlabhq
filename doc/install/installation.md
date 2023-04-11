@@ -218,18 +218,7 @@ below to use a system Ruby.
 Linux distributions generally have older versions of Ruby available, so these
 instructions are designed to install Ruby from the official source code.
 
-Download Ruby and compile it:
-
-```shell
-mkdir /tmp/ruby && cd /tmp/ruby
-curl --remote-name --location --progress-bar "https://cache.ruby-lang.org/pub/ruby/3.0/ruby-3.0.5.tar.gz"
-echo '9afc6380a027a4fe1ae1a3e2eccb6b497b9c5ac0631c12ca56f9b7beb4848776 ruby-3.0.5.tar.gz' | sha256sum -c - && tar xzf ruby-3.0.5.tar.gz
-cd ruby-3.0.5
-
-./configure --disable-install-rdoc --enable-shared
-make
-sudo make install
-```
+[Install Ruby](https://www.ruby-lang.org/en/documentation/installation/).
 
 ## 3. Go
 

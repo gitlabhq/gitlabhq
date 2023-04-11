@@ -28,10 +28,6 @@ include:
     - run_timed_command "scripts/gitaly-test-spawn"  # Do not use 'bundle exec' here
     - echo -e "\e[0Ksection_end:`date +%s`:gitaly-test-spawn\r\e[0K"
 
-.predictive-rspec-tests:
-  variables:
-    RSPEC_TESTS_MAPPING_ENABLED: "true"
-
 .single-db:
   variables:
     DECOMPOSED_DB: "false"
@@ -61,7 +57,6 @@ include:
     RUBY_GC_MALLOC_LIMIT_MAX: 134217728
     RECORD_DEPRECATIONS: "true"
     GEO_SECONDARY_PROXY: 0
-    RSPEC_TESTS_FILTER_FILE: "${RSPEC_MATCHING_TESTS_PATH}"
     SUCCESSFULLY_RETRIED_TEST_EXIT_CODE: 137
   needs:
     - job: "setup-test-env"

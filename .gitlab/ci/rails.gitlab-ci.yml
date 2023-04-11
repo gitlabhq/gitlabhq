@@ -74,24 +74,12 @@ rspec migration pg13:
     - .rails:rules:ee-and-foss-migration
     - .rspec-migration-parallel
 
-rspec migration pg13 predictive:
-  extends:
-    - rspec migration pg13
-    - .predictive-rspec-tests
-    - .rails:rules:ee-and-foss-migration:predictive
-
 rspec background_migration pg13:
   extends:
     - .rspec-base-pg13
     - .rspec-base-migration
     - .rails:rules:ee-and-foss-background-migration
     - .rspec-background-migration-parallel
-
-rspec background_migration pg13 predictive:
-  extends:
-    - rspec background_migration pg13
-    - .predictive-rspec-tests
-    - .rails:rules:ee-and-foss-background-migration:predictive
 
 rspec migration pg13 single-db:
   extends:
@@ -135,12 +123,6 @@ rspec unit pg13:
     - .rails:rules:ee-and-foss-unit
     - .rspec-unit-parallel
 
-rspec unit pg13 predictive:
-  extends:
-    - rspec unit pg13
-    - .predictive-rspec-tests
-    - .rails:rules:ee-and-foss-unit:predictive
-
 rspec unit pg13 single-db:
   extends:
     - rspec unit pg13
@@ -164,12 +146,6 @@ rspec integration pg13:
     - .rspec-base-pg13
     - .rails:rules:ee-and-foss-integration
     - .rspec-integration-parallel
-
-rspec integration pg13 predictive:
-  extends:
-    - rspec integration pg13
-    - .predictive-rspec-tests
-    - .rails:rules:ee-and-foss-integration:predictive
 
 rspec integration pg13 single-db:
   extends:
@@ -196,12 +172,6 @@ rspec system pg13:
     - .rspec-system-parallel
   variables:
     DEBUG_GITLAB_TRANSACTION_STACK: "true"
-
-rspec system pg13 predictive:
-  extends:
-    - rspec system pg13
-    - .predictive-rspec-tests
-    - .rails:rules:ee-and-foss-system:predictive
 
 rspec system pg13 single-db:
   extends:
@@ -305,24 +275,12 @@ rspec:coverage:
     - rspec unit pg13
     - rspec integration pg13
     - rspec system pg13
-    # FOSS/EE predictive jobs
-    - rspec migration pg13 predictive
-    - rspec background_migration pg13 predictive
-    - rspec unit pg13 predictive
-    - rspec integration pg13 predictive
-    - rspec system pg13 predictive
     # EE jobs
     - rspec-ee migration pg13
     - rspec-ee background_migration pg13
     - rspec-ee unit pg13
     - rspec-ee integration pg13
     - rspec-ee system pg13
-    # EE predictive jobs
-    - rspec-ee migration pg13 predictive
-    - rspec-ee background_migration pg13 predictive
-    - rspec-ee unit pg13 predictive
-    - rspec-ee integration pg13 predictive
-    - rspec-ee system pg13 predictive
     # Memory jobs
     - memory-on-boot
   script:
@@ -402,6 +360,56 @@ rspec:flaky-tests-report:
 
 ##################################################
 # EE: default refs (MRs, default branch, schedules) jobs #
+rspec-predictive:pipeline-generate:
+  extends:
+    - .rails:rules:rspec-predictive
+  stage: prepare
+  needs: ["detect-tests", "retrieve-tests-metadata"]
+  script:
+    - scripts/generate_rspec_pipeline.rb -t "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}" -k "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" -f "${RSPEC_MATCHING_TESTS_FOSS_PATH}" -o "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}.yml"
+    - scripts/generate_rspec_pipeline.rb -t "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}" -k "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" -f "${RSPEC_MATCHING_TESTS_EE_PATH}" -o "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}-ee.yml" -p "ee/"
+    - echo "Content of ${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}.yml:"
+    - cat "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}.yml"
+    - echo "\n================================================\n"
+    - echo "Content of ${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}-ee.yml:"
+    - cat "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}-ee.yml"
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}.yml"
+      - "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}-ee.yml"
+
+rspec:predictive:trigger:
+  extends:
+    - .rails:rules:rspec-predictive
+  stage: test
+  needs:
+    - job: "setup-test-env"
+      artifacts: false
+    - job: "retrieve-tests-metadata"
+      artifacts: false
+    - job: "compile-test-assets"
+      artifacts: false
+    - job: "rspec-predictive:pipeline-generate"
+      artifacts: true
+  variables:
+    PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+  trigger:
+    strategy: depend
+    forward:
+      yaml_variables: true
+      pipeline_variables: true
+    include:
+      - artifact: "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}.yml"
+        job: rspec-predictive:pipeline-generate
+
+rspec-ee:predictive:trigger:
+  extends: rspec:predictive:trigger
+  trigger:
+    include:
+      - artifact: "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}-ee.yml"
+        job: rspec-predictive:pipeline-generate
+
 rspec migration pg13-as-if-foss:
   extends:
     - .rspec-base-pg13-as-if-foss
@@ -409,24 +417,12 @@ rspec migration pg13-as-if-foss:
     - .rails:rules:as-if-foss-migration
     - .rspec-migration-parallel
 
-rspec migration pg13-as-if-foss predictive:
-  extends:
-    - rspec migration pg13-as-if-foss
-    - .predictive-rspec-tests
-    - .rails:rules:as-if-foss-migration:predictive
-
 rspec background_migration pg13-as-if-foss:
   extends:
     - .rspec-base-pg13-as-if-foss
     - .rspec-base-migration
     - .rails:rules:as-if-foss-background-migration
     - .rspec-background-migration-parallel
-
-rspec background_migration pg13-as-if-foss predictive:
-  extends:
-    - rspec background_migration pg13-as-if-foss
-    - .predictive-rspec-tests
-    - .rails:rules:as-if-foss-background-migration:predictive
 
 rspec migration pg13-as-if-foss single-db:
   extends:
@@ -458,12 +454,6 @@ rspec unit pg13-as-if-foss:
     - .rails:rules:as-if-foss-unit
     - .rspec-unit-parallel
 
-rspec unit pg13-as-if-foss predictive:
-  extends:
-    - rspec unit pg13-as-if-foss
-    - .predictive-rspec-tests
-    - .rails:rules:as-if-foss-unit:predictive
-
 rspec unit pg13-as-if-foss single-db:
   extends:
     - rspec unit pg13-as-if-foss
@@ -482,12 +472,6 @@ rspec integration pg13-as-if-foss:
     - .rails:rules:as-if-foss-integration
     - .rspec-integration-parallel
 
-rspec integration pg13-as-if-foss predictive:
-  extends:
-    - rspec integration pg13-as-if-foss
-    - .predictive-rspec-tests
-    - .rails:rules:as-if-foss-integration:predictive
-
 rspec integration pg13-as-if-foss single-db:
   extends:
     - rspec integration pg13-as-if-foss
@@ -505,12 +489,6 @@ rspec system pg13-as-if-foss:
     - .rspec-base-pg13-as-if-foss
     - .rails:rules:as-if-foss-system
     - .rspec-system-parallel
-
-rspec system pg13-as-if-foss predictive:
-  extends:
-    - rspec system pg13-as-if-foss
-    - .predictive-rspec-tests
-    - .rails:rules:as-if-foss-system:predictive
 
 rspec system pg13-as-if-foss single-db:
   extends:
@@ -531,24 +509,12 @@ rspec-ee migration pg13:
     - .rails:rules:ee-only-migration
     - .rspec-ee-migration-parallel
 
-rspec-ee migration pg13 predictive:
-  extends:
-    - rspec-ee migration pg13
-    - .predictive-rspec-tests
-    - .rails:rules:ee-only-migration:predictive
-
 rspec-ee background_migration pg13:
   extends:
     - .rspec-ee-base-pg13
     - .rspec-base-migration
     - .rails:rules:ee-only-background-migration
     - .rspec-ee-background-migration-parallel
-
-rspec-ee background_migration pg13 predictive:
-  extends:
-    - rspec-ee background_migration pg13
-    - .predictive-rspec-tests
-    - .rails:rules:ee-only-background-migration:predictive
 
 rspec-ee migration pg13 single-db:
   extends:
@@ -597,12 +563,6 @@ rspec-ee unit pg13 es8:
     - .rspec-ee-base-pg13-es8
     - .rspec-ee-unit-parallel
 
-rspec-ee unit pg13 predictive:
-  extends:
-    - rspec-ee unit pg13
-    - .predictive-rspec-tests
-    - .rails:rules:ee-only-unit:predictive
-
 rspec-ee unit pg13 single-db:
   extends:
     - rspec-ee unit pg13
@@ -626,12 +586,6 @@ rspec-ee integration pg13 es8:
     - .rspec-ee-base-pg13-es8
     - .rspec-ee-integration-parallel
 
-rspec-ee integration pg13 predictive:
-  extends:
-    - rspec-ee integration pg13
-    - .predictive-rspec-tests
-    - .rails:rules:ee-only-integration:predictive
-
 rspec-ee integration pg13 single-db:
   extends:
     - rspec-ee integration pg13
@@ -654,12 +608,6 @@ rspec-ee system pg13 es8:
   extends:
     - .rspec-ee-base-pg13-es8
     - .rspec-ee-system-parallel
-
-rspec-ee system pg13 predictive:
-  extends:
-    - rspec-ee system pg13
-    - .predictive-rspec-tests
-    - .rails:rules:ee-only-system:predictive
 
 rspec-ee system pg13 single-db:
   extends:

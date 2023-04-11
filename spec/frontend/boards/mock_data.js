@@ -277,6 +277,9 @@ export const labels = [
   },
 ];
 
+export const mockIssueFullPath = 'gitlab-org/test-subgroup/gitlab-test';
+export const mockEpicFullPath = 'gitlab-org/test-subgroup';
+
 export const rawIssue = {
   title: 'Issue 1',
   id: 'gid://gitlab/Issue/436',
@@ -302,11 +305,23 @@ export const rawIssue = {
   epic: {
     id: 'gid://gitlab/Epic/41',
   },
+  totalTimeSpent: 0,
+  humanTimeEstimate: null,
+  humanTotalTimeSpent: null,
+  emailsDisabled: false,
+  hidden: false,
+  webUrl: `${mockIssueFullPath}/-/issue/27`,
+  relativePosition: null,
+  severity: null,
+  milestone: null,
+  weight: null,
+  blocked: false,
+  blockedByCount: 0,
+  iteration: null,
+  healthStatus: null,
   type: 'ISSUE',
+  __typename: 'Issue',
 };
-
-export const mockIssueFullPath = 'gitlab-org/test-subgroup/gitlab-test';
-export const mockEpicFullPath = 'gitlab-org/test-subgroup';
 
 export const mockIssue = {
   id: 'gid://gitlab/Issue/436',
@@ -329,7 +344,22 @@ export const mockIssue = {
   epic: {
     id: 'gid://gitlab/Epic/41',
   },
+  totalTimeSpent: 0,
+  humanTimeEstimate: null,
+  humanTotalTimeSpent: null,
+  emailsDisabled: false,
+  hidden: false,
+  webUrl: `${mockIssueFullPath}/-/issue/27`,
+  relativePosition: null,
+  severity: null,
+  milestone: null,
+  weight: null,
+  blocked: false,
+  blockedByCount: 0,
+  iteration: null,
+  healthStatus: null,
   type: 'ISSUE',
+  __typename: 'Issue',
 };
 
 export const mockEpic = {

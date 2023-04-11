@@ -10,13 +10,13 @@ module Tooling
   module Mappings
     class JsToSystemSpecsMappings < Base
       def initialize(
-        changes_file, matching_tests_paths,
+        changed_files_pathname, predictive_tests_pathname,
         js_base_folder: 'app/assets/javascripts', system_specs_base_folder: 'spec/features')
-        @changed_files            = read_array_from_file(changes_file)
-        @matching_tests_paths     = matching_tests_paths
-        @js_base_folder           = js_base_folder
-        @js_base_folders          = folders_for_available_editions(js_base_folder)
-        @system_specs_base_folder = system_specs_base_folder
+        @changed_files             = read_array_from_file(changed_files_pathname)
+        @predictive_tests_pathname = predictive_tests_pathname
+        @js_base_folder            = js_base_folder
+        @js_base_folders           = folders_for_available_editions(js_base_folder)
+        @system_specs_base_folder  = system_specs_base_folder
 
         # Cannot be extracted to a constant, as it depends on a variable
         @first_js_folder_extract_regexp = %r{
@@ -36,7 +36,7 @@ module Tooling
           end
         end
 
-        write_array_to_file(matching_tests_paths, matching_system_tests)
+        write_array_to_file(predictive_tests_pathname, matching_system_tests)
       end
 
       # Keep the files that are in the @js_base_folders folders
@@ -66,7 +66,7 @@ module Tooling
 
       private
 
-      attr_reader :changed_files, :matching_tests_paths
+      attr_reader :changed_files, :predictive_tests_pathname
     end
   end
 end

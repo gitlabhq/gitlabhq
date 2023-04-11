@@ -1,12 +1,12 @@
 import { GlSprintf, GlModal } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import mockGetJobArtifactsResponse from 'test_fixtures/graphql/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
+import mockGetJobArtifactsResponse from 'test_fixtures/graphql/ci/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import ArtifactsBulkDelete from '~/artifacts/components/artifacts_bulk_delete.vue';
-import bulkDestroyArtifactsMutation from '~/artifacts/graphql/mutations/bulk_destroy_job_artifacts.mutation.graphql';
+import ArtifactsBulkDelete from '~/ci/artifacts/components/artifacts_bulk_delete.vue';
+import bulkDestroyArtifactsMutation from '~/ci/artifacts/graphql/mutations/bulk_destroy_job_artifacts.mutation.graphql';
 
 Vue.use(VueApollo);
 

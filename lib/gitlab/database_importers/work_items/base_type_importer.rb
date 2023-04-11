@@ -20,7 +20,8 @@ module Gitlab
           requirement_legacy: 'Requirement legacy',
           test_reports: 'Test reports',
           notifications: 'Notifications',
-          current_user_todos: "Current user todos"
+          current_user_todos: "Current user todos",
+          award_emoji: 'Award emoji'
         }.freeze
 
         WIDGETS_FOR_TYPE = {
@@ -36,20 +37,23 @@ module Gitlab
             :weight,
             :health_status,
             :notifications,
-            :current_user_todos
+            :current_user_todos,
+            :award_emoji
           ],
           incident: [
             :description,
             :hierarchy,
             :notes,
             :notifications,
-            :current_user_todos
+            :current_user_todos,
+            :award_emoji
           ],
           test_case: [
             :description,
             :notes,
             :notifications,
-            :current_user_todos
+            :current_user_todos,
+            :award_emoji
           ],
           requirement: [
             :description,
@@ -58,7 +62,8 @@ module Gitlab
             :requirement_legacy,
             :test_reports,
             :notifications,
-            :current_user_todos
+            :current_user_todos,
+            :award_emoji
           ],
           task: [
             :assignees,
@@ -71,7 +76,8 @@ module Gitlab
             :iteration,
             :weight,
             :notifications,
-            :current_user_todos
+            :current_user_todos,
+            :award_emoji
           ],
           objective: [
             :assignees,
@@ -83,7 +89,8 @@ module Gitlab
             :health_status,
             :progress,
             :notifications,
-            :current_user_todos
+            :current_user_todos,
+            :award_emoji
           ],
           key_result: [
             :assignees,
@@ -95,7 +102,8 @@ module Gitlab
             :health_status,
             :progress,
             :notifications,
-            :current_user_todos
+            :current_user_todos,
+            :award_emoji
           ]
         }.freeze
 

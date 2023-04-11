@@ -11,10 +11,18 @@ module Tooling
         File.read(file).split(' ')
       end
 
-      def write_array_to_file(file, content_array)
+      def write_array_to_file(file, content_array, overwrite: false)
         FileUtils.touch file
 
-        output_content = (File.read(file).split(' ') + content_array).join(' ')
+        # We sort the array to make it easier to read the output file
+        content_array.sort!
+
+        output_content =
+          if overwrite
+            content_array.join(' ')
+          else
+            (File.read(file).split(' ') + content_array).join(' ')
+          end
 
         File.write(file, output_content)
       end

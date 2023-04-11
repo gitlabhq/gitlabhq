@@ -58,21 +58,10 @@ sudo service gitlab stop
 
 ### 3. Update Ruby
 
-From GitLab 15.10, we only support Ruby 3.0 or higher and dropped support for Ruby 2.7. Be sure to upgrade if necessary.
+From GitLab 15.10, we only support Ruby 3.0.x and dropped support for Ruby 2.7. Be sure to upgrade if necessary.
 You can check which version you are running with `ruby -v`.
 
-Download Ruby and compile it:
-
-```shell
-mkdir /tmp/ruby && cd /tmp/ruby
-curl --remote-name --location --progress-bar "https://cache.ruby-lang.org/pub/ruby/3.0/ruby-3.0.5.tar.gz"
-echo '9afc6380a027a4fe1ae1a3e2eccb6b497b9c5ac0631c12ca56f9b7beb4848776 ruby-3.0.5.tar.gz' | sha256sum -c - && tar xzf ruby-3.0.5.tar.gz
-cd ruby-2.7.6
-
-./configure --disable-install-rdoc --enable-shared
-make
-sudo make install
-```
+[Install Ruby](https://www.ruby-lang.org/en/documentation/installation/).
 
 ### 4. Update Node.js
 

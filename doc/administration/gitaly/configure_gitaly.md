@@ -1203,7 +1203,8 @@ automatically keep parts of the pack-objects cache files in RAM,
 making it faster.
 
 Because the pack-objects cache can lead to a significant increase in
-disk write IO, it is off by default.
+disk write IO, it is off by default. In GitLab 15.11 and later,
+the write workload is approximately 50% lower, but the cache is still disabled by default.
 
 ### Configure the cache
 
@@ -1215,6 +1216,7 @@ below.
 | `enabled` | `false`                                            | Turns on the cache. When off, Gitaly runs a dedicated `git pack-objects` process for each request. |
 | `dir`     | `<PATH TO FIRST STORAGE>/+gitaly/PackObjectsCache` | Local directory where cache files get stored.                                                      |
 | `max_age` | `5m` (5 minutes)                                   | Cache entries older than this get evicted and removed from disk.                                   |
+| `min_occurrences` | 1 | Minimum times a key must occur before a cache entry is created. |
 
 In `/etc/gitlab/gitlab.rb`, set:
 
@@ -1226,6 +1228,7 @@ gitaly['configuration'] = {
     enabled: true,
     # dir: '/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache',
     # max_age: '5m',
+    # min_occurrences: 1,
   },
 }
 ```
@@ -1283,12 +1286,30 @@ a guarantee. Peak size may exceed this average.
 
 The `max_age` configuration setting lets you control the chance of a
 cache hit and the average amount of storage used by cache files.
-Entries older than `max_age` get evicted from the in-memory metadata
-store, and deleted from disk.
+Entries older than `max_age` get deleted from the disk.
 
 Eviction does not interfere with ongoing requests. It is OK for `max_age` to be less than the time it takes to do a
 fetch over a slow connection because Unix filesystems do not truly delete a file until all processes that are reading
 the deleted file have closed it.
+
+#### Minimum key occurrences `min_occurrences`
+
+> [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2222) in GitLab 15.11.
+
+The `min_occurrences` setting controls how often an identical request
+must occur before we create a new cache entry. The default value is `1`,
+meaning that unique requests do not get written into the cache.
+
+If you:
+
+- Increase this number, your cache hit rate goes down and the
+cache uses less disk space.
+- Decrease this number, your cache hit
+rate goes up and the cache uses more disk space.
+
+You should set `min_occurrences` to `1`. On GitLab.com,
+going from 0 to 1 saved us 50% cache disk space while barely affecting
+the cache hit rate.
 
 ### Observe the cache
 

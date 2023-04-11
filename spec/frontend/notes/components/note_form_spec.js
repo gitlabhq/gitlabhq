@@ -1,4 +1,4 @@
-import { GlLink } from '@gitlab/ui';
+import { GlLink, GlFormCheckbox } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import NoteForm from '~/notes/components/note_form.vue';
@@ -234,7 +234,7 @@ describe('issue_note_form component', () => {
     });
 
     it('shows resolve checkbox', () => {
-      expect(wrapper.find('.js-resolve-checkbox').exists()).toBe(true);
+      expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(true);
     });
 
     it('hides resolve checkbox', async () => {
@@ -253,7 +253,7 @@ describe('issue_note_form component', () => {
         },
       });
 
-      expect(wrapper.find('.js-resolve-checkbox').exists()).toBe(false);
+      expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(false);
     });
 
     it('hides actions for commits', async () => {

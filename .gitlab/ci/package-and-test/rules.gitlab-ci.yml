@@ -60,7 +60,13 @@
   rules:
     - if: $SKIP_OMNIBUS_TRIGGER == "true"
       when: never
-    - when: always
+    - if: $FOSS_ONLY != "1"
+
+.rules:omnibus-build-ce:
+  rules:
+    - if: $SKIP_OMNIBUS_TRIGGER == "true"
+      when: never
+    - if: $FOSS_ONLY == "1"
 
 .rules:update-cache:
   rules:
@@ -117,7 +123,7 @@
 
 .rules:test:ee-only:
   rules:
-    - if: $FOSS_ONLY == "true"
+    - if: $FOSS_ONLY == "1"
       when: never
 
 .rules:test:update:

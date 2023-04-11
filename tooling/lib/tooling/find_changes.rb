@@ -2,28 +2,35 @@
 # frozen_string_literal: true
 
 require 'gitlab'
+require_relative 'helpers/file_handler'
 
 module Tooling
   class FindChanges
-    def initialize(output_file: nil, matched_tests_file: nil, frontend_fixtures_mapping_path: nil)
-      @gitlab_token                   = ENV['PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE'] || ''
-      @gitlab_endpoint                = ENV['CI_API_V4_URL']
-      @mr_project_path                = ENV['CI_MERGE_REQUEST_PROJECT_PATH']
-      @mr_iid                         = ENV['CI_MERGE_REQUEST_IID']
-      @output_file                    = output_file
-      @matched_tests_file             = matched_tests_file
-      @frontend_fixtures_mapping_path = frontend_fixtures_mapping_path
+    include Helpers::FileHandler
+
+    def initialize(
+      changed_files_pathname = nil, predictive_tests_pathname = nil, frontend_fixtures_mapping_pathname = nil
+    )
+      @gitlab_token                       = ENV['PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE'] || ''
+      @gitlab_endpoint                    = ENV['CI_API_V4_URL']
+      @mr_project_path                    = ENV['CI_MERGE_REQUEST_PROJECT_PATH']
+      @mr_iid                             = ENV['CI_MERGE_REQUEST_IID']
+      @changed_files_pathname             = changed_files_pathname
+      @predictive_tests_pathname          = predictive_tests_pathname
+      @frontend_fixtures_mapping_pathname = frontend_fixtures_mapping_pathname
     end
 
     def execute
-      raise ArgumentError, "An path to an output file must be given as first argument." if output_file.nil?
+      if changed_files_pathname.nil?
+        raise ArgumentError, "A path to the changed files file must be given as first argument."
+      end
 
       add_frontend_fixture_files!
-      File.write(output_file, file_changes.join(' '))
+      write_array_to_file(changed_files_pathname, file_changes, overwrite: true)
     end
 
     def only_js_files_changed
-      @output_file = nil # We ensure that we'll get the diff from the MR directly, not from a file.
+      @changed_files_pathname = nil # We ensure that we'll get the diff from the MR directly, not from a file.
 
       file_changes.any? && file_changes.all? { |file| file.end_with?('.js') }
     end
@@ -31,7 +38,7 @@ module Tooling
     private
 
     attr_reader :gitlab_token, :gitlab_endpoint, :mr_project_path,
-      :mr_iid, :output_file, :matched_tests_file, :frontend_fixtures_mapping_path
+      :mr_iid, :changed_files_pathname, :predictive_tests_pathname, :frontend_fixtures_mapping_pathname
 
     def gitlab
       @gitlab ||= begin
@@ -45,7 +52,7 @@ module Tooling
     end
 
     def add_frontend_fixture_files?
-      matched_tests_file && frontend_fixtures_mapping_path
+      predictive_tests_pathname && frontend_fixtures_mapping_pathname
     end
 
     def add_frontend_fixture_files!
@@ -61,8 +68,8 @@ module Tooling
 
     def file_changes
       @file_changes ||=
-        if output_file && File.exist?(output_file)
-          File.read(output_file).split(' ')
+        if changed_files_pathname && File.exist?(changed_files_pathname)
+          read_array_from_file(changed_files_pathname)
         else
           mr_changes.changes.flat_map do |change|
             change.to_h.values_at('old_path', 'new_path')
@@ -75,15 +82,15 @@ module Tooling
     end
 
     def test_files
-      return [] if !matched_tests_file || !File.exist?(matched_tests_file)
+      return [] if !predictive_tests_pathname || !File.exist?(predictive_tests_pathname)
 
-      File.read(matched_tests_file).split(' ')
+      read_array_from_file(predictive_tests_pathname)
     end
 
     def frontend_fixtures_mapping
-      return {} if !frontend_fixtures_mapping_path || !File.exist?(frontend_fixtures_mapping_path)
+      return {} if !frontend_fixtures_mapping_pathname || !File.exist?(frontend_fixtures_mapping_pathname)
 
-      JSON.parse(File.read(frontend_fixtures_mapping_path)) # rubocop:disable Gitlab/Json
+      JSON.parse(File.read(frontend_fixtures_mapping_pathname)) # rubocop:disable Gitlab/Json
     end
   end
 end

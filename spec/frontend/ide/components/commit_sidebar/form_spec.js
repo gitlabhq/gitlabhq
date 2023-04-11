@@ -21,6 +21,7 @@ import { COMMIT_TO_NEW_BRANCH } from '~/ide/stores/modules/commit/constants';
 describe('IDE commit form', () => {
   let wrapper;
   let store;
+  const showModalSpy = jest.fn();
 
   const createComponent = () => {
     wrapper = shallowMount(CommitForm, {
@@ -29,7 +30,11 @@ describe('IDE commit form', () => {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
       stubs: {
-        GlModal: stubComponent(GlModal),
+        GlModal: stubComponent(GlModal, {
+          methods: {
+            show: showModalSpy,
+          },
+        }),
       },
     });
   };
@@ -57,6 +62,7 @@ describe('IDE commit form', () => {
     tooltip: getBinding(findCommitButtonTooltip().element, 'gl-tooltip').value.title,
   });
   const findForm = () => wrapper.find('form');
+  const findModal = () => wrapper.findComponent(GlModal);
   const submitForm = () => findForm().trigger('submit');
   const findCommitMessageInput = () => wrapper.findComponent(CommitMessageField);
   const setCommitMessageInput = (val) => findCommitMessageInput().vm.$emit('input', val);
@@ -298,22 +304,19 @@ describe('IDE commit form', () => {
         ${() => createCodeownersCommitError('test message')} | ${{ actionPrimary: { text: 'Create new branch' } }}
         ${createUnexpectedCommitError}                       | ${{ actionPrimary: null }}
       `('opens error modal if commitError with $error', async ({ createError, props }) => {
-        const modal = wrapper.findComponent(GlModal);
-        modal.vm.show = jest.fn();
-
         const error = createError();
         store.state.commit.commitError = error;
 
         await nextTick();
 
-        expect(modal.vm.show).toHaveBeenCalled();
-        expect(modal.props()).toMatchObject({
+        expect(showModalSpy).toHaveBeenCalled();
+        expect(findModal().props()).toMatchObject({
           actionCancel: { text: 'Cancel' },
           ...props,
         });
         // Because of the legacy 'mountComponent' approach here, the only way to
         // test the text of the modal is by viewing the content of the modal added to the document.
-        expect(modal.html()).toContain(error.messageHTML);
+        expect(findModal().html()).toContain(error.messageHTML);
       });
     });
 
@@ -339,7 +342,7 @@ describe('IDE commit form', () => {
 
           await nextTick();
 
-          wrapper.findComponent(GlModal).vm.$emit('ok');
+          findModal().vm.$emit('ok');
 
           await waitForPromises();
 

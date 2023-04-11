@@ -3,6 +3,8 @@
 require "spec_helper"
 
 RSpec.describe "Issues > User edits issue", :js, feature_category: :team_planning do
+  include CookieHelper
+
   let_it_be(:project) { create(:project_empty_repo, :public) }
   let_it_be(:project_with_milestones) { create(:project_empty_repo, :public) }
   let_it_be(:user) { create(:user) }
@@ -18,6 +20,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
       project.add_developer(user)
       project_with_milestones.add_developer(user)
       sign_in(user)
+      set_cookie('new-actions-popover-viewed', 'true')
     end
 
     context "from edit page" do

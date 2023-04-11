@@ -5587,7 +5587,6 @@ Layout/LineLength:
     - 'spec/workers/todos_destroyer/confidential_issue_worker_spec.rb'
     - 'spec/workers/update_head_pipeline_for_merge_request_worker_spec.rb'
     - 'spec/workers/users/deactivate_dormant_users_worker_spec.rb'
-    - 'tooling/bin/find_changes'
     - 'tooling/danger/product_intelligence.rb'
     - 'tooling/danger/project_helper.rb'
     - 'tooling/danger/specs.rb'

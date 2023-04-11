@@ -5,15 +5,20 @@ require 'fileutils'
 require_relative '../../../../../tooling/lib/tooling/mappings/view_to_system_specs_mappings'
 
 RSpec.describe Tooling::Mappings::ViewToSystemSpecsMappings, feature_category: :tooling do
-  attr_accessor :view_base_folder, :changes_file, :output_file
+  attr_accessor :view_base_folder, :changed_files_file, :predictive_tests_file
 
-  let(:instance) { described_class.new(changes_file, output_file, view_base_folder: view_base_folder) }
-  let(:changes_file_content)        { "changed_file1 changed_file2" }
-  let(:output_file_initial_content) { "previously_added_spec.rb" }
+  let(:instance) do
+    described_class.new(changed_files_pathname, predictive_tests_pathname, view_base_folder: view_base_folder)
+  end
+
+  let(:changed_files_pathname)           { changed_files_file.path }
+  let(:predictive_tests_pathname)        { predictive_tests_file.path }
+  let(:changed_files_content)            { "changed_file1 changed_file2" }
+  let(:predictive_tests_initial_content) { "previously_added_spec.rb" }
 
   around do |example|
-    self.changes_file        = Tempfile.new('changes')
-    self.output_file         = Tempfile.new('output_file')
+    self.changed_files_file    = Tempfile.new('changed_files_file')
+    self.predictive_tests_file = Tempfile.new('predictive_tests_file')
 
     # See https://ruby-doc.org/stdlib-1.9.3/libdoc/tempfile/rdoc/
     #     Tempfile.html#class-Tempfile-label-Explicit+close
@@ -23,10 +28,10 @@ RSpec.describe Tooling::Mappings::ViewToSystemSpecsMappings, feature_category: :
         example.run
       end
     ensure
-      changes_file.close
-      output_file.close
-      changes_file.unlink
-      output_file.unlink
+      changed_files_file.close
+      predictive_tests_file.close
+      changed_files_file.unlink
+      predictive_tests_file.unlink
     end
   end
 
@@ -34,13 +39,13 @@ RSpec.describe Tooling::Mappings::ViewToSystemSpecsMappings, feature_category: :
     FileUtils.mkdir_p("#{view_base_folder}/app/views/dashboard")
 
     # We write into the temp files initially, to check how the code modified those files
-    File.write(changes_file, changes_file_content)
-    File.write(output_file, output_file_initial_content)
+    File.write(changed_files_pathname, changed_files_content)
+    File.write(predictive_tests_pathname, predictive_tests_initial_content)
   end
 
   shared_examples 'writes nothing to the output file' do
     it 'writes nothing to the output file' do
-      expect { subject }.not_to change { File.read(changes_file) }
+      expect { subject }.not_to change { File.read(changed_files_pathname) }
     end
   end
 
@@ -48,7 +53,7 @@ RSpec.describe Tooling::Mappings::ViewToSystemSpecsMappings, feature_category: :
     subject { instance.execute }
 
     let(:changed_files)        { ["#{view_base_folder}/app/views/dashboard/my_view.html.haml"] }
-    let(:changes_file_content) { changed_files.join(" ") }
+    let(:changed_files_content) { changed_files.join(" ") }
 
     before do
       # We create all of the changed_files, so that they are part of the filtered files
@@ -88,9 +93,9 @@ RSpec.describe Tooling::Mappings::ViewToSystemSpecsMappings, feature_category: :
           end
 
           it 'writes that feature spec to the output file' do
-            expect { subject }.to change { File.read(output_file) }
-                              .from(output_file_initial_content)
-                              .to("#{output_file_initial_content} #{expected_feature_spec}")
+            expect { subject }.to change { File.read(predictive_tests_pathname) }
+                              .from(predictive_tests_initial_content)
+                              .to("#{predictive_tests_initial_content} #{expected_feature_spec}")
           end
         end
 
@@ -111,9 +116,9 @@ RSpec.describe Tooling::Mappings::ViewToSystemSpecsMappings, feature_category: :
           end
 
           it 'writes all of the feature specs for the parent folder to the output file' do
-            expect { subject }.to change { File.read(output_file) }
-                              .from(output_file_initial_content)
-                              .to("#{output_file_initial_content} #{expected_feature_specs.join(' ')}")
+            expect { subject }.to change { File.read(predictive_tests_pathname) }
+                              .from(predictive_tests_initial_content)
+                              .to("#{predictive_tests_initial_content} #{expected_feature_specs.join(' ')}")
           end
         end
       end

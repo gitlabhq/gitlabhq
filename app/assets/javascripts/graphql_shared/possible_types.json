@@ -146,6 +146,7 @@
   ],
   "WorkItemWidget": [
     "WorkItemWidgetAssignees",
+    "WorkItemWidgetAwardEmoji",
     "WorkItemWidgetCurrentUserTodos",
     "WorkItemWidgetDescription",
     "WorkItemWidgetHealthStatus",

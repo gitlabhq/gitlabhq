@@ -2,13 +2,13 @@ import { GlSkeletonLoader } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import ArtifactsApp from '~/artifacts/components/app.vue';
-import JobArtifactsTable from '~/artifacts/components/job_artifacts_table.vue';
-import getBuildArtifactsSizeQuery from '~/artifacts/graphql/queries/get_build_artifacts_size.query.graphql';
+import ArtifactsApp from '~/ci/artifacts/components/app.vue';
+import JobArtifactsTable from '~/ci/artifacts/components/job_artifacts_table.vue';
+import getBuildArtifactsSizeQuery from '~/ci/artifacts/graphql/queries/get_build_artifacts_size.query.graphql';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { PAGE_TITLE, TOTAL_ARTIFACTS_SIZE, SIZE_UNKNOWN } from '~/artifacts/constants';
+import { PAGE_TITLE, TOTAL_ARTIFACTS_SIZE, SIZE_UNKNOWN } from '~/ci/artifacts/constants';
 
 const TEST_BUILD_ARTIFACTS_SIZE = 1024;
 const TEST_PROJECT_PATH = 'project/path';

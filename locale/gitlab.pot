@@ -751,6 +751,9 @@ msgstr ""
 msgid "%{integrations_link_start}Integrations%{link_end} enable you to make third-party applications part of your GitLab workflow. If the available integrations don't meet your needs, consider using a %{webhooks_link_start}webhook%{link_end}."
 msgstr ""
 
+msgid "%{issuableDisplayName} %{lockStatus}."
+msgstr ""
+
 msgid "%{issuableType} will be removed! Are you sure?"
 msgstr ""
 
@@ -8867,7 +8870,7 @@ msgstr ""
 msgid "Checkout|Name of company or organization using GitLab"
 msgstr ""
 
-msgid "Checkout|Name: %{errors}"
+msgid "Checkout|Name: %{errorMessage}"
 msgstr ""
 
 msgid "Checkout|Need more users? Purchase GitLab for your %{company}."
@@ -11772,6 +11775,9 @@ msgid "Copy %{accessTokenType}"
 msgstr ""
 
 msgid "Copy %{http_label} clone URL"
+msgstr ""
+
+msgid "Copy %{issueType} email address"
 msgstr ""
 
 msgid "Copy %{name}"
@@ -15851,6 +15857,9 @@ msgid "Email Notification"
 msgstr ""
 
 msgid "Email a new %{name} to this project"
+msgstr ""
+
+msgid "Email address copied"
 msgstr ""
 
 msgid "Email address suffix"
@@ -21268,6 +21277,12 @@ msgstr ""
 msgid "Header message"
 msgstr ""
 
+msgid "HeaderAction|Notifications and other %{issueType} actions have moved to this menu."
+msgstr ""
+
+msgid "HeaderAction|Okay!"
+msgstr ""
+
 msgid "HeaderAction|incident"
 msgstr ""
 
@@ -23740,9 +23755,6 @@ msgstr ""
 msgid "InviteMembersBanner|We noticed that you haven't invited anyone to this group. Invite your colleagues so you can discuss issues, collaborate on merge requests, and share your knowledge."
 msgstr ""
 
-msgid "InviteMembersModal| Inviting a group %{linkStart}adds its members to your group%{linkEnd}, including members who join after the invite. This might put your group over the free %{count} user limit."
-msgstr ""
-
 msgid "InviteMembersModal| To get more members, the owner of this top-level group can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier."
 msgstr ""
 
@@ -23789,6 +23801,12 @@ msgid "InviteMembersModal|Invite a group"
 msgstr ""
 
 msgid "InviteMembersModal|Invite members"
+msgstr ""
+
+msgid "InviteMembersModal|Inviting a group %{linkStart}adds its members to your group%{linkEnd}, including members who join after the invite. This might put your group over the free %{count} user limit."
+msgstr ""
+
+msgid "InviteMembersModal|Inviting a group %{linkStart}adds its members to your project%{linkEnd}, including members who join after the invite. This might put your group over the free %{count} user limit."
 msgstr ""
 
 msgid "InviteMembersModal|Manage members"
@@ -26211,6 +26229,9 @@ msgstr ""
 msgid "Lock %{issuableDisplayName}"
 msgstr ""
 
+msgid "Lock %{issuableType}"
+msgstr ""
+
 msgid "Lock File?"
 msgstr ""
 
@@ -26218,9 +26239,6 @@ msgid "Lock memberships to LDAP synchronization"
 msgstr ""
 
 msgid "Lock memberships to SAML Group Links synchronization"
-msgstr ""
-
-msgid "Lock merge request"
 msgstr ""
 
 msgid "Lock not found"
@@ -27199,16 +27217,10 @@ msgstr ""
 msgid "Merge request events"
 msgstr ""
 
-msgid "Merge request locked."
-msgstr ""
-
 msgid "Merge request not merged"
 msgstr ""
 
 msgid "Merge request reports"
-msgstr ""
-
-msgid "Merge request unlocked."
 msgstr ""
 
 msgid "Merge request was scheduled to merge after pipeline succeeds"
@@ -27428,6 +27440,9 @@ msgid "MergeRequest|Failed to load the page"
 msgstr ""
 
 msgid "MergeRequest|No files found"
+msgstr ""
+
+msgid "MergeRequest|Reviewed by @%{username} but not yet approved"
 msgstr ""
 
 msgid "MergeRequest|Search (e.g. *.vue) (%{MODIFIER_KEY}P)"
@@ -36210,6 +36225,9 @@ msgid "Reduce risk and triage fewer vulnerabilities with security training"
 msgstr ""
 
 msgid "Reference"
+msgstr ""
+
+msgid "Reference copied"
 msgstr ""
 
 msgid "References"
@@ -46817,10 +46835,10 @@ msgstr ""
 msgid "Unlock"
 msgstr ""
 
-msgid "Unlock account"
+msgid "Unlock %{issuableType}"
 msgstr ""
 
-msgid "Unlock merge request"
+msgid "Unlock account"
 msgstr ""
 
 msgid "Unlock more features with GitLab Ultimate"
@@ -48911,6 +48929,9 @@ msgid "Vulnerability|Training not available for this vulnerability."
 msgstr ""
 
 msgid "Vulnerability|Unmodified Response"
+msgstr ""
+
+msgid "Vulnerability|Unmodified response:"
 msgstr ""
 
 msgid "Vulnerability|View training"
@@ -52356,6 +52377,9 @@ msgstr ""
 msgid "loading"
 msgstr ""
 
+msgid "locked"
+msgstr ""
+
 msgid "locked by %{path_lock_user_name} %{created_at}"
 msgstr ""
 
@@ -53252,6 +53276,9 @@ msgid "type parameter is missing and is required"
 msgstr ""
 
 msgid "unicode domains should use IDNA encoding"
+msgstr ""
+
+msgid "unlocked"
 msgstr ""
 
 msgid "updated"

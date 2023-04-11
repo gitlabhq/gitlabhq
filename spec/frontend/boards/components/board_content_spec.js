@@ -6,6 +6,7 @@ import Draggable from 'vuedraggable';
 import Vuex from 'vuex';
 
 import eventHub from '~/boards/eventhub';
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
@@ -78,6 +79,11 @@ describe('BoardContent', () => {
         isApolloBoard,
       },
       store,
+      stubs: {
+        BoardContentSidebar: stubComponent(BoardContentSidebar, {
+          template: '<div></div>',
+        }),
+      },
     });
   };
 

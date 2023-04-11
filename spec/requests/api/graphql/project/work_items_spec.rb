@@ -341,6 +341,51 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     end
   end
 
+  context 'when fetching work item award emoji widget' do
+    let(:fields) do
+      <<~GRAPHQL
+          nodes {
+            widgets {
+              type
+              ... on WorkItemWidgetAwardEmoji {
+                awardEmoji {
+                  nodes {
+                    name
+                    emoji
+                    user { id }
+                  }
+                }
+                upvotes
+                downvotes
+              }
+            }
+          }
+      GRAPHQL
+    end
+
+    before do
+      create(:award_emoji, name: 'star', user: current_user, awardable: item1)
+      create(:award_emoji, :upvote, awardable: item1)
+      create(:award_emoji, :downvote, awardable: item1)
+    end
+
+    it 'executes limited number of N+1 queries', :use_sql_query_cache do
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post_graphql(query, current_user: current_user)
+      end
+
+      create_list(:work_item, 2, project: project) do |item|
+        create(:award_emoji, name: 'rocket', awardable: item)
+        create_list(:award_emoji, 2, :upvote, awardable: item)
+        create_list(:award_emoji, 2, :downvote, awardable: item)
+      end
+
+      expect { post_graphql(query, current_user: current_user) }
+        .not_to exceed_all_query_limit(control)
+      expect_graphql_errors_to_be_empty
+    end
+  end
+
   def item_ids
     graphql_dig_at(items_data, :node, :id)
   end

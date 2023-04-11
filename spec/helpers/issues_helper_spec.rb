@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe IssuesHelper do
+  include Features::MergeRequestHelpers
+
   let_it_be(:project) { create(:project) }
   let_it_be_with_reload(:issue) { create(:issue, project: project) }
 
@@ -235,10 +237,13 @@ RSpec.describe IssuesHelper do
 
   describe '#issue_header_actions_data' do
     let(:current_user) { create(:user) }
+    let(:merge_request) { create(:merge_request, :opened, source_project: project, author: current_user) }
+    let(:issuable_sidebar_issue) { serialize_issuable_sidebar(current_user, project, merge_request) }
 
     before do
       allow(helper).to receive(:current_user).and_return(current_user)
       allow(helper).to receive(:can?).and_return(true)
+      allow(helper).to receive(:issuable_sidebar).and_return(issuable_sidebar_issue)
     end
 
     it 'returns expected result' do
@@ -257,10 +262,11 @@ RSpec.describe IssuesHelper do
         report_abuse_path: add_category_abuse_reports_path,
         reported_user_id: issue.author.id,
         reported_from_url: issue_url(issue),
-        submit_as_spam_path: mark_as_spam_project_issue_path(project, issue)
+        submit_as_spam_path: mark_as_spam_project_issue_path(project, issue),
+        issuable_email_address: issuable_sidebar_issue[:create_note_email]
       }
 
-      expect(helper.issue_header_actions_data(project, issue, current_user)).to include(expected)
+      expect(helper.issue_header_actions_data(project, issue, current_user, issuable_sidebar_issue)).to include(expected)
     end
   end
 

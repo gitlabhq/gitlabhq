@@ -42,18 +42,18 @@ RSpec.describe Tooling::Helpers::FileHandler, feature_category: :tooling do
     subject { instance.read_array_from_file(input_file_path) }
 
     context 'when the input file does not exist' do
-      let(:non_existing_input_file) { 'tmp/another_file.out' }
+      let(:non_existing_input_pathname) { 'tmp/another_file.out' }
 
-      subject { instance.read_array_from_file(non_existing_input_file) }
+      subject { instance.read_array_from_file(non_existing_input_pathname) }
 
       around do |example|
         example.run
       ensure
-        FileUtils.rm_rf(non_existing_input_file)
+        FileUtils.rm_rf(non_existing_input_pathname)
       end
 
       it 'creates the file' do
-        expect { subject }.to change { File.exist?(non_existing_input_file) }.from(false).to(true)
+        expect { subject }.to change { File.exist?(non_existing_input_pathname) }.from(false).to(true)
       end
     end
 
@@ -67,9 +67,10 @@ RSpec.describe Tooling::Helpers::FileHandler, feature_category: :tooling do
   end
 
   describe '#write_array_to_file' do
-    let(:content_array) { %w[new_entry] }
+    let(:content_array)  { %w[new_entry] }
+    let(:overwrite_flag) { false }
 
-    subject { instance.write_array_to_file(output_file_path, content_array) }
+    subject { instance.write_array_to_file(output_file_path, content_array, overwrite: overwrite_flag) }
 
     context 'when the output file does not exist' do
       let(:non_existing_output_file) { 'tmp/another_file.out' }
@@ -93,6 +94,14 @@ RSpec.describe Tooling::Helpers::FileHandler, feature_category: :tooling do
       it 'writes the correct content to the file' do
         expect { subject }.to change { File.read(output_file_path) }.from('').to(content_array.join(' '))
       end
+
+      context 'when the content array is not sorted' do
+        let(:content_array) { %w[new_entry a_new_entry] }
+
+        it 'sorts the array before writing it to file' do
+          expect { subject }.to change { File.read(output_file_path) }.from('').to(content_array.sort.join(' '))
+        end
+      end
     end
 
     context 'when the output file is not empty' do
@@ -100,8 +109,18 @@ RSpec.describe Tooling::Helpers::FileHandler, feature_category: :tooling do
 
       it 'appends the correct content to the file' do
         expect { subject }.to change { File.read(output_file_path) }
-        .from(initial_content)
-        .to((initial_content.split(' ') + content_array).join(' '))
+          .from(initial_content)
+          .to((initial_content.split(' ') + content_array).join(' '))
+      end
+
+      context 'when the overwrite flag is set to true' do
+        let(:overwrite_flag) { true }
+
+        it 'overwrites the previous content' do
+          expect { subject }.to change { File.read(output_file_path) }
+            .from(initial_content)
+            .to(content_array.join(' '))
+        end
       end
     end
   end

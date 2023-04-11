@@ -9,17 +9,17 @@ import {
 } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import getJobArtifactsResponse from 'test_fixtures/graphql/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
+import getJobArtifactsResponse from 'test_fixtures/graphql/ci/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import JobArtifactsTable from '~/artifacts/components/job_artifacts_table.vue';
-import FeedbackBanner from '~/artifacts/components/feedback_banner.vue';
-import ArtifactsTableRowDetails from '~/artifacts/components/artifacts_table_row_details.vue';
-import ArtifactDeleteModal from '~/artifacts/components/artifact_delete_modal.vue';
-import ArtifactsBulkDelete from '~/artifacts/components/artifacts_bulk_delete.vue';
+import JobArtifactsTable from '~/ci/artifacts/components/job_artifacts_table.vue';
+import FeedbackBanner from '~/ci/artifacts/components/feedback_banner.vue';
+import ArtifactsTableRowDetails from '~/ci/artifacts/components/artifacts_table_row_details.vue';
+import ArtifactDeleteModal from '~/ci/artifacts/components/artifact_delete_modal.vue';
+import ArtifactsBulkDelete from '~/ci/artifacts/components/artifacts_bulk_delete.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import getJobArtifactsQuery from '~/artifacts/graphql/queries/get_job_artifacts.query.graphql';
+import getJobArtifactsQuery from '~/ci/artifacts/graphql/queries/get_job_artifacts.query.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
   ARCHIVE_FILE_TYPE,
@@ -27,8 +27,8 @@ import {
   I18N_FETCH_ERROR,
   INITIAL_CURRENT_PAGE,
   BULK_DELETE_FEATURE_FLAG,
-} from '~/artifacts/constants';
-import { totalArtifactsSizeForJob } from '~/artifacts/utils';
+} from '~/ci/artifacts/constants';
+import { totalArtifactsSizeForJob } from '~/ci/artifacts/utils';
 import { createAlert } from '~/alert';
 
 jest.mock('~/alert');

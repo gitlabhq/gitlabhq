@@ -54,9 +54,9 @@ In summary:
 To identify the RSpec tests that are likely to fail in a merge request, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ci-cd/test_file_finder), with two strategies:
 
 - dynamic mapping from test coverage tracing (generated via the [`Crystalball` gem](https://github.com/toptal/crystalball))
-  ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/47d507c93779675d73a05002e2ec9c3c467cd698/tooling/bin/find_tests#L15))
+  ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/2e19d43ba0d456808916650088c0f70d905e7810/tooling/lib/tooling/find_tests.rb#L20))
 - static mapping maintained in the [`tests.yml` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tests.yml) for special cases that cannot
-  be mapped via coverage tracing ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/47d507c93779675d73a05002e2ec9c3c467cd698/tooling/bin/find_tests#L12))
+  be mapped via coverage tracing ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/2e19d43ba0d456808916650088c0f70d905e7810/tooling/lib/tooling/find_tests.rb#L20))
 
 The test mappings contain a map of each source files to a list of test files which is dependent of the source file.
 
