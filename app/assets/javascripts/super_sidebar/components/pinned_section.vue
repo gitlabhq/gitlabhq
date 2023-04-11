@@ -92,6 +92,6 @@ export default {
         {{ $options.i18n.emptyHint }}
       </div>
     </gl-collapse>
-    <hr class="gl-my-2" />
+    <hr class="gl-my-2 gl-mx-4" />
   </section>
 </template>

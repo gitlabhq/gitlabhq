@@ -17,7 +17,7 @@ module Gitlab
         end
 
         def restore
-          unless relation_reader
+          unless relation_reader.exist?
             raise Gitlab::ImportExport::Error, 'invalid import format'
           end
 
@@ -47,25 +47,8 @@ module Gitlab
         private
 
         def relation_reader
-          strong_memoize(:relation_reader) do
-            [ndjson_relation_reader, legacy_relation_reader]
-              .compact.find(&:exist?)
-          end
-        end
-
-        def ndjson_relation_reader
-          return unless Feature.enabled?(:project_import_ndjson, project.namespace)
-
-          ImportExport::Json::NdjsonReader.new(
+          @relation_reader ||= ImportExport::Json::NdjsonReader.new(
             File.join(shared.export_path, 'tree')
-          )
-        end
-
-        def legacy_relation_reader
-          ImportExport::Json::LegacyReader::File.new(
-            File.join(shared.export_path, 'project.json'),
-            relation_names: reader.project_relation_names,
-            allowed_path: importable_path
           )
         end
 

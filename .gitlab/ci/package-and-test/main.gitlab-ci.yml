@@ -455,6 +455,15 @@ group-saml:
     - if: $QA_SUITES =~ /Test::Integration::GroupSAML/
     - !reference [.rules:test:manual, rules]
 
+oauth:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::OAuth
+  rules:
+    - !reference [.rules:test:qa-default-branch, rules]
+    - if: $QA_SUITES =~ /Test::Integration::OAuth/
+    - !reference [.rules:test:manual, rules]
+
 instance-saml:
   extends: .qa
   variables:

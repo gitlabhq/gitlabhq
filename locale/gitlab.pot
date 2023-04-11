@@ -9403,6 +9403,9 @@ msgstr ""
 msgid "Close %{tabname}"
 msgstr ""
 
+msgid "Close %{workItemType}"
+msgstr ""
+
 msgid "Close design"
 msgstr ""
 
@@ -10790,6 +10793,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Cancel"
 msgstr ""
 
+msgid "ComplianceFrameworks|Compliance framework created"
+msgstr ""
+
 msgid "ComplianceFrameworks|Compliance framework deleted successfully"
 msgstr ""
 
@@ -10839,6 +10845,9 @@ msgid "ComplianceFrameworks|Name"
 msgstr ""
 
 msgid "ComplianceFrameworks|Name is required"
+msgstr ""
+
+msgid "ComplianceFrameworks|New compliance framework"
 msgstr ""
 
 msgid "ComplianceFrameworks|No compliance frameworks are set up yet"
@@ -33007,7 +33016,7 @@ msgstr ""
 msgid "Preferences|Choose between fixed (max. 1280px) and fluid (%{percentage}) application layout."
 msgstr ""
 
-msgid "Preferences|Choose what content you want to see by default on your dashboard."
+msgid "Preferences|Choose what content you want to see by default on your homepage."
 msgstr ""
 
 msgid "Preferences|Choose what content you want to see on a project’s overview page."
@@ -33040,9 +33049,6 @@ msgstr ""
 msgid "Preferences|Customize the colors of removed and added lines in diffs."
 msgstr ""
 
-msgid "Preferences|Dashboard"
-msgstr ""
-
 msgid "Preferences|Diff colors"
 msgstr ""
 
@@ -33062,6 +33068,9 @@ msgid "Preferences|For example: 30 minutes ago."
 msgstr ""
 
 msgid "Preferences|Gitpod"
+msgstr ""
+
+msgid "Preferences|Homepage"
 msgstr ""
 
 msgid "Preferences|Instead of all the files changed, show only one file at a time. To switch between files, use the file browser."
@@ -36747,6 +36756,9 @@ msgstr ""
 msgid "Reopen %{noteable}"
 msgstr ""
 
+msgid "Reopen %{workItemType}"
+msgstr ""
+
 msgid "Reopen epic"
 msgstr ""
 
@@ -38393,6 +38405,9 @@ msgid "Runners|You can set up a project runner to be used by multiple projects b
 msgstr ""
 
 msgid "Runners|You have used %{quotaUsed} out of %{quotaLimit} of your shared Runners pipeline minutes."
+msgstr ""
+
+msgid "Runners|You may lose access to the runner token if you leave this page."
 msgstr ""
 
 msgid "Runners|You've created a new runner!"

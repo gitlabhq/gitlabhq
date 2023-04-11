@@ -1,6 +1,8 @@
 import { getByText } from '@testing-library/dom';
+import htmlOpenIssue from 'test_fixtures/issues/open-issue.html';
+import htmlClosedIssue from 'test_fixtures/issues/closed-issue.html';
 import MockAdapter from 'axios-mock-adapter';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import Issue from '~/issues/issue';
 import axios from '~/lib/utils/axios_utils';
@@ -40,9 +42,9 @@ describe('Issue', () => {
   `('$desc', ({ isIssueInitiallyOpen, expectedCounterText }) => {
     beforeEach(() => {
       if (isIssueInitiallyOpen) {
-        loadHTMLFixture('issues/open-issue.html');
+        setHTMLFixture(htmlOpenIssue);
       } else {
-        loadHTMLFixture('issues/closed-issue.html');
+        setHTMLFixture(htmlClosedIssue);
       }
 
       testContext.issueCounter = getIssueCounter();

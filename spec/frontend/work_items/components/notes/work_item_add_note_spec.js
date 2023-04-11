@@ -1,7 +1,6 @@
-import { GlButton } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -28,7 +27,7 @@ jest.mock('~/lib/utils/autosave');
 
 const workItemId = workItemQueryResponse.data.workItem.id;
 
-describe('WorkItemCommentForm', () => {
+describe('Work item add note', () => {
   let wrapper;
 
   Vue.use(VueApollo);
@@ -38,6 +37,7 @@ describe('WorkItemCommentForm', () => {
   let workItemResponseHandler;
 
   const findCommentForm = () => wrapper.findComponent(WorkItemCommentForm);
+  const findTextarea = () => wrapper.findByTestId('note-reply-textarea');
 
   const createComponent = async ({
     mutationHandler = mutationSuccessHandler,
@@ -50,7 +50,6 @@ describe('WorkItemCommentForm', () => {
     workItemType = 'Task',
   } = {}) => {
     workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
-
     if (signedIn) {
       window.gon.current_user_id = '1';
       window.gon.current_user_avatar_url = 'avatar.png';
@@ -76,7 +75,7 @@ describe('WorkItemCommentForm', () => {
     });
 
     const { id } = workItemQueryResponse.data.workItem;
-    wrapper = shallowMount(WorkItemAddNote, {
+    wrapper = shallowMountExtended(WorkItemAddNote, {
       apolloProvider,
       propsData: {
         workItemId: id,
@@ -95,7 +94,7 @@ describe('WorkItemCommentForm', () => {
     await waitForPromises();
 
     if (isEditing) {
-      wrapper.findComponent(GlButton).vm.$emit('click');
+      findTextarea().trigger('click');
     }
   };
 

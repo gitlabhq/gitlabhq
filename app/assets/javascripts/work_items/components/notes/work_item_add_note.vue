@@ -1,8 +1,8 @@
 <script>
-import { GlAvatar, GlButton } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import Tracking from '~/tracking';
 import { ASC } from '~/notes/constants';
+import { __ } from '~/locale';
 import { clearDraft } from '~/lib/utils/autosave';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getWorkItemQuery } from '../../utils';
@@ -17,8 +17,6 @@ export default {
     avatarUrl: window.gon.current_user_avatar_url,
   },
   components: {
-    GlAvatar,
-    GlButton,
     WorkItemNoteSignedOut,
     WorkItemCommentLocked,
     WorkItemCommentForm,
@@ -75,11 +73,16 @@ export default {
       required: false,
       default: () => ({}),
     },
+    isNewDiscussion: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       workItem: {},
-      isEditing: false,
+      isEditing: this.isNewDiscussion,
       isSubmitting: false,
       isSubmittingWithKeydown: false,
     };
@@ -118,23 +121,9 @@ export default {
         property: `type_${this.workItemType}`,
       };
     },
-    isLockedOutOrSignedOut() {
-      return !this.signedIn || !this.canUpdate;
-    },
-    lockedOutUserWarningInReplies() {
-      return this.addPadding && this.isLockedOutOrSignedOut;
-    },
-    timelineEntryClass() {
-      return {
-        'timeline-entry gl-mb-3 note note-wrapper note-comment': true,
-        'gl-bg-gray-10 gl-rounded-bottom-left-base gl-rounded-bottom-right-base gl-p-5! gl-mx-n3 gl-mb-n2!': this
-          .lockedOutUserWarningInReplies,
-      };
-    },
     timelineEntryInnerClass() {
       return {
-        'timeline-entry-inner': true,
-        'gl-pb-3': this.addPadding,
+        'timeline-entry-inner': this.isNewDiscussion,
       };
     },
     timelineContentClass() {
@@ -154,6 +143,18 @@ export default {
     },
     canUpdate() {
       return this.workItem?.userPermissions?.updateWorkItem;
+    },
+    workItemState() {
+      return this.workItem?.state;
+    },
+    commentButtonText() {
+      return this.isNewDiscussion ? __('Comment') : __('Reply');
+    },
+    timelineEntryClass() {
+      return this.isNewDiscussion
+        ? 'timeline-entry note-form'
+        : // eslint-disable-next-line @gitlab/require-i18n-strings
+          'note note-wrapper note-comment discussion-reply-holder gl-border-t-0! clearfix';
     },
   },
   watch: {
@@ -226,8 +227,12 @@ export default {
       }
     },
     cancelEditing() {
-      this.isEditing = false;
+      this.isEditing = this.isNewDiscussion;
       this.$emit('cancelEditing');
+    },
+    showReplyForm() {
+      this.isEditing = true;
+      this.$emit('startReplying');
     },
   },
 };
@@ -242,9 +247,6 @@ export default {
       :is-project-archived="isProjectArchived"
     />
     <div v-else :class="timelineEntryInnerClass">
-      <div class="timeline-avatar gl-float-left">
-        <gl-avatar :src="$options.constantOptions.avatarUrl" :size="32" class="gl-mr-3" />
-      </div>
       <div :class="timelineContentClass">
         <div :class="parentClass">
           <work-item-comment-form
@@ -253,17 +255,27 @@ export default {
             :aria-label="__('Add a reply')"
             :is-submitting="isSubmitting"
             :autosave-key="autosaveKey"
+            :is-new-discussion="isNewDiscussion"
             :autocomplete-data-sources="autocompleteDataSources"
             :markdown-preview-path="markdownPreviewPath"
+            :work-item-state="workItemState"
+            :work-item-id="workItemId"
+            :autofocus="autofocus"
+            :comment-button-text="commentButtonText"
             @submitForm="updateWorkItem"
             @cancelEditing="cancelEditing"
           />
-          <gl-button
+          <textarea
             v-else
-            class="gl-flex-grow-1 gl-justify-content-start! gl-text-secondary!"
-            @click="isEditing = true"
-            >{{ __('Add a reply') }}</gl-button
-          >
+            ref="textarea"
+            rows="1"
+            class="reply-placeholder-text-field gl-font-regular!"
+            data-testid="note-reply-textarea"
+            :placeholder="__('Reply')"
+            :aria-label="__('Reply to comment')"
+            @focus="showReplyForm"
+            @click="showReplyForm"
+          ></textarea>
         </div>
       </div>
     </div>

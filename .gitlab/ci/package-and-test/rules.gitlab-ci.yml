@@ -10,16 +10,23 @@
 .feature-flags-set: &feature-flags-set
   if: $QA_FEATURE_FLAGS =~ /enabled|disabled/
 
-
 # Manually trigger job on ff changes but with default ff state instead of inverted
 .feature-flags-set-manual: &feature-flags-set-manual
   <<: *feature-flags-set
   when: manual
   allow_failure: true
 
-# Run all tests when framework changes present, full suite execution is explicitly enabled or a feature flag file is removed
+# Run the job on master pipeline
+.default-branch: &default-branch
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+
+# Run all tests when QA framework changes present, full suite execution is explicitly enabled or a feature flag file is removed
 .qa-run-all-tests: &qa-run-all-tests
-  if: $QA_FRAMEWORK_CHANGES == "true" || $QA_RUN_ALL_TESTS == "true" || $QA_FEATURE_FLAGS =~ /deleted/
+  if: $QA_FRAMEWORK_CHANGES == "true" || $QA_RUN_ALL_TESTS == "true" || $QA_RUN_ALL_E2E_LABEL == "true" || $QA_FEATURE_FLAGS =~ /deleted/
+
+# Run job when MR has pipeline:run-all-e2e label
+.qa-run-all-e2e-label: &qa-run-all-e2e-label
+  if: $QA_RUN_ALL_E2E_LABEL == "true"
 
 # Process test results (notify failure to slack, create test session report, relate test failures)
 .process-test-results: &process-test-results
@@ -121,6 +128,12 @@
       when: never
     - !reference [.rules:test:ee-only, rules]
     - !reference [.rules:test:qa, rules]
+
+.rules:test:qa-default-branch:
+  rules:
+    - *qa-run-all-e2e-label
+    - *default-branch
+    - *feature-flags-set-manual
 
 # ------------------------------------------
 # Report

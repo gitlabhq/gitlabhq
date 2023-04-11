@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::Group::TreeRestorer, feature: :subgroups do
+RSpec.describe Gitlab::ImportExport::Group::TreeRestorer, feature: :subgroups, feature_category: :importers do
   include ImportExport::CommonUtil
 
   shared_examples 'group restoration' do
@@ -171,7 +171,7 @@ RSpec.describe Gitlab::ImportExport::Group::TreeRestorer, feature: :subgroups do
           allow(shared).to receive(:export_path).and_return(tmpdir)
 
           expect(group_tree_restorer.restore).to eq(false)
-          expect(shared.errors).to include('Incorrect JSON format')
+          expect(shared.errors).to include('Invalid file')
         end
       end
     end

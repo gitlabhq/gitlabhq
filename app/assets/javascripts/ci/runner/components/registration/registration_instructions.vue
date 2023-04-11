@@ -70,7 +70,7 @@ export default {
         captureException({ error, component: this.$options.name });
       },
       pollInterval() {
-        if (this.runner?.status === STATUS_ONLINE) {
+        if (this.isRunnerOnline) {
           // stop polling
           return 0;
         }
@@ -97,9 +97,6 @@ export default {
       }
       return s__('Runners|Register runner');
     },
-    status() {
-      return this.runner?.status;
-    },
     tokenMessage() {
       if (this.token) {
         return s__(
@@ -122,15 +119,34 @@ export default {
     runCommand() {
       return runCommand({ platform: this.platform });
     },
+    isRunnerOnline() {
+      return this.runner?.status === STATUS_ONLINE;
+    },
+  },
+  created() {
+    window.addEventListener('beforeunload', this.onBeforeunload);
+  },
+  destroyed() {
+    window.removeEventListener('beforeunload', this.onBeforeunload);
   },
   methods: {
     toggleDrawer() {
       this.$emit('toggleDrawer');
     },
+    onBeforeunload(event) {
+      if (this.isRunnerOnline) {
+        return undefined;
+      }
+
+      const str = s__('Runners|You may lose access to the runner token if you leave this page.');
+      event.preventDefault();
+      // eslint-disable-next-line no-param-reassign
+      event.returnValue = str; // Chrome requires returnValue to be set
+      return str;
+    },
   },
   EXECUTORS_HELP_URL,
   SERVICE_COMMANDS_HELP_URL,
-  STATUS_ONLINE,
   I18N_REGISTRATION_SUCCESS,
 };
 </script>
@@ -225,7 +241,7 @@ export default {
         </gl-sprintf>
       </p>
     </section>
-    <section v-if="status == $options.STATUS_ONLINE">
+    <section v-if="isRunnerOnline">
       <h2 class="gl-font-size-h2">🎉 {{ $options.I18N_REGISTRATION_SUCCESS }}</h2>
 
       <p class="gl-pl-6">

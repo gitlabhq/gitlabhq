@@ -310,6 +310,9 @@ export default {
         :comment-button-text="__('Save comment')"
         :autocomplete-data-sources="autocompleteDataSources"
         :markdown-preview-path="markdownPreviewPath"
+        :work-item-id="workItemId"
+        :autofocus="isEditing"
+        class="gl-pl-3 gl-mt-3"
         @cancelEditing="isEditing = false"
         @submitForm="updateNote"
       />

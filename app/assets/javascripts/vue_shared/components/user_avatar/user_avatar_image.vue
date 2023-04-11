@@ -90,7 +90,7 @@ export default {
 </script>
 
 <template>
-  <span ref="userAvatar" class="gl-display-inline-flex">
+  <span ref="userAvatar">
     <gl-avatar
       :class="{
         lazy: lazy,

@@ -83,7 +83,8 @@ module QA
     "vscode" => "VSCode",
     "registry_with_cdn" => "RegistryWithCDN",
     "fips" => "FIPS",
-    "ci_cd_settings" => "CICDSettings"
+    "ci_cd_settings" => "CICDSettings",
+    "cli" => "CLI"
   )
 
   loader.setup

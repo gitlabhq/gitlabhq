@@ -210,11 +210,11 @@ module QA
       end
 
       def github_username
-        ENV['GITHUB_USERNAME']
+        ENV['QA_GITHUB_USERNAME']
       end
 
       def github_password
-        ENV['GITHUB_PASSWORD']
+        ENV['QA_GITHUB_PASSWORD']
       end
 
       def forker?
@@ -539,6 +539,22 @@ module QA
         return unless missing_env.any?
 
         raise "Missing Slack env: #{missing_env.map(&:upcase).join(', ')}"
+      end
+
+      def one_p_email
+        ENV['QA_1P_EMAIL']
+      end
+
+      def one_p_password
+        ENV['QA_1P_PASSWORD']
+      end
+
+      def one_p_secret
+        ENV['QA_1P_SECRET']
+      end
+
+      def one_p_github_uuid
+        ENV['QA_1P_GITHUB_UUID']
       end
 
       private

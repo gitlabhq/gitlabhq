@@ -1,4 +1,3 @@
-import { GlAvatarLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -54,7 +53,6 @@ describe('Work Item Note', () => {
 
   const errorHandler = jest.fn().mockRejectedValue('Oops');
 
-  const findAuthorAvatarLink = () => wrapper.findComponent(GlAvatarLink);
   const findTimelineEntryItem = () => wrapper.findComponent(TimelineEntryItem);
   const findNoteHeader = () => wrapper.findComponent(NoteHeader);
   const findNoteBody = () => wrapper.findComponent(NoteBody);
@@ -75,10 +73,10 @@ describe('Work Item Note', () => {
   } = {}) => {
     wrapper = shallowMount(WorkItemNote, {
       propsData: {
+        workItemId,
         note,
         isFirstNote,
         workItemType: 'Task',
-        workItemId,
         markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
         autocompleteDataSources: {},
         assignees,
@@ -243,10 +241,6 @@ describe('Work Item Note', () => {
         expect(findNoteHeader().exists()).toBe(true);
         expect(findNoteBody().exists()).toBe(true);
         expect(findNoteActions().exists()).toBe(true);
-      });
-
-      it('should have the Avatar link for comment threads', () => {
-        expect(findAuthorAvatarLink().exists()).toBe(true);
       });
 
       it('should not have the reply button props', () => {

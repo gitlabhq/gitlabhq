@@ -511,6 +511,17 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
         click_on 'How do I install GitLab Runner?'
         expect(page.find('[data-testid="runner-platforms-drawer"]')).to have_content('gitlab-runner install')
       end
+
+      it 'warns from leaving page without finishing registration' do
+        click_on s_('Runners|Go to runners page')
+
+        alert = page.driver.browser.switch_to.alert
+
+        expect(alert).not_to be_nil
+        alert.dismiss
+
+        expect(current_url).to match(register_admin_runner_path(Ci::Runner.last))
+      end
     end
   end
 

@@ -59,8 +59,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           'readWorkItem' => true,
           'updateWorkItem' => true,
           'deleteWorkItem' => false,
-          'adminWorkItem' => true,
-          'setWorkItemMetadata' => true
+          'adminWorkItem' => true
         },
         'project' => hash_including('id' => project.to_gid.to_s, 'fullPath' => project.full_path)
       )
@@ -495,25 +494,6 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       it 'allows an Issue GID as input' do
         expect(work_item_data).to include('id' => work_item.to_gid.to_s)
       end
-    end
-  end
-
-  context 'when the user cannot set work item metadata' do
-    let(:current_user) { guest }
-
-    before do
-      project.add_guest(guest)
-      post_graphql(query, current_user: current_user)
-    end
-
-    it 'returns correct user permission' do
-      expect(work_item_data).to include(
-        'id' => work_item.to_gid.to_s,
-        'userPermissions' =>
-          hash_including(
-            'setWorkItemMetadata' => false
-          )
-      )
     end
   end
 

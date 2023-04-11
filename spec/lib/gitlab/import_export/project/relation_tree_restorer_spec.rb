@@ -55,54 +55,19 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, feature_cate
     end
   end
 
-  context 'with legacy reader' do
-    let(:path) { 'spec/fixtures/lib/gitlab/import_export/complex/project.json' }
-    let(:relation_reader) do
-      Gitlab::ImportExport::Json::LegacyReader::File.new(
-        path,
-        relation_names: reader.project_relation_names,
-        allowed_path: 'project'
-      )
-    end
-
-    let(:attributes) { relation_reader.consume_attributes('project') }
-
-    it_behaves_like 'import project successfully'
-
-    context 'with logging of relations creation' do
-      let_it_be(:group) { create(:group).tap { |g| g.add_maintainer(user) } }
-      let_it_be(:importable) do
-        create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project', group: group)
-      end
-
-      it 'logs top-level relation creation' do
-        expect(shared.logger)
-          .to receive(:info)
-          .with(hash_including(message: '[Project/Group Import] Created new object relation'))
-          .at_least(:once)
-
-        subject
-      end
-    end
-  end
-
-  context 'with ndjson reader' do
+  context 'when inside a group' do
     let(:path) { 'spec/fixtures/lib/gitlab/import_export/complex/tree' }
     let(:relation_reader) { Gitlab::ImportExport::Json::NdjsonReader.new(path) }
 
-    it_behaves_like 'import project successfully'
-
-    context 'when inside a group' do
-      let_it_be(:group) do
-        create(:group, :disabled_and_unoverridable).tap { |g| g.add_maintainer(user) }
-      end
-
-      before do
-        importable.update!(shared_runners_enabled: false, group: group)
-      end
-
-      it_behaves_like 'import project successfully'
+    let_it_be(:group) do
+      create(:group, :disabled_and_unoverridable).tap { |g| g.add_maintainer(user) }
     end
+
+    before do
+      importable.update!(shared_runners_enabled: false, group: group)
+    end
+
+    it_behaves_like 'import project successfully'
   end
 
   context 'with invalid relations' do

@@ -32,7 +32,7 @@ namespace :ci do
 
     if run_all_label_present
       logger.info(" merge request has pipeline:run-all-e2e label, full test suite will be executed")
-      append_to_file(env_file, "QA_RUN_ALL_TESTS=true\n")
+      append_to_file(env_file, "QA_RUN_ALL_E2E_LABEL=true\n")
     elsif qa_changes.framework_changes? # run all tests when framework changes detected
       logger.info(" merge request contains qa framework changes, full test suite will be executed")
       append_to_file(env_file, "QA_FRAMEWORK_CHANGES=true\n")

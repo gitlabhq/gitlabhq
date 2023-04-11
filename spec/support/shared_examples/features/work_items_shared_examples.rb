@@ -38,8 +38,6 @@ RSpec.shared_examples 'work items comments' do |type|
   let(:comment) { 'Test comment' }
 
   def set_comment
-    click_button 'Add a reply'
-
     find(form_selector).fill_in(with: comment)
   end
 
@@ -69,7 +67,7 @@ RSpec.shared_examples 'work items comments' do |type|
         find('[data-testid="work-item-note-actions"]', match: :first).click
 
         expect(page).to have_selector('[data-testid="copy-link-action"]')
-        expect(page).to have_selector('[data-testid="assign-note-action"]')
+        expect(page).not_to have_selector('[data-testid="assign-note-action"]')
       end
     end
   end
@@ -84,8 +82,6 @@ RSpec.shared_examples 'work items comments' do |type|
     page.within(".main-notes-list") do
       expect(page).to have_content comment
     end
-
-    click_button 'Add a reply'
 
     expect(find(textarea_selector)).to have_content ""
   end
@@ -134,8 +130,6 @@ RSpec.shared_examples 'work items comments' do |type|
     end
 
     def click_reply_and_enter_slash
-      click_button 'Add a reply'
-
       find(form_selector).fill_in(with: "/")
 
       wait_for_all_requests

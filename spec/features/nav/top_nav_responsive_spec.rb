@@ -22,7 +22,7 @@ RSpec.describe 'top nav responsive', :js, feature_category: :navigation do
     context 'when menu is closed' do
       it 'has page content and hides responsive menu', :aggregate_failures do
         expect(page).to have_css('.page-title', text: 'Explore projects')
-        expect(page).to have_link('Dashboard', id: 'logo')
+        expect(page).to have_link('Homepage', id: 'logo')
 
         expect(page).to have_no_css('.top-nav-responsive')
       end
@@ -35,7 +35,7 @@ RSpec.describe 'top nav responsive', :js, feature_category: :navigation do
 
       it 'hides everything and shows responsive menu', :aggregate_failures do
         expect(page).to have_no_css('.page-title', text: 'Explore projects')
-        expect(page).to have_no_link('Dashboard', id: 'logo')
+        expect(page).to have_no_link('Homepage', id: 'logo')
 
         within '.top-nav-responsive' do
           expect(page).to have_link(nil, href: search_path)

@@ -23,6 +23,11 @@
       margin-bottom: 2px;
     }
 
+    .issue-labels,
+    .author-link {
+      display: inline-block;
+    }
+
     .icon-merge-request-unmerged {
       height: 13px;
       margin-bottom: 3px;

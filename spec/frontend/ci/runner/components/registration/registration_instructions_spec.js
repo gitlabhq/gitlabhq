@@ -50,6 +50,18 @@ describe('RegistrationInstructions', () => {
     await waitForPromises();
   };
 
+  const mockBeforeunload = () => {
+    const event = new Event('beforeunload');
+    const preventDefault = jest.spyOn(event, 'preventDefault');
+    const returnValueSetter = jest.spyOn(event, 'returnValue', 'set');
+
+    return {
+      event,
+      preventDefault,
+      returnValueSetter,
+    };
+  };
+
   const mockResolvedRunner = (runner = mockRunner) => {
     mockRunnerQuery.mockResolvedValue({
       data: {
@@ -266,6 +278,20 @@ describe('RegistrationInstructions', () => {
       it('does not show success message', () => {
         expect(wrapper.text()).not.toContain(I18N_REGISTRATION_SUCCESS);
       });
+
+      describe('when the page is closing', () => {
+        it('warns the user against closing', async () => {
+          const { event, preventDefault, returnValueSetter } = mockBeforeunload();
+
+          expect(preventDefault).not.toHaveBeenCalled();
+          expect(returnValueSetter).not.toHaveBeenCalled();
+
+          window.dispatchEvent(event);
+
+          expect(preventDefault).toHaveBeenCalledWith();
+          expect(returnValueSetter).toHaveBeenCalledWith(expect.any(String));
+        });
+      });
     });
 
     describe('when the runner has been registered', () => {
@@ -280,6 +306,20 @@ describe('RegistrationInstructions', () => {
       it('shows success message', () => {
         expect(wrapper.text()).toContain('🎉');
         expect(wrapper.text()).toContain(I18N_REGISTRATION_SUCCESS);
+      });
+
+      describe('when the page is closing', () => {
+        it('does not warn the user against closing', () => {
+          const { event, preventDefault, returnValueSetter } = mockBeforeunload();
+
+          expect(preventDefault).not.toHaveBeenCalled();
+          expect(returnValueSetter).not.toHaveBeenCalled();
+
+          window.dispatchEvent(event);
+
+          expect(preventDefault).not.toHaveBeenCalled();
+          expect(returnValueSetter).not.toHaveBeenCalled();
+        });
       });
     });
   });

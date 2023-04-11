@@ -248,6 +248,7 @@ export default {
                       :add-padding="true"
                       :autocomplete-data-sources="autocompleteDataSources"
                       :markdown-preview-path="markdownPreviewPath"
+                      @startReplying="showReplyForm"
                       @cancelEditing="hideReplyForm"
                       @replied="onReplied"
                       @replying="onReplying"
