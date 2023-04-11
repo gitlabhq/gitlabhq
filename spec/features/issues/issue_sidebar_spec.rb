@@ -86,7 +86,7 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
             end
 
             within '.js-right-sidebar' do
-              find('.block.assignee').click(x: 0, y: 0)
+              find('.block.assignee').click(x: 0, y: 0, offset: 0)
               find('.block.assignee .edit-link').click
             end
 

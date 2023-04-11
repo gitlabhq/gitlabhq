@@ -19,6 +19,14 @@ class GroupGroupLink < ApplicationRecord
     where(group_access: [Gitlab::Access::OWNER, Gitlab::Access::MAINTAINER])
   end
 
+  scope :with_developer_maintainer_owner_access, -> do
+    where(group_access: [Gitlab::Access::DEVELOPER, Gitlab::Access::MAINTAINER, Gitlab::Access::OWNER])
+  end
+
+  scope :with_developer_access, -> do
+    where(group_access: [Gitlab::Access::DEVELOPER])
+  end
+
   scope :with_owner_access, -> do
     where(group_access: [Gitlab::Access::OWNER])
   end

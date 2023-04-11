@@ -16,7 +16,12 @@ export default {
 </script>
 
 <template>
-  <gl-disclosure-dropdown :items="items" placement="center">
+  <gl-disclosure-dropdown
+    :items="items"
+    placement="center"
+    @shown="$emit('shown')"
+    @hidden="$emit('hidden')"
+  >
     <template #toggle>
       <slot></slot>
     </template>

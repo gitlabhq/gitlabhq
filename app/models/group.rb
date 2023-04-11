@@ -200,6 +200,10 @@ class Group < Namespace
       .where(project_authorizations: { user_id: user_ids })
   end
 
+  scope :with_project_creation_levels, -> (project_creation_levels) do
+    where(project_creation_level: project_creation_levels)
+  end
+
   scope :project_creation_allowed, -> do
     project_creation_allowed_on_levels = [
       ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS,
@@ -216,7 +220,7 @@ class Group < Namespace
       project_creation_allowed_on_levels.delete(nil)
     end
 
-    where(project_creation_level: project_creation_allowed_on_levels)
+    with_project_creation_levels(project_creation_allowed_on_levels)
   end
 
   scope :shared_into_ancestors, -> (group) do

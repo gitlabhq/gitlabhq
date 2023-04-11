@@ -67,6 +67,20 @@ describe('~/api/projects_api.js', () => {
     });
   });
 
+  describe('createProject', () => {
+    it('posts to the correct URL and returns the data', () => {
+      const body = { name: 'test project' };
+      const expectedUrl = '/api/v7/projects.json';
+      const expectedRes = { id: 999, name: 'test project' };
+
+      mock.onPost(expectedUrl, body).replyOnce(HTTP_STATUS_OK, { data: expectedRes });
+
+      return projectsApi.createProject(body).then(({ data }) => {
+        expect(data).toStrictEqual(expectedRes);
+      });
+    });
+  });
+
   describe('importProjectMembers', () => {
     beforeEach(() => {
       jest.spyOn(axios, 'post');

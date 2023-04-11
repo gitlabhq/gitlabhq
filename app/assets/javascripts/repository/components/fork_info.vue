@@ -24,7 +24,8 @@ export const i18n = {
   behindAhead: s__('ForksDivergence|%{messages} the upstream repository.'),
   limitedVisibility: s__('ForksDivergence|Source project has a limited visibility.'),
   error: s__('ForksDivergence|Failed to fetch fork details. Try again later.'),
-  sync: s__('ForksDivergence|Update fork'),
+  updateFork: s__('ForksDivergence|Update fork'),
+  createMergeRequest: s__('ForksDivergence|Create merge request'),
 };
 
 export default {
@@ -103,6 +104,16 @@ export default {
       required: false,
       default: '',
     },
+    createMrPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    canUserCreateMrInFork: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -173,11 +184,14 @@ export default {
     hasBehindAheadMessage() {
       return this.behindAheadMessage.length > 0;
     },
-    isSyncButtonAvailable() {
+    hasUpdateButton() {
       return (
         this.glFeatures.synchronizeFork &&
         ((this.sourceName && this.forkDetails && this.behind) || this.isUnknownDivergence)
       );
+    },
+    hasCreateMrButton() {
+      return this.canUserCreateMrInFork && this.ahead && this.createMrPath;
     },
     forkDivergenceMessage() {
       if (!this.forkDetails) {
@@ -286,14 +300,26 @@ export default {
         >
           {{ $options.i18n.inaccessibleProject }}
         </div>
-        <gl-button
-          v-if="isSyncButtonAvailable"
-          :disabled="forkDetails.isSyncing"
-          @click="checkIfSyncIsPossible"
-        >
-          <gl-loading-icon v-if="forkDetails.isSyncing" class="gl-display-inline" size="sm" />
-          <span>{{ $options.i18n.sync }}</span>
-        </gl-button>
+        <div class="gl-display-flex gl-xs-display-none!">
+          <gl-button
+            v-if="hasCreateMrButton"
+            class="gl-ml-4"
+            :href="createMrPath"
+            data-testid="create-mr-button"
+          >
+            <span>{{ $options.i18n.createMergeRequest }}</span>
+          </gl-button>
+          <gl-button
+            v-if="hasUpdateButton"
+            class="gl-ml-4"
+            :disabled="forkDetails.isSyncing"
+            data-testid="update-fork-button"
+            @click="checkIfSyncIsPossible"
+          >
+            <gl-loading-icon v-if="forkDetails.isSyncing" class="gl-display-inline" size="sm" />
+            <span>{{ $options.i18n.updateFork }}</span>
+          </gl-button>
+        </div>
         <conflicts-modal
           ref="modal"
           :source-name="sourceName"

@@ -456,7 +456,7 @@ group :test do
   gem 'rspec-benchmark', '~> 0.6.0'
   gem 'rspec-parameterized', '~> 1.0', require: false
 
-  gem 'capybara', '~> 3.35.3'
+  gem 'capybara', '~> 3.39'
   gem 'capybara-screenshot', '~> 1.0.22'
   gem 'selenium-webdriver', '~> 3.142'
 

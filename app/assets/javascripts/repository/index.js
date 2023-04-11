@@ -74,8 +74,10 @@ export default function setupVueRepositoryList() {
       sourceName,
       sourcePath,
       sourceDefaultBranch,
+      createMrPath,
       aheadComparePath,
       behindComparePath,
+      canUserCreateMrInFork,
     } = forkEl.dataset;
     return new Vue({
       el: forkEl,
@@ -90,6 +92,8 @@ export default function setupVueRepositoryList() {
             sourceDefaultBranch,
             aheadComparePath,
             behindComparePath,
+            createMrPath,
+            canUserCreateMrInFork,
           },
         });
       },
@@ -153,8 +157,8 @@ export default function setupVueRepositoryList() {
 
   initLastCommitApp();
   initBlobControlsApp();
-  initForkInfo();
   initRefSwitcher();
+  initForkInfo();
 
   router.afterEach(({ params: { path } }) => {
     setTitle(path, ref, fullName);

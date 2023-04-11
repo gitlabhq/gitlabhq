@@ -30,7 +30,7 @@ Learn the various ways to [create a merge request](creating_merge_requests.md).
 
 You can view merge requests for your project, group, or yourself.
 
-### View merge requests for a project
+### For a project
 
 To view all merge requests for a project:
 
@@ -39,7 +39,7 @@ To view all merge requests for a project:
 
 Or, to use a [keyboard shortcut](../../shortcuts.md), press <kbd>g</kbd> + <kbd>m</kbd>.
 
-### View merge requests for all projects in a group
+### For all projects in a group
 
 To view merge requests for all projects in a group:
 
@@ -48,7 +48,7 @@ To view merge requests for all projects in a group:
 
 If your group contains subgroups, this view also displays merge requests from the subgroup projects.
 
-### View all merge requests assigned to you
+### Assigned to you
 
 To view all merge requests assigned to you:
 
@@ -79,7 +79,7 @@ To filter the list of merge requests:
 
 1. Above the list of merge requests, select **Search or filter results...**.
 1. From the dropdown list, select the attribute you wish to filter by. Some examples:
-   - [**By environment or deployment date**](#filter-merge-requests-by-environment-or-deployment-date).
+   - [**By environment or deployment date**](#by-environment-or-deployment-date).
    - **ID**: Enter filter `#30` to return only merge request 30.
    - User filters: Type (or select from the dropdown list) any of these filters to display a list of users:
      - **Approved-By**, for merge requests already approved by a user. **(PREMIUM)**.
@@ -100,7 +100,7 @@ To filter the list of merge requests:
 GitLab displays the results on-screen, but you can also
 [retrieve them as an RSS feed](../../search/index.md#retrieve-search-results-as-feed).
 
-### Filter merge requests by environment or deployment date
+### By environment or deployment date
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44041) in GitLab 13.6.
 

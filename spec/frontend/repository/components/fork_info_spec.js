@@ -84,7 +84,8 @@ describe('ForkInfo component', () => {
   const findLink = () => wrapper.findComponent(GlLink);
   const findSkeleton = () => wrapper.findComponent(GlSkeletonLoader);
   const findIcon = () => wrapper.findComponent(GlIcon);
-  const findUpdateForkButton = () => wrapper.findComponent(GlButton);
+  const findUpdateForkButton = () => wrapper.findByTestId('update-fork-button');
+  const findCreateMrButton = () => wrapper.findByTestId('create-mr-button');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findDivergenceMessage = () => wrapper.findByTestId('divergence-message');
   const findInaccessibleMessage = () => wrapper.findByTestId('inaccessible-project');
@@ -139,6 +140,16 @@ describe('ForkInfo component', () => {
     expect(link.attributes('href')).toBe(propsForkInfo.sourcePath);
   });
 
+  it('renders Create MR Button with correct path', async () => {
+    await createComponent();
+    expect(findCreateMrButton().attributes('href')).toBe(propsForkInfo.createMrPath);
+  });
+
+  it('does not render create MR button if user had no permission to Create MR in fork', async () => {
+    await createComponent({ canUserCreateMrInFork: false });
+    expect(findCreateMrButton().exists()).toBe(false);
+  });
+
   it('renders alert with error message when request fails', async () => {
     mockForkDetailsQuery.mockRejectedValue(forkInfoError);
     await createComponent({});
@@ -170,7 +181,7 @@ describe('ForkInfo component', () => {
       });
       await createComponent({});
       expect(findUpdateForkButton().exists()).toBe(true);
-      expect(findUpdateForkButton().text()).toBe(i18n.sync);
+      expect(findUpdateForkButton().text()).toBe(i18n.updateFork);
     });
   });
 
@@ -211,7 +222,8 @@ describe('ForkInfo component', () => {
       message: '3 commits behind, 7 commits ahead of the upstream repository.',
       firstLink: propsForkInfo.behindComparePath,
       secondLink: propsForkInfo.aheadComparePath,
-      hasButton: true,
+      hasUpdateButton: true,
+      hasCreateMrButton: true,
     },
     {
       ahead: 7,
@@ -219,7 +231,8 @@ describe('ForkInfo component', () => {
       message: '7 commits ahead of the upstream repository.',
       firstLink: propsForkInfo.aheadComparePath,
       secondLink: '',
-      hasButton: false,
+      hasUpdateButton: false,
+      hasCreateMrButton: true,
     },
     {
       ahead: 0,
@@ -227,11 +240,12 @@ describe('ForkInfo component', () => {
       message: '3 commits behind the upstream repository.',
       firstLink: propsForkInfo.behindComparePath,
       secondLink: '',
-      hasButton: true,
+      hasUpdateButton: true,
+      hasCreateMrButton: false,
     },
   ])(
     'renders correct divergence message for ahead: $ahead, behind: $behind divergence commits',
-    ({ ahead, behind, message, firstLink, secondLink, hasButton }) => {
+    ({ ahead, behind, message, firstLink, secondLink, hasUpdateButton, hasCreateMrButton }) => {
       beforeEach(async () => {
         mockResolvedForkDetailsQuery({ ahead, behind, isSyncing: false, hasConflicts: false });
         await createComponent({});
@@ -251,9 +265,16 @@ describe('ForkInfo component', () => {
       });
 
       it('renders Update Fork button when fork is behind', () => {
-        expect(findUpdateForkButton().exists()).toBe(hasButton);
-        if (hasButton) {
-          expect(findUpdateForkButton().text()).toBe(i18n.sync);
+        expect(findUpdateForkButton().exists()).toBe(hasUpdateButton);
+        if (hasUpdateButton) {
+          expect(findUpdateForkButton().text()).toBe(i18n.updateFork);
+        }
+      });
+
+      it('renders Create Merge Request button when fork is ahead', () => {
+        expect(findCreateMrButton().exists()).toBe(hasCreateMrButton);
+        if (hasCreateMrButton) {
+          expect(findCreateMrButton().text()).toBe(i18n.createMergeRequest);
         }
       });
     },

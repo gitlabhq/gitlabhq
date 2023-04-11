@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Edit group settings', feature_category: :subgroups do
+  include Spec::Support::Helpers::ModalHelpers
+
   let(:user)  { create(:user) }
   let(:group) { create(:group, path: 'foo') }
 
@@ -241,6 +243,77 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
 
       expect(page).to have_text "Permissions"
       expect(page).not_to have_selector('#group_prevent_sharing_groups_outside_hierarchy')
+    end
+  end
+
+  describe 'group README', :js do
+    let_it_be(:group) { create(:group) }
+
+    context 'with gitlab-profile project and README.md' do
+      let_it_be(:project) { create(:project, :readme, namespace: group) }
+
+      it 'renders link to Group README and navigates to it on click' do
+        visit edit_group_path(group)
+        wait_for_requests
+
+        click_link('README')
+        wait_for_requests
+
+        expect(page).to have_current_path(project_blob_path(project, "#{project.default_branch}/README.md"))
+        expect(page).to have_text('README.md')
+      end
+    end
+
+    context 'with gitlab-profile project and no README.md' do
+      let_it_be(:project) { create(:project, name: 'gitlab-profile', namespace: group) }
+
+      it 'renders Add README button and allows user to create a README via the IDE' do
+        visit edit_group_path(group)
+        wait_for_requests
+
+        expect(page).not_to have_selector('.ide')
+
+        click_button('Add README')
+
+        accept_gl_confirm("This will create a README.md for project #{group.readme_project.present.path_with_namespace}.", button_text: 'Add README')
+        wait_for_requests
+
+        expect(page).to have_current_path("/-/ide/project/#{group.readme_project.present.path_with_namespace}/edit/main/-/README.md/")
+
+        page.within('.ide') do
+          expect(page).to have_text('README.md')
+        end
+      end
+    end
+
+    context 'with no gitlab-profile project and no README.md' do
+      it 'renders Add README button and allows user to create both the gitlab-profile project and README via the IDE' do
+        visit edit_group_path(group)
+        wait_for_requests
+
+        expect(page).not_to have_selector('.ide')
+
+        click_button('Add README')
+
+        accept_gl_confirm("This will create a project #{group.full_path}/gitlab-profile and add a README.md.", button_text: 'Create and add README')
+        wait_for_requests
+
+        expect(page).to have_current_path("/-/ide/project/#{group.full_path}/gitlab-profile/edit/main/-/README.md/")
+
+        page.within('.ide') do
+          expect(page).to have_text('README.md')
+        end
+      end
+    end
+
+    describe 'with :show_group_readme FF false' do
+      before do
+        stub_feature_flags(show_group_readme: false)
+      end
+
+      it 'does not render Group README settings' do
+        expect(page).not_to have_text('README')
+      end
     end
   end
 

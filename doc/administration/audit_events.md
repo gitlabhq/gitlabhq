@@ -316,12 +316,9 @@ The following actions on projects generate project audit events:
 
 ### GitLab agent for Kubernetes events
 
-The following actions on projects generate agent audit events:
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382133) in GitLab 15.10.
 
-- A cluster agent token is created.
-  Introduced in GitLab 15.9
-- A cluster agent token is revoked.
-  Introduced in GitLab 15.9
+GitLab generates audit events when a cluster agent token is created or revoked.
 
 ### Instance events **(PREMIUM SELF)**
 
@@ -364,23 +361,18 @@ Instance events can also be accessed using the [Instance Audit Events API](../ap
 
 ### GitLab Runner events
 
-The following GitLab Runner actions generate instance audit events:
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335509) in GitLab 14.8, audit events for when a runner is registered.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349540) in GitLab 14.9, audit events for when a runner is unregistered.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349542) in GitLab 14.9, audit events for when a runner is assigned to or unassigned from a project.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355637) in GitLab 15.0, audit events for when a runner registration token is reset.
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335509) in GitLab 14.8:
-  - Registered instance runner.
-  - Registered group runner.
-  - Registered project runner.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355637) in GitLab 15.0. and [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102579) in GitLab 15.6:
-  - Reset instance runner registration token.
-  - Reset group runner registration token.
-  - Reset project runner registration token.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349542) in GitLab 14.9.
-  - Assigned runner to project.
-  - Unassigned runner from project.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349540) in GitLab 14.9.
-  - Unregistered instance runner.
-  - Unregistered group runner.
-  - Unregistered project runner.
+GitLab generates audit events for the following GitLab Runner actions:
+
+- Instance, group, or project runner is registered.
+- Instance, group, or project runner is unregistered.
+- Runner is assigned to or unassigned from a project.
+- Instance, group, or project runner registration token is reset.
+  [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102579) in GitLab 15.6.
 
 ## "Deleted User" events
 

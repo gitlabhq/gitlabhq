@@ -35,6 +35,13 @@ export function getProjects(query, options, callback = () => {}) {
     });
 }
 
+export function createProject(projectData) {
+  const url = buildApiUrl(PROJECTS_PATH);
+  return axios.post(url, projectData).then(({ data }) => {
+    return data;
+  });
+}
+
 export function importProjectMembers(sourceId, targetId) {
   const url = buildApiUrl(PROJECT_IMPORT_MEMBERS_PATH)
     .replace(':id', sourceId)

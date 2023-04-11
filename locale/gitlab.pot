@@ -18519,6 +18519,9 @@ msgstr ""
 msgid "ForksDivergence|Create a merge request to your project's default branch."
 msgstr ""
 
+msgid "ForksDivergence|Create merge request"
+msgstr ""
+
 msgid "ForksDivergence|Failed to fetch fork details. Try again later."
 msgstr ""
 
@@ -21042,10 +21045,19 @@ msgstr ""
 msgid "Groups|Checking group URL availability..."
 msgstr ""
 
+msgid "Groups|Create and add README"
+msgstr ""
+
+msgid "Groups|Creating README"
+msgstr ""
+
 msgid "Groups|Enter a descriptive name for your group."
 msgstr ""
 
 msgid "Groups|Group ID"
+msgstr ""
+
+msgid "Groups|Group README"
 msgstr ""
 
 msgid "Groups|Group URL"
@@ -21091,6 +21103,15 @@ msgid "Groups|Subgroup name"
 msgstr ""
 
 msgid "Groups|Subgroup slug"
+msgstr ""
+
+msgid "Groups|There was an error creating the Group README."
+msgstr ""
+
+msgid "Groups|This will create a README.md for project %{path}."
+msgstr ""
+
+msgid "Groups|This will create a project %{path} and add a README.md."
 msgstr ""
 
 msgid "Groups|You're creating a new top-level group"

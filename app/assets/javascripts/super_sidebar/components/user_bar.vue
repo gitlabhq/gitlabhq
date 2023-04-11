@@ -56,6 +56,11 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      mrMenuShown: false,
+    };
+  },
   methods: {
     collapseSidebar() {
       toggleSuperSidebarCollapsed(true, true, true);
@@ -144,9 +149,11 @@ export default {
       <merge-request-menu
         class="gl-flex-basis-third gl-display-block!"
         :items="sidebarData.merge_request_menu"
+        @shown="mrMenuShown = true"
+        @hidden="mrMenuShown = false"
       >
         <counter
-          v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.mergeRequests"
+          v-gl-tooltip:super-sidebar.hover.bottom="mrMenuShown ? '' : $options.i18n.mergeRequests"
           class="gl-w-full"
           icon="merge-request-open"
           :count="sidebarData.total_merge_requests_count"

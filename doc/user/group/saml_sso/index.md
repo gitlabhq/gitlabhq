@@ -469,11 +469,11 @@ than 24 hours ago, GitLab prompts the user to sign in again through SSO.
 SSO is enforced as follows:
 
 | Project/Group visibility | Enforce SSO setting | Member with identity | Member without identity | Non-member or not signed in |
-|--------------------------|---------------------|--------------------| ------ |------------------------------|
-| Private                  | Off                 | Enforced           | Not enforced | No access                    |
-| Private                  | On            | Enforced           | Enforced | No access                    |
-| Public                   | Off                 | Enforced           | Not enforced | Not enforced                 |
-| Public                   | On            | Enforced           | Enforced | Not enforced                 |
+|--------------------------|---------------------|----------------------|-------------------------|-----------------------------|
+| Private                  | Off                 | Enforced             | Not enforced            | Not enforced                |
+| Private                  | On                  | Enforced             | Enforced                | Enforced                    |
+| Public                   | Off                 | Enforced             | Not enforced            | Not enforced                |
+| Public                   | On                  | Enforced             | Enforced                | Not enforced                |
 
 An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/297389) to add a similar SSO requirement for API activity.
 
@@ -481,7 +481,7 @@ An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/297389) to add a
 
 When the **Enforce SSO-only authentication for web activity for this group** option is enabled:
 
-- All users must access GitLab by using their GitLab group's single sign-on URL
+- All members must access GitLab by using their GitLab group's single sign-on URL
   to access group resources, regardless of whether they have an existing SAML
   identity.
 - SSO is enforced when users access groups and projects in the organization's
@@ -489,6 +489,9 @@ When the **Enforce SSO-only authentication for web activity for this group** opt
 - Users cannot be added as new members manually.
 - Users with the Owner role can use the standard sign in process to make
   necessary changes to top-level group settings.
+- For non-members or users who are not signed in:
+  - SSO is not enforced when they access public group resources.
+  - SSO is enforced when they access private group resources.
 
 SSO enforcement for web activity has the following effects when enabled:
 

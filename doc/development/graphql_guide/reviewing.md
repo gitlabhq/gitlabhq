@@ -37,7 +37,7 @@ For more information, see [deprecation and removal process](../../api/graphql/in
 Ensure that multi-version compatibility is guaranteed.
 This generally means frontend and backend code for the same GraphQL feature can't be shipped in the same release.
 
-For details, see [multiple version compatibility](../multi_version_compatibility.md).[multiple version compatibility](../multi_version_compatibility.md).
+For details, see [multiple version compatibility](../multi_version_compatibility.md).
 
 ### Technical writing review
 

@@ -2,6 +2,7 @@
 
 module ProjectsHelper
   include Gitlab::Utils::StrongMemoize
+  include CompareHelper
 
   def project_incident_management_setting
     @project_incident_management_setting ||= @project.incident_management_setting ||
@@ -139,9 +140,11 @@ module ProjectsHelper
       ahead_compare_path: project_compare_path(
         project, from: source_default_branch, to: ref, from_project_id: source_project.id
       ),
+      create_mr_path: create_mr_path(from: ref, source_project: project, to: source_default_branch, target_project: source_project),
       behind_compare_path: project_compare_path(
         source_project, from: ref, to: source_default_branch, from_project_id: project.id
-      )
+      ),
+      can_user_create_mr_in_fork: can_user_create_mr_in_fork(source_project)
     }
   end
 
@@ -161,6 +164,10 @@ module ProjectsHelper
 
   def visible_fork_source(project)
     project.fork_source if project.fork_source && can?(current_user, :read_project, project.fork_source)
+  end
+
+  def can_user_create_mr_in_fork(project)
+    can?(current_user, :create_merge_request_in, project)
   end
 
   def project_search_tabs?(tab)

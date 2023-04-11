@@ -216,7 +216,7 @@ merge_requests:
 - approver_groups
 - approved_by_users
 - draft_notes
-- merge_train
+- merge_train_car
 - blocks_as_blocker
 - blocks_as_blockee
 - blocking_merge_requests
@@ -873,6 +873,7 @@ incident_management_setting:
 - project
 merge_trains:
 - project
+merge_train_cars:
 - merge_request
 boards:
 - group

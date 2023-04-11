@@ -180,6 +180,15 @@ module GroupsHelper
     Feature.enabled?(:show_group_readme, group) && group.group_readme
   end
 
+  def group_settings_readme_app_data(group)
+    {
+      group_readme_path: group.group_readme&.present&.web_path,
+      readme_project_path: group.readme_project&.present&.path_with_namespace,
+      group_path: group.full_path,
+      group_id: group.id
+    }
+  end
+
   def enabled_git_access_protocol_options_for_group
     case ::Gitlab::CurrentSettings.enabled_git_access_protocol
     when nil, ""

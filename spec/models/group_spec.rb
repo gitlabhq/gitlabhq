@@ -969,6 +969,23 @@ RSpec.describe Group, feature_category: :subgroups do
       end
     end
 
+    describe '.with_project_creation_levels' do
+      let_it_be(:group_1) { create(:group, project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS) }
+      let_it_be(:group_2) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+      let_it_be(:group_3) { create(:group, project_creation_level: Gitlab::Access::MAINTAINER_PROJECT_ACCESS) }
+      let_it_be(:group_4) { create(:group, project_creation_level: nil) }
+
+      it 'returns groups with the specified project creation levels' do
+        result = described_class.with_project_creation_levels([
+          Gitlab::Access::NO_ONE_PROJECT_ACCESS,
+          Gitlab::Access::MAINTAINER_PROJECT_ACCESS
+        ])
+
+        expect(result).to include(group_1, group_3)
+        expect(result).not_to include(group_2, group_4)
+      end
+    end
+
     describe '.project_creation_allowed' do
       let_it_be(:group_1) { create(:group, project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS) }
       let_it_be(:group_2) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }

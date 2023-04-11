@@ -11,15 +11,15 @@ If using a SHA256 fingerprint in an API call, you should URL-encode the fingerpr
 
 ## Get SSH key with user by ID of an SSH key
 
-Get SSH key with user by ID of an SSH key. Note only administrators can lookup SSH key with user by ID of an SSH key.
+Get SSH key with user by ID of an SSH key. Only available to administrators.
 
 ```plaintext
 GET /keys/:id
 ```
 
-| Attribute | Type    | Required | Description          |
-|:----------|:--------|:---------|:---------------------|
-| `id`      | integer | yes      | The ID of an SSH key |
+| Attribute | Type    | Required | Description           |
+|:----------|:--------|:---------|:----------------------|
+| `id`      | integer | yes      | The ID of an SSH key. |
 
 Example request:
 
@@ -78,9 +78,9 @@ You can search for a user that owns a specific SSH key. Note only administrators
 GET /keys
 ```
 
-| Attribute     | Type   | Required | Description                   |
-|:--------------|:-------|:---------|:------------------------------|
-| `fingerprint` | string | yes      | The fingerprint of an SSH key |
+| Attribute     | Type   | Required | Description                    |
+|:--------------|:-------|:---------|:-------------------------------|
+| `fingerprint` | string | yes      | The fingerprint of an SSH key. |
 
 Example request:
 
