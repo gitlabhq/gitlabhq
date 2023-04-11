@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Issues, feature_category: :team_planning do
+RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) do
     create(:project, :public, creator_id: user.id, namespace: user.namespace)
@@ -75,7 +75,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
   describe 'POST /projects/:id/issues' do
     context 'support for deprecated assignee_id' do
-      it 'creates a new project issue', :aggregate_failures do
+      it 'creates a new project issue' do
         post api("/projects/#{project.id}/issues", user),
           params: { title: 'new issue', assignee_id: user2.id }
 
@@ -85,7 +85,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         expect(json_response['assignees'].first['name']).to eq(user2.name)
       end
 
-      it 'creates a new project issue when assignee_id is empty', :aggregate_failures do
+      it 'creates a new project issue when assignee_id is empty' do
         post api("/projects/#{project.id}/issues", user),
           params: { title: 'new issue', assignee_id: '' }
 
@@ -96,7 +96,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'single assignee restrictions' do
-      it 'creates a new project issue with no more than one assignee', :aggregate_failures do
+      it 'creates a new project issue with no more than one assignee' do
         post api("/projects/#{project.id}/issues", user),
           params: { title: 'new issue', assignee_ids: [user2.id, guest.id] }
 
@@ -122,7 +122,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
     context 'an internal ID is provided' do
       context 'by an admin' do
-        it 'sets the internal ID on the new issue', :aggregate_failures do
+        it 'sets the internal ID on the new issue' do
           post api("/projects/#{project.id}/issues", admin, admin_mode: true),
             params: { title: 'new issue', iid: 9001 }
 
@@ -132,7 +132,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       context 'by an owner' do
-        it 'sets the internal ID on the new issue', :aggregate_failures do
+        it 'sets the internal ID on the new issue' do
           post api("/projects/#{project.id}/issues", user),
             params: { title: 'new issue', iid: 9001 }
 
@@ -145,7 +145,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         let(:group) { create(:group) }
         let(:group_project) { create(:project, :public, namespace: group) }
 
-        it 'sets the internal ID on the new issue', :aggregate_failures do
+        it 'sets the internal ID on the new issue' do
           group.add_owner(user2)
           post api("/projects/#{group_project.id}/issues", user2),
             params: { title: 'new issue', iid: 9001 }
@@ -156,7 +156,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       context 'by another user' do
-        it 'ignores the given internal ID', :aggregate_failures do
+        it 'ignores the given internal ID' do
           post api("/projects/#{project.id}/issues", user2),
             params: { title: 'new issue', iid: 9001 }
 
@@ -166,7 +166,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       context 'when an issue with the same IID exists on database' do
-        it 'returns 409', :aggregate_failures do
+        it 'returns 409' do
           post api("/projects/#{project.id}/issues", admin, admin_mode: true),
             params: { title: 'new issue', iid: issue.iid }
 
@@ -176,7 +176,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
     end
 
-    it 'creates a new project issue', :aggregate_failures do
+    it 'creates a new project issue' do
       post api("/projects/#{project.id}/issues", user),
         params: { title: 'new issue', labels: 'label, label2', weight: 3, assignee_ids: [user2.id] }
 
@@ -189,7 +189,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       expect(json_response['assignees'].first['name']).to eq(user2.name)
     end
 
-    it 'creates a new project issue with labels param as array', :aggregate_failures do
+    it 'creates a new project issue with labels param as array' do
       post api("/projects/#{project.id}/issues", user),
         params: { title: 'new issue', labels: %w(label label2), weight: 3, assignee_ids: [user2.id] }
 
@@ -202,7 +202,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       expect(json_response['assignees'].first['name']).to eq(user2.name)
     end
 
-    it 'creates a new confidential project issue', :aggregate_failures do
+    it 'creates a new confidential project issue' do
       post api("/projects/#{project.id}/issues", user),
         params: { title: 'new issue', confidential: true }
 
@@ -211,7 +211,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       expect(json_response['confidential']).to be_truthy
     end
 
-    it 'creates a new confidential project issue with a different param', :aggregate_failures do
+    it 'creates a new confidential project issue with a different param' do
       post api("/projects/#{project.id}/issues", user),
         params: { title: 'new issue', confidential: 'y' }
 
@@ -220,7 +220,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       expect(json_response['confidential']).to be_truthy
     end
 
-    it 'creates a public issue when confidential param is false', :aggregate_failures do
+    it 'creates a public issue when confidential param is false' do
       post api("/projects/#{project.id}/issues", user),
         params: { title: 'new issue', confidential: false }
 
@@ -229,7 +229,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       expect(json_response['confidential']).to be_falsy
     end
 
-    it 'creates a public issue when confidential param is invalid', :aggregate_failures do
+    it 'creates a public issue when confidential param is invalid' do
       post api("/projects/#{project.id}/issues", user),
         params: { title: 'new issue', confidential: 'foo' }
 
@@ -242,7 +242,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
-    it 'allows special label names', :aggregate_failures do
+    it 'allows special label names' do
       post api("/projects/#{project.id}/issues", user),
         params: {
           title: 'new issue',
@@ -256,7 +256,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       expect(json_response['labels']).to include '&'
     end
 
-    it 'allows special label names with labels param as array', :aggregate_failures do
+    it 'allows special label names with labels param as array' do
       post api("/projects/#{project.id}/issues", user),
         params: {
           title: 'new issue',
@@ -270,7 +270,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       expect(json_response['labels']).to include '&'
     end
 
-    it 'returns 400 if title is too long', :aggregate_failures do
+    it 'returns 400 if title is too long' do
       post api("/projects/#{project.id}/issues", user),
         params: { title: 'g' * 256 }
       expect(response).to have_gitlab_http_status(:bad_request)
@@ -313,7 +313,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'with due date' do
-      it 'creates a new project issue', :aggregate_failures do
+      it 'creates a new project issue' do
         due_date = 2.weeks.from_now.strftime('%Y-%m-%d')
 
         post api("/projects/#{project.id}/issues", user),
@@ -336,7 +336,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       context 'by an admin' do
-        it 'sets the creation time on the new issue', :aggregate_failures do
+        it 'sets the creation time on the new issue' do
           post api("/projects/#{project.id}/issues", admin, admin_mode: true), params: params
 
           expect(response).to have_gitlab_http_status(:created)
@@ -346,7 +346,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       context 'by a project owner' do
-        it 'sets the creation time on the new issue', :aggregate_failures do
+        it 'sets the creation time on the new issue' do
           post api("/projects/#{project.id}/issues", user), params: params
 
           expect(response).to have_gitlab_http_status(:created)
@@ -356,7 +356,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       context 'by a group owner' do
-        it 'sets the creation time on the new issue', :aggregate_failures do
+        it 'sets the creation time on the new issue' do
           group = create(:group)
           group_project = create(:project, :public, namespace: group)
           group.add_owner(user2)
@@ -370,7 +370,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       context 'by another user' do
-        it 'ignores the given creation time', :aggregate_failures do
+        it 'ignores the given creation time' do
           project.add_developer(user2)
 
           post api("/projects/#{project.id}/issues", user2), params: params
@@ -397,7 +397,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'when request exceeds the rate limit' do
-      it 'prevents users from creating more issues', :aggregate_failures do
+      it 'prevents users from creating more issues' do
         allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
 
         post api("/projects/#{project.id}/issues", user),
@@ -437,7 +437,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         expect { post_issue }.not_to change(Issue, :count)
       end
 
-      it 'returns correct status and message', :aggregate_failures do
+      it 'returns correct status and message' do
         post_issue
 
         expect(response).to have_gitlab_http_status(:bad_request)
@@ -475,9 +475,15 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   describe '/projects/:id/issues/:issue_iid/move' do
     let!(:target_project) { create(:project, creator_id: user.id, namespace: user.namespace) }
     let!(:target_project2) { create(:project, creator_id: non_member.id, namespace: non_member.namespace) }
+    let(:path) { "/projects/#{project.id}/issues/#{issue.iid}/move" }
 
-    it 'moves an issue', :aggregate_failures do
-      post api("/projects/#{project.id}/issues/#{issue.iid}/move", user),
+    it_behaves_like 'POST request permissions for admin mode' do
+      let(:params) { { to_project_id: target_project2.id } }
+      let(:failed_status_code) { 400 }
+    end
+
+    it 'moves an issue' do
+      post api(path, user),
         params: { to_project_id: target_project.id }
 
       expect(response).to have_gitlab_http_status(:created)
@@ -485,8 +491,8 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'when source and target projects are the same' do
-      it 'returns 400 when trying to move an issue', :aggregate_failures do
-        post api("/projects/#{project.id}/issues/#{issue.iid}/move", user),
+      it 'returns 400 when trying to move an issue' do
+        post api(path, user),
           params: { to_project_id: project.id }
 
         expect(response).to have_gitlab_http_status(:bad_request)
@@ -495,8 +501,8 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'when the user does not have the permission to move issues' do
-      it 'returns 400 when trying to move an issue', :aggregate_failures do
-        post api("/projects/#{project.id}/issues/#{issue.iid}/move", user),
+      it 'returns 400 when trying to move an issue' do
+        post api(path, user),
           params: { to_project_id: target_project2.id }
 
         expect(response).to have_gitlab_http_status(:bad_request)
@@ -504,8 +510,8 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
     end
 
-    it 'moves the issue to another namespace if I am admin', :aggregate_failures do
-      post api("/projects/#{project.id}/issues/#{issue.iid}/move", admin, admin_mode: true),
+    it 'moves the issue to another namespace if I am admin' do
+      post api(path, admin, admin_mode: true),
         params: { to_project_id: target_project2.id }
 
       expect(response).to have_gitlab_http_status(:created)
@@ -513,7 +519,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'when using the issue ID instead of iid' do
-      it 'returns 404 when trying to move an issue', :aggregate_failures, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/341520' do
+      it 'returns 404 when trying to move an issue', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/341520' do
         post api("/projects/#{project.id}/issues/#{issue.id}/move", user),
           params: { to_project_id: target_project.id }
 
@@ -523,7 +529,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'when issue does not exist' do
-      it 'returns 404 when trying to move an issue', :aggregate_failures do
+      it 'returns 404 when trying to move an issue' do
         post api("/projects/#{project.id}/issues/123/move", user),
           params: { to_project_id: target_project.id }
 
@@ -533,7 +539,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'when source project does not exist' do
-      it 'returns 404 when trying to move an issue', :aggregate_failures do
+      it 'returns 404 when trying to move an issue' do
         post api("/projects/0/issues/#{issue.iid}/move", user),
           params: { to_project_id: target_project.id }
 
@@ -544,7 +550,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
     context 'when target project does not exist' do
       it 'returns 404 when trying to move an issue' do
-        post api("/projects/#{project.id}/issues/#{issue.iid}/move", user),
+        post api(path, user),
           params: { to_project_id: 0 }
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -562,7 +568,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
     context 'when user can admin the issue' do
       context 'when the user can admin the target project' do
-        it 'clones the issue', :aggregate_failures do
+        it 'clones the issue' do
           expect do
             post_clone_issue(user, issue, valid_target_project)
           end.to change { valid_target_project.issues.count }.by(1)
@@ -577,7 +583,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         end
 
         context 'when target project is the same source project' do
-          it 'clones the issue', :aggregate_failures do
+          it 'clones the issue' do
             expect do
               post_clone_issue(user, issue, issue.project)
             end.to change { issue.reset.project.issues.count }.by(1)
@@ -595,7 +601,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'when the user does not have the permission to clone issues' do
-      it 'returns 400', :aggregate_failures do
+      it 'returns 400' do
         post api("/projects/#{project.id}/issues/#{issue.iid}/clone", user),
           params: { to_project_id: invalid_target_project.id }
 
@@ -605,7 +611,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'when using the issue ID instead of iid' do
-      it 'returns 404', :aggregate_failures, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/341520' do
+      it 'returns 404', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/341520' do
         post api("/projects/#{project.id}/issues/#{issue.id}/clone", user),
           params: { to_project_id: valid_target_project.id }
 
@@ -615,7 +621,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'when issue does not exist' do
-      it 'returns 404', :aggregate_failures do
+      it 'returns 404' do
         post api("/projects/#{project.id}/issues/12300/clone", user),
           params: { to_project_id: valid_target_project.id }
 
@@ -625,7 +631,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'when source project does not exist' do
-      it 'returns 404', :aggregate_failures do
+      it 'returns 404' do
         post api("/projects/0/issues/#{issue.iid}/clone", user),
           params: { to_project_id: valid_target_project.id }
 
@@ -635,7 +641,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'when target project does not exist' do
-      it 'returns 404', :aggregate_failures do
+      it 'returns 404' do
         post api("/projects/#{project.id}/issues/#{issue.iid}/clone", user),
           params: { to_project_id: 0 }
 
@@ -644,7 +650,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
     end
 
-    it 'clones the issue with notes when with_notes is true', :aggregate_failures do
+    it 'clones the issue with notes when with_notes is true' do
       expect do
         post api("/projects/#{project.id}/issues/#{issue.iid}/clone", user),
           params: { to_project_id: valid_target_project.id, with_notes: true }
@@ -661,7 +667,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'POST :id/issues/:issue_iid/subscribe' do
-    it 'subscribes to an issue', :aggregate_failures do
+    it 'subscribes to an issue' do
       post api("/projects/#{project.id}/issues/#{issue.iid}/subscribe", user2)
 
       expect(response).to have_gitlab_http_status(:created)
@@ -694,7 +700,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'POST :id/issues/:issue_id/unsubscribe' do
-    it 'unsubscribes from an issue', :aggregate_failures do
+    it 'unsubscribes from an issue' do
       post api("/projects/#{project.id}/issues/#{issue.iid}/unsubscribe", user)
 
       expect(response).to have_gitlab_http_status(:created)

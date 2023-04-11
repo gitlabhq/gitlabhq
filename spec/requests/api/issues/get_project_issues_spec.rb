@@ -638,6 +638,12 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'GET /projects/:id/issues/:issue_iid' do
+    let(:path) { "/projects/#{project.id}/issues/#{confidential_issue.iid}" }
+
+    it_behaves_like 'GET request permissions for admin mode' do
+      let(:failed_status_code) { :not_found }
+    end
+
     context 'when unauthenticated' do
       it 'returns public issues' do
         get api("/projects/#{project.id}/issues/#{issue.iid}")
@@ -727,19 +733,19 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
     context 'confidential issues' do
       it 'returns 404 for non project members' do
-        get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", non_member)
+        get api(path, non_member)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'returns 404 for project members with guest role' do
-        get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", guest)
+        get api(path, guest)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'returns confidential issue for project members', :aggregate_failures do
-        get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", user)
+        get api(path, user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['title']).to eq(confidential_issue.title)
@@ -747,7 +753,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       it 'returns confidential issue for author', :aggregate_failures do
-        get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", author)
+        get api(path, author)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['title']).to eq(confidential_issue.title)
@@ -755,7 +761,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       it 'returns confidential issue for assignee', :aggregate_failures do
-        get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", assignee)
+        get api(path, assignee)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['title']).to eq(confidential_issue.title)
@@ -763,7 +769,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       it 'returns confidential issue for admin', :aggregate_failures do
-        get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", admin, admin_mode: true)
+        get api(path, admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['title']).to eq(confidential_issue.title)
@@ -889,6 +895,10 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
   describe 'GET /projects/:id/issues/:issue_iid/user_agent_detail' do
     let!(:user_agent_detail) { create(:user_agent_detail, subject: issue) }
+
+    it_behaves_like 'GET request permissions for admin mode' do
+      let(:path) { "/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail" }
+    end
 
     context 'when unauthenticated' do
       it 'returns unauthorized' do

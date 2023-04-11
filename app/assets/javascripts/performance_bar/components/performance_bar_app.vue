@@ -217,9 +217,13 @@ export default {
         }}</gl-link>
       </div>
       <div v-if="currentRequest.details" id="peek-download" class="view">
-        <gl-link class="gl-text-blue-200" :download="downloadName" :href="downloadPath">{{
-          s__('PerformanceBar|Download')
-        }}</gl-link>
+        <gl-link
+          class="gl-text-blue-200"
+          is-unsafe-link
+          :download="downloadName"
+          :href="downloadPath"
+          >{{ s__('PerformanceBar|Download') }}</gl-link
+        >
       </div>
       <div
         v-if="currentRequest.details && env === 'development'"
