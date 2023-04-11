@@ -80,10 +80,14 @@ module QA
         end
 
         def go_to_projects
+          return click_element(:nav_item_link, submenu_item: 'Projects') if Runtime::Env.super_sidebar_enabled?
+
           click_element(:sidebar_menu_link, menu_item: 'Projects')
         end
 
         def go_to_groups
+          return click_element(:nav_item_link, submenu_item: 'Groups') if Runtime::Env.super_sidebar_enabled?
+
           # Use new functionality to visit Groups where possible
           if has_element?(:sidebar_menu_link, menu_item: 'Groups')
             click_element(:sidebar_menu_link, menu_item: 'Groups')
@@ -98,6 +102,8 @@ module QA
         end
 
         def go_to_snippets
+          return click_element(:nav_item_link, submenu_item: 'Snippets') if Runtime::Env.super_sidebar_enabled?
+
           click_element(:sidebar_menu_link, menu_item: 'Snippets')
         end
 

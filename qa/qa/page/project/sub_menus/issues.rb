@@ -15,7 +15,7 @@ module QA
             end
           end
 
-          def click_issues
+          def go_to_issues
             within_sidebar do
               click_element(:sidebar_menu_link, menu_item: 'Issues')
             end

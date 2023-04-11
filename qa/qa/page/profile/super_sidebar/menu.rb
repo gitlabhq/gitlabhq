@@ -6,19 +6,23 @@ module QA
       module SuperSidebar
         module Menu
           def click_ssh_keys
-            click_element(:sidebar_menu_link, menu_item: 'SSH Keys')
+            click_element(:nav_item_link, submenu_item: 'SSH Keys')
           end
 
           def click_account
-            click_element(:sidebar_menu_link, menu_item: 'Account')
+            click_element(:nav_item_link, submenu_item: 'Account')
           end
 
           def click_emails
-            click_element(:sidebar_menu_link, menu_item: 'Emails')
+            click_element(:nav_item_link, submenu_item: 'Emails')
           end
 
           def click_password
-            click_element(:sidebar_menu_link, menu_item: 'Password')
+            click_element(:nav_item_link, submenu_item: 'Password')
+          end
+
+          def click_access_tokens
+            click_element(:nav_item_link, submenu_item: 'Access Tokens')
           end
         end
       end

@@ -18,13 +18,13 @@ module QA
 
         if Runtime::Env.super_sidebar_enabled?
           include Page::SubMenus::SuperSidebar::Manage
-          include SubMenus::SuperSidebar::Project
           include SubMenus::SuperSidebar::Plan
           include SubMenus::SuperSidebar::Settings
           include SubMenus::SuperSidebar::Code
           include SubMenus::SuperSidebar::Build
           include SubMenus::SuperSidebar::Operate
           include SubMenus::SuperSidebar::Monitor
+          include SubMenus::SuperSidebar::Main
         end
 
         def click_merge_requests

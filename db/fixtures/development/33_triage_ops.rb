@@ -192,7 +192,7 @@ class Gitlab::Seeder::TriageOps
     group = Group.new(
       name: group_path.titleize,
       path: group_path,
-      parent_id: parent&.id
+      parent: parent
     )
     group.description = FFaker::Lorem.sentence
     group.save!

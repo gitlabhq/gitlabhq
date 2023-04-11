@@ -1033,7 +1033,7 @@ For more information on Gitaly server configuration, see our
 1. Disable all other services by editing `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   # Disable all other services on the Praefect node
+   # Disable all other services on the Gitaly node
    postgresql['enable'] = false
    redis['enable'] = false
    nginx['enable'] = false

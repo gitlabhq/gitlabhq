@@ -478,8 +478,6 @@ end
 
 gem 'octokit', '~> 4.15'
 
-# Updating this gem version here is deprecated. See:
-# https://docs.gitlab.com/ee/development/emails.html#mailroom-gem-updates
 gem 'gitlab-mail_room', '~> 0.0.23', require: 'mail_room'
 
 gem 'email_reply_trimmer', '~> 0.1'

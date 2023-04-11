@@ -10,6 +10,7 @@ module QA
           prepend Page::SubMenus::SuperSidebar::Manage
           prepend Page::SubMenus::SuperSidebar::Plan
           prepend SubMenus::SuperSidebar::Settings
+          prepend SubMenus::SuperSidebar::Main
           prepend SubMenus::SuperSidebar::Build
         end
 

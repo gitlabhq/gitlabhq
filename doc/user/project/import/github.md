@@ -55,6 +55,9 @@ To import projects from GitHub:
 See also [Branch protection rules and project settings](#branch-protection-rules-and-project-settings) for additional
 prerequisites for those imports.
 
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383047), if you are using GitHub as an OmniAuth provider, ensure that the URL
+perimeter is specified in the [OmniAuth configuration](../../../integration/github.md#enable-github-oauth-in-gitlab).
+
 ### Importing from GitHub Enterprise to self-managed GitLab
 
 If you are importing from GitHub Enterprise to a self-managed GitLab instance:

@@ -19,7 +19,7 @@ module QA
         end
 
         project.visit!
-        Page::Project::Menu.perform(&:click_issues)
+        Page::Project::Menu.perform(&:go_to_issues)
       end
 
       it 'successfully exports issues list as CSV', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347968' do
