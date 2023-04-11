@@ -1,11 +1,12 @@
 import { GlLink } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import NoteForm from '~/notes/components/note_form.vue';
 import createStore from '~/notes/stores';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { AT_WHO_ACTIVE_CLASS } from '~/gfm_auto_complete';
+import eventHub from '~/environments/event_hub';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { noteableDataMock, notesDataMock, discussionMock, note } from '../mock_data';
 
 jest.mock('~/lib/utils/autosave');
@@ -14,23 +15,25 @@ describe('issue_note_form component', () => {
   let store;
   let wrapper;
   let props;
-  let features;
 
-  const createComponentWrapper = () => {
-    return mount(NoteForm, {
+  const createComponentWrapper = (propsData = {}, provide = {}) => {
+    wrapper = mountExtended(NoteForm, {
       store,
-      propsData: props,
+      propsData: {
+        ...props,
+        ...propsData,
+      },
       provide: {
-        glFeatures: features || {},
+        glFeatures: provide,
       },
     });
   };
 
-  const findCancelButton = () => wrapper.find('[data-testid="cancel"]');
+  const findCancelButton = () => wrapper.findByTestId('cancel');
+  const findCancelCommentButton = () => wrapper.findByTestId('cancelBatchCommentsEnabled');
+  const findMarkdownField = () => wrapper.findComponent(MarkdownField);
 
   beforeEach(() => {
-    features = {};
-
     store = createStore();
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
@@ -44,7 +47,7 @@ describe('issue_note_form component', () => {
 
   describe('noteHash', () => {
     beforeEach(() => {
-      wrapper = createComponentWrapper();
+      createComponentWrapper();
     });
 
     it('returns note hash string based on `noteId`', () => {
@@ -52,33 +55,29 @@ describe('issue_note_form component', () => {
     });
 
     it('return note hash as `#` when `noteId` is empty', async () => {
-      wrapper.setProps({
-        ...props,
+      createComponentWrapper({
         noteId: '',
       });
-      await nextTick();
 
       expect(wrapper.vm.noteHash).toBe('#');
     });
   });
 
   it('hides content editor switcher if feature flag content_editor_on_issues is off', () => {
-    features = { contentEditorOnIssues: false };
-    wrapper = createComponentWrapper();
+    createComponentWrapper({}, { contentEditorOnIssues: false });
 
     expect(wrapper.text()).not.toContain('Rich text');
   });
 
   it('shows content editor switcher if feature flag content_editor_on_issues is on', () => {
-    features = { contentEditorOnIssues: true };
-    wrapper = createComponentWrapper();
+    createComponentWrapper({}, { contentEditorOnIssues: true });
 
     expect(wrapper.text()).toContain('Rich text');
   });
 
   describe('conflicts editing', () => {
     beforeEach(() => {
-      wrapper = createComponentWrapper();
+      createComponentWrapper();
     });
 
     it('should show conflict message if note changes outside the component', async () => {
@@ -102,15 +101,13 @@ describe('issue_note_form component', () => {
 
   describe('form', () => {
     beforeEach(() => {
-      wrapper = createComponentWrapper();
+      createComponentWrapper();
     });
 
     it('should render text area with placeholder', () => {
       const textarea = wrapper.find('textarea');
 
-      expect(textarea.attributes('placeholder')).toEqual(
-        'Write a comment or drag your files here…',
-      );
+      expect(textarea.attributes('placeholder')).toBe('Write a comment or drag your files here…');
     });
 
     it('should set data-supports-quick-actions to enable autocomplete', () => {
@@ -130,7 +127,7 @@ describe('issue_note_form component', () => {
           ...note,
           internal,
         };
-        wrapper = createComponentWrapper();
+        createComponentWrapper();
 
         await nextTick();
 
@@ -139,11 +136,7 @@ describe('issue_note_form component', () => {
     );
 
     it('should link to markdown docs', () => {
-      const { markdownDocsPath } = notesDataMock;
-      const markdownField = wrapper.findComponent(MarkdownField);
-      const markdownFieldProps = markdownField.props();
-
-      expect(markdownFieldProps.markdownDocsPath).toBe(markdownDocsPath);
+      expect(findMarkdownField().props('markdownDocsPath')).toBe(notesDataMock.markdownDocsPath);
     });
 
     describe('keyboard events', () => {
@@ -156,12 +149,11 @@ describe('issue_note_form component', () => {
 
       describe('up', () => {
         it('should ender edit mode', () => {
-          // TODO: do not spy on vm
-          jest.spyOn(wrapper.vm, 'editMyLastNote');
+          const eventHubSpy = jest.spyOn(eventHub, '$emit');
 
           textarea.trigger('keydown.up');
 
-          expect(wrapper.vm.editMyLastNote).toHaveBeenCalled();
+          expect(eventHubSpy).not.toHaveBeenCalled();
         });
       });
 
@@ -169,17 +161,13 @@ describe('issue_note_form component', () => {
         it('should save note when cmd+enter is pressed', () => {
           textarea.trigger('keydown.enter', { metaKey: true });
 
-          const { handleFormUpdate } = wrapper.emitted();
-
-          expect(handleFormUpdate.length).toBe(1);
+          expect(wrapper.emitted('handleFormUpdate')).toHaveLength(1);
         });
 
         it('should save note when ctrl+enter is pressed', () => {
           textarea.trigger('keydown.enter', { ctrlKey: true });
 
-          const { handleFormUpdate } = wrapper.emitted();
-
-          expect(handleFormUpdate.length).toBe(1);
+          expect(wrapper.emitted('handleFormUpdate')).toHaveLength(1);
         });
 
         it('should disable textarea when ctrl+enter is pressed', async () => {
@@ -195,24 +183,16 @@ describe('issue_note_form component', () => {
     });
 
     describe('actions', () => {
-      it('should be possible to cancel', async () => {
-        wrapper.setProps({
-          ...props,
-        });
-        await nextTick();
+      it('should be possible to cancel', () => {
+        createComponentWrapper();
 
-        const cancelButton = findCancelButton();
-        cancelButton.vm.$emit('click');
-        await nextTick();
+        findCancelButton().vm.$emit('click');
 
-        expect(wrapper.emitted().cancelForm).toHaveLength(1);
+        expect(wrapper.emitted('cancelForm')).toHaveLength(1);
       });
 
       it('will not cancel form if there is an active at-who-active class', async () => {
-        wrapper.setProps({
-          ...props,
-        });
-        await nextTick();
+        createComponentWrapper();
 
         const textareaEl = wrapper.vm.$refs.markdownEditor.$el.querySelector('textarea');
         const cancelButton = findCancelButton();
@@ -220,21 +200,18 @@ describe('issue_note_form component', () => {
         cancelButton.vm.$emit('click');
         await nextTick();
 
-        expect(wrapper.emitted().cancelForm).toBeUndefined();
+        expect(wrapper.emitted('cancelForm')).toBeUndefined();
       });
 
       it('should be possible to update the note', async () => {
-        wrapper.setProps({
-          ...props,
-        });
-        await nextTick();
+        createComponentWrapper();
 
         const textarea = wrapper.find('textarea');
         textarea.setValue('Foo');
         const saveButton = wrapper.find('.js-vue-issue-save');
         saveButton.vm.$emit('click');
 
-        expect(wrapper.vm.isSubmitting).toBe(true);
+        expect(wrapper.emitted('handleFormUpdate')).toHaveLength(1);
       });
     });
   });
@@ -243,9 +220,7 @@ describe('issue_note_form component', () => {
     beforeEach(() => {
       store.registerModule('batchComments', batchComments());
 
-      wrapper = createComponentWrapper();
-      wrapper.setProps({
-        ...props,
+      createComponentWrapper({
         isDraft: true,
         noteId: '',
         discussion: { ...discussionMock, for_commit: false },
@@ -253,13 +228,9 @@ describe('issue_note_form component', () => {
     });
 
     it('should be possible to cancel', async () => {
-      jest.spyOn(wrapper.vm, 'cancelHandler');
+      findCancelCommentButton().vm.$emit('click');
 
-      await nextTick();
-      const cancelButton = wrapper.find('[data-testid="cancelBatchCommentsEnabled"]');
-      cancelButton.vm.$emit('click');
-
-      expect(wrapper.vm.cancelHandler).toHaveBeenCalledWith(true);
+      expect(wrapper.emitted('cancelForm')).toEqual([[true, false]]);
     });
 
     it('shows resolve checkbox', () => {
@@ -267,7 +238,7 @@ describe('issue_note_form component', () => {
     });
 
     it('hides resolve checkbox', async () => {
-      wrapper.setProps({
+      createComponentWrapper({
         isDraft: false,
         discussion: {
           ...discussionMock,
@@ -282,15 +253,11 @@ describe('issue_note_form component', () => {
         },
       });
 
-      await nextTick();
-
       expect(wrapper.find('.js-resolve-checkbox').exists()).toBe(false);
     });
 
     it('hides actions for commits', async () => {
-      wrapper.setProps({ discussion: { for_commit: true } });
-
-      await nextTick();
+      createComponentWrapper({ discussion: { for_commit: true } });
 
       expect(wrapper.find('.note-form-actions').text()).not.toContain('Start a review');
     });
@@ -299,13 +266,12 @@ describe('issue_note_form component', () => {
       it('should start review or add to review when cmd+enter is pressed', async () => {
         const textarea = wrapper.find('textarea');
 
-        jest.spyOn(wrapper.vm, 'handleAddToReview');
-
         textarea.setValue('Foo');
         textarea.trigger('keydown.enter', { metaKey: true });
 
         await nextTick();
-        expect(wrapper.vm.handleAddToReview).toHaveBeenCalled();
+
+        expect(wrapper.emitted('handleFormUpdateAddToReview')).toEqual([['Foo', false]]);
       });
     });
   });

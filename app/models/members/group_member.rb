@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class GroupMember < Member
-  extend ::Gitlab::Utils::Override
   include FromUnion
   include CreatedAtFilterable
 
@@ -104,12 +103,6 @@ class GroupMember < Member
     end
 
     update_two_factor_requirement
-
-    super
-  end
-
-  def after_decline_invite
-    notification_service.decline_group_invite(self)
 
     super
   end

@@ -47060,13 +47060,13 @@ msgstr ""
 msgid "UsageQuotas|An error occurred loading the transfer data. Please refresh the page to try again."
 msgstr ""
 
+msgid "UsageQuotas|Container Registry storage statistics are not used to calculate the total project storage. After namespace container deduplication, the total of all unique containers is added to the namespace storage total."
+msgstr ""
+
 msgid "UsageQuotas|Namespace transfer data used"
 msgstr ""
 
 msgid "UsageQuotas|The project-level storage statistics for the Container Registry are directional only and do not include savings for instance-wide deduplication."
-msgstr ""
-
-msgid "UsageQuotas|This project-level storage statistic does not include savings for site-wide deduplication and is not used to calculate total namespace storage."
 msgstr ""
 
 msgid "UsageQuota|%{linkStart}Shared runners%{linkEnd} are disabled, so there are no limits set on pipeline usage"

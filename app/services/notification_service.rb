@@ -492,6 +492,18 @@ class NotificationService
     mailer.member_access_denied_email(member.real_source_type, member.source_id, member.user_id).deliver_later
   end
 
+  def decline_invite(member)
+    # Must always send, regardless of project/namespace configuration since it's a
+    # response to the user's action.
+
+    mailer.member_invite_declined_email(
+      member.real_source_type,
+      member.source.id,
+      member.invite_email,
+      member.created_by_id
+    ).deliver_later
+  end
+
   # Project invite
   def invite_project_member(project_member, token)
     return true unless project_member.notifiable?(:subscription)
@@ -503,18 +515,6 @@ class NotificationService
     return true unless project_member.notifiable?(:subscription)
 
     mailer.member_invite_accepted_email(project_member.real_source_type, project_member.id).deliver_later
-  end
-
-  def decline_project_invite(project_member)
-    # Must always send, regardless of project/namespace configuration since it's a
-    # response to the user's action.
-
-    mailer.member_invite_declined_email(
-      project_member.real_source_type,
-      project_member.project.id,
-      project_member.invite_email,
-      project_member.created_by_id
-    ).deliver_later
   end
 
   def new_project_member(project_member)
@@ -540,18 +540,6 @@ class NotificationService
 
   def accept_group_invite(group_member)
     mailer.member_invite_accepted_email(group_member.real_source_type, group_member.id).deliver_later
-  end
-
-  def decline_group_invite(group_member)
-    # Must always send, regardless of project/namespace configuration since it's a
-    # response to the user's action.
-
-    mailer.member_invite_declined_email(
-      group_member.real_source_type,
-      group_member.group.id,
-      group_member.invite_email,
-      group_member.created_by_id
-    ).deliver_later
   end
 
   def new_group_member(group_member)

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ProjectMember < Member
-  extend ::Gitlab::Utils::Override
   SOURCE_TYPE = 'Project'
   SOURCE_TYPE_FORMAT = /\AProject\z/.freeze
 
@@ -142,12 +141,6 @@ class ProjectMember < Member
     run_after_commit_or_now do
       notification_service.accept_project_invite(self)
     end
-
-    super
-  end
-
-  def after_decline_invite
-    notification_service.decline_project_invite(self)
 
     super
   end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Member < ApplicationRecord
+  extend ::Gitlab::Utils::Override
   include EachBatch
   include AfterCommitQueue
   include Sortable
@@ -576,7 +577,7 @@ class Member < ApplicationRecord
   end
 
   def after_decline_invite
-    # override in subclass
+    notification_service.decline_invite(self)
   end
 
   def after_accept_request
