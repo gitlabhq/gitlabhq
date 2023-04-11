@@ -85,6 +85,7 @@ class Gitlab::Seeder::TriageOps
       Sidekiq::Testing.inline! do
         puts "Ensuring required groups"
         ensure_group('gitlab-com')
+        ensure_group('gitlab-com/support')
         ensure_group('gitlab-com/gl-security/appsec')
         ensure_group('gitlab-jh/jh-team')
         ensure_group('gitlab-org')

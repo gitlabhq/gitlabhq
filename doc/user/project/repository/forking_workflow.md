@@ -101,7 +101,7 @@ an `upstream` remote repository for your fork:
 
 A fork can be configured as a mirror of the upstream if all these conditions are met:
 
-1. Your subscription is **(PREMIUM)** or a higher tier.
+1. Your subscription is **Premium** or higher.
 1. You create all changes in branches (not `main`).
 1. You do not work on [merge requests for confidential issues](../merge_requests/confidential.md),
    which requires changes to `main`.
@@ -131,6 +131,12 @@ changes are added to the repository and branch you're merging into.
 ## Removing a fork relationship
 
 You can unlink your fork from its upstream project in the [advanced settings](../settings/index.md#remove-a-fork-relationship).
+
+If you unlink a fork in this way and if [pool repositories](../../../development/git_object_deduplication.md#pool-repositories) are used, all objects are
+copied from the pool into the fork.
+
+After this copy is complete, the relationship is broken and the fork becomes an independent project. From this point, any updates to objects in the pool are
+not propagated to the project that was previously a fork.
 
 ## Related topics
 

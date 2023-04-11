@@ -465,10 +465,9 @@ Exceptions to this general guideline should be motivated and documented.
 
 ### Ruby versions testing
 
-We're running Ruby 3.0 for the merge requests and the default branch. However,
-we're still running Ruby 2.7 for GitLab.com and there are older versions that
-we need to maintain, so we also run our test suite against Ruby 2.7 on a
-dedicated 2-hourly scheduled pipelines.
+We're running Ruby 3.0 on GitLab.com, as well as for merge requests and the default branch.
+However, there are older versions for which we need to support Ruby 2.7, so we also run our
+test suite against Ruby 2.7 on a dedicated 2-hourly scheduled pipelines.
 
 For merge requests, you can add the `pipeline:run-in-ruby2` label to switch
 the Ruby version used for running the whole test suite to 2.7. When you do
@@ -561,7 +560,7 @@ In general, pipelines for an MR fall into one of the following types (from short
 
 - [Documentation pipeline](#documentation-pipeline): For MRs that touch documentation.
 - [Backend pipeline](#backend-pipeline): For MRs that touch backend code.
-- [Frontend pipeline](#frontend-pipeline): For MRs that touch frontend code.
+- [Review app pipeline](#review-app-pipeline): For MRs that touch frontend code.
 - [End-to-end pipeline](#end-to-end-pipeline): For MRs that touch code in the `qa/` folder.
 
 A "pipeline type" is an abstract term that mostly describes the "critical path" (for example, the chain of jobs for which the sum
@@ -598,10 +597,10 @@ graph LR
 graph RL;
   classDef criticalPath fill:#f66;
 
-  1-3["compile-test-assets (6 minutes)"];
+  1-3["compile-test-assets (5.5 minutes)"];
   class 1-3 criticalPath;
   click 1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914317&udv=0"
-  1-6["setup-test-env (4 minutes)"];
+  1-6["setup-test-env (3.6 minutes)"];
   click 1-6 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914315&udv=0"
   1-14["retrieve-tests-metadata"];
   click 1-14 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356697&udv=0"
@@ -613,19 +612,19 @@ graph RL;
   click 2_5-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations"
   2_5-1 --> 1-3 & 1-6 & 1-14 & 1-15;
 
-  3_2-1["rspec:coverage (5.35 minutes)"];
+  3_2-1["rspec:coverage (5 minutes)"];
   class 3_2-1 criticalPath;
   click 3_2-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7248745&udv=0"
   3_2-1 -.->|"(don't use needs<br/>because of limitations)"| 2_5-1;
 
-  4_3-1["rspec:undercoverage (3.5 minutes)"];
+  4_3-1["rspec:undercoverage (1.3 minutes)"];
   class 4_3-1 criticalPath;
   click 4_3-1 "https://app.periscopedata.com/app/gitlab/652085/EP---Jobs-Durations?widget=13446492&udv=1005715"
   4_3-1 --> 3_2-1;
 
 ```
 
-### Frontend pipeline
+### Review app pipeline
 
 [Reference pipeline](https://gitlab.com/gitlab-org/gitlab/-/pipelines/431913287).
 
@@ -635,15 +634,15 @@ graph RL;
 
   1-2["build-qa-image (2 minutes)"];
   click 1-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914325&udv=0"
-  1-5["compile-production-assets (16 minutes)"];
+  1-5["compile-production-assets (12 minutes)"];
   class 1-5 criticalPath;
   click 1-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914312&udv=0"
 
-  2_3-1["build-assets-image (1.3 minutes)"];
+  2_3-1["build-assets-image (1.1 minutes)"];
   class 2_3-1 criticalPath;
   2_3-1 --> 1-5
 
-  2_6-1["start-review-app-pipeline (49 minutes)"];
+  2_6-1["start-review-app-pipeline (52 minutes)"];
   class 2_6-1 criticalPath;
   click 2_6-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations"
   2_6-1 --> 2_3-1 & 1-2;
@@ -659,17 +658,17 @@ graph RL;
 
   1-2["build-qa-image (2 minutes)"];
   click 1-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914325&udv=0"
-  1-5["compile-production-assets (16 minutes)"];
+  1-5["compile-production-assets (12 minutes)"];
   class 1-5 criticalPath;
   click 1-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914312&udv=0"
   1-15["detect-tests"];
   click 1-15 "https://app.periscopedata.com/app/gitlab/652085/EP---Jobs-Durations?widget=10113603&udv=1005715"
 
-  2_3-1["build-assets-image (1.3 minutes)"];
+  2_3-1["build-assets-image (1.1 minutes)"];
   class 2_3-1 criticalPath;
   2_3-1 --> 1-5
 
-  2_4-1["e2e:package-and-test (102 minutes)"];
+  2_4-1["e2e:package-and-test-ee (103 minutes)"];
   class 2_4-1 criticalPath;
   click 2_4-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914305&udv=0"
   2_4-1 --> 1-2 & 2_3-1 & 1-15;

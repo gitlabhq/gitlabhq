@@ -22,6 +22,7 @@ do more day-to-day tasks in Visual Studio Code, such as:
   and paste snippets to, and from, your editor.
 - [Browse repositories](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#browse-a-repository-without-cloning)
   without cloning them.
+- [Receive Code Suggestions](code_suggestions.md)
 
 ## Download the extension
 

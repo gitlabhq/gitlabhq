@@ -61,7 +61,7 @@ module Tooling
       def system_specs_for_edition(edition)
         all_files_in_folders_glob = File.join(@system_specs_base_folder, '**', '*')
         all_files_in_folders_glob = File.join(edition, all_files_in_folders_glob) if edition
-        Dir[all_files_in_folders_glob].select { |f| File.file?(f) }
+        Dir[all_files_in_folders_glob].select { |f| File.file?(f) && f.end_with?('_spec.rb') }
       end
 
       private

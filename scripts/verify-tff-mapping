@@ -201,6 +201,12 @@ tests = [
     explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/146',
     source: 'config/feature_categories.yml',
     expected: ['spec/db/docs_spec.rb', 'ee/spec/lib/ee/gitlab/database/docs/docs_spec.rb']
+  },
+
+  {
+    explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/1360',
+    source: 'vendor/project_templates/gitbook.tar.gz',
+    expected: ['spec/lib/gitlab/project_template_spec.rb']
   }
 ]
 

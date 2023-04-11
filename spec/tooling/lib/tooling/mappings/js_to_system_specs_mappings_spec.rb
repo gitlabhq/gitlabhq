@@ -181,6 +181,30 @@ RSpec.describe Tooling::Mappings::JsToSystemSpecsMappings, feature_category: :to
       instance.system_specs_for_edition(edition)
     end
 
+    let(:edition) { nil }
+
+    context 'when a file is not a ruby spec' do
+      before do
+        File.write("#{system_specs_base_folder}/issues_spec.tar.gz", "a test")
+      end
+
+      it 'does not return that file' do
+        expect(subject).to be_empty
+      end
+    end
+
+    context 'when a file is a ruby spec' do
+      let(:spec_pathname) { "#{system_specs_base_folder}/issues_spec.rb" }
+
+      before do
+        File.write(spec_pathname, "a test")
+      end
+
+      it 'returns that file' do
+        expect(subject).to match_array(spec_pathname)
+      end
+    end
+
     context 'when FOSS' do
       let(:edition) { nil }
 

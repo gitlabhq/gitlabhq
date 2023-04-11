@@ -1787,7 +1787,12 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
-    - if: '$SKIP_FLAKY_TESTS_AUTOMATICALLY == "true" || $RETRY_FAILED_TESTS_IN_NEW_PROCESS == "true"'
+    - if: '$SKIP_FLAKY_TESTS_AUTOMATICALLY != "true" && $RETRY_FAILED_TESTS_IN_NEW_PROCESS != "true"'
+      when: never
+    - <<: *if-merge-request
+      changes: *code-backstage-patterns
+      when: always
+    - <<: *if-default-branch-refs
       changes: *code-backstage-patterns
       when: always
 

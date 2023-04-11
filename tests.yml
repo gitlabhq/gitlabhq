@@ -108,3 +108,7 @@ mapping:
     test: spec/db/docs_spec.rb
   - source: config/feature_categories.yml
     test: ee/spec/lib/ee/gitlab/database/docs/docs_spec.rb
+
+  # See https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/1360
+  - source: vendor/project_templates/.*
+    test: spec/lib/gitlab/project_template_spec.rb

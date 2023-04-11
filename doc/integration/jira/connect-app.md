@@ -104,26 +104,29 @@ To create an OAuth application:
 
 > Introduced in GitLab 15.7.
 
-Prerequisites:
-
-- GitLab.com must serve as a proxy for the instance.
-- The instance must be publicly available.
-- The instance must be on version 15.7 or later.
-- You must set up [OAuth authentication](#set-up-oauth-authentication-for-self-managed-instances).
-
 You can link self-managed instances after installing the GitLab for Jira Cloud app from the marketplace.
 Jira apps can only link to one URL per marketplace listing. The official listing links to GitLab.com.
 
-If your instance doesn't meet the prerequisites or you don't want to use the official marketplace listing, you can
+NOTE:
+With this method, GitLab.com serves as a proxy for Jira traffic from your instance.
+
+If your instance doesn't meet the [prerequisites](#prerequisites) or you don't want to use the official marketplace listing, you can
 [install the app manually](#install-the-gitlab-for-jira-cloud-app-manually).
 
 It's not possible to create branches from Jira for self-managed instances. For more information, see [issue 391432](https://gitlab.com/gitlab-org/gitlab/-/issues/391432).
 
+### Prerequisites
+
+- The instance must be publicly available.
+- The instance must be on GitLab version 15.7 or later.
+- You must set up [OAuth authentication](#set-up-oauth-authentication-for-self-managed-instances).
+
 ### Set up your instance
+
+See [prerequisites](#prerequisites).
 
 To set up your self-managed instance for the GitLab for Jira Cloud app in GitLab 15.7 and later:
 
-1. [Set up OAuth authentication](#set-up-oauth-authentication-for-self-managed-instances).
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).
 1. Expand the **GitLab for Jira App** section.
@@ -144,7 +147,7 @@ To link your self-managed instance to the GitLab for Jira Cloud app:
 If your GitLab instance is self-managed and you don't want to use the official marketplace listing,
 you can install the app manually.
 
-Prerequisites:
+### Prerequisites
 
 - The instance must be publicly available.
 - You must set up [OAuth authentication](#set-up-oauth-authentication-for-self-managed-instances).
@@ -161,8 +164,10 @@ self-managed GitLab instances with Jira Cloud, you can do one of the following:
 
 #### Install the application in development mode
 
-You can configure your Atlassian Cloud instance to allow you to install applications
-from outside the Marketplace, which allows you to install the application:
+See [prerequisites](#prerequisites-1).
+
+To configure your Atlassian Cloud instance so you can install applications
+from outside the Marketplace:
 
 1. Sign in to your Jira instance as an administrator.
 1. Place your Jira instance into
@@ -194,11 +199,12 @@ then reinstall the application.
 
 #### Create a Marketplace listing
 
-If you prefer to not use development mode on your Jira instance, you can create
-your own Marketplace listing for your instance. This enables your application
-to be installed from the Atlassian Marketplace.
+If you don't want to use development mode on your Jira instance, you can create
+your own Marketplace listing. This way, your application
+can be installed from the Atlassian Marketplace.
 
-For full instructions, review the Atlassian [guide to creating a marketplace listing](https://developer.atlassian.com/platform/marketplace/installing-cloud-apps/#creating-the-marketplace-listing).
+See [prerequisites](#prerequisites-1).
+
 To create a Marketplace listing:
 
 1. Register as a Marketplace vendor.
@@ -211,6 +217,8 @@ To create a Marketplace listing:
 NOTE:
 This method uses [automated updates](#update-the-gitlab-for-jira-cloud-app)
 the same way as our GitLab.com Marketplace listing.
+
+For more information about creating a Marketplace listing, see the [Atlassian documentation](https://developer.atlassian.com/platform/marketplace/installing-cloud-apps/#creating-the-marketplace-listing).
 
 ## Configure your GitLab instance to serve as a proxy for the GitLab for Jira Cloud app **(FREE SELF)**
 

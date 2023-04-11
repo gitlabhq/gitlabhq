@@ -116,7 +116,7 @@
                 - if @user.website_url.present?
                   = render 'middle_dot_divider', stacking: true do
                     - if Feature.enabled?(:security_auto_fix) && @user.bot?
-                      = sprite_icon('question', css_class: 'gl-text-blue-600')
+                      = sprite_icon('question-o', css_class: 'gl-text-blue-500')
                     = link_to @user.short_website_url, @user.full_website_url, target: '_blank', rel: 'me noopener noreferrer nofollow', itemprop: 'url'
                 - if display_public_email?(@user)
                   = render 'middle_dot_divider', stacking: true do

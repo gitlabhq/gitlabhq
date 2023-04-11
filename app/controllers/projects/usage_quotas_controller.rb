@@ -6,10 +6,6 @@ module Projects
 
     layout "project_settings"
 
-    before_action do
-      push_frontend_feature_flag(:move_year_dropdown_usage_charts, current_user)
-    end
-
     feature_category :consumables_cost_management
     urgency :low
 
