@@ -6430,7 +6430,6 @@
 - './spec/lib/gitlab/error_tracking/processor/sanitize_error_message_processor_spec.rb'
 - './spec/lib/gitlab/error_tracking/processor/sanitizer_processor_spec.rb'
 - './spec/lib/gitlab/error_tracking/processor/sidekiq_processor_spec.rb'
-- './spec/lib/gitlab/error_tracking_spec.rb'
 - './spec/lib/gitlab/error_tracking/stack_trace_highlight_decorator_spec.rb'
 - './spec/lib/gitlab/etag_caching/middleware_spec.rb'
 - './spec/lib/gitlab/etag_caching/router/graphql_spec.rb'

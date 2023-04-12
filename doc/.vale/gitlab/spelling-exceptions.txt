@@ -393,6 +393,8 @@ Gitter
 GLab
 globals
 globbing
+globstar
+globstars
 Gmail
 Godep
 Golang

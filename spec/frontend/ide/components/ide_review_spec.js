@@ -63,7 +63,7 @@ describe('IDE review mode', () => {
         await wrapper.vm.reactivate();
       });
 
-      it('updates viewer to "mrdiff"', async () => {
+      it('updates viewer to "mrdiff"', () => {
         expect(store.state.viewer).toBe('mrdiff');
       });
     });

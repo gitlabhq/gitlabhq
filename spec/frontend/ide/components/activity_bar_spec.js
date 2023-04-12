@@ -50,13 +50,13 @@ describe('IDE ActivityBar component', () => {
       expect(button.classes('active')).toBe(true);
     });
 
-    it.each(MODES_WITHOUT_EDIT)('is correctly set after clicking %s mode button', async (mode) => {
+    it.each(MODES_WITHOUT_EDIT)('is correctly set after clicking %s mode button', (mode) => {
       mountComponent();
 
       testSettingActiveItem(mode);
     });
 
-    it('is correctly set after clicking edit mode button', async () => {
+    it('is correctly set after clicking edit mode button', () => {
       // The default currentActivityView is leftSidebarViews.edit.name,
       // so for the 'edit' mode, we pass a different currentActivityView.
       mountComponent({ currentActivityView: leftSidebarViews.review.name });

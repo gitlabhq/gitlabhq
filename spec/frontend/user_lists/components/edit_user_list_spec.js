@@ -67,7 +67,7 @@ describe('user_lists/components/edit_user_list', () => {
       expect(alert.text()).toContain(message);
     });
 
-    it('should not be dismissible', async () => {
+    it('should not be dismissible', () => {
       expect(alert.props('dismissible')).toBe(false);
     });
 

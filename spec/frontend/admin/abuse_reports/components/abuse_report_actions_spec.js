@@ -136,13 +136,13 @@ describe('AbuseReportActions', () => {
             await axios.waitForAll();
           });
 
-          it('updates the block button correctly', async () => {
+          it('updates the block button correctly', () => {
             const button = findBlockUserButton();
             expect(button.text()).toBe(blockButtonText);
             expect(button.attributes('disabled')).toBe(blockButtonDisabled);
           });
 
-          it('displays the returned message', async () => {
+          it('displays the returned message', () => {
             expect(createAlert).toHaveBeenCalledWith(createAlertArgs);
           });
         },

@@ -82,7 +82,7 @@ describe('~/user_lists/components/user_lists.vue', () => {
         emptyState = wrapper.findComponent(GlEmptyState);
       });
 
-      it('should render the empty state', async () => {
+      it('should render the empty state', () => {
         expect(emptyState.exists()).toBe(true);
       });
 

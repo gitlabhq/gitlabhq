@@ -4,7 +4,6 @@ description: Count of MAU using the `/remove_contacts` quick action
 product_section: dev
 product_stage: plan
 product_group: product_planning
-product_category: service_desk
 value_type: number
 status: active
 milestone: '14.5'

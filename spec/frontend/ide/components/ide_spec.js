@@ -64,7 +64,7 @@ describe('WebIDE', () => {
       });
     });
 
-    it('renders "New file" button in empty repo', async () => {
+    it('renders "New file" button in empty repo', () => {
       expect(wrapper.find('[title="New file"]').exists()).toBe(true);
     });
   });

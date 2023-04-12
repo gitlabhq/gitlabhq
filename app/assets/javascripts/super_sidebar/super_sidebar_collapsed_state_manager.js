@@ -32,7 +32,7 @@ const hide = (sidebar, toggle, isUserAction) => {
   setTimeout(() => {
     sidebar.classList.add(SIDEBAR_VISIBILITY_CLASS);
     if (isUserAction) {
-      toggle.focus();
+      toggle?.focus();
     }
   }, SIDEBAR_TRANSITION_DURATION);
 };

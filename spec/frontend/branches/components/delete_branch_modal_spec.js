@@ -94,7 +94,7 @@ describe('Delete branch modal', () => {
       expect(submitSpy).toHaveBeenCalled();
     });
 
-    it('calls show on the modal when a `openModal` event is received through the event hub', async () => {
+    it('calls show on the modal when a `openModal` event is received through the event hub', () => {
       expect(showMock).not.toHaveBeenCalled();
 
       emitOpenModal();

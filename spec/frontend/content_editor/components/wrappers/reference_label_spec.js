@@ -5,7 +5,7 @@ import ReferenceLabelWrapper from '~/content_editor/components/wrappers/referenc
 describe('content/components/wrappers/reference_label', () => {
   let wrapper;
 
-  const createWrapper = async (node = {}) => {
+  const createWrapper = (node = {}) => {
     wrapper = shallowMountExtended(ReferenceLabelWrapper, {
       propsData: { node },
     });

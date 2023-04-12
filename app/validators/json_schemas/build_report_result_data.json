@@ -8,10 +8,7 @@
       "format": "float"
     },
     "tests": {
-      "type": "object",
-      "items": {
-        "$ref": "./build_report_result_data_tests.json"
-      }
+      "$ref": "./build_report_result_data_tests.json"
     }
   },
   "additionalProperties": false

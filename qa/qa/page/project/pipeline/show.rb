@@ -44,7 +44,7 @@ module QA
             element :jobs_dropdown_menu
           end
 
-          view 'app/views/layouts/nav/_breadcrumbs.html.haml' do
+          view 'app/views/layouts/nav/breadcrumbs/_breadcrumbs.html.haml' do
             element :breadcrumb_links_content
             element :breadcrumb_current_link
           end

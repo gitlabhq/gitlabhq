@@ -48,7 +48,7 @@ describe('FrequentItemsListComponent', () => {
     });
 
     describe('fetched item messages', () => {
-      it('should show default empty list message', async () => {
+      it('should show default empty list message', () => {
         createComponent({
           items: [],
         });

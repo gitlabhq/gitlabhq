@@ -35,8 +35,8 @@
       = dispensable_render_if_exists "shared/new_user_signups_cap_reached_alert"
       = yield :page_level_alert
       = yield :group_invite_members_banner
-      - unless @hide_breadcrumbs
-        = render "layouts/nav/breadcrumbs"
+      - unless @hide_top_bar
+        = render "layouts/nav/top_bar"
     %div{ class: "#{container_class unless @no_container} #{@content_class}" }
       %main.content{ id: "content-body", **page_itemtype }
         = render "layouts/flash", extra_flash_class: 'limit-container-width'

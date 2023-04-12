@@ -4,7 +4,6 @@ description: Whether Dormant User Deactivation is enabled
 product_section: fulfillment
 product_stage: fulfillment
 product_group: utilization
-product_category: seat_cost_management
 value_type: boolean
 status: active
 milestone: "15.6"

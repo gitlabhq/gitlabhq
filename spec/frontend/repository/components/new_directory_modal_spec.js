@@ -124,7 +124,7 @@ describe('NewDirectoryModal', () => {
   });
 
   describe('form submission', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       mock = new MockAdapter(axios);
     });
 

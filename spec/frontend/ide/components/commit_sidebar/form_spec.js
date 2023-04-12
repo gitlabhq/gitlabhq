@@ -89,7 +89,7 @@ describe('IDE commit form', () => {
     ${'when user cannot push'}     | ${['test']} | ${{ pushCode: false }} | ${goToEditView}   | ${findBeginCommitButtonData} | ${true}  | ${MSG_CANNOT_PUSH_CODE}
     ${'when user cannot push'}     | ${['test']} | ${{ pushCode: false }} | ${goToCommitView} | ${findCommitButtonData}      | ${true}  | ${MSG_CANNOT_PUSH_CODE}
   `('$desc', ({ stagedFiles, userPermissions, viewFn, buttonFn, disabled, tooltip }) => {
-    beforeEach(async () => {
+    beforeEach(() => {
       store.state.stagedFiles = stagedFiles;
       store.state.projects.abcproject.userPermissions = userPermissions;
 

@@ -5,7 +5,7 @@ import ReferenceWrapper from '~/content_editor/components/wrappers/reference.vue
 describe('content/components/wrappers/reference', () => {
   let wrapper;
 
-  const createWrapper = async (node = {}) => {
+  const createWrapper = (node = {}) => {
     wrapper = shallowMountExtended(ReferenceWrapper, {
       propsData: { node },
     });

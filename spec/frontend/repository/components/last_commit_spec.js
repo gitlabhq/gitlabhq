@@ -101,7 +101,7 @@ const createCommitData = ({
   };
 };
 
-const createComponent = async (data = {}) => {
+const createComponent = (data = {}) => {
   Vue.use(VueApollo);
 
   const currentPath = 'path';

@@ -108,7 +108,7 @@ describe('drawio/drawio_editor', () => {
       await waitForDrawioIFrameMessage();
     });
 
-    it('sends configure action to the draw.io iframe', async () => {
+    it('sends configure action to the draw.io iframe', () => {
       expectDrawioIframeMessage({
         expectation: {
           action: 'configure',
@@ -121,7 +121,7 @@ describe('drawio/drawio_editor', () => {
       });
     });
 
-    it('does not remove the iframe after the load error timeouts run', async () => {
+    it('does not remove the iframe after the load error timeouts run', () => {
       jest.runAllTimers();
 
       expect(findDrawioIframe()).not.toBe(null);
@@ -227,7 +227,7 @@ describe('drawio/drawio_editor', () => {
         postMessageToParentWindow({ event: 'init' });
       });
 
-      it('displays an error alert indicating that the image is not a diagram', async () => {
+      it('displays an error alert indicating that the image is not a diagram', () => {
         expect(createAlert).toHaveBeenCalledWith({
           message: errorMessage,
           error: expect.any(Error),
@@ -248,7 +248,7 @@ describe('drawio/drawio_editor', () => {
         postMessageToParentWindow({ event: 'init' });
       });
 
-      it('displays an error alert indicating the failure', async () => {
+      it('displays an error alert indicating the failure', () => {
         expect(createAlert).toHaveBeenCalledWith({
           message: 'Cannot load the diagram into the diagrams.net editor',
           error: expect.any(Error),

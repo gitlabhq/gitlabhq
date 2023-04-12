@@ -17,6 +17,7 @@ import createStore from '~/code_navigation/store';
 import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
@@ -100,6 +101,7 @@ const initForkInfo = () => {
     sourceName,
     sourcePath,
     sourceDefaultBranch,
+    canSyncBranch,
     aheadComparePath,
     behindComparePath,
     canUserCreateMrInFork,
@@ -110,6 +112,7 @@ const initForkInfo = () => {
     render(h) {
       return h(ForkInfo, {
         props: {
+          canSyncBranch: parseBoolean(canSyncBranch),
           projectPath,
           selectedBranch,
           sourceName,

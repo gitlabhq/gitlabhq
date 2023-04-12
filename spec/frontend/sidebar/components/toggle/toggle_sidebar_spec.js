@@ -25,7 +25,7 @@ describe('ToggleSidebar', () => {
     expect(findGlButton().props('icon')).toBe('chevron-double-lg-left');
   });
 
-  it('should render the "chevron-double-lg-right" icon when expanded', async () => {
+  it('should render the "chevron-double-lg-right" icon when expanded', () => {
     createComponent({ props: { collapsed: false } });
 
     expect(findGlButton().props('icon')).toBe('chevron-double-lg-right');

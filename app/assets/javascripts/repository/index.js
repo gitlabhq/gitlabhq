@@ -75,6 +75,7 @@ export default function setupVueRepositoryList() {
       sourcePath,
       sourceDefaultBranch,
       createMrPath,
+      canSyncBranch,
       aheadComparePath,
       behindComparePath,
       canUserCreateMrInFork,
@@ -85,6 +86,7 @@ export default function setupVueRepositoryList() {
       render(h) {
         return h(ForkInfo, {
           props: {
+            canSyncBranch: parseBoolean(canSyncBranch),
             projectPath,
             selectedBranch,
             sourceName,

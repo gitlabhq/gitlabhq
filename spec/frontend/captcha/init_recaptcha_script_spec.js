@@ -50,7 +50,7 @@ describe('initRecaptchaScript', () => {
         await expect(result).resolves.toBe(window.grecaptcha);
       });
 
-      it('sets window[RECAPTCHA_ONLOAD_CALLBACK_NAME] to undefined', async () => {
+      it('sets window[RECAPTCHA_ONLOAD_CALLBACK_NAME] to undefined', () => {
         expect(getScriptOnload()).toBeUndefined();
       });
     });

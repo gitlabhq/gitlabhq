@@ -108,11 +108,11 @@ describe('Keep latest artifact checkbox', () => {
       await waitForPromises();
     });
 
-    it('sets correct setting value in checkbox with query result', async () => {
+    it('sets correct setting value in checkbox with query result', () => {
       expect(wrapper.element).toMatchSnapshot();
     });
 
-    it('checkbox is enabled when application setting is enabled', async () => {
+    it('checkbox is enabled when application setting is enabled', () => {
       expect(findCheckbox().attributes('disabled')).toBeUndefined();
     });
   });

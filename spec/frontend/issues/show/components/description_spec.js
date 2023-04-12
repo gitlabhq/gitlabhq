@@ -162,7 +162,7 @@ describe('Description component', () => {
       expect(TaskList).toHaveBeenCalled();
     });
 
-    it('does not re-init the TaskList when canUpdate is false', async () => {
+    it('does not re-init the TaskList when canUpdate is false', () => {
       createComponent({
         props: {
           issuableType: 'issuableType',

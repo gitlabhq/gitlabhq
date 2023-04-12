@@ -42,7 +42,7 @@ describe('markdown example snapshots in ContentEditor', () => {
   const expectedProseMirrorJsonExamples = loadExamples(prosemirrorJsonYml);
   const exampleNames = Object.keys(markdownExamples);
 
-  beforeAll(async () => {
+  beforeAll(() => {
     return renderHtmlAndJsonForAllExamples(markdownExamples).then((examples) => {
       actualHtmlAndJsonExamples = examples;
     });
@@ -60,7 +60,7 @@ describe('markdown example snapshots in ContentEditor', () => {
     if (skipRunningSnapshotWysiwygHtmlTests) {
       it.todo(`${exampleNamePrefix} HTML: ${skipRunningSnapshotWysiwygHtmlTests}`);
     } else {
-      it(`${exampleNamePrefix} HTML`, async () => {
+      it(`${exampleNamePrefix} HTML`, () => {
         const expectedHtml = expectedHtmlExamples[name].wysiwyg;
         const { html: actualHtml } = actualHtmlAndJsonExamples[name];
 
@@ -78,7 +78,7 @@ describe('markdown example snapshots in ContentEditor', () => {
     if (skipRunningSnapshotProsemirrorJsonTests) {
       it.todo(`${exampleNamePrefix} ProseMirror JSON: ${skipRunningSnapshotProsemirrorJsonTests}`);
     } else {
-      it(`${exampleNamePrefix} ProseMirror JSON`, async () => {
+      it(`${exampleNamePrefix} ProseMirror JSON`, () => {
         const expectedJson = expectedProseMirrorJsonExamples[name];
         const { json: actualJson } = actualHtmlAndJsonExamples[name];
 

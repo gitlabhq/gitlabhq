@@ -119,7 +119,7 @@ describe('Awards app actions', () => {
             mock.onPost(`${relativeRootUrl || ''}/awards`).reply(HTTP_STATUS_OK, { id: 1 });
           });
 
-          it('adds an optimistic award, removes it, and then commits ADD_NEW_AWARD', async () => {
+          it('adds an optimistic award, removes it, and then commits ADD_NEW_AWARD', () => {
             testAction(actions.toggleAward, null, { path: '/awards', awards: [] }, [
               makeOptimisticAddMutation(),
               makeOptimisticRemoveMutation(),
@@ -156,7 +156,7 @@ describe('Awards app actions', () => {
             mock.onDelete(`${relativeRootUrl || ''}/awards/1`).reply(HTTP_STATUS_OK);
           });
 
-          it('commits REMOVE_AWARD', async () => {
+          it('commits REMOVE_AWARD', () => {
             testAction(
               actions.toggleAward,
               'thumbsup',

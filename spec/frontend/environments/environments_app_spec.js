@@ -422,7 +422,7 @@ describe('~/environments/components/environments_app.vue', () => {
       );
     });
 
-    it('should sync search term from query params on load', async () => {
+    it('should sync search term from query params on load', () => {
       expect(searchBox.element.value).toBe('prod');
     });
   });

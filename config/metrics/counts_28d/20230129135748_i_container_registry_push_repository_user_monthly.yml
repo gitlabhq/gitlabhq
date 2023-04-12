@@ -4,7 +4,6 @@ description: A monthly count of users that have pushed a repository to the regis
 product_section: ops
 product_stage: package
 product_group: package
-product_category: container_registry
 value_type: number
 status: active
 milestone: '15.9'

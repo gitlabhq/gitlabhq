@@ -36,14 +36,14 @@ describe('Source Editor Toolbar button', () => {
       expect(findButton().exists()).toBe(false);
     });
 
-    it('renders a default button without props', async () => {
+    it('renders a default button without props', () => {
       createComponent();
       const btn = findButton();
       expect(btn.exists()).toBe(true);
       expect(btn.props()).toMatchObject(defaultProps);
     });
 
-    it('renders a button based on the props passed', async () => {
+    it('renders a button based on the props passed', () => {
       createComponent({
         button: customProps,
       });

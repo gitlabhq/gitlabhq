@@ -81,7 +81,7 @@ describe('Board Column Component', () => {
   });
 
   describe('on mount', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       initStore();
       jest.spyOn(store, 'dispatch').mockImplementation();
     });

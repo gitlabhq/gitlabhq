@@ -81,7 +81,7 @@ describe('SidebarSeverityWidget', () => {
   });
 
   describe('Update severity', () => {
-    it('calls mutate with `updateIssuableSeverity`', async () => {
+    it('calls mutate with `updateIssuableSeverity`', () => {
       const mutationMock = jest.fn().mockResolvedValue({
         data: { issueSetSeverity: { issue: { severity } } },
       });

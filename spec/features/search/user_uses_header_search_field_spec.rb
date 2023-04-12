@@ -38,7 +38,7 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
       end
 
       it 'renders breadcrumbs' do
-        page.within('.breadcrumbs-links') do
+        page.within('.breadcrumbs') do
           expect(page).to have_content('Search')
         end
       end

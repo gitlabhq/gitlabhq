@@ -94,14 +94,14 @@ describe('import actions cell', () => {
         );
       });
 
-      it('request migrate projects by default', async () => {
+      it('request migrate projects by default', () => {
         const dropdown = wrapper.findComponent(GlDropdown);
         dropdown.vm.$emit('click');
 
         expect(wrapper.emitted('import-group')[0]).toStrictEqual([{ migrateProjects: true }]);
       });
 
-      it('request not to migrate projects via dropdown option', async () => {
+      it('request not to migrate projects via dropdown option', () => {
         const dropdown = wrapper.findComponent(GlDropdown);
         dropdown.findComponent(GlDropdownItem).vm.$emit('click');
 

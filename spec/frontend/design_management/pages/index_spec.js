@@ -719,7 +719,7 @@ describe('Design management index page', () => {
         expect(mockMutate).not.toHaveBeenCalled();
       });
 
-      it('removes onPaste listener after mouseleave event', async () => {
+      it('removes onPaste listener after mouseleave event', () => {
         findDesignsWrapper().trigger('mouseleave');
         document.dispatchEvent(event);
 

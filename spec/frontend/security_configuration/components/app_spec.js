@@ -422,7 +422,7 @@ describe('App component', () => {
   describe('Vulnerability management', () => {
     const props = { securityTrainingEnabled: true };
 
-    beforeEach(async () => {
+    beforeEach(() => {
       createComponent({
         ...props,
       });

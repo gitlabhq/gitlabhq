@@ -4,7 +4,6 @@ description: Count of unique users created timeline events
 product_section: ops
 product_stage: monitor
 product_group: respond
-product_category: incident_management
 value_type: number
 status: active
 milestone: "15.5"

@@ -5,7 +5,6 @@ description: Number of users closing Jira issues by month
 product_section: dev
 product_stage: manage
 product_group: integrations
-product_category: integrations
 value_type: number
 status: active
 time_frame: 28d

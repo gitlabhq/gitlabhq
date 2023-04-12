@@ -401,7 +401,7 @@ describe('fetchMilestones', () => {
     },
   );
 
-  it('sets milestonesLoading to true', async () => {
+  it('sets milestonesLoading to true', () => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 
     const store = createStore();

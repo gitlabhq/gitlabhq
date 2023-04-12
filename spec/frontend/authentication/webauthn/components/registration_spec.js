@@ -211,7 +211,7 @@ describe('Registration', () => {
     });
 
     describe(`when ${STATE_ERROR} state`, () => {
-      it('shows an initial error message and a retry button', async () => {
+      it('shows an initial error message and a retry button', () => {
         const myError = 'my error';
         createComponent({ initialError: myError });
 

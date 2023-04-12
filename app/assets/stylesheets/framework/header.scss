@@ -312,22 +312,12 @@ $search-input-field-x-min-width: 200px;
   margin-top: $dropdown-vertical-offset;
 }
 
-.breadcrumbs {
-  display: flex;
-  min-height: $breadcrumb-min-height;
-  color: $gl-text-color;
-}
-
-.breadcrumbs-container {
-  display: flex;
-  width: 100%;
-  padding-top: $gl-padding / 2;
-  padding-bottom: $gl-padding / 2;
-  align-items: center;
+.top-bar-container {
+  min-height: $top-bar-height;
   border-bottom: 1px solid $border-color;
 }
 
-.breadcrumbs-links {
+.breadcrumbs {
   flex: 1;
   min-width: 0;
   align-self: center;
@@ -549,7 +539,7 @@ $search-input-field-x-min-width: 200px;
   @include media-breakpoint-down(sm) {
     @include gl-display-block;
 
-    + .breadcrumbs-links {
+    + .breadcrumbs {
       @include gl-pl-4;
       @include gl-border-l-1;
       @include gl-border-l-solid;

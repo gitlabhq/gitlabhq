@@ -440,7 +440,7 @@ describe('HeaderActions component', () => {
       wrapper = mountComponent({ props: { isIssueAuthor: false } });
     });
 
-    it("doesn't render", async () => {
+    it("doesn't render", () => {
       expect(findAbuseCategorySelector().exists()).toEqual(false);
     });
 

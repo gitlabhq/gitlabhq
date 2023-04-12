@@ -199,7 +199,7 @@ describe('LabelsSelectRoot', () => {
     });
   });
 
-  it('emits `updateSelectedLabels` event on dropdown contents `setLabels` event if iid is not set', async () => {
+  it('emits `updateSelectedLabels` event on dropdown contents `setLabels` event if iid is not set', () => {
     const label = { id: 'gid://gitlab/ProjectLabel/1' };
     createComponent({ config: { ...mockConfig, iid: undefined } });
 

@@ -4,7 +4,6 @@ key_path: redis_hll_counters.code_review.i_code_review_user_create_mr_from_issue
 description: Count of unique users per month who create a merge request from an issue
 product_stage: create
 product_group: code_review
-product_category: code_review
 product_section: 'TBD'
 value_type: number
 status: active

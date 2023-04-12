@@ -5,7 +5,6 @@ description: Count of MAU creating label lists on Boards
 product_section: dev
 product_stage: plan
 product_group: project_management
-product_category: boards
 value_type: number
 status: active
 time_frame: 28d

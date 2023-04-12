@@ -14,7 +14,7 @@ describe('content_editor/components/content_editor_alert', () => {
 
   const findErrorAlert = () => wrapper.findComponent(GlAlert);
 
-  const createWrapper = async () => {
+  const createWrapper = () => {
     tiptapEditor = createTestEditor();
     eventHub = eventHubFactory();
 

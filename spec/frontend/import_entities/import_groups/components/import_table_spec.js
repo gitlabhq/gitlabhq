@@ -687,7 +687,7 @@ describe('import table', () => {
       return waitForPromises();
     });
 
-    it('renders import all dropdown', async () => {
+    it('renders import all dropdown', () => {
       expect(findImportSelectedDropdown().exists()).toBe(true);
     });
 

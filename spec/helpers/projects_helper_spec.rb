@@ -1364,6 +1364,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
         allow(helper).to receive(:visible_fork_source).with(project).and_return(source_project)
         allow(helper).to receive(:can_user_create_mr_in_fork).with(source_project).and_return(false)
+        allow(helper).to receive(:current_user).and_return(user)
 
         ahead_path =
           "/#{project.full_path}/-/compare/#{source_project.default_branch}...ref?from_project_id=#{source_project.id}"
@@ -1376,6 +1377,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
           selected_branch: 'ref',
           source_name: source_project.full_name,
           source_path: project_path(source_project),
+          can_sync_branch: 'false',
           ahead_compare_path: ahead_path,
           behind_compare_path: behind_path,
           source_default_branch: source_project.default_branch,

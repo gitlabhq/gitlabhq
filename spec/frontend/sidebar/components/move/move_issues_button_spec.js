@@ -346,7 +346,7 @@ describe('MoveIssuesButton', () => {
         expect(issuableEventHub.$emit).not.toHaveBeenCalled();
       });
 
-      it('emits `issuables:bulkMoveStarted` when issues are moving', async () => {
+      it('emits `issuables:bulkMoveStarted` when issues are moving', () => {
         createComponent({ selectedIssuables: selectedIssuesMocks.issuesTasksAndTestCases });
         emitMoveIssuablesEvent();
 

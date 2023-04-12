@@ -206,11 +206,11 @@ describe('ProjectsDropdownFilter component', () => {
       findSearchBoxByType().vm.$emit('input', 'this is a very long search string');
     });
 
-    it('renders the highlighted items', async () => {
+    it('renders the highlighted items', () => {
       expect(findUnhighlightedItems().findAll('li').length).toBe(1);
     });
 
-    it('hides the unhighlighted items that do not match the string', async () => {
+    it('hides the unhighlighted items that do not match the string', () => {
       expect(findUnhighlightedItems().findAll('li').length).toBe(1);
       expect(findUnhighlightedItems().text()).toContain('No matching results');
     });

@@ -452,7 +452,7 @@ describe('InviteMembersModal', () => {
     const expectedSyntaxError = 'email contains an invalid email address';
 
     describe('when no invites have been entered in the form and then some are entered', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         createInviteMembersToGroupWrapper();
       });
 

@@ -153,7 +153,7 @@ describe('Design management design index page', () => {
   });
 
   describe('when navigating away from component', () => {
-    it('removes fullscreen layout class', async () => {
+    it('removes fullscreen layout class', () => {
       jest.spyOn(utils, 'getPageLayoutElement').mockReturnValue(mockPageLayoutElement);
       createComponent({ loading: true });
 

@@ -5,7 +5,6 @@ description: Number of unique users performing imports
 product_section: dev
 product_stage: manage
 product_group: import
-product_category: importers
 value_type: number
 status: active
 time_frame: 28d

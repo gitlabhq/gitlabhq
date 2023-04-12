@@ -2,6 +2,32 @@
 
 require 'spec_helper'
 
+RSpec.shared_examples 'structure sql schema assertions for' do |object_exists_method, all_objects_method|
+  subject(:structure_sql) { described_class.new(structure_file_path, schema_name) }
+
+  let(:structure_file_path) { Rails.root.join('spec/fixtures/structure.sql') }
+  let(:schema_name) { 'public' }
+
+  describe "##{object_exists_method}" do
+    it 'returns true when schema object exists' do
+      expect(structure_sql.public_send(object_exists_method, valid_schema_object_name)).to be_truthy
+    end
+
+    it 'returns false when schema object does not exists' do
+      expect(structure_sql.public_send(object_exists_method, 'invalid-object-name')).to be_falsey
+    end
+  end
+
+  describe "##{all_objects_method}" do
+    it 'returns all the schema objects' do
+      schema_objects = structure_sql.public_send(all_objects_method)
+
+      expect(schema_objects).to all(be_a(schema_object))
+      expect(schema_objects.map(&:name)).to eq(expected_objects)
+    end
+  end
+end
+
 RSpec.describe Gitlab::Database::SchemaValidation::StructureSql, feature_category: :database do
   let(:structure_file_path) { Rails.root.join('spec/fixtures/structure.sql') }
   let(:schema_name) { 'public' }
@@ -9,74 +35,32 @@ RSpec.describe Gitlab::Database::SchemaValidation::StructureSql, feature_categor
   subject(:structure_sql) { described_class.new(structure_file_path, schema_name) }
 
   context 'when having indexes' do
-    describe '#index_exists?' do
-      subject(:index_exists) { structure_sql.index_exists?(index_name) }
-
-      context 'when the index does not exist' do
-        let(:index_name) { 'non-existent-index' }
-
-        it 'returns false' do
-          expect(index_exists).to be_falsey
-        end
-      end
-
-      context 'when the index exists' do
-        let(:index_name) { 'index' }
-
-        it 'returns true' do
-          expect(index_exists).to be_truthy
-        end
-      end
+    let(:schema_object) { Gitlab::Database::SchemaValidation::SchemaObjects::Index }
+    let(:valid_schema_object_name) { 'index' }
+    let(:expected_objects) do
+      %w[missing_index wrong_index index index_namespaces_public_groups_name_id
+        index_on_deploy_keys_id_and_type_and_public index_users_on_public_email_excluding_null_and_empty]
     end
 
-    describe '#indexes' do
-      it 'returns indexes' do
-        indexes = structure_sql.indexes
-
-        expected_indexes = %w[
-          missing_index
-          wrong_index
-          index
-          index_namespaces_public_groups_name_id
-          index_on_deploy_keys_id_and_type_and_public
-          index_users_on_public_email_excluding_null_and_empty
-        ]
-
-        expect(indexes).to all(be_a(Gitlab::Database::SchemaValidation::SchemaObjects::Index))
-        expect(indexes.map(&:name)).to eq(expected_indexes)
-      end
-    end
+    include_examples 'structure sql schema assertions for', 'index_exists?', 'indexes'
   end
 
   context 'when having triggers' do
-    describe '#trigger_exists?' do
-      subject(:trigger_exists) { structure_sql.trigger_exists?(name) }
+    let(:schema_object) { Gitlab::Database::SchemaValidation::SchemaObjects::Trigger }
+    let(:valid_schema_object_name) { 'trigger' }
+    let(:expected_objects) { %w[trigger wrong_trigger missing_trigger_1 projects_loose_fk_trigger] }
 
-      context 'when the trigger does not exist' do
-        let(:name) { 'non-existent-trigger' }
+    include_examples 'structure sql schema assertions for', 'trigger_exists?', 'triggers'
+  end
 
-        it 'returns false' do
-          expect(trigger_exists).to be_falsey
-        end
-      end
-
-      context 'when the trigger exists' do
-        let(:name) { 'trigger' }
-
-        it 'returns true' do
-          expect(trigger_exists).to be_truthy
-        end
-      end
+  context 'when having tables' do
+    let(:schema_object) { Gitlab::Database::SchemaValidation::SchemaObjects::Table }
+    let(:valid_schema_object_name) { 'test_table' }
+    let(:expected_objects) do
+      %w[test_table ci_project_mirrors wrong_table extra_table_columns missing_table missing_table_columns
+        operations_user_lists]
     end
 
-    describe '#triggers' do
-      it 'returns triggers' do
-        triggers = structure_sql.triggers
-        expected_triggers = %w[trigger wrong_trigger missing_trigger_1 projects_loose_fk_trigger]
-
-        expect(triggers).to all(be_a(Gitlab::Database::SchemaValidation::SchemaObjects::Trigger))
-        expect(triggers.map(&:name)).to eq(expected_triggers)
-      end
-    end
+    include_examples 'structure sql schema assertions for', 'table_exists?', 'tables'
   end
 end

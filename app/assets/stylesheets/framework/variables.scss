@@ -484,7 +484,7 @@ $mr-review-bar-height: calc(2rem + 13px);
 $flash-height: 52px;
 $flash-container-top: 48px;
 $context-header-height: 60px;
-$breadcrumb-min-height: 48px;
+$top-bar-height: 48px;
 $home-panel-title-row-height: 64px;
 $home-panel-avatar-mobile-size: 24px;
 $issuable-title-max-width: 350px;
@@ -694,7 +694,7 @@ $issue-boards-filter-height: 68px;
  The following heights are used in environment_logs.scss and are used for calculation of the log viewer height.
 */
 $environment-logs-breadcrumbs-height: 63px;
-$environment-logs-breadcrumbs-height-md: $breadcrumb-min-height;
+$environment-logs-breadcrumbs-height-md: $top-bar-height;
 
 $environment-logs-difference-xs-up: calc(#{$header-height} + #{$environment-logs-breadcrumbs-height});
 $environment-logs-difference-md-up: calc(#{$header-height} + #{$environment-logs-breadcrumbs-height-md});

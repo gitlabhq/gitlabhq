@@ -99,7 +99,7 @@ describe('Repository table component', () => {
 
   describe('FileTable showMore', () => {
     describe('when is present', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         factory('/');
       });
 

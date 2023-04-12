@@ -173,7 +173,7 @@ describe('custom metrics form fields component', () => {
         return axios.waitForAll();
       });
 
-      it('shows invalid query message', async () => {
+      it('shows invalid query message', () => {
         expect(wrapper.text()).toContain(errorMessage);
       });
     });

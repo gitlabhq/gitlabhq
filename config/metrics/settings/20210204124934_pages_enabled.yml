@@ -5,7 +5,6 @@ description: Whether GitLab Pages is enabled
 product_section: ops
 product_stage: create
 product_group: editor
-product_category: collection
 value_type: boolean
 status: active
 time_frame: none

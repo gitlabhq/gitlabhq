@@ -4,7 +4,7 @@ import FootnoteDefinitionWrapper from '~/content_editor/components/wrappers/foot
 describe('content/components/wrappers/footnote_definition', () => {
   let wrapper;
 
-  const createWrapper = async (node = {}) => {
+  const createWrapper = (node = {}) => {
     wrapper = shallowMountExtended(FootnoteDefinitionWrapper, {
       propsData: {
         node,

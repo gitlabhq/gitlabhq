@@ -106,7 +106,7 @@ describe('releases/components/tag_field_new', () => {
       });
 
       describe('when the user selects a new tag name', () => {
-        beforeEach(async () => {
+        beforeEach(() => {
           findCreateNewTagOption().vm.$emit('click');
         });
 
@@ -122,7 +122,7 @@ describe('releases/components/tag_field_new', () => {
       describe('when the user selects an existing tag name', () => {
         const updatedTagName = 'updated-tag-name';
 
-        beforeEach(async () => {
+        beforeEach(() => {
           findTagNameDropdown().vm.$emit('input', updatedTagName);
         });
 
@@ -147,7 +147,7 @@ describe('releases/components/tag_field_new', () => {
 
     describe('"Create tag" option', () => {
       describe('when the search query exactly matches one of the search results', () => {
-        beforeEach(async () => {
+        beforeEach(() => {
           createComponent(mount, { searchQuery: TEST_TAG_NAME });
         });
 
@@ -157,7 +157,7 @@ describe('releases/components/tag_field_new', () => {
       });
 
       describe('when the search query does not exactly match one of the search results', () => {
-        beforeEach(async () => {
+        beforeEach(() => {
           createComponent(mount, { searchQuery: NONEXISTENT_TAG_NAME });
         });
 
@@ -234,7 +234,7 @@ describe('releases/components/tag_field_new', () => {
     });
 
     describe('when the user selects a git ref', () => {
-      it("updates the store's createFrom property", async () => {
+      it("updates the store's createFrom property", () => {
         const updatedCreateFrom = 'update-create-from';
         findCreateFromDropdown().vm.$emit('input', updatedCreateFrom);
 

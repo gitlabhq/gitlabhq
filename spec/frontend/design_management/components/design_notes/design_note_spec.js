@@ -189,7 +189,7 @@ describe('Design note component', () => {
     });
   });
 
-  it('should emit `delete-note` event with proper payload when delete note button is clicked', async () => {
+  it('should emit `delete-note` event with proper payload when delete note button is clicked', () => {
     const payload = {
       ...note,
       userPermissions: {

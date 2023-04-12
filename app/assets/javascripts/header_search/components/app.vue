@@ -286,6 +286,7 @@ export default {
           :max="searchOptions.length - 1"
           :min="$options.FIRST_DROPDOWN_INDEX"
           :default-index="defaultIndex"
+          :enable-cycle="true"
         />
         <header-search-default-items
           v-if="showDefaultItems"

@@ -38,7 +38,7 @@ describe('Blob Header Editing', () => {
   });
 
   describe('functionality', () => {
-    it('emits input event when the blob name is changed', async () => {
+    it('emits input event when the blob name is changed', () => {
       const inputComponent = findFormInput();
       const newValue = 'bar.txt';
 

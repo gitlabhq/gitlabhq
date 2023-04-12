@@ -123,6 +123,7 @@ export const propsForkInfo = {
   selectedBranch: 'main',
   sourceName: 'gitLab',
   sourcePath: 'gitlab-org/gitlab',
+  canSyncBranch: true,
   aheadComparePath: '/nataliia/myGitLab/-/compare/main...ref?from_project_id=1',
   behindComparePath: 'gitlab-org/gitlab/-/compare/ref...main?from_project_id=2',
   createMrPath: 'path/to/new/mr',

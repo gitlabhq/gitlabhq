@@ -53,7 +53,7 @@ describe('content_editor/services/create_content_editor', () => {
     });
   });
 
-  it('allows providing external content editor extensions', async () => {
+  it('allows providing external content editor extensions', () => {
     const labelReference = 'this is a ~group::editor';
     const { tiptapExtension, serializer } = createTestContentEditorExtension();
 

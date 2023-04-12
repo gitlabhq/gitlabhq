@@ -250,7 +250,7 @@ describe('Repository table row component', () => {
 
     afterAll(() => jest.useRealTimers());
 
-    it('emits a `row-appear` event', async () => {
+    it('emits a `row-appear` event', () => {
       const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
       findIntersectionObserver().vm.$emit('appear');
 

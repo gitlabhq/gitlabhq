@@ -138,7 +138,7 @@ describe('Sidebar date Widget', () => {
       });
     });
 
-    it('renders GlDatePicker', async () => {
+    it('renders GlDatePicker', () => {
       expect(findDatePicker().exists()).toBe(true);
     });
   });
@@ -171,7 +171,7 @@ describe('Sidebar date Widget', () => {
     },
   );
 
-  it('does not render SidebarInheritDate when canInherit is true and date is loading', async () => {
+  it('does not render SidebarInheritDate when canInherit is true and date is loading', () => {
     createComponent({ canInherit: true });
 
     expect(wrapper.findComponent(SidebarInheritDate).exists()).toBe(false);

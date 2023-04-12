@@ -4,7 +4,6 @@ description: Number of unique merge request authors
 product_section: dev
 product_stage: create
 product_group: code_review
-product_category: code_review
 value_type: number
 status: removed
 milestone: "15.6"

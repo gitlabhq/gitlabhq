@@ -101,7 +101,7 @@ describe('ForkInfo component', () => {
     mockResolvedForkDetailsQuery();
   });
 
-  it('displays a skeleton while loading data', async () => {
+  it('displays a skeleton while loading data', () => {
     createComponent();
     expect(findSkeleton().exists()).toBe(true);
   });
@@ -191,11 +191,11 @@ describe('ForkInfo component', () => {
       await createComponent({}, { ahead: 0, behind: 0, isSyncing: false, hasConflicts: false });
     });
 
-    it('renders up to date message when fork is up to date', async () => {
+    it('renders up to date message when fork is up to date', () => {
       expect(findDivergenceMessage().text()).toBe(i18n.upToDate);
     });
 
-    it('does not render Update Fork button', async () => {
+    it('does not render Update Fork button', () => {
       expect(findUpdateForkButton().exists()).toBe(false);
     });
   });
@@ -206,8 +206,22 @@ describe('ForkInfo component', () => {
       await createComponent({}, null);
     });
 
-    it('renders limited visibility messsage when forkDetails are empty', async () => {
+    it('renders limited visibility messsage when forkDetails are empty', () => {
       expect(findDivergenceMessage().text()).toBe(i18n.limitedVisibility);
+    });
+
+    it('does not render Update Fork button', () => {
+      expect(findUpdateForkButton().exists()).toBe(false);
+    });
+  });
+
+  describe('User cannot sync the branch', () => {
+    beforeEach(async () => {
+      mockResolvedForkDetailsQuery({ ahead: 0, behind: 7, isSyncing: false, hasConflicts: false });
+      await createComponent(
+        { canSyncBranch: false },
+        { ahead: 0, behind: 7, isSyncing: false, hasConflicts: false },
+      );
     });
 
     it('does not render Update Fork button', async () => {

@@ -106,7 +106,7 @@ describe('Board card', () => {
     });
   });
 
-  it('should not highlight the card by default', async () => {
+  it('should not highlight the card by default', () => {
     createStore();
     mountComponent();
 
@@ -114,7 +114,7 @@ describe('Board card', () => {
     expect(wrapper.classes()).not.toContain('multi-select');
   });
 
-  it('should highlight the card with a correct style when selected', async () => {
+  it('should highlight the card with a correct style when selected', () => {
     createStore({
       initialState: {
         activeId: mockIssue.id,
@@ -126,7 +126,7 @@ describe('Board card', () => {
     expect(wrapper.classes()).not.toContain('multi-select');
   });
 
-  it('should highlight the card with a correct style when multi-selected', async () => {
+  it('should highlight the card with a correct style when multi-selected', () => {
     createStore({
       initialState: {
         activeId: inactiveId,

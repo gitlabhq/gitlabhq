@@ -22,5 +22,5 @@ afterEach(() =>
 afterEach(async () => {
   const dbs = await indexedDB.databases();
 
-  await Promise.all(dbs.map(async (db) => indexedDB.deleteDatabase(db.name)));
+  await Promise.all(dbs.map((db) => indexedDB.deleteDatabase(db.name)));
 });

@@ -8,7 +8,7 @@ describe('content/components/wrappers/table_cell_body', () => {
   let editor;
   let node;
 
-  const createWrapper = async () => {
+  const createWrapper = () => {
     wrapper = shallowMount(TableCellBodyWrapper, {
       propsData: {
         editor,

@@ -70,7 +70,7 @@ describe('Commit box pipeline status', () => {
       await waitForPromises();
     });
 
-    it('should display pipeline status after the query is resolved successfully', async () => {
+    it('should display pipeline status after the query is resolved successfully', () => {
       expect(findStatusIcon().exists()).toBe(true);
 
       expect(findLoadingIcon().exists()).toBe(false);

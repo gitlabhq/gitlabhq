@@ -146,7 +146,7 @@ describe('BoardSidebarTitle', () => {
       createWrapper();
     });
 
-    it('sets title, expands item and shows alert', async () => {
+    it('sets title, expands item and shows alert', () => {
       expect(wrapper.vm.title).toBe(TEST_TITLE);
       expect(findCollapsed().isVisible()).toBe(false);
       expect(findAlert().exists()).toBe(true);

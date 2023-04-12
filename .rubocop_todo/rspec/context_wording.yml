@@ -1848,7 +1848,6 @@ RSpec/ContextWording:
     - 'spec/lib/gitlab/encoding_helper_spec.rb'
     - 'spec/lib/gitlab/error_tracking/context_payload_generator_spec.rb'
     - 'spec/lib/gitlab/error_tracking/processor/sidekiq_processor_spec.rb'
-    - 'spec/lib/gitlab/error_tracking_spec.rb'
     - 'spec/lib/gitlab/exclusive_lease_helpers/sleeping_lock_spec.rb'
     - 'spec/lib/gitlab/external_authorization/access_spec.rb'
     - 'spec/lib/gitlab/favicon_spec.rb'

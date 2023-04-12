@@ -201,7 +201,7 @@ describe('CE IssuesListApp component', () => {
       return waitForPromises();
     });
 
-    it('renders', async () => {
+    it('renders', () => {
       expect(findIssuableList().props()).toMatchObject({
         namespace: defaultProvide.fullPath,
         recentSearchesStorageKey: 'issues',
@@ -803,7 +803,7 @@ describe('CE IssuesListApp component', () => {
     describe('when "sort" event is emitted by IssuableList', () => {
       it.each(Object.keys(urlSortParams))(
         'updates to the new sort when payload is `%s`',
-        async (sortKey) => {
+        (sortKey) => {
           // Ensure initial sort key is different so we can trigger an update when emitting a sort key
           wrapper =
             sortKey === CREATED_DESC

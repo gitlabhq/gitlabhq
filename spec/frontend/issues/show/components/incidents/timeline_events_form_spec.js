@@ -245,7 +245,7 @@ describe('Timeline events form', () => {
       expect(findMinuteInput().element.value).toBe('0');
     });
 
-    it('should disable the save buttons when event content does not exist', async () => {
+    it('should disable the save buttons when event content does not exist', () => {
       expect(findSubmitButton().props('disabled')).toBe(true);
       expect(findSubmitAndAddButton().props('disabled')).toBe(true);
     });

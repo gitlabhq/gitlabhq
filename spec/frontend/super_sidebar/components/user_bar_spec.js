@@ -138,7 +138,7 @@ describe('UserBar component', () => {
       expect(tooltip.value).toBe(`Search GitLab <kbd>/</kbd>`);
     });
 
-    it('should render search modal', async () => {
+    it('should render search modal', () => {
       expect(findSearchModal().exists()).toBe(true);
     });
   });

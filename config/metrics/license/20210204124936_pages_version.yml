@@ -5,7 +5,6 @@ description: The version number of GitLab Pages
 product_section: ops
 product_stage: create
 product_group: editor
-product_category: pages
 value_type: string
 status: active
 milestone: "<13.9"

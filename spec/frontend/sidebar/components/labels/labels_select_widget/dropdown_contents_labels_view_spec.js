@@ -96,11 +96,11 @@ describe('DropdownContentsLabelsView', () => {
       await waitForPromises();
     });
 
-    it('does not render loading icon', async () => {
+    it('does not render loading icon', () => {
       expect(findLoadingIcon().exists()).toBe(false);
     });
 
-    it('renders labels list', async () => {
+    it('renders labels list', () => {
       expect(findLabelsList().exists()).toBe(true);
       expect(findLabels()).toHaveLength(2);
     });

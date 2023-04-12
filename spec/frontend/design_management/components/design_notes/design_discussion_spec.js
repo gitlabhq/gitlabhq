@@ -381,7 +381,7 @@ describe('Design discussions component', () => {
     });
   });
 
-  it('should open confirmation modal when the note emits `delete-note` event', async () => {
+  it('should open confirmation modal when the note emits `delete-note` event', () => {
     createComponent();
 
     findDesignNotes().at(0).vm.$emit('delete-note', { id: '1' });

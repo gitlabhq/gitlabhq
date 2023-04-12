@@ -5,7 +5,6 @@ description: "List the index inconsistencies in the database"
 product_section: enablement
 product_stage: enablement
 product_group: database
-product_category: database
 value_type: object
 status: active
 milestone: "15.10"

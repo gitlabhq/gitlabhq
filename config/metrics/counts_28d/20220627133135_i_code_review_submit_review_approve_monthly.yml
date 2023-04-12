@@ -3,7 +3,6 @@ key_path: redis_hll_counters.code_review.i_code_review_submit_review_approve_mon
 description: Count of unique users per month who submit a review and approve
 product_stage: create
 product_group: code_review
-product_category: code_review
 product_section: dev
 value_type: number
 status: active

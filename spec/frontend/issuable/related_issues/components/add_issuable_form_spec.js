@@ -230,7 +230,7 @@ describe('AddIssuableForm', () => {
           ]);
         });
 
-        it('emits an event with a "is_blocked_by" link type when the "is blocked by" radio input selected', async () => {
+        it('emits an event with a "is_blocked_by" link type when the "is blocked by" radio input selected', () => {
           findRadioGroup().vm.$emit('input', linkedIssueTypesMap.IS_BLOCKED_BY);
           findAddIssuableForm().trigger('submit');
 

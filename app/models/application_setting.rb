@@ -439,6 +439,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
             allow_nil: false,
             inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
+  validates :silent_mode_enabled,
+            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
   Gitlab::SSHPublicKey.supported_types.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end

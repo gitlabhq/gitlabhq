@@ -260,7 +260,7 @@ describe('Design reply form component', () => {
       ${false}     | ${false}     | ${UPDATE_NOTE_ERROR}
     `(
       'return proper error message on error in case of isDiscussion is $isDiscussion and isNewComment is $isNewComment',
-      async ({ isDiscussion, isNewComment, errorMessage }) => {
+      ({ isDiscussion, isNewComment, errorMessage }) => {
         createComponent({ props: { isDiscussion, isNewComment } });
 
         expect(wrapper.vm.getErrorMessage()).toBe(errorMessage);

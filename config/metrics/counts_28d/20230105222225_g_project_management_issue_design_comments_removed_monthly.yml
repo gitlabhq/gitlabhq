@@ -4,7 +4,6 @@ description: Count of unique users per month who removed a comment on a design
 product_section: dev
 product_stage: plan
 product_group: product_planning
-product_category: design_management
 value_type: number
 status: active
 milestone: "15.9"

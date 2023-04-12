@@ -5,7 +5,6 @@ description: Count of visiting the manage license compliance page
 product_section: sec
 product_stage: secure
 product_group: static_analysis
-product_category: dependency_scanning
 value_type: number
 status: active
 milestone: '14.6'

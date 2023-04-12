@@ -140,7 +140,7 @@ describe('Ci environments dropdown', () => {
       expect(wrapper.emitted('search-environment-scope')[1]).toEqual([currentEnv]);
     });
 
-    it('renders loading icon while search query is loading', async () => {
+    it('renders loading icon while search query is loading', () => {
       createComponent({ enableFeatureFlag: true, props: { areEnvironmentsLoading: true } });
 
       expect(findListbox().props('searching')).toBe(true);

@@ -20,7 +20,7 @@ describe('content/components/wrappers/table_of_contents', () => {
     eventHub = eventHubFactory();
   };
 
-  const createWrapper = async () => {
+  const createWrapper = () => {
     wrapper = mountExtended(TableOfContentsWrapper, {
       propsData: {
         editor: tiptapEditor,

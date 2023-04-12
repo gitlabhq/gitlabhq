@@ -50,6 +50,20 @@ RSpec.describe "Sync project fork", feature_category: :source_code_management do
     end
   end
 
+  context 'when the branch is protected', :use_clean_rails_redis_caching do
+    let_it_be(:protected_branch) do
+      create(:protected_branch, :no_one_can_push, :no_one_can_merge, project: project, name: target_branch)
+    end
+
+    it_behaves_like 'a mutation that returns a top-level access error'
+
+    it 'does not call the sync service' do
+      expect(::Projects::Forks::SyncWorker).not_to receive(:perform_async)
+
+      post_graphql_mutation(mutation, current_user: current_user)
+    end
+  end
+
   context 'when the user does not have permission' do
     let_it_be(:current_user) { create(:user) }
 

@@ -32,11 +32,11 @@ describe('PoToJson', () => {
     });
 
     describe('#main', () => {
-      it('throws without arguments', async () => {
+      it('throws without arguments', () => {
         return expect(main()).rejects.toThrow(/doesn't seem to be a folder/);
       });
 
-      it('throws if outputDir does not exist', async () => {
+      it('throws if outputDir does not exist', () => {
         return expect(
           main({
             localeRoot: LOCALE_DIR,
@@ -45,7 +45,7 @@ describe('PoToJson', () => {
         ).rejects.toThrow(/doesn't seem to be a folder/);
       });
 
-      it('throws if localeRoot does not exist', async () => {
+      it('throws if localeRoot does not exist', () => {
         return expect(
           main({
             localeRoot: 'i-do-not-exist',

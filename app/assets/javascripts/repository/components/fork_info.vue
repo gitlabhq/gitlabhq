@@ -94,6 +94,11 @@ export default {
       required: false,
       default: '',
     },
+    canSyncBranch: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     aheadComparePath: {
       type: String,
       required: false,
@@ -187,6 +192,7 @@ export default {
     hasUpdateButton() {
       return (
         this.glFeatures.synchronizeFork &&
+        this.canSyncBranch &&
         ((this.sourceName && this.forkDetails && this.behind) || this.isUnknownDivergence)
       );
     },

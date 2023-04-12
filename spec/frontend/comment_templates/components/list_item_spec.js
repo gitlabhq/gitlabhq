@@ -39,7 +39,7 @@ describe('Comment templates list item component', () => {
   const findDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findModal = () => wrapper.findComponent(GlModal);
 
-  it('renders list item', async () => {
+  it('renders list item', () => {
     wrapper = createComponent({ template: { name: 'test', content: '/assign_reviewer' } });
 
     expect(wrapper.element).toMatchSnapshot();

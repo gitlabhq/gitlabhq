@@ -250,7 +250,7 @@ describe('BoardsSelector', () => {
 
   describe('dropdown visibility', () => {
     describe('when multipleIssueBoardsAvailable is enabled', () => {
-      it('show dropdown', async () => {
+      it('show dropdown', () => {
         createStore();
         createComponent({ provide: { multipleIssueBoardsAvailable: true } });
         expect(findDropdown().exists()).toBe(true);
@@ -258,7 +258,7 @@ describe('BoardsSelector', () => {
     });
 
     describe('when multipleIssueBoardsAvailable is disabled but it hasMissingBoards', () => {
-      it('show dropdown', async () => {
+      it('show dropdown', () => {
         createStore();
         createComponent({
           provide: { multipleIssueBoardsAvailable: false, hasMissingBoards: true },
@@ -268,7 +268,7 @@ describe('BoardsSelector', () => {
     });
 
     describe("when multipleIssueBoardsAvailable is disabled and it dosn't hasMissingBoards", () => {
-      it('hide dropdown', async () => {
+      it('hide dropdown', () => {
         createStore();
         createComponent({
           provide: { multipleIssueBoardsAvailable: false, hasMissingBoards: false },

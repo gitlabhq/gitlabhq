@@ -331,7 +331,7 @@ describe('Issuable output', () => {
     });
 
     describe('when title is not in view', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         wrapper.findComponent(GlIntersectionObserver).vm.$emit('disappear');
       });
 

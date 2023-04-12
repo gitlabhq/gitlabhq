@@ -59,7 +59,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
     expect(wrapper.findByTestId('remove-link').exists()).toBe(exist);
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     buildEditor();
 
     tiptapEditor
@@ -195,7 +195,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
       await buildWrapperAndDisplayMenu();
     });
 
-    it('directly opens the edit form for a placeholder link', async () => {
+    it('directly opens the edit form for a placeholder link', () => {
       expectLinkButtonsToExist(false);
 
       expect(wrapper.findComponent(GlForm).exists()).toBe(true);
@@ -226,7 +226,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
       linkTitleInput = wrapper.findByTestId('link-title');
     });
 
-    it('hides the link and copy/edit/remove link buttons', async () => {
+    it('hides the link and copy/edit/remove link buttons', () => {
       expectLinkButtonsToExist(false);
     });
 
@@ -254,7 +254,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
         await wrapper.findComponent(GlForm).vm.$emit('submit', createFakeEvent());
       });
 
-      it('updates prosemirror doc with new link', async () => {
+      it('updates prosemirror doc with new link', () => {
         expect(tiptapEditor.getHTML()).toBe(
           '<p>Download <a target="_blank" rel="noopener noreferrer nofollow" href="https://google.com" title="Search Google">PDF File</a></p>',
         );

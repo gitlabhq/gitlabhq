@@ -65,7 +65,7 @@ describe('~/environments/environment_details/page.vue', () => {
         wrapper = createWrapper();
         await waitForPromises();
       });
-      it('should render a table when query is loaded', async () => {
+      it('should render a table when query is loaded', () => {
         expect(wrapper.findComponent(GlLoadingIcon).exists()).not.toBe(true);
         expect(wrapper.findComponent(GlTableLite).exists()).toBe(true);
       });
@@ -77,7 +77,7 @@ describe('~/environments/environment_details/page.vue', () => {
         await waitForPromises();
       });
 
-      it('should render empty state component', async () => {
+      it('should render empty state component', () => {
         expect(wrapper.findComponent(GlTableLite).exists()).toBe(false);
         expect(wrapper.findComponent(EmptyState).exists()).toBe(true);
       });

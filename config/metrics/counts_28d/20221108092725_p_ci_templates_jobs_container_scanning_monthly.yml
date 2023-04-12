@@ -4,7 +4,6 @@ description: Monthly counts for Container Scanning CI template (Jobs folder)
 product_section: sec
 product_stage: secure
 product_group: composition_analysis
-product_category: container_scanning
 value_type: number
 status: active
 milestone: '15.6'

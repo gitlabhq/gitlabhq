@@ -175,7 +175,7 @@ describe('diffs/components/app', () => {
   });
 
   describe('codequality diff', () => {
-    it('does not fetch code quality data on FOSS', async () => {
+    it('does not fetch code quality data on FOSS', () => {
       createComponent();
       jest.spyOn(wrapper.vm, 'fetchCodequality');
       wrapper.vm.fetchData(false);

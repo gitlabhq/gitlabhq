@@ -5,7 +5,6 @@ description: List of collected data categories corresponding to instance setting
 product_section: analytics
 product_stage: analytics
 product_group: product_intelligence
-product_category: collection
 value_type: object
 status: active
 milestone: "14.1"

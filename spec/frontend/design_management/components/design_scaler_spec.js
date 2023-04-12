@@ -36,7 +36,7 @@ describe('Design management design scaler component', () => {
       expect(wrapper.emitted('scale')[1]).toEqual([1]);
     });
 
-    it('emits @scale event when "decrement" button clicked', async () => {
+    it('emits @scale event when "decrement" button clicked', () => {
       getDecreaseScaleButton().vm.$emit('click');
       expect(wrapper.emitted('scale')[1]).toEqual([1.4]);
     });

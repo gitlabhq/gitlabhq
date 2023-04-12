@@ -107,7 +107,8 @@ Example response:
   "external_pipeline_validation_service_token": null,
   "external_pipeline_validation_service_url": null,
   "jira_connect_application_key": null,
-  "jira_connect_proxy_url": null
+  "jira_connect_proxy_url": null,
+  "silent_mode_enabled": false
 }
 ```
 
@@ -120,9 +121,9 @@ the `delayed_project_deletion` and `delayed_group_deletion` attributes will not 
 
 ```json
 {
-  "id" : 1,
-  "signup_enabled" : true,
-  "group_owners_can_manage_default_branch_protection" : true,
+  "id": 1,
+  "signup_enabled": true,
+  "group_owners_can_manage_default_branch_protection": true,
   "file_template_project_id": 1,
   "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
   "delayed_project_deletion": false,
@@ -231,7 +232,8 @@ Example response:
   "jira_connect_application_key": "123",
   "jira_connect_proxy_url": "http://gitlab.example.com",
   "user_defaults_to_private_profile": true,
-  "projects_api_rate_limit_unauthenticated": 400
+  "projects_api_rate_limit_unauthenticated": 400,
+  "silent_mode_enabled": false
 }
 ```
 
@@ -475,6 +477,7 @@ listed in the descriptions of the relevant settings.
 | `sign_in_text`                           | string           | no                                   | Text on the login page. |
 | `signin_enabled`                         | string           | no                                   | (Deprecated: Use `password_authentication_enabled_for_web` instead) Flag indicating if password authentication is enabled for the web interface. |
 | `signup_enabled`                         | boolean          | no                                   | Enable registration. Default is `true`. |
+| `silent_mode_enabled`                    | boolean          | no                                   | Enable [Silent mode](../administration/silent_mode/index.md). Default is `false`. |
 | `slack_app_enabled` **(PREMIUM)**        | boolean          | no                                   | (**If enabled, requires:** `slack_app_id`, `slack_app_secret` and `slack_app_secret`) Enable Slack app. |
 | `slack_app_id` **(PREMIUM)**             | string           | required by: `slack_app_enabled`     | The app ID of the Slack-app. |
 | `slack_app_secret` **(PREMIUM)**         | string           | required by: `slack_app_enabled`     | The app secret of the Slack-app. |

@@ -256,7 +256,7 @@ describe('Snippet Edit app', () => {
       VISIBILITY_LEVEL_PRIVATE_STRING,
       VISIBILITY_LEVEL_INTERNAL_STRING,
       VISIBILITY_LEVEL_PUBLIC_STRING,
-    ])('marks %s visibility by default', async (visibility) => {
+    ])('marks %s visibility by default', (visibility) => {
       createComponent({
         props: { snippetGid: '' },
         selectedLevel: visibility,

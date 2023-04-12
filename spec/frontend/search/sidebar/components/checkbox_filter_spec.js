@@ -89,7 +89,7 @@ describe('CheckboxFilter', () => {
   describe('actions', () => {
     const checkedLanguageName = MOCK_LANGUAGE_AGGREGATIONS_BUCKETS[0].key;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       defaultProps.filtersData = convertFiltersData(MOCK_LANGUAGE_AGGREGATIONS_BUCKETS.slice(0, 3));
       CheckboxFilter.computed.selectedFilter.get = jest.fn(() => checkedLanguageName);
 
