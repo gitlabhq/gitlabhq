@@ -13053,6 +13053,7 @@ The deployment of an environment.
 | <a id="deploymentid"></a>`id` | [`ID`](#id) | Global ID of the deployment. |
 | <a id="deploymentiid"></a>`iid` | [`ID`](#id) | Project-level internal ID of the deployment. |
 | <a id="deploymentjob"></a>`job` | [`CiJob`](#cijob) | Pipeline job of the deployment. |
+| <a id="deploymentpendingapprovalcount"></a>`pendingApprovalCount` | [`Int`](#int) | Number of pending unified approvals on the deployment. |
 | <a id="deploymentref"></a>`ref` | [`String`](#string) | Git-Ref that the deployment ran on. |
 | <a id="deploymentsha"></a>`sha` | [`String`](#string) | Git-SHA that the deployment ran on. |
 | <a id="deploymentstatus"></a>`status` | [`DeploymentStatus`](#deploymentstatus) | Status of the deployment. |

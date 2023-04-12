@@ -867,8 +867,6 @@ it 'is overdue' do
   travel_to(3.days.from_now) do
     expect(issue).to be_overdue
   end
-
-  travel_back # Returns the current time back to its original state
 end
 ```
 
