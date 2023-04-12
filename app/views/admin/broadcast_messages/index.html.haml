@@ -9,5 +9,7 @@
 #js-broadcast-messages{ data: {
   page: params[:page] || 1,
   target_access_level_options: target_access_level_options.to_json,
+  messages_path: admin_broadcast_messages_path,
+  preview_path: preview_admin_broadcast_messages_path,
   messages_count: @broadcast_messages.total_count,
   messages: admin_broadcast_messages_data(@broadcast_messages) } }

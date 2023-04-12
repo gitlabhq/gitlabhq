@@ -17,13 +17,7 @@ import { redirectTo } from '~/lib/utils/url_utility';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import {
-  BROADCAST_MESSAGES_PATH,
-  MESSAGES_PREVIEW_PATH,
-  THEMES,
-  TYPES,
-  TYPE_BANNER,
-} from '../constants';
+import { THEMES, TYPES, TYPE_BANNER } from '../constants';
 import MessageFormGroup from './message_form_group.vue';
 import DatetimePicker from './datetime_picker.vue';
 
@@ -49,7 +43,17 @@ export default {
     SafeHtml,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['targetAccessLevelOptions'],
+  inject: {
+    targetAccessLevelOptions: {
+      default: [[]],
+    },
+    messagesPath: {
+      default: '',
+    },
+    previewPath: {
+      default: '',
+    },
+  },
   i18n: {
     message: s__('BroadcastMessages|Message'),
     messagePlaceholder: s__('BroadcastMessages|Your message here'),
@@ -111,8 +115,8 @@ export default {
     },
     formPath() {
       return this.isAddForm
-        ? BROADCAST_MESSAGES_PATH
-        : `${BROADCAST_MESSAGES_PATH}/${this.broadcastMessage.id}`;
+        ? this.messagesPath
+        : `${this.messagesPath}/${this.broadcastMessage.id}`;
     },
     formPayload() {
       return JSON.stringify({
@@ -138,7 +142,7 @@ export default {
 
       const success = await this.submitForm();
       if (success) {
-        redirectTo(BROADCAST_MESSAGES_PATH);
+        redirectTo(this.messagesPath);
       } else {
         this.loading = false;
       }
@@ -161,7 +165,7 @@ export default {
 
     async renderPreview() {
       try {
-        const res = await axios.post(MESSAGES_PREVIEW_PATH, this.formPayload, FORM_HEADERS);
+        const res = await axios.post(this.previewPath, this.formPayload, FORM_HEADERS);
         this.renderedMessage = res.data;
       } catch (e) {
         this.renderedMessage = '';
@@ -175,7 +179,13 @@ export default {
 </script>
 <template>
   <gl-form @submit.prevent="onSubmit">
-    <gl-broadcast-message class="gl-my-6" :type="type" :theme="theme" :dismissible="dismissable">
+    <gl-broadcast-message
+      class="gl-my-6"
+      :type="type"
+      :theme="theme"
+      :dismissible="dismissable"
+      data-testid="preview-broadcast-message"
+    >
       <div v-safe-html:[$options.safeHtmlConfig]="messagePreview"></div>
     </gl-broadcast-message>
 
@@ -186,6 +196,7 @@ export default {
         size="sm"
         :debounce="$options.DEFAULT_DEBOUNCE_AND_THROTTLE_MS"
         :placeholder="$options.i18n.messagePlaceholder"
+        data-testid="message-input"
       />
     </message-form-group>
 
@@ -241,7 +252,7 @@ export default {
       <datetime-picker v-model="endsAt" />
     </message-form-group>
 
-    <div class="form-actions gl-mb-3">
+    <div class="form-actions gl-my-3">
       <gl-button
         type="submit"
         variant="confirm"

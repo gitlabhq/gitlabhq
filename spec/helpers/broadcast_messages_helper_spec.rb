@@ -157,4 +157,24 @@ RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
       expect(single_broadcast_message['ends_at']).to eq('2020-01-02T00:00:00Z')
     end
   end
+
+  describe '#broadcast_message_data' do
+    let(:starts_at) { 1.day.ago }
+    let(:ends_at) { 1.day.from_now }
+    let(:message) { build(:broadcast_message, id: non_existing_record_id, starts_at: starts_at, ends_at: ends_at) }
+
+    it 'returns the expected message data attributes' do
+      keys = [
+        :id, :message, :broadcast_type, :theme, :dismissable, :target_access_levels, :messages_path,
+        :preview_path, :target_path, :starts_at, :ends_at, :target_access_level_options
+      ]
+
+      expect(broadcast_message_data(message).keys).to match(keys)
+    end
+
+    it 'has the correct iso formatted date', time_travel_to: '2020-01-01 00:00:00 +0000' do
+      expect(broadcast_message_data(message)[:starts_at]).to eq('2019-12-31T00:00:00Z')
+      expect(broadcast_message_data(message)[:ends_at]).to eq('2020-01-02T00:00:00Z')
+    end
+  end
 end
