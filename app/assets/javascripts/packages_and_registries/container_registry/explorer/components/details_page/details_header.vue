@@ -4,9 +4,10 @@ import { sprintf, n__, s__ } from '~/locale';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import { formatDate } from '~/lib/utils/datetime_utility';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import {
-  UPDATED_AT,
+  CREATED_AT,
   CLEANUP_UNSCHEDULED_TEXT,
   CLEANUP_SCHEDULED_TEXT,
   CLEANUP_ONGOING_TEXT,
@@ -65,11 +66,11 @@ export default {
     visibilityIcon() {
       return this.imageDetails?.project?.visibility === 'public' ? 'eye' : 'eye-slash';
     },
-    timeAgo() {
-      return this.timeFormatted(this.imageDetails.updatedAt);
+    formattedCreatedAtDate() {
+      return formatDate(this.imageDetails.createdAt, 'mmm d, yyyy HH:MM', true);
     },
-    updatedText() {
-      return sprintf(UPDATED_AT, { time: this.timeAgo });
+    createdText() {
+      return sprintf(CREATED_AT, { time: this.formattedCreatedAtDate });
     },
     tagCountText() {
       if (this.$apollo.queries.containerRepository.loading) {
@@ -145,9 +146,9 @@ export default {
     <template #metadata-updated>
       <metadata-item
         :icon="visibilityIcon"
-        :text="updatedText"
+        :text="createdText"
         size="xl"
-        data-testid="updated-and-visibility"
+        data-testid="created-and-visibility"
       />
     </template>
     <template #right-actions>

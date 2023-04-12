@@ -469,7 +469,8 @@ To pass a job-created environment variable to other jobs:
    - Values can be wrapped in quotes, but cannot contain newline characters.
 1. Save the `.env` file as an [`artifacts:reports:dotenv`](../yaml/artifacts_reports.md#artifactsreportsdotenv)
    artifact.
-1. Jobs in later stages can then [use the variable in scripts](#use-cicd-variables-in-job-scripts).
+1. Jobs in later stages can then [use the variable in scripts](#use-cicd-variables-in-job-scripts),
+   unless [jobs are configured not to receive `dotenv` variables](#control-which-jobs-receive-dotenv-variables).
 
 For example:
 

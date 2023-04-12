@@ -5,14 +5,14 @@
   extends:
     - .reports:rules:schedule-dast
   image:
-    name: "${REGISTRY_HOST}/security-products/dast:$DAST_VERSION"
+    name: "${CI_TEMPLATE_REGISTRY_HOST}/security-products/dast:$DAST_VERSION"
   resource_group: dast_scan
   variables:
-    DAST_USERNAME_FIELD: "user[login]"
-    DAST_PASSWORD_FIELD: "user[password]"
-    DAST_SUBMIT_FIELD: "name:button"
+    DAST_USERNAME_FIELD: "name:user[login]"
+    DAST_PASSWORD_FIELD: "name:user[password]"
+    DAST_SUBMIT_FIELD: "css:.js-sign-in-button"
     DAST_FULL_SCAN_ENABLED: "true"
-    DAST_VERSION: 2
+    DAST_VERSION: 3
     GIT_STRATEGY: none
     # -Xmx is used to set the JVM memory to 6GB to prevent DAST OutOfMemoryError.
     DAST_ZAP_CLI_OPTIONS: "-Xmx6144m"

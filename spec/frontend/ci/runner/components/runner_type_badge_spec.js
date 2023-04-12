@@ -2,6 +2,7 @@ import { GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import RunnerTypeBadge from '~/ci/runner/components/runner_type_badge.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { assertProps } from 'helpers/assert_props';
 import {
   INSTANCE_TYPE,
   GROUP_TYPE,
@@ -50,7 +51,7 @@ describe('RunnerTypeBadge', () => {
 
   it('validation fails for an incorrect type', () => {
     expect(() => {
-      createComponent({ props: { type: 'AN_UNKNOWN_VALUE' } });
+      assertProps(RunnerTypeBadge, { type: 'AN_UNKNOWN_VALUE' });
     }).toThrow();
   });
 

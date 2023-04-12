@@ -127,7 +127,6 @@ export const containerRepositoryMock = {
   location: 'host.docker.internal:5000/gitlab-org/gitlab-test/rails-12009',
   canDelete: true,
   createdAt: '2020-11-03T13:29:21Z',
-  updatedAt: '2020-11-03T13:29:21Z',
   expirationPolicyStartedAt: null,
   expirationPolicyCleanupStatus: 'UNSCHEDULED',
   project: {

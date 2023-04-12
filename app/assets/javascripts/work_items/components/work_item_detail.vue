@@ -537,14 +537,13 @@ export default {
               {{ workItemBreadcrumbReference }}
             </li>
           </ul>
-          <work-item-type-icon
-            v-else-if="!error"
-            :work-item-icon-name="workItemIconName"
-            :work-item-type="workItemType && workItemType.toUpperCase()"
-            show-text
-            class="gl-font-weight-bold gl-text-secondary gl-mr-auto"
-            data-testid="work-item-type"
-          />
+          <div v-else-if="!error" class="gl-mr-auto" data-testid="work-item-type">
+            <work-item-type-icon
+              :work-item-icon-name="workItemIconName"
+              :work-item-type="workItemType && workItemType.toUpperCase()"
+            />
+            {{ workItemBreadcrumbReference }}
+          </div>
           <gl-loading-icon v-if="updateInProgress" :inline="true" class="gl-mr-3" />
           <gl-badge
             v-if="workItem.confidential"

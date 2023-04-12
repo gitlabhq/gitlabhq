@@ -45,7 +45,7 @@ export default {
     },
   },
   i18n: {
-    title: s__('Navigation|Frequent groups'),
+    title: s__('Navigation|Frequently visited groups'),
     searchTitle: s__('Navigation|Groups'),
     pristineText: s__('Navigation|Groups you visit often will appear here.'),
     noResultsText: s__('Navigation|No group matches found'),

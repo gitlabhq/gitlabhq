@@ -8,23 +8,22 @@ module Projects
     STREAMING_FIRST_PAGE_SIZE = 200
     STREAMING_PER_PAGE = 2000
 
-    def initialize(blob, commit, params)
+    def initialize(blob, commit, blame_mode, params)
       @blob = blob
       @commit = commit
-      @streaming_enabled = streaming_state(params)
-      @pagination_enabled = pagination_state(params)
+      @blame_mode = blame_mode
       @page = extract_page(params)
       @params = params
     end
 
-    attr_reader :page, :streaming_enabled
+    attr_reader :page
 
     def blame
       Gitlab::Blame.new(blob, commit, range: blame_range)
     end
 
     def pagination
-      return unless pagination_enabled
+      return unless blame_mode.pagination?
 
       Kaminari.paginate_array([], total_count: blob_lines_count, limit: per_page)
         .tap { |pagination| pagination.max_paginates_per(per_page) }
@@ -32,12 +31,12 @@ module Projects
     end
 
     def per_page
-      streaming_enabled ? STREAMING_PER_PAGE : PER_PAGE
+      blame_mode.streaming? ? STREAMING_PER_PAGE : PER_PAGE
     end
 
     def total_pages
       total = (blob_lines_count.to_f / per_page).ceil
-      return total unless streaming_enabled
+      return total unless blame_mode.streaming?
 
       ([blob_lines_count - STREAMING_FIRST_PAGE_SIZE, 0].max.to_f / per_page).ceil + 1
     end
@@ -46,20 +45,16 @@ module Projects
       [total_pages - 1, 0].max
     end
 
-    def streaming_possible
-      Feature.enabled?(:blame_page_streaming, commit.project)
-    end
-
     private
 
-    attr_reader :blob, :commit, :pagination_enabled
+    attr_reader :blob, :commit, :blame_mode
 
     def blame_range
-      return unless pagination_enabled || streaming_enabled
+      return if blame_mode.full?
 
       first_line = (page - 1) * per_page + 1
 
-      if streaming_enabled
+      if blame_mode.streaming?
         return 1..STREAMING_FIRST_PAGE_SIZE if page == 1
 
         first_line = STREAMING_FIRST_PAGE_SIZE + (page - 2) * per_page + 1
@@ -76,18 +71,6 @@ module Projects
       return 1 if page < 1 || overlimit?(page)
 
       page
-    end
-
-    def streaming_state(params)
-      return false unless streaming_possible
-
-      Gitlab::Utils.to_boolean(params[:streaming], default: false)
-    end
-
-    def pagination_state(params)
-      return false if Gitlab::Utils.to_boolean(params[:no_pagination], default: false)
-
-      Feature.enabled?(:blame_page_pagination, commit.project)
     end
 
     def overlimit?(page)

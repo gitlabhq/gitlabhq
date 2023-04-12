@@ -650,6 +650,18 @@ over [`expect.objectContaining`](https://jestjs.io/docs/expect#expectobjectconta
    });
    ```
 
+### Testing props validation
+
+1. When checking component props use `assertProps` helper. Props validation failures will be thrown as errors
+
+```javascript
+import { assertProps } from 'helpers/assert_props'
+
+// ...
+
+expect(() => assertProps(SomeComponent, { invalidPropValue: '1', someOtherProp: 2 })).toThrow()
+```
+
 ## The JavaScript/Vue Accord
 
 The goal of this accord is to make sure we are all on the same page.

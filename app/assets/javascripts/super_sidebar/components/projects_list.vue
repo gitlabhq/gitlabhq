@@ -45,7 +45,7 @@ export default {
     },
   },
   i18n: {
-    title: s__('Navigation|Frequent projects'),
+    title: s__('Navigation|Frequently visited projects'),
     searchTitle: s__('Navigation|Projects'),
     pristineText: s__('Navigation|Projects you visit often will appear here.'),
     noResultsText: s__('Navigation|No project matches found'),

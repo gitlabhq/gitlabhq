@@ -75,7 +75,7 @@ describe('GroupsList component', () => {
 
     it('passes the correct props to the frequent items list', () => {
       expect(findFrequentItemsList().props()).toEqual({
-        title: s__('Navigation|Frequent groups'),
+        title: s__('Navigation|Frequently visited groups'),
         storageKey,
         maxItems: MAX_FREQUENT_GROUPS_COUNT,
         pristineText: s__('Navigation|Groups you visit often will appear here.'),

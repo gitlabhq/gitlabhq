@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlLoadingIcon, GlTable } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { assertProps } from 'helpers/assert_props';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
@@ -593,19 +594,14 @@ describe('Ci Variable Shared Component', () => {
             }
           });
 
-          it('will not mount component with wrong data', async () => {
-            try {
-              await createComponentWithApollo({
-                customHandlers: [[getGroupVariables, mockVariables]],
-                props: { ...createGroupProps(), queryData: { wrongKey: {} } },
-                provide: pagesFeatureFlagProvide,
-              });
-            } catch (e) {
-              error = e;
-            } finally {
-              expect(wrapper.exists()).toBe(false);
-              expect(error.toString()).toContain('custom validator check failed for prop');
-            }
+          it('report custom validator error on wrong data', () => {
+            expect(() =>
+              assertProps(
+                ciVariableShared,
+                { ...defaultProps, ...createGroupProps(), queryData: { wrongKey: {} } },
+                { provide: mockProvide },
+              ),
+            ).toThrow('custom validator check failed for prop');
           });
         });
 
@@ -630,18 +626,14 @@ describe('Ci Variable Shared Component', () => {
             }
           });
 
-          it('will not mount component with wrong data', async () => {
-            try {
-              await createComponentWithApollo({
-                props: { ...createGroupProps(), mutationData: { wrongKey: {} } },
-                provide: pagesFeatureFlagProvide,
-              });
-            } catch (e) {
-              error = e;
-            } finally {
-              expect(wrapper.exists()).toBe(false);
-              expect(error.toString()).toContain('custom validator check failed for prop');
-            }
+          it('report custom validator error on wrong data', async () => {
+            expect(() =>
+              assertProps(
+                ciVariableShared,
+                { ...defaultProps, ...createGroupProps(), mutationData: { wrongKey: {} } },
+                { provide: { ...mockProvide, ...pagesFeatureFlagProvide } },
+              ),
+            ).toThrow('custom validator check failed for prop');
           });
         });
       });

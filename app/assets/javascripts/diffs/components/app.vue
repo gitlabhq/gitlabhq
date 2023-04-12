@@ -253,6 +253,9 @@ export default {
     renderDiffFiles() {
       return this.flatBlobsList.length > 0;
     },
+    diffsIncomplete() {
+      return this.flatBlobsList.length !== this.diffFiles.length;
+    },
     renderFileTree() {
       return this.renderDiffFiles && this.showTreeList;
     },
@@ -312,6 +315,11 @@ export default {
     },
     diffViewType() {
       this.adjustView();
+    },
+    viewDiffsFileByFile(newViewFileByFile) {
+      if (!newViewFileByFile && this.diffsIncomplete && this.glFeatures.singleFileFileByFile) {
+        this.refetchDiffData({ refetchMeta: false });
+      }
     },
     shouldShow() {
       // When the shouldShow property changed to true, the route is rendered for the first time
@@ -429,13 +437,15 @@ export default {
       'setCodequalityEndpoint',
       'fetchDiffFilesMeta',
       'fetchDiffFilesBatch',
+      'fetchFileByFile',
       'fetchCoverageFiles',
       'fetchCodequality',
+      'rereadNoteHash',
       'startRenderDiffsQueue',
       'assignDiscussionsToDiff',
       'setHighlightedRow',
       'cacheTreeListWidth',
-      'scrollToFile',
+      'goToFile',
       'setShowTreeList',
       'navigateToDiffFileIndex',
       'setFileByFile',
@@ -448,16 +458,27 @@ export default {
     subscribeToEvents() {
       notesEventHub.$once('fetchDiffData', this.fetchData);
       notesEventHub.$on('refetchDiffData', this.refetchDiffData);
+      if (this.glFeatures.singleFileFileByFile) {
+        diffsEventHub.$on('diffFilesModified', this.setDiscussions);
+        notesEventHub.$on('fetchedNotesData', this.rereadNoteHash);
+      }
     },
     unsubscribeFromEvents() {
+      if (this.glFeatures.singleFileFileByFile) {
+        notesEventHub.$off('fetchedNotesData', this.rereadNoteHash);
+        diffsEventHub.$off('diffFilesModified', this.setDiscussions);
+      }
       notesEventHub.$off('refetchDiffData', this.refetchDiffData);
       notesEventHub.$off('fetchDiffData', this.fetchData);
     },
     navigateToDiffFileNumber(number) {
-      this.navigateToDiffFileIndex(number - 1);
+      this.navigateToDiffFileIndex({
+        index: number - 1,
+        singleFile: this.glFeatures.singleFileFileByFile,
+      });
     },
-    refetchDiffData() {
-      this.fetchData(false);
+    refetchDiffData({ refetchMeta = true } = {}) {
+      this.fetchData({ toggleTree: false, fetchMeta: refetchMeta });
     },
     needsReload() {
       return this.diffFiles.length && isSingleViewStyle(this.diffFiles[0]);
@@ -465,44 +486,52 @@ export default {
     needsFirstLoad() {
       return !this.diffFiles.length;
     },
-    fetchData(toggleTree = true) {
-      this.fetchDiffFilesMeta()
-        .then((data) => {
-          let realSize = 0;
+    fetchData({ toggleTree = true, fetchMeta = true } = {}) {
+      if (fetchMeta) {
+        this.fetchDiffFilesMeta()
+          .then((data) => {
+            let realSize = 0;
 
-          if (data) {
-            realSize = data.real_size;
-          }
+            if (data) {
+              realSize = data.real_size;
 
-          this.diffFilesLength = parseInt(realSize, 10) || 0;
-          if (toggleTree) {
-            this.setTreeDisplay();
-          }
+              if (this.viewDiffsFileByFile && this.glFeatures.singleFileFileByFile) {
+                this.fetchFileByFile();
+              }
+            }
 
-          updateChangesTabCount({
-            count: this.diffFilesLength,
+            this.diffFilesLength = parseInt(realSize, 10) || 0;
+            if (toggleTree) {
+              this.setTreeDisplay();
+            }
+
+            updateChangesTabCount({
+              count: this.diffFilesLength,
+            });
+          })
+          .catch(() => {
+            createAlert({
+              message: __('Something went wrong on our end. Please try again!'),
+            });
           });
-        })
-        .catch(() => {
-          createAlert({
-            message: __('Something went wrong on our end. Please try again!'),
-          });
-        });
+      }
 
-      this.fetchDiffFilesBatch()
-        .then(() => {
-          if (toggleTree) this.setTreeDisplay();
-          // Guarantee the discussions are assigned after the batch finishes.
-          // Just watching the length of the discussions or the diff files
-          // isn't enough, because with split diff loading, neither will
-          // change when loading the other half of the diff files.
-          this.setDiscussions();
-        })
-        .catch(() => {
-          createAlert({
-            message: __('Something went wrong on our end. Please try again!'),
+      if (!this.viewDiffsFileByFile || !this.glFeatures.singleFileFileByFile) {
+        this.fetchDiffFilesBatch()
+          .then(() => {
+            if (toggleTree) this.setTreeDisplay();
+            // Guarantee the discussions are assigned after the batch finishes.
+            // Just watching the length of the discussions or the diff files
+            // isn't enough, because with split diff loading, neither will
+            // change when loading the other half of the diff files.
+            this.setDiscussions();
+          })
+          .catch(() => {
+            createAlert({
+              message: __('Something went wrong on our end. Please try again!'),
+            });
           });
-        });
+      }
 
       if (this.endpointCoverage) {
         this.fetchCoverageFiles();
@@ -578,7 +607,10 @@ export default {
     jumpToFile(step) {
       const targetIndex = this.currentDiffIndex + step;
       if (targetIndex >= 0 && targetIndex < this.flatBlobsList.length) {
-        this.scrollToFile({ path: this.flatBlobsList[targetIndex].path });
+        this.goToFile({
+          path: this.flatBlobsList[targetIndex].path,
+          singleFile: this.glFeatures.singleFileFileByFile,
+        });
       }
     },
     setTreeDisplay() {

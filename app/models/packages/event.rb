@@ -18,6 +18,7 @@ module Packages
       delete_tag
       delete_tag_bulk
       list_tags
+      create_tag
       cli_metadata
       pull_symbol_package
       push_symbol_package

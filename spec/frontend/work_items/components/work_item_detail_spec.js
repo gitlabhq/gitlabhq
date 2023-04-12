@@ -388,11 +388,12 @@ describe('WorkItemDetail component', () => {
       expect(findParent().exists()).toBe(false);
     });
 
-    it('shows work item type if there is not a parent', async () => {
+    it('shows work item type with reference when there is no a parent', async () => {
       createComponent({ handler: jest.fn().mockResolvedValue(workItemQueryResponseWithoutParent) });
 
       await waitForPromises();
       expect(findWorkItemType().exists()).toBe(true);
+      expect(findWorkItemType().text()).toBe('Task #1');
     });
 
     describe('with parent', () => {

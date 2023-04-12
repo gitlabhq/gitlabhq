@@ -1,0 +1,8 @@
+---
+name: members_with_shared_group_access
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115346
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/398621
+milestone: '15.11'
+type: development
+group: group::tenant scale
+default_enabled: false

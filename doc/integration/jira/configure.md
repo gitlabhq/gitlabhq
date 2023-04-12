@@ -8,10 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 The Jira integration connects one or more GitLab projects to a Jira instance. You can host the Jira instance yourself or in [Atlassian Cloud](https://www.atlassian.com/migration/assess/why-cloud). The supported Jira versions are `6.x`, `7.x`, `8.x`, and `9.x`.
 
-You can set up the [Jira integration](index.md#jira-integration)
-by configuring your project settings in GitLab.
-You can also configure these settings at a [group level](../../user/admin_area/settings/project_integration_management.md#manage-group-level-default-settings-for-a-project-integration),
-and for self-managed GitLab, at an [instance level](../../user/admin_area/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration).
+## Configure the integration
 
 Prerequisites:
 
@@ -22,9 +19,13 @@ Prerequisites:
   and the email address you used to create the token.
   See [authentication in Jira](index.md#authentication-in-jira).
 
-## Configure a project
+You can enable the Jira integration by configuring your project settings in GitLab.
+You can also configure these settings at the:
 
-To configure your project:
+- [Group level](../../user/admin_area/settings/project_integration_management.md#manage-group-level-default-settings-for-a-project-integration)
+- [Instance level](../../user/admin_area/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration) for self-managed GitLab
+
+To configure your project settings in GitLab:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Integrations**.

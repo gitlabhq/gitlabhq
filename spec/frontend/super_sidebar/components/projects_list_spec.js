@@ -70,7 +70,7 @@ describe('ProjectsList component', () => {
 
     it('passes the correct props to the frequent items list', () => {
       expect(findFrequentItemsList().props()).toEqual({
-        title: s__('Navigation|Frequent projects'),
+        title: s__('Navigation|Frequently visited projects'),
         storageKey,
         maxItems: MAX_FREQUENT_PROJECTS_COUNT,
         pristineText: s__('Navigation|Projects you visit often will appear here.'),

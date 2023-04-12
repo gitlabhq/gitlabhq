@@ -3,12 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Projects::BlameService, :aggregate_failures, feature_category: :source_code_management do
-  subject(:service) { described_class.new(blob, commit, params) }
+  subject(:service) { described_class.new(blob, commit, blame_mode, params) }
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:commit) { project.repository.commit }
   let_it_be(:blob) { project.repository.blob_at('HEAD', 'README.md') }
 
+  let(:blame_mode) { Gitlab::Git::BlameMode.new(project, params) }
   let(:params) { { page: page } }
   let(:page) { nil }
 

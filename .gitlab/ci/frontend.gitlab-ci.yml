@@ -131,17 +131,21 @@ retrieve-frontend-fixtures:
     - .rails-cache
     - .use-pg13
   stage: fixtures
-  needs: ["setup-test-env", "retrieve-tests-metadata"]
+  needs: ["setup-test-env", "retrieve-tests-metadata", "retrieve-frontend-fixtures"]
   variables:
     CRYSTALBALL: "false"
     WEBPACK_VENDOR_DLL: "true"
   script:
     - source scripts/utils.sh
     - source scripts/gitlab_component_helpers.sh
-    - install_gitlab_gem
-    - export_fixtures_sha_for_download
     - |
-      if check_fixtures_download; then
+      if [[ -d "tmp/tests/frontend" ]]; then
+        # Remove tmp/tests/frontend/ except on the first parallelized job so that depending
+        # jobs don't download the exact same artifact multiple times.
+        if [[ -n "${CI_NODE_INDEX}" ]] && [[ "${CI_NODE_INDEX}" -ne 1 ]]; then
+          echoinfo "INFO: Removing 'tmp/tests/frontend' as we're on node ${CI_NODE_INDEX}.";
+          rm -rf "tmp/tests/frontend";
+        fi
         exit 0
       else
         echo "No frontend fixtures directory, generating frontend fixtures."
@@ -250,7 +254,7 @@ jest:
   extends:
     - .jest-base
     - .frontend:rules:jest
-  needs: ["rspec-all frontend_fixture", "retrieve-frontend-fixtures"]
+  needs: ["rspec-all frontend_fixture"]
   artifacts:
     name: coverage-frontend
     expire_in: 31d
@@ -298,10 +302,7 @@ jest-integration:
     - .frontend:rules:default-frontend-jobs
   script:
     - run_timed_command "yarn jest:integration --ci"
-  needs:
-    - job: "rspec-all frontend_fixture"
-    - job: "retrieve-frontend-fixtures"
-    - job: "graphql-schema-dump"
+  needs: ["rspec-all frontend_fixture", "graphql-schema-dump"]
 
 coverage-frontend:
   extends:
@@ -384,10 +385,7 @@ startup-css-check:
   extends:
     - .startup-css-check-base
     - .frontend:rules:default-frontend-jobs
-  needs:
-    - job: "compile-test-assets"
-    - job: "rspec-all frontend_fixture"
-    - job: "retrieve-frontend-fixtures"
+  needs: ["compile-test-assets", "rspec-all frontend_fixture"]
 
 startup-css-check as-if-foss:
   extends:
@@ -414,7 +412,6 @@ compile-storybook:
   needs:
     - !reference [.compile-storybook-base, needs]
     - job: "rspec-all frontend_fixture"
-    - job: "retrieve-frontend-fixtures"
   artifacts:
     name: storybook
     expire_in: 31d

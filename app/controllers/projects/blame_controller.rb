@@ -21,14 +21,12 @@ class Projects::BlameController < Projects::ApplicationController
 
     load_environment
 
-    blame_service = Projects::BlameService.new(@blob, @commit, blame_params)
+    @blame_mode = Gitlab::Git::BlameMode.new(@commit.project, blame_params)
+    blame_service = Projects::BlameService.new(@blob, @commit, @blame_mode, blame_params)
 
     @blame = Gitlab::View::Presenter::Factory.new(blame_service.blame, project: @project, path: @path, page: blame_service.page).fabricate!
 
-    @streaming_possible = blame_service.streaming_possible
-
-    @streaming_enabled = blame_service.streaming_enabled
-    @blame_pagination = blame_service.pagination unless @streaming_enabled
+    @blame_pagination = blame_service.pagination
 
     @blame_per_page = blame_service.per_page
 
@@ -40,7 +38,8 @@ class Projects::BlameController < Projects::ApplicationController
 
     load_environment
 
-    blame_service = Projects::BlameService.new(@blob, @commit, blame_params)
+    @blame_mode = Gitlab::Git::BlameMode.new(@commit.project, blame_params)
+    blame_service = Projects::BlameService.new(@blob, @commit, @blame_mode, blame_params)
 
     @blame = Gitlab::View::Presenter::Factory.new(blame_service.blame, project: @project, path: @path, page: blame_service.page).fabricate!
 

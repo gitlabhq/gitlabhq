@@ -1,0 +1,25 @@
+---
+description: Create NPM project packages tag
+category: API::NpmProjectPackages
+action: create_tag
+label_description:
+property_description:
+value_description:
+extra_properties:
+identifiers:
+- project
+- user
+- namespace
+product_section: ops
+product_stage: package
+product_group: group::package registry
+product_category:
+milestone: "15.11"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115545
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

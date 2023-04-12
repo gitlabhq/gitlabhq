@@ -3,6 +3,7 @@ import * as Sentry from '@sentry/browser';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import waitForPromises from 'helpers/wait_for_promises';
+import { assertProps } from 'helpers/assert_props';
 import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
 import ActionButtons from '~/vue_merge_request_widget/components/widget/action_buttons.vue';
 import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
@@ -111,9 +112,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
 
     it('validates widget name', () => {
       expect(() => {
-        createComponent({
-          propsData: { widgetName: 'InvalidWidgetName' },
-        });
+        assertProps(Widget, { widgetName: 'InvalidWidgetName' });
       }).toThrow();
     });
   });

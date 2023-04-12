@@ -2,7 +2,7 @@
 - add_page_specific_style 'page_bundles/tree'
 - blame_streaming_url = blame_pages_streaming_url(@id, @project)
 
-- if @streaming_enabled && total_extra_pages > 0
+- if @blame_mode.streaming? && total_extra_pages > 0
   - content_for :startup_js do
     = javascript_tag do
       :plain
@@ -37,21 +37,21 @@
       .blame-table-wrapper
         = render partial: 'page'
 
-        - if @streaming_enabled
+        - if @blame_mode.streaming?
           #blame-stream-container.blame-stream-container
 
-    - if @blame_pagination && @blame_pagination.total_pages > 1
+    - if @blame_mode.pagination? && @blame_pagination.total_pages > 1
       .gl-display-flex.gl-justify-content-center.gl-flex-direction-column.gl-align-items-center.gl-p-3.gl-bg-gray-50.gl-border-t-solid.gl-border-t-1.gl-border-gray-100
-        = render Pajamas::ButtonComponent.new(href: entire_blame_path(@id, @project, @streaming_possible), size: :small, button_options: { class: 'gl-mt-3' }) do |c|
+        = render Pajamas::ButtonComponent.new(href: entire_blame_path(@id, @project, @blame_mode), size: :small, button_options: { class: 'gl-mt-3' }) do |c|
           = _('Show full blame')
 
-    - if @streaming_enabled
+    - if @blame_mode.streaming?
       #blame-stream-loading.blame-stream-loading
         .gradient
         = gl_loading_icon(size: 'sm')
         %span.gl-mx-2
           = _('Loading full blame...')
 
-  - if @blame_pagination
+  - if @blame_mode.pagination?
     = paginate(@blame_pagination, theme: "gitlab")
 

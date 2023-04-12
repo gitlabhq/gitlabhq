@@ -216,17 +216,12 @@ ul.wiki-pages-list.content-list {
 
 .drawio-editor {
   position: fixed;
-  top: calc(var(--header-height, 48px));
+  top: 0;
   left: 0;
   bottom: 0;
-  width: 100%;
-  height: calc(100% - var(--header-height, 48px));
+  width: 100vw;
+  height: 100vh;
   border: 0;
   z-index: 1100;
   visibility: hidden;
-}
-
-.with-performance-bar .drawio-editor {
-  top: calc(var(--header-height, 48px) + 35px);
-  height: calc(100% - var(--header-height, 48px) - 35px);
 }

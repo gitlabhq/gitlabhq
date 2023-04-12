@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import Dashboard from '~/monitoring/components/dashboard.vue';
 import DashboardPage from '~/monitoring/pages/dashboard_page.vue';
 import { createStore } from '~/monitoring/stores';
+import { assertProps } from 'helpers/assert_props';
 import { dashboardProps } from '../fixture_data';
 
 describe('monitoring/pages/dashboard_page', () => {
@@ -45,7 +46,7 @@ describe('monitoring/pages/dashboard_page', () => {
   });
 
   it('throws errors if dashboard props are not passed', () => {
-    expect(() => buildWrapper()).toThrow('Missing required prop: "dashboardProps"');
+    expect(() => assertProps(DashboardPage, {})).toThrow('Missing required prop: "dashboardProps"');
   });
 
   it('renders the dashboard page with dashboard component', () => {

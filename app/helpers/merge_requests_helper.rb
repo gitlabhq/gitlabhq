@@ -260,6 +260,10 @@ module MergeRequestsHelper
     Feature.enabled?(:moved_mr_sidebar, @project) && defined?(@merge_request)
   end
 
+  def single_file_file_by_file?
+    Feature.enabled?(:single_file_file_by_file, @project)
+  end
+
   def sticky_header_data
     data = {
       iid: @merge_request.iid,

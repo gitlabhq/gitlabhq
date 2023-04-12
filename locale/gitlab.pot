@@ -1839,6 +1839,21 @@ msgstr ""
 msgid "ACTION REQUIRED: Something went wrong while obtaining the Let's Encrypt certificate for GitLab Pages domain '%{domain}'"
 msgstr ""
 
+msgid "AI|Close the Code Explanation"
+msgstr ""
+
+msgid "AI|Code Explanation"
+msgstr ""
+
+msgid "AI|Explain the code from %{filePath} in human understandable language presented in Markdown format. In the response add neither original code snippet nor any title. `%{text}`"
+msgstr ""
+
+msgid "AI|The container element wasn't found, stopping AI Genie."
+msgstr ""
+
+msgid "AI|What does the selected code mean?"
+msgstr ""
+
 msgid "API"
 msgstr ""
 
@@ -11340,6 +11355,9 @@ msgstr ""
 msgid "ContainerRegistry|Copy push command"
 msgstr ""
 
+msgid "ContainerRegistry|Created %{time}"
+msgstr ""
+
 msgid "ContainerRegistry|Delete image repository?"
 msgstr ""
 
@@ -11395,9 +11413,6 @@ msgid "ContainerRegistry|Keep the most recent:"
 msgstr ""
 
 msgid "ContainerRegistry|Keep these tags"
-msgstr ""
-
-msgid "ContainerRegistry|Last updated %{time}"
 msgstr ""
 
 msgid "ContainerRegistry|Login"
@@ -28669,10 +28684,10 @@ msgstr ""
 msgid "Navigation|Explore"
 msgstr ""
 
-msgid "Navigation|Frequent groups"
+msgid "Navigation|Frequently visited groups"
 msgstr ""
 
-msgid "Navigation|Frequent projects"
+msgid "Navigation|Frequently visited projects"
 msgstr ""
 
 msgid "Navigation|Groups"
@@ -53073,6 +53088,9 @@ msgid "project namespace cannot be the parent of another namespace"
 msgstr ""
 
 msgid "projects"
+msgstr ""
+
+msgid "random"
 msgstr ""
 
 msgid "reCAPTCHA"
