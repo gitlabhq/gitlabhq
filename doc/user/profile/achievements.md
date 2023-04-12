@@ -4,7 +4,7 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Achievements (Alpha) **(FREE)**
+# Achievements (Experiment) **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113156) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `achievements`. Disabled by default.
 
@@ -21,7 +21,7 @@ An achievement consists of a name, a description, and an avatar.
 
 ![Achievements on user profile page](img/user_profile_achievements_v15_11.png)
 
-This feature is in Alpha.
+This feature is an Experiment.
 For more information about planned work, see [epic 9429](https://gitlab.com/groups/gitlab-org/-/epics/9429).
 Tell us about your use cases by leaving comments in the epic.
 

@@ -148,7 +148,7 @@ describe('CommitFormModal', () => {
       createComponent({ method: mountExtended });
     });
 
-    it('Action primary button dispatches submit action', async () => {
+    it('Action primary button dispatches submit action', () => {
       getByText(mockData.modalPropsData.i18n.actionPrimaryText).trigger('click');
 
       expect(wrapper.vm.$refs.form.$el.submit).toHaveBeenCalled();

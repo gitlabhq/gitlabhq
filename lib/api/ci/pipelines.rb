@@ -69,13 +69,19 @@ module API
                               documentation: { example: 'asc' }
           optional :source,   type: String, values: ::Ci::Pipeline.sources.keys,
                               documentation: { example: 'push' }
+          optional :name,     types: String, desc: 'Filter pipelines by name',
+                              documentation: { example: 'Build pipeline' }
         end
         get ':id/pipelines', urgency: :low, feature_category: :continuous_integration do
           authorize! :read_pipeline, user_project
           authorize! :read_build, user_project
 
+          params.delete(:name) unless ::Feature.enabled?(:pipeline_name_in_api, user_project)
+
           pipelines = ::Ci::PipelinesFinder.new(user_project, current_user, params).execute
-          present paginate(pipelines), with: Entities::Ci::PipelineBasic, project: user_project
+          pipelines = pipelines.preload_pipeline_metadata if ::Feature.enabled?(:pipeline_name_in_api, user_project)
+
+          present paginate(pipelines), with: Entities::Ci::PipelineBasicWithMetadata, project: user_project
         end
 
         desc 'Create a new pipeline' do

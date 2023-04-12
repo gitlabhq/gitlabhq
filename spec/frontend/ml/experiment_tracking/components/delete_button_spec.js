@@ -49,7 +49,7 @@ describe('DeleteButton', () => {
       expect(findModalText().exists()).toBe(true);
     });
 
-    it('submits the form when primary action is clicked', async () => {
+    it('submits the form when primary action is clicked', () => {
       const submitSpy = jest.spyOn(findForm().element, 'submit');
 
       findModal().vm.$emit('primary');

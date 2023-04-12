@@ -63,7 +63,7 @@ describe('Color utils', () => {
       ${'groups:issues:index'} | ${'gl-dark'}  | ${'monokai-light'} | ${true}
     `(
       'is $expected on $page with $bodyClass body class and $ideTheme IDE theme',
-      async ({ page, bodyClass, ideTheme, expected }) => {
+      ({ page, bodyClass, ideTheme, expected }) => {
         document.body.outerHTML = `<body class="${bodyClass}" data-page="${page}"></body>`;
         window.gon = {
           user_color_scheme: ideTheme,

@@ -48,7 +48,7 @@ describe('Packages Cleanup Policy Settings Form', () => {
     wrapper.findByTestId('keep-n-duplicated-package-files-dropdown');
   const findNextRunAt = () => wrapper.findByTestId('next-run-at');
 
-  const submitForm = async () => {
+  const submitForm = () => {
     findForm().trigger('submit');
     return waitForPromises();
   };

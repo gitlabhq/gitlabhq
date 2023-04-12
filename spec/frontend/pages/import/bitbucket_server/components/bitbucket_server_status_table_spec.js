@@ -39,7 +39,7 @@ describe('BitbucketServerStatusTable', () => {
     expect(wrapper.findComponent(BitbucketStatusTable).exists()).toBe(true);
   });
 
-  it('renders Reconfigure button', async () => {
+  it('renders Reconfigure button', () => {
     createComponent(BitbucketStatusTableStub);
     expect(findReconfigureButton().attributes().href).toBe('/reconfigure');
     expect(findReconfigureButton().text()).toBe('Reconfigure');

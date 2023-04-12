@@ -313,7 +313,7 @@ describe('PackagesApp', () => {
     describe('deleting a file', () => {
       const [fileToDelete] = packageFiles();
 
-      const doDeleteFile = async () => {
+      const doDeleteFile = () => {
         findPackageFiles().vm.$emit('delete-files', [fileToDelete]);
 
         findDeleteFileModal().vm.$emit('primary');
@@ -433,7 +433,7 @@ describe('PackagesApp', () => {
     });
 
     describe('deleting multiple files', () => {
-      const doDeleteFiles = async () => {
+      const doDeleteFiles = () => {
         findPackageFiles().vm.$emit('delete-files', packageFiles());
 
         findDeleteFilesModal().vm.$emit('primary');
@@ -636,7 +636,7 @@ describe('PackagesApp', () => {
   });
 
   describe('dependency links', () => {
-    it('does not show the dependency links for a non nuget package', async () => {
+    it('does not show the dependency links for a non nuget package', () => {
       createComponent();
 
       expect(findDependenciesCountBadge().exists()).toBe(false);

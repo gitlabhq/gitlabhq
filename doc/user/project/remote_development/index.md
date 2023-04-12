@@ -14,7 +14,7 @@ FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `vscode_web_ide`. On GitLab.com, this feature is available. The feature is not ready for production use.
 
 WARNING:
-This feature is in [Alpha](../../../policy/alpha-beta-support.md#experiment) and subject to change without notice.
+This feature is an [Experiment](../../../policy/alpha-beta-support.md#experiment) and subject to change without notice.
 
 DISCLAIMER:
 This page contains information related to upcoming products, features, and functionality.

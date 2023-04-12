@@ -14,7 +14,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
   let_it_be(:pipeline) do
     create(:ci_empty_pipeline, project: project, sha: project.commit.id,
-                               ref: project.default_branch, user: user)
+                               ref: project.default_branch, user: user, name: 'Build pipeline')
   end
 
   before do
@@ -41,8 +41,44 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         it 'includes pipeline source' do
           get api("/projects/#{project.id}/pipelines", user)
 
-          expect(json_response.first.keys).to contain_exactly(*%w[id iid project_id sha ref status web_url created_at updated_at source])
+          expect(json_response.first.keys).to contain_exactly(*%w[id iid project_id sha ref status web_url created_at updated_at source name])
         end
+
+        context 'when pipeline_name_in_api feature flag is off' do
+          before do
+            stub_feature_flags(pipeline_name_in_api: false)
+          end
+
+          it 'does not include pipeline name in response and ignores name parameter' do
+            get api("/projects/#{project.id}/pipelines", user), params: { name: 'Chatops pipeline' }
+
+            expect(json_response.length).to eq(1)
+            expect(json_response.first.keys).not_to include('name')
+          end
+        end
+      end
+
+      it 'avoids N+1 queries' do
+        # Call to trigger any one time queries
+        get api("/projects/#{project.id}/pipelines", user), params: {}
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          get api("/projects/#{project.id}/pipelines", user), params: {}
+        end
+
+        3.times do
+          create(
+            :ci_empty_pipeline,
+            project: project,
+            sha: project.commit.id,
+            ref: project.default_branch,
+            user: user,
+            name: 'Build pipeline')
+        end
+
+        expect do
+          get api("/projects/#{project.id}/pipelines", user), params: {}
+        end.not_to exceed_all_query_limit(control)
       end
 
       context 'when parameter is passed' do
@@ -301,6 +337,19 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
               expect(response).to have_gitlab_http_status(:bad_request)
             end
+          end
+        end
+
+        context 'when name is provided' do
+          let_it_be(:pipeline2) { create(:ci_empty_pipeline, project: project, user: user, name: 'Chatops pipeline') }
+
+          it 'filters by name' do
+            get api("/projects/#{project.id}/pipelines", user), params: { name: 'Build pipeline' }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response.length).to eq(1)
+            expect(json_response.first['name']).to eq('Build pipeline')
           end
         end
       end

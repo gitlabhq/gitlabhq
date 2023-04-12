@@ -54,7 +54,7 @@ describe('Manual Variables Form', () => {
     });
   };
 
-  const createComponentWithApollo = async ({ props = {} } = {}) => {
+  const createComponentWithApollo = ({ props = {} } = {}) => {
     const requestHandlers = [[getJobQuery, getJobQueryResponse]];
 
     mockApollo = createMockApollo(requestHandlers);
@@ -309,7 +309,7 @@ describe('Manual Variables Form', () => {
       await createComponentWithApollo();
     });
 
-    it('delete variable button placeholder should only exist when a user cannot remove', async () => {
+    it('delete variable button placeholder should only exist when a user cannot remove', () => {
       expect(findDeleteVarBtnPlaceholder().exists()).toBe(true);
     });
 

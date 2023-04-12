@@ -103,7 +103,7 @@ describe('CustomNotificationsModal', () => {
         ${1}  | ${'new_note'}    | ${'New note'}    | ${false} | ${false}
       `(
         'renders a checkbox for "$eventName" with checked=$enabled',
-        async ({ index, eventName, enabled, loading }) => {
+        ({ index, eventName, enabled, loading }) => {
           const checkbox = findCheckboxAt(index);
           expect(checkbox.text()).toContain(eventName);
           expect(checkbox.vm.$attrs.checked).toBe(enabled);

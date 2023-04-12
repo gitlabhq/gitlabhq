@@ -6,7 +6,7 @@ info: Machine Learning Experiment Tracking is a GitLab Incubation Engineering pr
 
 # MLFlow Client Integration **(FREE)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8560) in GitLab 15.6 as an [Alpha](../../../policy/alpha-beta-support.md#experiment) release [with a flag](../../../administration/feature_flags.md) named `ml_experiment_tracking`. Disabled by default.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8560) in GitLab 15.6 as an [Experiment](../../../policy/alpha-beta-support.md#experiment) release [with a flag](../../../administration/feature_flags.md) named `ml_experiment_tracking`. Disabled by default.
 
 DISCLAIMER:
 MLFlow Client Integration is an experimental feature being developed by the Incubation Engineering Department,

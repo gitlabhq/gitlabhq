@@ -52,7 +52,7 @@ describe('renderObservability', () => {
     );
   });
 
-  it('handle route-update events', async () => {
+  it('handle route-update events', () => {
     component.vm.$router.push('/something?foo=bar');
     component.vm.$emit('route-update', { url: '/some_path' });
     expect(component.vm.$router.currentRoute.path).toBe('/something');

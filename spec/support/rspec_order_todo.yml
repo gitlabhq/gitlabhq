@@ -494,7 +494,6 @@
 - './ee/spec/features/trial_registrations/company_information_spec.rb'
 - './ee/spec/features/trial_registrations/signin_spec.rb'
 - './ee/spec/features/trial_registrations/signup_spec.rb'
-- './ee/spec/features/trials/select_namespace_spec.rb'
 - './ee/spec/features/trials/show_trial_banner_spec.rb'
 - './ee/spec/features/users/arkose_labs_csp_spec.rb'
 - './ee/spec/features/users/login_spec.rb'

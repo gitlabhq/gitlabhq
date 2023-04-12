@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequestPollCachedWidgetEntity do
+RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_review_workflow do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project, refind: true)  { create :project, :repository }
@@ -327,6 +327,41 @@ RSpec.describe MergeRequestPollCachedWidgetEntity do
 
         it 'does not set reports path' do
           expect(subject[path_field]).to be_nil
+        end
+      end
+    end
+  end
+
+  describe 'favicon overlay path' do
+    context 'when merged' do
+      before do
+        resource.mark_as_merged!
+        resource.metrics.update!(merged_by: user)
+      end
+
+      it 'returns merged favicon overlay' do
+        expect(subject[:favicon_overlay_path]).to match_asset_path('/assets/mr_favicons/favicon_status_merged.png')
+      end
+
+      context 'with pipeline' do
+        let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
+
+        it 'returns merged favicon overlay' do
+          expect(subject[:favicon_overlay_path]).to match_asset_path('/assets/mr_favicons/favicon_status_merged.png')
+        end
+      end
+    end
+
+    context 'when not merged' do
+      it 'returns no favicon overlay' do
+        expect(subject[:favicon_overlay_path]).to be_nil
+      end
+
+      context 'with pipeline' do
+        let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
+
+        it 'returns pipeline favicon overlay' do
+          expect(subject[:favicon_overlay_path]).to match_asset_path('/assets/ci_favicons/favicon_status_pending.png')
         end
       end
     end

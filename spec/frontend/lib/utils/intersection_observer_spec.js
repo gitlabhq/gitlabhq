@@ -57,7 +57,7 @@ describe('IntersectionObserver Utility', () => {
       ${true}        | ${'IntersectionAppear'}
     `(
       'should emit the correct event on the entry target based on the computed Intersection',
-      async ({ isIntersecting, event }) => {
+      ({ isIntersecting, event }) => {
         const target = document.createElement('div');
         observer.addEntry({ target, isIntersecting });
 

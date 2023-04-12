@@ -196,6 +196,10 @@ FactoryBot.define do
       confidential { true }
     end
 
+    trait :internal do
+      internal { true }
+    end
+
     trait :with_review do
       review
     end

@@ -85,7 +85,7 @@ describe('PackagesListApp', () => {
     });
   };
 
-  const waitForFirstRequest = async () => {
+  const waitForFirstRequest = () => {
     // emit a search update so the query is executed
     findSearch().vm.$emit('update', { sort: 'NAME_DESC', filters: [] });
     return waitForPromises();

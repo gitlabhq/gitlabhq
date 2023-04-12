@@ -192,7 +192,7 @@ describe('Linked pipeline', () => {
           };
 
           describe('when retryable', () => {
-            beforeEach(async () => {
+            beforeEach(() => {
               createComponent({ propsData: retryablePipeline });
             });
 

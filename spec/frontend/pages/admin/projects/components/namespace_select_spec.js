@@ -45,7 +45,7 @@ describe('NamespaceSelect', () => {
       expect(findNamespaceInput().exists()).toBe(false);
     });
 
-    it('sets appropriate props', async () => {
+    it('sets appropriate props', () => {
       expect(findListbox().props()).toMatchObject({
         items: [
           { text: 'user: Administrator', value: '10' },
@@ -84,7 +84,7 @@ describe('NamespaceSelect', () => {
         expect(findNamespaceInput().attributes('value')).toBe(selectId);
       });
 
-      it('updates the listbox value', async () => {
+      it('updates the listbox value', () => {
         expect(findListbox().props()).toMatchObject({
           selected: selectId,
           toggleText: expectToggleText,

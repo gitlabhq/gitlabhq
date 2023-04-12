@@ -115,7 +115,7 @@ describe('ProtectedBranchEdit', () => {
     });
 
     describe('when clicked', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         mock
           .onPatch(TEST_URL, { protected_branch: { [patchParam]: true } })
           .replyOnce(HTTP_STATUS_OK, {});

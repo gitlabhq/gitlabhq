@@ -354,17 +354,7 @@ RSpec.describe Ci::RetryJobService, feature_category: :continuous_integration do
 
       include_context 'retryable build'
 
-      context 'when retry_job_start_pipeline_after_commit is enabled' do
-        it_behaves_like 'retries the job'
-      end
-
-      context 'when retry_job_start_pipeline_after_commit is disabled' do
-        before do
-          stub_feature_flags(retry_job_start_pipeline_after_commit: false)
-        end
-
-        it_behaves_like 'retries the job'
-      end
+      it_behaves_like 'retries the job'
 
       context 'automatic retryable build' do
         let!(:auto_retryable_build) do
@@ -375,22 +365,9 @@ RSpec.describe Ci::RetryJobService, feature_category: :continuous_integration do
           auto_retryable_build.drop_with_exit_code!('test failure', 1)
         end
 
-        context 'when retry_job_start_pipeline_after_commit is enabled' do
-          it 'creates a new build and enqueues BuildQueueWorker' do
-            expect { drop_build! }.to change { Ci::Build.count }.by(1)
-                                  .and change { BuildQueueWorker.jobs.count }.by(1)
-          end
-        end
-
-        context 'when retry_job_start_pipeline_after_commit is disabled' do
-          before do
-            stub_feature_flags(retry_job_start_pipeline_after_commit: false)
-          end
-
-          it 'creates a new build but does not enqueue BuildQueueWorker' do
-            expect { drop_build! }.to change { Ci::Build.count }.by(1)
-                                  .and change { BuildQueueWorker.jobs.count }.by(0)
-          end
+        it 'creates a new build and enqueues BuildQueueWorker' do
+          expect { drop_build! }.to change { Ci::Build.count }.by(1)
+                                .and change { BuildQueueWorker.jobs.count }.by(1)
         end
       end
 

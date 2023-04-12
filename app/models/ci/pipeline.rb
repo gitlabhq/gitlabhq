@@ -399,6 +399,7 @@ module Ci
     scope :created_before_id, -> (id) { where(arel_table[:id].lt(id)) }
     scope :before_pipeline, -> (pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
     scope :with_pipeline_source, -> (source) { where(source: source) }
+    scope :preload_pipeline_metadata, -> { preload(:pipeline_metadata) }
 
     scope :outside_pipeline_family, ->(pipeline) do
       where.not(id: pipeline.same_family_pipeline_ids)

@@ -421,8 +421,8 @@ export default {
         );
     },
     setFaviconHelper() {
-      if (this.mr.ciStatusFaviconPath) {
-        return setFaviconOverlay(this.mr.ciStatusFaviconPath);
+      if (this.mr.faviconOverlayPath) {
+        return setFaviconOverlay(this.mr.faviconOverlayPath);
       }
       return Promise.resolve();
     },

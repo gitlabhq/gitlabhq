@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
   include ProjectForksHelper
+  include IconsHelper
 
   describe '#format_mr_branch_names' do
     describe 'within the same project' do
@@ -28,7 +29,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
   end
 
   describe '#merge_path_description' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
     let(:forked_project) { fork_project(project) }
     let(:merge_request_forked) { create(:merge_request, source_project: forked_project, target_project: project) }
     let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
@@ -147,6 +148,29 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
 
       it 'returns reviewer label only with include_value: false' do
         expect(helper.reviewers_label(merge_request, include_value: false)).to eq("Reviewers")
+      end
+    end
+  end
+
+  describe '#merge_request_source_branch' do
+    let_it_be(:project) { create(:project) }
+    let(:forked_project) { fork_project(project) }
+    let(:merge_request_forked) { create(:merge_request, source_project: forked_project, target_project: project) }
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+    context 'when merge request is a fork' do
+      subject { merge_request_source_branch(merge_request_forked) }
+
+      it 'does show the fork icon' do
+        expect(subject).to match(/fork/)
+      end
+    end
+
+    context 'when merge request is not a fork' do
+      subject { merge_request_source_branch(merge_request) }
+
+      it 'does not show the fork icon' do
+        expect(subject).not_to match(/fork/)
       end
     end
   end

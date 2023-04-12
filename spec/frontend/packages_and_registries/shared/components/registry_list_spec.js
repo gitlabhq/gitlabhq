@@ -116,7 +116,7 @@ describe('Registry List', () => {
           expect(findDeleteSelected().exists()).toBe(false);
         });
 
-        it('populates the first slot prop correctly', async () => {
+        it('populates the first slot prop correctly', () => {
           expect(findScopedSlots().at(0).exists()).toBe(true);
 
           // it's the first slot

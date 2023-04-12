@@ -297,6 +297,8 @@
   - 1
 - - ldap_group_sync
   - 2
+- - llm_completion
+  - 1
 - - mail_scheduler
   - 2
 - - mailers

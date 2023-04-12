@@ -444,6 +444,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '.preload_pipeline_metadata' do
+    let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, user: user, name: 'Chatops pipeline') }
+
+    it 'loads associations' do
+      result = described_class.preload_pipeline_metadata.first
+
+      expect(result.association(:pipeline_metadata).loaded?).to be(true)
+    end
+  end
+
   describe '.ci_sources' do
     subject { described_class.ci_sources }
 

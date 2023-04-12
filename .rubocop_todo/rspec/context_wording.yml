@@ -169,7 +169,6 @@ RSpec/ContextWording:
     - 'ee/spec/features/protected_branches_spec.rb'
     - 'ee/spec/features/signup_spec.rb'
     - 'ee/spec/features/trial_registrations/company_information_spec.rb'
-    - 'ee/spec/features/trials/select_namespace_spec.rb'
     - 'ee/spec/features/users/login_spec.rb'
     - 'ee/spec/features/users/signup_spec.rb'
     - 'ee/spec/finders/approval_rules/group_finder_spec.rb'

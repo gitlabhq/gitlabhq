@@ -304,7 +304,7 @@ describe('JiraImportForm', () => {
         expect(getContinueButton().text()).toBe('Continue');
       });
 
-      it('is in loading state when the form is submitting', async () => {
+      it('is in loading state when the form is submitting', () => {
         wrapper = mountComponent({ isSubmitting: true });
 
         expect(getContinueButton().props('loading')).toBe(true);
@@ -416,7 +416,7 @@ describe('JiraImportForm', () => {
         wrapper = mountComponent({ hasMoreUsers: true });
       });
 
-      it('calls the GraphQL user mapping mutation', async () => {
+      it('calls the GraphQL user mapping mutation', () => {
         const mutationArguments = {
           mutation: getJiraUserMappingMutation,
           variables: {

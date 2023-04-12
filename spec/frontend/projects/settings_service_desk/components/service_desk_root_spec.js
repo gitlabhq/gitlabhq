@@ -147,7 +147,7 @@ describe('ServiceDeskRoot', () => {
           await waitForPromises();
         });
 
-        it('sends a request to update template', async () => {
+        it('sends a request to update template', () => {
           expect(spy).toHaveBeenCalledWith(provideData.endpoint, {
             issue_template_key: 'Bug',
             outgoing_name: 'GitLab Support Bot',

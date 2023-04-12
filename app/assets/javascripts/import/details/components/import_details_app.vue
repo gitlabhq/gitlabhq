@@ -1,7 +1,9 @@
 <script>
 import { s__ } from '~/locale';
+import ImportDetailsTable from './import_details_table.vue';
 
 export default {
+  components: { ImportDetailsTable },
   props: {
     project: {
       type: Object,
@@ -18,5 +20,6 @@ export default {
 <template>
   <div>
     <h1>{{ $options.i18n.pageTitle }}</h1>
+    <import-details-table />
   </div>
 </template>

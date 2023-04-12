@@ -121,7 +121,7 @@ describe('Poll', () => {
   });
 
   describe('with delayed initial request', () => {
-    it('delays the first request', async () => {
+    it('delays the first request', () => {
       mockServiceCall({ status: HTTP_STATUS_OK, headers: { 'poll-interval': 1 } });
 
       const Polling = new Poll({

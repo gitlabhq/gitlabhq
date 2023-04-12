@@ -182,7 +182,6 @@ Style/PercentLiteralDelimiters:
     - 'ee/app/controllers/groups/protected_environments_controller.rb'
     - 'ee/app/controllers/projects/integrations/jira/issues_controller.rb'
     - 'ee/app/controllers/projects/protected_environments_controller.rb'
-    - 'ee/app/controllers/trials_controller.rb'
     - 'ee/app/finders/iterations_finder.rb'
     - 'ee/app/graphql/types/incident_management/oncall_rotation_date_input_type.rb'
     - 'ee/app/helpers/credentials_inventory_helper.rb'

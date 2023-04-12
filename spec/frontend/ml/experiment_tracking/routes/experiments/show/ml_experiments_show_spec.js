@@ -48,7 +48,7 @@ describe('MlExperimentsShow', () => {
   });
 
   describe('default inputs', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       createWrapper();
     });
 

@@ -932,7 +932,6 @@ Layout/LineLength:
     - 'ee/app/controllers/projects/security/policies_controller.rb'
     - 'ee/app/controllers/projects/security/vulnerabilities/notes_controller.rb'
     - 'ee/app/controllers/subscriptions_controller.rb'
-    - 'ee/app/controllers/trials_controller.rb'
     - 'ee/app/enums/vulnerabilities/dismissal_reason_enum.rb'
     - 'ee/app/finders/compliance_management/merge_requests/compliance_violations_finder.rb'
     - 'ee/app/finders/incident_management/escalation_rules_finder.rb'

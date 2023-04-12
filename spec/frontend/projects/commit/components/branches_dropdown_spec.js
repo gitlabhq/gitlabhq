@@ -59,7 +59,7 @@ describe('BranchesDropdown', () => {
   });
 
   describe('Selecting Dropdown Item', () => {
-    it('emits event', async () => {
+    it('emits event', () => {
       findDropdown().vm.$emit('select', '_anything_');
 
       expect(wrapper.emitted()).toHaveProperty('input');

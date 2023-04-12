@@ -40,7 +40,6 @@ container_scanning:
     reports:
       container_scanning: gl-container-scanning-report.json
       dependency_scanning: gl-dependency-scanning-report.json
-      cyclonedx: "**/gl-sbom-*.cdx.json"
     paths: [gl-container-scanning-report.json, gl-dependency-scanning-report.json, "**/gl-sbom-*.cdx.json"]
   dependencies: []
   script:

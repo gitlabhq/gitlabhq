@@ -715,6 +715,9 @@ msgstr ""
 msgid "%{firstMilestoneName} + %{numberOfOtherMilestones} more"
 msgstr ""
 
+msgid "%{fork_icon} %{source_project_path}:%{source_branch}"
+msgstr ""
+
 msgid "%{gitlab_experience_text}. Don't worry, this information isn't shared outside of your self-managed GitLab instance."
 msgstr ""
 
@@ -1073,6 +1076,9 @@ msgid "%{size} bytes"
 msgstr ""
 
 msgid "%{sourceBranch} into %{targetBranch}"
+msgstr ""
+
+msgid "%{source_project_path}:%{source_branch}"
 msgstr ""
 
 msgid "%{source} %{copyButton} into %{target}"
@@ -22221,6 +22227,9 @@ msgid "Importing..."
 msgstr ""
 
 msgid "Import|GitHub import details"
+msgstr ""
+
+msgid "Import|No import details"
 msgstr ""
 
 msgid "Import|Partially completed"
@@ -44339,6 +44348,9 @@ msgid "The snippet is visible only to project members."
 msgstr ""
 
 msgid "The snippet is visible to any logged in user except external users."
+msgstr ""
+
+msgid "The source project is a fork"
 msgstr ""
 
 msgid "The source project of this merge request has been removed."

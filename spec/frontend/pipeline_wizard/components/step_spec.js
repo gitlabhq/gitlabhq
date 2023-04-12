@@ -207,7 +207,7 @@ describe('Pipeline Wizard - Step Page', () => {
       findInputWrappers();
     });
 
-    it('injects the template when an input wrapper emits a beforeUpdate:compiled event', async () => {
+    it('injects the template when an input wrapper emits a beforeUpdate:compiled event', () => {
       input1.vm.$emit('beforeUpdate:compiled');
 
       expect(wrapper.vm.compiled.toString()).toBe(compiledYamlAfterInitialLoad);

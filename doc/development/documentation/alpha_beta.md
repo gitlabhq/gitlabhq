@@ -4,15 +4,15 @@ stage: none
 group: unassigned
 ---
 
-# Document Alpha, Beta, LA features
+# Documenting Experiment and Beta features
 
 Some features are not generally available and are instead considered
-[Alpha, Beta, or Limited Availability](../../policy/alpha-beta-support.md).
+[Experiment or Beta](../../policy/alpha-beta-support.md).
 
 When you document a feature in one of these three statuses:
 
-- Add `(Alpha)`, `(Beta)`, or `(Limited Availability)` in parentheses after the page or topic title.
-- Do not include `(Alpha)`, `(Beta)`, or `(Limited Availability)` in the left nav.
+- Add `(Experiment)` or `(Beta)` in parentheses after the page or topic title.
+- Do not include `(Experiment)` or `(Beta)` in the left nav.
 - Ensure the version history lists the feature's status.
 
 These features are usually behind a feature flag, which follow [these documentation guidelines](feature_flags.md).
@@ -23,9 +23,9 @@ the `FLAG:` note should be above these details.
 For example:
 
 ```markdown
-## Great new feature (Alpha)
+## Great new feature (Experiment)
 
-> [Introduced](link) in GitLab 15.10. This feature is in [Alpha](<link_to>/policy/alpha-beta-support.md).
+> [Introduced](link) in GitLab 15.10. This feature is an [Experiment](<link_to>/policy/alpha-beta-support.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.
@@ -34,7 +34,7 @@ On GitLab.com, this feature is not available. This feature is not ready for prod
 
 Use this great new feature when you need to do this new thing.
 
-This feature is in [Alpha](<link_to>/policy/alpha-beta-support.md). To join
+This feature is an [Experiment](<link_to>/policy/alpha-beta-support.md). To join
 the list of users testing this feature, do this thing. If you find a bug,
 [open an issue](link).
 ```

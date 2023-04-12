@@ -59,7 +59,7 @@ describe('Pipeline DAG graph wrapper', () => {
       });
     });
 
-    it('does not render the graph', async () => {
+    it('does not render the graph', () => {
       expect(getGraph().exists()).toBe(false);
     });
 
@@ -70,7 +70,7 @@ describe('Pipeline DAG graph wrapper', () => {
 
   describe('when all query variables are defined', () => {
     describe('but the parse fails', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         createComponent({
           graphData: unparseableGraph,
         });
@@ -88,7 +88,7 @@ describe('Pipeline DAG graph wrapper', () => {
     });
 
     describe('parse succeeds', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         createComponent({ method: mount });
       });
 
@@ -102,7 +102,7 @@ describe('Pipeline DAG graph wrapper', () => {
     });
 
     describe('parse succeeds, but the resulting graph is too small', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         createComponent({
           graphData: tooSmallGraph,
         });
@@ -120,7 +120,7 @@ describe('Pipeline DAG graph wrapper', () => {
     });
 
     describe('the returned data is empty', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         createComponent({
           method: mount,
           graphData: graphWithoutDependencies,
@@ -139,7 +139,7 @@ describe('Pipeline DAG graph wrapper', () => {
   });
 
   describe('annotations', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       createComponent();
     });
 

@@ -51,7 +51,7 @@ For more information on:
 
 1. Configure the following attributes so your SAML users cannot change them:
 
-   - [`NameID`](../user/group/saml_sso/index.md#nameid).
+   - [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
    - `Email` when used with `omniauth_auto_link_saml_user`.
 
    If users can change these attributes, they can sign in as other authorized users.
@@ -134,7 +134,7 @@ For more information on:
 
 1. Configure the following attributes so your SAML users cannot change them:
 
-   - [`NameID`](../user/group/saml_sso/index.md#nameid).
+   - [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
    - `Email` when used with `omniauth_auto_link_saml_user`.
 
    If users can change these attributes, they can sign in as other authorized users.
@@ -226,7 +226,7 @@ For more information on:
 
 1. Configure the following attributes so your SAML users cannot change them:
 
-   - [`NameID`](../user/group/saml_sso/index.md#nameid).
+   - [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
    - `Email` when used with `omniauth_auto_link_saml_user`.
 
    If users can change these attributes, they can sign in as other authorized users.
@@ -306,7 +306,7 @@ For more information on:
 
 1. Configure the following attributes so your SAML users cannot change them:
 
-   - [`NameID`](../user/group/saml_sso/index.md#nameid).
+   - [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
    - `Email` when used with `omniauth_auto_link_saml_user`.
 
    If users can change these attributes, they can sign in as other authorized users.
@@ -382,7 +382,7 @@ To configure a SAML application on your IdP, you need at least the following inf
 
 - Assertion consumer service URL.
 - Issuer.
-- [`NameID`](../user/group/saml_sso/index.md#nameid).
+- [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
 - [Email address claim](#configure-assertions).
 
 For an example configuration, see [set up identity providers](#set-up-identity-providers).
@@ -653,7 +653,7 @@ IdPs, contact your provider's support.
 1. Complete the SAML general configuration. Enter:
    - `"Single sign-on URL"`: Use the assertion consumer service URL.
    - `"Audience URI"`: Use the issuer.
-   - [`NameID`](../user/group/saml_sso/index.md#nameid).
+   - [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
    - [Assertions](#configure-assertions).
 1. In the feedback section, enter that you're a customer and creating an
    app for internal use.
@@ -2442,7 +2442,7 @@ The value given is added to the current time at which the response is validated.
 Before setting the `uid` to a unique attribute, make sure that you have configured
 the following attributes so your SAML users cannot change them:
 
-- [`NameID`](../user/group/saml_sso/index.md#nameid).
+- [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
 - `Email` when used with `omniauth_auto_link_saml_user`.
 
 If users can change these attributes, they can sign in as other authorized users.
@@ -3120,7 +3120,7 @@ such as the following:
 | Sign SAML assertion | Optional | Validates the integrity of a SAML assertion. When active, signs the whole response. |
 | Check SAML request signature | Optional | Checks the signature on the SAML response. |
 | Default RelayState | Optional | Specifies the URL users should end up on after successfully signing in through SAML at your IdP. |
-| NameID format | Persistent | See [NameID format details](../user/group/saml_sso/index.md#nameid-format). |
+| NameID format | Persistent | See [NameID format details](../user/group/saml_sso/index.md#manage-user-saml-identity). |
 | Additional URLs | Optional | May include the issuer, identifier, or assertion consumer service URL in other fields on some providers. |
 
 For example configurations, see the [notes on specific providers](#set-up-identity-providers).

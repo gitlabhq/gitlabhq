@@ -470,15 +470,15 @@ describe('MrWidgetOptions', () => {
         });
 
         it('should call setFavicon method', async () => {
-          wrapper.vm.mr.ciStatusFaviconPath = overlayDataUrl;
+          wrapper.vm.mr.faviconOverlayPath = overlayDataUrl;
 
           await wrapper.vm.setFaviconHelper();
 
           expect(setFaviconOverlay).toHaveBeenCalledWith(overlayDataUrl);
         });
 
-        it('should not call setFavicon when there is no ciStatusFaviconPath', async () => {
-          wrapper.vm.mr.ciStatusFaviconPath = null;
+        it('should not call setFavicon when there is no faviconOverlayPath', async () => {
+          wrapper.vm.mr.faviconOverlayPath = null;
           await wrapper.vm.setFaviconHelper();
           expect(faviconElement.getAttribute('href')).toEqual(null);
         });

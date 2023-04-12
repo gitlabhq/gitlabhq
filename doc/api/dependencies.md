@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Dependencies API **(ULTIMATE)**
 
 WARNING:
-This API is in an [Alpha](../policy/alpha-beta-support.md#experiment) stage and considered unstable.
+This API is in an [Experiment](../policy/alpha-beta-support.md#experiment) and considered unstable.
 The response payload may be subject to change or breakage
 across GitLab releases.
 

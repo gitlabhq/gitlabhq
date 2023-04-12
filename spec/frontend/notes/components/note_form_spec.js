@@ -54,7 +54,7 @@ describe('issue_note_form component', () => {
       expect(wrapper.vm.noteHash).toBe(`#note_${props.noteId}`);
     });
 
-    it('return note hash as `#` when `noteId` is empty', async () => {
+    it('return note hash as `#` when `noteId` is empty', () => {
       createComponentWrapper({
         noteId: '',
       });
@@ -203,7 +203,7 @@ describe('issue_note_form component', () => {
         expect(wrapper.emitted('cancelForm')).toBeUndefined();
       });
 
-      it('should be possible to update the note', async () => {
+      it('should be possible to update the note', () => {
         createComponentWrapper();
 
         const textarea = wrapper.find('textarea');
@@ -227,7 +227,7 @@ describe('issue_note_form component', () => {
       });
     });
 
-    it('should be possible to cancel', async () => {
+    it('should be possible to cancel', () => {
       findCancelCommentButton().vm.$emit('click');
 
       expect(wrapper.emitted('cancelForm')).toEqual([[true, false]]);
@@ -237,7 +237,7 @@ describe('issue_note_form component', () => {
       expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(true);
     });
 
-    it('hides resolve checkbox', async () => {
+    it('hides resolve checkbox', () => {
       createComponentWrapper({
         isDraft: false,
         discussion: {
@@ -256,7 +256,7 @@ describe('issue_note_form component', () => {
       expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(false);
     });
 
-    it('hides actions for commits', async () => {
+    it('hides actions for commits', () => {
       createComponentWrapper({ discussion: { for_commit: true } });
 
       expect(wrapper.find('.note-form-actions').text()).not.toContain('Start a review');

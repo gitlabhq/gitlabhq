@@ -22,7 +22,7 @@ describe('NoteTimelineEventButton', () => {
 
   const findTimelineButton = () => wrapper.findComponent(GlButton);
 
-  it('emits click-promote-comment-to-event', async () => {
+  it('emits click-promote-comment-to-event', () => {
     findTimelineButton().vm.$emit('click');
 
     expect(wrapper.emitted('click-promote-comment-to-event')).toEqual([[emitData]]);

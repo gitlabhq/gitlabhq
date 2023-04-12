@@ -149,13 +149,6 @@ Instead of:
 This phrasing is more active and is from the user perspective, rather than the person who implemented the feature.
 [View details in the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/allow-allows).
 
-## Alpha
-
-Use uppercase for **Alpha**. For example: **The XYZ feature is in Alpha.** or **This Alpha release is ready to test.**
-
-You might also want to link to [this section](../../../policy/alpha-beta-support.md#experiment)
-in the handbook when writing about Alpha features.
-
 ## analytics
 
 Use lowercase for **analytics** and its variations, like **contribution analytics** and **issue analytics**.
@@ -497,6 +490,13 @@ Instead of:
 ## expand
 
 Use **expand** instead of **open** when you are talking about expanding or collapsing a section in the UI.
+
+## Experiment
+
+Use uppercase for **Experiment**. For example: **The XYZ feature is an Experiment.** or **This Experiment is ready to test.**
+
+You might also want to link to [this section](../../../policy/alpha-beta-support.md#experiment)
+in the handbook when writing about Experiment features.
 
 ## FAQ
 

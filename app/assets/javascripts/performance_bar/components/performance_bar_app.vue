@@ -133,14 +133,20 @@ export default {
       const fileName = this.requests[0].displayName;
       return `${fileName}_perf_bar_${Date.now()}.json`;
     },
-    memoryReportPath() {
-      return mergeUrlParams({ performance_bar: 'memory' }, window.location.href);
-    },
     showZoekt() {
       return document.body.dataset.page === 'search:show';
     },
     showFlamegraphButtons() {
-      return this.currentRequest.details && this.isGetRequest(this.currentRequestId);
+      return this.isGetRequest(this.currentRequestId);
+    },
+    showMemoryReportButton() {
+      return this.isGetRequest(this.currentRequestId) && this.env === 'development';
+    },
+    memoryReportPath() {
+      return mergeUrlParams(
+        { performance_bar: 'memory' },
+        this.store.findRequest(this.currentRequestId).fullUrl,
+      );
     },
   },
   created() {
@@ -225,11 +231,7 @@ export default {
           >{{ s__('PerformanceBar|Download') }}</gl-link
         >
       </div>
-      <div
-        v-if="currentRequest.details && env === 'development'"
-        id="peek-memory-report"
-        class="view"
-      >
+      <div v-if="showMemoryReportButton" id="peek-memory-report" class="view">
         <gl-link class="gl-text-blue-200" :href="memoryReportPath">{{
           s__('PerformanceBar|Memory report')
         }}</gl-link>

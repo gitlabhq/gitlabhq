@@ -1,5 +1,6 @@
 import { GlSkeletonLoader, GlIcon } from '@gitlab/ui';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import mrDiffCommentFixture from 'test_fixtures/merge_requests/diff_comment.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { sprintf } from '~/locale';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
@@ -41,12 +42,10 @@ const DEFAULT_PROPS = {
 };
 
 describe('User Popover Component', () => {
-  const fixtureTemplate = 'merge_requests/diff_comment.html';
-
   let wrapper;
 
   beforeEach(() => {
-    loadHTMLFixture(fixtureTemplate);
+    setHTMLFixture(mrDiffCommentFixture);
     gon.features = {};
   });
 

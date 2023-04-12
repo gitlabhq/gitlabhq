@@ -32,10 +32,10 @@ module Ci
         new_job.set_enqueue_immediately!
       end
 
-      start_pipeline_proc = -> { start_pipeline(job, new_job) } if start_pipeline && start_pipeline_after_commit?
+      start_pipeline_proc = -> { start_pipeline(job, new_job) } if start_pipeline
 
       new_job.run_after_commit do
-        start_pipeline_proc.call if start_pipeline_proc
+        start_pipeline_proc&.call
 
         ::Ci::CopyCrossDatabaseAssociationsService.new.execute(job, new_job)
 
@@ -69,8 +69,6 @@ module Ci
         next if new_job.failed?
 
         ResetSkippedJobsService.new(project, current_user).execute(job)
-
-        start_pipeline(job, new_job) unless start_pipeline_after_commit?
       end
     end
 
@@ -84,11 +82,6 @@ module Ci
       Ci::PipelineCreation::StartPipelineService.new(job.pipeline).execute
       new_job.reset
     end
-
-    def start_pipeline_after_commit?
-      Feature.enabled?(:retry_job_start_pipeline_after_commit, project)
-    end
-    strong_memoize_attr :start_pipeline_after_commit?
   end
 end
 

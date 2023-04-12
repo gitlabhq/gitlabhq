@@ -74,7 +74,7 @@ describe('Harbor List Page', () => {
   });
 
   describe('isLoading is true', () => {
-    it('shows the skeleton loader', async () => {
+    it('shows the skeleton loader', () => {
       mountComponent();
       fireFirstSortUpdate();
 
@@ -93,7 +93,7 @@ describe('Harbor List Page', () => {
       expect(findCliCommands().exists()).toBe(false);
     });
 
-    it('title has the metadataLoading props set to true', async () => {
+    it('title has the metadataLoading props set to true', () => {
       mountComponent();
       fireFirstSortUpdate();
 

@@ -1,9 +1,9 @@
 /* eslint-disable import/no-commonjs, no-new */
 
+import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
 import htmlPipelineSchedulesEditSnippets from 'test_fixtures/snippets/show.html';
 import htmlPipelineSchedulesEditCommit from 'test_fixtures/commit/show.html';
-import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';

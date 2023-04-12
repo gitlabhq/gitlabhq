@@ -129,7 +129,7 @@ describe('Pipelines stage component', () => {
       await axios.waitForAll();
     });
 
-    it('renders the received data and emits the correct events', async () => {
+    it('renders the received data and emits the correct events', () => {
       expect(findDropdownMenu().text()).toContain(stageReply.latest_statuses[0].name);
       expect(findDropdownMenuTitle().text()).toContain(stageReply.name);
       expect(eventHub.$emit).toHaveBeenCalledWith('clickedDropdown');
