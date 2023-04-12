@@ -228,7 +228,8 @@ The version of the component can be (in order of highest priority first):
 
 1. A commit SHA - For example: `gitlab.com/gitlab-org/dast@e3262fdd0914fa823210cdb79a8c421e2cef79d8`
 1. A tag - For example: `gitlab.com/gitlab-org/dast@1.0`
-1. A special moving target version that points to the most recent released tag - For example: `gitlab.com/gitlab-org/dast@~latest`
+1. A special moving target version that points to the most recent released tag. The target project must be
+explicitly marked as a [catalog resource](#catalog-resource) - For example: `gitlab.com/gitlab-org/dast@~latest`
 1. A branch name - For example: `gitlab.com/gitlab-org/dast@master`
 
 If a tag and branch exist with the same name, the tag takes precedence over the branch.

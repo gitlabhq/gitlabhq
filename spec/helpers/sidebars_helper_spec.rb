@@ -405,6 +405,10 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       expect(helper.super_sidebar_nav_panel(nav: 'your_work', user: user)).to be_a(Sidebars::YourWork::Panel)
     end
 
+    it 'returns Search Panel for search nav' do
+      expect(helper.super_sidebar_nav_panel(nav: 'search', user: user)).to be_a(Sidebars::Search::Panel)
+    end
+
     it 'returns "Your Work" Panel as a fallback', :use_clean_rails_memory_store_caching do
       expect(helper.super_sidebar_nav_panel(user: user)).to be_a(Sidebars::YourWork::Panel)
     end

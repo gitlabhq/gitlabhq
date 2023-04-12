@@ -244,6 +244,28 @@ approval rule for certain branches:
 1. To enable this configuration, read
    [Code Owner's approvals for protected branches](../../protected_branches.md#require-code-owner-approval-on-a-protected-branch).
 
+## Code coverage check approval
+
+You can require specific approvals in the case that a merge request would reduce code test
+coverage.
+
+For more information, see [Coverage check approval rule](../../../../ci/testing/code_coverage.md#coverage-check-approval-rule).
+
+## Security Approvals **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357021) in GitLab 15.0.
+
+You can use [scan result policies](../../../application_security/policies/scan-result-policies.md#scan-result-policy-editor) to define security approvals based on the status of vulnerabilities in the merge request and the default branch.
+Details for each security policy is shown in the Security Approvals section of your Merge Request configuration.
+
+The security approval rules are applied to all merge requests until the pipeline is complete. The application of the
+security approval rules prevents users from merging in code before the security scans run. After the pipeline is
+complete, the security approval rules are checked to determine if the security approvals are still required.
+
+![Security Approvals](img/security_approvals_v15_0.png)
+
+These policies are both created and edited in the [security policy editor](../../../application_security/policies/index.md#policy-editor).
+
 ## Troubleshooting
 
 ### Approval rule name can't be blank
@@ -265,18 +287,3 @@ isn't recognized as a valid Code Owner for the project, nor does it display in t
 project's **Approvals** list. To fix this problem, add the approval group as a shared group
 high enough in the shared hierarchy so the project requiring review inherits this
 group of users.
-
-## Security Approvals **(ULTIMATE)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357021) in GitLab 15.0.
-
-You can use [scan result policies](../../../application_security/policies/scan-result-policies.md#scan-result-policy-editor) to define security approvals based on the status of vulnerabilities in the merge request and the default branch.
-Details for each security policy is shown in the Security Approvals section of your Merge Request configuration.
-
-The security approval rules are applied to all merge requests until the pipeline is complete. The application of the
-security approval rules prevents users from merging in code before the security scans run. Once the pipeline is
-complete, the security approval rules are checked to determine if the security approvals are still required.
-
-![Security Approvals](img/security_approvals_v15_0.png)
-
-These policies are both created and edited in the [security policy editor](../../../application_security/policies/index.md#policy-editor).

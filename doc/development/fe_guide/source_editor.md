@@ -17,6 +17,14 @@ GitLab features use it, including:
 - [Web Editor](../../user/project/repository/web_editor.md)
 - [Security Policies](../../user/application_security/policies/index.md)
 
+## When to use Source Editor
+
+Use Source Editor only when users need to edit the file content.
+If you only need to display source code, consider using the [`BlobContent`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/blob/components/blob_content.vue) component.
+
+If the page you're working on is already loading the Source Editor,
+displaying read-only content in the Source Editor is still a valid option.
+
 ## How to use Source Editor
 
 Source Editor is framework-agnostic and can be used in any application, including both

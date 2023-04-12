@@ -96,9 +96,7 @@ RSpec.shared_examples 'hardware device for 2fa' do |device_type|
       end
 
       it 'provides a button that shows the fallback otp code UI' do
-        expect(page).to have_link('Sign in via 2FA code')
-
-        click_link('Sign in via 2FA code')
+        click_button(_('Sign in via 2FA code'))
 
         assert_fallback_ui(page)
       end

@@ -16,31 +16,30 @@ module Banzai
       # by converting it into the ```math syntax. In this way, we can ensure
       # that it's considered a code block and will not have any markdown processed inside it.
 
-      # Corresponds to the "$$\n...\n$$" syntax
-      REGEX = %r{
-          #{::Gitlab::Regex.markdown_code_or_html_blocks}
-        |
-          (?=(?<=^\n|\A)\$\$\ *\n.*\n\$\$\ *(?=\n$|\z))(?:
-            # Display math block:
-            # $$
-            # latex math
-            # $$
-
-            (?<=^\n|\A)\$\$\ *\n
-            (?<display_math>
-              (?:.)+?
-            )
-            \n\$\$\ *(?=\n$|\z)
-          )
-      }mx.freeze
+      # Display math block:
+      # $$
+      # latex math
+      # $$
+      REGEX =
+        "#{::Gitlab::Regex.markdown_code_or_html_blocks_or_html_comments_untrusted}" \
+        '|' \
+        '^\$\$\ *\n' \
+        '(?P<display_math>' \
+        '(?:\n|.)*?' \
+        ')' \
+        '\n\$\$\ *$' \
+        .freeze
 
       def call
-        @text.gsub(REGEX) do
-          if $~[:display_math]
-            # change from $$ to ```math
-            "```math\n#{$~[:display_math]}\n```"
+        regex = Gitlab::UntrustedRegexp.new(REGEX, multiline: true)
+        return @text unless regex.match?(@text)
+
+        regex.replace_gsub(@text) do |match|
+          # change from $$ to ```math
+          if match[:display_math]
+            "```math\n#{match[:display_math]}\n```"
           else
-            $~[0]
+            match.to_s
           end
         end
       end

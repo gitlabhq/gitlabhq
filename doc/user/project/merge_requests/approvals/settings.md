@@ -153,13 +153,6 @@ To do this:
    select **Remove approvals by Code Owners if their files changed**.
 1. Select **Save changes**.
 
-## Code coverage check approvals
-
-You can require specific approvals if a merge request would result in a decline in code test
-coverage.
-
-For more information, see [Coverage check approval rule](../../../../ci/pipelines/settings.md#coverage-check-approval-rule).
-
 ## Settings cascading
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285410) in GitLab 14.4. [Deployed behind the `group_merge_request_approval_settings_feature_flag` flag](../../../../administration/feature_flags.md), disabled by default.

@@ -4,16 +4,16 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Terraform Registry API **(FREE)**
+# Terraform Module Registry API **(FREE)**
 
-This is the API documentation for [Terraform Modules](../../user/packages/terraform_module_registry/index.md).
+This is the API documentation for the [Terraform Module Registry](../../user/packages/terraform_module_registry/index.md).
 
 WARNING:
 This API is used by the [Terraform CLI](https://www.terraform.io/)
 and is generally not meant for manual consumption. Undocumented authentication methods might be removed in the future.
 
 For instructions on how to upload and install Terraform modules from the GitLab
-infrastructure registry, see the [Terraform modules registry documentation](../../user/packages/terraform_module_registry/index.md).
+Terraform Module Registry, see the [Terraform Module Registry documentation](../../user/packages/terraform_module_registry/index.md).
 
 ## List available versions for a specific module
 
@@ -35,7 +35,7 @@ curl --header "Authorization: Bearer <personal_access_token>" "https://gitlab.ex
 
 Example response:
 
-```shell
+```json
 {
   "modules": [
     {
@@ -93,9 +93,9 @@ curl --header "Authorization: Bearer <personal_access_token>" "https://gitlab.ex
 
 Example response:
 
-```shell
+```json
 {
-  "name": "hellow-world/local",
+  "name": "hello-world/local",
   "provider": "local",
   "providers": [
     "local"
@@ -132,9 +132,9 @@ curl --header "Authorization: Bearer <personal_access_token>" "https://gitlab.ex
 
 Example response:
 
-```shell
+```json
 {
-  "name": "hellow-world/local",
+  "name": "hello-world/local",
   "provider": "local",
   "providers": [
     "local"
@@ -171,7 +171,7 @@ curl --header "Authorization: Bearer <personal_access_token>" "https://gitlab.ex
 
 Example response:
 
-```shell
+```plaintext
 HTTP/1.1 204 No Content
 Content-Length: 0
 X-Terraform-Get: /api/v4/packages/terraform/modules/v1/group/hello-world/local/1.0.0/file?token=&archive=tgz
@@ -200,7 +200,7 @@ curl --header "Authorization: Bearer <personal_access_token>" "https://gitlab.ex
 
 Example response:
 
-```shell
+```plaintext
 HTTP/1.1 204 No Content
 Content-Length: 0
 X-Terraform-Get: /api/v4/packages/terraform/modules/v1/group/hello-world/local/1.0.0/file?token=&archive=tgz

@@ -1329,6 +1329,13 @@ Use lowercase for **terminal**. For example:
 - Open a terminal.
 - From a terminal, run the `docker login` command.
 
+## Terraform Module Registry
+
+Use title case for the GitLab Terraform Module Registry, but use lowercase `m` when
+talking about non-specific modules. For example:
+
+- You can publish a Terraform module to your project's Terraform Module Registry.
+
 ## text box
 
 Use **text box** instead of **field** or **box** when referring to the UI element.

@@ -7,8 +7,7 @@ import syntaxHighlight from '~/syntax_highlight';
 initCompareSelector();
 
 new Diff(); // eslint-disable-line no-new
-const paddingTop = 16;
-initDiffStatsDropdown(document.querySelector('.navbar-gitlab').offsetHeight - paddingTop);
+initDiffStatsDropdown(true);
 GpgBadges.fetch();
 
 syntaxHighlight([document.querySelector('.files')]);

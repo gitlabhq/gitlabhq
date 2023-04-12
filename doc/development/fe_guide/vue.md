@@ -16,11 +16,23 @@ What is described in the following sections can be found in these examples:
 - [Security products](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/app/assets/javascripts/vue_shared/security_reports)
 - [Registry](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/assets/javascripts/registry/stores)
 
+## When to add Vue application
+
+Sometimes, HAML page is enough to satisfy requirements. This statement is correct primarily for the static pages or pages that have very little logic. How do we know it's worth adding a Vue application to the page? The answer is "when we need to maintain application state and synchronize the rendered page with it".
+
+To better explain this, let's imagine the page that has one toggle, and toggling it sends an API request. This case does not involve any state we want to maintain, we send the request and switch the toggle. However, if we add ont more toggle that should always be the opposite to the first one, we need a _state_: one toggle should be "aware" about the state of another one. When written in plain JavaScript, this logic usually involves listening to DOM event and reacting with modifying DOM. Cases like this are much easier to handle with Vue.js so we should create a Vue application here.
+
+### What are some flags signaling that you might need Vue application?
+
+- when you need to define complex conditionals based on multiple factors and update them on user interaction;
+- when you have to maintain any form of application state and share it between tags/elements;
+- when you expect complex logic to be added in the future - it's easier to start with basic Vue application than having to rewrite JS/HAML to Vue on the next step.
+
 ## Vue architecture
 
 All new features built with Vue.js must follow a [Flux architecture](https://facebookarchive.github.io/flux/).
 The main goal we are trying to achieve is to have only one data flow, and only one data entry.
-To achieve this goal we use [Vuex](#vuex).
+To achieve this goal we use [Vuex](#vuex) or [Apollo Client](graphql.md#libraries)
 
 You can also read about this architecture in Vue documentation about
 [state management](https://v2.vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch)

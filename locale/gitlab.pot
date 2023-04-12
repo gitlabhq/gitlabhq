@@ -23087,13 +23087,13 @@ msgstr ""
 msgid "InfrastructureRegistry|For more information on the Terraform registry, %{linkStart}see our documentation%{linkEnd}."
 msgstr ""
 
-msgid "InfrastructureRegistry|Infrastructure Registry"
-msgstr ""
-
 msgid "InfrastructureRegistry|Publish and share your modules. %{docLinkStart}More information%{docLinkEnd}"
 msgstr ""
 
 msgid "InfrastructureRegistry|Terraform"
+msgstr ""
+
+msgid "InfrastructureRegistry|Terraform Module Registry"
 msgstr ""
 
 msgid "InfrastructureRegistry|Terraform modules are the main way to package and reuse resource configurations with Terraform. Learn more about how to %{noPackagesLinkStart}create Terraform modules%{noPackagesLinkEnd} in GitLab."
@@ -43524,6 +43524,12 @@ msgid "Terms of service"
 msgstr ""
 
 msgid "Terraform"
+msgstr ""
+
+msgid "Terraform Module Registry"
+msgstr ""
+
+msgid "Terraform modules"
 msgstr ""
 
 msgid "TerraformBanner|Learn more about GitLab's Backend State"

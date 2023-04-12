@@ -227,3 +227,5 @@ Search/NamespacedClass:
     - 'spec/support/helpers/filtered_search_helpers.rb'
     - 'spec/support/helpers/search_helpers.rb'
     - 'spec/support/helpers/search_settings_helpers.rb'
+    - 'lib/sidebars/search/panel.rb'
+    - 'spec/lib/sidebars/search/panel_spec.rb'

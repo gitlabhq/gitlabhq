@@ -1,4 +1,4 @@
-import { GlBadge, GlIcon, GlAvatarLabeled } from '@gitlab/ui';
+import { GlButton, GlBadge, GlIcon, GlAvatarLabeled, GlAvatarLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import IssuableHeader from '~/vue_shared/issuable/show/components/issuable_header.vue';
@@ -13,7 +13,10 @@ const issuableHeaderProps = {
 describe('IssuableHeader', () => {
   let wrapper;
 
+  const findAvatar = () => wrapper.findByTestId('avatar');
   const findTaskStatusEl = () => wrapper.findByTestId('task-status');
+  const findButton = () => wrapper.findComponent(GlButton);
+  const findGlAvatarLink = () => wrapper.findComponent(GlAvatarLink);
 
   const createComponent = (props = {}, { stubs } = {}) => {
     wrapper = shallowMountExtended(IssuableHeader, {
@@ -40,7 +43,7 @@ describe('IssuableHeader', () => {
     describe('authorId', () => {
       it('returns numeric ID from GraphQL ID of `author` prop', () => {
         createComponent();
-        expect(wrapper.vm.authorId).toBe(1);
+        expect(findGlAvatarLink().attributes('data-user-id')).toBe('1');
       });
     });
   });
@@ -52,12 +55,14 @@ describe('IssuableHeader', () => {
 
     it('dispatches `click` event on sidebar toggle button', () => {
       createComponent();
-      wrapper.vm.toggleSidebarButtonEl = document.querySelector('.js-toggle-right-sidebar-button');
-      jest.spyOn(wrapper.vm.toggleSidebarButtonEl, 'dispatchEvent').mockImplementation(jest.fn);
+      const toggleSidebarButtonEl = document.querySelector('.js-toggle-right-sidebar-button');
+      const dispatchEvent = jest
+        .spyOn(toggleSidebarButtonEl, 'dispatchEvent')
+        .mockImplementation(jest.fn);
 
-      wrapper.vm.handleRightSidebarToggleClick();
+      findButton().vm.$emit('click');
 
-      expect(wrapper.vm.toggleSidebarButtonEl.dispatchEvent).toHaveBeenCalledWith(
+      expect(dispatchEvent).toHaveBeenCalledWith(
         expect.objectContaining({
           type: 'click',
         }),
@@ -109,7 +114,7 @@ describe('IssuableHeader', () => {
         href: webUrl,
         target: '_blank',
       };
-      const avatarEl = wrapper.findByTestId('avatar');
+      const avatarEl = findAvatar();
       expect(avatarEl.exists()).toBe(true);
       expect(avatarEl.attributes()).toMatchObject(avatarElAttrs);
       expect(avatarEl.findComponent(GlAvatarLabeled).attributes()).toMatchObject({

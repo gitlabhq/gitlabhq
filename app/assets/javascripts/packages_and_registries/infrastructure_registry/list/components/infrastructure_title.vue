@@ -36,7 +36,7 @@ export default {
     },
   },
   i18n: {
-    LIST_TITLE_TEXT: s__('InfrastructureRegistry|Infrastructure Registry'),
+    LIST_TITLE_TEXT: s__('InfrastructureRegistry|Terraform Module Registry'),
     LIST_INTRO_TEXT: s__(
       'InfrastructureRegistry|Publish and share your modules. %{docLinkStart}More information%{docLinkEnd}',
     ),

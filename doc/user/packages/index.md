@@ -14,15 +14,9 @@ packages, which can be easily consumed as a dependency in downstream projects.
 
 The GitLab [Container Registry](container_registry/index.md) is a secure and private registry for container images. It's built on open source software and completely integrated within GitLab. Use GitLab CI/CD to create and publish images. Use the GitLab [API](../../api/container_registry.md) to manage the registry across groups and projects.
 
-## Infrastructure Registry
+## Terraform Module Registry
 
-The GitLab [Infrastructure Registry](infrastructure_registry/index.md) is a secure and private registry for infrastructure packages. You can use GitLab CI/CD to create and publish infrastructure packages.
-
-The Infrastructure Registry supports the following formats:
-
-| Package type | GitLab version |
-| ------------ | -------------- |
-| [Terraform Module](terraform_module_registry/index.md) | 14.0+ |
+The GitLab [Terraform Module Registry](terraform_module_registry/index.md) is a secure and private registry for Terraform modules. You can use GitLab CI/CD to create and publish modules.
 
 ## Dependency Proxy
 

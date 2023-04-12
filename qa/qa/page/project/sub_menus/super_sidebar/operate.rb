@@ -13,7 +13,7 @@ module QA
             end
 
             def go_to_infrastructure_registry
-              open_operate_submenu('Infrastructure Registry')
+              open_operate_submenu('Terraform modules')
             end
 
             def go_to_kubernetes_clusters

@@ -1189,10 +1189,21 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
         MARKDOWN
       end
 
-      it { is_expected.to match(%(<section>\nsomething\n</section>)) }
-      it { is_expected.not_to match(%(must start in first column <section>\nsomething\n</section>)) }
-      it { is_expected.not_to match(%(<section>must be multi-line</section>)) }
-      it { expect(subject.match(markdown)[:html]).to eq expected }
+      describe 'normal regular expression' do
+        it { is_expected.to match(%(<section>\nsomething\n</section>)) }
+        it { is_expected.not_to match(%(must start in first column <section>\nsomething\n</section>)) }
+        it { is_expected.not_to match(%(<section>must be multi-line</section>)) }
+        it { expect(subject.match(markdown)[:html]).to eq expected }
+      end
+
+      describe 'untrusted regular expression' do
+        subject { Gitlab::UntrustedRegexp.new(described_class::MARKDOWN_HTML_BLOCK_REGEX_UNTRUSTED, multiline: true) }
+
+        it { is_expected.to match(%(<section>\nsomething\n</section>)) }
+        it { is_expected.not_to match(%(must start in first column <section>\nsomething\n</section>)) }
+        it { is_expected.not_to match(%(<section>must be multi-line</section>)) }
+        it { expect(subject.match(markdown)[:html]).to eq expected }
+      end
     end
 
     context 'HTML comment lines' do

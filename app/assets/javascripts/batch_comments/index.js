@@ -7,6 +7,8 @@ import store from '~/mr_notes/stores';
 export const initReviewBar = () => {
   const el = document.getElementById('js-review-bar');
 
+  if (!el) return;
+
   Vue.use(VueApollo);
 
   // eslint-disable-next-line no-new

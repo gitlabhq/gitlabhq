@@ -115,4 +115,6 @@ _What tasks or actions should the user be capable of performing with this featur
 
 /label ~wg-ai-integration
 /cc @tmccaslin @hbenson @wayne @pedroms @jmandell
-/ confidential
+/confidential
+
+Make change to this template here: https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/AI%20Project%20Proposal.md 

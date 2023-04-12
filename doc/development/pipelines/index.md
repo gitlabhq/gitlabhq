@@ -176,6 +176,20 @@ graph LR
     A --"artifact: list of test files"--> B & C
 ```
 
+## Merge Trains
+
+### Why do we need to have a “stable” master branch to enable merge trains?
+
+If the master branch is unstable (i.e. CI/CD pipelines for the master branch are failing frequently), all of the merge requests pipelines that were added AFTER a faulty merge request pipeline would have to be **cancelled** and **added back to the train**, which would create a lot of delays if the merge train is long.
+
+### How stable does the master branch have to be for us to enable merge trains?
+
+We don't have a specific number, but we need to have better numbers for flaky tests failures and infrastructure failures (see the [Master Broken Incidents RCA Dashboard](https://app.periscopedata.com/app/gitlab/1082465/Master-Broken-Incidents-Root-Cause-Analysis)).
+
+### Could we gradually move to merge trains in our CI/CD configuration?
+
+There was a proposal from a contributor, but the approach is not without some downsides: [see the original proposal and discussion](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/195#note_1117151994).
+
 ## Faster feedback for some merge requests
 
 ### Broken Master Fixes

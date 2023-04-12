@@ -299,6 +299,32 @@ References should be parseable even inside _<%= merge_request.to_reference %>_ e
   v^2 + w^2 = x^2
   ```
 
+Parsed correctly when between code blocks
+
+```ruby
+x = 1
+```
+
+$$
+a^2+b^2=c^2
+$$
+
+```
+plaintext
+```
+
+Parsed correctly with a mixture of HTML comments and HTML blocks
+
+<!-- sdf -->
+
+$$
+a^2+b^2=c^2
+$$
+
+<h1>
+html
+</h1>
+
 ### Gollum Tags
 
 - [[linked-resource]]

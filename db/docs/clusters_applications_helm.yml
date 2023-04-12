@@ -1,7 +1,5 @@
 ---
 table_name: clusters_applications_helm
-classes:
-- Clusters::Applications::Helm
 feature_categories:
 - kubernetes_management
 description: "(Deprecated) A GitLab managed Helm installation in a Kubernetes cluster"

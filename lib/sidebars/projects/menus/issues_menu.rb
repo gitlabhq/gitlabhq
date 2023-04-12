@@ -57,7 +57,8 @@ module Sidebars
         override :pill_count
         def pill_count
           strong_memoize(:pill_count) do
-            context.project.open_issues_count(context.current_user)
+            count = context.project.open_issues_count(context.current_user)
+            format_cached_count(1000, count)
           end
         end
 

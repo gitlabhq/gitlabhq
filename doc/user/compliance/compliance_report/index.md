@@ -85,10 +85,10 @@ The following are unavailable compliance violations that are tracked in [epic 52
 |:-------------------------------------|:---------------|:---------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------|
 | Pipeline failed                      | Medium         | [Pipeline results](../../../ci/pipelines/index.md)                                     | Merge requests pipeline failed and was merged.                                                     |
 | Pipeline passed with warnings        | Info           | [Pipeline results](../../../ci/pipelines/index.md)                                     | Merge request pipeline passed with warnings and was merged.                                        |
-| Code coverage down more than 10%     | High           | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results) | Code coverage report for the merge request indicates a reduction in coverage of more than 10%.     |
-| Code coverage down between 5% to 10% | Medium         | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results) | Code coverage report for the merge request indicates a reduction in coverage of between 5% to 10%. |
-| Code coverage down between 1% to 5%  | Low            | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results) | Code coverage report for the merge request indicates a reduction in coverage of between 1% to 5%.  |
-| Code coverage down less than 1%      | Info           | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results) | Code coverage report for the merge request indicates a reduction in coverage of less than 1%.      |
+| Code coverage down more than 10%     | High           | [Code coverage](../../../ci/testing/code_coverage.md#view-code-coverage-results-in-the-mr) | Code coverage report for the merge request indicates a reduction in coverage of more than 10%.     |
+| Code coverage down between 5% to 10% | Medium         | [Code coverage](../../../ci/testing/code_coverage.md#view-code-coverage-results-in-the-mr) | Code coverage report for the merge request indicates a reduction in coverage of between 5% to 10%. |
+| Code coverage down between 1% to 5%  | Low            | [Code coverage](../../../ci/testing/code_coverage.md#view-code-coverage-results-in-the-mr) | Code coverage report for the merge request indicates a reduction in coverage of between 1% to 5%.  |
+| Code coverage down less than 1%      | Info           | [Code coverage](../../../ci/testing/code_coverage.md#view-code-coverage-results-in-the-mr) | Code coverage report for the merge request indicates a reduction in coverage of less than 1%.      |
 
 <!-- vale gitlab.SubstitutionWarning = YES -->
 

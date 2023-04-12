@@ -567,11 +567,11 @@ RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
       end
     end
 
-    describe 'Infrastructure Registry' do
-      it 'shows link to infrastructure registry page' do
+    describe 'Terraform modules' do
+      it 'shows link to terraform modules page' do
         render
 
-        expect(rendered).to have_link('Infrastructure Registry', href: project_infrastructure_registry_index_path(project))
+        expect(rendered).to have_link('Terraform modules', href: project_infrastructure_registry_index_path(project))
       end
 
       context 'when package registry config is disabled' do
@@ -580,7 +580,7 @@ RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
 
           render
 
-          expect(rendered).not_to have_link('Infrastructure Registry', href: project_infrastructure_registry_index_path(project))
+          expect(rendered).not_to have_link('Terraform modules', href: project_infrastructure_registry_index_path(project))
         end
       end
     end

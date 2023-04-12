@@ -45,7 +45,7 @@ class FakeWebauthnDevice
         return Promise.resolve(result);
       };
     JS
-    @page.click_link('Try again?', href: false)
+    @page.click_button(_('Try again?'))
   end
 
   def fake_webauthn_authentication

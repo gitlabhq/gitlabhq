@@ -1,5 +1,8 @@
 #js-authenticate-token-2fa
-%a.gl-button.btn.btn-block.btn-confirm#js-login-2fa-device{ href: '#' }= _("Sign in via 2FA code")
+= render Pajamas::ButtonComponent.new(variant: :confirm,
+  block: true,
+  button_options: { id: 'js-login-2fa-device' }) do
+  = _("Sign in via 2FA code")
 
 -# haml-lint:disable InlineJavaScript
 %script#js-authenticate-token-2fa-in-progress{ type: "text/template" }
@@ -9,7 +12,9 @@
 %script#js-authenticate-token-2fa-error{ type: "text/template" }
   %div
     %p <%= error_message %> (<%= error_name %>)
-    %a.btn.btn-default.gl-button.btn-block#js-token-2fa-try-again= _("Try again?")
+    = render Pajamas::ButtonComponent.new(block: true,
+      button_options: { id: 'js-token-2fa-try-again', class: 'gl-mb-3' }) do
+      = _("Try again?")
 
 -# haml-lint:disable InlineJavaScript
 %script#js-authenticate-token-2fa-authenticated{ type: "text/template" }

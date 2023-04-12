@@ -73,7 +73,7 @@ module NavbarStructureHelper
     insert_after_sub_nav_item(
       _('Package Registry'),
       within: _('Packages and registries'),
-      new_sub_nav_item_name: _('Infrastructure Registry')
+      new_sub_nav_item_name: _('Terraform modules')
     )
   end
 

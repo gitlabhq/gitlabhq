@@ -65,7 +65,7 @@ module Sidebars
           end
 
           ::Sidebars::MenuItem.new(
-            title: _('Infrastructure Registry'),
+            title: _('Terraform modules'),
             link: project_infrastructure_registry_index_path(context.project),
             super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
             active_routes: { controller: :infrastructure_registry },
