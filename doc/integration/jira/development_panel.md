@@ -8,6 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/233149) from GitLab Premium to GitLab Free in 13.4.
 
+The Jira development panel connects all GitLab projects in a group or personal namespace.
 You can view GitLab activity from the Jira development panel.
 
 When you're in GitLab, you can refer to a Jira issue by ID.

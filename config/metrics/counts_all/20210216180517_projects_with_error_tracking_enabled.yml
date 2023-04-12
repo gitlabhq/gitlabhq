@@ -5,7 +5,6 @@ description: Projects where error tracking is enabled
 product_section: ops
 product_stage: monitor
 product_group: monitor
-product_category: error_tracking
 value_type: number
 status: active
 time_frame: all

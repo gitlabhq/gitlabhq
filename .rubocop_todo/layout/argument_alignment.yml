@@ -1203,7 +1203,6 @@ Layout/ArgumentAlignment:
     - 'ee/lib/ee/api/entities/member.rb'
     - 'ee/lib/ee/api/entities/merge_request_approval_state.rb'
     - 'ee/lib/ee/api/entities/merge_request_approval_state_rule.rb'
-    - 'ee/lib/ee/api/entities/merge_train.rb'
     - 'ee/lib/ee/api/entities/project.rb'
     - 'ee/lib/ee/api/groups.rb'
     - 'ee/lib/ee/api/helpers/issues_helpers.rb'

@@ -3170,7 +3170,7 @@ class Project < ApplicationRecord
   private
 
   def pages_unique_domain_enabled?
-    Feature.enabled?(:pages_unique_domain) &&
+    Feature.enabled?(:pages_unique_domain, self) &&
       project_setting.pages_unique_domain_enabled?
   end
 

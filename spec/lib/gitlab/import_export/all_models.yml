@@ -718,7 +718,7 @@ project:
 - webide_pipelines
 - reviews
 - incident_management_setting
-- merge_trains
+- merge_train_cars
 - designs
 - project_aliases
 - external_pull_requests

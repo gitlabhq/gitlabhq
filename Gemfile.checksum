@@ -147,7 +147,7 @@
 {"name":"escape_utils","version":"1.2.1","platform":"ruby","checksum":"e5292fe8d7e12a9bcb4502d99e28fb602e4e1514690d98a1c4957f6f77b4b162"},
 {"name":"et-orbi","version":"1.2.7","platform":"ruby","checksum":"3b693d47f94a4060ccc07e60adda488759b1e8b9228a633ebbad842dfc245fb4"},
 {"name":"ethon","version":"0.15.0","platform":"ruby","checksum":"0809805a035bc10f54162ca99f15ded49e428e0488bcfe1c08c821e18261a74d"},
-{"name":"excon","version":"0.90.0","platform":"ruby","checksum":"01beac0f20652b12de95aef931f72bcb82ffb009e1c34c42a5cf5df93f4070ae"},
+{"name":"excon","version":"0.99.0","platform":"ruby","checksum":"09f0de591b5bd1c642680aa1340538a16b90c1111694b46f61f6d8bfdd340249"},
 {"name":"execjs","version":"2.8.1","platform":"ruby","checksum":"6d939919cfd81bcc4d6556f322c3995a70cfe4289ea0bd3b1f999b489c323088"},
 {"name":"expgen","version":"0.1.1","platform":"ruby","checksum":"4e6a0f65b210a201d6045debb3e62a24e33251a49f81a11b067d303a60d3a239"},
 {"name":"expression_parser","version":"0.9.0","platform":"ruby","checksum":"2b56db3cffc48c3337f4f29f5bc2374c86e7ba29acb40269c74bb55af9f868a4"},

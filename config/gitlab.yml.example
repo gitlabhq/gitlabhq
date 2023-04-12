@@ -272,7 +272,7 @@ production: &base
     # secret_file: /home/git/gitlab/.gitlab_mailroom_secret
 
     # File location to read encrypted incoming email secrets from
-    # encrypted_secret_file: /mnt/gitlab/smtp.yaml.enc 
+    # encrypted_secret_file: /mnt/gitlab/smtp.yaml.enc
     # Default: shared/encrypted_settings/incoming_email.yaml.enc
 
   ## Consolidated object store config

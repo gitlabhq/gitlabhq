@@ -4880,6 +4880,8 @@ Input type: `ProjectInitializeProductAnalyticsInput`
 
 ### `Mutation.projectMemberBulkUpdate`
 
+Updates multiple members of a project. To use this mutation, you must have at least the Maintainer role.
+
 Input type: `ProjectMemberBulkUpdateInput`
 
 #### Arguments

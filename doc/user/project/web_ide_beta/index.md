@@ -48,6 +48,10 @@ To open the Web IDE Beta from a merge request:
 1. Go to your merge request.
 1. In the upper-right corner, select **Code > Open in Web IDE**.
 
+The Web IDE Beta opens modified and created files in separate tabs and displays changes side by side with the original source. To optimize loading time, only the top 10 files (by number of lines changed) are opened automatically.
+
+In the file tree, any modified or created file in the merge request is indicated by an icon next to the filename. To view changes to a file, right-click the filename and select **Compare with merge request base**.
+
 ## Open a file in the Web IDE Beta
 
 To open any file by its name:

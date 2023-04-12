@@ -5,7 +5,6 @@ description: Count creator ids from projects with service desk enabled
 product_section: dev
 product_stage: plan
 product_group: product_planning
-product_category: service_desk
 value_type: number
 status: active
 time_frame: all

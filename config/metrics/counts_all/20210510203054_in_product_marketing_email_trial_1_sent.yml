@@ -6,7 +6,6 @@ description: Total sent emails of the trial track's second email
 product_section: 'TBD'
 product_stage: growth
 product_group: activation
-product_category: onboarding
 value_type: number
 status: active
 milestone: "13.12"

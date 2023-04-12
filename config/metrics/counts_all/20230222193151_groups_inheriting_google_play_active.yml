@@ -4,7 +4,6 @@ description: Count of active groups inheriting integrations for Google Play
 product_section: dev
 product_stage: manage
 product_group: integrations
-product_category: integrations
 value_type: number
 status: active
 milestone: "15.10"

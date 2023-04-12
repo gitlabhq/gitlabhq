@@ -5,7 +5,6 @@ description: Total available and stopped environments
 product_section: ops
 product_stage: release
 product_group: release
-product_category: continuous_delivery
 value_type: number
 status: active
 time_frame: all

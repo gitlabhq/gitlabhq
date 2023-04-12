@@ -455,7 +455,7 @@ GEM
       tzinfo
     ethon (0.15.0)
       ffi (>= 1.15.0)
-    excon (0.90.0)
+    excon (0.99.0)
     execjs (2.8.1)
     expgen (0.1.1)
       parslet

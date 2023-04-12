@@ -51,7 +51,7 @@ module Projects
     private
 
     def add_pages_unique_domain
-      if Feature.disabled?(:pages_unique_domain)
+      if Feature.disabled?(:pages_unique_domain, project)
         params[:project_setting_attributes]&.delete(:pages_unique_domain_enabled)
 
         return

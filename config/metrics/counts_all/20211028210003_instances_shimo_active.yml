@@ -5,7 +5,6 @@ description: Count of instances with active Shimo integrations
 product_section: dev
 product_stage: manage
 product_group: integrations
-product_category: integrations
 value_type: number
 status: active
 milestone: "14.5"

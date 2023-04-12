@@ -77,7 +77,7 @@ class Projects::PagesController < Projects::ApplicationController
   def project_params_attributes
     attributes = %i[pages_https_only]
 
-    return attributes unless Feature.enabled?(:pages_unique_domain)
+    return attributes unless Feature.enabled?(:pages_unique_domain, @project)
 
     attributes + [
       project_setting_attributes: [

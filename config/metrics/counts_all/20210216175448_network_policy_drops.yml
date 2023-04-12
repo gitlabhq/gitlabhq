@@ -6,7 +6,6 @@ description: Cumulative count of packets dropped by Cilium (Container Network Se
 product_section: sec
 product_stage: protect_stage_was_removed
 product_group: container_security_group_was_removed
-product_category: container_network_security_category_was_removed
 value_type: number
 status: removed
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86351

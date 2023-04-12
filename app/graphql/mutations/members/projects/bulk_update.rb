@@ -5,6 +5,9 @@ module Mutations
     module Projects
       class BulkUpdate < BulkUpdateBase
         graphql_name 'ProjectMemberBulkUpdate'
+        description 'Updates multiple members of a project. ' \
+                    'To use this mutation, you must have at least the Maintainer role.'
+
         authorize :admin_project_member
 
         field :project_members,

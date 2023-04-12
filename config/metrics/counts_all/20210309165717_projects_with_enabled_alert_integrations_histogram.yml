@@ -5,7 +5,6 @@ description: Histogram (buckets 1 to 100) of projects with at least 1 enabled in
 product_section: ops
 product_stage: monitor
 product_group: monitor
-product_category: incident_management
 value_type: object
 status: active
 milestone: "13.10"
