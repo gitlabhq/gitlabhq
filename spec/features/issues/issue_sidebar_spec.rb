@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
   include MobileHelpers
   include Features::InviteMembersModalHelpers
-  include CookieHelper
 
   let_it_be(:group) { create(:group, :nested) }
   let_it_be(:project) { create(:project, :public, namespace: group) }
@@ -21,7 +20,6 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
   context 'when signed in' do
     before do
       sign_in(user)
-      set_cookie('new-actions-popover-viewed', 'true')
     end
 
     context 'when concerning the assignee', :js do
@@ -207,7 +205,6 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
 
     context 'as an allowed user' do
       before do
-        stub_feature_flags(moved_mr_sidebar: false)
         project.add_developer(user)
         visit_issue(project, issue)
       end
@@ -296,7 +293,6 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
 
     context 'as a guest' do
       before do
-        stub_feature_flags(moved_mr_sidebar: false)
         project.add_guest(user)
         visit_issue(project, issue)
       end

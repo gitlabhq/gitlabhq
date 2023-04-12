@@ -27,7 +27,7 @@ described [in Using Variables](variables.md).
 ## `text` variable type
 
 WARNING:
-This variable type is an [Alpha](../../../policy/alpha-beta-support.md#alpha-features) feature, and is subject to change at any time
+This variable type is an [Alpha](../../../policy/alpha-beta-support.md#experiment) feature, and is subject to change at any time
 without prior notice!
 
 For each `text` variable defined in the dashboard YAML, a free text field displays
@@ -64,7 +64,7 @@ templating:
 ## `custom` variable type
 
 WARNING:
-This variable type is an [Alpha](../../../policy/alpha-beta-support.md#alpha-features) feature, and is subject to change at any time
+This variable type is an [Alpha](../../../policy/alpha-beta-support.md#experiment) feature, and is subject to change at any time
 without prior notice!
 
 Each `custom` variable defined in the dashboard YAML creates a dropdown list
@@ -112,7 +112,7 @@ templating:
 ## `metric_label_values` variable type
 
 WARNING:
-This variable type is an [Alpha](../../../policy/alpha-beta-support.md#alpha-features) feature, and is subject to change at any time
+This variable type is an [Alpha](../../../policy/alpha-beta-support.md#experiment) feature, and is subject to change at any time
 without prior notice!
 
 ### Full syntax

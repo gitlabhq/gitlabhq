@@ -161,7 +161,7 @@ module QA
         end
 
         def signed_in_as_user?(user)
-          return false if has_no_personal_area?
+          return false unless has_personal_area?
 
           within_user_menu do
             has_element?(:user_profile_link, text: /#{user.username}/)

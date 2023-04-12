@@ -226,10 +226,6 @@ When you close an incident that is linked to an [alert](alerts.md),
 the linked alert's status changes to **Resolved**.
 You are then credited with the alert's status change.
 
-<!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
-If you don't see this action at the top of an incident, your project or instance might have
-enabled a feature flag for [moved actions](../../user/project/merge_requests/index.md#move-sidebar-actions)
-
 ### Automatically close incidents via recovery alerts
 
 > [Introduced for HTTP integrations](https://gitlab.com/gitlab-org/gitlab/-/issues/13402) in GitLab 13.4.
@@ -252,22 +248,6 @@ To configure the setting:
 When GitLab receives a recovery alert, it closes the associated incident.
 This action is recorded as a system note on the incident indicating that it
 was closed automatically by the GitLab Alert bot.
-
-## Delete an incident
-
-Prerequisites:
-
-- You must have the Owner role for a project.
-
-To delete an incident:
-
-1. In an incident, select **Incident actions** (**{ellipsis_v}**).
-1. Select **Delete incident**.
-
-Alternatively:
-
-1. In an incident, select **Edit title and description** (**{pencil}**).
-1. Select **Delete incident**.
 
 ## Other actions
 

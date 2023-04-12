@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tracking do
   let_it_be(:user) { create(:user) }
-
-  let(:setting) { create(:project_error_tracking_setting) }
-  let(:project) { setting.project }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:setting) { create(:project_error_tracking_setting, project: project) }
+  let_it_be(:project_without_setting) { create(:project) }
 
   shared_examples 'returns project settings' do
     it 'returns correct project settings' do
@@ -100,7 +100,8 @@ RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tra
   end
 
   describe "PATCH /projects/:id/error_tracking/settings" do
-    let(:params) { { active: false } }
+    let(:params) { { active: false, integrated: integrated } }
+    let(:integrated) { false }
 
     def make_request
       patch api("/projects/#{project.id}/error_tracking/settings", user), params: params
@@ -111,82 +112,78 @@ RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tra
         project.add_maintainer(user)
       end
 
-      context 'patch settings' do
-        context 'integrated_error_tracking feature enabled' do
-          it_behaves_like 'returns project settings'
+      context 'with integrated_error_tracking feature enabled' do
+        it_behaves_like 'returns project settings'
+      end
+
+      context 'with integrated_error_tracking feature disabled' do
+        before do
+          stub_feature_flags(integrated_error_tracking: false)
         end
 
-        context 'integrated_error_tracking feature disabled' do
-          before do
-            stub_feature_flags(integrated_error_tracking: false)
-          end
+        it_behaves_like 'returns project settings with false for integrated'
+      end
 
-          it_behaves_like 'returns project settings with false for integrated'
-        end
+      it 'updates enabled flag' do
+        expect(setting).to be_enabled
 
-        it 'updates enabled flag' do
-          expect(setting).to be_enabled
+        make_request
 
+        expect(json_response).to include('active' => false)
+        expect(setting.reload).not_to be_enabled
+      end
+
+      context 'when active is invalid' do
+        let(:params) { { active: "randomstring" } }
+
+        it 'returns active is invalid if non boolean' do
           make_request
 
-          expect(json_response).to include('active' => false)
-          expect(setting.reload).not_to be_enabled
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error'])
+            .to eq('active is invalid')
         end
+      end
 
-        context 'active is invalid' do
-          let(:params) { { active: "randomstring" } }
+      context 'when active is empty' do
+        let(:params) { { active: '' } }
 
-          it 'returns active is invalid if non boolean' do
+        it 'returns 400' do
+          make_request
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error'])
+            .to eq('active is empty')
+        end
+      end
+
+      context 'with integrated param' do
+        let(:params) { { active: true, integrated: true } }
+
+        context 'when integrated_error_tracking feature enabled' do
+          before do
+            stub_feature_flags(integrated_error_tracking: true)
+          end
+
+          it 'updates the integrated flag' do
+            expect(setting.integrated).to be_falsey
+
             make_request
 
-            expect(response).to have_gitlab_http_status(:bad_request)
-            expect(json_response['error'])
-              .to eq('active is invalid')
-          end
-        end
-
-        context 'active is empty' do
-          let(:params) { { active: '' } }
-
-          it 'returns 400' do
-            make_request
-
-            expect(response).to have_gitlab_http_status(:bad_request)
-            expect(json_response['error'])
-              .to eq('active is empty')
-          end
-        end
-
-        context 'with integrated param' do
-          let(:params) { { active: true, integrated: true } }
-
-          context 'integrated_error_tracking feature enabled' do
-            before do
-              stub_feature_flags(integrated_error_tracking: true)
-            end
-
-            it 'updates the integrated flag' do
-              expect(setting.integrated).to be_falsey
-
-              make_request
-
-              expect(json_response).to include('integrated' => true)
-              expect(setting.reload.integrated).to be_truthy
-            end
+            expect(json_response).to include('integrated' => true)
+            expect(setting.reload.integrated).to be_truthy
           end
         end
       end
 
       context 'without a project setting' do
-        let_it_be(:project) { create(:project) }
+        let(:project) { project_without_setting }
 
         before do
           project.add_maintainer(user)
         end
 
-        context 'patch settings' do
-          it_behaves_like 'returns no project settings'
-        end
+        it_behaves_like 'returns no project settings'
       end
 
       context "when ::Projects::Operations::UpdateService responds with an error" do
@@ -210,38 +207,22 @@ RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tra
       end
     end
 
-    context 'when authenticated as reporter' do
-      before do
-        project.add_reporter(user)
-      end
-
-      context 'patch request' do
-        it_behaves_like 'returns 403'
-      end
-    end
-
     context 'when authenticated as developer' do
       before do
         project.add_developer(user)
       end
 
-      context 'patch request' do
-        it_behaves_like 'returns 403'
-      end
+      it_behaves_like 'returns 403'
     end
 
     context 'when authenticated as non-member' do
-      context 'patch request' do
-        it_behaves_like 'returns 404'
-      end
+      it_behaves_like 'returns 404'
     end
 
     context 'when unauthenticated' do
       let(:user) { nil }
 
-      context 'patch request' do
-        it_behaves_like 'returns 401'
-      end
+      it_behaves_like 'returns 401'
     end
   end
 
@@ -255,43 +236,25 @@ RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tra
         project.add_maintainer(user)
       end
 
-      context 'get settings' do
-        context 'integrated_error_tracking feature enabled' do
-          before do
-            stub_feature_flags(integrated_error_tracking: true)
-          end
+      it_behaves_like 'returns project settings'
 
-          it_behaves_like 'returns project settings'
+      context 'when integrated_error_tracking feature disabled' do
+        before do
+          stub_feature_flags(integrated_error_tracking: false)
         end
 
-        context 'integrated_error_tracking feature disabled' do
-          before do
-            stub_feature_flags(integrated_error_tracking: false)
-          end
-
-          it_behaves_like 'returns project settings with false for integrated'
-        end
+        it_behaves_like 'returns project settings with false for integrated'
       end
     end
 
     context 'without a project setting' do
-      let(:project) { create(:project) }
+      let(:project) { project_without_setting }
 
       before do
         project.add_maintainer(user)
       end
 
-      context 'get settings' do
-        it_behaves_like 'returns no project settings'
-      end
-    end
-
-    context 'when authenticated as reporter' do
-      before do
-        project.add_reporter(user)
-      end
-
-      it_behaves_like 'returns 403'
+      it_behaves_like 'returns no project settings'
     end
 
     context 'when authenticated as developer' do
@@ -329,9 +292,8 @@ RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tra
         end
 
         context "when integrated" do
-          let(:integrated) { true }
-
           context "with existing setting" do
+            let(:project) { setting.project }
             let(:setting) { create(:project_error_tracking_setting, :integrated) }
             let(:active) { false }
 
@@ -351,8 +313,8 @@ RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tra
           end
 
           context "without setting" do
+            let(:project) { project_without_setting }
             let(:active) { true }
-            let_it_be(:project) { create(:project) }
 
             it "creates a setting" do
               expect { make_request }.to change { ErrorTracking::ProjectErrorTrackingSetting.count }
@@ -362,7 +324,7 @@ RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tra
               expect(json_response).to eq(
                 "active" => true,
                 "api_url" => nil,
-                "integrated" => integrated,
+                "integrated" => true,
                 "project_name" => nil,
                 "sentry_external_url" => nil
               )
@@ -382,9 +344,7 @@ RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tra
           end
         end
 
-        context "integrated_error_tracking feature disabled" do
-          let(:integrated) { true }
-
+        context "when integrated_error_tracking feature disabled" do
           before do
             stub_feature_flags(integrated_error_tracking: false)
           end
@@ -405,14 +365,6 @@ RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tra
         end
       end
 
-      context 'as reporter' do
-        before do
-          project.add_reporter(user)
-        end
-
-        it_behaves_like 'returns 403'
-      end
-
       context "as developer" do
         before do
           project.add_developer(user)
@@ -428,7 +380,6 @@ RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tra
 
     context "when unauthorized" do
       let(:user) { nil }
-      let(:integrated) { true }
 
       it_behaves_like 'returns 401'
     end

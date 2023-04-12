@@ -26,8 +26,3 @@ export const IssuableStatusText = {
   [STATUS_MERGED]: __('Merged'),
   [STATUS_LOCKED]: __('Open'),
 };
-
-export const IssuableTypeText = {
-  [TYPE_ISSUE]: __('issue'),
-  [TYPE_MERGE_REQUEST]: __('merge request'),
-};

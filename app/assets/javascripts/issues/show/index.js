@@ -174,8 +174,6 @@ export function initHeaderActions(store, type = '') {
       reportedUserId: parseInt(el.dataset.reportedUserId, 10),
       reportedFromUrl: el.dataset.reportedFromUrl,
       submitAsSpamPath: el.dataset.submitAsSpamPath,
-      issuableEmailAddress: el.dataset.issuableEmailAddress,
-      fullPath: el.dataset.projectPath,
     },
     render: (createElement) => createElement(HeaderActions),
   });

@@ -2429,7 +2429,6 @@ RSpec/ContextWording:
     - 'spec/requests/api/deployments_spec.rb'
     - 'spec/requests/api/environments_spec.rb'
     - 'spec/requests/api/error_tracking/collector_spec.rb'
-    - 'spec/requests/api/error_tracking/project_settings_spec.rb'
     - 'spec/requests/api/files_spec.rb'
     - 'spec/requests/api/generic_packages_spec.rb'
     - 'spec/requests/api/graphql/ci/runner_spec.rb'

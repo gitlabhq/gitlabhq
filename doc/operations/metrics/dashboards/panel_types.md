@@ -234,7 +234,7 @@ For example, if you have a query value of `53.6`, adding `%` as the unit results
 ## Gauge
 
 WARNING:
-This panel type is an [Alpha](../../../policy/alpha-beta-support.md#alpha-features) feature, and is subject to change at any time
+This panel type is an [Alpha](../../../policy/alpha-beta-support.md#experiment) feature, and is subject to change at any time
 without prior notice!
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207044) in GitLab 13.3.

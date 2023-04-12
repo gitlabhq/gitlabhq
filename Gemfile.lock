@@ -1368,7 +1368,7 @@ GEM
       rexml
     ruby-statistics (3.0.0)
     ruby2_keywords (0.0.5)
-    ruby_parser (3.19.2)
+    ruby_parser (3.20.0)
       sexp_processor (~> 4.16)
     rubyntlm (0.6.3)
     rubypants (0.2.0)
@@ -1900,7 +1900,7 @@ DEPENDENCIES
   ruby-openai (~> 3.7)
   ruby-progressbar (~> 1.10)
   ruby-saml (~> 1.13.0)
-  ruby_parser (~> 3.19)
+  ruby_parser (~> 3.20)
   rubyzip (~> 2.3.2)
   rugged (~> 1.5)
   sanitize (~> 6.0)

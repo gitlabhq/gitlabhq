@@ -40,7 +40,7 @@ Migrating groups by direct transfer copies the groups from one place to another.
   - The subgroup of any existing top-level group.
   - Another GitLab instance, including GitLab.com.
 - In the [API](../../../api/bulk_imports.md), copy top-level groups and subgroups to these locations.
-- Copy groups with projects (in [beta](../../../policy/alpha-beta-support.md#beta-features) and not ready for production
+- Copy groups with projects (in [beta](../../../policy/alpha-beta-support.md#beta) and not ready for production
   use) or without projects. Copying projects with groups is available:
   - On GitLab.com by default.
 
@@ -50,7 +50,7 @@ Not all group and project resources are copied. See list of copied resources bel
 - [Migrated project items](#migrated-project-items-beta).
 
 WARNING:
-Importing groups with projects is in [beta](../../../policy/alpha-beta-support.md#beta-features). This feature is not
+Importing groups with projects is in [beta](../../../policy/alpha-beta-support.md#beta). This feature is not
 ready for production use.
 
 We invite you to leave your feedback about migrating by direct transfer in
@@ -153,7 +153,7 @@ role.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
 
 WARNING:
-Importing groups with projects is in [beta](../../../policy/alpha-beta-support.md#beta-features). This feature is not
+Importing groups with projects is in [beta](../../../policy/alpha-beta-support.md#beta). This feature is not
 ready for production use.
 
 ### Group import history
@@ -247,7 +247,7 @@ specific project item is migrated:
 Any other project items are **not** migrated.
 
 WARNING:
-Migrating projects when migrating groups by direct transfer is in [beta](../../../policy/alpha-beta-support.md#beta-features)
+Migrating projects when migrating groups by direct transfer is in [beta](../../../policy/alpha-beta-support.md#beta)
 and is not ready for production use.
 
 Project items that are migrated to the destination GitLab instance include:

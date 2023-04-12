@@ -15,7 +15,7 @@ You can use Flux to:
 
 To get started, see the [Flux installation documentation](https://fluxcd.io/flux/installation).
 
-Support for Flux is in [Open Beta](../../../../policy/alpha-beta-support.md#beta-features).
+Support for Flux is in [Open Beta](../../../../policy/alpha-beta-support.md#beta).
 
 ## Bootstrap installation
 

@@ -347,7 +347,7 @@ gem 'gitlab-labkit', '~> 0.31.1'
 gem 'thrift', '>= 0.16.0'
 
 # I18n
-gem 'ruby_parser', '~> 3.19', require: false
+gem 'ruby_parser', '~> 3.20', require: false
 gem 'rails-i18n', '~> 7.0'
 gem 'gettext_i18n_rails', '~> 1.8.0'
 gem 'gettext_i18n_rails_js', '~> 1.3'

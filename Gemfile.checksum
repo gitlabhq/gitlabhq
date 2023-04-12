@@ -539,7 +539,7 @@
 {"name":"ruby-saml","version":"1.13.0","platform":"ruby","checksum":"d31cbdf5fb8fdd6aa3187e48dba3085cfeb751af30276a5739aa3659a66f069c"},
 {"name":"ruby-statistics","version":"3.0.0","platform":"ruby","checksum":"610301370346931cb701e3a8d3d3e28eb65681162cae6066c0c11abf20efdc81"},
 {"name":"ruby2_keywords","version":"0.0.5","platform":"ruby","checksum":"ffd13740c573b7301cf7a2e61fc857b2a8e3d3aff32545d6f8300d8bae10e3ef"},
-{"name":"ruby_parser","version":"3.19.2","platform":"ruby","checksum":"aaadcedd9263e6c32e0e667f10d4f97dac0a5de313323d1dbb5db612605ff896"},
+{"name":"ruby_parser","version":"3.20.0","platform":"ruby","checksum":"17d0c8bbef7fcdf99b1070bb2555d49111758f75d312e8799f66df831ebdcbe3"},
 {"name":"rubyntlm","version":"0.6.3","platform":"ruby","checksum":"5b321456dba3130351f7451f8669f1afa83a0d26fd63cdec285b7b88e667102d"},
 {"name":"rubypants","version":"0.2.0","platform":"ruby","checksum":"f07e38eac793655a0323fe91946081052341b9e69807026fcf102346589eedee"},
 {"name":"rubyzip","version":"2.3.2","platform":"ruby","checksum":"3f57e3935dc2255c414484fbf8d673b4909d8a6a57007ed754dde39342d2373f"},

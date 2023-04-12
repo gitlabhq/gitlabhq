@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # SaaS runners on Windows (beta) **(FREE SAAS)**
 
-SaaS runners on Windows are in [beta](../../../policy/alpha-beta-support.md#beta-features)
+SaaS runners on Windows are in [beta](../../../policy/alpha-beta-support.md#beta)
 and shouldn't be used for production workloads.
 
 During this beta period, the [shared runner quota for CI/CD minutes](../../pipelines/cicd_minutes.md)
@@ -126,7 +126,7 @@ test:
 
 ## Limitations and known issues
 
-- All the limitations mentioned in our [beta definition](../../../policy/alpha-beta-support.md#beta-features).
+- All the limitations mentioned in our [beta definition](../../../policy/alpha-beta-support.md#beta).
 - The average provisioning time for a new Windows VM is 5 minutes.
   This means that you may notice slower build start times
   on the Windows runner fleet during the beta. In a future

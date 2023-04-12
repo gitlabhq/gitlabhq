@@ -209,10 +209,6 @@ To close an issue, you can do the following:
 - At the top of the issue, select **Close issue**.
 - In an [issue board](../issue_board.md), drag an issue card from its list into the **Closed** list.
 
-<!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
-If you don't see this action at the top of an issue, your project or instance might have
-enabled a feature flag for [moved actions](../merge_requests/index.md#move-sidebar-actions).
-
 ### Reopen a closed issue
 
 Prerequisites:
@@ -348,7 +344,7 @@ Prerequisites:
 
 To delete an issue:
 
-1. In an issue, select **Issue actions** (**{ellipsis_v}**).
+1. In an issue, select the vertical ellipsis (**{ellipsis_v}**).
 1. Select **Delete issue**.
 
 Alternatively:
@@ -366,7 +362,7 @@ You can promote an issue to an [epic](../../group/epics/index.md) in the immedia
 
 To promote an issue to an epic:
 
-1. In an issue, select **Issue actions** (**{ellipsis_v}**).
+1. In an issue, select the vertical ellipsis (**{ellipsis_v}**).
 1. Select **Promote to epic**.
 
 Alternatively, you can use the `/promote` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
@@ -475,10 +471,6 @@ To copy the issue reference to your clipboard:
 You can now paste the reference into another description or comment.
 
 Read more about issue references in [GitLab-Flavored Markdown](../../markdown.md#gitlab-specific-references).
-
-<!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
-If you don't see this action on the right sidebar, your project or instance might have
-enabled a feature flag for [moved actions](../merge_requests/index.md#move-sidebar-actions).
 
 ## Copy issue email address
 

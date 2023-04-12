@@ -7,11 +7,11 @@ type: index, reference
 
 # Code Suggestions (Open Beta) **(ULTIMATE SAAS)**
 
-> - Enabled as opt-in with GitLab 15.11 as [Open Beta](/ee/policy/alpha-beta-support.md#open-beta-features).
-> - [Introduced](https://about.gitlab.com/releases/2023/02/22/gitlab-15-9-released/#code-suggestions-available-in-closed-beta) in GitLab 15.9 as [Closed Beta](/ee/policy/alpha-beta-support.md#closed-beta-features).
+> - Enabled as opt-in with GitLab 15.11 as [Open Beta](/ee/policy/alpha-beta-support.md#beta).
+> - [Introduced](https://about.gitlab.com/releases/2023/02/22/gitlab-15-9-released/#code-suggestions-available-in-closed-beta) in GitLab 15.9 as [Closed Beta](/ee/policy/alpha-beta-support.md#beta).
 
 WARNING:
-This feature is in [Open Beta](/ee/policy/alpha-beta-support.md#open-beta-features). Code Suggestions use generative AI to suggest code while you're developing. Due to high demand, this feature will have unscheduled downtime and code suggestions in VS Code may be delayed. Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality). Beta users should read about the [known limitations](#known-limitations). We look forward to hearing your feedback.
+This feature is in [Open Beta](/ee/policy/alpha-beta-support.md#beta). Code Suggestions use generative AI to suggest code while you're developing. Due to high demand, this feature will have unscheduled downtime and code suggestions in VS Code may be delayed. Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality). Beta users should read about the [known limitations](#known-limitations). We look forward to hearing your feedback.
 
 Use Code Suggestions to write code more efficiently by viewing code suggestions
 as you type. Depending on the cursor position, the extension either:
@@ -98,7 +98,7 @@ Code Suggestions only work when you have internet connectivity and can access Gi
 
 ### Stability and performance
 
-This feature is currently in [Open Beta](/ee/policy/alpha-beta-support.md#open-beta-features). While the Code Suggestions inference API operates completely within GitLab.com's enterprise infrastructure, we expect a high demand for this Beta feature, which may cause degraded performance or unexpected downtime of the feature. We have built this feature to gracefully degrade and have controls in place to allow us to mitigate abuse or misuse. GitLab may disable this feature for any or all customers at any time at our discretion.
+This feature is currently in [Open Beta](/ee/policy/alpha-beta-support.md#beta). While the Code Suggestions inference API operates completely within GitLab.com's enterprise infrastructure, we expect a high demand for this Beta feature, which may cause degraded performance or unexpected downtime of the feature. We have built this feature to gracefully degrade and have controls in place to allow us to mitigate abuse or misuse. GitLab may disable this feature for any or all customers at any time at our discretion.
 
 ## Data privacy
 

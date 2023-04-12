@@ -296,7 +296,7 @@ An example `package.json`:
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/211685) from GitLab Ultimate to GitLab Free in 13.1.
 
 WARNING:
-Interactive Web Terminals for the Web IDE is currently in [**Beta**](../../../policy/alpha-beta-support.md#beta-features).
+Interactive Web Terminals for the Web IDE is currently in [**Beta**](../../../policy/alpha-beta-support.md#beta).
 GitLab.com shared runners [do not yet support Interactive Web Terminals](https://gitlab.com/gitlab-org/gitlab/-/issues/24674),
 so you must use your own private runner to make use of this feature.
 

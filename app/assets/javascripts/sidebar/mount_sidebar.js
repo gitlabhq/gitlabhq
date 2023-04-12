@@ -17,7 +17,6 @@ import { __ } from '~/locale';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import Translate from '~/vue_shared/translate';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
-import NewHeaderActionsPopover from '~/issues/show/components/new_header_actions_popover.vue';
 import CollapsedAssigneeList from './components/assignees/collapsed_assignee_list.vue';
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
 import SidebarAssigneesWidget from './components/assignees/sidebar_assignees_widget.vue';
@@ -788,21 +787,6 @@ export function mountAssigneesDropdown() {
   });
 }
 
-function mountNewIssuePopover() {
-  const el = document.querySelector('.js-sidebar-header-popover');
-
-  if (!el) {
-    return null;
-  }
-
-  return new Vue({
-    el,
-    name: 'NewHeaderActionsPopover',
-    render: (createElement) =>
-      createElement(NewHeaderActionsPopover, { props: { issueType: TYPE_MERGE_REQUEST } }),
-  });
-}
-
 const isAssigneesWidgetShown =
   (isInIssuePage() || isInDesignPage() || isInMRPage()) && gon.features.issueAssigneesWidget;
 
@@ -830,7 +814,6 @@ export function mountSidebar(mediator, store) {
   mountSidebarSeverityWidget();
   mountSidebarEscalationStatus();
   mountMoveIssueButton();
-  mountNewIssuePopover();
 }
 
 export { getSidebarOptions };

@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Configure OpenID Connect with GCP Workload Identity Federation **(FREE)**
 
 WARNING:
-The `CI_JOB_JWT_V2` variable is under development [(alpha)](../../../policy/alpha-beta-support.md#alpha-features) and is not yet suitable for production use.
+The `CI_JOB_JWT_V2` variable is under development [(alpha)](../../../policy/alpha-beta-support.md#experiment) and is not yet suitable for production use.
 
 This tutorial demonstrates authenticating to Google Cloud from a GitLab CI/CD job
 using a JSON Web Token (JWT) token and Workload Identity Federation. This configuration

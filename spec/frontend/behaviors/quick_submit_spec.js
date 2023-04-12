@@ -61,22 +61,15 @@ describe('Quick Submit behavior', () => {
     expect(testContext.spies.submit).not.toHaveBeenCalled();
   });
 
-  it('disables input of type submit', () => {
-    const submitButton = $('.js-quick-submit input[type=submit]');
-    testContext.textarea.trigger(keydownEvent());
-
-    expect(submitButton).toBeDisabled();
-  });
-
-  it('disables button of type submit', () => {
-    const submitButton = $('.js-quick-submit input[type=submit]');
+  it('disables submit', () => {
+    const submitButton = $('.js-quick-submit [type=submit]');
     testContext.textarea.trigger(keydownEvent());
 
     expect(submitButton).toBeDisabled();
   });
 
   it('only clicks one submit', () => {
-    const existingSubmit = $('.js-quick-submit input[type=submit]');
+    const existingSubmit = $('.js-quick-submit [type=submit]');
     // Add an extra submit button
     const newSubmit = $('<button type="submit">Submit it</button>');
     newSubmit.insertAfter(testContext.textarea);

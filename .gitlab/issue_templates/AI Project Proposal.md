@@ -115,3 +115,4 @@ _What tasks or actions should the user be capable of performing with this featur
 
 /label ~wg-ai-integration
 /cc @tmccaslin @hbenson @wayne @pedroms @jmandell
+/ confidential
