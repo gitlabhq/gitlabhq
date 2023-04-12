@@ -6,6 +6,10 @@
 # See Ruby-lang issue https://bugs.ruby-lang.org/issues/17542
 # See issue on GitLab https://gitlab.com/gitlab-org/gitlab/-/issues/289836
 
+# This file can be removed once Ruby 3.0 is no longer supported:
+# https://gitlab.com/gitlab-org/gitlab/-/issues/396223
+return if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new(3.1)
+
 module Net
   class HTTP < Protocol
     def proxy_user

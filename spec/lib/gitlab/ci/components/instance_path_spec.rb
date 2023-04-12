@@ -98,6 +98,37 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
       end
     end
 
+    context 'when version is `~latest`' do
+      let(:version) { '~latest' }
+
+      context 'when project is a catalog resource' do
+        before do
+          create(:catalog_resource, project: existing_project)
+        end
+
+        context 'when project has releases' do
+          let_it_be(:releases) do
+            [
+              create(:release, project: existing_project, sha: 'sha-1', released_at: Time.zone.now - 1.day),
+              create(:release, project: existing_project, sha: 'sha-2', released_at: Time.zone.now)
+            ]
+          end
+
+          it 'returns the sha of the latest release' do
+            expect(path.sha).to eq(releases.last.sha)
+          end
+        end
+
+        context 'when project does not have releases' do
+          it { expect(path.sha).to be_nil }
+        end
+      end
+
+      context 'when project is not a catalog resource' do
+        it { expect(path.sha).to be_nil }
+      end
+    end
+
     context 'when project does not exist' do
       let(:project_path) { 'non-existent/project' }
 

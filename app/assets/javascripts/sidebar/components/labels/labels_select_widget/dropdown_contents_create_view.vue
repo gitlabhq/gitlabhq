@@ -13,6 +13,7 @@ import { WORKSPACE_GROUP } from '~/issues/constants';
 import { __ } from '~/locale';
 import { workspaceLabelsQueries } from '../../../constants';
 import createLabelMutation from './graphql/create_label.mutation.graphql';
+import { DEFAULT_LABEL_COLOR } from './constants';
 
 const errorMessage = __('Error creating label.');
 
@@ -44,11 +45,16 @@ export default {
       type: String,
       required: true,
     },
+    searchKey: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
-      labelTitle: '',
-      selectedColor: '',
+      labelTitle: this.searchKey,
+      selectedColor: DEFAULT_LABEL_COLOR,
       labelCreateInProgress: false,
       error: undefined,
     };

@@ -59,7 +59,8 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           'readWorkItem' => true,
           'updateWorkItem' => true,
           'deleteWorkItem' => false,
-          'adminWorkItem' => true
+          'adminWorkItem' => true,
+          'adminParentLink' => true
         },
         'project' => hash_including('id' => project.to_gid.to_s, 'fullPath' => project.full_path)
       )

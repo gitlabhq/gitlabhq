@@ -1228,7 +1228,7 @@ lib/gitlab/checks/** @proglottis @toon
 
 [Verify] @gitlab-org/maintainers/cicd-verify
 # Verify Backend
-/**/app/**/ci/ 
+/**/app/**/ci/
 /**/lib/**/ci/
 /**/spec/**/ci/
 /**/app/**/merge_trains/
@@ -1347,7 +1347,7 @@ lib/gitlab/checks/** @proglottis @toon
 /**/javascripts/jobs/          @gitlab-org/ci-cd/verify/frontend
 /**/javascripts/token_access/  @gitlab-org/ci-cd/verify/frontend
 /**/javascripts/admin/application_settings/runner_token_expiration/  @gitlab-org/ci-cd/verify/frontend
-/**/javascripts/usage_quotas/pipelines/ @gitlab-org/ci-cd/verify/frontend @fulfillment-group/utilization-group/fe
+/**/javascripts/usage_quotas/pipelines/ @gitlab-org/ci-cd/verify/frontend @sheldonled @aalakkad @kpalchyk
 
 [Manage::Workspace]
 lib/api/entities/basic_project_details.rb @gitlab-org/manage/manage-workspace/backend-approvers
@@ -1419,9 +1419,9 @@ ee/lib/ee/api/entities/project.rb @gitlab-org/manage/manage-workspace/backend-ap
 /lib/gitlab/audit_json_logger.rb @gitlab-org/govern/compliance
 
 [Fulfillment::Utilization]
-/ee/app/assets/javascripts/usage_quotas/components/ @fulfillment-group/utilization-group/fe
-/ee/app/assets/javascripts/usage_quotas/seats/ @fulfillment-group/utilization-group/fe
-/ee/app/assets/javascripts/usage_quotas/storage/ @fulfillment-group/utilization-group/fe
+/ee/app/assets/javascripts/usage_quotas/components/ @sheldonled @aalakkad @kpalchyk
+/ee/app/assets/javascripts/usage_quotas/seats/ @sheldonled @aalakkad @kpalchyk
+/ee/app/assets/javascripts/usage_quotas/storage/ @sheldonled @aalakkad @kpalchyk
 
 [Manage::Foundations]
 /lib/sidebars/ @gitlab-org/manage/foundations/engineering

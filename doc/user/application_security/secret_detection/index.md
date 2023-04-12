@@ -59,6 +59,7 @@ Different features are available in different [GitLab tiers](https://about.gitla
 | [Configure Secret Detection scanner](#enable-secret-detection)   | **{check-circle}** Yes | **{check-circle}** Yes |
 | [Customize Secret Detection settings](#configure-scan-settings)  | **{check-circle}** Yes | **{check-circle}** Yes |
 | Download [JSON Report](../sast/index.md#reports-json-format)     | **{check-circle}** Yes | **{check-circle}** Yes |
+| [Check text for potential secrets](#warnings-for-potential-leaks-in-text-content) before it's posted | **{check-circle}** Yes | **{check-circle}** Yes |
 | See new findings in the merge request widget                     | **{dotted-circle}** No | **{check-circle}** Yes |
 | View identified secrets in the pipelines' **Security** tab       | **{dotted-circle}** No | **{check-circle}** Yes |
 | [Manage vulnerabilities](../vulnerability_report/index.md)       | **{dotted-circle}** No | **{check-circle}** Yes |
@@ -534,6 +535,26 @@ variable, or as a CI/CD variable.
 
 - If using a variable, set the value of `ADDITIONAL_CA_CERT_BUNDLE` to the text
   representation of the certificate.
+
+## Warnings for potential leaks in text content
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368434) in GitLab 15.11.
+
+When you create an issue, propose a merge request, or write a comment, you might accidentally post a sensitive value.
+For example, you might paste in the details of an API request or an environment variable that contains an authentication token.
+
+GitLab checks if the text of your issue description, merge request description, comment, or reply contains a sensitive token.
+If a token is found, a warning message is displayed. You can then edit your message before posting it.
+This check happens in your browser before the message is sent to the server.
+The check is always on; you don't have to set it up.
+
+Your text is checked for the following secret types:
+
+- GitLab [personal access tokens](../../../security/token_overview.md#personal-access-tokens)
+- GitLab [feed tokens](../../../security/token_overview.md#feed-token)
+
+This feature is separate from Secret Detection scanning, which checks your Git repository for leaked secrets.
+[Issue 405147](https://gitlab.com/gitlab-org/gitlab/-/issues/405147) tracks efforts to align these two types of protection.
 
 ## Troubleshooting
 

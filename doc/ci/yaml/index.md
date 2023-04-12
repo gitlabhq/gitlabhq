@@ -958,7 +958,7 @@ job:
 
 **Related topics**:
 
-- [Use CI/CD variables to define the artifacts name](../jobs/job_artifacts.md#with-cicd-variables-to-define-the-artifacts-name).
+- [Use CI/CD variables to define the artifacts name](../jobs/job_artifacts.md#with-a-dynamically-defined-name).
 
 #### `artifacts:public`
 

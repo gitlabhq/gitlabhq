@@ -39,7 +39,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::SecretDetection do
         end
 
         it "generates expected metadata_version" do
-          expect(report.findings.first.metadata_version).to eq('14.1.2')
+          expect(report.findings.first.metadata_version).to eq('15.0.0')
         end
       end
     end

@@ -67,7 +67,7 @@ is used.
 To prevent artifacts from expiring, you can select **Keep** from the job details page.
 The option is not available when an artifact has no expiry set.
 
-### With CI/CD variables to define the artifacts name
+### With a dynamically defined name
 
 You can use [CI/CD variables](../variables/index.md) to dynamically define the
 artifacts file's name.
@@ -186,7 +186,7 @@ job:
   dependencies: []
 ```
 
-## View all job artifacts
+## View all job artifacts in a project
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254938) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `artifacts_management_page`. Disabled by default.
 
@@ -202,21 +202,18 @@ You can download or delete individual artifacts from this list.
 
 ## Download job artifacts
 
-You can download job artifacts by selecting **Download** (**{download}**) from:
+You can download job artifacts from:
 
-- Any **Pipelines** list, to the right of the pipeline select **Download artifacts** (**{download}**).
-- Any **Jobs** list, to the right of the job select **Download artifacts** (**{download}**).
-- A job's detail page, on the right of the page select **Download**.
-- A merge request **Overview** page, to the right of the latest pipeline select **Artifacts** (**{download}**).
-- The [**Artifacts**](#view-all-job-artifacts) page, to the right of the job select **Download** (**{download}**).
-- If the **Browse** (**{folder-open}**) option is available, you can browse the contents of the artifacts
-  from the UI without downloading the artifact. You can also select **Download artifacts archive**
-  from the artifacts browser.
+- Any **Pipelines** list. On the right of the pipeline, select **Download artifacts** (**{download}**).
+- Any **Jobs** list. On the right of the job, select **Download artifacts** (**{download}**).
+- A job's detail page. On the right of the page, select **Download**.
+- A merge request **Overview** page. On the right of the latest pipeline, select **Artifacts** (**{download}**).
+- The [**Artifacts**](#view-all-job-artifacts-in-a-project) page. On the right of the job, select **Download** (**{download}**).
+- The [artifacts browser](#browse-the-contents-of-the-artifacts-archive). On the top of the page,
+  select **Download artifacts archive** (**{download}**).
 
-  If [GitLab Pages](../../administration/pages/index.md) is enabled in the project, you can preview
-  HTML files in the artifacts directly in your browser. If the project is internal or private, you must
-  enable [GitLab Pages access control](../../administration/pages/index.md#access-control) to preview
-  HTML files.
+[Report artifacts](../yaml/artifacts_reports.md) can only be downloaded from the **Pipelines** list
+or **Artifacts** page.
 
 You can download job artifacts from the latest successful pipeline by using [the job artifacts API](../../api/job_artifacts.md).
 You cannot download [artifact reports](../yaml/artifacts_reports.md) with the job artifacts API,
@@ -245,7 +242,21 @@ Artifacts for [parent and child pipelines](../pipelines/downstream_pipelines.md#
 are searched in hierarchical order from parent to child. For example, if both parent and
 child pipelines have a job with the same name, the job artifacts from the parent pipeline are returned.
 
-### From a URL with the artifacts browser
+## Browse the contents of the artifacts archive
+
+You can browse the contents of the artifacts from the UI without downloading the artifact locally,
+from:
+
+- Any **Jobs** list. On the right of the job, select **Browse** (**{folder-open}**).
+- A job's detail page. On the right of the page, select **Browse**.
+- The **Artifacts** page. On the right of the job, select **Browse** (**{folder-open}**).
+
+If [GitLab Pages](../../administration/pages/index.md) is enabled in the project, you can preview
+HTML files in the artifacts directly in your browser. If the project is internal or private, you must
+enable [GitLab Pages access control](../../administration/pages/index.md#access-control) to preview
+HTML files.
+
+### From a URL
 
 You can browse the job artifacts of the latest successful pipeline for a specific job
 with a publicly accessible URL.

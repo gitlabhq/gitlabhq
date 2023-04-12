@@ -19,7 +19,11 @@ import {
   getIssueDetailsResponse,
   projectWorkItemTypesQueryResponse,
 } from 'jest/work_items/mock_data';
-import { descriptionProps as initialProps, descriptionHtmlWithList } from '../mock_data/mock_data';
+import {
+  descriptionProps as initialProps,
+  descriptionHtmlWithList,
+  descriptionHtmlWithDetailsTag,
+} from '../mock_data/mock_data';
 
 jest.mock('~/alert');
 jest.mock('~/task_list');
@@ -109,6 +113,19 @@ describe('Description component', () => {
     await jest.runOnlyPendingTimers();
 
     expect(findGfmContent().classes()).toContain('issue-realtime-trigger-pulse');
+  });
+
+  it('doesnt animate expand/collapse of details elements', async () => {
+    createComponent();
+
+    await wrapper.setProps({ descriptionHtml: descriptionHtmlWithDetailsTag.collapsed });
+    expect(findGfmContent().classes()).not.toContain('issue-realtime-pre-pulse');
+
+    await wrapper.setProps({ descriptionHtml: descriptionHtmlWithDetailsTag.expanded });
+    expect(findGfmContent().classes()).not.toContain('issue-realtime-pre-pulse');
+
+    await wrapper.setProps({ descriptionHtml: descriptionHtmlWithDetailsTag.collapsed });
+    expect(findGfmContent().classes()).not.toContain('issue-realtime-pre-pulse');
   });
 
   it('applies syntax highlighting and math when description changed', async () => {

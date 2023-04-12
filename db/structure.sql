@@ -17365,11 +17365,11 @@ ALTER SEQUENCE issue_tracker_data_id_seq OWNED BY issue_tracker_data.id;
 CREATE TABLE issue_user_mentions (
     id bigint NOT NULL,
     issue_id integer NOT NULL,
-    note_id integer,
+    note_id_convert_to_bigint integer,
     mentioned_users_ids integer[],
     mentioned_projects_ids integer[],
     mentioned_groups_ids integer[],
-    note_id_convert_to_bigint bigint
+    note_id bigint
 );
 
 CREATE SEQUENCE issue_user_mentions_id_seq
@@ -30802,8 +30802,6 @@ CREATE INDEX index_issue_tracker_data_on_integration_id ON issue_tracker_data US
 
 CREATE UNIQUE INDEX index_issue_user_mentions_on_note_id ON issue_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
 
-CREATE UNIQUE INDEX index_issue_user_mentions_on_note_id_convert_to_bigint ON issue_user_mentions USING btree (note_id_convert_to_bigint) WHERE (note_id_convert_to_bigint IS NOT NULL);
-
 CREATE INDEX index_issues_on_author_id ON issues USING btree (author_id);
 
 CREATE INDEX index_issues_on_author_id_and_id_and_created_at ON issues USING btree (author_id, id, created_at);
@@ -35268,9 +35266,6 @@ ALTER TABLE ONLY issues
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_geo_event_log_on_geo_event_id FOREIGN KEY (geo_event_id) REFERENCES geo_events(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY issue_user_mentions
-    ADD CONSTRAINT fk_issue_user_mentions_note_id_convert_to_bigint FOREIGN KEY (note_id_convert_to_bigint) REFERENCES notes(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY ml_candidate_metrics
     ADD CONSTRAINT fk_ml_candidate_metrics_on_candidate_id FOREIGN KEY (candidate_id) REFERENCES ml_candidates(id) ON DELETE CASCADE;

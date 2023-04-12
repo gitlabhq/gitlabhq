@@ -216,6 +216,8 @@ The following actions on groups generate group audit events:
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) in GitLab 15.6.
 - An environment is protected or unprotected.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216164) in GitLab 15.8.
+- Changes to Code Suggestions.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/405295) in GitLab 15.11.
 
 ### Project events
 

@@ -135,6 +135,8 @@ To set up your self-managed instance for the GitLab for Jira Cloud app in GitLab
 
 ### Link your instance
 
+See [prerequisites](#prerequisites).
+
 To link your self-managed instance to the GitLab for Jira Cloud app:
 
 1. Install the [GitLab for Jira Cloud app](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud).
@@ -320,3 +322,34 @@ To resolve this issue on GitLab self-managed, follow one of the solutions below,
     - Contact the [Jira Software Cloud support](https://support.atlassian.com/jira-software-cloud/) and ask to trigger a new installed lifecycle event for the GitLab for Jira Cloud app in your namespace.
   - In all GitLab versions:
     - Re-install the GitLab for Jira Cloud app. This might remove all already synced development panel data.
+
+### `Failed to update GitLab version` error when setting up the GitLab for Jira Cloud app for self-managed instances
+
+When you set up the GitLab for Jira Cloud app, you might get the following message after you enter your
+self-managed instance URL:
+
+```plaintext
+Failed to update GitLab version. Please try again.
+```
+
+To resolve this issue, ensure all prerequisites for your installation method have been met:
+
+- [Prerequisites for connecting the GitLab for Jira Cloud app](#prerequisites)
+- [Prerequisites for installing the GitLab for Jira Cloud app manually](#prerequisites-1)
+
+If you're using GitLab 15.8 and earlier and have previously enabled both the `jira_connect_oauth_self_managed`
+and the `jira_connect_oauth` feature flags, you must disable the `jira_connect_oauth_self_managed` flag
+due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388943). To check for these flags:
+
+1. Open a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Execute the following code:
+
+   ```ruby
+   # Check if both feature flags are enabled.
+   # If the flags are enabled, these commands return `true`.
+   Feature.enabled?(:jira_connect_oauth)
+   Feature.enabled?(:jira_connect_oauth_self_managed)
+
+   # If both flags are enabled, disable the `jira_connect_oauth_self_managed` flag.
+   Feature.disable(:jira_connect_oauth_self_managed)
+   ```

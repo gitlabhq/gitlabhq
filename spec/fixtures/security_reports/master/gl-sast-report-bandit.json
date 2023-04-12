@@ -1,5 +1,5 @@
 {
-  "version": "14.0.4",
+  "version": "15.0.4",
   "vulnerabilities": [
     {
       "id": "985a5666dcae22adef5ac12f8a8a2dacf9b9b481ae5d87cd0ac1712b0fd64864",
@@ -26,6 +26,15 @@
     }
   ],
   "scan": {
+    "analyzer": {
+      "id": "find_sec_bugs_analyzer",
+      "name": "Find Security Bugs Analyzer",
+      "url": "https://gitlab.com",
+      "vendor": {
+        "name": "GitLab"
+      },
+      "version": "1.0.0"
+    },
     "scanner": {
       "id": "bandit",
       "name": "Bandit",

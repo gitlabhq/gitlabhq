@@ -358,6 +358,16 @@ to a larger value in [the NGINX configuration](https://nginx.org/en/docs/http/ng
 
 ## Troubleshooting
 
+### Using Google Chrome with Kerberos authentication against Windows AD
+
+When you use Google Chrome to sign in to GitLab with Kerberos, you must enter your full username. For example, `username@domain.com`.
+
+If you do not enter your full username, the sign-in fails. Check the logs to see the following event message as evidence of this sign-in failure:
+
+```plain
+"message":"OmniauthKerberosController: failed to process Negotiate/Kerberos authentication: gss_accept_sec_context did not return GSS_S_COMPLETE: An unsupported mechanism was requested\nUnknown error"`.
+```
+
 ### Test connectivity between the GitLab and Kerberos servers
 
 You can use utilities like [`kinit`](https://web.mit.edu/kerberos/krb5-1.12/doc/user/user_commands/kinit.html) and [`klist`](https://web.mit.edu/kerberos/krb5-1.12/doc/user/user_commands/klist.html) to test connectivity between the GitLab server

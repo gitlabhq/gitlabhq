@@ -1,7 +1,10 @@
 <script>
 import { GlButton, GlCard, GlIcon, GlLink } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
-import { REPORT_TYPE_SAST_IAC } from '~/vue_shared/security_reports/constants';
+import {
+  REPORT_TYPE_BREACH_AND_ATTACK_SIMULATION,
+  REPORT_TYPE_SAST_IAC,
+} from '~/vue_shared/security_reports/constants';
 import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
 import FeatureCardBadge from './feature_card_badge.vue';
 
@@ -68,8 +71,7 @@ export default {
       };
     },
     hasSecondary() {
-      const { name, description, configurationText } = this.feature.secondary ?? {};
-      return Boolean(name && description && configurationText);
+      return Boolean(this.feature.secondary);
     },
     // This condition is a temporary hack to not display any wrong information
     // until this BE Bug is fixed: https://gitlab.com/gitlab-org/gitlab/-/issues/350307.
@@ -78,7 +80,17 @@ export default {
       return this.feature.type !== REPORT_TYPE_SAST_IAC;
     },
     hasBadge() {
-      return Boolean(this.available && this.feature.badge?.text);
+      const shouldDisplay = this.available || this.feature.badge?.alwaysDisplay;
+      return Boolean(shouldDisplay && this.feature.badge?.text);
+    },
+    hasEnabledStatus() {
+      return (
+        this.isNotSastIACTemporaryHack &&
+        this.feature.type !== REPORT_TYPE_BREACH_AND_ATTACK_SIMULATION
+      );
+    },
+    showSecondaryConfigurationHelpPath() {
+      return Boolean(this.available && this.feature.secondary?.configurationHelpPath);
     },
   },
   methods: {
@@ -118,19 +130,25 @@ export default {
           :badge-href="feature.badge.badgeHref"
         />
 
-        <template v-if="enabled">
-          <span>
-            <gl-icon name="check-circle-filled" />
-            <span class="gl-text-green-700">{{ $options.i18n.enabled }}</span>
-          </span>
+        <template v-if="hasEnabledStatus">
+          <template v-if="enabled">
+            <span>
+              <gl-icon name="check-circle-filled" />
+              <span class="gl-text-green-700">{{ $options.i18n.enabled }}</span>
+            </span>
+          </template>
+
+          <template v-else-if="available">
+            <span>{{ $options.i18n.notEnabled }}</span>
+          </template>
+
+          <template v-else>
+            {{ $options.i18n.availableWith }}
+          </template>
         </template>
 
-        <template v-else-if="available">
-          <span>{{ $options.i18n.notEnabled }}</span>
-        </template>
-
-        <template v-else>
-          {{ $options.i18n.availableWith }}
+        <template v-else-if="!available">
+          <span>{{ $options.i18n.availableWith }}</span>
         </template>
       </div>
     </div>
@@ -185,6 +203,16 @@ export default {
         class="gl-mt-5"
       >
         {{ feature.secondary.configurationText }}
+      </gl-button>
+
+      <gl-button
+        v-else-if="showSecondaryConfigurationHelpPath"
+        icon="external-link"
+        :href="feature.secondary.configurationHelpPath"
+        category="secondary"
+        class="gl-mt-5"
+      >
+        {{ $options.i18n.configurationGuide }}
       </gl-button>
     </div>
   </gl-card>

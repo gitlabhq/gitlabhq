@@ -803,7 +803,7 @@ variables:
 NOTE:
 Zip archives are the only supported artifact type. Follow [the issue for details](https://gitlab.com/gitlab-org/gitlab/-/issues/367203).
 
-GitLab Runner can generate and produce attestation metadata for all build artifacts. To enable this feature, you must set the `RUNNER_GENERATE_ARTIFACTS_METADATA` environment variable to `true`. This variable can either be set globally or it can be set for individual jobs. The metadata is in rendered in a plain text `.json` file that's stored with the artifact. The filename is as follows: `{ARTIFACT_NAME}-metadata.json` where `ARTIFACT_NAME` is what was defined as the [name for the artifact](../jobs/job_artifacts.md#with-cicd-variables-to-define-the-artifacts-name) in the CI file. The filename, however, defaults to `artifacts-metadata.json` if no name was given to the build artifacts.
+GitLab Runner can generate and produce attestation metadata for all build artifacts. To enable this feature, you must set the `RUNNER_GENERATE_ARTIFACTS_METADATA` environment variable to `true`. This variable can either be set globally or it can be set for individual jobs. The metadata is in rendered in a plain text `.json` file that's stored with the artifact. The filename is as follows: `{ARTIFACT_NAME}-metadata.json` where `ARTIFACT_NAME` is what was defined as the [name for the artifact](../jobs/job_artifacts.md#with-a-dynamically-defined-name) in the CI file. The filename, however, defaults to `artifacts-metadata.json` if no name was given to the build artifacts.
 
 ### Attestation format
 

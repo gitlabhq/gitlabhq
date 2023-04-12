@@ -132,7 +132,10 @@ export default {
   },
   watch: {
     descriptionHtml(newDescription, oldDescription) {
-      if (!this.initialUpdate && newDescription !== oldDescription) {
+      if (
+        !this.initialUpdate &&
+        this.stripClientState(newDescription) !== this.stripClientState(oldDescription)
+      ) {
         this.animateChange();
       } else {
         this.initialUpdate = false;
@@ -320,6 +323,9 @@ export default {
         // Otherwise, the task item is a simple one where the task text exists as the last child
         listItem.append(element);
       }
+    },
+    stripClientState(description) {
+      return description.replaceAll('<details open="true">', '<details>');
     },
     async createTask({ taskTitle, taskDescription, oldDescription }) {
       try {

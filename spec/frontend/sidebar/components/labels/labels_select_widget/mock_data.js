@@ -117,6 +117,17 @@ export const workspaceLabelsQueryResponse = {
   },
 };
 
+export const workspaceLabelsQueryEmptyResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Project/126',
+      labels: {
+        nodes: [],
+      },
+    },
+  },
+};
+
 export const issuableLabelsQueryResponse = {
   data: {
     workspace: {

@@ -8,11 +8,13 @@ import { createAlert } from '~/alert';
 import { workspaceLabelsQueries } from '~/sidebar/constants';
 import DropdownContentsCreateView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_create_view.vue';
 import createLabelMutation from '~/sidebar/components/labels/labels_select_widget/graphql/create_label.mutation.graphql';
+import { DEFAULT_LABEL_COLOR } from '~/sidebar/components/labels/labels_select_widget/constants';
 import {
   mockRegularLabel,
   mockSuggestedColors,
   createLabelSuccessfulResponse,
   workspaceLabelsQueryResponse,
+  workspaceLabelsQueryEmptyResponse,
 } from './mock_data';
 
 jest.mock('~/alert');
@@ -61,14 +63,16 @@ describe('DropdownContentsCreateView', () => {
     mutationHandler = createLabelSuccessHandler,
     labelCreateType = 'project',
     workspaceType = 'project',
+    labelsResponse = workspaceLabelsQueryResponse,
+    searchTerm = '',
   } = {}) => {
     const mockApollo = createMockApollo([[createLabelMutation, mutationHandler]]);
     mockApollo.clients.defaultClient.cache.writeQuery({
       query: workspaceLabelsQueries[workspaceType].query,
-      data: workspaceLabelsQueryResponse.data,
+      data: labelsResponse.data,
       variables: {
         fullPath: '',
-        searchTerm: '',
+        searchTerm,
       },
     });
 
@@ -94,7 +98,7 @@ describe('DropdownContentsCreateView', () => {
 
   it('selects a color after clicking on colored block', async () => {
     createComponent();
-    expect(findSelectedColor().attributes('style')).toBeUndefined();
+    expect(findSelectedColorText().attributes('value')).toBe(DEFAULT_LABEL_COLOR);
 
     findAllColors().at(0).vm.$emit('click', new Event('mouseclick'));
     await nextTick();
@@ -104,7 +108,7 @@ describe('DropdownContentsCreateView', () => {
 
   it('shows correct color hex code after selecting a color', async () => {
     createComponent();
-    expect(findSelectedColorText().attributes('value')).toBe('');
+    expect(findSelectedColorText().attributes('value')).toBe(DEFAULT_LABEL_COLOR);
 
     findAllColors().at(0).vm.$emit('click', new Event('mouseclick'));
     await nextTick();
@@ -123,6 +127,7 @@ describe('DropdownContentsCreateView', () => {
   it('disables a Create button if color is not set', async () => {
     createComponent();
     findLabelTitleInput().vm.$emit('input', 'Test title');
+    findSelectedColorText().vm.$emit('input', '');
     await nextTick();
 
     expect(findCreateButton().props('disabled')).toBe(true);
@@ -231,5 +236,22 @@ describe('DropdownContentsCreateView', () => {
     expect(wrapper.findComponent(GlAlert).text()).toEqual(
       titleTakenError.data.labelCreate.errors[0],
     );
+  });
+
+  describe('when empty labels response', () => {
+    it('is able to create label with searched text when empty response', async () => {
+      createComponent({ searchTerm: '', labelsResponse: workspaceLabelsQueryEmptyResponse });
+
+      findLabelTitleInput().vm.$emit('input', 'random');
+
+      findCreateButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(createLabelSuccessHandler).toHaveBeenCalledWith({
+        color: DEFAULT_LABEL_COLOR,
+        projectPath: '',
+        title: 'random',
+      });
+    });
   });
 });

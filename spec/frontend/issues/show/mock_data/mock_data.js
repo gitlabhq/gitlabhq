@@ -79,3 +79,16 @@ export const descriptionHtmlWithList = `
     <li data-sourcepos="3:1-3:8">todo 3</li>
   </ul>
 `;
+
+export const descriptionHtmlWithDetailsTag = {
+  expanded: `
+    <details open="true">
+      <summary>Section 1</summary>
+      <p>Data</p>
+    </details>'`,
+  collapsed: `
+    <details>
+      <summary>Section 1</summary>
+      <p>Data</p>
+    </details>'`,
+};
