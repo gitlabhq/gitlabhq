@@ -7,7 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Import your project from GitHub to GitLab **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10, you no longer need to add any users to the parent group in GitLab to successfully import the **Require a pull request before merging - Allow specified actors to bypass required pull requests** branch protection rule.
 
 You can import your GitHub projects from either GitHub.com or GitHub Enterprise. Importing projects does not
 migrate or import any types of groups or organizations from GitHub to GitLab.
@@ -51,9 +52,6 @@ To import projects from GitHub:
 - GitHub accounts must have a GitHub public-facing email address is populated. This means all comments and contributions
   are properly mapped to the same user in GitLab. GitHub Enterprise does not require this field to be populated so you
   may have to add it on existing accounts.
-
-See also [Branch protection rules and project settings](#branch-protection-rules-and-project-settings) for additional
-prerequisites for those imports.
 
 Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383047), if you are using GitHub as an OmniAuth provider, ensure that the URL
 perimeter is specified in the [OmniAuth configuration](../../../integration/github.md#enable-github-oauth-in-gitlab).
@@ -255,10 +253,7 @@ When they are imported, supported GitHub branch protection rules are mapped to e
 | **Require signed commits** for the project's default branch                                         | **Reject unsigned commits** GitLab [push rule](../repository/push_rules.md#prevent-unintended-consequences) **(PREMIUM)**                                   | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) |
 | **Allow force pushes - Everyone**                                                                   | **Allowed to force push** [branch protection setting](../protected_branches.md#allow-force-push-on-a-protected-branch)                                      | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/370943) |
 | **Require a pull request before merging - Require review from Code Owners**                         | **Require approval from code owners** [branch protection setting](../protected_branches.md#require-code-owner-approval-on-a-protected-branch) **(PREMIUM)** | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/376683) |
-| **Require a pull request before merging - Allow specified actors to bypass required pull requests** (1) | List of users in the **Allowed to push** list of [branch protection settings](../protected_branches.md#configure-a-protected-branch) **(PREMIUM)**. Without a Premium license, the list of users that are allowed to push is limited to roles. | [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/384939) |
-
-1. To successfully import the **Require a pull request before merging - Allow specified actors to bypass required pull requests** rule, you must add to the parent group in GitLab
-   the users that are allowed to bypass required pull requests before you begin importing.
+| **Require a pull request before merging - Allow specified actors to bypass required pull requests** | List of users in the **Allowed to push** list of [branch protection settings](../protected_branches.md#configure-a-protected-branch) **(PREMIUM)**. Without a **Premium** subscription, the list of users that are allowed to push is limited to roles. | [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/384939) |
 
 Mapping GitHub rule **Require status checks to pass before merging** to
 [external status checks](../merge_requests/status_checks.md) was considered in issue

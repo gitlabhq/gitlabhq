@@ -5,6 +5,8 @@ module Banzai
     class CommitParser < BaseParser
       self.reference_type = :commit
 
+      COMMITS_LIMIT = 1000
+
       def referenced_by(nodes, options = {})
         commit_ids = commit_ids_per_project(nodes)
         projects = find_projects_for_hash_keys(commit_ids)
@@ -19,6 +21,8 @@ module Banzai
       end
 
       def find_commits(project, ids)
+        return limited_commits(project, ids) if Feature.enabled?(:limited_commit_parser, project)
+
         commits = []
 
         return commits unless project.valid_repo?
@@ -33,6 +37,14 @@ module Banzai
       end
 
       private
+
+      def limited_commits(project, ids)
+        return [] unless project.valid_repo?
+
+        ids = ids.take(COMMITS_LIMIT)
+
+        project.commits_by(oids: ids)
+      end
 
       def can_read_reference?(user, ref_project, node)
         can?(user, :download_code, ref_project)

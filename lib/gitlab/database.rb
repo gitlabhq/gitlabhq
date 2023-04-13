@@ -51,6 +51,11 @@ module Gitlab
 
     FULLY_QUALIFIED_IDENTIFIER = /^\w+\.\w+$/
 
+    ## Database Modes
+    MODE_SINGLE_DATABASE = "single-database"
+    MODE_SINGLE_DATABASE_CI_CONNECTION = "single-database-ci-connection"
+    MODE_MULTIPLE_DATABASES = "multiple-databases"
+
     def self.database_base_models
       @database_base_models ||= {
         # Note that we use ActiveRecord::Base here and not ApplicationRecord.
@@ -138,7 +143,17 @@ module Gitlab
     # Database configured. Returns false if the database is shared
     def self.has_database?(database_name)
       db_config = ::Gitlab::Database.database_base_models[database_name]&.connection_db_config
-      db_config.present? && ::Gitlab::Database.db_config_share_with(db_config).nil?
+      db_config.present? && db_config_share_with(db_config).nil?
+    end
+
+    def self.database_mode
+      if !has_config?(CI_DATABASE_NAME)
+        MODE_SINGLE_DATABASE
+      elsif has_database?(CI_DATABASE_NAME)
+        MODE_MULTIPLE_DATABASES
+      else
+        MODE_SINGLE_DATABASE_CI_CONNECTION
+      end
     end
 
     class PgUser < ApplicationRecord

@@ -3,7 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe SwapIssueUserMentionsNoteIdToBigintForGitlabDotCom, feature_category: :database do
+# rubocop: disable RSpec/FilePath
+RSpec.describe SwapIssueUserMentionsNoteIdToBigintForGitlabDotCom2, feature_category: :database do
   describe '#up' do
     before do
       # A we call `schema_migrate_down!` before each example, and for this migration
@@ -61,6 +62,23 @@ RSpec.describe SwapIssueUserMentionsNoteIdToBigintForGitlabDotCom, feature_categ
         end
       end
     end
+
+    it 'is a no-op if columns are already swapped' do
+      connection = described_class.new.connection
+      connection.execute('ALTER TABLE issue_user_mentions ALTER COLUMN note_id TYPE bigint')
+      connection.execute('ALTER TABLE issue_user_mentions ALTER COLUMN note_id_convert_to_bigint TYPE integer')
+
+      allow_any_instance_of(described_class).to receive(:com_or_dev_or_test_but_not_jh?).and_return(true)
+
+      migrate!
+
+      user_mentions = table(:issue_user_mentions)
+      user_mentions.reset_column_information
+
+      expect(user_mentions.columns.find { |c| c.name == 'note_id' }.sql_type).to eq('bigint')
+      expect(user_mentions.columns.find { |c| c.name == 'note_id_convert_to_bigint' }.sql_type).to eq('integer')
+    end
     # rubocop: enable RSpec/AnyInstanceOf
   end
 end
+# rubocop: enable RSpec/FilePath

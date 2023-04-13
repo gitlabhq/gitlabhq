@@ -685,6 +685,9 @@ Settings.cron_jobs['ci_runners_stale_machines_cleanup_worker']['job_class'] = 'C
 Settings.cron_jobs['cleanup_dangling_debian_package_files_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['cleanup_dangling_debian_package_files_worker']['cron'] ||= '20 21 * * *'
 Settings.cron_jobs['cleanup_dangling_debian_package_files_worker']['job_class'] = 'Packages::Debian::CleanupDanglingPackageFilesWorker'
+Settings.cron_jobs['global_metrics_update_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['global_metrics_update_worker']['cron'] ||= '*/1 * * * *'
+Settings.cron_jobs['global_metrics_update_worker']['job_class'] ||= 'Metrics::GlobalMetricsUpdateWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= Settingslogic.new({})

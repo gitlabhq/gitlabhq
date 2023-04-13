@@ -46754,6 +46754,9 @@ msgstr ""
 msgid "Unable to load commits. Try again later."
 msgstr ""
 
+msgid "Unable to load current Workspaces. Please try again or contact an administrator."
+msgstr ""
+
 msgid "Unable to load file contents. Try again later."
 msgstr ""
 
@@ -50104,6 +50107,9 @@ msgid "Workspaces|Get started with GitLab Workspaces"
 msgstr ""
 
 msgid "Workspaces|GitLab Workspaces is a powerful collaborative platform that provides a comprehensive set of tools for software development teams to manage their entire development lifecycle."
+msgstr ""
+
+msgid "Workspaces|Workspaces"
 msgstr ""
 
 msgid "Would you like to create a new branch?"
