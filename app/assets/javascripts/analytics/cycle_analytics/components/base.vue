@@ -177,6 +177,7 @@ export default {
       :has-project-filter="false"
       :start-date="createdAfter"
       :end-date="createdBefore"
+      :group-path="groupPath"
       @setDateRange="onSetDateRange"
     />
     <div class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row">

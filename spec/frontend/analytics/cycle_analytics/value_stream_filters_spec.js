@@ -10,11 +10,14 @@ import {
   selectedProjects,
 } from './mock_data';
 
+const { path } = currentGroup;
+const groupPath = `groups/${path}`;
+
 function createComponent(props = {}) {
   return shallowMount(ValueStreamFilters, {
     propsData: {
       selectedProjects,
-      groupId: currentGroup.id,
+      groupPath,
       namespacePath: currentGroup.fullPath,
       startDate,
       endDate,

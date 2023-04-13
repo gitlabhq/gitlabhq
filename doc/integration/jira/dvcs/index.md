@@ -20,31 +20,25 @@ are accessible.
 - **Self-managed GitLab**: Your GitLab instance must be accessible by Jira.
 - **Jira Server**: Your network must allow access to your instance.
 
-NOTE:
-When using GitLab 15.0 and later (including GitLab.com) with Jira Server, you might experience a [session token bug in Jira](https://jira.atlassian.com/browse/JSWSERVER-21389). As a workaround, ensure Jira Server is version 9.1.0 and later or 8.20.11 and later.
-
 ## Smart Commits
 
-When connecting GitLab with Jira with DVCS, you can process your Jira issues using
-special commands, called
-[Smart Commits](https://support.atlassian.com/jira-software-cloud/docs/process-issues-with-smart-commits/),
-in your commit messages. With Smart Commits, you can:
+When connecting GitLab and Jira with the Jira DVCS connector, you can process your Jira issues with
+special commands called [Smart Commits](https://support.atlassian.com/jira-software-cloud/docs/process-issues-with-smart-commits/).
+With Smart Commits, you can:
 
 - Comment on issues.
 - Record time-tracking information against issues.
 - Transition issues to any status defined in the Jira project's workflow.
 
-Commands must be in the first line of the commit message. The
-[Jira Software documentation](https://support.atlassian.com/jira-software-cloud/docs/process-issues-with-smart-commits/)
-contains more information about how Smart Commits work, and what commands are available
-for your use.
+Commands must be in the first line of the commit message. For more information about how Smart Commits work and what commands are available
+for use, see the [Atlassian documentation](https://support.atlassian.com/jira-software-cloud/docs/process-issues-with-smart-commits/).
 
-For Smart Commits to work, the committing user on GitLab must have a corresponding
-user on Jira with the same email address or username.
+For Smart Commits to work, the GitLab user must have a corresponding
+Jira user with the same email address or username.
 
 ### Smart Commit syntax
 
-Smart Commits should follow the pattern of:
+Smart Commits must follow this pattern:
 
 ```plaintext
 <ISSUE_KEY> <ignored text> #<command> <optional command parameters>
@@ -56,7 +50,7 @@ Some examples:
 - Record time tracking: `KEY-123 #time 2w 4d 10h 52m Tracking work time.`
 - Close an issue: `KEY-123 #close Closing issue`
 
-A Smart Commit message must not span more than one line (no carriage returns) but
+A Smart Commit message must not span more than one line (no carriage returns), but
 you can still perform multiple actions in a single commit. For example:
 
 - Add time tracking, add a comment, and transition to **Closed**:
@@ -73,64 +67,60 @@ you can still perform multiple actions in a single commit. For example:
 
 ## Configure a GitLab application for DVCS
 
-For projects in a single group we recommend you create a [group application](../../oauth_provider.md#create-a-group-owned-application).
-For projects across multiple groups we recommend you create and use a `jira` user in GitLab, and use the account
-only for integration work. A separate account ensures regular account
-maintenance does not affect your integration. If a `jira` user or group application is not feasible,
-you can set up this integration as an [instance-wide application](../../oauth_provider.md#create-an-instance-wide-application)
-or with a [user owned application](../../oauth_provider.md#create-a-user-owned-application) instead.
+For projects in a single group, you should create a [group application](../../oauth_provider.md#create-a-group-owned-application).
 
-1. Navigate to the [appropriate **Applications** section](../../oauth_provider.md).
-1. In the **Name** field, enter a descriptive name for the integration, such as `Jira`.
-1. In the **Redirect URI** field, enter the URI appropriate for your version of GitLab,
-   replacing `<gitlab.example.com>` with your GitLab instance domain:
-   - *For GitLab versions 13.0 and later* **and** *Jira versions 8.14 and later,* use the
+For projects across multiple groups, you should create a new user account in GitLab for Jira integration work only.
+A separate account ensures regular account maintenance does not affect your integration.
+
+If a separate user account or group application is not possible, you can set up this integration
+as an [instance-wide application](../../oauth_provider.md#create-an-instance-wide-application)
+or with a [user-owned application](../../oauth_provider.md#create-a-user-owned-application).
+
+1. Go to the [appropriate **Applications** section](../../oauth_provider.md).
+1. In the **Name** text box, enter a descriptive name for the integration (for example, `Jira`).
+1. In the **Redirect URI** text box, enter the appropriate URI.
+   Replace `<gitlab.example.com>` with your GitLab instance domain:
+   - **In Jira 8.14 and later**, use the
      generated `Redirect URL` from
-     [Linking GitLab accounts with Jira](https://confluence.atlassian.com/adminjiraserver/linking-gitlab-accounts-1027142272.html).
-   - *For GitLab versions 13.0 and later* **and** *Jira Cloud,* use `https://<gitlab.example.com>/login/oauth/callback`.
-   - *For GitLab versions 11.3 and later* **and** *Jira versions 8.13 and earlier,* use `https://<gitlab.example.com>/login/oauth/callback`.
+     [linking GitLab accounts](https://confluence.atlassian.com/adminjiraserver/linking-gitlab-accounts-1027142272.html).
+   - **In Jira 8.13 and earlier**, use `https://<gitlab.example.com>/login/oauth/callback`.
      If you use GitLab.com, the URL is `https://gitlab.com/login/oauth/callback`.
-   - *For GitLab versions 11.2 and earlier,* use
-     `https://<gitlab.example.com>/-/jira/login/oauth/callback`.
 
-1. For **Scopes**, select `api` and clear any other checkboxes.
-   - The DVCS connector requires a _write-enabled_ `api` scope to automatically create and manage required webhooks.
+1. In **Scopes**, select `api` and clear any other checkboxes.
+   The DVCS connector requires a **write-enabled** `api` scope to automatically create and manage required webhooks.
 1. Select **Submit**.
 1. Copy the **Application ID** and **Secret** values.
-   You need them to configure Jira.
+   You need these values to configure Jira.
 
 ## Configure Jira for DVCS
 
-Configure this connection when you want to import all GitLab commits and branches,
-for the groups you specify, into Jira. This import takes a few minutes and, after
+To import all GitLab commits and branches into Jira for the groups you specify,
+configure Jira for DVCS. This import takes a few minutes and, after
 it completes, refreshes every 60 minutes:
 
 1. Complete the [GitLab configuration](#configure-a-gitlab-application-for-dvcs).
-1. Go to your DVCS accounts:
-   - *For Jira Server,* select **Settings (gear) > Applications > DVCS accounts**.
-   - *For Jira Cloud,* select **Settings (gear) > Products > DVCS accounts**.
+1. Go to your DVCS account:
+   - **For Jira Server**, select **Settings (gear) > Applications > DVCS accounts**.
 1. To create a new integration, select the appropriate value for **Host**:
-   - *For Jira versions 8.14 and later:* Select **GitLab** or
+   - **In Jira 8.14 and later**, select **GitLab** or
      **GitLab Self-Managed**.
-   - *For Jira Cloud or Jira versions 8.13 and earlier:* Select **GitHub Enterprise**.
-1. For **Team or User Account**, enter either:
-   - *For Jira versions 8.14 and later:*
+   - **In Jira 8.13 and earlier**, select **GitHub Enterprise**.
+1. For **Team or User Account**, enter:
+   - **In Jira 8.14 and later**:
       - The relative path of a top-level GitLab group that
-        [the GitLab user](#configure-a-gitlab-application-for-dvcs) has access to.
-   - *For Jira Cloud or Jira versions 8.13 and earlier:*
+        [the GitLab user](#configure-a-gitlab-application-for-dvcs) can access.
+   - **In Jira 8.13 and earlier**:
       - The relative path of a top-level GitLab group that
-        [the GitLab user](#configure-a-gitlab-application-for-dvcs) has access to.
+        [the GitLab user](#configure-a-gitlab-application-for-dvcs) can access.
       - The relative path of your personal namespace.
 
-1. In the **Host URL** field, enter the URI appropriate for your version of GitLab,
-   replacing `<gitlab.example.com>` with your GitLab instance domain:
-   - *For GitLab versions 11.3 and later,* use `https://<gitlab.example.com>`.
-   - *For GitLab versions 11.2 and earlier,* use
-     `https://<gitlab.example.com>/-/jira`.
+1. In the **Host URL** text box, enter the appropriate URL.
+   Replace `<gitlab.example.com>` with your GitLab instance domain.
+   Use `https://<gitlab.example.com>`.
 
-1. For **Client ID**, use the **Application ID** value from the previous section.
-1. For **Client Secret**, use the **Secret** value from the previous section.
-1. Ensure that the rest of the checkboxes are selected.
+1. For **Client ID**, use the [**Application ID** value](#configure-a-gitlab-application-for-dvcs).
+1. For **Client Secret**, use the [**Secret** value](#configure-a-gitlab-application-for-dvcs).
+1. Ensure that all other checkboxes are selected.
 1. To create the DVCS account, select **Add** and then **Continue**.
 1. Jira redirects to GitLab where you have to confirm the authorization.
    GitLab then redirects back to Jira where the synced
@@ -139,7 +129,7 @@ it completes, refreshes every 60 minutes:
 To connect additional GitLab projects from other GitLab top-level groups or
 personal namespaces, repeat the previous steps with additional Jira DVCS accounts.
 
-After you configure the integration, read more about [how to test and use it](../development_panel.md).
+For more information about how to use the integration, see [Jira development panel](../development_panel.md).
 
 ## Refresh data imported to Jira
 
@@ -164,11 +154,11 @@ For more information, see [Install the GitLab for Jira Cloud app](../connect-app
 | Smart Commits      | **{check-circle}** Yes | **{check-circle}** Yes |
 | Sync MRs           | **{check-circle}** Yes | **{check-circle}** Yes |
 | Sync branches      | **{check-circle}** Yes | **{check-circle}** Yes |
-| Sync commits       | **{check-circle}** Yes | **{check-circle}** Yes|
+| Sync commits       | **{check-circle}** Yes | **{check-circle}** Yes |
 | Sync builds        | **{dotted-circle}** No | **{check-circle}** Yes |
 | Sync deployments   | **{dotted-circle}** No | **{check-circle}** Yes |
 | Sync feature flags | **{dotted-circle}** No | **{check-circle}** Yes |
-| Sync interval      | 60 Minutes         | Real time                             |
+| Sync interval      | 60 Minutes             | Real time              |
 | Create branches    | **{dotted-circle}** No | **{check-circle}** Yes (Only GitLab SaaS) |
 | Historic data sync | **{check-circle}** Yes | **{dotted-circle}** No |
 

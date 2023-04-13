@@ -76,7 +76,13 @@ module Gitlab
         end
 
         def get_from_auth_hash_or_info(key)
-          coerce_utf8(auth_hash[key]) || get_info(key)
+          if auth_hash.key?(key)
+            coerce_utf8(auth_hash[key])
+          elsif auth_hash.key?(:extra) && auth_hash.extra.key?(:raw_info) && !auth_hash.extra.raw_info[key].nil?
+            coerce_utf8(auth_hash.extra.raw_info[key])
+          else
+            get_info(key)
+          end
         end
 
         # Allow for configuring a custom username claim per provider from

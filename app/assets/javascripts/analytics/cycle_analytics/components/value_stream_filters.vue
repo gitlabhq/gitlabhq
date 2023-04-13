@@ -35,6 +35,10 @@ export default {
       type: String,
       required: true,
     },
+    groupPath: {
+      type: String,
+      required: true,
+    },
     startDate: {
       type: Date,
       required: false,
@@ -79,7 +83,7 @@ export default {
         <projects-dropdown-filter
           v-if="hasProjectFilter"
           class="js-projects-dropdown-filter project-select gl-mb-2 gl-lg-mb-0"
-          :group-namespace="namespacePath"
+          :group-namespace="groupPath"
           :query-params="projectsQueryParams"
           :multi-select="$options.multiProjectSelect"
           :default-projects="selectedProjects"

@@ -247,6 +247,25 @@ To change this setting for a specific group:
 
 To change this setting globally, see [Default project creation protection](../admin_area/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
 
+## Add Group README
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390230) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `show_group_readme`. Disabled by default.
+
+As a group owner or member, you can use a README to provide more information about your team, and invite users to contribute to your projects.
+The README is displayed on the group overview page, and can be changed in the group settings. All group members can edit the README.
+
+Prerequisite:
+
+- To create the README from the group settings, you must have the Owner role for the group.
+
+To add a group README:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. In the **Group README** section, select **Add README**. This action creates a new project `gitlab-profile` that contains the `README.md` file.
+1. On the prompt for creating a README, select **Create and add README**. You're redirected to the Web IDE, where a README file is created.
+1. In the Web IDE, edit and commit the `README.md` file.
+
 ## Change the owner of a group
 
 You can change the owner of a group. Each group must always have at least one

@@ -11,7 +11,7 @@ module Issuable
 
         @old_milestone = issuable.milestone
 
-        if params[:milestone_id].blank? || params[:milestone_id] == IssuableFinder::Params::NONE
+        if params[:milestone_id].blank? || params[:milestone_id].to_s == IssuableFinder::Params::NONE
           issuable.milestone = nil
 
           return

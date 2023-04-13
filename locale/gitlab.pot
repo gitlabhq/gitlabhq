@@ -1845,6 +1845,9 @@ msgstr ""
 msgid "ACTION REQUIRED: Something went wrong while obtaining the Let's Encrypt certificate for GitLab Pages domain '%{domain}'"
 msgstr ""
 
+msgid "AI actions"
+msgstr ""
+
 msgid "AI|Close the Code Explanation"
 msgstr ""
 
@@ -12564,6 +12567,9 @@ msgid "Created on:"
 msgstr ""
 
 msgid "Creates a branch and a merge request to resolve this issue."
+msgstr ""
+
+msgid "Creates a summary of all comments"
 msgstr ""
 
 msgid "Creates branch '%{branch_name}' and a merge request to resolve this issue."
@@ -42943,6 +42949,9 @@ msgid "Suggestions:"
 msgstr ""
 
 msgid "Suite"
+msgstr ""
+
+msgid "Summarize comments"
 msgstr ""
 
 msgid "Summary"

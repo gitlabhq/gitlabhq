@@ -73,6 +73,14 @@ RSpec.describe Issuable::Callbacks::Milestone, feature_category: :team_planning 
         end
       end
 
+      context "when milestone_id is '0'" do
+        let(:params) { { milestone_id: 0 } }
+
+        it "unsets the issuable's milestone" do
+          expect { callback.after_initialize }.to change { issuable.milestone }.from(project_milestone).to(nil)
+        end
+      end
+
       context 'when milestone_id is not given' do
         let(:params) { {} }
 

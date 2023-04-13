@@ -59,6 +59,7 @@ export default () => {
       showTimelineViewToggle,
       reportAbusePath: notesDataset.reportAbusePath,
       newCommentTemplatePath: notesDataset.newCommentTemplatePath,
+      issuableId: noteableData.id,
     },
     data() {
       return {

@@ -28,6 +28,8 @@ export default {
     GlTab,
     DrawioToolbarButton,
     CommentTemplatesDropdown,
+    AiActionsDropdown: () =>
+      import('ee_component/vue_shared/components/markdown/ai_actions_dropdown.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -37,6 +39,7 @@ export default {
     newCommentTemplatePath: {
       default: null,
     },
+    issuableId: { default: null },
   },
   props: {
     previewMarkdown: {
@@ -117,6 +120,14 @@ export default {
     mdCollapsibleSection() {
       const expandText = s__('MarkdownEditor|Click to expand');
       return [`<details><summary>${expandText}</summary>`, `{text}`, '</details>'].join('\n');
+    },
+    showAiActions() {
+      return (
+        this.issuableId &&
+        this.glFeatures.openaiExperimentation &&
+        this.glFeatures.summarizeNotes &&
+        this.glFeatures.summarizeComments
+      );
     },
   },
   watch: {
@@ -269,6 +280,7 @@ export default {
               </gl-button>
             </gl-popover>
           </template>
+          <ai-actions-dropdown v-if="showAiActions" :issuable-id="issuableId" />
           <toolbar-button
             tag="**"
             :button-title="

@@ -18,8 +18,8 @@
 # REQUIRED FIELDS
 #
 - title: "Feature A is deprecated"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
-  announcement_milestone: "XX.YY"  # (required) The milestone when this feature was first announced as deprecated.
   removal_milestone: "XX.YY"  # (required) The milestone when this feature is planned to be removed
+  announcement_milestone: "XX.YY"  # (required) The milestone when this feature was first announced as deprecated.
   breaking_change: true  # (required) Change to false if this is not a breaking change.
   reporter: exampleuser  # (required) GitLab username of the person reporting the change
   stage: stage  # (required) String value of the stage that the feature was created in. e.g., Growth
