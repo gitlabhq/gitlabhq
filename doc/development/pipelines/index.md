@@ -47,22 +47,49 @@ In summary:
 - RSpec tests are dependent on the backend code.
 - Jest tests are dependent on both frontend and backend code, the latter through the frontend fixtures.
 
+### Predictive Tests Dashboards
+
+- <https://app.periscopedata.com/app/gitlab/1116767/Test-Intelligence-Accuracy>
+- <https://app.periscopedata.com/app/gitlab/899368/EP---Predictive-testing-analysis>
+
+### The `detect-tests` CI job
+
+Most CI/CD pipelines for `gitlab-org/gitlab` will run a [`detect-tests` CI job](https://gitlab.com/gitlab-org/gitlab/-/blob/0c6058def8f182b4a2410db5d08a9550b951b2d8/.gitlab/ci/setup.gitlab-ci.yml#L101-146) in the `prepare` stage to detect which backend/frontend tests should be run based on the files that changed in the given MR.
+
+The `detect-tests` job will create many files that will contain the backend/frontend tests that should be run. Those files will be read in subsequent jobs in the pipeline, and only those tests will be executed.
+
 ### RSpec predictive jobs
 
 #### Determining predictive RSpec test files in a merge request
 
-To identify the RSpec tests that are likely to fail in a merge request, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ci-cd/test_file_finder), with two strategies:
+To identify the RSpec tests that are likely to fail in a merge request, we use *static mappings* and *dynamic mappings*.
 
-- dynamic mapping from test coverage tracing (generated via the [`Crystalball` gem](https://github.com/toptal/crystalball))
-  ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/2e19d43ba0d456808916650088c0f70d905e7810/tooling/lib/tooling/find_tests.rb#L20))
-- static mapping maintained in the [`tests.yml` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tests.yml) for special cases that cannot
-  be mapped via coverage tracing ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/2e19d43ba0d456808916650088c0f70d905e7810/tooling/lib/tooling/find_tests.rb#L20))
+##### Static mappings
+
+We use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ci-cd/test_file_finder), with a static mapping maintained in the [`tests.yml` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tests.yml) for special cases that cannot
+  be mapped via coverage tracing ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/5ab06422826c0d69c615655982a6f969a7f3c6ea/tooling/lib/tooling/find_tests.rb#L17)).
 
 The test mappings contain a map of each source files to a list of test files which is dependent of the source file.
 
-In the `detect-tests` job, we use this mapping to identify the predictive tests needed for the current merge request.
+##### Dynamic mappings
 
-Later on in [the `rspec fail-fast` job](#fail-fast-job-in-merge-request-pipelines), we run the predictive tests for the current merge request.
+First, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ci-cd/test_file_finder), with a dynamic mapping strategy from test coverage tracing (generated via the [`Crystalball` gem](https://github.com/toptal/crystalball))
+  ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tooling/lib/tooling/find_tests.rb#L20)).
+
+In addition to `test_file_finder`, we have added several advanced mappings to detect even more tests to run:
+
+- [`FindChanges`](https://gitlab.com/gitlab-org/gitlab/-/blob/28943cbd8b6d7e9a350d00e5ea5bb52123ee14a4/tooling/lib/tooling/find_changes.rb) ([!74003](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74003))
+  - Automatically detect Jest tests to run upon backend changes (via frontend fixtures)
+- [`PartialToViewsMappings`](https://gitlab.com/gitlab-org/gitlab/-/blob/28943cbd8b6d7e9a350d00e5ea5bb52123ee14a4/tooling/lib/tooling/mappings/partial_to_views_mappings.rb) ([#395016](https://gitlab.com/gitlab-org/gitlab/-/issues/395016))
+  - Run view specs when Rails partials included in those views are changed in an MR
+- [`JsToSystemSpecsMappings`](https://gitlab.com/gitlab-org/gitlab/-/blob/28943cbd8b6d7e9a350d00e5ea5bb52123ee14a4/tooling/lib/tooling/mappings/js_to_system_specs_mappings.rb) ([#386754](https://gitlab.com/gitlab-org/gitlab/-/issues/386754))
+  - Run certain system specs if a JavaScript file was changed in an MR
+- [`GraphqlBaseTypeMappings`](https://gitlab.com/gitlab-org/gitlab/-/blob/28943cbd8b6d7e9a350d00e5ea5bb52123ee14a4/tooling/lib/tooling/mappings/graphql_base_type_mappings.rb) ([#386756](https://gitlab.com/gitlab-org/gitlab/-/issues/386756))
+  - If a GraphQL type class changed, we should try to identify the other GraphQL types that potentially include this type, and run their specs.
+- [`ViewToSystemSpecsMappings`](https://gitlab.com/gitlab-org/gitlab/-/blob/28943cbd8b6d7e9a350d00e5ea5bb52123ee14a4/tooling/lib/tooling/mappings/view_to_system_specs_mappings.rb) ([#395017](https://gitlab.com/gitlab-org/gitlab/-/issues/395017))
+  - When a view gets changed, we try to find feature specs that would test that area of the code.
+- [`ViewToJsMappings`](https://gitlab.com/gitlab-org/gitlab/-/blob/8d7dfb7c043adf931128088b9ffab3b4a39af6f5/tooling/lib/tooling/mappings/view_to_js_mappings.rb) ([#386719](https://gitlab.com/gitlab-org/gitlab/-/issues/386719))
+  - If a JS file is changed, we should try to identify the system specs that are covering this JS component.
 
 #### Exceptional cases
 
@@ -73,6 +100,10 @@ In addition, there are a few circumstances where we would always run the full RS
 - when the merge request is created by an automation (for example, Gitaly update or MR targeting a stable branch)
 - when the merge request is created in a security mirror
 - when any CI configuration file is changed (for example, `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
+
+#### Have you encountered a problem with backend predictive tests?
+
+If so, please have a look at [the Engineering Productivity RUNBOOK on predictive tests](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/predictive-tests.md) for instructions on how to act upon predictive tests issues. Additionally, if you identified any test selection gaps, please let `@gl-quality/eng-prod` know so that we can take the necessary steps to optimize test selections.
 
 ### Jest predictive jobs
 
@@ -95,6 +126,10 @@ In addition, there are a few circumstances where we would always run the full Je
 The `rules` definitions for full Jest tests are defined at `.frontend:rules:jest` in
 [`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/42321b18b946c64d2f6f788c38844499a5ae9141/.gitlab/ci/rules.gitlab-ci.yml#L938-955).
 
+#### Have you encountered a problem with frontend predictive tests?
+
+If so, please have a look at [the Engineering Productivity RUNBOOK on predictive tests](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/predictive-tests.md) for instructions on how to act upon predictive tests issues.
+
 ### Fork pipelines
 
 We run only the predictive RSpec & Jest jobs for fork pipelines, unless the `pipeline:run-all-rspec`
@@ -104,8 +139,7 @@ See the [experiment issue](https://gitlab.com/gitlab-org/quality/quality-enginee
 
 ## Fail-fast job in merge request pipelines
 
-To provide faster feedback when a merge request breaks existing tests, we are experimenting with a
-fail-fast mechanism.
+To provide faster feedback when a merge request breaks existing tests, we implemented a fail-fast mechanism.
 
 An `rspec fail-fast` job is added in parallel to all other `rspec` jobs in a merge
 request pipeline. This job runs the tests that are directly related to the changes

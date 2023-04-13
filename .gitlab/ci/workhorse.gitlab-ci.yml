@@ -10,7 +10,7 @@ workhorse:verify:
 
 .workhorse:test:
   extends: .workhorse:rules:workhorse
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-golang-${GO_VERSION}:git-2.36
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-golang-${GO_VERSION}-rust-${RUST_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-2.36-exiftool-12.60
   variables:
     GITALY_ADDRESS: "tcp://127.0.0.1:8075"
   stage: test
@@ -18,7 +18,6 @@ workhorse:verify:
     - setup-test-env
   before_script:
     - go version
-    - apt-get update && apt-get -y install libimage-exiftool-perl
     - scripts/gitaly-test-build
   script:
     - make -C workhorse test
@@ -37,7 +36,10 @@ workhorse:test go:
 
 workhorse:test fips:
   extends: .workhorse:test
-  image: registry.gitlab.com/gitlab-org/gitlab-omnibus-builder/ubuntu_20.04_fips:4.0.0
+  parallel:
+    matrix:
+      - GO_VERSION: ["1.18", "1.19"]
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ubi-${UBI_VERSION}-ruby-${RUBY_VERSION}-golang-${GO_VERSION}-rust-${RUST_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-2.36-exiftool-12.60
   variables:
     FIPS_MODE: 1
 

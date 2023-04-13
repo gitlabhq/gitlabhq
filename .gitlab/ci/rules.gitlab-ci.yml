@@ -1329,16 +1329,16 @@
       changes: *ci-qa-patterns
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
+      changes:
+        - qa/Gemfile.lock # qa/Gemfile.lock is a part of *qa-patterns, so this rule must be placed before the one with *qa-patterns changes
+      variables:
+        UPDATE_QA_CACHE: "true"
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *qa-patterns
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
       changes: *code-patterns
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request
-      changes:
-        - qa/Gemfile.lock
-      variables:
-        UPDATE_QA_CACHE: "true"
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *code-patterns
       when: manual
