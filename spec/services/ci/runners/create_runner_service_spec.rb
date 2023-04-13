@@ -3,24 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category: :runner_fleet do
-  subject(:execute) { described_class.new(user: current_user, type: type, params: params).execute }
+  subject(:execute) { described_class.new(user: current_user, params: params).execute }
 
   let(:runner) { execute.payload[:runner] }
 
   let_it_be(:admin) { create(:admin) }
   let_it_be(:non_admin_user) { create(:user) }
   let_it_be(:anonymous) { nil }
+  let_it_be(:group_owner) { create(:user) }
 
-  shared_context 'when admin user' do
-    let(:current_user) { admin }
-
-    before do
-      allow(current_user).to receive(:can?).with(:create_instance_runners).and_return true
-    end
-  end
+  let_it_be(:group) { create(:group) }
 
   shared_examples 'it can create a runner' do
-    it 'creates a runner of the specified type' do
+    it 'creates a runner of the specified type', :aggregate_failures do
+      is_expected.to be_success
       expect(runner.runner_type).to eq expected_type
     end
 
@@ -42,7 +38,7 @@ RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category:
         expect(runner.active).to be true
         expect(runner.creator).to be current_user
         expect(runner.authenticated_user_registration_type?).to be_truthy
-        expect(runner.runner_type).to eq 'instance_type'
+        expect(runner.runner_type).to eq expected_type
       end
     end
 
@@ -81,7 +77,7 @@ RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category:
         expect(runner.maximum_timeout).to eq args[:maximum_timeout]
 
         expect(runner.authenticated_user_registration_type?).to be_truthy
-        expect(runner.runner_type).to eq 'instance_type'
+        expect(runner.runner_type).to eq expected_type
       end
 
       context 'with a nil paused value' do
@@ -138,7 +134,6 @@ RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category:
   end
 
   shared_examples 'it can return an error' do
-    let(:group) { create(:group) }
     let(:runner_double) { Ci::Runner.new }
 
     context 'when the runner fails to save' do
@@ -154,25 +149,137 @@ RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category:
     end
   end
 
-  context 'with type param set to nil' do
+  context 'with :runner_type param set to instance_type' do
     let(:expected_type) { 'instance_type' }
-    let(:type) { nil }
-    let(:params) { {} }
+    let(:params) { { runner_type: 'instance_type' } }
 
-    it_behaves_like 'it cannot create a runner' do
+    context 'when anonymous user' do
       let(:current_user) { anonymous }
+
+      it_behaves_like 'it cannot create a runner'
     end
 
-    it_behaves_like 'it cannot create a runner' do
+    context 'when non-admin user' do
       let(:current_user) { non_admin_user }
+
+      it_behaves_like 'it cannot create a runner'
     end
 
-    it_behaves_like 'it can create a runner' do
-      include_context 'when admin user'
+    context 'when admin user' do
+      let(:current_user) { admin }
+
+      it_behaves_like 'it cannot create a runner'
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it_behaves_like 'it can create a runner'
+        it_behaves_like 'it can return an error'
+
+        context 'with unexpected scope param specified' do
+          let(:params) { { runner_type: 'instance_type', scope: group } }
+
+          it_behaves_like 'it cannot create a runner'
+        end
+      end
+    end
+  end
+
+  context 'with :runner_type param set to group_type' do
+    let(:expected_type) { 'group_type' }
+    let(:params) { { runner_type: 'group_type', scope: group } }
+
+    before do
+      group.add_developer(non_admin_user)
+      group.add_owner(group_owner)
     end
 
-    it_behaves_like 'it can return an error' do
-      include_context 'when admin user'
+    context 'when anonymous user' do
+      let(:current_user) { anonymous }
+
+      it_behaves_like 'it cannot create a runner'
+    end
+
+    context 'when non-admin user' do
+      let(:current_user) { non_admin_user }
+
+      it_behaves_like 'it cannot create a runner'
+    end
+
+    context 'when group owner' do
+      let(:current_user) { group_owner }
+
+      it_behaves_like 'it can create a runner'
+
+      context 'with missing scope param' do
+        let(:params) { { runner_type: 'group_type' } }
+
+        it_behaves_like 'it cannot create a runner'
+      end
+    end
+
+    context 'when admin user' do
+      let(:current_user) { admin }
+
+      it_behaves_like 'it cannot create a runner'
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it_behaves_like 'it can create a runner'
+        it_behaves_like 'it can return an error'
+      end
+    end
+  end
+
+  context 'with :runner_type param set to project_type' do
+    let_it_be(:project) { create(:project, namespace: group) }
+
+    let(:expected_type) { 'project_type' }
+    let(:params) { { runner_type: 'project_type', scope: project } }
+
+    before do
+      group.add_developer(non_admin_user)
+      group.add_owner(group_owner)
+    end
+
+    context 'when anonymous user' do
+      let(:current_user) { anonymous }
+
+      it_behaves_like 'it cannot create a runner'
+    end
+
+    context 'when group owner' do
+      let(:current_user) { group_owner }
+
+      it_behaves_like 'it can create a runner'
+
+      context 'with missing scope param' do
+        let(:params) { { runner_type: 'project_type' } }
+
+        it_behaves_like 'it cannot create a runner'
+      end
+    end
+
+    context 'when non-admin user' do
+      let(:current_user) { non_admin_user }
+
+      it_behaves_like 'it cannot create a runner'
+
+      context 'with project permissions to create runner' do
+        before do
+          project.add_maintainer(current_user)
+        end
+
+        it_behaves_like 'it can create a runner'
+      end
+    end
+
+    context 'when admin user' do
+      let(:current_user) { admin }
+
+      it_behaves_like 'it cannot create a runner'
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it_behaves_like 'it can create a runner'
+        it_behaves_like 'it can return an error'
+      end
     end
   end
 end

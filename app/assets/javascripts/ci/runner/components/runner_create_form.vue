@@ -4,7 +4,7 @@ import RunnerFormFields from '~/ci/runner/components/runner_form_fields.vue';
 import runnerCreateMutation from '~/ci/runner/graphql/new/runner_create.mutation.graphql';
 import { modelToUpdateMutationVariables } from 'ee_else_ce/ci/runner/runner_update_form_utils';
 import { captureException } from '../sentry_utils';
-import { DEFAULT_ACCESS_LEVEL } from '../constants';
+import { DEFAULT_ACCESS_LEVEL, INSTANCE_TYPE } from '../constants';
 
 export default {
   name: 'RunnerCreateForm',
@@ -17,6 +17,7 @@ export default {
     return {
       saving: false,
       runner: {
+        runnerType: INSTANCE_TYPE,
         description: '',
         maintenanceNote: '',
         paused: false,

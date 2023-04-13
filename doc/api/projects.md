@@ -2223,6 +2223,9 @@ This endpoint:
   projects within a group to be deleted after a delayed period. When enabled,
   actual deletion happens after the number of days specified in the
   [default deletion delay](../user/admin_area/settings/visibility_and_access_controls.md#deletion-protection).
+- From [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) on
+  [Premium or higher](https://about.gitlab.com/pricing/) tiers, deletes a project immediately if the project is already
+  marked for deletion, and the `permanently_remove` and `full_path` parameters are passed.
 
 WARNING:
 The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935)
@@ -2233,9 +2236,11 @@ in GitLab 13.2, as discussed in [Enable delayed project deletion](../user/group/
 DELETE /projects/:id
 ```
 
-| Attribute | Type           | Required               | Description |
-|-----------|----------------|------------------------|-------------|
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| Attribute                          | Type              | Required               | Description                                                                                                                                                                                                                                              |
+|------------------------------------|-------------------|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`                               | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).                                                                                                                                                                     |
+| `permanently_remove` **(PREMIUM)** | boolean/string    | no                     | Immediately deletes a project if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11                                                                                                           |
+| `full_path` **(PREMIUM)**          | string            | no                     | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. To find the project path, use `path_with_namespace` from [get single project](projects.md#get-single-project) |
 
 ## Restore project marked for deletion **(PREMIUM)**
 

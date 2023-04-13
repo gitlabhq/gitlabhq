@@ -214,7 +214,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_group_runners
     enable :admin_group_runners
     enable :register_group_runners
-    enable :create_group_runners
+    enable :create_runner
 
     enable :set_note_created_at
     enable :set_emails_disabled
@@ -325,7 +325,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { ~admin & ~group_runner_registration_allowed }.policy do
     prevent :register_group_runners
-    prevent :create_group_runners
+    prevent :create_runner
   end
 
   rule { migration_bot }.policy do
@@ -342,7 +342,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end
 
   rule { ~create_runner_workflow_enabled }.policy do
-    prevent :create_group_runners
+    prevent :create_runner
   end
 
   # Should be matched with ProjectPolicy#read_internal_note

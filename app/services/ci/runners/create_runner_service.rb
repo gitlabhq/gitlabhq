@@ -5,23 +5,25 @@ module Ci
     class CreateRunnerService
       RUNNER_CLASS_MAPPING = {
         'instance_type' => Ci::Runners::RunnerCreationStrategies::InstanceRunnerStrategy,
-        nil => Ci::Runners::RunnerCreationStrategies::InstanceRunnerStrategy
+        'group_type' => Ci::Runners::RunnerCreationStrategies::GroupRunnerStrategy,
+        'project_type' => Ci::Runners::RunnerCreationStrategies::ProjectRunnerStrategy
       }.freeze
 
-      attr_accessor :user, :type, :params, :strategy
-
-      def initialize(user:, type:, params:)
+      def initialize(user:, params:)
         @user = user
-        @type = type
         @params = params
-        @strategy = RUNNER_CLASS_MAPPING[type].new(user: user, type: type, params: params)
+        @strategy = RUNNER_CLASS_MAPPING[params[:runner_type]].new(user: user, params: params)
       end
 
       def execute
         normalize_params
 
-        return ServiceResponse.error(message: 'Validation error') unless strategy.validate_params
-        return ServiceResponse.error(message: 'Insufficient permissions') unless strategy.authorized_user?
+        error = strategy.validate_params
+        return ServiceResponse.error(message: error, reason: :validation_error) if error
+
+        unless strategy.authorized_user?
+          return ServiceResponse.error(message: _('Insufficient permissions'), reason: :forbidden)
+        end
 
         runner = ::Ci::Runner.new(params)
 
@@ -32,12 +34,15 @@ module Ci
 
       def normalize_params
         params[:registration_type] = :authenticated_user
-        params[:runner_type] = type
         params[:active] = !params.delete(:paused) if params.key?(:paused)
         params[:creator] = user
 
         strategy.normalize_params
       end
+
+      private
+
+      attr_reader :user, :params, :strategy
     end
   end
 end

@@ -347,3 +347,53 @@ mutation {
   }
 }
 ```
+
+### Compliance jobs are overwritten by target repository
+
+If you use the `extends` statement in a compliance pipeline configuration, compliance jobs are overwritten by the target repository job. For example,
+you could have the following `.compliance-gitlab-ci.yml` configuration:
+
+```yaml
+"compliance job":
+  extends:
+    - .compliance_template
+  stage: build
+
+.compliance_template:
+  script:
+    - echo "take compliance action"
+```
+
+You could also have the following `.gitlab-ci.yml` configuration:
+
+```yaml
+"compliance job":
+  stage: test
+  script:
+    - echo "overwriting compliance action"
+```
+
+This configuration results in the target repository pipeline overwriting the compliance pipeline, and you get the following message:
+`overwriting compliance action`.
+
+To avoid overwriting a compliance job, don't use the `extends` keyword in compliance pipeline configuration. For example,
+you could have the following `.compliance-gitlab-ci.yml` configuration:
+
+```yaml
+"compliance job":
+  stage: build
+  script:
+    - echo "take compliance action"
+```
+
+You could also have the following `.gitlab-ci.yml` configuration:
+
+```yaml
+"compliance job":
+  stage: test
+  script:
+    - echo "overwriting compliance action"
+```
+
+This configuration doesn't overwrite the compliance pipeline and you get the following message:
+`take compliance action`.

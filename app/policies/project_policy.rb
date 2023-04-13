@@ -535,7 +535,7 @@ class ProjectPolicy < BasePolicy
     enable :destroy_freeze_period
     enable :admin_feature_flags_client
     enable :register_project_runners
-    enable :create_project_runners
+    enable :create_runner
     enable :admin_project_runners
     enable :read_project_runners
     enable :update_runners_registration_token
@@ -844,7 +844,7 @@ class ProjectPolicy < BasePolicy
 
   rule { ~admin & ~project_runner_registration_allowed }.policy do
     prevent :register_project_runners
-    prevent :create_project_runners
+    prevent :create_runner
   end
 
   rule { can?(:admin_project_member) }.policy do
@@ -870,7 +870,7 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { ~create_runner_workflow_enabled }.policy do
-    prevent :create_project_runners
+    prevent :create_runner
   end
 
   # Should be matched with GroupPolicy#read_internal_note

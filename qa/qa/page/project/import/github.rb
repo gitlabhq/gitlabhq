@@ -32,6 +32,8 @@ module QA
             # In this case skip this step and proceed to import project row
             return unless has_element?(:personal_access_token_field)
 
+            raise ArgumentError, "No personal access token was provided" if personal_access_token.empty?
+
             fill_element(:personal_access_token_field, personal_access_token)
             click_element(:authenticate_button)
             finished_loading?

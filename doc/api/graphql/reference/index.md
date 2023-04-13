@@ -61,7 +61,7 @@ CI Catalog resources visible to the current user.
 
 WARNING:
 **Introduced** in 15.11.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Returns [`CiCatalogResourceConnection`](#cicatalogresourceconnection).
 
@@ -263,7 +263,7 @@ Find issues visible to the current user. At least one filter must be provided.
 
 WARNING:
 **Introduced** in 15.6.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Returns [`IssueConnection`](#issueconnection).
 
@@ -395,7 +395,7 @@ Find a note.
 
 WARNING:
 **Introduced** in 15.9.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Returns [`Note`](#note).
 
@@ -563,7 +563,7 @@ Find a synthetic note.
 
 WARNING:
 **Introduced** in 15.9.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Returns [`Note`](#note).
 
@@ -738,7 +738,7 @@ Find a work item.
 
 WARNING:
 **Introduced** in 15.1.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Returns [`WorkItem`](#workitem).
 
@@ -771,7 +771,7 @@ mutation($id: NoteableID!, $body: String!) {
 
 WARNING:
 **Introduced** in 15.10.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `AchievementsAwardInput`
 
@@ -795,7 +795,7 @@ Input type: `AchievementsAwardInput`
 
 WARNING:
 **Introduced** in 15.8.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `AchievementsCreateInput`
 
@@ -821,7 +821,7 @@ Input type: `AchievementsCreateInput`
 
 WARNING:
 **Introduced** in 15.11.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `AchievementsDeleteInput`
 
@@ -844,7 +844,7 @@ Input type: `AchievementsDeleteInput`
 
 WARNING:
 **Introduced** in 15.10.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `AchievementsRevokeInput`
 
@@ -867,7 +867,7 @@ Input type: `AchievementsRevokeInput`
 
 WARNING:
 **Introduced** in 15.11.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `AchievementsUpdateInput`
 
@@ -950,7 +950,7 @@ Input type: `AdminSidekiqQueuesDeleteJobsInput`
 
 WARNING:
 **Introduced** in 15.11.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `AiActionInput`
 
@@ -1317,7 +1317,7 @@ Input type: `BoardListUpdateLimitMetricsInput`
 
 WARNING:
 **Introduced** in 15.10.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `BulkDestroyJobArtifactsInput`
 
@@ -1364,7 +1364,7 @@ Input type: `BulkEnableDevopsAdoptionNamespacesInput`
 
 WARNING:
 **Introduced** in 15.3.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `BulkRunnerDeleteInput`
 
@@ -1388,7 +1388,7 @@ Input type: `BulkRunnerDeleteInput`
 
 WARNING:
 **Introduced** in 15.11.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `CatalogResourcesCreateInput`
 
@@ -1844,7 +1844,7 @@ Input type: `CreateComplianceFrameworkInput`
 
 WARNING:
 **Introduced** in 13.6.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `CreateCustomEmojiInput`
 
@@ -2734,7 +2734,7 @@ Input type: `DestroyContainerRepositoryTagsInput`
 
 WARNING:
 **Introduced** in 13.6.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `DestroyCustomEmojiInput`
 
@@ -3853,7 +3853,7 @@ Allows updating several properties for a set of issues. Does nothing if the `bul
 
 WARNING:
 **Introduced** in 15.9.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `IssuesBulkUpdateInput`
 
@@ -4949,7 +4949,7 @@ Input type: `ProjectSetLockedInput`
 
 WARNING:
 **Introduced** in 15.9.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `ProjectSyncForkInput`
 
@@ -5233,7 +5233,7 @@ Input type: `RepositionImageDiffNoteInput`
 
 WARNING:
 **Introduced** in 15.10.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `RunnerCreateInput`
 
@@ -5242,14 +5242,16 @@ Input type: `RunnerCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationrunnercreateaccesslevel"></a>`accessLevel` | [`CiRunnerAccessLevel`](#cirunneraccesslevel) | Access level of the runner. |
-| <a id="mutationrunnercreateassociatedprojects"></a>`associatedProjects` | [`[ProjectID!]`](#projectid) | Projects associated with the runner. Available only for project runners. |
 | <a id="mutationrunnercreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationrunnercreatedescription"></a>`description` | [`String`](#string) | Description of the runner. |
+| <a id="mutationrunnercreategroupid"></a>`groupId` | [`GroupID`](#groupid) | Global ID of the group that the runner is created in (valid only for group runner). |
 | <a id="mutationrunnercreatelocked"></a>`locked` | [`Boolean`](#boolean) | Indicates the runner is locked. |
 | <a id="mutationrunnercreatemaintenancenote"></a>`maintenanceNote` | [`String`](#string) | Runner's maintenance notes. |
 | <a id="mutationrunnercreatemaximumtimeout"></a>`maximumTimeout` | [`Int`](#int) | Maximum timeout (in seconds) for jobs processed by the runner. |
 | <a id="mutationrunnercreatepaused"></a>`paused` | [`Boolean`](#boolean) | Indicates the runner is not allowed to receive jobs. |
+| <a id="mutationrunnercreateprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project that the runner is created in (valid only for project runner). |
 | <a id="mutationrunnercreaterununtagged"></a>`runUntagged` | [`Boolean`](#boolean) | Indicates the runner is able to run untagged jobs. |
+| <a id="mutationrunnercreaterunnertype"></a>`runnerType` | [`CiRunnerType!`](#cirunnertype) | Type of the runner to create. |
 | <a id="mutationrunnercreatetaglist"></a>`tagList` | [`[String!]`](#string) | Tags associated with the runner. |
 
 #### Fields
@@ -5639,7 +5641,7 @@ Input type: `TerraformStateUnlockInput`
 
 WARNING:
 **Introduced** in 15.6.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `TimelineEventCreateInput`
 
@@ -6567,7 +6569,7 @@ Converts the work item to a new type.
 
 WARNING:
 **Introduced** in 15.11.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `WorkItemConvertInput`
 
@@ -6593,7 +6595,7 @@ Creates a work item.
 
 WARNING:
 **Introduced** in 15.1.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `WorkItemCreateInput`
 
@@ -6626,7 +6628,7 @@ Creates a work item from a task in another work item's description.
 
 WARNING:
 **Introduced** in 15.1.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `WorkItemCreateFromTaskInput`
 
@@ -6653,7 +6655,7 @@ Deletes a work item.
 
 WARNING:
 **Introduced** in 15.1.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `WorkItemDeleteInput`
 
@@ -6678,7 +6680,7 @@ Deletes a task in a work item's description.
 
 WARNING:
 **Introduced** in 15.1.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `WorkItemDeleteTaskInput`
 
@@ -6703,7 +6705,7 @@ Input type: `WorkItemDeleteTaskInput`
 
 WARNING:
 **Introduced** in 15.10.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `WorkItemExportInput`
 
@@ -6711,7 +6713,7 @@ Input type: `WorkItemExportInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationworkitemexportauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Deprecated:** This feature is in Alpha. It can be changed or removed at any time. Introduced in 15.9. |
+| <a id="mutationworkitemexportauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Deprecated:** This feature is an Experiment. It can be changed or removed at any time. Introduced in 15.9. |
 | <a id="mutationworkitemexportclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitemexportiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="mutationworkitemexportin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
@@ -6734,7 +6736,7 @@ Updates a work item by Global ID.
 
 WARNING:
 **Introduced** in 15.1.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `WorkItemUpdateInput`
 
@@ -6775,7 +6777,7 @@ Updates a work item's task by Global ID.
 
 WARNING:
 **Introduced** in 15.1.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `WorkItemUpdateTaskInput`
 
@@ -11114,7 +11116,7 @@ Representation of a GitLab user.
 | <a id="achievementname"></a>`name` | [`String!`](#string) | Name of the achievement. |
 | <a id="achievementnamespace"></a>`namespace` | [`Namespace!`](#namespace) | Namespace of the achievement. |
 | <a id="achievementupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the achievement was last updated. |
-| <a id="achievementuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Recipients for the achievement. |
+| <a id="achievementuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Recipients for the achievement. |
 
 ### `AgentConfiguration`
 
@@ -11578,7 +11580,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="boardepicancestorsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter epics by milestone title, computed from epic's issues. |
 | <a id="boardepicancestorsmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="boardepicancestorsnot"></a>`not` | [`NegatedEpicFilterInput`](#negatedepicfilterinput) | Negated epic arguments. |
-| <a id="boardepicancestorsor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
+| <a id="boardepicancestorsor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="boardepicancestorssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="boardepicancestorssort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
 | <a id="boardepicancestorsstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
@@ -11617,7 +11619,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="boardepicchildrenmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter epics by milestone title, computed from epic's issues. |
 | <a id="boardepicchildrenmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="boardepicchildrennot"></a>`not` | [`NegatedEpicFilterInput`](#negatedepicfilterinput) | Negated epic arguments. |
-| <a id="boardepicchildrenor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
+| <a id="boardepicchildrenor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="boardepicchildrensearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="boardepicchildrensort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
 | <a id="boardepicchildrenstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
@@ -11784,10 +11786,10 @@ Represents the total number of issues and their weights for a particular day.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cicatalogresourcedescription"></a>`description` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is in Alpha. It can be changed or removed at any time. Description of the catalog resource. |
-| <a id="cicatalogresourceicon"></a>`icon` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is in Alpha. It can be changed or removed at any time. Icon for the catalog resource. |
-| <a id="cicatalogresourceid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in 15.11. This feature is in Alpha. It can be changed or removed at any time. ID of the catalog resource. |
-| <a id="cicatalogresourcename"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is in Alpha. It can be changed or removed at any time. Name of the catalog resource. |
+| <a id="cicatalogresourcedescription"></a>`description` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Description of the catalog resource. |
+| <a id="cicatalogresourceicon"></a>`icon` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Icon for the catalog resource. |
+| <a id="cicatalogresourceid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. ID of the catalog resource. |
+| <a id="cicatalogresourcename"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Name of the catalog resource. |
 
 ### `CiConfig`
 
@@ -11983,7 +11985,7 @@ CI/CD variables for a GitLab instance.
 | <a id="cijobrefpath"></a>`refPath` | [`String`](#string) | Path to the ref. |
 | <a id="cijobretried"></a>`retried` | [`Boolean`](#boolean) | Indicates that the job has been retried. |
 | <a id="cijobretryable"></a>`retryable` | [`Boolean!`](#boolean) | Indicates the job can be retried. |
-| <a id="cijobrunnermanager"></a>`runnerManager` **{warning-solid}** | [`CiRunnerManager`](#cirunnermanager) | **Introduced** in 15.11. This feature is in Alpha. It can be changed or removed at any time. Runner manager assigned to the job. |
+| <a id="cijobrunnermanager"></a>`runnerManager` **{warning-solid}** | [`CiRunnerManager`](#cirunnermanager) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Runner manager assigned to the job. |
 | <a id="cijobscheduled"></a>`scheduled` | [`Boolean!`](#boolean) | Indicates the job is scheduled. |
 | <a id="cijobscheduledat"></a>`scheduledAt` | [`Time`](#time) | Schedule for the build. |
 | <a id="cijobschedulingtype"></a>`schedulingType` | [`String`](#string) | Type of job scheduling. Value is `dag` if the job uses the `needs` keyword, and `stage` otherwise. |
@@ -12027,7 +12029,7 @@ CI/CD variables for a GitLab instance.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cijobtracehtmlsummary"></a>`htmlSummary` **{warning-solid}** | [`String!`](#string) | **Introduced** in 15.11. This feature is in Alpha. It can be changed or removed at any time. HTML summary containing the last 10 lines of the trace. |
+| <a id="cijobtracehtmlsummary"></a>`htmlSummary` **{warning-solid}** | [`String!`](#string) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. HTML summary containing the last 10 lines of the trace. |
 
 ### `CiJobsDurationStatistics`
 
@@ -12037,11 +12039,11 @@ Representation of duration statistics for a group of CI jobs.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cijobsdurationstatisticsp50"></a>`p50` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 15.8. This feature is in Alpha. It can be changed or removed at any time. 50th percentile. 50% of the durations are lower than this value. |
-| <a id="cijobsdurationstatisticsp75"></a>`p75` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 15.8. This feature is in Alpha. It can be changed or removed at any time. 75th percentile. 75% of the durations are lower than this value. |
-| <a id="cijobsdurationstatisticsp90"></a>`p90` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 15.8. This feature is in Alpha. It can be changed or removed at any time. 90th percentile. 90% of the durations are lower than this value. |
-| <a id="cijobsdurationstatisticsp95"></a>`p95` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 15.8. This feature is in Alpha. It can be changed or removed at any time. 95th percentile. 95% of the durations are lower than this value. |
-| <a id="cijobsdurationstatisticsp99"></a>`p99` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 15.8. This feature is in Alpha. It can be changed or removed at any time. 99th percentile. 99% of the durations are lower than this value. |
+| <a id="cijobsdurationstatisticsp50"></a>`p50` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 15.8. This feature is an Experiment. It can be changed or removed at any time. 50th percentile. 50% of the durations are lower than this value. |
+| <a id="cijobsdurationstatisticsp75"></a>`p75` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 15.8. This feature is an Experiment. It can be changed or removed at any time. 75th percentile. 75% of the durations are lower than this value. |
+| <a id="cijobsdurationstatisticsp90"></a>`p90` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 15.8. This feature is an Experiment. It can be changed or removed at any time. 90th percentile. 90% of the durations are lower than this value. |
+| <a id="cijobsdurationstatisticsp95"></a>`p95` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 15.8. This feature is an Experiment. It can be changed or removed at any time. 95th percentile. 95% of the durations are lower than this value. |
+| <a id="cijobsdurationstatisticsp99"></a>`p99` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 15.8. This feature is an Experiment. It can be changed or removed at any time. 99th percentile. 99% of the durations are lower than this value. |
 
 ### `CiJobsStatistics`
 
@@ -12051,7 +12053,7 @@ Statistics for a group of CI jobs.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cijobsstatisticsqueuedduration"></a>`queuedDuration` **{warning-solid}** | [`CiJobsDurationStatistics`](#cijobsdurationstatistics) | **Introduced** in 15.8. This feature is in Alpha. It can be changed or removed at any time. Statistics for amount of time that jobs were waiting to be picked up. The calculation is performed based on the most recent 100 jobs executed by the 5000 most recently created runners in context. If no filter is applied to runners, the calculation is performed based on the most recent 100 jobs globally. |
+| <a id="cijobsstatisticsqueuedduration"></a>`queuedDuration` **{warning-solid}** | [`CiJobsDurationStatistics`](#cijobsdurationstatistics) | **Introduced** in 15.8. This feature is an Experiment. It can be changed or removed at any time. Statistics for amount of time that jobs were waiting to be picked up. The calculation is performed based on the most recent 100 jobs executed by the 5000 most recently created runners in context. If no filter is applied to runners, the calculation is performed based on the most recent 100 jobs globally. |
 
 ### `CiManualVariable`
 
@@ -12123,17 +12125,17 @@ CI/CD variables for a project.
 | <a id="cirunnercreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that created this runner. |
 | <a id="cirunnerdescription"></a>`description` | [`String`](#string) | Description of the runner. |
 | <a id="cirunnereditadminurl"></a>`editAdminUrl` | [`String`](#string) | Admin form URL of the runner. Only available for administrators. |
-| <a id="cirunnerephemeralauthenticationtoken"></a>`ephemeralAuthenticationToken` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. Ephemeral authentication token used for runner manager registration. Only available for the creator of the runner for a limited time during registration. |
+| <a id="cirunnerephemeralauthenticationtoken"></a>`ephemeralAuthenticationToken` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. Ephemeral authentication token used for runner manager registration. Only available for the creator of the runner for a limited time during registration. |
 | <a id="cirunnerexecutorname"></a>`executorName` | [`String`](#string) | Executor last advertised by the runner. |
 | <a id="cirunnergroups"></a>`groups` | [`GroupConnection`](#groupconnection) | Groups the runner is associated with. For group runners only. (see [Connections](#connections)) |
 | <a id="cirunnerid"></a>`id` | [`CiRunnerID!`](#cirunnerid) | ID of the runner. |
 | <a id="cirunneripaddress"></a>`ipAddress` | [`String`](#string) | IP address of the runner. |
 | <a id="cirunnerjobcount"></a>`jobCount` | [`Int`](#int) | Number of jobs processed by the runner (limited to 1000, plus one to indicate that more items exist). |
-| <a id="cirunnerjobexecutionstatus"></a>`jobExecutionStatus` **{warning-solid}** | [`CiRunnerJobExecutionStatus`](#cirunnerjobexecutionstatus) | **Introduced** in 15.7. This feature is in Alpha. It can be changed or removed at any time. Job execution status of the runner. |
+| <a id="cirunnerjobexecutionstatus"></a>`jobExecutionStatus` **{warning-solid}** | [`CiRunnerJobExecutionStatus`](#cirunnerjobexecutionstatus) | **Introduced** in 15.7. This feature is an Experiment. It can be changed or removed at any time. Job execution status of the runner. |
 | <a id="cirunnerlocked"></a>`locked` | [`Boolean`](#boolean) | Indicates the runner is locked. |
 | <a id="cirunnermaintenancenote"></a>`maintenanceNote` | [`String`](#string) | Runner's maintenance notes. |
 | <a id="cirunnermaintenancenotehtml"></a>`maintenanceNoteHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `maintenance_note`. |
-| <a id="cirunnermanagers"></a>`managers` **{warning-solid}** | [`CiRunnerManagerConnection`](#cirunnermanagerconnection) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Machines associated with the runner configuration. |
+| <a id="cirunnermanagers"></a>`managers` **{warning-solid}** | [`CiRunnerManagerConnection`](#cirunnermanagerconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Machines associated with the runner configuration. |
 | <a id="cirunnermaximumtimeout"></a>`maximumTimeout` | [`Int`](#int) | Maximum timeout (in seconds) for jobs processed by the runner. |
 | <a id="cirunnerownerproject"></a>`ownerProject` | [`Project`](#project) | Project that owns the runner. For project runners only. |
 | <a id="cirunnerpaused"></a>`paused` | [`Boolean!`](#boolean) | Indicates the runner is paused and not available to run jobs. |
@@ -12148,7 +12150,7 @@ CI/CD variables for a project.
 | <a id="cirunnershortsha"></a>`shortSha` | [`String`](#string) | First eight characters of the runner's token used to authenticate new job requests. Used as the runner's unique ID. |
 | <a id="cirunnertaglist"></a>`tagList` | [`[String!]`](#string) | Tags associated with the runner. |
 | <a id="cirunnertokenexpiresat"></a>`tokenExpiresAt` | [`Time`](#time) | Runner token expiration time. |
-| <a id="cirunnerupgradestatus"></a>`upgradeStatus` **{warning-solid}** | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | **Introduced** in 14.10. This feature is in Alpha. It can be changed or removed at any time. Availability of upgrades for the runner. |
+| <a id="cirunnerupgradestatus"></a>`upgradeStatus` **{warning-solid}** | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | **Introduced** in 14.10. This feature is an Experiment. It can be changed or removed at any time. Availability of upgrades for the runner. |
 | <a id="cirunneruserpermissions"></a>`userPermissions` | [`RunnerPermissions!`](#runnerpermissions) | Permissions for the current user on the resource. |
 | <a id="cirunnerversion"></a>`version` | [`String`](#string) | Version of the runner. |
 
@@ -13760,7 +13762,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="epicancestorsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter epics by milestone title, computed from epic's issues. |
 | <a id="epicancestorsmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="epicancestorsnot"></a>`not` | [`NegatedEpicFilterInput`](#negatedepicfilterinput) | Negated epic arguments. |
-| <a id="epicancestorsor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
+| <a id="epicancestorsor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="epicancestorssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="epicancestorssort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
 | <a id="epicancestorsstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
@@ -13799,7 +13801,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="epicchildrenmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter epics by milestone title, computed from epic's issues. |
 | <a id="epicchildrenmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="epicchildrennot"></a>`not` | [`NegatedEpicFilterInput`](#negatedepicfilterinput) | Negated epic arguments. |
-| <a id="epicchildrenor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
+| <a id="epicchildrenor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="epicchildrensearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="epicchildrensort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
 | <a id="epicchildrenstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
@@ -14096,7 +14098,7 @@ Represents epic board list metadata.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="epiclistmetadataepicscount"></a>`epicsCount` | [`Int`](#int) | Count of epics in the list. |
-| <a id="epiclistmetadatatotalweight"></a>`totalWeight` **{warning-solid}** | [`Int`](#int) | **Introduced** in 14.7. This feature is in Alpha. It can be changed or removed at any time. Total weight of all issues in the list. |
+| <a id="epiclistmetadatatotalweight"></a>`totalWeight` **{warning-solid}** | [`Int`](#int) | **Introduced** in 14.7. This feature is an Experiment. It can be changed or removed at any time. Total weight of all issues in the list. |
 
 ### `EpicPermissions`
 
@@ -14290,7 +14292,7 @@ Find Dependency Proxy Blob registries on this Geo node.
 
 WARNING:
 **Introduced** in 15.6.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Returns [`DependencyProxyBlobRegistryConnection`](#dependencyproxyblobregistryconnection).
 
@@ -14465,7 +14467,7 @@ Find Project Wiki Repository registries on this Geo node. Ignored if `geo_projec
 
 WARNING:
 **Introduced** in 15.10.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Returns [`ProjectWikiRepositoryRegistryConnection`](#projectwikirepositoryregistryconnection).
 
@@ -14573,7 +14575,7 @@ GPG signature for a signed commit.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupachievements"></a>`achievements` **{warning-solid}** | [`AchievementConnection`](#achievementconnection) | **Introduced** in 15.8. This feature is in Alpha. It can be changed or removed at any time. Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled. |
+| <a id="groupachievements"></a>`achievements` **{warning-solid}** | [`AchievementConnection`](#achievementconnection) | **Introduced** in 15.8. This feature is an Experiment. It can be changed or removed at any time. Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled. |
 | <a id="groupactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for repositories in the namespace in bytes. |
 | <a id="groupadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
 | <a id="groupallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean!`](#boolean) | Indicates whether to regularly prune stale group runners. Defaults to false. |
@@ -14582,7 +14584,7 @@ GPG signature for a signed commit.
 | <a id="groupcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the group. |
 | <a id="groupcontainslockedprojects"></a>`containsLockedProjects` | [`Boolean!`](#boolean) | Includes at least one project where the repository size exceeds the limit. |
 | <a id="groupcrossprojectpipelineavailable"></a>`crossProjectPipelineAvailable` | [`Boolean!`](#boolean) | Indicates if the cross_project_pipeline feature is available for the namespace. |
-| <a id="groupcustomemoji"></a>`customEmoji` **{warning-solid}** | [`CustomEmojiConnection`](#customemojiconnection) | **Introduced** in 13.6. This feature is in Alpha. It can be changed or removed at any time. Custom emoji within this namespace. |
+| <a id="groupcustomemoji"></a>`customEmoji` **{warning-solid}** | [`CustomEmojiConnection`](#customemojiconnection) | **Introduced** in 13.6. This feature is an Experiment. It can be changed or removed at any time. Custom emoji within this namespace. |
 | <a id="groupdependencyproxyblobcount"></a>`dependencyProxyBlobCount` | [`Int!`](#int) | Number of dependency proxy blobs cached in the group. |
 | <a id="groupdependencyproxyblobs"></a>`dependencyProxyBlobs` | [`DependencyProxyBlobConnection`](#dependencyproxyblobconnection) | Dependency Proxy blobs. (see [Connections](#connections)) |
 | <a id="groupdependencyproxyimagecount"></a>`dependencyProxyImageCount` | [`Int!`](#int) | Number of dependency proxy images cached in the group. |
@@ -14599,7 +14601,7 @@ GPG signature for a signed commit.
 | <a id="groupepicboards"></a>`epicBoards` | [`EpicBoardConnection`](#epicboardconnection) | Find epic boards. (see [Connections](#connections)) |
 | <a id="groupepicsenabled"></a>`epicsEnabled` | [`Boolean`](#boolean) | Indicates if Epics are enabled for namespace. |
 | <a id="groupexternalauditeventdestinations"></a>`externalAuditEventDestinations` | [`ExternalAuditEventDestinationConnection`](#externalauditeventdestinationconnection) | External locations that receive audit events belonging to the group. (see [Connections](#connections)) |
-| <a id="groupflowmetrics"></a>`flowMetrics` **{warning-solid}** | [`GroupValueStreamAnalyticsFlowMetrics`](#groupvaluestreamanalyticsflowmetrics) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Flow metrics for value stream analytics. |
+| <a id="groupflowmetrics"></a>`flowMetrics` **{warning-solid}** | [`GroupValueStreamAnalyticsFlowMetrics`](#groupvaluestreamanalyticsflowmetrics) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Flow metrics for value stream analytics. |
 | <a id="groupfullname"></a>`fullName` | [`String!`](#string) | Full name of the namespace. |
 | <a id="groupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
 | <a id="groupid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
@@ -14622,7 +14624,7 @@ GPG signature for a signed commit.
 | <a id="groupstoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | Total storage limit of the root namespace in bytes. |
 | <a id="groupsubgroupcreationlevel"></a>`subgroupCreationLevel` | [`String`](#string) | Permission level required to create subgroups within the group. |
 | <a id="grouptemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` | [`Time`](#time) | Date until the temporary storage increase is active. |
-| <a id="grouptimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in 15.3. This feature is in Alpha. It can be changed or removed at any time. Timelog categories for the namespace. |
+| <a id="grouptimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in 15.3. This feature is an Experiment. It can be changed or removed at any time. Timelog categories for the namespace. |
 | <a id="grouptotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | <a id="grouptotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. |
 | <a id="grouptwofactorgraceperiod"></a>`twoFactorGracePeriod` | [`Int`](#int) | Time before two-factor authentication is enforced. |
@@ -14859,7 +14861,7 @@ Returns [`Epic`](#epic).
 | <a id="groupepicmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter epics by milestone title, computed from epic's issues. |
 | <a id="groupepicmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="groupepicnot"></a>`not` | [`NegatedEpicFilterInput`](#negatedepicfilterinput) | Negated epic arguments. |
-| <a id="groupepicor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
+| <a id="groupepicor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="groupepicsearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="groupepicsort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
 | <a id="groupepicstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
@@ -14910,7 +14912,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupepicsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter epics by milestone title, computed from epic's issues. |
 | <a id="groupepicsmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="groupepicsnot"></a>`not` | [`NegatedEpicFilterInput`](#negatedepicfilterinput) | Negated epic arguments. |
-| <a id="groupepicsor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
+| <a id="groupepicsor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="groupepicssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="groupepicssort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
 | <a id="groupepicsstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
@@ -16297,7 +16299,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestsquashonmerge"></a>`squashOnMerge` | [`Boolean!`](#boolean) | Indicates if the merge request will be squashed when merged. |
 | <a id="mergerequeststate"></a>`state` | [`MergeRequestState!`](#mergerequeststate) | State of the merge request. |
 | <a id="mergerequestsubscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Indicates if the currently logged in user is subscribed to this merge request. |
-| <a id="mergerequestsuggestedreviewers"></a>`suggestedReviewers` **{warning-solid}** | [`SuggestedReviewersType`](#suggestedreviewerstype) | **Introduced** in 15.4. This feature is in Alpha. It can be changed or removed at any time. Suggested reviewers for merge request. Returns `null` if `suggested_reviewers` feature flag is disabled. This flag is disabled by default and only available on GitLab.com because the feature is experimental and is subject to change without notice. |
+| <a id="mergerequestsuggestedreviewers"></a>`suggestedReviewers` **{warning-solid}** | [`SuggestedReviewersType`](#suggestedreviewerstype) | **Introduced** in 15.4. This feature is an Experiment. It can be changed or removed at any time. Suggested reviewers for merge request. Returns `null` if `suggested_reviewers` feature flag is disabled. This flag is disabled by default and only available on GitLab.com because the feature is experimental and is subject to change without notice. |
 | <a id="mergerequesttargetbranch"></a>`targetBranch` | [`String!`](#string) | Target branch of the merge request. |
 | <a id="mergerequesttargetbranchexists"></a>`targetBranchExists` | [`Boolean!`](#boolean) | Indicates if the target branch of the merge request exists. |
 | <a id="mergerequesttargetproject"></a>`targetProject` | [`Project!`](#project) | Target project of the merge request. |
@@ -16423,7 +16425,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneesavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="mergerequestassigneestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestassigneestatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="mergerequestassigneeuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
+| <a id="mergerequestassigneeuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestassigneeuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestassigneeusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="mergerequestassigneewebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
@@ -16673,7 +16675,7 @@ The author of the merge request.
 | <a id="mergerequestauthorsavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="mergerequestauthorstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestauthorstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="mergerequestauthoruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
+| <a id="mergerequestauthoruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestauthoruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestauthorusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="mergerequestauthorwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
@@ -16942,7 +16944,7 @@ A user participating in a merge request.
 | <a id="mergerequestparticipantsavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="mergerequestparticipantstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestparticipantstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="mergerequestparticipantuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
+| <a id="mergerequestparticipantuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestparticipantuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestparticipantusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="mergerequestparticipantwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
@@ -17211,7 +17213,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="mergerequestreviewerstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestreviewerstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="mergerequestrevieweruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
+| <a id="mergerequestrevieweruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestrevieweruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestreviewerusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="mergerequestreviewerwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
@@ -17552,7 +17554,7 @@ Contains statistics about a milestone.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="namespaceachievements"></a>`achievements` **{warning-solid}** | [`AchievementConnection`](#achievementconnection) | **Introduced** in 15.8. This feature is in Alpha. It can be changed or removed at any time. Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled. |
+| <a id="namespaceachievements"></a>`achievements` **{warning-solid}** | [`AchievementConnection`](#achievementconnection) | **Introduced** in 15.8. This feature is an Experiment. It can be changed or removed at any time. Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled. |
 | <a id="namespaceactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for repositories in the namespace in bytes. |
 | <a id="namespaceadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
 | <a id="namespacecontainslockedprojects"></a>`containsLockedProjects` | [`Boolean!`](#boolean) | Includes at least one project where the repository size exceeds the limit. |
@@ -17573,7 +17575,7 @@ Contains statistics about a milestone.
 | <a id="namespacesharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
 | <a id="namespacestoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | Total storage limit of the root namespace in bytes. |
 | <a id="namespacetemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` | [`Time`](#time) | Date until the temporary storage increase is active. |
-| <a id="namespacetimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in 15.3. This feature is in Alpha. It can be changed or removed at any time. Timelog categories for the namespace. |
+| <a id="namespacetimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in 15.3. This feature is an Experiment. It can be changed or removed at any time. Timelog categories for the namespace. |
 | <a id="namespacetotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | <a id="namespacetotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. |
 | <a id="namespacevisibility"></a>`visibility` | [`String`](#string) | Visibility of the namespace. |
@@ -18489,11 +18491,11 @@ Represents a product analytics dashboard visualization.
 | <a id="projectcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of the project creation. |
 | <a id="projectdastscannerprofiles"></a>`dastScannerProfiles` | [`DastScannerProfileConnection`](#dastscannerprofileconnection) | DAST scanner profiles associated with the project. (see [Connections](#connections)) |
 | <a id="projectdastsiteprofiles"></a>`dastSiteProfiles` | [`DastSiteProfileConnection`](#dastsiteprofileconnection) | DAST Site Profiles associated with the project. (see [Connections](#connections)) |
-| <a id="projectdependencies"></a>`dependencies` **{warning-solid}** | [`DependencyConnection`](#dependencyconnection) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. Software dependencies used by the project. |
+| <a id="projectdependencies"></a>`dependencies` **{warning-solid}** | [`DependencyConnection`](#dependencyconnection) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. Software dependencies used by the project. |
 | <a id="projectdescription"></a>`description` | [`String`](#string) | Short description of the project. |
 | <a id="projectdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="projectdora"></a>`dora` | [`Dora`](#dora) | Project's DORA metrics. |
-| <a id="projectflowmetrics"></a>`flowMetrics` **{warning-solid}** | [`ProjectValueStreamAnalyticsFlowMetrics`](#projectvaluestreamanalyticsflowmetrics) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Flow metrics for value stream analytics. |
+| <a id="projectflowmetrics"></a>`flowMetrics` **{warning-solid}** | [`ProjectValueStreamAnalyticsFlowMetrics`](#projectvaluestreamanalyticsflowmetrics) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Flow metrics for value stream analytics. |
 | <a id="projectforkscount"></a>`forksCount` | [`Int!`](#int) | Number of times the project has been forked. |
 | <a id="projectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. |
 | <a id="projectgrafanaintegration"></a>`grafanaIntegration` | [`GrafanaIntegration`](#grafanaintegration) | Grafana integration details for the project. |
@@ -18502,11 +18504,11 @@ Represents a product analytics dashboard visualization.
 | <a id="projectid"></a>`id` | [`ID!`](#id) | ID of the project. |
 | <a id="projectimportstatus"></a>`importStatus` | [`String`](#string) | Status of import background job of the project. |
 | <a id="projectincidentmanagementtimelineeventtags"></a>`incidentManagementTimelineEventTags` | [`[TimelineEventTagType!]`](#timelineeventtagtype) | Timeline event tags for the project. |
-| <a id="projectiscatalogresource"></a>`isCatalogResource` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 15.11. This feature is in Alpha. It can be changed or removed at any time. Indicates if a project is a catalog resource. |
+| <a id="projectiscatalogresource"></a>`isCatalogResource` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Indicates if a project is a catalog resource. |
 | <a id="projectissuesenabled"></a>`issuesEnabled` | [`Boolean`](#boolean) | Indicates if Issues are enabled for the current user. |
 | <a id="projectjiraimportstatus"></a>`jiraImportStatus` | [`String`](#string) | Status of Jira import background job of the project. |
 | <a id="projectjiraimports"></a>`jiraImports` | [`JiraImportConnection`](#jiraimportconnection) | Jira imports into the project. (see [Connections](#connections)) |
-| <a id="projectjitsukey"></a>`jitsuKey` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.7. This feature is in Alpha. It can be changed or removed at any time. Jitsu key assigned to the project. |
+| <a id="projectjitsukey"></a>`jitsuKey` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.7. This feature is an Experiment. It can be changed or removed at any time. Jitsu key assigned to the project. |
 | <a id="projectjobsenabled"></a>`jobsEnabled` | [`Boolean`](#boolean) | Indicates if CI/CD pipeline jobs are enabled for the current user. |
 | <a id="projectlanguages"></a>`languages` | [`[RepositoryLanguage!]`](#repositorylanguage) | Programming languages used in the project. |
 | <a id="projectlastactivityat"></a>`lastActivityAt` | [`Time`](#time) | Timestamp of the project last activity. |
@@ -18527,7 +18529,7 @@ Represents a product analytics dashboard visualization.
 | <a id="projectpathlocks"></a>`pathLocks` | [`PathLockConnection`](#pathlockconnection) | The project's path locks. (see [Connections](#connections)) |
 | <a id="projectpipelineanalytics"></a>`pipelineAnalytics` | [`PipelineAnalytics`](#pipelineanalytics) | Pipeline analytics. |
 | <a id="projectprintingmergerequestlinkenabled"></a>`printingMergeRequestLinkEnabled` | [`Boolean`](#boolean) | Indicates if a link to create or view a merge request should display after a push to Git repositories of the project from the command line. |
-| <a id="projectproductanalyticsstate"></a>`productAnalyticsState` **{warning-solid}** | [`ProductAnalyticsState`](#productanalyticsstate) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Current state of the product analytics stack for this project.Can only be called for one project in a single request. |
+| <a id="projectproductanalyticsstate"></a>`productAnalyticsState` **{warning-solid}** | [`ProductAnalyticsState`](#productanalyticsstate) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Current state of the product analytics stack for this project.Can only be called for one project in a single request. |
 | <a id="projectpublicjobs"></a>`publicJobs` | [`Boolean`](#boolean) | Indicates if there is public access to pipelines and job details of the project, including output logs and artifacts. |
 | <a id="projectpushrules"></a>`pushRules` | [`PushRules`](#pushrules) | Project's push rules settings. |
 | <a id="projectrecentissueboards"></a>`recentIssueBoards` | [`BoardConnection`](#boardconnection) | List of recently visited boards of the project. Maximum size is 4. (see [Connections](#connections)) |
@@ -18552,7 +18554,7 @@ Represents a product analytics dashboard visualization.
 | <a id="projectsuggestioncommitmessage"></a>`suggestionCommitMessage` | [`String`](#string) | Commit message used to apply merge request suggestions. |
 | <a id="projecttaglist"></a>`tagList` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.12. Use `topics`. |
 | <a id="projectterraformstates"></a>`terraformStates` | [`TerraformStateConnection`](#terraformstateconnection) | Terraform states associated with the project. (see [Connections](#connections)) |
-| <a id="projecttimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in 15.3. This feature is in Alpha. It can be changed or removed at any time. Timelog categories for the project. |
+| <a id="projecttimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in 15.3. This feature is an Experiment. It can be changed or removed at any time. Timelog categories for the project. |
 | <a id="projecttopics"></a>`topics` | [`[String!]`](#string) | List of project topics. |
 | <a id="projectuserpermissions"></a>`userPermissions` | [`ProjectPermissions!`](#projectpermissions) | Permissions for the current user on the resource. |
 | <a id="projectvisibility"></a>`visibility` | [`String`](#string) | Visibility of the project. |
@@ -18692,7 +18694,7 @@ CI/CD config variable.
 
 WARNING:
 **Introduced** in 15.3.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Returns [`[CiConfigVariable!]`](#ciconfigvariable).
 
@@ -18899,7 +18901,7 @@ Details of the fork project compared to its upstream project.
 
 WARNING:
 **Introduced** in 15.7.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Returns [`ForkDetails`](#forkdetails).
 
@@ -19462,7 +19464,7 @@ Product Analytics dashboards of the project.
 
 WARNING:
 **Introduced** in 15.6.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Returns [`ProductAnalyticsDashboardConnection`](#productanalyticsdashboardconnection).
 
@@ -19738,7 +19740,7 @@ Visible forks of the project.
 
 WARNING:
 **Introduced** in 15.10.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Returns [`ProjectConnection`](#projectconnection).
 
@@ -19839,7 +19841,7 @@ Work items of the project.
 
 WARNING:
 **Introduced** in 15.1.
-This feature is in Alpha. It can be changed or removed at any time.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Returns [`WorkItemConnection`](#workitemconnection).
 
@@ -19851,7 +19853,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectworkitemsauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. Filter work items by author username. |
+| <a id="projectworkitemsauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. Filter work items by author username. |
 | <a id="projectworkitemsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="projectworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="projectworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
@@ -21563,7 +21565,7 @@ Core represention of a GitLab user.
 | <a id="usercoresavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="usercorestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="usercorestatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="usercoreuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
+| <a id="usercoreuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="usercoreuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="usercoreusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="usercorewebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
@@ -22489,7 +22491,7 @@ Represents vulnerability letter grades with associated projects.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemauthor"></a>`author` **{warning-solid}** | [`UserCore`](#usercore) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. User that created the work item. |
+| <a id="workitemauthor"></a>`author` **{warning-solid}** | [`UserCore`](#usercore) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. User that created the work item. |
 | <a id="workitemclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the work item was closed. |
 | <a id="workitemconfidential"></a>`confidential` | [`Boolean!`](#boolean) | Indicates the work item is confidential. |
 | <a id="workitemcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the work item was created. |
@@ -22498,8 +22500,8 @@ Represents vulnerability letter grades with associated projects.
 | <a id="workitemid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
 | <a id="workitemiid"></a>`iid` | [`ID!`](#id) | Internal ID of the work item. |
 | <a id="workitemlockversion"></a>`lockVersion` | [`Int!`](#int) | Lock version of the work item. Incremented each time the work item is updated. |
-| <a id="workitemnamespace"></a>`namespace` **{warning-solid}** | [`Namespace`](#namespace) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Namespace the work item belongs to. |
-| <a id="workitemproject"></a>`project` **{warning-solid}** | [`Project`](#project) | **Introduced** in 15.3. This feature is in Alpha. It can be changed or removed at any time. Project the work item belongs to. |
+| <a id="workitemnamespace"></a>`namespace` **{warning-solid}** | [`Namespace`](#namespace) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Namespace the work item belongs to. |
+| <a id="workitemproject"></a>`project` **{warning-solid}** | [`Project`](#project) | **Introduced** in 15.3. This feature is an Experiment. It can be changed or removed at any time. Project the work item belongs to. |
 | <a id="workitemstate"></a>`state` | [`WorkItemState!`](#workitemstate) | State of the work item. |
 | <a id="workitemtitle"></a>`title` | [`String!`](#string) | Title of the work item. |
 | <a id="workitemtitlehtml"></a>`titleHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `title`. |
@@ -23079,8 +23081,8 @@ Direction of access.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="cirunnerjobexecutionstatusidle"></a>`IDLE` **{warning-solid}** | **Introduced** in 15.7. This feature is in Alpha. It can be changed or removed at any time. Runner is idle. |
-| <a id="cirunnerjobexecutionstatusrunning"></a>`RUNNING` **{warning-solid}** | **Introduced** in 15.7. This feature is in Alpha. It can be changed or removed at any time. Runner is executing jobs. |
+| <a id="cirunnerjobexecutionstatusidle"></a>`IDLE` **{warning-solid}** | **Introduced** in 15.7. This feature is an Experiment. It can be changed or removed at any time. Runner is idle. |
+| <a id="cirunnerjobexecutionstatusrunning"></a>`RUNNING` **{warning-solid}** | **Introduced** in 15.7. This feature is an Experiment. It can be changed or removed at any time. Runner is executing jobs. |
 
 ### `CiRunnerMembershipFilter`
 
@@ -23088,7 +23090,7 @@ Values for filtering runners in namespaces. The previous type name `RunnerMember
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="cirunnermembershipfilterall_available"></a>`ALL_AVAILABLE` **{warning-solid}** | **Introduced** in 15.5. This feature is in Alpha. It can be changed or removed at any time. Include all runners. This list includes runners for all projects in the group and subgroups, as well as for the parent groups and instance. |
+| <a id="cirunnermembershipfilterall_available"></a>`ALL_AVAILABLE` **{warning-solid}** | **Introduced** in 15.5. This feature is an Experiment. It can be changed or removed at any time. Include all runners. This list includes runners for all projects in the group and subgroups, as well as for the parent groups and instance. |
 | <a id="cirunnermembershipfilterdescendants"></a>`DESCENDANTS` | Include runners that have either a direct or inherited relationship. These runners can be specific to a project or a group. |
 | <a id="cirunnermembershipfilterdirect"></a>`DIRECT` | Include runners that have a direct relationship. |
 
@@ -23888,10 +23890,10 @@ Issue type.
 | ----- | ----------- |
 | <a id="issuetypeincident"></a>`INCIDENT` | Incident issue type. |
 | <a id="issuetypeissue"></a>`ISSUE` | Issue issue type. |
-| <a id="issuetypekey_result"></a>`KEY_RESULT` **{warning-solid}** | **Introduced** in 15.7. This feature is in Alpha. It can be changed or removed at any time. Key Result issue type. Available only when feature flag `okrs_mvc` is enabled. |
-| <a id="issuetypeobjective"></a>`OBJECTIVE` **{warning-solid}** | **Introduced** in 15.6. This feature is in Alpha. It can be changed or removed at any time. Objective issue type. Available only when feature flag `okrs_mvc` is enabled. |
+| <a id="issuetypekey_result"></a>`KEY_RESULT` **{warning-solid}** | **Introduced** in 15.7. This feature is an Experiment. It can be changed or removed at any time. Key Result issue type. Available only when feature flag `okrs_mvc` is enabled. |
+| <a id="issuetypeobjective"></a>`OBJECTIVE` **{warning-solid}** | **Introduced** in 15.6. This feature is an Experiment. It can be changed or removed at any time. Objective issue type. Available only when feature flag `okrs_mvc` is enabled. |
 | <a id="issuetyperequirement"></a>`REQUIREMENT` | Requirement issue type. |
-| <a id="issuetypetask"></a>`TASK` **{warning-solid}** | **Introduced** in 15.2. This feature is in Alpha. It can be changed or removed at any time. Task issue type. |
+| <a id="issuetypetask"></a>`TASK` **{warning-solid}** | **Introduced** in 15.2. This feature is an Experiment. It can be changed or removed at any time. Task issue type. |
 | <a id="issuetypetest_case"></a>`TEST_CASE` | Test Case issue type. |
 
 ### `IterationSearchableField`
@@ -26222,7 +26224,7 @@ Implementations:
 | <a id="usersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="userstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="userstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="useruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
+| <a id="useruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="useruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="userusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="userwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |

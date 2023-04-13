@@ -6,7 +6,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
 import RunnerFormFields from '~/ci/runner/components/runner_form_fields.vue';
-import { DEFAULT_ACCESS_LEVEL } from '~/ci/runner/constants';
+import { DEFAULT_ACCESS_LEVEL, INSTANCE_TYPE } from '~/ci/runner/constants';
 import runnerCreateMutation from '~/ci/runner/graphql/new/runner_create.mutation.graphql';
 import { captureException } from '~/ci/runner/sentry_utils';
 import { runnerCreateResult } from '../mock_data';
@@ -16,6 +16,7 @@ jest.mock('~/ci/runner/sentry_utils');
 const mockCreatedRunner = runnerCreateResult.data.runnerCreate.runner;
 
 const defaultRunnerModel = {
+  runnerType: INSTANCE_TYPE,
   description: '',
   accessLevel: DEFAULT_ACCESS_LEVEL,
   paused: false,

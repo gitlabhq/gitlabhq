@@ -130,8 +130,6 @@ module Gitlab
         end
 
         def can_reduce_sub_batch_size?
-          return false unless Feature.enabled?(:reduce_sub_batch_size_on_timeouts)
-
           still_retryable? && within_batch_size_boundaries?
         end
 

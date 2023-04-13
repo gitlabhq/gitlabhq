@@ -1,5 +1,6 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import * as Sentry from '@sentry/browser';
 import { within } from '@testing-library/dom';
 import { mount, createWrapper } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
@@ -12,6 +13,7 @@ import { member } from '../../mock_data';
 
 Vue.use(Vuex);
 jest.mock('ee_else_ce/members/guest_overage_confirm_action');
+jest.mock('@sentry/browser');
 
 describe('RoleDropdown', () => {
   let wrapper;
@@ -20,9 +22,9 @@ describe('RoleDropdown', () => {
     show: jest.fn(),
   };
 
-  const createStore = () => {
+  const createStore = ({ updateMemberRoleReturn = Promise.resolve() } = {}) => {
     actions = {
-      updateMemberRole: jest.fn(() => Promise.resolve()),
+      updateMemberRole: jest.fn(() => updateMemberRoleReturn),
     };
 
     return new Vuex.Store({
@@ -32,7 +34,7 @@ describe('RoleDropdown', () => {
     });
   };
 
-  const createComponent = (propsData = {}) => {
+  const createComponent = (propsData = {}, store = createStore()) => {
     wrapper = mount(RoleDropdown, {
       provide: {
         namespace: MEMBER_TYPES.user,
@@ -46,7 +48,7 @@ describe('RoleDropdown', () => {
         permissions: {},
         ...propsData,
       },
-      store: createStore(),
+      store,
       mocks: {
         $toast,
       },
@@ -75,11 +77,11 @@ describe('RoleDropdown', () => {
   });
 
   describe('when dropdown is open', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       guestOverageConfirmAction.mockReturnValue(true);
       createComponent();
 
-      return findDropdownToggle().trigger('click');
+      await findDropdownToggle().trigger('click');
     });
 
     it('renders all valid roles', () => {
@@ -113,26 +115,74 @@ describe('RoleDropdown', () => {
         });
       });
 
-      it('displays toast when successful', async () => {
-        await getDropdownItemByText('Developer').trigger('click');
+      describe('when updateMemberRole is successful', () => {
+        it('displays toast', async () => {
+          await getDropdownItemByText('Developer').trigger('click');
 
-        await nextTick();
+          await nextTick();
 
-        expect($toast.show).toHaveBeenCalledWith('Role updated successfully.');
+          expect($toast.show).toHaveBeenCalledWith('Role updated successfully.');
+        });
+
+        it('puts dropdown in loading state while waiting for `updateMemberRole` to resolve', async () => {
+          await getDropdownItemByText('Developer').trigger('click');
+
+          expect(findDropdown().props('loading')).toBe(true);
+        });
+
+        it('enables dropdown after `updateMemberRole` resolves', async () => {
+          await getDropdownItemByText('Developer').trigger('click');
+
+          await waitForPromises();
+
+          expect(findDropdown().props('disabled')).toBe(false);
+        });
+
+        it('does not log error to Sentry', async () => {
+          await getDropdownItemByText('Developer').trigger('click');
+
+          await waitForPromises();
+
+          expect(Sentry.captureException).not.toHaveBeenCalled();
+        });
       });
 
-      it('puts dropdown in loading state while waiting for `updateMemberRole` to resolve', async () => {
-        await getDropdownItemByText('Developer').trigger('click');
+      describe('when updateMemberRole is not successful', () => {
+        const reason = 'Rejected ☹️';
 
-        expect(findDropdown().props('loading')).toBe(true);
-      });
+        beforeEach(() => {
+          createComponent({}, createStore({ updateMemberRoleReturn: Promise.reject(reason) }));
+        });
 
-      it('enables dropdown after `updateMemberRole` resolves', async () => {
-        await getDropdownItemByText('Developer').trigger('click');
+        it('does not display toast', async () => {
+          await getDropdownItemByText('Developer').trigger('click');
 
-        await waitForPromises();
+          await nextTick();
 
-        expect(findDropdown().props('disabled')).toBe(false);
+          expect($toast.show).not.toHaveBeenCalled();
+        });
+
+        it('puts dropdown in loading state while waiting for `updateMemberRole` to resolve', async () => {
+          await getDropdownItemByText('Developer').trigger('click');
+
+          expect(findDropdown().props('loading')).toBe(true);
+        });
+
+        it('enables dropdown after `updateMemberRole` resolves', async () => {
+          await getDropdownItemByText('Developer').trigger('click');
+
+          await waitForPromises();
+
+          expect(findDropdown().props('disabled')).toBe(false);
+        });
+
+        it('logs error to Sentry', async () => {
+          await getDropdownItemByText('Developer').trigger('click');
+
+          await waitForPromises();
+
+          expect(Sentry.captureException).toHaveBeenCalledWith(reason);
+        });
       });
     });
   });

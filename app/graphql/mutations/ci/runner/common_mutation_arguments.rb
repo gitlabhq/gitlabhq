@@ -38,11 +38,6 @@ module Mutations
           argument :tag_list, [GraphQL::Types::String],
             required: false,
             description: 'Tags associated with the runner.'
-
-          argument :associated_projects, [::Types::GlobalIDType[::Project]],
-            required: false,
-            description: 'Projects associated with the runner. Available only for project runners.',
-            prepare: ->(global_ids, _ctx) { global_ids&.filter_map { |gid| gid.model_id.to_i } }
         end
       end
     end

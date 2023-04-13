@@ -327,6 +327,8 @@
   - 1
 - - merge_requests_handle_assignees_change
   - 1
+- - merge_requests_llm_summarize_merge_request
+  - 1
 - - merge_requests_resolve_todos
   - 1
 - - merge_requests_resolve_todos_after_approval

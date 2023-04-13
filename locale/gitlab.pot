@@ -28169,6 +28169,9 @@ msgstr ""
 msgid "Missing commit signatures endpoint!"
 msgstr ""
 
+msgid "Missing/invalid scope"
+msgstr ""
+
 msgid "MissingSSHKeyWarningLink|Add SSH key"
 msgstr ""
 
@@ -46857,6 +46860,9 @@ msgid "Undo ignore"
 msgstr ""
 
 msgid "Unexpected error"
+msgstr ""
+
+msgid "Unexpected scope"
 msgstr ""
 
 msgid "Unfollow"

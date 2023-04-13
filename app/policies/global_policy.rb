@@ -121,11 +121,11 @@ class GlobalPolicy < BasePolicy
     enable :approve_user
     enable :reject_user
     enable :read_usage_trends_measurement
-    enable :create_instance_runners
+    enable :create_instance_runner
   end
 
   rule { ~create_runner_workflow_enabled }.policy do
-    prevent :create_instance_runners
+    prevent :create_instance_runner
   end
 
   # We can't use `read_statistics` because the user may have different permissions for different projects

@@ -164,7 +164,6 @@ RSpec/ExpectInHook:
     - 'spec/helpers/projects_helper_spec.rb'
     - 'spec/helpers/search_helper_spec.rb'
     - 'spec/helpers/users_helper_spec.rb'
-    - 'spec/initializers/net_http_response_patch_spec.rb'
     - 'spec/initializers/validate_database_config_spec.rb'
     - 'spec/lib/api/entities/merge_request_changes_spec.rb'
     - 'spec/lib/api/helpers/variables_helpers_spec.rb'

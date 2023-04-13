@@ -3,27 +3,35 @@
 module Ci
   module Runners
     module RunnerCreationStrategies
-      class InstanceRunnerStrategy
+      class ProjectRunnerStrategy
+        include Gitlab::Utils::StrongMemoize
+
         def initialize(user:, params:)
           @user = user
           @params = params
         end
 
         def normalize_params
-          params[:runner_type] = 'instance_type'
+          params[:runner_type] = 'project_type'
+          params[:projects] = [scope]
         end
 
         def validate_params
-          _('Unexpected scope') if params[:scope]
+          _('Missing/invalid scope') unless scope.present?
         end
 
         def authorized_user?
-          user.present? && user.can?(:create_instance_runner)
+          user.present? && user.can?(:create_runner, scope)
         end
 
         private
 
         attr_reader :user, :params
+
+        def scope
+          params.delete(:scope)
+        end
+        strong_memoize_attr :scope
       end
     end
   end

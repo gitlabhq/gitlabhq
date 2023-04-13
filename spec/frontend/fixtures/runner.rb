@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Runner (JavaScript fixtures)' do
+RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :runner_fleet do
   include AdminModeHelper
   include ApiHelpers
   include JavaScriptFixturesHelpers
@@ -169,14 +169,17 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
         get_graphql_query_as_string("#{query_path}#{runner_create_mutation}")
       end
 
-      it "#{fixtures_path}#{runner_create_mutation}.json" do
-        post_graphql(query, current_user: admin, variables: {
-          input: {
-            description: 'My dummy runner'
-          }
-        })
+      context 'with runnerType set to INSTANCE_TYPE' do
+        it "#{fixtures_path}#{runner_create_mutation}.json" do
+          post_graphql(query, current_user: admin, variables: {
+            input: {
+              runnerType: 'INSTANCE_TYPE',
+              description: 'My dummy runner'
+            }
+          })
 
-        expect_graphql_errors_to_be_empty
+          expect_graphql_errors_to_be_empty
+        end
       end
     end
   end
