@@ -12,7 +12,7 @@ The `Vulnerability::Feedback` model is currently undergoing deprecation and shou
 
 ## Commonly used terms
 
-### Feedback 
+### Feedback
 
 An instance of `Vulnerabilities::Feedback` class. They are created to keep track of users' interactions with Vulnerability Findings before they are promoted to a Vulnerability. This model is deprecated and due to be removed by GitLab 16.0 as part of the [Deprecate and remove Vulnerabilities::Feedback epic](https://gitlab.com/groups/gitlab-org/-/epics/5629).
 
@@ -38,7 +38,7 @@ An instance of the `Vulnerabilities::StateTransition` class. This model represen
 
 ### Vulnerability
 
-An instance of `Vulnerability` class. A `Vulnerability` is representative of a `Vulnerability::Finding` which has been detected in the default branch of the project, or if the `present_on_default_branch` flag is false, is representative of a finding which has been interacted with in some way outside of the default branch, such as if it is dismissed (`State Transition`), or linked to an `Issue` or `Merge Request`. They are created based on information available in `Vulnerabilities::Finding` class. Every `Vulnerability` **must have** a corresponding `Vulnerabilities::Finding` object to be valid, however this is not enforced at the database level. 
+An instance of `Vulnerability` class. A `Vulnerability` is representative of a `Vulnerability::Finding` which has been detected in the default branch of the project, or if the `present_on_default_branch` flag is false, is representative of a finding which has been interacted with in some way outside of the default branch, such as if it is dismissed (`State Transition`), or linked to an `Issue` or `Merge Request`. They are created based on information available in `Vulnerabilities::Finding` class. Every `Vulnerability` **must have** a corresponding `Vulnerabilities::Finding` object to be valid, however this is not enforced at the database level.
 
 ### Finding
 
@@ -81,7 +81,7 @@ At this point, the following things can happen to the `Security::Finding` which 
 
 ### Scan runs in a pipeline for the default branch
 
-If the pipeline ran on the default branch then the following steps, in addition to the steps in [#scan-runs-in-a-pipeline-for-a-non-default-branch], are executed:
+If the pipeline ran on the default branch then the following steps, in addition to the steps in [Scan runs in a pipeline for a non-default branch](#scan-runs-in-a-pipeline-for-a-non-default-branch), are executed:
 
 1. `Security::StoreScansService` gets called and schedules `StoreSecurityReportsWorker`.
 1. `StoreSecurityReportsWorker` executes `Security::Ingestion::IngestReportsService`.
@@ -92,8 +92,8 @@ If the pipeline ran on the default branch then the following steps, in addition 
 
 If you change the state of a vulnerability, such as selecting `Dismiss vulnerability` the following things currently happen:
 
-- A `Feedback` record of `dismissal` type is created to record the current state. 
-- If they do not already exist, a `Vulnerability Finding` and a `Vulnerability` with `present_on_default_branch: false` attribute get created, to which a `State Transition` reflecting the state change is related. 
+- A `Feedback` record of `dismissal` type is created to record the current state.
+- If they do not already exist, a `Vulnerability Finding` and a `Vulnerability` with `present_on_default_branch: false` attribute get created, to which a `State Transition` reflecting the state change is related.
 
 You can optionally add a comment to the state change which is recorded on both the `Feedback` and the `State Transition`.
 

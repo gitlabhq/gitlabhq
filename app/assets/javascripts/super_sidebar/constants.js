@@ -30,3 +30,6 @@ export const HELP_MENU_TRACKING_DEFAULTS = {
   'data-track-property': 'nav_help_menu',
   'data-track-action': 'click_link',
 };
+
+export const SIDEBAR_PINS_EXPANDED_COOKIE = 'sidebar_pinned_section_expanded';
+export const SIDEBAR_COOKIE_EXPIRATION = 365 * 10;

@@ -22,7 +22,7 @@ module CarrierWave
           # multithreaded uploads (https://github.com/fog/fog-aws/pull/579).
           # Multithreaded uploads are essential for copying large amounts of data
           # within the request timeout.
-          if ::Feature.enabled?(:s3_multithreaded_uploads) && fog_provider == 'AWS'
+          if ::Feature.enabled?(:s3_multithreaded_uploads, type: :ops) && fog_provider == 'AWS'
             # AWS SDK uses 10 threads by default and a multipart chunk size of 10 MB
             file.concurrency = 10
             file.multipart_chunk_size = 10485760

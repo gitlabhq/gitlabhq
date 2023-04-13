@@ -2,6 +2,8 @@
 import { GlCollapse, GlIcon } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
 import { s__ } from '~/locale';
+import { setCookie, getCookie } from '~/lib/utils/common_utils';
+import { SIDEBAR_PINS_EXPANDED_COOKIE, SIDEBAR_COOKIE_EXPIRATION } from '../constants';
 import NavItem from './nav_item.vue';
 
 export default {
@@ -25,7 +27,7 @@ export default {
   },
   data() {
     return {
-      expanded: true,
+      expanded: getCookie(SIDEBAR_PINS_EXPANDED_COOKIE) !== 'false',
       draggableItems: this.items,
     };
   },
@@ -38,6 +40,11 @@ export default {
     },
   },
   watch: {
+    expanded(newExpanded) {
+      setCookie(SIDEBAR_PINS_EXPANDED_COOKIE, newExpanded, {
+        expires: SIDEBAR_COOKIE_EXPIRATION,
+      });
+    },
     items(newItems) {
       this.draggableItems = newItems;
     },

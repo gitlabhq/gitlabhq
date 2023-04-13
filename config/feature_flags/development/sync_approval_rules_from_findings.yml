@@ -1,0 +1,8 @@
+---
+name: sync_approval_rules_from_findings
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115825
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/397011
+milestone: '15.11'
+type: development
+group: group::security policies
+default_enabled: false

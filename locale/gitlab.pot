@@ -1863,6 +1863,9 @@ msgstr ""
 msgid "AI|What does the selected code mean?"
 msgstr ""
 
+msgid "AI|You are not allowed to copy any part of this output into issues, comments, GitLab source code, commit messages, merge requests or any other user interface in the %{gitlabOrg} or %{gitlabCom} groups."
+msgstr ""
+
 msgid "API"
 msgstr ""
 

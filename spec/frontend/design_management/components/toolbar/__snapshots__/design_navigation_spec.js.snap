@@ -7,7 +7,7 @@ exports[`Design management pagination component renders navigation buttons 1`] =
   class="gl-display-flex gl-align-items-center"
 >
   
-  0 of 2
+  0 of 3
   
   <gl-button-group-stub
     class="gl-mx-5"

@@ -1,3 +1,45 @@
+export const designListQueryResponseNodes = [
+  {
+    __typename: 'Design',
+    id: '1',
+    event: 'NONE',
+    filename: 'fox_1.jpg',
+    notesCount: 3,
+    image: 'image-1',
+    imageV432x230: 'image-1',
+    currentUserTodos: {
+      __typename: 'ToDo',
+      nodes: [],
+    },
+  },
+  {
+    __typename: 'Design',
+    id: '2',
+    event: 'NONE',
+    filename: 'fox_2.jpg',
+    notesCount: 2,
+    image: 'image-2',
+    imageV432x230: 'image-2',
+    currentUserTodos: {
+      __typename: 'ToDo',
+      nodes: [],
+    },
+  },
+  {
+    __typename: 'Design',
+    id: '3',
+    event: 'NONE',
+    filename: 'fox_3.jpg',
+    notesCount: 1,
+    image: 'image-3',
+    imageV432x230: 'image-3',
+    currentUserTodos: {
+      __typename: 'ToDo',
+      nodes: [],
+    },
+  },
+];
+
 export const designListQueryResponse = {
   data: {
     project: {
@@ -11,47 +53,7 @@ export const designListQueryResponse = {
           copyState: 'READY',
           designs: {
             __typename: 'DesignConnection',
-            nodes: [
-              {
-                __typename: 'Design',
-                id: '1',
-                event: 'NONE',
-                filename: 'fox_1.jpg',
-                notesCount: 3,
-                image: 'image-1',
-                imageV432x230: 'image-1',
-                currentUserTodos: {
-                  __typename: 'ToDo',
-                  nodes: [],
-                },
-              },
-              {
-                __typename: 'Design',
-                id: '2',
-                event: 'NONE',
-                filename: 'fox_2.jpg',
-                notesCount: 2,
-                image: 'image-2',
-                imageV432x230: 'image-2',
-                currentUserTodos: {
-                  __typename: 'ToDo',
-                  nodes: [],
-                },
-              },
-              {
-                __typename: 'Design',
-                id: '3',
-                event: 'NONE',
-                filename: 'fox_3.jpg',
-                notesCount: 1,
-                image: 'image-3',
-                imageV432x230: 'image-3',
-                currentUserTodos: {
-                  __typename: 'ToDo',
-                  nodes: [],
-                },
-              },
-            ],
+            nodes: designListQueryResponseNodes,
           },
           versions: {
             __typename: 'DesignVersion',

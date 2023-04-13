@@ -959,6 +959,7 @@ Input type: `AiActionInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationaiactionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiactionexplaincode"></a>`explainCode` | [`AiExplainCodeInput`](#aiexplaincodeinput) | Input for explain_code AI action. |
 | <a id="mutationaiactionsummarizecomments"></a>`summarizeComments` | [`AiSummarizeCommentsInput`](#aisummarizecommentsinput) | Input for summarize_comments AI action. |
 
 #### Fields
@@ -26479,6 +26480,24 @@ be used as arguments).
 
 Only general use input types are listed here. For mutation input types,
 see the associated mutation type above.
+
+### `AiExplainCodeInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiexplaincodeinputmessages"></a>`messages` | [`[AiExplainCodeMessageInput!]!`](#aiexplaincodemessageinput) | Code messages that is passed to be explained by AI. |
+| <a id="aiexplaincodeinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | GID of the resource to mutate. |
+
+### `AiExplainCodeMessageInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiexplaincodemessageinputcontent"></a>`content` | [`String!`](#string) | Content of the message. |
+| <a id="aiexplaincodemessageinputrole"></a>`role` | [`String!`](#string) | Role of the message (system, user, assistant). |
 
 ### `AiSummarizeCommentsInput`
 

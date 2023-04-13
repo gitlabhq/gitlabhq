@@ -54,6 +54,26 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
       end
     end
 
+    describe 'collapsible section' do
+      it 'shows the Pinned section as expanded by default' do
+        within '#super-sidebar' do
+          expect(page).to have_content 'Your pinned items appear here.'
+        end
+      end
+
+      it 'maintains the collapsed/expanded state between page loads' do
+        within '#super-sidebar' do
+          click_on 'Pinned'
+          visit project_path(project)
+          expect(page).not_to have_content 'Your pinned items appear here.'
+
+          click_on 'Pinned'
+          visit project_path(project)
+          expect(page).to have_content 'Your pinned items appear here.'
+        end
+      end
+    end
+
     describe 'pinned items' do
       before do
         within '#super-sidebar' do

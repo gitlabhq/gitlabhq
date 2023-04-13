@@ -170,20 +170,20 @@ sequenceDiagram
 
 ## Iterations
 
-- [x] Define [requirements for detection coverage and actions](https://gitlab.com/gitlab-org/gitlab/-/issues/376716)
-- [x] Implement [Clientside detection of GitLab tokens within comments/issues](https://gitlab.com/gitlab-org/gitlab/-/issues/368434)
-- [ ] PoC of secret scanning service
-      - [ ] Benchmarking of issuables, comments, job logs and blobs to gain confidence that the total costs will be viable
-      - [ ] Capacity planning for addition of service component to Reference Architectures headroom
-      - [ ] Service capabilities
-          - [ ] gRPC commit retrieval from Gitaly
-          - [ ] blob scanning
-- [ ] Implementation of secret scanning service MVC (targeting individual commits)
-- [ ] Security and readiness review
-- [ ] Deployment and monitoring
-- [ ] Implementation of secret scanning service MVC (targeting arbitrary text blobs)
-- [ ] Deployment and monitoring
-- [ ] High priority domain object rollout (priority `TBD`)
-      - [ ] Issuable comments
-      - [ ] Issuable bodies
-      - [ ] Job logs
+- ✓ Define [requirements for detection coverage and actions](https://gitlab.com/gitlab-org/gitlab/-/issues/376716)
+- ✓ Implement [Clientside detection of GitLab tokens within comments/issues](https://gitlab.com/gitlab-org/gitlab/-/issues/368434)
+- PoC of secret scanning service
+  - Benchmarking of issuables, comments, job logs and blobs to gain confidence that the total costs will be viable
+  - Capacity planning for addition of service component to Reference Architectures headroom
+  - Service capabilities
+    - gRPC commit retrieval from Gitaly
+    - blob scanning
+- Implementation of secret scanning service MVC (targeting individual commits)
+- Security and readiness review
+- Deployment and monitoring
+- Implementation of secret scanning service MVC (targeting arbitrary text blobs)
+- Deployment and monitoring
+- High priority domain object rollout (priority `TBD`)
+  - Issuable comments
+  - Issuable bodies
+  - Job logs

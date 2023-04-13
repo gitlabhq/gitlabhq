@@ -144,7 +144,7 @@ export default {
   },
   computed: {
     shouldRenderGenie() {
-      return this.glFeatures.explainCode && this.glFeatures.explainCodeSnippet;
+      return this.glFeatures.explainCode && this.glFeatures.explainCodeSnippet && this.isLoggedIn;
     },
     isLoggedIn() {
       return isLoggedIn();
