@@ -46,27 +46,8 @@ RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer
     end
 
     describe 'namespace_id' do
-      context 'when destination namespace is present' do
-        it 'adds namespace_id' do
-          expect(transformed_data[:namespace_id]).to eq(destination_group.id)
-        end
-      end
-
-      context 'when destination namespace is blank' do
-        it 'does not add namespace_id key' do
-          entity = create(
-            :bulk_import_entity,
-            source_type: :project_entity,
-            bulk_import: bulk_import,
-            source_full_path: 'source/full/path',
-            destination_slug: 'Destination-Project-Name',
-            destination_namespace: ''
-          )
-
-          context = double(entity: entity)
-
-          expect(described_class.new.transform(context, data)).not_to have_key(:namespace_id)
-        end
+      it 'adds namespace_id' do
+        expect(transformed_data[:namespace_id]).to eq(destination_group.id)
       end
     end
 

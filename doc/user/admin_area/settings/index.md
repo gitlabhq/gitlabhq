@@ -66,6 +66,10 @@ The **CI/CD** settings contain:
   [risks are involved](../../packages/container_registry/reduce_container_registry_storage.md#use-with-external-container-registries)
   in enabling some of these settings.
 
+## Security and Compliance settings
+
+- [License compliance settings](security_and_compliance.md#choose-package-registry-metadata-to-sync): Enable or disable synchronization of package metadata by a registry type.
+
 ### Geo **(PREMIUM SELF)**
 
 The **Geo** setting contains:

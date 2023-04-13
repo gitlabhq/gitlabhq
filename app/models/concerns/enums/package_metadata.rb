@@ -20,5 +20,9 @@ module Enums
     def self.purl_types
       PURL_TYPES
     end
+
+    def self.purl_types_numerical
+      purl_types.invert
+    end
   end
 end

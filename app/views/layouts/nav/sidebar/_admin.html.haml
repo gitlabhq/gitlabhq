@@ -270,6 +270,7 @@
               = link_to ci_cd_admin_application_settings_path, title: _('CI/CD') do
                 %span
                   = _('CI/CD')
+            = render_if_exists 'layouts/nav/ee/admin/security_and_compliance_sidebar'
             = nav_link(path: 'application_settings#reporting') do
               = link_to reporting_admin_application_settings_path, title: _('Reporting') do
                 %span

@@ -21,7 +21,7 @@ module BulkImports
           project[:created_at] = data['created_at']
           project[:import_type] = PROJECT_IMPORT_TYPE
           project[:visibility_level] = visibility_level(entity, namespace, data['visibility'])
-          project[:namespace_id] = namespace.id if namespace
+          project[:namespace_id] = namespace.id
 
           project.with_indifferent_access
         end

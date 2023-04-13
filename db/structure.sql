@@ -11749,6 +11749,7 @@ CREATE TABLE application_settings (
     encrypted_openai_api_key_iv bytea,
     database_max_running_batched_background_migrations integer DEFAULT 2 NOT NULL,
     silent_mode_enabled boolean DEFAULT false NOT NULL,
+    package_metadata_purl_types smallint[] DEFAULT '{}'::smallint[],
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -23373,6 +23374,7 @@ CREATE TABLE user_preferences (
     use_new_navigation boolean,
     achievements_enabled boolean DEFAULT true NOT NULL,
     pinned_nav_items jsonb DEFAULT '{}'::jsonb NOT NULL,
+    pass_user_identities_to_ci_jwt boolean DEFAULT false NOT NULL,
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_d07ccd35f7 CHECK ((char_length(diffs_addition_color) <= 7))
 );

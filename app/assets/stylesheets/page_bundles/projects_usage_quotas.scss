@@ -1,3 +1,5 @@
+@import 'mixins_and_variables_and_functions';
+
 .storage-type-usage {
   &:first-child {
     @include gl-rounded-top-left-base;
@@ -12,6 +14,6 @@
   &:not(:last-child) {
     @include gl-border-r-2;
     @include gl-border-r-solid;
-    @include gl-border-white;
+    border-right-color: var(--white, $white);
   }
 }

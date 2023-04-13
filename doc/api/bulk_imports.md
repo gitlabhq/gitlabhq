@@ -18,7 +18,8 @@ prerequisites for [migrating groups by direct transfer](../user/group/import/ind
 
 ## Start a new group migration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66353) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66353) in GitLab 14.2.
+> - `project_entity` source type [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
 
 ```plaintext
 POST /bulk_imports
@@ -30,7 +31,7 @@ POST /bulk_imports
 | `configuration[url]`              | String | yes      | Source GitLab instance URL. |
 | `configuration[access_token]`     | String | yes      | Access token to the source GitLab instance. |
 | `entities`                        | Array  | yes      | List of entities to import. |
-| `entities[source_type]`           | String | yes      | Source entity type (only `group_entity` is supported). |
+| `entities[source_type]`           | String | yes      | Source entity type. Valid values are `group_entity` (GitLab 14.2 and later) and `project_entity` (GitLab 15.11 and later). |
 | `entities[source_full_path]`      | String | yes      | Source full path of the entity to import. |
 | `entities[destination_name]`      | String | yes      | Deprecated: Use :destination_slug instead. Destination slug for the entity. |
 | `entities[destination_slug]`      | String | yes      | Destination slug for the entity. |

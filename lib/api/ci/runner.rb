@@ -15,7 +15,7 @@ module API
         end
         params do
           requires :token, type: String, desc: 'Registration token'
-          optional :description, type: String, desc: %q(Runner's description)
+          optional :description, type: String, desc: %q(Description of the runner)
           optional :maintainer_note, type: String, desc: %q(Deprecated: see `maintenance_note`)
           optional :maintenance_note, type: String,
                                       desc: %q(Free-form maintenance notes for the runner (1024 characters))
@@ -27,13 +27,13 @@ module API
             optional :architecture, type: String, desc: %q(Runner's architecture)
           end
           optional :active, type: Boolean,
-                            desc: 'Deprecated: Use `paused` instead. Specifies whether the runner is allowed ' \
+                            desc: 'Deprecated: Use `paused` instead. Specifies if the runner is allowed ' \
                                   'to receive new jobs'
-          optional :paused, type: Boolean, desc: 'Specifies whether the runner should ignore new jobs'
-          optional :locked, type: Boolean, desc: 'Specifies whether the runner should be locked for the current project'
+          optional :paused, type: Boolean, desc: 'Specifies if the runner should ignore new jobs'
+          optional :locked, type: Boolean, desc: 'Specifies if the runner should be locked for the current project'
           optional :access_level, type: String, values: ::Ci::Runner.access_levels.keys,
                                   desc: 'The access level of the runner'
-          optional :run_untagged, type: Boolean, desc: 'Specifies whether the runner should handle untagged jobs'
+          optional :run_untagged, type: Boolean, desc: 'Specifies if the runner should handle untagged jobs'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
                               desc: %q(A list of runner tags)
           optional :maximum_timeout, type: Integer,

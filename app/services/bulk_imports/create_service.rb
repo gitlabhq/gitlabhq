@@ -2,7 +2,7 @@
 
 # Entry point of the BulkImport/Direct Transfer feature.
 # This service receives a Gitlab Instance connection params
-# and a list of groups to be imported.
+# and a list of groups or projects to be imported.
 #
 # Process topography:
 #
@@ -15,16 +15,17 @@
 # P1 (sync)
 #
 # - Create a BulkImport record
-# - Create a BulkImport::Entity for each group to be imported
-# - Enqueue a BulkImportWorker job (P2) to import the given groups (entities)
+# - Create a BulkImport::Entity for each group or project (entities) to be imported
+# - Enqueue a BulkImportWorker job (P2) to import the given entity
 #
 # Pn (async)
 #
 # - For each group to be imported (BulkImport::Entity.with_status(:created))
 #   - Import the group data
 #   - Create entities for each subgroup of the imported group
-#   - Enqueue a BulkImports::CreateService job (Pn) to import the new entities (subgroups)
-#
+#   - Create entities for each project of the imported group
+#   - Enqueue a BulkImportWorker job (Pn) to import the new entities
+
 module BulkImports
   class CreateService
     ENTITY_TYPES_MAPPING = {
@@ -84,7 +85,7 @@ module BulkImports
         Array.wrap(params).each do |entity_params|
           track_access_level(entity_params)
 
-          validate_destination_namespace(entity_params[:destination_namespace])
+          validate_destination_namespace(entity_params)
           validate_destination_slug(entity_params[:destination_slug] || entity_params[:destination_name])
           validate_destination_full_path(entity_params)
 
@@ -137,10 +138,18 @@ module BulkImports
       credentials[:url].starts_with?(Settings.gitlab.base_url)
     end
 
-    def validate_destination_namespace(destination_namespace)
-      return if destination_namespace =~ Gitlab::Regex.bulk_import_destination_namespace_path_regex
+    def validate_destination_namespace(entity_params)
+      destination_namespace = entity_params[:destination_namespace]
+      source_type = entity_params[:source_type]
 
-      raise BulkImports::Error.destination_namespace_validation_failure
+      return if destination_namespace.blank?
+
+      group = Group.find_by_full_path(destination_namespace)
+      if group.nil? ||
+          (source_type == 'group_entity' && !current_user.can?(:create_subgroup, group)) ||
+          (source_type == 'project_entity' && !current_user.can?(:import_projects, group))
+        raise BulkImports::Error.destination_namespace_validation_failure(destination_namespace)
+      end
     end
 
     def validate_destination_slug(destination_slug)

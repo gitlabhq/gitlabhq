@@ -15,9 +15,8 @@ module BulkImports
       self.new("Invalid source URL. Enter only the base URL of the source GitLab instance.")
     end
 
-    def self.destination_namespace_validation_failure
-      self.new("Import failed. Destination group or subgroup path " \
-               "#{Gitlab::Regex.bulk_import_destination_namespace_path_regex_message}")
+    def self.destination_namespace_validation_failure(destination_namespace)
+      self.new("Import failed. Destination '#{destination_namespace}' is invalid, or you don't have permission.")
     end
 
     def self.destination_slug_validation_failure

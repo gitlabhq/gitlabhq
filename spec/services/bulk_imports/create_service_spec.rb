@@ -135,10 +135,11 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
               body: { 'scopes' => ['api'] }.to_json,
               headers: { 'Content-Type' => 'application/json' }
             )
+
+          parent_group.add_owner(user)
         end
 
         it 'creates bulk import' do
-          parent_group.add_owner(user)
           expect { subject.execute }.to change { BulkImport.count }.by(1)
 
           last_bulk_import = BulkImport.last
@@ -231,10 +232,11 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
               status: 200
             )
         end
+
+        parent_group.add_owner(user)
       end
 
       it 'creates bulk import' do
-        parent_group.add_owner(user)
         expect { subject.execute }.to change { BulkImport.count }.by(1)
 
         last_bulk_import = BulkImport.last
@@ -341,6 +343,8 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
         end
 
         it 'defines access_level as not a member' do
+          parent_group.members.delete_all
+
           subject.execute
           expect_snowplow_event(
             category: 'BulkImports::CreateService',
@@ -403,7 +407,7 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
         end
       end
 
-      describe '.validate_setting_enabled!' do
+      describe '#validate_setting_enabled!' do
         let(:entity_source_id) { 'gid://gitlab/Model/12345' }
         let(:graphql_client) { instance_double(BulkImports::Clients::Graphql) }
         let(:http_client) { instance_double(BulkImports::Clients::HTTP) }
@@ -502,15 +506,15 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
         end
       end
 
-      describe '.validate_destination_namespace' do
-        context 'when the destination_namespace is invalid' do
+      describe '#validate_destination_namespace' do
+        context 'when the destination_namespace does not exist' do
           let(:params) do
             [
               {
                 source_type: 'group_entity',
                 source_full_path: 'full/path/to/source',
                 destination_slug: 'destination-slug',
-                destination_namespace: '---destination----namespace---',
+                destination_namespace: 'destination-namespace',
                 migrate_projects: migrate_projects
               }
             ]
@@ -522,17 +526,62 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
             expect(result).to be_a(ServiceResponse)
             expect(result).to be_error
             expect(result.message)
-              .to eq(
-                "Import failed. Destination group or subgroup path " \
-                "must have a relative path structure with no HTTP protocol characters, or leading " \
-                "or trailing forward slashes. Path segments must not start or end with a special " \
-                "character, and must not contain consecutive special characters."
-              )
+              .to eq("Import failed. Destination 'destination-namespace' is invalid, or you don't have permission.")
+          end
+        end
+
+        context 'when the user does not have permission to create subgroups' do
+          let(:params) do
+            [
+              {
+                source_type: 'group_entity',
+                source_full_path: 'full/path/to/source',
+                destination_slug: 'destination-slug',
+                destination_namespace: parent_group.path,
+                migrate_projects: migrate_projects
+              }
+            ]
+          end
+
+          it 'returns ServiceResponse with an error message' do
+            parent_group.members.delete_all
+
+            result = subject.execute
+
+            expect(result).to be_a(ServiceResponse)
+            expect(result).to be_error
+            expect(result.message)
+            .to eq("Import failed. Destination '#{parent_group.path}' is invalid, or you don't have permission.")
+          end
+        end
+
+        context 'when the user does not have permission to create projects' do
+          let(:params) do
+            [
+              {
+                source_type: 'project_entity',
+                source_full_path: 'full/path/to/source',
+                destination_slug: 'destination-slug',
+                destination_namespace: parent_group.path,
+                migrate_projects: migrate_projects
+              }
+            ]
+          end
+
+          it 'returns ServiceResponse with an error message' do
+            parent_group.members.delete_all
+
+            result = subject.execute
+
+            expect(result).to be_a(ServiceResponse)
+            expect(result).to be_error
+            expect(result.message)
+              .to eq("Import failed. Destination '#{parent_group.path}' is invalid, or you don't have permission.")
           end
         end
       end
 
-      describe '.validate_destination_slug' do
+      describe '#validate_destination_slug' do
         context 'when the destination_slug is invalid' do
           let(:params) do
             [
@@ -540,7 +589,7 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
                 source_type: 'group_entity',
                 source_full_path: 'full/path/to/source',
                 destination_slug: 'destin-*-ation-slug',
-                destination_namespace: 'destination_namespace',
+                destination_namespace: parent_group.path,
                 migrate_projects: migrate_projects
               }
             ]
@@ -561,7 +610,7 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
         end
       end
 
-      describe '.validate_destination_full_path' do
+      describe '#validate_destination_full_path' do
         context 'when the source_type is a group' do
           context 'when the provided destination_slug already exists in the destination_namespace' do
             let_it_be(:existing_subgroup) { create(:group, path: 'existing-subgroup', parent_id: parent_group.id ) }
@@ -657,6 +706,8 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
             end
 
             it 'returns ServiceResponse with an error message' do
+              existing_group.add_owner(user)
+
               result = subject.execute
 
               expect(result).to be_a(ServiceResponse)
@@ -684,6 +735,8 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
             end
 
             it 'returns success ServiceResponse' do
+              existing_group.add_owner(user)
+
               result = subject.execute
 
               expect(result).to be_a(ServiceResponse)

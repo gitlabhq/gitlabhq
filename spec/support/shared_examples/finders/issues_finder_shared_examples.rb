@@ -598,7 +598,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
       end
 
       context 'filtering by no label' do
-        let(:params) { { label_name: described_class::Params::FILTER_NONE } }
+        let(:params) { { label_name: IssuableFinder::Params::FILTER_NONE } }
 
         it 'returns items with no labels' do
           expect(items).to contain_exactly(item1, item4, item5)
@@ -606,7 +606,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
       end
 
       context 'filtering by any label' do
-        let(:params) { { label_name: described_class::Params::FILTER_ANY } }
+        let(:params) { { label_name: IssuableFinder::Params::FILTER_ANY } }
 
         it 'returns items that have one or more label' do
           create_list(:label_link, 2, label: create(:label, project: project2), target: item3)

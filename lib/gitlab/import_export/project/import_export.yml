@@ -1195,6 +1195,9 @@ ee:
         - :milestone
         - lists:
           - :milestone
+      - approval_rules:
+        - :approval_project_rules_protected_branches
+        - :approval_project_rules_users
 
   included_attributes:
     issuable_sla:
@@ -1260,9 +1263,30 @@ ee:
       - :description
     iterations_cadence:
       - :title
+    approval_rules:
+      - :approvals_required
+      - :name
+      - :rule_type
+      - :scanners
+      - :vulnerabilities_allowed
+      - :severity_levels
+      - :report_type
+      - :vulnerability_states
+      - :orchestration_policy_idx
+      - :applies_to_all_protected_branches
+    approval_project_rules_protected_branches:
+      - :protected_branch
+    approval_project_rules_users:
+      - :user_id
   excluded_attributes:
     project:
       - :vulnerability_hooks_integrations
+    approval_rules:
+      - :created_at
+      - :updated_at
+  methods:
+    approval_project_rules_protected_branches:
+      - :branch_name
   preloads:
     issues:
       epic:

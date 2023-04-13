@@ -3111,6 +3111,9 @@ msgstr ""
 msgid "AdminSettings|Only enable search after installing the plugin, enabling indexing, and recreating the index."
 msgstr ""
 
+msgid "AdminSettings|Package registry metadata to sync"
+msgstr ""
+
 msgid "AdminSettings|Pause Elasticsearch indexing"
 msgstr ""
 
@@ -30869,6 +30872,9 @@ msgstr ""
 msgid "Package registry rate limits"
 msgstr ""
 
+msgid "Package registry types for which metadata is stored, required for License Compliance for CycloneDX files"
+msgstr ""
+
 msgid "Package type"
 msgstr ""
 
@@ -40892,6 +40898,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Settings"
+msgstr ""
+
+msgid "Settings for the License Compliance feature"
 msgstr ""
 
 msgid "Settings|Unable to load the merge request options settings. Try reloading the page."

@@ -22,6 +22,7 @@ Licenses not in the SPDX list are reported as "Unknown". License information can
 
 Prerequisites:
 
+- Enable [Synchronization with the GitLab License Database](../../admin_area/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in Admin Area for the GitLab instance.
 - Enable [Dependency Scanning](../../application_security/dependency_scanning/index.md#configuration).
 
 From the `.gitlab-ci.yml` file, remove the deprecated line `Jobs/License-Scanning.gitlab-ci.yml`, if

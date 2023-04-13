@@ -29,7 +29,7 @@ module Ci
 
         return ServiceResponse.success(payload: { runner: runner }) if runner.save
 
-        ServiceResponse.error(message: runner.errors.full_messages)
+        ServiceResponse.error(message: runner.errors.full_messages, reason: :save_error)
       end
 
       def normalize_params

@@ -1009,3 +1009,20 @@ iterations_cadence:
   - iterations
 catalog_resource:
   - project
+approval_rules:
+  - users
+  - groups
+  - group_users
+  - security_orchestration_policy_configuration
+  - protected_branches
+  - approval_merge_request_rule_sources
+  - approval_merge_request_rules
+  - approval_project_rules_users
+  - approval_project_rules_protected_branches
+  - scan_result_policy_read
+approval_project_rules_users:
+  - user
+  - approval_project_rule
+approval_project_rules_protected_branches:
+  - protected_branch
+  - approval_project_rule

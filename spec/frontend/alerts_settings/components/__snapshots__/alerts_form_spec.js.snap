@@ -61,6 +61,7 @@ exports[`Alert integration settings form default state should match the default 
         items="[object Object]"
         noresultstext="No results found"
         placement="left"
+        popperoptions="[object Object]"
         resetbuttonlabel=""
         searchplaceholder="Search"
         selected="selecte_tmpl"

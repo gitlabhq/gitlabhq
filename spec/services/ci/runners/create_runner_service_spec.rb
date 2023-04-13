@@ -179,6 +179,17 @@ RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category:
 
           it_behaves_like 'it cannot create a runner'
         end
+
+        context 'when model validation fails' do
+          let(:params) { { runner_type: 'instance_type', run_untagged: false, tag_list: [] } }
+
+          it_behaves_like 'it cannot create a runner'
+
+          it 'returns error message and reason', :aggregate_failures do
+            expect(execute.reason).to eq(:save_error)
+            expect(execute.message).to contain_exactly(a_string_including('Tags list can not be empty'))
+          end
+        end
       end
     end
   end

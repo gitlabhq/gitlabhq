@@ -431,5 +431,6 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :projects do
 
     select_timezone
     select_target_branch
+    find('body').click # close dropdown
   end
 end

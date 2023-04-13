@@ -27,14 +27,6 @@ RSpec.shared_examples 'visibility level settings' do
         expect(transformed_data[:visibility_level]).to eq(Gitlab::VisibilityLevel::PRIVATE)
       end
     end
-
-    context 'when destination is blank' do
-      let(:destination_namespace) { '' }
-
-      it 'sets visibility level to public' do
-        expect(transformed_data[:visibility_level]).to eq(Gitlab::VisibilityLevel::PUBLIC)
-      end
-    end
   end
 
   context 'when internal' do
@@ -63,27 +55,6 @@ RSpec.shared_examples 'visibility level settings' do
         expect(transformed_data[:visibility_level]).to eq(Gitlab::VisibilityLevel::PRIVATE)
       end
     end
-
-    context 'when destination is blank' do
-      let(:destination_namespace) { '' }
-
-      it 'sets visibility level to internal' do
-        expect(transformed_data[:visibility_level]).to eq(Gitlab::VisibilityLevel::INTERNAL)
-      end
-
-      context 'when visibility level is restricted' do
-        it 'sets visibility level to private' do
-          stub_application_setting(
-            restricted_visibility_levels: [
-              Gitlab::VisibilityLevel::INTERNAL,
-              Gitlab::VisibilityLevel::PUBLIC
-            ]
-          )
-
-          expect(transformed_data[:visibility_level]).to eq(Gitlab::VisibilityLevel::PRIVATE)
-        end
-      end
-    end
   end
 
   context 'when private' do
@@ -107,14 +78,6 @@ RSpec.shared_examples 'visibility level settings' do
 
     context 'when destination is a private group' do
       let(:destination_group) { create(:group, :private) }
-
-      it 'sets visibility level to private' do
-        expect(transformed_data[:visibility_level]).to eq(Gitlab::VisibilityLevel::PRIVATE)
-      end
-    end
-
-    context 'when destination is blank' do
-      let(:destination_namespace) { '' }
 
       it 'sets visibility level to private' do
         expect(transformed_data[:visibility_level]).to eq(Gitlab::VisibilityLevel::PRIVATE)

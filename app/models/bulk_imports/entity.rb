@@ -56,7 +56,7 @@ class BulkImports::Entity < ApplicationRecord
 
   validates :destination_namespace,
             presence: true,
-            if: :project
+            if: :project?
 
   validate :validate_parent_is_a_group, if: :parent
   validate :validate_imported_entity_type

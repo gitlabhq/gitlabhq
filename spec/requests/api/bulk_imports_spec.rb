@@ -75,6 +75,8 @@ RSpec.describe API::BulkImports, feature_category: :importers do
   end
 
   describe 'POST /bulk_imports' do
+    let_it_be(:destination_namespace) { create(:group) }
+
     let(:request) { post api('/bulk_imports', user), params: params }
     let(:destination_param) { { destination_slug: 'destination_slug' } }
     let(:params) do
@@ -87,7 +89,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
           {
             source_type: 'group_entity',
             source_full_path: 'full_path',
-            destination_namespace: 'destination_namespace'
+            destination_namespace: destination_namespace.path
           }.merge(destination_param)
         ]
       }
@@ -108,6 +110,8 @@ RSpec.describe API::BulkImports, feature_category: :importers do
       end
       stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/#{source_entity_identifier}/export_relations/status?page=1&per_page=30&private_token=access_token")
         .to_return(status: 200, body: "", headers: {})
+
+      destination_namespace.add_owner(user)
     end
 
     shared_examples 'starting a new migration' do
@@ -197,7 +201,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
             {
               source_type: 'group_entity',
               source_full_path: 'full_path',
-              destination_namespace: 'destination_namespace'
+              destination_namespace: destination_namespace.path
             }
           ]
         }
@@ -223,17 +227,13 @@ RSpec.describe API::BulkImports, feature_category: :importers do
       end
     end
 
-    context 'when the destination_namespace is invalid' do
+    context 'when the destination_namespace does not exist' do
       it 'returns invalid error' do
-        params[:entities][0][:destination_namespace] = "?not a destination-namespace"
+        params[:entities][0][:destination_namespace] = "invalid-destination-namespace"
 
         request
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to eq("entities[0][destination_namespace] must have a relative " \
-                                             "path structure with no HTTP protocol characters, or leading or " \
-                                             "trailing forward slashes. Path segments must not start or " \
-                                             "end with a special character, and must not contain " \
-                                             "consecutive special characters.")
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq("Import failed. Destination 'invalid-destination-namespace' is invalid, or you don't have permission.")
       end
     end
 

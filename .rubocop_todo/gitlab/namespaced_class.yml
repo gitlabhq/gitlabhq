@@ -875,6 +875,7 @@ Gitlab/NamespacedClass:
     - 'ee/app/models/approval_merge_request_rule.rb'
     - 'ee/app/models/approval_merge_request_rule_source.rb'
     - 'ee/app/models/approval_project_rule.rb'
+    - 'ee/app/models/approval_project_rules_user.rb'
     - 'ee/app/models/approval_project_rules_protected_branch.rb'
     - 'ee/app/models/approval_state.rb'
     - 'ee/app/models/approval_wrapped_any_approver_rule.rb'

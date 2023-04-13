@@ -92,6 +92,7 @@ module Gitlab
           when :'Ci::PipelineSchedule' then setup_pipeline_schedule
           when :'ProtectedBranch::MergeAccessLevel' then setup_protected_branch_access_level
           when :'ProtectedBranch::PushAccessLevel' then setup_protected_branch_access_level
+          when :ApprovalProjectRulesProtectedBranch then setup_merge_approval_protected_branch
           when :releases then setup_release
           end
 
@@ -193,6 +194,13 @@ module Gitlab
           return false unless root_ancestor.is_a?(::Group)
 
           root_ancestor.max_member_access_for_user(@user) == Gitlab::Access::OWNER
+        end
+
+        def setup_merge_approval_protected_branch
+          source_branch_name = @relation_hash.delete('branch_name')
+          target_branch = @importable.protected_branches.find_by(name: source_branch_name)
+
+          @relation_hash['protected_branch'] = target_branch
         end
 
         def compute_relative_position

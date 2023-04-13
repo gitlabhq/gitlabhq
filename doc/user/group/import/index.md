@@ -225,6 +225,7 @@ Group items that are migrated to the destination GitLab instance include:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
 > - `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
+> - Project-only migrations using API [added](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
 
 If you choose to migrate projects when you [select groups to migrate](#select-the-groups-and-projects-to-import),
 project items are migrated with the projects.
@@ -245,6 +246,9 @@ specific project item is migrated:
    <https://gitlab.com/gitlab-org/gitlab/-/blob/15-9-stable-ee/lib/gitlab/import_export/project/import_export.yml>.
 
 Any other project items are **not** migrated.
+
+If you choose not to migrate projects along with groups or if you want to retry a project migration, you can
+initiate project-only migrations using the [API](../../../api/bulk_imports.md).
 
 WARNING:
 Migrating projects when migrating groups by direct transfer is in [Beta](../../../policy/alpha-beta-support.md#beta)

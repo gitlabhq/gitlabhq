@@ -295,6 +295,13 @@ module Gitlab
         end
 
         def unique_relation?
+          # this guard is necessary because
+          # when multiple approval_project_rules_protected_branch referenced the same protected branch
+          # or approval_project_rules_user referenced the same user
+          # the different instances were squashed into one
+          # because this method returned true for reason that needs investigation
+          return if @relation_sym == :approval_rules
+
           strong_memoize(:unique_relation) do
             importable_foreign_key.present? &&
               (has_unique_index_on_importable_fk? || uses_importable_fk_as_primary_key?)
