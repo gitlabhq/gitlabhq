@@ -73,6 +73,7 @@ describe('UserBar component', () => {
       expect(isuesCounter.attributes('data-track-action')).toBe('click_link');
       expect(isuesCounter.attributes('data-track-label')).toBe('issues_link');
       expect(isuesCounter.attributes('data-track-property')).toBe('nav_core_menu');
+      expect(isuesCounter.attributes('class')).toContain('dashboard-shortcuts-issues');
     });
 
     it('renders merge requests counter', () => {
@@ -92,6 +93,7 @@ describe('UserBar component', () => {
       expect(todosCounter.attributes('data-track-action')).toBe('click_link');
       expect(todosCounter.attributes('data-track-label')).toBe('todos_link');
       expect(todosCounter.attributes('data-track-property')).toBe('nav_core_menu');
+      expect(todosCounter.attributes('class')).toContain('shortcuts-todos');
     });
 
     it('renders branding logo', () => {

@@ -1334,7 +1334,7 @@ module Ci
 
     def cluster_agent_authorizations
       strong_memoize(:cluster_agent_authorizations) do
-        ::Clusters::AgentAuthorizationsFinder.new(project).execute
+        ::Clusters::Agents::Authorizations::CiAccess::Finder.new(project).execute
       end
     end
 

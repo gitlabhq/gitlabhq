@@ -750,7 +750,7 @@ kbd {
   min-height: var(--header-height, 48px);
   border: 0;
   position: fixed;
-  top: 0;
+  top: calc(var(--system-header-height) + var(--performance-bar-height));
   left: 0;
   right: 0;
   border-radius: 0;

@@ -22,6 +22,9 @@ vulnerabilities. By including an extra Container Scanning job in your pipeline t
 vulnerabilities and displays them in a merge request, you can use GitLab to audit your Docker-based
 apps.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Container Scanning](https://www.youtube.com/watch?v=C0jn2eN5MAs).
+
 Container Scanning is often considered part of Software Composition Analysis (SCA). SCA can contain
 aspects of inspecting the items your code uses. These items typically include application and system
 dependencies that are almost always imported from external sources, rather than sourced from items

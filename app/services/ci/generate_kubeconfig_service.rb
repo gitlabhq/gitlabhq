@@ -41,7 +41,7 @@ module Ci
     attr_reader :pipeline, :token, :environment, :template
 
     def agent_authorizations
-      ::Clusters::Agents::FilterAuthorizationsService.new(
+      ::Clusters::Agents::Authorizations::CiAccess::FilterService.new(
         pipeline.cluster_agent_authorizations,
         environment: environment
       ).execute

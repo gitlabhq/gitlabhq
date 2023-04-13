@@ -1,12 +1,14 @@
 - @hide_top_links = true
 - breadcrumb_title _('Search')
 - page_title @search_term
+- nav 'search'
 - if params[:group_id].present?
   = hidden_field_tag :group_id, params[:group_id]
 - if params[:project_id].present?
   = hidden_field_tag :project_id, params[:project_id]
 - group_attributes = @group&.attributes&.slice('id', 'name')&.merge(full_name: @group&.full_name)
 - project_attributes = @project&.attributes&.slice('id', 'namespace_id', 'name')&.merge(name_with_namespace: @project&.name_with_namespace)
+- search_bar_classes = 'search-sidebar gl-display-flex gl-flex-direction-column gl-mr-4'
 
 - if @search_results && !(@search_results.respond_to?(:failed?) && @search_results.failed?)
   - if @search_service_presenter.without_count?
@@ -20,5 +22,7 @@
   = render_if_exists 'search/form_elasticsearch', attrs: { class: 'mb-2 mb-sm-0 align-self-center' }
 
 #js-search-topbar{ data: { "group-initial-json": group_attributes.to_json, "project-initial-json": project_attributes.to_json, "elasticsearch-enabled": @search_service_presenter.advanced_search_enabled?.to_s, "default-branch-name": @project&.default_branch } }
-- if @search_term
-  = render 'search/results'
+.results.gl-md-display-flex.gl-mt-0
+  #js-search-sidebar{ class: search_bar_classes, data: { navigation_json: search_navigation_json } }
+  - if @search_term
+    = render 'search/results'

@@ -43,7 +43,6 @@
 - dependency_firewall
 - dependency_management
 - dependency_proxy
-- dependency_scanning
 - deployment_management
 - design_management
 - design_system
@@ -80,7 +79,6 @@
 - interactive_application_security_testing
 - internationalization
 - kubernetes_management
-- license_compliance
 - logging
 - merge_trains
 - metrics
@@ -123,6 +121,7 @@
 - service_desk
 - service_ping
 - sm_provisioning
+- software_composition_analysis
 - source_code_management
 - static_application_security_testing
 - subgroups

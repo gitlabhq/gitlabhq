@@ -158,8 +158,8 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :kubernetes_manageme
         send_request(params: { agent_id: agent.id, agent_config: config })
 
         expect(response).to have_gitlab_http_status(:no_content)
-        expect(agent.authorized_groups).to contain_exactly(group)
-        expect(agent.authorized_projects).to contain_exactly(project)
+        expect(agent.ci_access_authorized_groups).to contain_exactly(group)
+        expect(agent.ci_access_authorized_projects).to contain_exactly(project)
       end
     end
 

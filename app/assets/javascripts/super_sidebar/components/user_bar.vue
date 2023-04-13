@@ -137,7 +137,7 @@ export default {
     <div class="gl-display-flex gl-justify-content-space-between gl-px-3 gl-py-2 gl-gap-2">
       <counter
         v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.issues"
-        class="gl-flex-basis-third"
+        class="gl-flex-basis-third dashboard-shortcuts-issues"
         icon="issues"
         :count="sidebarData.assigned_open_issues_count"
         :href="sidebarData.issues_dashboard_path"
@@ -165,7 +165,7 @@ export default {
       </merge-request-menu>
       <counter
         v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.todoList"
-        class="gl-flex-basis-third"
+        class="gl-flex-basis-third shortcuts-todos"
         icon="todo-done"
         :count="sidebarData.todos_pending_count"
         href="/dashboard/todos"

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Note do
+RSpec.describe Note, feature_category: :team_planning do
   include RepoHelpers
 
   describe 'associations' do
@@ -799,20 +799,22 @@ RSpec.describe Note do
 
   describe '#system_note_with_references?' do
     it 'falsey for user-generated notes' do
-      note = create(:note, system: false)
+      note = build_stubbed(:note, system: false)
 
       expect(note.system_note_with_references?).to be_falsy
     end
 
     context 'when the note might contain cross references' do
       SystemNoteMetadata.new.cross_reference_types.each do |type|
-        let(:note) { create(:note, :system) }
-        let!(:metadata) { create(:system_note_metadata, note: note, action: type) }
+        context "with #{type}" do
+          let(:note) { build_stubbed(:note, :system) }
+          let!(:metadata) { build_stubbed(:system_note_metadata, note: note, action: type) }
 
-        it 'delegates to the cross-reference regex' do
-          expect(note).to receive(:matches_cross_reference_regex?).and_return(false)
+          it 'delegates to the cross-reference regex' do
+            expect(note).to receive(:matches_cross_reference_regex?).and_return(false)
 
-          note.system_note_with_references?
+            note.system_note_with_references?
+          end
         end
       end
     end

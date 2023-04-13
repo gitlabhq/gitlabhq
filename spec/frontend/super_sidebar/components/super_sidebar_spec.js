@@ -67,7 +67,19 @@ describe('SuperSidebar component', () => {
     });
 
     it("does not call the context switcher's focusInput method initially", () => {
+      createWrapper();
+
       expect(focusInputMock).not.toHaveBeenCalled();
+    });
+
+    it('renders hidden shortcut links', () => {
+      createWrapper();
+      const [linkAttrs] = sidebarData.shortcut_links;
+      const link = wrapper.find(`.${linkAttrs.css_class}`);
+
+      expect(link.exists()).toBe(true);
+      expect(link.attributes('href')).toBe(linkAttrs.href);
+      expect(link.attributes('class')).toContain('gl-display-none');
     });
   });
 

@@ -19,11 +19,14 @@ describe('GroupsList component', () => {
 
   const itRendersViewAllItem = () => {
     it('renders the "View all..." item', () => {
-      expect(findViewAllLink().props('item')).toEqual({
+      const link = findViewAllLink();
+
+      expect(link.props('item')).toEqual({
         icon: 'group',
         link: viewAllLink,
         title: s__('Navigation|View all your groups'),
       });
+      expect(link.props('linkClasses')).toEqual({ 'dashboard-shortcuts-groups': true });
     });
   };
 

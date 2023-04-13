@@ -266,14 +266,14 @@ module API
           persisted_environment = current_authenticated_job.actual_persisted_environment
           environment = { tier: persisted_environment.tier, slug: persisted_environment.slug } if persisted_environment
 
-          agent_authorizations = ::Clusters::Agents::FilterAuthorizationsService.new(
-            ::Clusters::AgentAuthorizationsFinder.new(project).execute,
+          agent_authorizations = ::Clusters::Agents::Authorizations::CiAccess::FilterService.new(
+            ::Clusters::Agents::Authorizations::CiAccess::Finder.new(project).execute,
             environment: persisted_environment&.name
           ).execute
 
           # See https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kubernetes_ci_access.md#apiv4joballowed_agents-api
           {
-            allowed_agents: Entities::Clusters::AgentAuthorization.represent(agent_authorizations),
+            allowed_agents: Entities::Clusters::Agents::Authorizations::CiAccess.represent(agent_authorizations),
             job: { id: current_authenticated_job.id },
             pipeline: { id: pipeline.id },
             project: { id: project.id, groups: project_groups },

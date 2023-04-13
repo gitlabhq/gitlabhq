@@ -146,7 +146,7 @@ export default {
     <component
       :is="elem"
       v-bind="linkProps"
-      class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-px-0 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-text-decoration-none!"
+      class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-0 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none!"
       :class="computedLinkClasses"
       data-qa-selector="nav_item_link"
       data-testid="nav-item-link"

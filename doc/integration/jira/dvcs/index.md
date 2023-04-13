@@ -149,8 +149,8 @@ For more information, see [Install the GitLab for Jira Cloud app](../connect-app
 
 ### Feature comparison of DVCS and GitLab for Jira Cloud app
 
-| Feature            | DVCS (Jira Cloud)  | GitLab for Jira Cloud app             |
-|--------------------|--------------------|---------------------------------------|
+| Feature            | DVCS                   | GitLab for Jira Cloud app |
+|--------------------|------------------------|---------------------------|
 | Smart Commits      | **{check-circle}** Yes | **{check-circle}** Yes |
 | Sync MRs           | **{check-circle}** Yes | **{check-circle}** Yes |
 | Sync branches      | **{check-circle}** Yes | **{check-circle}** Yes |

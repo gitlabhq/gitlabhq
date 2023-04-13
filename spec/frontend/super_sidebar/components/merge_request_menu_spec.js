@@ -38,6 +38,7 @@ describe('MergeRequestMenu component', () => {
       expect(link.attributes('data-track-action')).toBe(extraAttrs['data-track-action']);
       expect(link.attributes('data-track-label')).toBe(extraAttrs['data-track-label']);
       expect(link.attributes('data-track-property')).toBe(extraAttrs['data-track-property']);
+      expect(link.attributes('class')).toContain(extraAttrs.class);
     });
 
     it('renders item count string in badge', () => {

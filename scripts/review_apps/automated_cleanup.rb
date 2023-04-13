@@ -183,12 +183,6 @@ module ReviewApps
       kubernetes.cleanup_namespaces_by_created_at(created_before: threshold_time(days: days)) unless dry_run
     end
 
-    def perform_stale_pvc_cleanup!(days:)
-      puts "Dry-run mode." if dry_run
-
-      kubernetes.cleanup_pvcs_by_created_at(created_before: threshold_time(days: days)) unless dry_run
-    end
-
     private
 
     attr_reader :api_endpoint, :dry_run, :gitlab_token, :project_path
@@ -321,11 +315,5 @@ if $PROGRAM_NAME == __FILE__
 
   timed('Stale Namespace cleanup') do
     automated_cleanup.perform_stale_namespace_cleanup!(days: 3)
-  end
-
-  puts
-
-  timed('Stale PVC cleanup') do
-    automated_cleanup.perform_stale_pvc_cleanup!(days: 30)
   end
 end

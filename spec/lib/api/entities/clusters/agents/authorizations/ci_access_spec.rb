@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::Clusters::AgentAuthorization do
+RSpec.describe API::Entities::Clusters::Agents::Authorizations::CiAccess, feature_category: :kubernetes_management do
   subject { described_class.new(authorization).as_json }
 
   shared_examples 'generic authorization' do
@@ -16,20 +16,20 @@ RSpec.describe API::Entities::Clusters::AgentAuthorization do
   end
 
   context 'project authorization' do
-    let(:authorization) { create(:agent_project_authorization) }
+    let(:authorization) { create(:agent_ci_access_project_authorization) }
 
     include_examples 'generic authorization'
   end
 
   context 'group authorization' do
-    let(:authorization) { create(:agent_group_authorization) }
+    let(:authorization) { create(:agent_ci_access_group_authorization) }
 
     include_examples 'generic authorization'
   end
 
   context 'implicit authorization' do
     let(:agent) { create(:cluster_agent) }
-    let(:authorization) { Clusters::Agents::ImplicitAuthorization.new(agent: agent) }
+    let(:authorization) { Clusters::Agents::Authorizations::CiAccess::ImplicitAuthorization.new(agent: agent) }
 
     include_examples 'generic authorization'
   end

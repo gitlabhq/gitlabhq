@@ -36,11 +36,14 @@ export default {
     storageKey() {
       return `${this.username}/frequent-groups`;
     },
-    viewAllItem() {
+    viewAllProps() {
       return {
-        link: this.viewAllLink,
-        title: s__('Navigation|View all your groups'),
-        icon: 'group',
+        item: {
+          link: this.viewAllLink,
+          title: s__('Navigation|View all your groups'),
+          icon: 'group',
+        },
+        linkClasses: { 'dashboard-shortcuts-groups': true },
       };
     },
   },
@@ -61,7 +64,7 @@ export default {
     :search-results="searchResults"
   >
     <template #view-all-items>
-      <nav-item :item="viewAllItem" />
+      <nav-item v-bind="viewAllProps" />
     </template>
   </search-results>
   <frequent-items-list
@@ -72,7 +75,7 @@ export default {
     :pristine-text="$options.i18n.pristineText"
   >
     <template #view-all-items>
-      <nav-item :item="viewAllItem" />
+      <nav-item v-bind="viewAllProps" />
     </template>
   </frequent-items-list>
 </template>

@@ -324,30 +324,28 @@ GitLab generates audit events when a cluster agent token is created or revoked.
 
 ### Instance events **(PREMIUM SELF)**
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16826) in GitLab 13.5, audit events for failed second-factor authentication attempt.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276250) in GitLab 13.6, audit events for when a user is approved using the Admin Area.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276921) in GitLab 13.6, audit events for when a user's personal access token is successfully or unsuccessfully created or revoked.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/298783) in GitLab 13.9, audit events for when a user requests access to an instance or is rejected using the Admin Area.
+
 The following user actions on a GitLab instance generate instance audit events:
 
-- Sign-in events and the authentication type (such as standard, LDAP, or OmniAuth)
-- Failed sign-ins
-- Added SSH key
-- Added or removed email
-- Changed password
-- Ask for password reset
-- Grant OAuth access
-- Started or stopped user impersonation
-- Changed username. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7797) in GitLab 12.8.
-- User was deleted. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/251) in GitLab 12.8.
-- User was added. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/251) in GitLab 12.8.
-- User requests access to an instance. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/298783) in GitLab 13.9.
-- User was approved using the Admin Area. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276250) in GitLab 13.6.
-- User was rejected using the Admin Area. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/298783) in GitLab 13.9.
-- User was blocked using the Admin Area. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/251) in GitLab 12.8.
-- User was blocked using the API. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25872) in GitLab 12.9.
-- Failed second-factor authentication attempt. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16826) in
-  GitLab 13.5.
-- A user's personal access token was successfully created or revoked.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276921) in GitLab 13.6.
-- A failed attempt to create or revoke a user's personal access token.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276921) in GitLab 13.6.
+- Sign-in events and the authentication type such as standard, LDAP, or OmniAuth.
+- Failed sign-ins.
+- Added SSH key.
+- Added or removed email.
+- Changed password.
+- Ask for password reset.
+- Grant OAuth access.
+- Started or stopped user impersonation.
+- Changed username.
+- User was added or deleted.
+- User requests access to an instance.
+- User was approved, rejected, or blocked using the Admin Area.
+- User was blocked using the API.
+- Failed second-factor authentication attempt.
+- A user's personal access token was successfully or unsuccessfully created or revoked.
 - Administrator added or removed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323905) in GitLab 14.1.
 - Removed SSH key. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220127) in GitLab 14.1.
 - Added or removed GPG key. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220127) in GitLab 14.1.

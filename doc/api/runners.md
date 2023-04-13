@@ -774,7 +774,7 @@ Example response:
 }
 ```
 
-## Reset instance's runner registration token
+## Reset instance's runner registration token (deprecated)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104691) in GitLab 15.7.
@@ -793,7 +793,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/runners/reset_registration_token"
 ```
 
-## Reset project's runner registration token
+## Reset project's runner registration token (deprecated)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104691) in GitLab 15.7.
@@ -812,7 +812,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/9/runners/reset_registration_token"
 ```
 
-## Reset group's runner registration token
+## Reset group's runner registration token (deprecated)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104691) in GitLab 15.7.

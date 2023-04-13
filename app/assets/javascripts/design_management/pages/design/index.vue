@@ -332,7 +332,7 @@ export default {
 
 <template>
   <div
-    class="design-detail js-design-detail fixed-top gl-w-full gl-bottom-0 gl-display-flex gl-justify-content-center gl-flex-direction-column gl-lg-flex-direction-row"
+    class="design-detail js-design-detail fixed-top gl-w-full gl-display-flex gl-justify-content-center gl-flex-direction-column gl-lg-flex-direction-row"
   >
     <div
       class="gl-display-flex gl-overflow-hidden gl-flex-grow-1 gl-flex-direction-column gl-relative"

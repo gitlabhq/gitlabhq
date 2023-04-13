@@ -12,11 +12,11 @@ module Clusters
 
     has_many :agent_tokens, -> { order_last_used_at_desc }, class_name: 'Clusters::AgentToken', inverse_of: :agent
 
-    has_many :group_authorizations, class_name: 'Clusters::Agents::GroupAuthorization'
-    has_many :authorized_groups, class_name: '::Group', through: :group_authorizations, source: :group
+    has_many :ci_access_group_authorizations, class_name: 'Clusters::Agents::Authorizations::CiAccess::GroupAuthorization'
+    has_many :ci_access_authorized_groups, class_name: '::Group', through: :ci_access_group_authorizations, source: :group
 
-    has_many :project_authorizations, class_name: 'Clusters::Agents::ProjectAuthorization'
-    has_many :authorized_projects, class_name: '::Project', through: :project_authorizations, source: :project
+    has_many :ci_access_project_authorizations, class_name: 'Clusters::Agents::Authorizations::CiAccess::ProjectAuthorization'
+    has_many :ci_access_authorized_projects, class_name: '::Project', through: :ci_access_project_authorizations, source: :project
 
     has_many :activity_events, -> { in_timeline_order }, class_name: 'Clusters::Agents::ActivityEvent', inverse_of: :agent
 

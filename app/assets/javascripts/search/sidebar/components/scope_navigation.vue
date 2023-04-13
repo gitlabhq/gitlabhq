@@ -22,7 +22,9 @@ export default {
     ...mapState(['navigation', 'urlQuery']),
   },
   created() {
-    this.fetchSidebarCount();
+    if (this.urlQuery?.search) {
+      this.fetchSidebarCount();
+    }
   },
   methods: {
     ...mapActions(['fetchSidebarCount']),

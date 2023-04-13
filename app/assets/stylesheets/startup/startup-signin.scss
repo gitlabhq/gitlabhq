@@ -769,6 +769,9 @@ svg {
   fill: currentColor;
 }
 
+.fixed-top {
+  top: calc(var(--system-header-height) + var(--performance-bar-height));
+}
 .gl-display-flex {
   display: flex;
 }

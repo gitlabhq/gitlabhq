@@ -25,7 +25,9 @@ jest.mock('~/super_sidebar/utils', () => ({
 }));
 const focusInputMock = jest.fn();
 
-const persistentLinks = [{ title: 'Explore', link: '/explore', icon: 'compass' }];
+const persistentLinks = [
+  { title: 'Explore', link: '/explore', icon: 'compass', link_classes: 'persistent-link-class' },
+];
 const username = 'root';
 const projectsPath = 'projectsPath';
 const groupsPath = 'groupsPath';
@@ -94,8 +96,13 @@ describe('ContextSwitcher component', () => {
 
     it('renders the persistent links', () => {
       const navItems = findNavItems();
+      const firstNavItem = navItems.at(0);
+
       expect(navItems.length).toBe(persistentLinks.length);
-      expect(navItems.at(0).props('item')).toBe(persistentLinks[0]);
+      expect(firstNavItem.props('item')).toBe(persistentLinks[0]);
+      expect(firstNavItem.props('linkClasses')).toEqual({
+        [persistentLinks[0].link_classes]: persistentLinks[0].link_classes,
+      });
     });
 
     it('passes the placeholder to the search box', () => {

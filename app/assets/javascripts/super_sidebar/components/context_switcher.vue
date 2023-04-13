@@ -150,7 +150,12 @@ export default {
             {{ $options.i18n.switchTo }}
           </div>
           <ul :aria-label="$options.i18n.switchTo" class="gl-p-0">
-            <nav-item v-for="item in persistentLinks" :key="item.link" :item="item" />
+            <nav-item
+              v-for="item in persistentLinks"
+              :key="item.link"
+              :item="item"
+              :link-classes="{ [item.link_classes]: item.link_classes }"
+            />
           </ul>
         </li>
         <projects-list

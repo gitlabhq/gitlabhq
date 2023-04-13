@@ -89,7 +89,8 @@ module SidebarsHelper
       panel_type: panel_type,
       update_pins_url: pins_url,
       is_impersonating: impersonating?,
-      stop_impersonation_path: admin_impersonation_path
+      stop_impersonation_path: admin_impersonation_path,
+      shortcut_links: shortcut_links
     }
   end
 
@@ -180,7 +181,8 @@ module SidebarsHelper
             extraAttrs: {
               'data-track-action': 'click_link',
               'data-track-label': 'merge_requests_assigned',
-              'data-track-property': 'nav_core_menu'
+              'data-track-property': 'nav_core_menu',
+              class: 'dashboard-shortcuts-merge_requests'
             }
           },
           {
@@ -190,7 +192,8 @@ module SidebarsHelper
             extraAttrs: {
               'data-track-action': 'click_link',
               'data-track-label': 'merge_requests_to_review',
-              'data-track-property': 'nav_core_menu'
+              'data-track-property': 'nav_core_menu',
+              class: 'dashboard-shortcuts-review_requests'
             }
           }
         ]
@@ -333,6 +336,26 @@ module SidebarsHelper
 
   def impersonating?
     !!session[:impersonator_id]
+  end
+
+  def shortcut_links
+    [
+      {
+        title: _('Milestones'),
+        href: dashboard_milestones_path,
+        css_class: 'dashboard-shortcuts-milestones'
+      },
+      {
+        title: _('Snippets'),
+        href: dashboard_snippets_path,
+        css_class: 'dashboard-shortcuts-snippets'
+      },
+      {
+        title: _('Activity'),
+        href: activity_dashboard_path,
+        css_class: 'dashboard-shortcuts-activity'
+      }
+    ]
   end
 end
 

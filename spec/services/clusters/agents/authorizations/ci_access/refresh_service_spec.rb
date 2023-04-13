@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Agents::RefreshAuthorizationService, feature_category: :kubernetes_management do
+RSpec.describe Clusters::Agents::Authorizations::CiAccess::RefreshService, feature_category: :kubernetes_management do
   describe '#execute' do
     let_it_be(:root_ancestor) { create(:group) }
 
@@ -39,11 +39,11 @@ RSpec.describe Clusters::Agents::RefreshAuthorizationService, feature_category: 
     before do
       default_config = { default_namespace: 'default' }
 
-      agent.group_authorizations.create!(group: removed_group, config: default_config)
-      agent.group_authorizations.create!(group: modified_group, config: default_config)
+      agent.ci_access_group_authorizations.create!(group: removed_group, config: default_config)
+      agent.ci_access_group_authorizations.create!(group: modified_group, config: default_config)
 
-      agent.project_authorizations.create!(project: removed_project, config: default_config)
-      agent.project_authorizations.create!(project: modified_project, config: default_config)
+      agent.ci_access_project_authorizations.create!(project: removed_project, config: default_config)
+      agent.ci_access_project_authorizations.create!(project: modified_project, config: default_config)
     end
 
     shared_examples 'removing authorization' do
@@ -78,12 +78,12 @@ RSpec.describe Clusters::Agents::RefreshAuthorizationService, feature_category: 
     describe 'group authorization' do
       it 'refreshes authorizations for the agent' do
         expect(subject).to be_truthy
-        expect(agent.authorized_groups).to contain_exactly(added_group, modified_group)
+        expect(agent.ci_access_authorized_groups).to contain_exactly(added_group, modified_group)
 
-        added_authorization = agent.group_authorizations.find_by(group: added_group)
+        added_authorization = agent.ci_access_group_authorizations.find_by(group: added_group)
         expect(added_authorization.config).to eq({ 'default_namespace' => 'default' })
 
-        modified_authorization = agent.group_authorizations.find_by(group: modified_group)
+        modified_authorization = agent.ci_access_group_authorizations.find_by(group: modified_group)
         expect(modified_authorization.config).to eq({ 'default_namespace' => 'new-namespace' })
       end
 
@@ -94,24 +94,24 @@ RSpec.describe Clusters::Agents::RefreshAuthorizationService, feature_category: 
 
         it 'authorizes groups up to the limit' do
           expect(subject).to be_truthy
-          expect(agent.authorized_groups).to contain_exactly(added_group)
+          expect(agent.ci_access_authorized_groups).to contain_exactly(added_group)
         end
       end
 
       include_examples 'removing authorization' do
-        let(:authorizations) { agent.authorized_groups }
+        let(:authorizations) { agent.ci_access_authorized_groups }
       end
     end
 
     describe 'project authorization' do
       it 'refreshes authorizations for the agent' do
         expect(subject).to be_truthy
-        expect(agent.authorized_projects).to contain_exactly(added_project, modified_project)
+        expect(agent.ci_access_authorized_projects).to contain_exactly(added_project, modified_project)
 
-        added_authorization = agent.project_authorizations.find_by(project: added_project)
+        added_authorization = agent.ci_access_project_authorizations.find_by(project: added_project)
         expect(added_authorization.config).to eq({ 'default_namespace' => 'default' })
 
-        modified_authorization = agent.project_authorizations.find_by(project: modified_project)
+        modified_authorization = agent.ci_access_project_authorizations.find_by(project: modified_project)
         expect(modified_authorization.config).to eq({ 'default_namespace' => 'new-namespace' })
       end
 
@@ -121,7 +121,7 @@ RSpec.describe Clusters::Agents::RefreshAuthorizationService, feature_category: 
 
         it 'creates an authorization record for the project' do
           expect(subject).to be_truthy
-          expect(agent.authorized_projects).to contain_exactly(added_project)
+          expect(agent.ci_access_authorized_projects).to contain_exactly(added_project)
         end
       end
 
@@ -131,7 +131,7 @@ RSpec.describe Clusters::Agents::RefreshAuthorizationService, feature_category: 
 
         it 'creates an authorization record for the project' do
           expect(subject).to be_truthy
-          expect(agent.authorized_projects).to contain_exactly(added_project)
+          expect(agent.ci_access_authorized_projects).to contain_exactly(added_project)
         end
       end
 
@@ -142,12 +142,12 @@ RSpec.describe Clusters::Agents::RefreshAuthorizationService, feature_category: 
 
         it 'authorizes projects up to the limit' do
           expect(subject).to be_truthy
-          expect(agent.authorized_projects).to contain_exactly(added_project)
+          expect(agent.ci_access_authorized_projects).to contain_exactly(added_project)
         end
       end
 
       include_examples 'removing authorization' do
-        let(:authorizations) { agent.authorized_projects }
+        let(:authorizations) { agent.ci_access_authorized_projects }
       end
     end
   end

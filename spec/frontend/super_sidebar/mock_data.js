@@ -53,6 +53,7 @@ export const mergeRequestMenuGroup = [
           'data-track-action': 'click_link',
           'data-track-label': 'merge_requests_assigned',
           'data-track-property': 'nav_core_menu',
+          class: 'dashboard-shortcuts-merge_requests',
         },
       },
       {
@@ -63,6 +64,7 @@ export const mergeRequestMenuGroup = [
           'data-track-action': 'click_link',
           'data-track-label': 'merge_requests_to_review',
           'data-track-property': 'nav_core_menu',
+          class: 'dashboard-shortcuts-review_requests',
         },
       },
     ],
@@ -104,6 +106,13 @@ export const sidebarData = {
   panel_type: 'your_work',
   update_pins_url: 'path/to/pins',
   stop_impersonation_path: '/admin/impersonation',
+  shortcut_links: [
+    {
+      title: 'Shortcut link',
+      href: '/shortcut-link',
+      css_class: 'shortcut-link-class',
+    },
+  ],
 };
 
 export const userMenuMockStatus = {

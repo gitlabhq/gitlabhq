@@ -36,27 +36,6 @@
   }
 }
 
-// System Header
-.with-system-header {
-  // main navigation
-  // login page
-  .navbar-gitlab,
-  .fixed-top {
-    top: $system-header-height;
-  }
-
-  // Performance Bar
-  // System Header
-  &.with-performance-bar {
-    // main navigation
-    header.navbar-gitlab,
-    .fixed-top {
-      top: $performance-bar-height + $system-header-height;
-    }
-
-  }
-}
-
 // System Footer
 .with-system-footer {
   // navless pages' footer eg: login page

@@ -35,6 +35,9 @@ vulnerability.
 
 ![Dependency scanning Widget](img/dependency_scanning_v13_2.png)
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Dependency Scanning](https://www.youtube.com/watch?v=TBnfbGk4c4o).
+
 ## Dependency Scanning compared to Container Scanning
 
 GitLab offers both Dependency Scanning and Container Scanning

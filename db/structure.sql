@@ -309,15 +309,6 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION trigger_7f4fcd5aa322() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."id_convert_to_bigint" := NEW."id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_909cf0a06094() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -13054,7 +13045,7 @@ CREATE TABLE p_ci_builds_metadata (
     id bigint NOT NULL,
     runtime_runner_features jsonb DEFAULT '{}'::jsonb NOT NULL,
     id_tokens jsonb DEFAULT '{}'::jsonb NOT NULL,
-    partition_id bigint DEFAULT 100 NOT NULL,
+    partition_id bigint NOT NULL,
     debug_trace_enabled boolean DEFAULT false NOT NULL
 )
 PARTITION BY LIST (partition_id);
@@ -13083,7 +13074,7 @@ CREATE TABLE ci_builds_metadata (
     id bigint DEFAULT nextval('ci_builds_metadata_id_seq'::regclass) NOT NULL,
     runtime_runner_features jsonb DEFAULT '{}'::jsonb NOT NULL,
     id_tokens jsonb DEFAULT '{}'::jsonb NOT NULL,
-    partition_id bigint DEFAULT 100 NOT NULL,
+    partition_id bigint NOT NULL,
     debug_trace_enabled boolean DEFAULT false NOT NULL
 );
 ALTER TABLE ONLY p_ci_builds_metadata ATTACH PARTITION ci_builds_metadata FOR VALUES IN ('100');
@@ -22292,7 +22283,6 @@ CREATE SEQUENCE self_managed_prometheus_alert_events_id_seq
 ALTER SEQUENCE self_managed_prometheus_alert_events_id_seq OWNED BY self_managed_prometheus_alert_events.id;
 
 CREATE TABLE sent_notifications (
-    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     project_id integer,
     noteable_id integer,
     noteable_type character varying,
@@ -34226,8 +34216,6 @@ CREATE TRIGGER trigger_428d92773fe7 BEFORE INSERT OR UPDATE ON timelogs FOR EACH
 CREATE TRIGGER trigger_482bac5ec48a BEFORE INSERT OR UPDATE ON system_note_metadata FOR EACH ROW EXECUTE FUNCTION trigger_482bac5ec48a();
 
 CREATE TRIGGER trigger_775287b6d67a BEFORE INSERT OR UPDATE ON note_diff_files FOR EACH ROW EXECUTE FUNCTION trigger_775287b6d67a();
-
-CREATE TRIGGER trigger_7f4fcd5aa322 BEFORE INSERT OR UPDATE ON sent_notifications FOR EACH ROW EXECUTE FUNCTION trigger_7f4fcd5aa322();
 
 CREATE TRIGGER trigger_909cf0a06094 BEFORE INSERT OR UPDATE ON award_emoji FOR EACH ROW EXECUTE FUNCTION trigger_909cf0a06094();
 

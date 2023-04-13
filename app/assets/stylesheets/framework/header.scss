@@ -8,7 +8,7 @@ $search-input-field-x-min-width: 200px;
   min-height: $header-height;
   border: 0;
   position: fixed;
-  top: 0;
+  top: $calc-application-bars-height;
   left: 0;
   right: 0;
   border-radius: 0;
@@ -477,11 +477,6 @@ $search-input-field-x-min-width: 200px;
 
 .with-notifications .notification-dot {
   visibility: visible;
-}
-
-.with-performance-bar .navbar-gitlab,
-.with-performance-bar .fixed-top {
-  top: $performance-bar-height;
 }
 
 .navbar-empty {

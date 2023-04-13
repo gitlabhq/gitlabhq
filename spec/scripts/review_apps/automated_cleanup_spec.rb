@@ -30,7 +30,6 @@ RSpec.describe ReviewApps::AutomatedCleanup, feature_category: :tooling do
     allow(Tooling::Helm3Client).to receive(:new).and_return(helm_client)
     allow(Tooling::KubernetesClient).to receive(:new).and_return(kubernetes_client)
 
-    allow(kubernetes_client).to receive(:cleanup_pvcs_by_created_at)
     allow(kubernetes_client).to receive(:cleanup_namespaces_by_created_at)
   end
 
@@ -120,28 +119,6 @@ RSpec.describe ReviewApps::AutomatedCleanup, feature_category: :tooling do
         it 'returns the correct dry_run value' do
           expect(subject).to eq(dry_run: true)
         end
-      end
-    end
-  end
-
-  describe '#perform_stale_pvc_cleanup!' do
-    subject { instance.perform_stale_pvc_cleanup!(days: days) }
-
-    let(:days) { 2 }
-
-    it_behaves_like 'the days argument is an integer in the correct range'
-
-    it 'performs Kubernetes cleanup by created at' do
-      expect(kubernetes_client).to receive(:cleanup_pvcs_by_created_at).with(created_before: two_days_ago)
-
-      subject
-    end
-
-    context 'when the dry-run flag is true' do
-      let(:dry_run) { true }
-
-      it 'does not delete anything' do
-        expect(kubernetes_client).not_to receive(:cleanup_pvcs_by_created_at)
       end
     end
   end

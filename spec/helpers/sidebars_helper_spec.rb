@@ -139,7 +139,24 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         },
         pinned_items: %w[foo bar],
         panel_type: panel_type,
-        update_pins_url: pins_url
+        update_pins_url: pins_url,
+        shortcut_links: [
+          {
+            title: _('Milestones'),
+            href: dashboard_milestones_path,
+            css_class: 'dashboard-shortcuts-milestones'
+          },
+          {
+            title: _('Snippets'),
+            href: dashboard_snippets_path,
+            css_class: 'dashboard-shortcuts-snippets'
+          },
+          {
+            title: _('Activity'),
+            href: activity_dashboard_path,
+            css_class: 'dashboard-shortcuts-activity'
+          }
+        ]
       })
     end
 
@@ -155,7 +172,8 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
               extraAttrs: {
                 'data-track-action': 'click_link',
                 'data-track-label': 'merge_requests_assigned',
-                'data-track-property': 'nav_core_menu'
+                'data-track-property': 'nav_core_menu',
+                class: 'dashboard-shortcuts-merge_requests'
               }
             },
             {
@@ -165,7 +183,8 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
               extraAttrs: {
                 'data-track-action': 'click_link',
                 'data-track-label': 'merge_requests_to_review',
-                'data-track-property': 'nav_core_menu'
+                'data-track-property': 'nav_core_menu',
+                class: 'dashboard-shortcuts-review_requests'
               }
             }
           ]

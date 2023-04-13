@@ -129,7 +129,7 @@ module API
           post '/', feature_category: :kubernetes_management, urgency: :low do
             agent = ::Clusters::Agent.find(params[:agent_id])
 
-            ::Clusters::Agents::RefreshAuthorizationService.new(agent, config: params[:agent_config]).execute
+            ::Clusters::Agents::Authorizations::CiAccess::RefreshService.new(agent, config: params[:agent_config]).execute
 
             no_content!
           end

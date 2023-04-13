@@ -1,7 +1,7 @@
 ---
 table_name: agent_project_authorizations
 classes:
-- Clusters::Agents::ProjectAuthorization
+- Clusters::Agents::Authorizations::CiAccess::ProjectAuthorization
 feature_categories:
 - kubernetes_management
 description: Configuration for a project that is authorized to use a particular cluster agent

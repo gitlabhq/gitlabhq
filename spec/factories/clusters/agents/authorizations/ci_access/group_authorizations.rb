@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :agent_project_authorization, class: 'Clusters::Agents::ProjectAuthorization' do
+  factory :agent_ci_access_group_authorization, class: 'Clusters::Agents::Authorizations::CiAccess::GroupAuthorization' do
     association :agent, factory: :cluster_agent
-    project
+    group
 
     transient do
       environments { nil }

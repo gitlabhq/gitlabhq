@@ -1,7 +1,7 @@
 ---
 table_name: agent_group_authorizations
 classes:
-- Clusters::Agents::GroupAuthorization
+- Clusters::Agents::Authorizations::CiAccess::GroupAuthorization
 feature_categories:
 - kubernetes_management
 description: Configuration for a group that is authorized to use a particular cluster agent

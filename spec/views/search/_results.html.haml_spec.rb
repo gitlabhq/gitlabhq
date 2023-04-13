@@ -97,12 +97,6 @@ RSpec.describe 'search/_results', feature_category: :global_search do
             expect(rendered).not_to have_selector('[data-track-property=search_result]')
           end
         end
-
-        it 'does render the sidebar' do
-          render
-
-          expect(rendered).to have_selector('#js-search-sidebar')
-        end
       end
     end
 

@@ -12,7 +12,7 @@ import { queryToObject, setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import KeysetPagination from '~/vue_shared/components/incubation/pagination.vue';
 import IncubationAlert from '~/vue_shared/components/incubation/incubation_alert.vue';
-import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
+import ExperimentHeader from './components/experiment_header.vue';
 import {
   LIST_KEY_CREATED_AT,
   BASE_SORT_FIELDS,
@@ -31,7 +31,7 @@ export default {
     IncubationAlert,
     RegistrySearch,
     KeysetPagination,
-    DeleteButton,
+    ExperimentHeader,
   },
   props: {
     experiment: {
@@ -130,6 +130,14 @@ export default {
     hasItems() {
       return this.candidates.length > 0;
     },
+    deleteButtonInfo() {
+      return {
+        deletePath: this.experiment.path,
+        deleteConfirmationText: translations.DELETE_EXPERIMENT_CONFIRMATION_MESSAGE,
+        actionPrimaryText: translations.DELETE_EXPERIMENT_PRIMARY_ACTION_LABEL,
+        modalTitle: translations.DELETE_EXPERIMENT_MODAL_TITLE,
+      };
+    },
   },
   methods: {
     submitFilters() {
@@ -163,20 +171,7 @@ export default {
       :link-to-feedback-issue="$options.constants.FEATURE_FEEDBACK_ISSUE"
     />
 
-    <div class="detail-page-header gl-flex-wrap-wrap">
-      <div class="detail-page-header-body">
-        <h1 class="page-title gl-font-size-h-display flex-fill">
-          {{ experiment.name }}
-        </h1>
-
-        <delete-button
-          :delete-path="experiment.path"
-          :delete-confirmation-text="$options.i18n.DELETE_EXPERIMENT_CONFIRMATION_MESSAGE"
-          :action-primary-text="$options.i18n.DELETE_EXPERIMENT_PRIMARY_ACTION_LABEL"
-          :modal-title="$options.i18n.DELETE_EXPERIMENT_MODAL_TITLE"
-        />
-      </div>
-    </div>
+    <experiment-header :title="experiment.name" :delete-info="deleteButtonInfo" />
 
     <registry-search
       :filters="filters"

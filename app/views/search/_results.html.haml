@@ -1,9 +1,5 @@
-- search_bar_classes = 'search-sidebar gl-display-flex gl-flex-direction-column gl-mr-4'
-
 = render_if_exists 'shared/promotions/promote_advanced_search'
 
-.results.gl-md-display-flex.gl-mt-0
-  #js-search-sidebar{ class: search_bar_classes, data: { navigation_json: search_navigation_json } }
-  .gl-w-full.gl-flex-grow-1.gl-overflow-x-hidden
-    = render partial: 'search/results_status' if @search_objects.present?
-    = render partial: 'search/results_list'
+.gl-w-full.gl-flex-grow-1.gl-overflow-x-hidden
+  = render partial: 'search/results_status' unless @search_objects.to_a.empty?
+  = render partial: 'search/results_list'

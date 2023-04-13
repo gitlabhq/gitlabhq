@@ -54,7 +54,7 @@ Style/PercentLiteralDelimiters:
     - 'app/models/ci/pipeline.rb'
     - 'app/models/clusters/platforms/kubernetes.rb'
     - 'app/models/commit.rb'
-    - 'app/models/concerns/clusters/agents/authorization_config_scopes.rb'
+    - 'app/models/concerns/clusters/agents/authorizations/ci_access/config_scopes.rb'
     - 'app/models/concerns/diff_positionable_note.rb'
     - 'app/models/concerns/enums/prometheus_metric.rb'
     - 'app/models/concerns/issuable.rb'

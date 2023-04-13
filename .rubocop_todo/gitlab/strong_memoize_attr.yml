@@ -180,7 +180,7 @@ Gitlab/StrongMemoizeAttr:
     - 'app/services/ci/pipelines/hook_service.rb'
     - 'app/services/ci/queue/build_queue_service.rb'
     - 'app/services/ci/update_build_state_service.rb'
-    - 'app/services/clusters/agents/refresh_authorization_service.rb'
+    - 'app/services/clusters/agents/authorizations/ci_access/refresh_service.rb'
     - 'app/services/clusters/integrations/prometheus_health_check_service.rb'
     - 'app/services/concerns/alert_management/alert_processing.rb'
     - 'app/services/concerns/incident_management/settings.rb'

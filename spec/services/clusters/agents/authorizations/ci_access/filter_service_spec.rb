@@ -2,16 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Agents::FilterAuthorizationsService, feature_category: :continuous_integration do
+RSpec.describe Clusters::Agents::Authorizations::CiAccess::FilterService, feature_category: :continuous_integration do
   describe '#execute' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }
 
     let(:agent_authorizations_without_env) do
       [
-        build(:agent_project_authorization, project: project, agent: build(:cluster_agent, project: project)),
-        build(:agent_group_authorization, group: group, agent: build(:cluster_agent, project: project)),
-        ::Clusters::Agents::ImplicitAuthorization.new(agent: build(:cluster_agent, project: project))
+        build(:agent_ci_access_project_authorization, project: project, agent: build(:cluster_agent, project: project)),
+        build(:agent_ci_access_group_authorization, group: group, agent: build(:cluster_agent, project: project)),
+        ::Clusters::Agents::Authorizations::CiAccess::ImplicitAuthorization.new(agent: build(:cluster_agent, project: project))
       ]
     end
 
@@ -31,13 +31,13 @@ RSpec.describe Clusters::Agents::FilterAuthorizationsService, feature_category: 
       let(:agent_authorizations_with_env) do
         [
           build(
-            :agent_project_authorization,
+            :agent_ci_access_project_authorization,
             project: project,
             agent: build(:cluster_agent, project: project),
             environments: ['staging', 'review/*', 'production']
           ),
           build(
-            :agent_group_authorization,
+            :agent_ci_access_group_authorization,
             group: group,
             agent: build(:cluster_agent, project: project),
             environments: ['staging', 'review/*', 'production']
@@ -48,13 +48,13 @@ RSpec.describe Clusters::Agents::FilterAuthorizationsService, feature_category: 
       let(:agent_authorizations_with_different_env) do
         [
           build(
-            :agent_project_authorization,
+            :agent_ci_access_project_authorization,
             project: project,
             agent: build(:cluster_agent, project: project),
             environments: ['staging']
           ),
           build(
-            :agent_group_authorization,
+            :agent_ci_access_group_authorization,
             group: group,
             agent: build(:cluster_agent, project: project),
             environments: ['staging']

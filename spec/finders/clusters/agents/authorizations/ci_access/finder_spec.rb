@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::AgentAuthorizationsFinder do
+RSpec.describe Clusters::Agents::Authorizations::CiAccess::Finder, feature_category: :kubernetes_management do
   describe '#execute' do
     let_it_be(:top_level_group) { create(:group) }
     let_it_be(:subgroup1) { create(:group, parent: top_level_group) }
@@ -54,34 +54,34 @@ RSpec.describe Clusters::AgentAuthorizationsFinder do
         let(:unrelated_agent) { create(:cluster_agent) }
 
         before do
-          create(:agent_project_authorization, agent: unrelated_agent, project: requesting_project)
+          create(:agent_ci_access_project_authorization, agent: unrelated_agent, project: requesting_project)
         end
 
         it { is_expected.to be_empty }
       end
 
       context 'agent configuration project shares a root namespace, but does not belong to an ancestor of the given project' do
-        let!(:project_authorization) { create(:agent_project_authorization, agent: non_ancestor_agent, project: requesting_project) }
+        let!(:project_authorization) { create(:agent_ci_access_project_authorization, agent: non_ancestor_agent, project: requesting_project) }
 
         it { is_expected.to match_array([project_authorization]) }
       end
 
       context 'with project authorizations present' do
-        let!(:authorization) { create(:agent_project_authorization, agent: production_agent, project: requesting_project) }
+        let!(:authorization) { create(:agent_ci_access_project_authorization, agent: production_agent, project: requesting_project) }
 
         it { is_expected.to match_array [authorization] }
       end
 
       context 'with overlapping authorizations' do
         let!(:agent) { create(:cluster_agent, project: requesting_project) }
-        let!(:project_authorization) { create(:agent_project_authorization, agent: agent, project: requesting_project) }
-        let!(:group_authorization) { create(:agent_group_authorization, agent: agent, group: bottom_level_group) }
+        let!(:project_authorization) { create(:agent_ci_access_project_authorization, agent: agent, project: requesting_project) }
+        let!(:group_authorization) { create(:agent_ci_access_group_authorization, agent: agent, group: bottom_level_group) }
 
         it { is_expected.to match_array [project_authorization] }
       end
 
       it_behaves_like 'access_as' do
-        let!(:authorization) { create(:agent_project_authorization, agent: production_agent, project: requesting_project, config: config) }
+        let!(:authorization) { create(:agent_ci_access_project_authorization, agent: production_agent, project: requesting_project, config: config) }
       end
     end
 
@@ -92,7 +92,7 @@ RSpec.describe Clusters::AgentAuthorizationsFinder do
         expect(subject.count).to eq(1)
 
         authorization = subject.first
-        expect(authorization).to be_a(Clusters::Agents::ImplicitAuthorization)
+        expect(authorization).to be_a(Clusters::Agents::Authorizations::CiAccess::ImplicitAuthorization)
         expect(authorization.agent).to eq(associated_agent)
       end
     end
@@ -102,15 +102,15 @@ RSpec.describe Clusters::AgentAuthorizationsFinder do
         let(:unrelated_agent) { create(:cluster_agent) }
 
         before do
-          create(:agent_group_authorization, agent: unrelated_agent, group: top_level_group)
+          create(:agent_ci_access_group_authorization, agent: unrelated_agent, group: top_level_group)
         end
 
         it { is_expected.to be_empty }
       end
 
       context 'multiple agents are authorized for the same group' do
-        let!(:staging_auth) { create(:agent_group_authorization, agent: staging_agent, group: bottom_level_group) }
-        let!(:production_auth) { create(:agent_group_authorization, agent: production_agent, group: bottom_level_group) }
+        let!(:staging_auth) { create(:agent_ci_access_group_authorization, agent: staging_agent, group: bottom_level_group) }
+        let!(:production_auth) { create(:agent_ci_access_group_authorization, agent: production_agent, group: bottom_level_group) }
 
         it 'returns authorizations for all agents' do
           expect(subject).to contain_exactly(staging_auth, production_auth)
@@ -118,8 +118,8 @@ RSpec.describe Clusters::AgentAuthorizationsFinder do
       end
 
       context 'a single agent is authorized to more than one matching group' do
-        let!(:bottom_level_auth) { create(:agent_group_authorization, agent: production_agent, group: bottom_level_group) }
-        let!(:top_level_auth) { create(:agent_group_authorization, agent: production_agent, group: top_level_group) }
+        let!(:bottom_level_auth) { create(:agent_ci_access_group_authorization, agent: production_agent, group: bottom_level_group) }
+        let!(:top_level_auth) { create(:agent_ci_access_group_authorization, agent: production_agent, group: top_level_group) }
 
         it 'picks the authorization for the closest group to the requesting project' do
           expect(subject).to contain_exactly(bottom_level_auth)
@@ -127,13 +127,13 @@ RSpec.describe Clusters::AgentAuthorizationsFinder do
       end
 
       context 'agent configuration project does not belong to an ancestor of the authorized group' do
-        let!(:group_authorization) { create(:agent_group_authorization, agent: non_ancestor_agent, group: bottom_level_group) }
+        let!(:group_authorization) { create(:agent_ci_access_group_authorization, agent: non_ancestor_agent, group: bottom_level_group) }
 
         it { is_expected.to match_array([group_authorization]) }
       end
 
       it_behaves_like 'access_as' do
-        let!(:authorization) { create(:agent_group_authorization, agent: production_agent, group: top_level_group, config: config) }
+        let!(:authorization) { create(:agent_ci_access_group_authorization, agent: production_agent, group: top_level_group, config: config) }
       end
     end
   end

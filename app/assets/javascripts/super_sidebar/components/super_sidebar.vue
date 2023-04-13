@@ -108,5 +108,14 @@ export default {
         </div>
       </div>
     </aside>
+    <a
+      v-for="shortcutLink in sidebarData.shortcut_links"
+      :key="shortcutLink.href"
+      :href="shortcutLink.href"
+      :class="shortcutLink.css_class"
+      class="gl-display-none"
+    >
+      {{ shortcutLink.title }}
+    </a>
   </div>
 </template>

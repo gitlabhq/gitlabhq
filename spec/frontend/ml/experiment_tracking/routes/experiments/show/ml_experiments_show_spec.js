@@ -1,10 +1,10 @@
 import { GlAlert, GlTableLite, GlLink, GlEmptyState } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import MlExperimentsShow from '~/ml/experiment_tracking/routes/experiments/show/ml_experiments_show.vue';
+import ExperimentHeader from '~/ml/experiment_tracking/routes/experiments/show/components/experiment_header.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import Pagination from '~/vue_shared/components/incubation/pagination.vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
 import * as urlHelpers from '~/lib/utils/url_utility';
 import { MOCK_START_CURSOR, MOCK_PAGE_INFO, MOCK_CANDIDATES, MOCK_EXPERIMENT } from './mock_data';
 
@@ -36,7 +36,7 @@ describe('MlExperimentsShow', () => {
   const findTableRows = () => findTable().findAll('tbody > tr');
   const findNthTableRow = (idx) => findTableRows().at(idx);
   const findColumnInRow = (row, col) => findNthTableRow(row).findAll('td').at(col);
-  const findDeleteButton = () => wrapper.findComponent(DeleteButton);
+  const findExperimentHeader = () => wrapper.findComponent(ExperimentHeader);
 
   const hrefInRowAndColumn = (row, col) =>
     findColumnInRow(row, col).findComponent(GlLink).attributes().href;
@@ -60,8 +60,12 @@ describe('MlExperimentsShow', () => {
       expect(findPagination().exists()).toBe(false);
     });
 
-    it('shows delete button', () => {
-      expect(findDeleteButton().exists()).toBe(true);
+    it('shows experiment header', () => {
+      expect(findExperimentHeader().exists()).toBe(true);
+    });
+
+    it('passes the correct title to experiment header', () => {
+      expect(findExperimentHeader().props('title')).toBe(MOCK_EXPERIMENT.name);
     });
 
     it('does not show table', () => {
