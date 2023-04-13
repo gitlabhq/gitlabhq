@@ -50,6 +50,27 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect_successful_response_with_paginated_array
       end
 
+      context 'when merge request is unchecked' do
+        let(:check_service_class) { MergeRequests::MergeabilityCheckService }
+        let(:mr_entity) { json_response.find { |mr| mr['id'] == merge_request.id } }
+        let(:merge_request) { create(:merge_request, :simple, author: user, source_project: project, title: "Test") }
+
+        before do
+          merge_request.mark_as_unchecked!
+        end
+
+        context 'with merge status recheck projection' do
+          it 'does not enqueue a merge status recheck' do
+            expect(check_service_class).not_to receive(:new)
+
+            get(api(endpoint_path), params: { with_merge_status_recheck: true })
+
+            expect_successful_response_with_paginated_array
+            expect(mr_entity['merge_status']).to eq('unchecked')
+          end
+        end
+      end
+
       it_behaves_like 'issuable API rate-limited search' do
         let(:url) { endpoint_path }
         let(:issuable) { merge_request }
@@ -85,28 +106,67 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
           merge_request.mark_as_unchecked!
         end
 
-        context 'with merge status recheck projection' do
-          it 'checks mergeability asynchronously' do
-            expect_next_instances_of(check_service_class, (1..2)) do |service|
-              expect(service).not_to receive(:execute)
-              expect(service).to receive(:async_execute).and_call_original
+        context 'with a developer+ role' do
+          before do
+            project.add_developer(user2)
+          end
+
+          context 'with merge status recheck projection' do
+            it 'checks mergeability asynchronously' do
+              expect_next_instances_of(check_service_class, (1..2)) do |service|
+                expect(service).not_to receive(:execute)
+                expect(service).to receive(:async_execute).and_call_original
+              end
+
+              get(api(endpoint_path, user2), params: { with_merge_status_recheck: true })
+
+              expect_successful_response_with_paginated_array
+              expect(mr_entity['merge_status']).to eq('checking')
             end
+          end
 
-            get(api(endpoint_path, user), params: { with_merge_status_recheck: true })
+          context 'without merge status recheck projection' do
+            it 'does not enqueue a merge status recheck' do
+              expect(check_service_class).not_to receive(:new)
 
-            expect_successful_response_with_paginated_array
-            expect(mr_entity['merge_status']).to eq('checking')
+              get api(endpoint_path, user2)
+
+              expect_successful_response_with_paginated_array
+              expect(mr_entity['merge_status']).to eq('unchecked')
+            end
           end
         end
 
-        context 'without merge status recheck projection' do
-          it 'does not enqueue a merge status recheck' do
-            expect(check_service_class).not_to receive(:new)
+        context 'with a reporter role' do
+          context 'with merge status recheck projection' do
+            it 'does not enqueue a merge status recheck' do
+              expect(check_service_class).not_to receive(:new)
 
-            get api(endpoint_path, user)
+              get(api(endpoint_path, user2), params: { with_merge_status_recheck: true })
 
-            expect_successful_response_with_paginated_array
-            expect(mr_entity['merge_status']).to eq('unchecked')
+              expect_successful_response_with_paginated_array
+              expect(mr_entity['merge_status']).to eq('unchecked')
+            end
+          end
+
+          context 'when restrict_merge_status_recheck FF is disabled' do
+            before do
+              stub_feature_flags(restrict_merge_status_recheck: false)
+            end
+
+            context 'with merge status recheck projection' do
+              it 'does enqueue a merge status recheck' do
+                expect_next_instances_of(check_service_class, (1..2)) do |service|
+                  expect(service).not_to receive(:execute)
+                  expect(service).to receive(:async_execute).and_call_original
+                end
+
+                get(api(endpoint_path, user2), params: { with_merge_status_recheck: true })
+
+                expect_successful_response_with_paginated_array
+                expect(mr_entity['merge_status']).to eq('checking')
+              end
+            end
           end
         end
       end

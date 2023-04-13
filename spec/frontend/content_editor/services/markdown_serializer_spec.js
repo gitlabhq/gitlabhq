@@ -1375,6 +1375,25 @@ paragraph
       .run();
   };
 
+  const editNonInclusiveMarkAction = (initialContent) => {
+    tiptapEditor.commands.setContent(initialContent.toJSON());
+    tiptapEditor.commands.selectTextblockEnd();
+
+    let { from } = tiptapEditor.state.selection;
+    tiptapEditor.commands.setTextSelection({
+      from: from - 1,
+      to: from - 1,
+    });
+
+    const sel = tiptapEditor.state.doc.textBetween(from - 1, from, ' ');
+    tiptapEditor.commands.insertContent(`${sel} modified`);
+
+    tiptapEditor.commands.selectTextblockEnd();
+    from = tiptapEditor.state.selection.from;
+
+    tiptapEditor.commands.deleteRange({ from: from - 1, to: from });
+  };
+
   it.each`
     mark                   | markdown                                        | modifiedMarkdown                                         | editAction
     ${'bold'}              | ${'**bold**'}                                   | ${'**bold modified**'}                                   | ${defaultEditAction}
@@ -1385,8 +1404,8 @@ paragraph
     ${'italic'}            | ${'*italic*'}                                   | ${'*italic modified*'}                                   | ${defaultEditAction}
     ${'italic'}            | ${'<em>italic</em>'}                            | ${'<em>italic modified</em>'}                            | ${defaultEditAction}
     ${'italic'}            | ${'<i>italic</i>'}                              | ${'<i>italic modified</i>'}                              | ${defaultEditAction}
-    ${'link'}              | ${'[gitlab](https://gitlab.com)'}               | ${'[gitlab modified](https://gitlab.com)'}               | ${defaultEditAction}
-    ${'link'}              | ${'<a href="https://gitlab.com">link</a>'}      | ${'<a href="https://gitlab.com">link modified</a>'}      | ${defaultEditAction}
+    ${'link'}              | ${'[gitlab](https://gitlab.com)'}               | ${'[gitlab modified](https://gitlab.com)'}               | ${editNonInclusiveMarkAction}
+    ${'link'}              | ${'<a href="https://gitlab.com">link</a>'}      | ${'<a href="https://gitlab.com">link modified</a>'}      | ${editNonInclusiveMarkAction}
     ${'link'}              | ${'link www.gitlab.com'}                        | ${'modified link www.gitlab.com'}                        | ${prependContentEditAction}
     ${'link'}              | ${'link https://www.gitlab.com'}                | ${'modified link https://www.gitlab.com'}                | ${prependContentEditAction}
     ${'link'}              | ${'link(https://www.gitlab.com)'}               | ${'modified link(https://www.gitlab.com)'}               | ${prependContentEditAction}

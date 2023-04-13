@@ -200,6 +200,7 @@
     "vue-observe-visibility": "^1.0.0",
     "vue-resize": "^1.0.1",
     "vue-router": "3.4.9",
+    "vue-router-vue3": "npm:vue-router@4.1.6",
     "vue-template-compiler": "2.7.14",
     "vue-virtual-scroll-list": "^1.4.7",
     "vuedraggable": "^2.23.0",

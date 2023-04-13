@@ -1,0 +1,8 @@
+---
+name: restrict_merge_status_recheck
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115948
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/404567
+milestone: '15.11'
+type: development
+group: group::code review
+default_enabled: false

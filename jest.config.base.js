@@ -44,6 +44,7 @@ module.exports = (path, options = {}) => {
       // Library wrappers
       '^vuex$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vuex.js',
       '^vue-apollo$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vue_apollo.js',
+      '^vue-router$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vue_router.js',
     });
     Object.assign(globals, {
       'vue-jest': {

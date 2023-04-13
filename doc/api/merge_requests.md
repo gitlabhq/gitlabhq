@@ -11,6 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - `merged_by` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350534) in GitLab 14.7.
 > - `merge_user` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349031) as an eventual replacement for `merged_by` in GitLab 14.7.
 > - `merge_status` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in favor of `detailed_merge_status` in GitLab 15.6.
+> - `with_merge_status_recheck` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115948) in GitLab 15.11  [with a flag](../administration/feature_flags.md) named `restrict_merge_status_recheck` to be ignored for requests from users insufficient permissions. Disabled by default.
 
 Every API call to merge requests must be authenticated.
 
@@ -72,7 +73,7 @@ Supported attributes:
 | `updated_before`                | datetime       | **{dotted-circle}** No       | Returns merge requests updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `view`                          | string         | **{dotted-circle}** No       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request. |
 | `with_labels_details`           | boolean        | **{dotted-circle}** No       | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. |
-| `with_merge_status_recheck`     | boolean        | **{dotted-circle}** No       | If `true`, this projection requests (but does not guarantee) that the `merge_status` field be recalculated asynchronously. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31890) in GitLab 13.0. |
+| `with_merge_status_recheck`     | boolean        | **{dotted-circle}** No       | If `true`, this projection requests (but does not guarantee) that the `merge_status` field be recalculated asynchronously. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31890) in GitLab 13.0. In GitLab 15.11 and later, enable the `restrict_merge_status_recheck` feature [flag](../administration/feature_flags.md) for this attribute to be ignored when requested by users without at least the Developer role. |
 | `wip`                           | string         | **{dotted-circle}** No       | Filter merge requests against their `wip` status. `yes` to return *only* draft merge requests, `no` to return *non-draft* merge requests. |
 
 ```json
@@ -275,7 +276,7 @@ Supported attributes:
 | `view`                          | string         | **{dotted-circle}** No       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request. |
 | `wip`                           | string         | **{dotted-circle}** No       | Filter merge requests against their `wip` status. `yes` to return *only* draft merge requests, `no` to return *non-draft* merge requests. |
 | `with_labels_details`           | boolean        | **{dotted-circle}** No       | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. |
-| `with_merge_status_recheck`     | boolean        | **{dotted-circle}** No       | If `true`, this projection requests (but does not guarantee) that the `merge_status` field be recalculated asynchronously. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31890) in GitLab 13.0. |
+| `with_merge_status_recheck`     | boolean        | **{dotted-circle}** No       | If `true`, this projection requests (but does not guarantee) that the `merge_status` field be recalculated asynchronously. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31890) in GitLab 13.0. In GitLab 15.11 and later, enable the `restrict_merge_status_recheck` feature [flag](../administration/feature_flags.md) for this attribute to be ignored when requested by users without at least the Developer role. |
 
 ```json
 [
@@ -464,7 +465,7 @@ Supported attributes:
 | `updated_before`                | datetime       | **{dotted-circle}** No       | Returns merge requests updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `view`                          | string         | **{dotted-circle}** No       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request. |
 | `with_labels_details`           | boolean        | **{dotted-circle}** No       | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. |
-| `with_merge_status_recheck`     | boolean        | **{dotted-circle}** No       | If `true`, this projection requests (but does not guarantee) that the `merge_status` field be recalculated asynchronously. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31890) in GitLab 13.0. |
+| `with_merge_status_recheck`     | boolean        | **{dotted-circle}** No       | If `true`, this projection requests (but does not guarantee) that the `merge_status` field be recalculated asynchronously. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31890) in GitLab 13.0. In GitLab 15.11 and later, enable the `restrict_merge_status_recheck` feature [flag](../administration/feature_flags.md) for this attribute to be ignored when requested by users without at least the Developer role. |
 
 ```json
 [

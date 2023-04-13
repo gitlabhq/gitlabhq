@@ -607,7 +607,7 @@ export const link = {
       return '[';
     }
 
-    const attrs = { href: state.esc(href || canonicalSrc) };
+    const attrs = { href: state.esc(href || canonicalSrc || '') };
 
     if (title) {
       attrs.title = title;
@@ -623,14 +623,14 @@ export const link = {
     const { canonicalSrc, href, title, sourceMarkdown, isReference } = mark.attrs;
 
     if (isReference) {
-      return `][${state.esc(canonicalSrc || href)}]`;
+      return `][${state.esc(canonicalSrc || href || '')}]`;
     }
 
     if (linkType(sourceMarkdown) === LINK_HTML) {
       return closeTag('a');
     }
 
-    return `](${state.esc(canonicalSrc || href)}${title ? ` ${state.quote(title)}` : ''})`;
+    return `](${state.esc(canonicalSrc || href || '')}${title ? ` ${state.quote(title)}` : ''})`;
   },
 };
 

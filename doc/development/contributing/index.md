@@ -8,10 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Contribute to GitLab
 
 Thank you for your interest in contributing to GitLab. This guide details how
-to contribute to GitLab in a way that is easy for everyone.
+to contribute to the development of GitLab in a way that is easy for everyone.
 
-For a first-time step-by-step guide to the contribution process, see our
-[Contributing to GitLab](https://about.gitlab.com/community/contribute/) page.
+For a first-time step-by-step guide to the contribution process for development, see [Tutorial: Make a GitLab contribution](first_contribution.md).
+
+For other ways to contribute see our [Contributing to GitLab](https://about.gitlab.com/community/contribute/) page.
 
 Looking for something to work on? See the
 [How to contribute](#how-to-contribute) section for more information.

@@ -322,9 +322,11 @@ if (EXPLICIT_VUE_VERSION) {
 
 if (USE_VUE3) {
   Object.assign(alias, {
-    vue: '@vue/compat',
+    // ensure we always use the same type of module for Vue
+    vue: '@vue/compat/dist/vue.runtime.esm-bundler.js',
     vuex: path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vuex.js'),
     'vue-apollo': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue_apollo.js'),
+    'vue-router': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue_router.js'),
   });
 
   vueLoaderOptions.compiler = require.resolve('./vue3migration/compiler');

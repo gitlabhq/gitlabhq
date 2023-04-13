@@ -2,7 +2,6 @@
 import trackUIControl from '../services/track_ui_control';
 import ToolbarButton from './toolbar_button.vue';
 import ToolbarAttachmentButton from './toolbar_attachment_button.vue';
-import ToolbarLinkButton from './toolbar_link_button.vue';
 import ToolbarTableButton from './toolbar_table_button.vue';
 import ToolbarTextStyleDropdown from './toolbar_text_style_dropdown.vue';
 import ToolbarMoreDropdown from './toolbar_more_dropdown.vue';
@@ -11,7 +10,6 @@ export default {
   components: {
     ToolbarButton,
     ToolbarTextStyleDropdown,
-    ToolbarLinkButton,
     ToolbarTableButton,
     ToolbarAttachmentButton,
     ToolbarMoreDropdown,
@@ -24,7 +22,10 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-w-full gl-border-b gl-display-flex gl-justify-content-end">
+  <div
+    class="gl-w-full gl-border-b gl-display-flex gl-justify-content-end"
+    data-testid="formatting-toolbar"
+  >
     <div class="gl-py-2 gl-display-flex gl-flex-wrap-wrap gl-align-items-end">
       <toolbar-text-style-dropdown
         data-testid="text-styles"
@@ -62,7 +63,14 @@ export default {
         :label="__('Code')"
         @execute="trackToolbarControlExecution"
       />
-      <toolbar-link-button data-testid="link" @execute="trackToolbarControlExecution" />
+      <toolbar-button
+        data-testid="link"
+        content-type="link"
+        icon-name="link"
+        editor-command="editLink"
+        :label="__('Insert link')"
+        @execute="trackToolbarControlExecution"
+      />
       <toolbar-button
         data-testid="bullet-list"
         content-type="bulletList"

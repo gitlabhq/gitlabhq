@@ -33,12 +33,13 @@ Also, you can sort them by [**Label priority**](project/labels.md#set-label-prio
 ## Actions that create to-do items
 
 Many to-do items are created automatically.
-A to-do item is added to your To-Do List when:
+Some of the actions that add a to-do item to your To-Do List:
 
 - An issue or merge request is assigned to you.
+- A [merge request review](project/merge_requests/reviews/index.md) is requested.
 - You're [mentioned](discussions/index.md#mentions) in the description or
   comment of an issue, merge request, or epic.
-- You are mentioned in a comment on a commit or design.
+- You're mentioned in a comment on a commit or design.
 - The CI/CD pipeline for your merge request fails.
 - An open merge request cannot be merged due to conflict, and one of the
   following is true:

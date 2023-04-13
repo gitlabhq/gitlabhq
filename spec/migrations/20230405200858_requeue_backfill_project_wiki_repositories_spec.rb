@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillProjectWikiRepositories, feature_category: :geo_replication do
+RSpec.describe RequeueBackfillProjectWikiRepositories, feature_category: :geo_replication do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

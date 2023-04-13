@@ -5,6 +5,7 @@ import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.v
 import { joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
+import { titleQueries } from 'ee_else_ce/boards/constants';
 
 export default {
   components: {
@@ -19,7 +20,7 @@ export default {
   directives: {
     autofocusonshow,
   },
-  inject: ['isApolloBoard'],
+  inject: ['fullPath', 'issuableType', 'isEpicBoard', 'isApolloBoard'],
   props: {
     activeItem: {
       type: Object,
@@ -77,8 +78,9 @@ export default {
     },
     async setPendingState() {
       const pendingChanges = localStorage.getItem(this.pendingChangesStorageKey);
+      const shouldOpen = pendingChanges !== this.title;
 
-      if (pendingChanges) {
+      if (pendingChanges && shouldOpen) {
         this.title = pendingChanges;
         this.showChangesAlert = true;
         await this.$nextTick();
@@ -93,6 +95,26 @@ export default {
       this.showChangesAlert = false;
       localStorage.removeItem(this.pendingChangesStorageKey);
     },
+    async setActiveBoardItemTitle() {
+      if (!this.isApolloBoard) {
+        await this.setActiveItemTitle({ title: this.title, projectPath: this.projectPath });
+        return;
+      }
+      const { fullPath, issuableType, isEpicBoard, title } = this;
+      const workspacePath = isEpicBoard
+        ? { groupPath: fullPath }
+        : { projectPath: this.projectPath };
+      await this.$apollo.mutate({
+        mutation: titleQueries[issuableType].mutation,
+        variables: {
+          input: {
+            ...workspacePath,
+            iid: String(this.item.iid),
+            title,
+          },
+        },
+      });
+    },
     async setTitle() {
       this.$refs.sidebarItem.collapse();
 
@@ -102,7 +124,7 @@ export default {
 
       try {
         this.loading = true;
-        await this.setActiveItemTitle({ title: this.title, projectPath: this.projectPath });
+        await this.setActiveBoardItemTitle();
         localStorage.removeItem(this.pendingChangesStorageKey);
         this.showChangesAlert = false;
       } catch (e) {
