@@ -67,7 +67,7 @@
                   %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle
                     = "(#{@user.pronouns})"
                 - if @user.status&.busy?
-                  %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle= s_("UserProfile|(Busy)")
+                  = render Pajamas::BadgeComponent.new(s_('UserProfile|Busy'), size: 'sm', variant: 'warning', class: 'gl-vertical-align-middle')
 
               - if @user.pronunciation.present?
                 .gl-align-items-center

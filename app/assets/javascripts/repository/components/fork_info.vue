@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlLink, GlSkeletonLoader, GlLoadingIcon, GlSprintf, GlButton } from '@gitlab/ui';
 import { s__, sprintf, n__ } from '~/locale';
-import { createAlert } from '~/alert';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import syncForkMutation from '~/repository/mutations/sync_fork.mutation.graphql';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../event_hub';
@@ -26,6 +26,9 @@ export const i18n = {
   error: s__('ForksDivergence|Failed to fetch fork details. Try again later.'),
   updateFork: s__('ForksDivergence|Update fork'),
   createMergeRequest: s__('ForksDivergence|Create merge request'),
+  successMessage: s__(
+    'ForksDivergence|Successfully fetched and merged from the upstream repository.',
+  ),
 };
 
 export default {
@@ -62,6 +65,10 @@ export default {
           this.increasePollInterval();
         }
         if (this.isForkUpdated) {
+          createAlert({
+            message: this.$options.i18n.successMessage,
+            variant: VARIANT_INFO,
+          });
           eventHub.$emit(FORK_UPDATED_EVENT);
         }
       },
@@ -124,7 +131,6 @@ export default {
     return {
       project: {},
       currentPollInterval: null,
-      isSyncTriggered: false,
     };
   },
   computed: {
@@ -150,7 +156,7 @@ export default {
       return this.forkDetails?.isSyncing;
     },
     isForkUpdated() {
-      return !this.hasConflicts && !this.isSyncing && this.currentPollInterval;
+      return this.isUpToDate && this.currentPollInterval;
     },
     ahead() {
       return this.project?.forkDetails?.ahead;
@@ -216,9 +222,8 @@ export default {
   },
   watch: {
     hasConflicts(newVal) {
-      if (newVal && this.isSyncTriggered) {
+      if (newVal && this.currentPollInterval) {
         this.showConflictsModal();
-        this.isSyncTriggered = false;
       }
     },
   },
@@ -257,7 +262,6 @@ export default {
       this.$refs.modal.show();
     },
     startSyncing() {
-      this.isSyncTriggered = true;
       this.syncForkWithPolling();
     },
     checkIfSyncIsPossible() {

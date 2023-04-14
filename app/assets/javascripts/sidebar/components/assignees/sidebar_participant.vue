@@ -1,7 +1,7 @@
 <script>
-import { GlAvatarLabeled, GlIcon } from '@gitlab/ui';
+import { GlAvatarLabeled, GlBadge, GlIcon } from '@gitlab/ui';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
-import { s__, sprintf } from '~/locale';
+import { __ } from '~/locale';
 
 const AVAILABILITY_STATUS = {
   NOT_SET: 'NOT_SET',
@@ -11,6 +11,7 @@ const AVAILABILITY_STATUS = {
 export default {
   components: {
     GlAvatarLabeled,
+    GlBadge,
     GlIcon,
   },
   props: {
@@ -25,22 +26,15 @@ export default {
     },
   },
   computed: {
-    userLabel() {
-      const { name, status } = this.user;
-      if (!status || status?.availability !== AVAILABILITY_STATUS.BUSY) {
-        return name;
-      }
-      return sprintf(
-        s__('UserAvailability|%{author} (Busy)'),
-        {
-          author: name,
-        },
-        false,
-      );
+    isBusy() {
+      return this.user?.status?.availability === AVAILABILITY_STATUS.BUSY;
     },
     hasCannotMergeIcon() {
       return this.issuableType === TYPE_MERGE_REQUEST && !this.user.canMerge;
     },
+  },
+  i18n: {
+    busy: __('Busy'),
   },
 };
 </script>
@@ -48,7 +42,7 @@ export default {
 <template>
   <gl-avatar-labeled
     :size="32"
-    :label="userLabel"
+    :label="user.name"
     :sub-label="`@${user.username}`"
     :src="user.avatarUrl || user.avatar || user.avatar_url"
     class="gl-align-items-center gl-relative sidebar-participant"
@@ -61,6 +55,9 @@ export default {
         class="merge-icon"
         :size="12"
       />
+      <gl-badge v-if="isBusy" size="sm" variant="warning" class="gl-ml-2">
+        {{ $options.i18n.busy }}
+      </gl-badge>
     </template>
   </gl-avatar-labeled>
 </template>

@@ -69,7 +69,11 @@ module Gitlab
         end
 
         def table_map
-          @table_map ||= fetch_tables.transform_values! { |stmt| SchemaObjects::Table.new(stmt.first['table_name']) }
+          @table_map ||= fetch_tables.transform_values! do |stmt|
+            columns = stmt.map { |column| SchemaObjects::Column.new(Adapters::ColumnDatabaseAdapter.new(column)) }
+
+            SchemaObjects::Table.new(stmt.first['table_name'], columns)
+          end
         end
 
         def fetch_indexes

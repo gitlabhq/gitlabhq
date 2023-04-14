@@ -5,7 +5,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { createAlert } from '~/alert';
+import { createAlert, VARIANT_INFO } from '~/alert';
 
 import ForkInfo, { i18n } from '~/repository/components/fork_info.vue';
 import ConflictsModal from '~/repository/components/fork_sync_conflicts_modal.vue';
@@ -349,7 +349,16 @@ describe('ForkInfo component', () => {
       mockResolvedForkDetailsQuery({ ahead: 0, behind: 0, isSyncing: false, hasConflicts: false });
     });
 
-    it('emits fork:update event to eventHub', async () => {
+    it('shows info alert once the fork is updated', async () => {
+      await startForkUpdate();
+      await waitForPolling();
+      expect(createAlert).toHaveBeenCalledWith({
+        message: i18n.successMessage,
+        variant: VARIANT_INFO,
+      });
+    });
+
+    it('emits fork:updated event to eventHub', async () => {
       jest.spyOn(eventHub, '$emit').mockImplementation();
       await startForkUpdate();
       await waitForPolling();

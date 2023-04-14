@@ -36,7 +36,15 @@ module Gitlab
         end
 
         def tables
-          @tables ||= table_statements.map { |stmt| SchemaObjects::Table.new(stmt.relation.relname) }
+          @tables ||= table_statements.map do |stmt|
+            table_name = stmt.relation.relname
+
+            columns = stmt.table_elts.select { |n| n.node == :column_def }.map do |column|
+              SchemaObjects::Column.new(Adapters::ColumnStructureSqlAdapter.new(table_name, column.column_def))
+            end
+
+            SchemaObjects::Table.new(table_name, columns)
+          end
         end
 
         private

@@ -51,6 +51,7 @@ class Projects::BlobController < Projects::ApplicationController
     push_frontend_feature_flag(:highlight_js, @project)
     push_frontend_feature_flag(:explain_code_snippet, current_user)
     push_licensed_feature(:explain_code, @project) if @project.licensed_feature_available?(:explain_code)
+    push_frontend_feature_flag(:synchronize_fork, @project&.fork_source)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
   end
 

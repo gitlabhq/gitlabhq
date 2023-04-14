@@ -1206,7 +1206,7 @@ lib/gitlab/checks/** @proglottis @toon
 /lib/tasks/gitlab/password.rake @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/tasks/tokens.rake @gitlab-org/manage/authentication-and-authorization/approvers
 
-[Verify] @gitlab-org/maintainers/cicd-verify
+[Verify] @gitlab-org/maintainers/cicd-verify @shinya.maeda @stanhu @ayufan 
 # Verify Backend
 /**/app/**/ci/
 /**/lib/**/ci/

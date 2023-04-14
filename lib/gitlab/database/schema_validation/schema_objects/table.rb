@@ -5,19 +5,34 @@ module Gitlab
     module SchemaValidation
       module SchemaObjects
         class Table
-          def initialize(name)
+          def initialize(name, columns)
             @name = name
+            @columns = columns
           end
+
+          attr_reader :name, :columns
 
           def table_name
             name
           end
 
           def statement
-            nil
+            format('CREATE TABLE %s (%s)', name, columns_statement)
           end
 
-          attr_reader :name
+          def fetch_column_by_name(column_name)
+            columns.find { |column| column.name == column_name }
+          end
+
+          def column_exists?(column_name)
+            fetch_column_by_name(column_name).present?
+          end
+
+          private
+
+          def columns_statement
+            columns.map(&:statement).join(', ')
+          end
         end
       end
     end

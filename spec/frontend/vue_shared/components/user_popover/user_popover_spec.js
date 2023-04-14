@@ -275,7 +275,7 @@ describe('User Popover Component', () => {
 
       createWrapper({ user });
 
-      expect(wrapper.findByText('(Busy)').exists()).toBe(true);
+      expect(wrapper.findByText('Busy').exists()).toBe(true);
     });
 
     it('should hide the busy status for any other status', () => {
@@ -286,7 +286,7 @@ describe('User Popover Component', () => {
 
       createWrapper({ user });
 
-      expect(wrapper.findByText('(Busy)').exists()).toBe(false);
+      expect(wrapper.findByText('Busy').exists()).toBe(false);
     });
 
     it('shows pronouns when user has them set', () => {

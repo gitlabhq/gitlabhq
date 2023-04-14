@@ -666,10 +666,11 @@ describe('GfmAutoComplete', () => {
             username: 'my-group',
             title: '',
             icon: '<i class="icon"/>',
-            availabilityStatus: '<span class="gl-text-gray-500"> (Busy)</span>',
+            availabilityStatus:
+              '<span class="badge badge-warning badge-pill gl-badge sm gl-ml-2">Busy</span>',
           }),
         ).toBe(
-          '<li>IMG my-group <small><span class="gl-text-gray-500"> (Busy)</span></small> <i class="icon"/></li>',
+          '<li>IMG my-group <small><span class="badge badge-warning badge-pill gl-badge sm gl-ml-2">Busy</span></small> <i class="icon"/></li>',
         );
       });
 

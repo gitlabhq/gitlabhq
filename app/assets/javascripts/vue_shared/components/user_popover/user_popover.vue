@@ -1,5 +1,6 @@
 <script>
 import {
+  GlBadge,
   GlPopover,
   GlLink,
   GlSkeletonLoader,
@@ -35,6 +36,7 @@ export default {
   I18N_USER_LEARN,
   USER_POPOVER_DELAY,
   components: {
+    GlBadge,
     GlIcon,
     GlLink,
     GlPopover,
@@ -226,9 +228,9 @@ export default {
             data-testid="user-popover-pronouns"
             >({{ user.pronouns }})</span
           >
-          <span v-if="isBusy" class="gl-text-gray-500 gl-font-sm gl-font-weight-normal gl-p-1"
-            >({{ $options.I18N_USER_BUSY }})</span
-          >
+          <gl-badge v-if="isBusy" size="sm" variant="warning" class="gl-ml-1">
+            {{ $options.I18N_USER_BUSY }}
+          </gl-badge>
         </template>
       </gl-avatar-labeled>
     </div>

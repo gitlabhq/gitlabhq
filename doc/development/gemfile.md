@@ -65,6 +65,17 @@ This means that new dependencies should, at a minimum, meet the following criter
 - If the project uses a C extension, consider requesting an additional review from a C or MRI
   domain expert. C extensions can greatly impact GitLab stability and performance.
 
+## Gems that require a domain expert approval
+
+Changes to the following gems require a domain expert review and approval by a backend team member of the group.
+
+For gems not listed in this table, it's still recommended but not required that you find a domain expert to review changes.
+
+| Gem | Requires approval by |
+| ------ | ------ |
+| `doorkeeper` | [Manage:Authentication and Authorization](https://about.gitlab.com/handbook/product/categories/#authentication-and-authorization-group) |
+| `doorkeeper-openid_connect` | [Manage:Authentication and Authorization](https://about.gitlab.com/handbook/product/categories/#authentication-and-authorization-group)  |
+
 ## Request an Appsec review
 
 When adding a new gem to our `Gemfile` or even changing versions in

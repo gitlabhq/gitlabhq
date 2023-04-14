@@ -297,7 +297,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
           end
 
           page.within '.dropdown-menu-user' do
-            expect(page).to have_content("#{user.name} (Busy)")
+            expect(page).to have_content("#{user.name} Busy")
           end
         end
 
@@ -308,7 +308,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
           visit project_issue_path(project, issue)
           wait_for_requests
 
-          expect(page.find('.issuable-assignees')).to have_content("#{user.name} (Busy)")
+          expect(page.find('.issuable-assignees')).to have_content("#{user.name} Busy")
         end
       end
     end

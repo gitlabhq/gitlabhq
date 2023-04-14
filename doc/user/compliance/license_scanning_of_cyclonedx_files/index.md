@@ -67,8 +67,11 @@ License scanning is supported for the following languages and package managers:
       <td><a href="https://maven.apache.org/">Maven</a></td>
     </tr>
     <tr>
-      <td rowspan="2">JavaScript and TypeScript</td>
+      <td rowspan="3">JavaScript and TypeScript</td>
       <td><a href="https://www.npmjs.com/">npm</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://pnpm.io/">pnpm</a></td>
     </tr>
     <tr>
       <td><a href="https://classic.yarnpkg.com/en/">yarn</a></td>

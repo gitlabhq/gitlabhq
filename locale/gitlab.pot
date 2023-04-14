@@ -1854,6 +1854,9 @@ msgstr ""
 msgid "AI|Code Explanation"
 msgstr ""
 
+msgid "AI|Experiment"
+msgstr ""
+
 msgid "AI|Explain the code from %{filePath} in human understandable language presented in Markdown format. In the response add neither original code snippet nor any title. `%{text}`"
 msgstr ""
 
@@ -18622,6 +18625,9 @@ msgid "ForksDivergence|Resolve merge conflicts manually"
 msgstr ""
 
 msgid "ForksDivergence|Source project has a limited visibility."
+msgstr ""
+
+msgid "ForksDivergence|Successfully fetched and merged from the upstream repository."
 msgstr ""
 
 msgid "ForksDivergence|The upstream changes could not be synchronized to this project due to file conflicts in the default branch. You must resolve the conflicts manually:"
@@ -47819,13 +47825,7 @@ msgstr ""
 msgid "User-based escalation rules must have a user with access to the project"
 msgstr ""
 
-msgid "UserAvailability|%{author} %{spanStart}(Busy)%{spanEnd}"
-msgstr ""
-
-msgid "UserAvailability|%{author} (Busy)"
-msgstr ""
-
-msgid "UserAvailability|(Busy)"
+msgid "UserAvailability|%{author}%{badgeStart}Busy%{badgeEnd}"
 msgstr ""
 
 msgid "UserLists|Add"
@@ -47903,9 +47903,6 @@ msgstr ""
 msgid "UserList|created %{timeago}"
 msgstr ""
 
-msgid "UserProfile|(Busy)"
-msgstr ""
-
 msgid "UserProfile|Activity"
 msgstr ""
 
@@ -47913,6 +47910,9 @@ msgid "UserProfile|Blocked user"
 msgstr ""
 
 msgid "UserProfile|Bot activity"
+msgstr ""
+
+msgid "UserProfile|Busy"
 msgstr ""
 
 msgid "UserProfile|Contributed projects"
