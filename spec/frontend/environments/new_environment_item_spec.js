@@ -12,6 +12,7 @@ import Deployment from '~/environments/components/deployment.vue';
 import DeployBoardWrapper from '~/environments/components/deploy_board_wrapper.vue';
 import KubernetesOverview from '~/environments/components/kubernetes_overview.vue';
 import { resolvedEnvironment, rolloutStatus, agent } from './graphql/mock_data';
+import { mockKasTunnelUrl } from './mock_data';
 
 Vue.use(VueApollo);
 
@@ -26,7 +27,13 @@ describe('~/environments/components/new_environment_item.vue', () => {
     mountExtended(EnvironmentItem, {
       apolloProvider,
       propsData: { environment: resolvedEnvironment, ...propsData },
-      provide: { helpPagePath: '/help', projectId: '1', projectPath: '/1', ...provideData },
+      provide: {
+        helpPagePath: '/help',
+        projectId: '1',
+        projectPath: '/1',
+        kasTunnelUrl: mockKasTunnelUrl,
+        ...provideData,
+      },
       stubs: { transition: stubTransition() },
     });
 
@@ -536,6 +543,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
         agentProjectPath: agent.project,
         agentName: agent.name,
         agentId: agent.id,
+        namespace: agent.kubernetesNamespace,
       });
     });
 

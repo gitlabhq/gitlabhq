@@ -87,6 +87,8 @@
   aggregation: weekly
 - name: i_quickactions_subscribe
   aggregation: weekly
+- name: i_quickactions_summarize_diff
+  aggregation: weekly
 - name: i_quickactions_tableflip
   aggregation: weekly
 - name: i_quickactions_tag

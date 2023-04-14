@@ -124,11 +124,6 @@ module Issues
     def update_project_counter_caches?(issue)
       super || issue.confidential_changed?
     end
-
-    override :allowed_create_params
-    def allowed_create_params(params)
-      super(params).except(:work_item_type_id, :work_item_type)
-    end
   end
 end
 

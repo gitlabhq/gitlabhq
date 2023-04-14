@@ -173,7 +173,8 @@ export default {
       return this.glFeatures?.kasUserAccessProject;
     },
     hasRequiredAgentData() {
-      return this.agent.project && this.agent.id && this.agent.name;
+      const { project, id, name } = this.agent || {};
+      return project && id && name;
     },
     showKubernetesOverview() {
       return this.isKubernetesOverviewAvailable && this.hasRequiredAgentData;
@@ -367,6 +368,7 @@ export default {
           :agent-project-path="agent.project"
           :agent-name="agent.name"
           :agent-id="agent.id"
+          :namespace="agent.kubernetesNamespace"
         />
       </div>
       <div v-if="rolloutStatus" :class="$options.deployBoardClasses">

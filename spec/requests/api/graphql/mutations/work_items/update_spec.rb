@@ -1223,17 +1223,16 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
     end
 
     context 'when unsupported widget input is sent' do
-      let_it_be(:test_case) { create(:work_item_type, :default, :test_case) }
-      let_it_be(:work_item) { create(:work_item, work_item_type: test_case, project: project) }
+      let_it_be(:work_item) { create(:work_item, :incident, project: project) }
 
       let(:input) do
         {
-          'hierarchyWidget' => {}
+          'assigneesWidget' => { 'assigneeIds' => [developer.to_gid.to_s] }
         }
       end
 
       it_behaves_like 'a mutation that returns top-level errors',
-        errors: ["Following widget keys are not supported by Test Case type: [:hierarchy_widget]"]
+        errors: ["Following widget keys are not supported by Incident type: [:assignees_widget]"]
     end
   end
 end

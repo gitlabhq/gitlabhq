@@ -39,6 +39,8 @@ class Issue < ApplicationRecord
   DueThisMonth                    = DueDateStruct.new('Due This Month', 'month').freeze
   DueNextMonthAndPreviousTwoWeeks = DueDateStruct.new('Due Next Month And Previous Two Weeks', 'next_month_and_previous_two_weeks').freeze
 
+  IssueTypeOutOfSyncError = Class.new(StandardError)
+
   SORTING_PREFERENCE_FIELD = :issues_sort
   MAX_BRANCH_TEMPLATE = 255
 
@@ -233,6 +235,7 @@ class Issue < ApplicationRecord
   scope :with_projects_matching_search_data, -> { where('issue_search_data.project_id = issues.project_id') }
 
   before_validation :ensure_namespace_id, :ensure_work_item_type
+  before_save :check_issue_type_in_sync!
 
   after_save :ensure_metrics!, unless: :importing?
   after_commit :expire_etag_cache, unless: :importing?
@@ -723,6 +726,33 @@ class Issue < ApplicationRecord
   end
 
   private
+
+  def check_issue_type_in_sync!
+    # We might have existing records out of sync, so we need to skip this check unless the value is changed
+    # so those records can still be updated until we fix them and remove the issue_type column
+    # https://gitlab.com/gitlab-org/gitlab/-/work_items/403158?iid_path=true
+    return unless (changes.keys & %w[issue_type work_item_type_id]).any?
+
+    if issue_type != work_item_type.base_type
+      error = IssueTypeOutOfSyncError.new(
+        <<~ERROR
+          Issue `issue_type` out of sync with `work_item_type_id` column.
+          `issue_type` must be equal to `work_item.base_type`.
+          You can assign the correct work_item_type like this for example:
+
+          Issue.new(issue_type: :incident, work_item_type: WorkItems::Type.default_by_type(:incident))
+
+          More details in https://gitlab.com/gitlab-org/gitlab/-/issues/338005
+        ERROR
+      )
+
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
+        error,
+        issue_type: issue_type,
+        work_item_type_id: work_item_type_id
+      )
+    end
+  end
 
   def due_date_after_start_date
     return unless start_date.present? && due_date.present?

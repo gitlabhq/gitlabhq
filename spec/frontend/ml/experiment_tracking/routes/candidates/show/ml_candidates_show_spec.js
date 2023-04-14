@@ -1,6 +1,7 @@
-import { GlAlert } from '@gitlab/ui';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import MlCandidatesShow from '~/ml/experiment_tracking/routes/candidates/show';
+import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
+import IncubationAlert from '~/vue_shared/components/incubation/incubation_alert.vue';
 
 describe('MlCandidatesShow', () => {
   let wrapper;
@@ -25,23 +26,31 @@ describe('MlCandidatesShow', () => {
         experiment_name: 'The Experiment',
         experiment_path: 'path/to/experiment',
         status: 'SUCCESS',
+        path: 'path_to_candidate',
       },
     };
 
-    return mountExtended(MlCandidatesShow, { propsData: { candidate } });
+    wrapper = shallowMountExtended(MlCandidatesShow, { propsData: { candidate } });
   };
 
-  const findAlert = () => wrapper.findComponent(GlAlert);
+  beforeEach(createWrapper);
+
+  const findAlert = () => wrapper.findComponent(IncubationAlert);
+  const findDeleteButton = () => wrapper.findComponent(DeleteButton);
 
   it('shows incubation warning', () => {
-    wrapper = createWrapper();
-
     expect(findAlert().exists()).toBe(true);
   });
 
-  it('renders correctly', () => {
-    wrapper = createWrapper();
+  it('shows delete button', () => {
+    expect(findDeleteButton().exists()).toBe(true);
+  });
 
+  it('passes the delete path to delete button', () => {
+    expect(findDeleteButton().props('deletePath')).toBe('path_to_candidate');
+  });
+
+  it('renders correctly', () => {
     expect(wrapper.element).toMatchSnapshot();
   });
 });

@@ -114,7 +114,8 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
         'path_to_artifact' => "/#{project.full_path}/-/packages/#{candidate.artifact.id}",
         'experiment_name' => candidate.experiment.name,
         'path_to_experiment' => "/#{project.full_path}/-/ml/experiments/#{experiment.iid}",
-        'status' => 'running'
+        'status' => 'running',
+        'path' => "/#{project.full_path}/-/ml/candidates/#{candidate.iid}"
       }
 
       expect(subject['info']).to include(expected_info)

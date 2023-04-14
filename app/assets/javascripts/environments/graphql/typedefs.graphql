@@ -62,6 +62,19 @@ type LocalPageInfo {
   previousPage: Int!
 }
 
+type k8sPodStatus {
+  phase: String
+}
+
+type LocalK8sPods {
+  status: k8sPodStatus
+}
+
+input LocalConfiguration {
+  basePath: String
+  baseOptions: JSON
+}
+
 extend type Query {
   environmentApp(page: Int, scope: String): LocalEnvironmentApp
   folder(environment: NestedLocalEnvironmentInput): LocalEnvironmentFolder
@@ -71,6 +84,7 @@ extend type Query {
   environmentToStop: LocalEnvironment
   isEnvironmentStopping(environment: LocalEnvironmentInput): Boolean
   isLastDeployment(environment: LocalEnvironmentInput): Boolean
+  k8sPods(configuration: LocalConfiguration, namespace: String): [LocalK8sPods]
 }
 
 extend type Mutation {

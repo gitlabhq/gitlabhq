@@ -199,6 +199,7 @@ module.exports = (path, options = {}) => {
     'vue-test-utils-compat',
     '@gitlab/ui',
     '@gitlab/favicon-overlay',
+    '@gitlab/cluster-client',
     'bootstrap-vue',
     'three',
     'monaco-editor',

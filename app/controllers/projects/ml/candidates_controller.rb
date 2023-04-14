@@ -10,9 +10,10 @@ module Projects
       def show; end
 
       def destroy
+        @experiment = @candidate.experiment
         @candidate.destroy!
 
-        redirect_to project_ml_experiments_path(@project),
+        redirect_to project_ml_experiment_path(@project, @experiment.iid),
           status: :found,
           notice: s_("MlExperimentTracking|Candidate removed")
       end

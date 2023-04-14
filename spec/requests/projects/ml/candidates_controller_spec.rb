@@ -64,7 +64,7 @@ RSpec.describe Projects::Ml::CandidatesController, feature_category: :mlops do
 
   describe 'DELETE #destroy' do
     let_it_be(:candidate_for_deletion) do
-      create(:ml_candidates, experiment: experiment, user: user)
+      create(:ml_candidates, project: project, experiment: experiment, user: user)
     end
 
     let(:candidate_iid) { candidate_for_deletion.iid }
@@ -76,6 +76,7 @@ RSpec.describe Projects::Ml::CandidatesController, feature_category: :mlops do
     it 'deletes the experiment', :aggregate_failures do
       expect(response).to have_gitlab_http_status(:found)
       expect(flash[:notice]).to eq('Candidate removed')
+      expect(response).to redirect_to("/#{project.full_path}/-/ml/experiments/#{experiment.iid}")
       expect { Ml::Candidate.find(id: candidate_for_deletion.id) }.to raise_error(ActiveRecord::RecordNotFound)
     end
 

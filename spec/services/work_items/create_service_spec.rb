@@ -81,6 +81,37 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
         end
       end
 
+      context 'when applying quick actions' do
+        let(:work_item) { service_result[:work_item] }
+        let(:opts) do
+          {
+            title: 'My work item',
+            work_item_type: work_item_type,
+            description: '/shrug'
+          }
+        end
+
+        context 'when work item type is not the default Issue' do
+          let(:work_item_type) { create(:work_item_type, :task, namespace: group) }
+
+          it 'saves the work item without applying the quick action' do
+            expect(service_result).to be_success
+            expect(work_item).to be_persisted
+            expect(work_item.description).to eq('/shrug')
+          end
+        end
+
+        context 'when work item type is the default Issue' do
+          let(:work_item_type) { WorkItems::Type.default_by_type(:issue) }
+
+          it 'saves the work item and applies the quick action' do
+            expect(service_result).to be_success
+            expect(work_item).to be_persisted
+            expect(work_item.description).to eq(' ¯\＿(ツ)＿/¯')
+          end
+        end
+      end
+
       context 'when params are valid' do
         it 'created instance is a WorkItem' do
           expect(Issuable::CommonSystemNotesService).to receive_message_chain(:new, :execute)

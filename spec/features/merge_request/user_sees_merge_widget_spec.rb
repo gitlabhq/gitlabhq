@@ -396,7 +396,9 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
     end
 
     it 'updates the MR widget', :sidekiq_might_not_need_inline do
-      click_button 'Merge'
+      page.within('.mr-state-widget') do
+        click_button 'Merge'
+      end
 
       expect(page).to have_content('An error occurred while merging')
     end
@@ -452,7 +454,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
 
       wait_for_requests
 
-      expect(page).not_to have_button('Merge')
+      expect(page).not_to have_button('Merge', exact: true)
       expect(page).to have_content('Merging!')
     end
   end

@@ -801,6 +801,14 @@ export const resolvedDeploymentDetails = {
 
 export const agent = {
   project: 'agent-project',
-  id: '1',
+  id: 'gid://gitlab/ClusterAgent/1',
   name: 'agent-name',
+  kubernetesNamespace: 'agent-namespace',
 };
+
+const runningPod = { status: { phase: 'Running' } };
+const pendingPod = { status: { phase: 'Pending' } };
+const succeededPod = { status: { phase: 'Succeeded' } };
+const failedPod = { status: { phase: 'Failed' } };
+
+export const k8sPodsMock = [runningPod, runningPod, pendingPod, succeededPod, failedPod, failedPod];

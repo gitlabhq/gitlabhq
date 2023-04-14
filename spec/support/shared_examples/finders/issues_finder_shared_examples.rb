@@ -914,9 +914,9 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
       end
 
       context 'filtering by item type' do
-        let_it_be(:incident_item) { create(factory, issue_type: :incident, project: project1) }
-        let_it_be(:objective) { create(factory, issue_type: :objective, project: project1) }
-        let_it_be(:key_result) { create(factory, issue_type: :key_result, project: project1) }
+        let_it_be(:incident_item) { create(factory, :incident, project: project1) }
+        let_it_be(:objective) { create(factory, :objective, project: project1) }
+        let_it_be(:key_result) { create(factory, :key_result, project: project1) }
 
         context 'no type given' do
           let(:params) { { issue_types: [] } }

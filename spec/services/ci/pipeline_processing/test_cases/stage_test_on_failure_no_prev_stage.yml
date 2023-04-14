@@ -1,0 +1,29 @@
+config:
+  test1:
+    stage: test
+    script: exit 0
+
+  test2:
+    stage: test
+    when: on_failure
+    script: exit 0
+
+init:
+  expect:
+    pipeline: pending
+    stages:
+      test: pending
+    jobs:
+      test1: pending
+      test2: skipped
+
+transitions:
+  - event: success
+    jobs: [test1]
+    expect:
+      pipeline: success
+      stages:
+        test: success
+      jobs:
+        test1: success
+        test2: skipped

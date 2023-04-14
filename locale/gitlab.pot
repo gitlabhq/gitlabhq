@@ -12185,6 +12185,9 @@ msgstr ""
 msgid "Create %{workspace} label"
 msgstr ""
 
+msgid "Create LLM-generated summary from diff(s)"
+msgstr ""
+
 msgid "Create New Directory"
 msgstr ""
 
@@ -12627,6 +12630,9 @@ msgid "Created on %{created_at}"
 msgstr ""
 
 msgid "Created on:"
+msgstr ""
+
+msgid "Creates a LLM-generated summary from diff(s)."
 msgstr ""
 
 msgid "Creates a branch and a merge request to resolve this issue."
@@ -16684,7 +16690,22 @@ msgstr ""
 msgid "Environment|Deployment tier"
 msgstr ""
 
+msgid "Environment|Failed"
+msgstr ""
+
 msgid "Environment|Kubernetes overview"
+msgstr ""
+
+msgid "Environment|Pending"
+msgstr ""
+
+msgid "Environment|Pods"
+msgstr ""
+
+msgid "Environment|Running"
+msgstr ""
+
+msgid "Environment|Succeeded"
 msgstr ""
 
 msgid "Epic"
@@ -26433,6 +26454,9 @@ msgstr ""
 msgid "MD5"
 msgstr ""
 
+msgid "MLExperimentTracking|Delete candidate?"
+msgstr ""
+
 msgid "MLExperimentTracking|Delete experiment?"
 msgstr ""
 
@@ -28307,7 +28331,13 @@ msgstr ""
 msgid "MlExperimentTracking|Created at"
 msgstr ""
 
+msgid "MlExperimentTracking|Delete candidate"
+msgstr ""
+
 msgid "MlExperimentTracking|Delete experiment"
+msgstr ""
+
+msgid "MlExperimentTracking|Deleting this candidate will delete the associated parameters, metrics, and metadata."
 msgstr ""
 
 msgid "MlExperimentTracking|Deleting this experiment will also delete its candidates and their associated metadata."
@@ -37441,6 +37471,9 @@ msgstr ""
 msgid "Request details"
 msgstr ""
 
+msgid "Request for summary queued."
+msgstr ""
+
 msgid "Request parameter %{param} is missing."
 msgstr ""
 
@@ -45057,6 +45090,9 @@ msgid "This code snippet contains everything reflected in the configuration form
 msgstr ""
 
 msgid "This comment changed after you started editing it. Review the %{startTag}updated comment%{endTag} to ensure information is not lost."
+msgstr ""
+
+msgid "This comment was generated using OpenAI"
 msgstr ""
 
 msgid "This commit is part of merge request %{link_to_merge_request}. Comments created here will be created in the context of that merge request."

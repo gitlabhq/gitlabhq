@@ -44,7 +44,10 @@ RSpec.describe IssueSidebarBasicEntity do
 
       context 'for an incident issue' do
         before do
-          issue.update!(issue_type: Issue.issue_types[:incident])
+          issue.update!(
+            issue_type: Issue.issue_types[:incident],
+            work_item_type: WorkItems::Type.default_by_type(:incident)
+          )
         end
 
         it 'is present and true' do

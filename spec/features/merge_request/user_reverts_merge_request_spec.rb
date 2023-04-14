@@ -13,7 +13,9 @@ RSpec.describe 'User reverts a merge request', :js, feature_category: :code_revi
 
     visit(merge_request_path(merge_request))
 
-    click_button('Merge')
+    page.within('.mr-state-widget') do
+      click_button 'Merge'
+    end
 
     wait_for_requests
 

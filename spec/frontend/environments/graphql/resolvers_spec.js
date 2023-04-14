@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import { CoreV1Api } from '@gitlab/cluster-client';
 import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -17,6 +18,7 @@ import {
   resolvedEnvironment,
   folder,
   resolvedFolder,
+  k8sPodsMock,
 } from './mock_data';
 
 const ENDPOINT = `${TEST_HOST}/environments`;
@@ -141,6 +143,61 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       });
 
       expect(environmentFolder).toEqual(resolvedFolder);
+    });
+  });
+  describe('k8sPods', () => {
+    const namespace = 'default';
+    const configuration = {
+      basePath: 'kas-proxy/',
+      baseOptions: {
+        headers: { 'GitLab-Agent-Id': '1' },
+      },
+    };
+
+    const mockPodsListFn = jest.fn().mockImplementation(() => {
+      return Promise.resolve({
+        data: {
+          items: k8sPodsMock,
+        },
+      });
+    });
+
+    const mockNamespacedPodsListFn = jest.fn().mockImplementation(mockPodsListFn);
+    const mockAllPodsListFn = jest.fn().mockImplementation(mockPodsListFn);
+
+    beforeEach(() => {
+      jest
+        .spyOn(CoreV1Api.prototype, 'listCoreV1NamespacedPod')
+        .mockImplementation(mockNamespacedPodsListFn);
+      jest
+        .spyOn(CoreV1Api.prototype, 'listCoreV1PodForAllNamespaces')
+        .mockImplementation(mockAllPodsListFn);
+    });
+
+    it('should request namespaced pods from the cluster_client library if namespace is specified', async () => {
+      const pods = await mockResolvers.Query.k8sPods(null, { configuration, namespace });
+
+      expect(mockNamespacedPodsListFn).toHaveBeenCalledWith(namespace);
+      expect(mockAllPodsListFn).not.toHaveBeenCalled();
+
+      expect(pods).toEqual(k8sPodsMock);
+    });
+    it('should request all pods from the cluster_client library if namespace is not specified', async () => {
+      const pods = await mockResolvers.Query.k8sPods(null, { configuration, namespace: '' });
+
+      expect(mockAllPodsListFn).toHaveBeenCalled();
+      expect(mockNamespacedPodsListFn).not.toHaveBeenCalled();
+
+      expect(pods).toEqual(k8sPodsMock);
+    });
+    it('should throw an error if the API call fails', async () => {
+      jest
+        .spyOn(CoreV1Api.prototype, 'listCoreV1PodForAllNamespaces')
+        .mockRejectedValue(new Error('API error'));
+
+      await expect(mockResolvers.Query.k8sPods(null, { configuration })).rejects.toThrow(
+        'API error',
+      );
     });
   });
   describe('stopEnvironment', () => {

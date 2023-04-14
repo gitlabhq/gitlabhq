@@ -1493,31 +1493,5 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
       let(:existing_issue) { create(:issue, project: project) }
       let(:issuable) { described_class.new(container: project, current_user: user, params: params).execute(existing_issue) }
     end
-
-    context 'with quick actions' do
-      context 'as work item' do
-        let(:opts) { { description: "/shrug" } }
-
-        context 'when work item type is not the default Issue' do
-          let(:issue) { create(:work_item, :task, description: "") }
-
-          it 'does not apply the quick action' do
-            expect do
-              update_issue(opts)
-            end.to change(issue, :description).to("/shrug")
-          end
-        end
-
-        context 'when work item type is the default Issue' do
-          let(:issue) { create(:work_item, :issue, description: "") }
-
-          it 'does not apply the quick action' do
-            expect do
-              update_issue(opts)
-            end.to change(issue, :description).to(" ¯\\＿(ツ)＿/¯")
-          end
-        end
-      end
-    end
   end
 end

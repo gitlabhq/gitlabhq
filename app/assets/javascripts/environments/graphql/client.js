@@ -5,6 +5,7 @@ import pageInfoQuery from './queries/page_info.query.graphql';
 import environmentToDeleteQuery from './queries/environment_to_delete.query.graphql';
 import environmentToRollbackQuery from './queries/environment_to_rollback.query.graphql';
 import environmentToStopQuery from './queries/environment_to_stop.query.graphql';
+import k8sPodsQuery from './queries/k8s_pods.query.graphql';
 import { resolvers } from './resolvers';
 import typeDefs from './typedefs.graphql';
 
@@ -79,6 +80,14 @@ export const apolloProvider = (endpoint) => {
         retryUrl: null,
         autoStopPath: null,
         lastDeployment: null,
+      },
+    },
+  });
+  cache.writeQuery({
+    query: k8sPodsQuery,
+    data: {
+      status: {
+        phase: '',
       },
     },
   });
