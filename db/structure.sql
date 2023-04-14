@@ -10760,6 +10760,26 @@ CREATE SEQUENCE abuse_reports_id_seq
 
 ALTER SEQUENCE abuse_reports_id_seq OWNED BY abuse_reports.id;
 
+CREATE TABLE abuse_trust_scores (
+    id bigint NOT NULL,
+    user_id bigint,
+    score double precision NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    source smallint NOT NULL,
+    correlation_id_value text,
+    CONSTRAINT check_77ca9551db CHECK ((char_length(correlation_id_value) <= 32))
+);
+
+CREATE SEQUENCE abuse_trust_scores_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE abuse_trust_scores_id_seq OWNED BY abuse_trust_scores.id;
+
 CREATE TABLE achievements (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
@@ -24504,6 +24524,8 @@ ALTER SEQUENCE zoom_meetings_id_seq OWNED BY zoom_meetings.id;
 
 ALTER TABLE ONLY abuse_reports ALTER COLUMN id SET DEFAULT nextval('abuse_reports_id_seq'::regclass);
 
+ALTER TABLE ONLY abuse_trust_scores ALTER COLUMN id SET DEFAULT nextval('abuse_trust_scores_id_seq'::regclass);
+
 ALTER TABLE ONLY achievements ALTER COLUMN id SET DEFAULT nextval('achievements_id_seq'::regclass);
 
 ALTER TABLE ONLY agent_activity_events ALTER COLUMN id SET DEFAULT nextval('agent_activity_events_id_seq'::regclass);
@@ -26196,6 +26218,9 @@ ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_
 
 ALTER TABLE ONLY abuse_reports
     ADD CONSTRAINT abuse_reports_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY abuse_trust_scores
+    ADD CONSTRAINT abuse_trust_scores_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY achievements
     ADD CONSTRAINT achievements_pkey PRIMARY KEY (id);
@@ -29361,6 +29386,8 @@ CREATE INDEX index_abuse_reports_on_status_category_and_id ON abuse_reports USIN
 CREATE INDEX index_abuse_reports_on_status_reporter_id_and_id ON abuse_reports USING btree (status, reporter_id, id);
 
 CREATE INDEX index_abuse_reports_on_user_id ON abuse_reports USING btree (user_id);
+
+CREATE INDEX index_abuse_trust_scores_on_user_id_and_source_and_created_at ON abuse_trust_scores USING btree (user_id, source, created_at);
 
 CREATE UNIQUE INDEX "index_achievements_on_namespace_id_LOWER_name" ON achievements USING btree (namespace_id, lower(name));
 
@@ -36531,6 +36558,9 @@ ALTER TABLE ONLY approval_project_rules_protected_branches
 
 ALTER TABLE ONLY packages_composer_cache_files
     ADD CONSTRAINT fk_rails_b82cea43a0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY abuse_trust_scores
+    ADD CONSTRAINT fk_rails_b903079eb4 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dora_configurations
     ADD CONSTRAINT fk_rails_b9b8d90ddb FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

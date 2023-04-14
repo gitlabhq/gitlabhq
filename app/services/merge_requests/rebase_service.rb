@@ -63,3 +63,5 @@ module MergeRequests
     end
   end
 end
+
+::MergeRequests::RebaseService.prepend_mod

@@ -13,7 +13,7 @@ describe('WorkItemLinksMenu', () => {
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findRemoveDropdownItem = () => wrapper.findComponent(GlDropdownItem);
 
-  beforeEach(async () => {
+  beforeEach(() => {
     createComponent();
   });
 

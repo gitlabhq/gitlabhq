@@ -79,15 +79,18 @@ describe('ManageViaMr component', () => {
       const buildConfigureSecurityFeatureMock = buildConfigureSecurityFeatureMockFactory(
         mutationId,
       );
-      const successHandler = jest.fn(async () => buildConfigureSecurityFeatureMock());
-      const noSuccessPathHandler = async () =>
+      const successHandler = jest.fn().mockResolvedValue(buildConfigureSecurityFeatureMock());
+      const noSuccessPathHandler = jest.fn().mockResolvedValue(
         buildConfigureSecurityFeatureMock({
           successPath: '',
-        });
-      const errorHandler = async (message = 'foo') => {
-        return buildConfigureSecurityFeatureMock({
-          errors: [message],
-        });
+        }),
+      );
+      const errorHandler = (message = 'foo') => {
+        return Promise.resolve(
+          buildConfigureSecurityFeatureMock({
+            errors: [message],
+          }),
+        );
       };
       const pendingHandler = () => new Promise(() => {});
 

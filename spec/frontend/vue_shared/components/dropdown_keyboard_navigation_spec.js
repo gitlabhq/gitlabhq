@@ -44,7 +44,7 @@ describe('DropdownKeyboardNavigation', () => {
       createComponent();
     });
 
-    it('should $emit @change with the default index', async () => {
+    it('should $emit @change with the default index', () => {
       expect(wrapper.emitted('change')[0]).toStrictEqual([MOCK_DEFAULT_INDEX]);
     });
 

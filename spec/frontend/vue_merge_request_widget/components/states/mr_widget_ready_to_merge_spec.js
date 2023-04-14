@@ -596,7 +596,7 @@ describe('ReadyToMerge', () => {
 
     describe('commits edit components', () => {
       describe('when fast-forward merge is enabled', () => {
-        it('should not be rendered if squash is disabled', async () => {
+        it('should not be rendered if squash is disabled', () => {
           createComponent({
             mr: {
               ffOnlyEnabled: true,

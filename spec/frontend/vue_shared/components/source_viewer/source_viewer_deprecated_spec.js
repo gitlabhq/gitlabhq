@@ -168,7 +168,7 @@ describe('Source Viewer component', () => {
   });
 
   describe('LineHighlighter', () => {
-    it('instantiates the lineHighlighter class', async () => {
+    it('instantiates the lineHighlighter class', () => {
       expect(LineHighlighter).toHaveBeenCalledWith({ scrollBehavior: 'auto' });
     });
   });

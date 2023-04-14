@@ -838,7 +838,7 @@ describe('MrWidgetOptions', () => {
   });
 
   describe('security widget', () => {
-    const setup = async (hasPipeline) => {
+    const setup = (hasPipeline) => {
       const mrData = {
         ...mockData,
         ...(hasPipeline ? {} : { pipeline: null }),
@@ -853,7 +853,9 @@ describe('MrWidgetOptions', () => {
         apolloMock: [
           [
             securityReportMergeRequestDownloadPathsQuery,
-            async () => ({ data: securityReportMergeRequestDownloadPathsQueryResponse }),
+            jest
+              .fn()
+              .mockResolvedValue({ data: securityReportMergeRequestDownloadPathsQueryResponse }),
           ],
         ],
       });

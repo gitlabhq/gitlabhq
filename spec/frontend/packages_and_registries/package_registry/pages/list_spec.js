@@ -195,6 +195,11 @@ describe('PackagesListApp', () => {
         list: expect.arrayContaining([expect.objectContaining({ id: packageData().id })]),
         isLoading: false,
         pageInfo: expect.objectContaining({ endCursor: pagination().endCursor }),
+        groupSettings: expect.objectContaining({
+          mavenPackageRequestsForwarding: true,
+          npmPackageRequestsForwarding: true,
+          pypiPackageRequestsForwarding: true,
+        }),
       });
     });
 
@@ -244,6 +249,16 @@ describe('PackagesListApp', () => {
       expect(resolver).toHaveBeenCalledWith(
         expect.objectContaining({ isGroupPage, [sortType]: 'NAME_DESC' }),
       );
+    });
+
+    it('list component has group settings prop set', () => {
+      expect(findListComponent().props()).toMatchObject({
+        groupSettings: expect.objectContaining({
+          mavenPackageRequestsForwarding: true,
+          npmPackageRequestsForwarding: true,
+          pypiPackageRequestsForwarding: true,
+        }),
+      });
     });
   });
 

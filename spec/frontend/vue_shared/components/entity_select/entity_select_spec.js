@@ -201,7 +201,7 @@ describe('EntitySelect', () => {
   describe('pagination', () => {
     const searchString = 'searchString';
 
-    beforeEach(async () => {
+    beforeEach(() => {
       let requestCount = 0;
       fetchItemsMock.mockImplementation((searchQuery, page) => {
         requestCount += 1;

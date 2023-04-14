@@ -55,7 +55,7 @@ describe('DropdownWidget component', () => {
       expect(wrapper.emitted('set-search')).toEqual([[searchTerm]]);
     });
 
-    it('renders one selectable item per passed option', async () => {
+    it('renders one selectable item per passed option', () => {
       expect(findDropdownItems()).toHaveLength(2);
     });
 

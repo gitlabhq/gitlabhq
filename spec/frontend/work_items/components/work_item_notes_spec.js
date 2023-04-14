@@ -123,7 +123,7 @@ describe('WorkItemNotes component', () => {
     });
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     createComponent();
   });
 

@@ -128,7 +128,7 @@ describe('Work item comment form component', () => {
       expect(findMarkdownEditor().props('value')).toBe('new comment');
     });
 
-    it('calls `updateDraft` with correct parameters', async () => {
+    it('calls `updateDraft` with correct parameters', () => {
       findMarkdownEditor().vm.$emit('input', 'new comment');
 
       expect(autosave.updateDraft).toHaveBeenCalledWith(mockAutosaveKey, 'new comment');

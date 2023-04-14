@@ -408,7 +408,7 @@ describe('WorkItemDetail component', () => {
         expect(findParent().exists()).toBe(true);
       });
 
-      it('does not show work item type', async () => {
+      it('does not show work item type', () => {
         expect(findWorkItemType().exists()).toBe(false);
       });
 

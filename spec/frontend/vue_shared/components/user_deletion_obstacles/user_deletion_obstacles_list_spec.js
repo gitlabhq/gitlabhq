@@ -61,7 +61,7 @@ describe('User deletion obstacles list', () => {
     ${true}       | ${'You are currently a part of:'}           | ${'Removing yourself may put your on-call team at risk of missing a notification.'}
     ${false}      | ${`User ${userName} is currently part of:`} | ${'Removing this user may put their on-call team at risk of missing a notification.'}
   `('when current user', ({ isCurrentUser, titleText, footerText }) => {
-    it(`${isCurrentUser ? 'is' : 'is not'} a part of on-call management`, async () => {
+    it(`${isCurrentUser ? 'is' : 'is not'} a part of on-call management`, () => {
       createComponent({
         isCurrentUser,
       });

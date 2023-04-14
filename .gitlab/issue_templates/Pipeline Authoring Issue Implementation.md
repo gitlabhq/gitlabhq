@@ -20,6 +20,7 @@ _NOTE: If the issue has addressed all of these questions, this separate section 
 Some relevant technical details, if applicable, such as:
 
 - Does this need a ~"feature flag"?
+- Does there need to be an associated ~"instrumentation" issue created related to this work?
 - Is there an example response showing the data structure that should be returned (new endpoints only)?
 - What permissions should be used?
 - Is this EE or CE?

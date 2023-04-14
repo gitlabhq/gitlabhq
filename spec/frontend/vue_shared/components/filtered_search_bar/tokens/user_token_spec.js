@@ -140,7 +140,7 @@ describe('UserToken', () => {
           });
         });
 
-        it('sets `loading` to false when request completes', async () => {
+        it('sets `loading` to false when request completes', () => {
           expect(findBaseToken().props('suggestionsLoading')).toBe(false);
         });
       });
@@ -187,7 +187,7 @@ describe('UserToken', () => {
       expect(tokenValue.text()).toBe(mockUsers[0].name); // "Administrator"
     });
 
-    it('renders token value with correct avatarUrl from user object', async () => {
+    it('renders token value with correct avatarUrl from user object', () => {
       const getAvatarEl = () =>
         wrapper.findAllComponents(GlFilteredSearchTokenSegment).at(2).findComponent(GlAvatar);
 

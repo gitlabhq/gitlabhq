@@ -168,6 +168,7 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu, feature_catego
           stub_feature_flags(harbor_registry_integration: true)
 
           is_expected.not_to be_nil
+          expect(subject.active_routes[:controller]).to eq('projects/harbor/repositories')
         end
       end
 

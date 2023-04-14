@@ -91,7 +91,7 @@ describe('EmojiToken', () => {
       describe('when request is successful', () => {
         const searchTerm = 'foo';
 
-        beforeEach(async () => {
+        beforeEach(() => {
           wrapper = createComponent({
             config: {
               fetchEmojis: jest.fn().mockResolvedValue({ data: mockEmojis }),
@@ -135,7 +135,7 @@ describe('EmojiToken', () => {
   describe('template', () => {
     const defaultEmojis = OPTIONS_NONE_ANY;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       wrapper = createComponent({
         value: { data: `"${mockEmojis[0].name}"` },
         config: {

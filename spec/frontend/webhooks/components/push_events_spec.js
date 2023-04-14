@@ -61,7 +61,7 @@ describe('Webhook push events form editor component', () => {
         await nextTick();
       });
 
-      it('all_branches should be selected by default', async () => {
+      it('all_branches should be selected by default', () => {
         expect(findPushEventRulesGroup().element).toMatchSnapshot();
       });
 

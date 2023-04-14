@@ -120,7 +120,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
   describe('fetch', () => {
     it('sets the data.collapsed property after a successfull call - multiPolling: false', async () => {
       const mockData = { headers: {}, status: HTTP_STATUS_OK, data: { vulnerabilities: [] } };
-      createComponent({ propsData: { fetchCollapsedData: async () => mockData } });
+      createComponent({ propsData: { fetchCollapsedData: () => Promise.resolve(mockData) } });
       await waitForPromises();
       expect(wrapper.emitted('input')[0][0]).toEqual({ collapsed: mockData.data, expanded: null });
     });
@@ -286,7 +286,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       expect(findExpandedSection().text()).toBe('More complex content');
     });
 
-    it('emits a toggle even when button is toggled', async () => {
+    it('emits a toggle even when button is toggled', () => {
       createComponent({
         propsData: {
           isCollapsible: true,

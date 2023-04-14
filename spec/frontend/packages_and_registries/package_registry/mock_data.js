@@ -103,6 +103,13 @@ export const linksData = {
   },
 };
 
+export const defaultPackageGroupSettings = {
+  mavenPackageRequestsForwarding: true,
+  npmPackageRequestsForwarding: true,
+  pypiPackageRequestsForwarding: true,
+  __typename: 'PackageSettings',
+};
+
 export const packageVersions = () => [
   {
     createdAt: '2021-08-10T09:33:54Z',
@@ -381,7 +388,12 @@ export const packageDestroyFilesMutationError = () => ({
   ],
 });
 
-export const packagesListQuery = ({ type = 'group', extend = {}, extendPagination = {} } = {}) => ({
+export const packagesListQuery = ({
+  type = 'group',
+  extend = {},
+  extendPagination = {},
+  packageSettings = defaultPackageGroupSettings,
+} = {}) => ({
   data: {
     [type]: {
       id: '1',
@@ -408,6 +420,14 @@ export const packagesListQuery = ({ type = 'group', extend = {}, extendPaginatio
         pageInfo: pagination(extendPagination),
         __typename: 'PackageConnection',
       },
+      ...(type === 'group' && { packageSettings }),
+      ...(type === 'project' && {
+        group: {
+          id: '1',
+          packageSettings,
+          __typename: 'Group',
+        },
+      }),
       ...extend,
       __typename: capitalize(type),
     },

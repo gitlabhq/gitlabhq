@@ -78,14 +78,8 @@ or with a [user-owned application](../../oauth_provider.md#create-a-user-owned-a
 
 1. Go to the [appropriate **Applications** section](../../oauth_provider.md).
 1. In the **Name** text box, enter a descriptive name for the integration (for example, `Jira`).
-1. In the **Redirect URI** text box, enter the appropriate URI.
-   Replace `<gitlab.example.com>` with your GitLab instance domain:
-   - **In Jira 8.14 and later**, use the
-     generated `Redirect URL` from
-     [linking GitLab accounts](https://confluence.atlassian.com/adminjiraserver/linking-gitlab-accounts-1027142272.html).
-   - **In Jira 8.13 and earlier**, use `https://<gitlab.example.com>/login/oauth/callback`.
-     If you use GitLab.com, the URL is `https://gitlab.com/login/oauth/callback`.
-
+1. In the **Redirect URI** text box, enter the generated **Redirect URL** from
+   [linking GitLab accounts](https://confluence.atlassian.com/adminjiraserver/linking-gitlab-accounts-1027142272.html).
 1. In **Scopes**, select `api` and clear any other checkboxes.
    The DVCS connector requires a **write-enabled** `api` scope to automatically create and manage required webhooks.
 1. Select **Submit**.
@@ -101,19 +95,8 @@ it completes, refreshes every 60 minutes:
 1. Complete the [GitLab configuration](#configure-a-gitlab-application-for-dvcs).
 1. Go to your DVCS account:
    - **For Jira Server**, select **Settings (gear) > Applications > DVCS accounts**.
-1. To create a new integration, select the appropriate value for **Host**:
-   - **In Jira 8.14 and later**, select **GitLab** or
-     **GitLab Self-Managed**.
-   - **In Jira 8.13 and earlier**, select **GitHub Enterprise**.
-1. For **Team or User Account**, enter:
-   - **In Jira 8.14 and later**:
-      - The relative path of a top-level GitLab group that
-        [the GitLab user](#configure-a-gitlab-application-for-dvcs) can access.
-   - **In Jira 8.13 and earlier**:
-      - The relative path of a top-level GitLab group that
-        [the GitLab user](#configure-a-gitlab-application-for-dvcs) can access.
-      - The relative path of your personal namespace.
-
+1. To create a new integration, for **Host**, select **GitLab** or **GitLab Self-Managed**.
+1. For **Team or User Account**, enter the relative path of a top-level GitLab group that [the GitLab user](#configure-a-gitlab-application-for-dvcs) can access.
 1. In the **Host URL** text box, enter the appropriate URL.
    Replace `<gitlab.example.com>` with your GitLab instance domain.
    Use `https://<gitlab.example.com>`.

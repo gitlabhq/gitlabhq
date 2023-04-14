@@ -4,7 +4,6 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
-import DeletePackageModal from '~/packages_and_registries/shared/components/delete_package_modal.vue';
 import DeleteModal from '~/packages_and_registries/package_registry/components/delete_modal.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
 import {
@@ -17,7 +16,7 @@ import {
 } from '~/packages_and_registries/package_registry/constants';
 import PackagesList from '~/packages_and_registries/package_registry/components/list/packages_list.vue';
 import Tracking from '~/tracking';
-import { packageData } from '../../mock_data';
+import { defaultPackageGroupSettings, packageData } from '../../mock_data';
 
 describe('packages_list', () => {
   let wrapper;
@@ -39,17 +38,19 @@ describe('packages_list', () => {
     list: [firstPackage, secondPackage],
     isLoading: false,
     pageInfo: {},
+    groupSettings: defaultPackageGroupSettings,
   };
 
   const EmptySlotStub = { name: 'empty-slot-stub', template: '<div>bar</div>' };
 
   const findPackagesListLoader = () => wrapper.findComponent(PackagesListLoader);
-  const findPackageListDeleteModal = () => wrapper.findComponent(DeletePackageModal);
   const findEmptySlot = () => wrapper.findComponent(EmptySlotStub);
   const findRegistryList = () => wrapper.findComponent(RegistryList);
   const findPackagesListRow = () => wrapper.findComponent(PackagesListRow);
   const findErrorPackageAlert = () => wrapper.findComponent(GlAlert);
   const findDeletePackagesModal = () => wrapper.findComponent(DeleteModal);
+
+  const showMock = jest.fn();
 
   const mountComponent = (props) => {
     wrapper = shallowMountExtended(PackagesList, {
@@ -58,10 +59,9 @@ describe('packages_list', () => {
         ...props,
       },
       stubs: {
-        DeletePackageModal,
         DeleteModal: stubComponent(DeleteModal, {
           methods: {
-            show: jest.fn(),
+            show: showMock,
           },
         }),
         GlSprintf,
@@ -119,15 +119,20 @@ describe('packages_list', () => {
   });
 
   describe('layout', () => {
-    it("doesn't contain a visible modal component", () => {
+    beforeEach(() => {
       mountComponent();
+    });
 
-      expect(findPackageListDeleteModal().props('itemToBeDeleted')).toBeNull();
+    it('modal component is not shown', () => {
+      expect(showMock).not.toHaveBeenCalled();
+    });
+
+    it('modal component props is empty', () => {
+      expect(findDeletePackagesModal().props('itemsToBeDeleted')).toEqual([]);
+      expect(findDeletePackagesModal().props('showRequestForwardingContent')).toBe(false);
     });
 
     it('does not have an error alert displayed', () => {
-      mountComponent();
-
       expect(findErrorPackageAlert().exists()).toBe(false);
     });
   });
@@ -146,8 +151,8 @@ describe('packages_list', () => {
       finderFunction().vm.$emit('delete', deletePayload);
     });
 
-    it('passes itemToBeDeleted to the modal', () => {
-      expect(findPackageListDeleteModal().props('itemToBeDeleted')).toStrictEqual(firstPackage);
+    it('passes itemsToBeDeleted to the modal', () => {
+      expect(findDeletePackagesModal().props('itemsToBeDeleted')).toStrictEqual([firstPackage]);
     });
 
     it('requesting delete tracks the right action', () => {
@@ -158,9 +163,13 @@ describe('packages_list', () => {
       );
     });
 
+    it('modal component is shown', () => {
+      expect(showMock).toHaveBeenCalledTimes(1);
+    });
+
     describe('when modal confirms', () => {
       beforeEach(() => {
-        findPackageListDeleteModal().vm.$emit('ok');
+        findDeletePackagesModal().vm.$emit('confirm');
       });
 
       it('emits delete when modal confirms', () => {
@@ -176,14 +185,14 @@ describe('packages_list', () => {
       });
     });
 
-    it.each(['ok', 'cancel'])('resets itemToBeDeleted when modal emits %s', async (event) => {
-      await findPackageListDeleteModal().vm.$emit(event);
+    it.each(['confirm', 'cancel'])('resets itemsToBeDeleted when modal emits %s', async (event) => {
+      await findDeletePackagesModal().vm.$emit(event);
 
-      expect(findPackageListDeleteModal().props('itemToBeDeleted')).toBeNull();
+      expect(findDeletePackagesModal().props('itemsToBeDeleted')).toEqual([]);
     });
 
     it('canceling delete tracks the right action', () => {
-      findPackageListDeleteModal().vm.$emit('cancel');
+      findDeletePackagesModal().vm.$emit('cancel');
 
       expect(eventSpy).toHaveBeenCalledWith(
         category,
@@ -237,7 +246,7 @@ describe('packages_list', () => {
     it.each(['confirm', 'cancel'])('resets itemsToBeDeleted when modal emits %s', async (event) => {
       await findDeletePackagesModal().vm.$emit(event);
 
-      expect(findDeletePackagesModal().props('itemsToBeDeleted')).toHaveLength(0);
+      expect(findDeletePackagesModal().props('itemsToBeDeleted')).toEqual([]);
     });
 
     it('canceling delete tracks the right action', () => {
@@ -273,7 +282,9 @@ describe('packages_list', () => {
 
       await nextTick();
 
-      expect(findPackageListDeleteModal().text()).toContain(errorPackage.name);
+      expect(showMock).toHaveBeenCalledTimes(1);
+
+      expect(findDeletePackagesModal().props('itemsToBeDeleted')).toStrictEqual([errorPackage]);
     });
   });
 

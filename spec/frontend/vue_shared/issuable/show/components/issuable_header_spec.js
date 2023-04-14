@@ -82,7 +82,7 @@ describe('IssuableHeader', () => {
       expect(statusBoxEl.text()).toContain('Open');
     });
 
-    it('renders blocked icon when issuable is blocked', async () => {
+    it('renders blocked icon when issuable is blocked', () => {
       createComponent({
         blocked: true,
       });
@@ -93,7 +93,7 @@ describe('IssuableHeader', () => {
       expect(blockedEl.findComponent(GlIcon).props('name')).toBe('lock');
     });
 
-    it('renders confidential icon when issuable is confidential', async () => {
+    it('renders confidential icon when issuable is confidential', () => {
       createComponent({
         confidential: true,
       });

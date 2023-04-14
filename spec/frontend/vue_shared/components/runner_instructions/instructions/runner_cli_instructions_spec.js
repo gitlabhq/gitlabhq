@@ -65,7 +65,7 @@ describe('RunnerCliInstructions component', () => {
       await waitForPromises();
     });
 
-    it('should not show alert', async () => {
+    it('should not show alert', () => {
       expect(findAlert().exists()).toBe(false);
     });
 
@@ -85,13 +85,13 @@ describe('RunnerCliInstructions component', () => {
         });
       });
 
-      it('binary instructions are shown', async () => {
+      it('binary instructions are shown', () => {
         const instructions = findBinaryInstructions().text();
 
         expect(instructions).toBe(installInstructions.trim());
       });
 
-      it('register command is shown with a replaced token', async () => {
+      it('register command is shown with a replaced token', () => {
         const command = findRegisterCommand().text();
 
         expect(command).toBe(

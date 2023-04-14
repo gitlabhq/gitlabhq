@@ -34,20 +34,20 @@ export default {
   inject: ['emptyListIllustration', 'isGroupPage', 'fullPath', 'settingsPath'],
   data() {
     return {
-      packages: {},
+      packagesResource: {},
       sort: '',
       filters: {},
       mutationLoading: false,
     };
   },
   apollo: {
-    packages: {
+    packagesResource: {
       query: getPackagesQuery,
       variables() {
         return this.queryVariables;
       },
       update(data) {
-        return data[this.graphqlResource]?.packages ?? {};
+        return data[this.graphqlResource] ?? {};
       },
       skip() {
         return !this.sort;
@@ -55,6 +55,14 @@ export default {
     },
   },
   computed: {
+    packages() {
+      return this.packagesResource?.packages ?? {};
+    },
+    groupSettings() {
+      return this.isGroupPage
+        ? this.packagesResource?.packageSettings ?? {}
+        : this.packagesResource?.group?.packageSettings ?? {};
+    },
     queryVariables() {
       return {
         isGroupPage: this.isGroupPage,
@@ -87,7 +95,7 @@ export default {
         : this.$options.i18n.noResultsTitle;
     },
     isLoading() {
-      return this.$apollo.queries.packages.loading || this.mutationLoading;
+      return this.$apollo.queries.packagesResource.loading || this.mutationLoading;
     },
     refetchQueriesData() {
       return [
@@ -127,7 +135,7 @@ export default {
         after: this.pageInfo?.endCursor,
       };
 
-      this.$apollo.queries.packages.fetchMore({
+      this.$apollo.queries.packagesResource.fetchMore({
         variables,
         updateQuery: this.updateQuery,
       });
@@ -140,7 +148,7 @@ export default {
         before: this.pageInfo?.startCursor,
       };
 
-      this.$apollo.queries.packages.fetchMore({
+      this.$apollo.queries.packagesResource.fetchMore({
         variables,
         updateQuery: this.updateQuery,
       });
@@ -184,6 +192,7 @@ export default {
     >
       <template #default="{ deletePackages }">
         <package-list
+          :group-settings="groupSettings"
           :list="packages.nodes"
           :is-loading="isLoading"
           :page-info="pageInfo"

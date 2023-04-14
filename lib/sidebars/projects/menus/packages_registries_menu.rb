@@ -84,7 +84,7 @@ module Sidebars
             title: _('Harbor Registry'),
             link: project_harbor_repositories_path(context.project),
             super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
-            active_routes: { controller: :harbor_registry },
+            active_routes: { controller: 'projects/harbor/repositories' },
             item_id: :harbor_registry
           )
         end

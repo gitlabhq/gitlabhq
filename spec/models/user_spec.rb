@@ -181,6 +181,7 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:achievements).through(:user_achievements).class_name('Achievements::Achievement').inverse_of(:users) }
     it { is_expected.to have_many(:namespace_commit_emails).class_name('Users::NamespaceCommitEmail') }
     it { is_expected.to have_many(:audit_events).with_foreign_key(:author_id).inverse_of(:user) }
+    it { is_expected.to have_many(:abuse_trust_scores).class_name('Abuse::TrustScore') }
 
     it do
       is_expected.to have_many(:alert_assignees).class_name('::AlertManagement::AlertAssignee').inverse_of(:assignee)

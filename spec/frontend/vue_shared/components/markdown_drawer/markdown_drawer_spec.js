@@ -156,7 +156,7 @@ describe('MarkdownDrawer', () => {
       renderGLFMSpy.mockClear();
     });
 
-    it('fetches the Markdown and caches it', async () => {
+    it('fetches the Markdown and caches it', () => {
       expect(getRenderedMarkdown).toHaveBeenCalledTimes(1);
       expect(Object.keys(cache)).toHaveLength(1);
     });
@@ -205,7 +205,7 @@ describe('MarkdownDrawer', () => {
   });
 
   describe('While Markdown is fetching', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       getRenderedMarkdown.mockReturnValue(new Promise(() => {}));
 
       createComponent();
@@ -215,7 +215,7 @@ describe('MarkdownDrawer', () => {
       getRenderedMarkdown.mockClear();
     });
 
-    it('shows skeleton', async () => {
+    it('shows skeleton', () => {
       expect(findSkeleton().exists()).toBe(true);
     });
   });

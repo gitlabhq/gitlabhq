@@ -219,6 +219,7 @@ class User < ApplicationRecord
   has_many :abuse_reports,            dependent: :destroy, foreign_key: :user_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :reported_abuse_reports,   dependent: :destroy, foreign_key: :reporter_id, class_name: "AbuseReport" # rubocop:disable Cop/ActiveRecordDependent
   has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :abuse_trust_scores,       class_name: 'Abuse::TrustScore', foreign_key: :user_id
   has_many :builds,                   class_name: 'Ci::Build'
   has_many :pipelines,                class_name: 'Ci::Pipeline'
   has_many :todos,                    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -2208,6 +2209,10 @@ class User < ApplicationRecord
 
     namespace_commit_emails.find_by(namespace: project.project_namespace) ||
       namespace_commit_emails.find_by(namespace: project.root_namespace)
+  end
+
+  def trust_scores_for_source(source)
+    abuse_trust_scores.where(source: source)
   end
 
   protected

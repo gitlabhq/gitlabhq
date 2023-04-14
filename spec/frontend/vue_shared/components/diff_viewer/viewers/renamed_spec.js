@@ -155,7 +155,7 @@ describe('Renamed Diff Viewer', () => {
       createRenamedComponent({ props: { diffFile } });
     });
 
-    it(`transitions the component with "${TRANSITION_ACKNOWLEDGE_ERROR}"`, async () => {
+    it(`transitions the component with "${TRANSITION_ACKNOWLEDGE_ERROR}"`, () => {
       jest.spyOn(transitionModule, 'transition');
 
       expect(transitionModule.transition).not.toHaveBeenCalled();

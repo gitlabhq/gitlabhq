@@ -351,7 +351,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   });
 
   describe('when contentEditor is disabled', () => {
-    it('resets the editingMode to markdownField', async () => {
+    it('resets the editingMode to markdownField', () => {
       localStorage.setItem('gl-markdown-editor-mode', 'contentEditor');
 
       buildWrapper({ propsData: { autosaveKey: 'issue/1234', enableContentEditor: false } });

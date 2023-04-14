@@ -345,7 +345,7 @@ describe('Web IDE link component', () => {
 
     it.each(testActions)(
       'emits the correct event when an action handler is called',
-      async ({ props, expectedEventPayload }) => {
+      ({ props, expectedEventPayload }) => {
         createComponent({ ...props, needsToFork: true, disableForkModal: true });
 
         findActionsButton().props('actions')[0].handle();
@@ -354,7 +354,7 @@ describe('Web IDE link component', () => {
       },
     );
 
-    it.each(testActions)('renders the fork confirmation modal', async ({ props }) => {
+    it.each(testActions)('renders the fork confirmation modal', ({ props }) => {
       createComponent({ ...props, needsToFork: true });
 
       expect(findForkConfirmModal().exists()).toBe(true);

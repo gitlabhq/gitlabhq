@@ -32,7 +32,7 @@ describe('TrackEvent directive', () => {
     expect(Tracking.event).not.toHaveBeenCalled();
   });
 
-  it('tracks event on click if tracking info provided', async () => {
+  it('tracks event on click if tracking info provided', () => {
     wrapper = mountComponent({
       category: 'Tracking',
       action: 'click_trackable_btn',

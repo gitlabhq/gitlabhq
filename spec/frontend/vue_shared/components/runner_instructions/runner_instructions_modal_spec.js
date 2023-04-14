@@ -80,7 +80,7 @@ describe('RunnerInstructionsModal component', () => {
       await waitForPromises();
     });
 
-    it('should not show alert', async () => {
+    it('should not show alert', () => {
       expect(findAlert().exists()).toBe(false);
     });
 

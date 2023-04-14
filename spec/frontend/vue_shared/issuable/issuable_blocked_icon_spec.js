@@ -139,7 +139,7 @@ describe('IssuableBlockedIcon', () => {
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
-  it('should not query for blocking issuables by default', async () => {
+  it('should not query for blocking issuables by default', () => {
     createWrapperWithApollo();
 
     expect(findGlPopover().text()).not.toContain(mockBlockingIssue1.title);
@@ -195,18 +195,18 @@ describe('IssuableBlockedIcon', () => {
         await mouseenter();
       });
 
-      it('should render a title of the issuable', async () => {
+      it('should render a title of the issuable', () => {
         expect(findIssuableTitle().text()).toBe(mockBlockingIssue1.title);
       });
 
-      it('should render issuable reference and link to the issuable', async () => {
+      it('should render issuable reference and link to the issuable', () => {
         const formattedRef = mockBlockingIssue1.reference.split('/')[1];
 
         expect(findGlLink().text()).toBe(formattedRef);
         expect(findGlLink().attributes('href')).toBe(mockBlockingIssue1.webUrl);
       });
 
-      it('should render popover title with correct blocking issuable count', async () => {
+      it('should render popover title with correct blocking issuable count', () => {
         expect(findPopoverTitle().text()).toBe('Blocked by 1 issue');
       });
     });
@@ -241,7 +241,7 @@ describe('IssuableBlockedIcon', () => {
         expect(wrapper.html()).toMatchSnapshot();
       });
 
-      it('should render popover title with correct blocking issuable count', async () => {
+      it('should render popover title with correct blocking issuable count', () => {
         expect(findPopoverTitle().text()).toBe('Blocked by 4 issues');
       });
 
@@ -249,7 +249,7 @@ describe('IssuableBlockedIcon', () => {
         expect(findHiddenBlockingCount().text()).toBe('+ 1 more issue');
       });
 
-      it('should link to the blocked issue page at the related issue anchor', async () => {
+      it('should link to the blocked issue page at the related issue anchor', () => {
         expect(findViewAllIssuableLink().text()).toBe('View all blocking issues');
         expect(findViewAllIssuableLink().attributes('href')).toBe(
           `${mockBlockedIssue2.webUrl}#related-issues`,

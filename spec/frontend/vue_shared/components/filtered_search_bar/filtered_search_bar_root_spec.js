@@ -398,7 +398,7 @@ describe('FilteredSearchBarRoot', () => {
       expect(glFilteredSearchEl.props('historyItems')).toEqual(mockHistoryItems);
     });
 
-    it('renders checkbox when `showCheckbox` prop is true', async () => {
+    it('renders checkbox when `showCheckbox` prop is true', () => {
       let wrapperWithCheckbox = createComponent({
         showCheckbox: true,
       });

@@ -504,7 +504,7 @@ describe('IssuableListRoot', () => {
       });
     });
 
-    it('has the page size change component', async () => {
+    it('has the page size change component', () => {
       expect(findPageSizeSelector().exists()).toBe(true);
     });
 

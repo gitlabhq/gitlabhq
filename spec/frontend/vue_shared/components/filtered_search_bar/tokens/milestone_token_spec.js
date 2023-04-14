@@ -153,7 +153,7 @@ describe('MilestoneToken', () => {
       { text: 'bar', value: 'baz' },
     ];
 
-    beforeEach(async () => {
+    beforeEach(() => {
       wrapper = createComponent({
         value: { data: `"${mockRegularMilestone.title}"` },
         config: {

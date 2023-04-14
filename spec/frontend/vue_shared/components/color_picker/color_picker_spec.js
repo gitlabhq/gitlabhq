@@ -96,7 +96,7 @@ describe('ColorPicker', () => {
       expect(colorTextInput().attributes('class')).not.toContain('is-invalid');
     });
 
-    it('shows invalid feedback when the state is marked as invalid', async () => {
+    it('shows invalid feedback when the state is marked as invalid', () => {
       createComponent(mount, { invalidFeedback: invalidText, state: false });
 
       expect(invalidFeedback().text()).toBe(invalidText);

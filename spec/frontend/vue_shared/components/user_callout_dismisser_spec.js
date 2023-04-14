@@ -31,18 +31,18 @@ describe('UserCalloutDismisser', () => {
   const MOCK_FEATURE_NAME = 'mock_feature_name';
 
   // Query handlers
-  const successHandlerFactory = (dismissedCallouts = []) => async () =>
-    userCalloutsResponse(dismissedCallouts);
-  const anonUserHandler = async () => anonUserCalloutsResponse();
+  const successHandlerFactory = (dismissedCallouts = []) => () =>
+    Promise.resolve(userCalloutsResponse(dismissedCallouts));
+  const anonUserHandler = () => Promise.resolve(anonUserCalloutsResponse());
   const errorHandler = () => Promise.reject(new Error('query error'));
   const pendingHandler = () => new Promise(() => {});
 
   // Mutation handlers
-  const mutationSuccessHandlerSpy = jest.fn(async (variables) =>
-    userCalloutMutationResponse(variables),
+  const mutationSuccessHandlerSpy = jest.fn((variables) =>
+    Promise.resolve(userCalloutMutationResponse(variables)),
   );
-  const mutationErrorHandlerSpy = jest.fn(async (variables) =>
-    userCalloutMutationResponse(variables, ['mutation error']),
+  const mutationErrorHandlerSpy = jest.fn((variables) =>
+    Promise.resolve(userCalloutMutationResponse(variables, ['mutation error'])),
   );
 
   const defaultScopedSlotSpy = jest.fn();
