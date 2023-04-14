@@ -72,6 +72,10 @@ FactoryBot.define do
       user_type { :security_bot }
     end
 
+    trait :llm_bot do
+      user_type { :llm_bot }
+    end
+
     trait :external do
       external { true }
     end

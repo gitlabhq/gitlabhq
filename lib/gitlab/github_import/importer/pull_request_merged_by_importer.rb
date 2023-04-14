@@ -17,11 +17,7 @@ module Gitlab
         def execute
           user_finder = GithubImport::UserFinder.new(project, client)
 
-          gitlab_user_id = begin
-            user_finder.user_id_for(pull_request.merged_by)
-          rescue ::Octokit::NotFound
-            nil
-          end
+          gitlab_user_id = user_finder.user_id_for(pull_request.merged_by)
 
           metrics_upsert(gitlab_user_id)
 

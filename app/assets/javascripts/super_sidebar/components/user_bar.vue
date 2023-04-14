@@ -2,6 +2,7 @@
 import { GlBadge, GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { highCountTrim } from '~/lib/utils/text_utility';
 import logo from '../../../../views/shared/_logo.svg';
 import { toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
 import CreateMenu from './create_menu.vue';
@@ -59,11 +60,26 @@ export default {
   data() {
     return {
       mrMenuShown: false,
+      todoCount: this.sidebarData.todos_pending_count,
     };
+  },
+  computed: {
+    formattedTodoCount() {
+      return highCountTrim(this.todoCount);
+    },
+  },
+  mounted() {
+    document.addEventListener('todo:toggle', this.updateTodos);
+  },
+  beforeDestroy() {
+    document.removeEventListener('todo:toggle', this.updateTodos);
   },
   methods: {
     collapseSidebar() {
       toggleSuperSidebarCollapsed(true, true, true);
+    },
+    updateTodos(e) {
+      this.todoCount = e.detail.count || 0;
     },
   },
 };
@@ -94,8 +110,9 @@ export default {
         :href="sidebarData.canary_toggle_com_url"
         size="sm"
         class="gl-ml-2"
-        >{{ $options.NEXT_LABEL }}</gl-badge
       >
+        {{ $options.NEXT_LABEL }}
+      </gl-badge>
       <div class="gl-flex-grow-1"></div>
       <gl-button
         v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.collapseSidebar"
@@ -165,9 +182,9 @@ export default {
       </merge-request-menu>
       <counter
         v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.todoList"
-        class="gl-flex-basis-third shortcuts-todos"
+        class="gl-flex-basis-third shortcuts-todos js-todos-count"
         icon="todo-done"
-        :count="sidebarData.todos_pending_count"
+        :count="formattedTodoCount"
         href="/dashboard/todos"
         :label="$options.i18n.todoList"
         data-qa-selector="todos_shortcut_button"

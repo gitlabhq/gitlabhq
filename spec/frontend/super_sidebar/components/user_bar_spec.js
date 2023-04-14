@@ -1,6 +1,6 @@
 import { GlBadge } from '@gitlab/ui';
 import Vuex from 'vuex';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { __ } from '~/locale';
 import CreateMenu from '~/super_sidebar/components/create_menu.vue';
@@ -10,8 +10,13 @@ import Counter from '~/super_sidebar/components/counter.vue';
 import UserBar from '~/super_sidebar/components/user_bar.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
+import { highCountTrim } from '~/lib/utils/text_utility';
 import { sidebarData } from '../mock_data';
 import { MOCK_DEFAULT_SEARCH_OPTIONS } from './global_search/mock_data';
+
+jest.mock('~/lib/utils/text_utility', () => ({
+  highCountTrim: jest.fn().mockReturnValue('99+'),
+}));
 
 describe('UserBar component', () => {
   let wrapper;
@@ -85,15 +90,25 @@ describe('UserBar component', () => {
       expect(mrsCounter.attributes('data-track-property')).toBe('nav_core_menu');
     });
 
-    it('renders todos counter', () => {
-      const todosCounter = findTodosCounter();
-      expect(todosCounter.props('count')).toBe(sidebarData.todos_pending_count);
-      expect(todosCounter.props('href')).toBe('/dashboard/todos');
-      expect(todosCounter.props('label')).toBe(__('To-Do list'));
-      expect(todosCounter.attributes('data-track-action')).toBe('click_link');
-      expect(todosCounter.attributes('data-track-label')).toBe('todos_link');
-      expect(todosCounter.attributes('data-track-property')).toBe('nav_core_menu');
-      expect(todosCounter.attributes('class')).toContain('shortcuts-todos');
+    describe('Todos counter', () => {
+      it('renders it', () => {
+        const todosCounter = findTodosCounter();
+        expect(todosCounter.props('href')).toBe('/dashboard/todos');
+        expect(todosCounter.props('label')).toBe(__('To-Do list'));
+        expect(todosCounter.attributes('data-track-action')).toBe('click_link');
+        expect(todosCounter.attributes('data-track-label')).toBe('todos_link');
+        expect(todosCounter.attributes('data-track-property')).toBe('nav_core_menu');
+        expect(todosCounter.attributes('class')).toContain('shortcuts-todos');
+      });
+
+      it('should format and update todo counter when event is emitted', async () => {
+        createWrapper();
+        const count = 100;
+        document.dispatchEvent(new CustomEvent('todo:toggle', { detail: { count } }));
+        await nextTick();
+        expect(highCountTrim).toHaveBeenCalledWith(count);
+        expect(findTodosCounter().props('count')).toBe('99+');
+      });
     });
 
     it('renders branding logo', () => {

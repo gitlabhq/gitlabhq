@@ -89,9 +89,11 @@ initRails();
 function deferredInitialisation() {
   const $body = $('body');
 
-  if (!gon.use_new_navigation) initTopNav();
+  if (!gon.use_new_navigation) {
+    initTopNav();
+    initTodoToggle();
+  }
   initBreadcrumbs();
-  initTodoToggle();
   initPrefetchLinks('.js-prefetch-document');
   initLogoAnimation();
   initServicePingConsent();

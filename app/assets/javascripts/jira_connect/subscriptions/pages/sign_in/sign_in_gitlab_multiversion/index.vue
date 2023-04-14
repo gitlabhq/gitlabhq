@@ -42,8 +42,8 @@ export default {
   },
   mounted() {
     this.gitlabBasePath = retrieveBaseUrl();
-    setApiBaseURL(this.gitlabBasePath);
     if (this.gitlabBasePath !== GITLAB_COM_BASE_PATH) {
+      setApiBaseURL(this.gitlabBasePath);
       this.showSetupInstructions = true;
     }
   },

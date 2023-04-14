@@ -17,11 +17,7 @@ module Gitlab
         def execute
           user_finder = GithubImport::UserFinder.new(project, client)
 
-          gitlab_user_id = begin
-            user_finder.user_id_for(review.author)
-          rescue ::Octokit::NotFound
-            nil
-          end
+          gitlab_user_id = user_finder.user_id_for(review.author)
 
           if gitlab_user_id
             add_review_note!(gitlab_user_id)

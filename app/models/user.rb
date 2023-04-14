@@ -924,6 +924,17 @@ class User < ApplicationRecord
       end
     end
 
+    def llm_bot
+      email_pattern = "llm-bot%s@#{Settings.gitlab.host}"
+
+      unique_internal(where(user_type: :llm_bot), 'GitLab-Llm-Bot', email_pattern) do |u|
+        u.bio = 'The Gitlab LLM bot used for fetching LLM-generated content'
+        u.name = 'GitLab LLM Bot'
+        u.avatar = bot_avatar(image: 'support-bot.png') # todo: add an avatar for llm-bot
+        u.confirmed_at = Time.zone.now
+      end
+    end
+
     def admin_bot
       email_pattern = "admin-bot%s@#{Settings.gitlab.host}"
 

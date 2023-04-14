@@ -17,3 +17,15 @@ export const SIDEBAR_PARAMS = [
 ];
 
 export const NUMBER_FORMATING_OPTIONS = { notation: 'compact', compactDisplay: 'short' };
+
+export const ICON_MAP = {
+  blobs: 'code',
+  issues: 'issues',
+  merge_requests: 'merge-request',
+  commits: 'commit',
+  notes: 'comments',
+  milestones: 'tag',
+  users: 'users',
+  projects: 'project',
+  wiki_blobs: 'overview',
+};

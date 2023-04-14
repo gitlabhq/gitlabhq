@@ -10,6 +10,7 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
   let_it_be(:service_account) { create(:user, :service_account) }
   let_it_be(:migration_bot) { create(:user, :migration_bot) }
   let_it_be(:security_bot) { create(:user, :security_bot) }
+  let_it_be(:llm_bot) { create(:user, :llm_bot) }
   let_it_be_with_reload(:current_user) { create(:user) }
   let_it_be(:user) { create(:user) }
 
@@ -234,6 +235,12 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
 
     context 'security bot' do
       let(:current_user) { security_bot }
+
+      it { is_expected.to be_disallowed(:access_api) }
+    end
+
+    context 'llm bot' do
+      let(:current_user) { llm_bot }
 
       it { is_expected.to be_disallowed(:access_api) }
     end
@@ -617,6 +624,12 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       it { is_expected.to be_disallowed(:log_in) }
     end
 
+    context 'llm bot' do
+      let(:current_user) { llm_bot }
+
+      it { is_expected.to be_disallowed(:log_in) }
+    end
+
     context 'user blocked pending approval' do
       before do
         current_user.block_pending_approval
@@ -655,6 +668,12 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       let(:current_user) { security_bot }
 
       it { is_expected.to be_disallowed(:create_instance_runner) }
+    end
+
+    context 'with llm_bot' do
+      let(:current_user) { llm_bot }
+
+      it { is_expected.to be_disallowed(:create_instance_runners) }
     end
 
     context 'with regular user' do
@@ -702,6 +721,12 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
         let(:current_user) { security_bot }
 
         it { is_expected.to be_disallowed(:create_instance_runner) }
+      end
+
+      context 'with llm_bot' do
+        let(:current_user) { llm_bot }
+
+        it { is_expected.to be_disallowed(:create_instance_runners) }
       end
 
       context 'with regular user' do

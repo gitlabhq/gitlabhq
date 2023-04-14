@@ -10,6 +10,7 @@ import {
   MOCK_LANGUAGE_AGGREGATIONS_BUCKETS,
   TEST_FILTER_DATA,
   MOCK_NAVIGATION,
+  MOCK_NAVIGATION_ITEMS,
 } from '../mock_data';
 
 describe('Global Search Store Getters', () => {
@@ -66,6 +67,13 @@ describe('Global Search Store Getters', () => {
     `('$description', ({ lang, result }) => {
       state.urlQuery = lang;
       expect(getters.currentUrlQueryHasLanguageFilters(state)).toBe(result);
+    });
+  });
+
+  describe('navigationItems', () => {
+    it('returns the re-mapped navigation data', () => {
+      state.navigation = MOCK_NAVIGATION;
+      expect(getters.navigationItems(state)).toStrictEqual(MOCK_NAVIGATION_ITEMS);
     });
   });
 });

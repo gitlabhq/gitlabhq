@@ -1857,6 +1857,9 @@ msgstr ""
 msgid "AI|Explain the code from %{filePath} in human understandable language presented in Markdown format. In the response add neither original code snippet nor any title. `%{text}`"
 msgstr ""
 
+msgid "AI|Something went wrong. Please try again later"
+msgstr ""
+
 msgid "AI|The container element wasn't found, stopping AI Genie."
 msgstr ""
 
@@ -2670,9 +2673,6 @@ msgstr ""
 msgid "Admin Notifications"
 msgstr ""
 
-msgid "Admin Overview"
-msgstr ""
-
 msgid "Admin Section"
 msgstr ""
 
@@ -2683,9 +2683,6 @@ msgid "Admin mode disabled"
 msgstr ""
 
 msgid "Admin mode enabled"
-msgstr ""
-
-msgid "Admin navigation"
 msgstr ""
 
 msgid "Admin notes"
@@ -3711,19 +3708,73 @@ msgstr ""
 msgid "Administrators are not permitted to connect applications with these scopes: %{code_open}api%{code_close}, %{code_open}read_api%{code_close}, %{code_open}read_repository%{code_close}, %{code_open}write_repository%{code_close}, %{code_open}write_registry%{code_close}, %{code_open}read_registry%{code_close}, and %{code_open}sudo%{code_close}. To permit this, change the %{code_open}disable_admin_oauth_scopes%{code_close} setting using the API."
 msgstr ""
 
+msgid "Admin|Abuse Reports"
+msgstr ""
+
 msgid "Admin|Additional users must be reviewed and approved by a system administrator. Learn more about %{help_link_start}usage caps%{help_link_end}."
+msgstr ""
+
+msgid "Admin|Admin Area"
 msgstr ""
 
 msgid "Admin|Admin notes"
 msgstr ""
 
+msgid "Admin|Analytics"
+msgstr ""
+
+msgid "Admin|Applications"
+msgstr ""
+
+msgid "Admin|CI/CD"
+msgstr ""
+
+msgid "Admin|Credentials"
+msgstr ""
+
+msgid "Admin|Deploy Keys"
+msgstr ""
+
+msgid "Admin|Geo"
+msgstr ""
+
+msgid "Admin|Kubernetes"
+msgstr ""
+
+msgid "Admin|Labels"
+msgstr ""
+
 msgid "Admin|Learn more about quarterly reconciliation"
+msgstr ""
+
+msgid "Admin|Messages"
+msgstr ""
+
+msgid "Admin|Monitoring"
 msgstr ""
 
 msgid "Admin|Note"
 msgstr ""
 
+msgid "Admin|Overview"
+msgstr ""
+
+msgid "Admin|Push Rules"
+msgstr ""
+
 msgid "Admin|Quarterly reconciliation will occur on %{qrtlyDate}"
+msgstr ""
+
+msgid "Admin|Settings"
+msgstr ""
+
+msgid "Admin|Spam Logs"
+msgstr ""
+
+msgid "Admin|Subscription"
+msgstr ""
+
+msgid "Admin|System Hooks"
 msgstr ""
 
 msgid "Admin|The number of max seats in your namespace exceeds the number of seats in your subscription. On %{qrtlyDate}, quarterly reconciliation occurs and you are automatically billed a prorated amount for the overage. No action is needed from you. If you have a credit card on file, it will be charged. Otherwise, you will receive an invoice. For more information about the timing of the invoicing process, view the documentation."
@@ -20635,6 +20686,9 @@ msgid "GroupSAML|SCIM Token"
 msgstr ""
 
 msgid "GroupSAML|SHA1 fingerprint of the SAML token signing certificate. Get this from your identity provider, where it can also be called \"Thumbprint\"."
+msgstr ""
+
+msgid "GroupSAML|Some todos may be hidden because your SAML session has expired. Click to reauthenticate with the following groups to view hidden todos:"
 msgstr ""
 
 msgid "GroupSAML|The SCIM token is now hidden. To see the value of the token again, you need to %{linkStart}reset it%{linkEnd}."

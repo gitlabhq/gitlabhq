@@ -18,7 +18,8 @@ module HasUserType
     security_policy_bot: 10, # Currently not in use. See https://gitlab.com/gitlab-org/gitlab/-/issues/384174
     admin_bot: 11,
     suggested_reviewers_bot: 12,
-    service_account: 13
+    service_account: 13,
+    llm_bot: 14
   }.with_indifferent_access.freeze
 
   BOT_USER_TYPES = %w[
@@ -33,6 +34,7 @@ module HasUserType
     admin_bot
     suggested_reviewers_bot
     service_account
+    llm_bot
   ].freeze
 
   # `service_account` allows instance/namespaces to configure a user for external integrations/automations

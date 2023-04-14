@@ -118,26 +118,74 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
         expect(subject[:created_references].map(&:work_item_id)).to match_array([task1.id, task2.id])
       end
 
-      it 'creates notes', :aggregate_failures do
-        subject
+      it 'creates notes and records the events', :aggregate_failures do
+        expect { subject }.to change(WorkItems::ResourceLinkEvent, :count).by(2)
 
         work_item_notes = work_item.notes.last(2)
+        resource_link_events = WorkItems::ResourceLinkEvent.last(2)
         expect(work_item_notes.first.note).to eq("added #{task1.to_reference} as child task")
         expect(work_item_notes.last.note).to eq("added #{task2.to_reference} as child task")
         expect(task1.notes.last.note).to eq("added #{work_item.to_reference} as parent issue")
         expect(task2.notes.last.note).to eq("added #{work_item.to_reference} as parent issue")
+        expect(resource_link_events.first).to have_attributes(
+          user_id: user.id,
+          issue_id: work_item.id,
+          child_work_item_id: task1.id,
+          action: "add",
+          system_note_metadata_id: task1.notes.last.system_note_metadata.id
+        )
+        expect(resource_link_events.last).to have_attributes(
+          user_id: user.id,
+          issue_id: work_item.id,
+          child_work_item_id: task2.id,
+          action: "add",
+          system_note_metadata_id: task2.notes.last.system_note_metadata.id
+        )
+      end
+
+      context 'when note creation fails for some reason' do
+        let(:params) { { issuable_references: [task1] } }
+
+        [Note.new, nil].each do |relate_child_note|
+          it 'still records the link event', :aggregate_failures do
+            allow_next_instance_of(WorkItems::ParentLinks::CreateService) do |instance|
+              allow(instance).to receive(:create_notes).and_return(relate_child_note)
+            end
+
+            expect { subject }
+              .to change(WorkItems::ResourceLinkEvent, :count).by(1)
+              .and not_change(Note, :count)
+
+            expect(WorkItems::ResourceLinkEvent.last).to have_attributes(
+              user_id: user.id,
+              issue_id: work_item.id,
+              child_work_item_id: task1.id,
+              action: "add",
+              system_note_metadata_id: nil
+            )
+          end
+        end
       end
 
       context 'when task is already assigned' do
         let(:params) { { issuable_references: [task, task2] } }
 
         it 'creates links only for non related tasks', :aggregate_failures do
-          expect { subject }.to change(parent_link_class, :count).by(1)
+          expect { subject }
+            .to change(parent_link_class, :count).by(1)
+            .and change(WorkItems::ResourceLinkEvent, :count).by(1)
 
           expect(subject[:created_references].map(&:work_item_id)).to match_array([task2.id])
           expect(work_item.notes.last.note).to eq("added #{task2.to_reference} as child task")
           expect(task2.notes.last.note).to eq("added #{work_item.to_reference} as parent issue")
           expect(task.notes).to be_empty
+          expect(WorkItems::ResourceLinkEvent.last).to have_attributes(
+            user_id: user.id,
+            issue_id: work_item.id,
+            child_work_item_id: task2.id,
+            action: "add",
+            system_note_metadata_id: task2.notes.last.system_note_metadata.id
+          )
         end
       end
 

@@ -6,7 +6,7 @@ import SignInGitlabMultiversion from '~/jira_connect/subscriptions/pages/sign_in
 import SignInOauthButton from '~/jira_connect/subscriptions/components/sign_in_oauth_button.vue';
 import VersionSelectForm from '~/jira_connect/subscriptions/pages/sign_in/sign_in_gitlab_multiversion/version_select_form.vue';
 
-import { updateInstallation } from '~/jira_connect/subscriptions/api';
+import { updateInstallation, setApiBaseURL } from '~/jira_connect/subscriptions/api';
 import { reloadPage, persistBaseUrl, retrieveBaseUrl } from '~/jira_connect/subscriptions/utils';
 import { GITLAB_COM_BASE_PATH } from '~/jira_connect/subscriptions/constants';
 
@@ -72,6 +72,10 @@ describe('SignInGitlabMultiversion', () => {
         expect(findSetupInstructions().exists()).toBe(true);
       });
 
+      it('calls setApiBaseURL with correct params', () => {
+        expect(setApiBaseURL).toHaveBeenCalledWith(mockBasePath);
+      });
+
       describe('when SetupInstructions emits `next` event', () => {
         beforeEach(async () => {
           findSetupInstructions().vm.$emit('next');
@@ -100,6 +104,10 @@ describe('SignInGitlabMultiversion', () => {
 
       it('renders sign in button', () => {
         expect(findSignInOauthButton().props('gitlabBasePath')).toBe(GITLAB_COM_BASE_PATH);
+      });
+
+      it('does not call setApiBaseURL', () => {
+        expect(setApiBaseURL).not.toHaveBeenCalled();
       });
 
       describe('when button emits `sign-in` event', () => {

@@ -6821,7 +6821,8 @@ RSpec.describe User, feature_category: :user_profile do
             { user_type: :support_bot },
             { user_type: :security_bot },
             { user_type: :automation_bot },
-            { user_type: :admin_bot }
+            { user_type: :admin_bot },
+            { user_type: :llm_bot }
           ]
         end
 

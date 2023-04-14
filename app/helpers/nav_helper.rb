@@ -97,7 +97,7 @@ module NavHelper
   def super_sidebar_supported?
     return true if @nav.nil?
 
-    %w(your_work explore project group profile user_profile search).include?(@nav)
+    %w(your_work explore project group profile user_profile search admin).include?(@nav)
   end
 
   def get_header_links

@@ -15,7 +15,15 @@ module WorkItems
       private
 
       def create_notes
-        SystemNoteService.unrelate_work_item(parent, child, current_user)
+        unrelate_note = SystemNoteService.unrelate_work_item(parent, child, current_user)
+
+        ResourceLinkEvent.create(
+          user: @current_user,
+          work_item: @link.work_item_parent,
+          child_work_item: @link.work_item,
+          action: ResourceLinkEvent.actions[:remove],
+          system_note_metadata_id: unrelate_note&.system_note_metadata&.id
+        )
       end
 
       def not_found_message

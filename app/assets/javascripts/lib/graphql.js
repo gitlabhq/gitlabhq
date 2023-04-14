@@ -53,6 +53,15 @@ export const typePolicies = {
   TreeEntry: {
     keyFields: ['webPath'],
   },
+  Subscription: {
+    fields: {
+      aiCompletionResponse: {
+        read(value) {
+          return value ?? null;
+        },
+      },
+    },
+  },
 };
 
 export const stripWhitespaceFromQuery = (url, path) => {

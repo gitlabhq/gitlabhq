@@ -223,8 +223,8 @@ The cost factors for jobs running on shared runners on GitLab.com are:
 
 - `1` for internal, public, and private projects.
 - Exceptions for public projects:
-  - `0.5` for projects in the [GitLab for Open Source program](../../subscriptions/index.md#gitlab-for-open-source).
-  - `0.008` for forks of projects in the [GitLab for Open Source program](../../subscriptions/index.md#gitlab-for-open-source). For every 125 minutes of job execution time,
+  - `0.5` for projects in the [GitLab for Open Source program](../../subscriptions/community_programs.md#gitlab-for-open-source).
+  - `0.008` for forks of projects in the [GitLab for Open Source program](../../subscriptions/community_programs.md#gitlab-for-open-source). For every 125 minutes of job execution time,
   you use 1 CI/CD minute.
 - Discounted dynamically for [community contributions to GitLab projects](#cost-factor-for-community-contributions-to-gitlab-projects).
 

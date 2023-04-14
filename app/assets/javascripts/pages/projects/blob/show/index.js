@@ -61,7 +61,14 @@ const initRefSwitcher = () => {
 initRefSwitcher();
 
 if (viewBlobEl) {
-  const { blobPath, projectPath, targetBranch, originalBranch } = viewBlobEl.dataset;
+  const {
+    blobPath,
+    projectPath,
+    targetBranch,
+    originalBranch,
+    resourceId,
+    userId,
+  } = viewBlobEl.dataset;
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -72,6 +79,8 @@ if (viewBlobEl) {
     provide: {
       targetBranch,
       originalBranch,
+      resourceId,
+      userId,
     },
     render(createElement) {
       return createElement(BlobContentViewer, {

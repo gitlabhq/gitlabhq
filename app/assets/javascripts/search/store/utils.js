@@ -144,3 +144,7 @@ export const prepareSearchAggregations = (state, aggregationData) =>
 
     return item;
   });
+
+export const addCountOverLimit = (count = '') => {
+  return count.includes('+') ? '+' : '';
+};
