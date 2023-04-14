@@ -292,6 +292,21 @@ RSpec.describe Ci::RetryJobService do
 
       it_behaves_like 'retries the job'
 
+      context 'automatic retryable build' do
+        let!(:auto_retryable_build) do
+          create(:ci_build, pipeline: pipeline, ci_stage: stage, user: user, options: { retry: 1 })
+        end
+
+        def drop_build!
+          auto_retryable_build.drop_with_exit_code!('test failure', 1)
+        end
+
+        it 'creates a new build and enqueues BuildQueueWorker' do
+          expect { drop_build! }.to change { Ci::Build.count }.by(1)
+                                .and change { BuildQueueWorker.jobs.count }.by(1)
+        end
+      end
+
       context 'when there are subsequent jobs that are skipped' do
         let!(:subsequent_build) do
           create(:ci_build, :skipped, pipeline: pipeline, ci_stage: deploy_stage)
