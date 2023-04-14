@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.10.3 (2023-04-14)
+
+### Fixed (3 changes)
+
+- [Backport fixes for broadcast messages](gitlab-org/gitlab@c97c17e31e99f9e93127245cd1f65f7d15cdb0ef) ([merge request](gitlab-org/gitlab!117276))
+- [Fix automatically-retried jobs stuck in pending state](gitlab-org/gitlab@e349581eaf1e050b8bcdee76f9d40f0c182a09f8) ([merge request](gitlab-org/gitlab!117280))
+- [Verify deploy keys settings for protected tags (backport)](gitlab-org/gitlab@4bd6914bd616c1d8dc9ee7cb75e92be13d522ca9) ([merge request](gitlab-org/gitlab!116952))
+
+### Changed (1 change)
+
+- [Change the order of vulnerability creation](gitlab-org/gitlab@4193c4cab75f9472b3804b74b17f4a10f3ae9580) ([merge request](gitlab-org/gitlab!116851)) **GitLab Enterprise Edition**
+
 ## 15.10.2 (2023-04-05)
 
 ### Fixed (3 changes)
