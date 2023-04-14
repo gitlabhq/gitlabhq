@@ -118,7 +118,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
           expect(issuable_form).to have_selector(markdown_field_focused_selector)
 
           page.within issuable_form do
-            click_on _('Viewing markdown')
+            click_on _('Editing markdown')
             click_on _('Rich text')
           end
 
@@ -131,7 +131,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
           expect(issuable_form).to have_selector(content_editor_focused_selector)
 
           page.within issuable_form do
-            click_on _('Viewing rich text')
+            click_on _('Editing rich text')
             click_on _('Markdown')
           end
 

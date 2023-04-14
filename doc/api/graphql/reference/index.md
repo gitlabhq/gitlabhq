@@ -22998,6 +22998,7 @@ Available fields to be exported as CSV.
 | <a id="availableexportfieldsauthor"></a>`AUTHOR` | Author name. |
 | <a id="availableexportfieldsauthor_username"></a>`AUTHOR_USERNAME` | Author username. |
 | <a id="availableexportfieldscreated_at"></a>`CREATED_AT` | Date of creation. |
+| <a id="availableexportfieldsdescription"></a>`DESCRIPTION` | Description. |
 | <a id="availableexportfieldsid"></a>`ID` | Unique identifier. |
 | <a id="availableexportfieldstitle"></a>`TITLE` | Title. |
 | <a id="availableexportfieldstype"></a>`TYPE` | Type of the work item. |

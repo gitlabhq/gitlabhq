@@ -33,6 +33,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     it_behaves_like 'work items comments', :issue
     it_behaves_like 'work items description'
     it_behaves_like 'work items milestone'
+    it_behaves_like 'work items notifications'
   end
 
   context 'for signed in owner' do
@@ -57,5 +58,15 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     end
 
     it_behaves_like 'work items comment actions for guest users'
+  end
+
+  context 'for user not signed in' do
+    before do
+      visit work_items_path
+    end
+
+    it 'actions dropdown is not displayed' do
+      expect(page).not_to have_selector('[data-testid="work-item-actions-dropdown"]')
+    end
   end
 end

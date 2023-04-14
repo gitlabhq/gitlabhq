@@ -32,8 +32,6 @@ class GroupsController < Groups::ApplicationController
 
   before_action :check_export_rate_limit!, only: [:export, :download_export]
 
-  before_action :track_experiment_event, only: [:new]
-
   before_action only: :issues do
     push_frontend_feature_flag(:or_issuable_queries, group)
     push_frontend_feature_flag(:frontend_caching, group)
@@ -400,12 +398,6 @@ class GroupsController < Groups::ApplicationController
 
   def captcha_required?
     captcha_enabled? && !params[:parent_id]
-  end
-
-  def track_experiment_event
-    return if params[:parent_id]
-
-    experiment(:require_verification_for_namespace_creation, user: current_user).track(:start_create_group)
   end
 
   def group_feature_attributes

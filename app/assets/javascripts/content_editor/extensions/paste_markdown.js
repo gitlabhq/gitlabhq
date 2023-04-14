@@ -63,13 +63,29 @@ export default Extension.create({
     };
   },
   addProseMirrorPlugins() {
+    let pasteRaw = false;
+
     return [
       new Plugin({
         key: new PluginKey('pasteMarkdown'),
         props: {
-          handlePaste: (_, event) => {
+          handleKeyDown: (_, event) => {
+            pasteRaw = event.key === 'v' && (event.metaKey || event.ctrlKey) && event.shiftKey;
+          },
+
+          handlePaste: (view, event) => {
             const { clipboardData } = event;
             const content = clipboardData.getData(TEXT_FORMAT);
+            const { state } = view;
+            const { tr, selection } = state;
+            const { from, to } = selection;
+
+            if (pasteRaw) {
+              tr.insertText(content.replace(/^\s+|\s+$/gm, ''), from, to);
+              view.dispatch(tr);
+              return true;
+            }
+
             const hasHTML = clipboardData.types.some((type) => type === HTML_FORMAT);
             const hasVsCode = clipboardData.types.some((type) => type === VS_CODE_FORMAT);
             const vsCodeMeta = hasVsCode ? JSON.parse(clipboardData.getData(VS_CODE_FORMAT)) : {};

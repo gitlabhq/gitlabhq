@@ -3603,7 +3603,6 @@
 - './spec/experiments/force_company_trial_experiment_spec.rb'
 - './spec/experiments/in_product_guidance_environments_webide_experiment_spec.rb'
 - './spec/experiments/ios_specific_templates_experiment_spec.rb'
-- './spec/experiments/require_verification_for_namespace_creation_experiment_spec.rb'
 - './spec/features/abuse_report_spec.rb'
 - './spec/features/action_cable_logging_spec.rb'
 - './spec/features/admin/admin_abuse_reports_spec.rb'

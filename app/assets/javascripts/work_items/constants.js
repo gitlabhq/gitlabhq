@@ -14,6 +14,7 @@ export const TASK_TYPE_NAME = 'Task';
 
 export const WIDGET_TYPE_ASSIGNEES = 'ASSIGNEES';
 export const WIDGET_TYPE_DESCRIPTION = 'DESCRIPTION';
+export const WIDGET_TYPE_NOTIFICATIONS = 'NOTIFICATIONS';
 export const WIDGET_TYPE_LABELS = 'LABELS';
 export const WIDGET_TYPE_START_AND_DUE_DATE = 'START_AND_DUE_DATE';
 export const WIDGET_TYPE_WEIGHT = 'WEIGHT';
@@ -205,3 +206,8 @@ export const WORK_ITEM_ACTIVITY_SORT_OPTIONS = [
   { key: DESC, text: __('Newest first'), testid: 'newest-first' },
   { key: ASC, text: __('Oldest first') },
 ];
+
+export const TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION = 'confidentiality-toggle-action';
+export const TEST_ID_NOTIFICATIONS_TOGGLE_ACTION = 'notifications-toggle-action';
+export const TEST_ID_NOTIFICATIONS_TOGGLE_FORM = 'notifications-toggle-form';
+export const TEST_ID_DELETE_ACTION = 'delete-action';

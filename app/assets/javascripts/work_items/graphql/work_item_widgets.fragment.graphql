@@ -85,4 +85,8 @@ fragment WorkItemWidgets on WorkItemWidget {
   ... on WorkItemWidgetNotes {
     type
   }
+  ... on WorkItemWidgetNotifications {
+    type
+    subscribed
+  }
 }

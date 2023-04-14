@@ -1,0 +1,13 @@
+mutation updateWorkItemNotificationsWidget($input: WorkItemUpdateInput!) {
+  workItemUpdate(input: $input) {
+    workItem {
+      id
+      widgets {
+        ... on WorkItemWidgetNotifications {
+          type
+          subscribed
+        }
+      }
+    }
+  }
+}

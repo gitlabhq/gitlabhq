@@ -26,6 +26,7 @@ import {
   i18n,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
+  WIDGET_TYPE_NOTIFICATIONS,
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_WEIGHT,
@@ -270,6 +271,9 @@ export default {
     },
     hasDescriptionWidget() {
       return this.isWidgetPresent(WIDGET_TYPE_DESCRIPTION);
+    },
+    workItemNotificationsSubscribed() {
+      return Boolean(this.isWidgetPresent(WIDGET_TYPE_NOTIFICATIONS)?.subscribed);
     },
     workItemAssignees() {
       return this.isWidgetPresent(WIDGET_TYPE_ASSIGNEES);
@@ -557,6 +561,7 @@ export default {
           <work-item-actions
             v-if="canUpdate || canDelete"
             :work-item-id="workItem.id"
+            :subscribed-to-notifications="workItemNotificationsSubscribed"
             :work-item-type="workItemType"
             :can-delete="canDelete"
             :can-update="canUpdate"

@@ -68,6 +68,7 @@ if (viewBlobEl) {
     originalBranch,
     resourceId,
     userId,
+    explainCodeAvailable,
   } = viewBlobEl.dataset;
 
   // eslint-disable-next-line no-new
@@ -81,6 +82,7 @@ if (viewBlobEl) {
       originalBranch,
       resourceId,
       userId,
+      explainCodeAvailable: parseBoolean(explainCodeAvailable),
     },
     render(createElement) {
       return createElement(BlobContentViewer, {

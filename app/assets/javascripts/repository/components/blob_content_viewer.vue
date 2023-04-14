@@ -41,6 +41,7 @@ export default {
     originalBranch: {
       default: '',
     },
+    explainCodeAvailable: { default: false },
   },
   apollo: {
     projectInfo: {
@@ -144,7 +145,7 @@ export default {
   },
   computed: {
     shouldRenderGenie() {
-      return this.glFeatures.explainCode && this.glFeatures.explainCodeSnippet && this.isLoggedIn;
+      return this.explainCodeAvailable;
     },
     isLoggedIn() {
       return isLoggedIn();

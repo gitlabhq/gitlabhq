@@ -285,3 +285,25 @@ RSpec.shared_examples 'work items comment actions for guest users' do
     end
   end
 end
+
+RSpec.shared_examples 'work items notifications' do
+  let(:actions_dropdown_selector) { '[data-testid="work-item-actions-dropdown"]' }
+  let(:notifications_toggle_selector) { '[data-testid="notifications-toggle-action"] > button' }
+
+  it 'displays toast when notification is toggled' do
+    find(actions_dropdown_selector).click
+
+    page.within('[data-testid="notifications-toggle-form"]') do
+      expect(page).not_to have_css(".is-checked")
+
+      find(notifications_toggle_selector).click
+      wait_for_requests
+
+      expect(page).to have_css(".is-checked")
+    end
+
+    page.within('.gl-toast') do
+      expect(find('.toast-body')).to have_content(_('Notifications turned on.'))
+    end
+  end
+end

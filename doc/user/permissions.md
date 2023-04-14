@@ -540,3 +540,4 @@ the Owner role:
 
 - Additional permissions can only be applied to users with the Guest role.
 - If a user with a custom role is shared with a group or project, their custom role is not transferred over with them. The user has the regular Guest role in the new group or project.
+- You cannot use an [Auditor user](../administration/auditor_users.md) as a template for a custom role.

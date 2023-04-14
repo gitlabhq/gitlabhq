@@ -185,6 +185,17 @@ deploy:
   # ... rest of your job configuration
 ```
 
+### Environments with KAS that use self-signed certificates
+
+If you use an environment with KAS and a self-signed certificate, you must configure your Kubernetes client to trust the certificate authority (CA) that signed your certificate.
+
+To configure your client, do one of the following:
+
+- Set a CI/CD variable `SSL_CERT_FILE` with the KAS certificate in PEM format.
+- Configure the Kubernetes client with `--certificate-authority=$KAS_CERTIFICATE`, where `KAS_CERTIFICATE` is a CI/CD variable with the CA certificate of KAS.
+- Place the certificates in an appropriate location in the job container by updating the container image or mounting via the runner.
+- Not recommended. Configure the Kubernetes client with `--insecure-skip-tls-verify=true`.
+
 ## Restrict project and group access by using impersonation **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345014) in GitLab 14.5.
@@ -342,3 +353,16 @@ If you attempt to use `kubectl` without TLS, you might get an error like:
 $ kubectl get pods
 error: You must be logged in to the server (the server has asked for the client to provide credentials)
 ```
+
+### Unable to connect to the server: certificate signed by unknown authority
+
+If you use an environment with KAS and a self-signed certificate, your `kubectl` call might return this error:
+
+```plaintext
+kubectl get pods
+Unable to connect to the server: x509: certificate signed by unknown authority
+```
+
+The error occurs because the job does not trust the certificate authority (CA) that signed the KAS certificate.
+
+To resolve the issue, [configure `kubectl` to trust the CA](#environments-with-kas-that-use-self-signed-certificates).

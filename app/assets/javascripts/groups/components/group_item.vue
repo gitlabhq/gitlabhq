@@ -16,8 +16,12 @@ import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { __ } from '~/locale';
-import { VISIBILITY_LEVELS_STRING_TO_INTEGER } from '~/visibility_level/constants';
-import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE, ITEM_TYPE } from '../constants';
+import {
+  VISIBILITY_LEVELS_STRING_TO_INTEGER,
+  VISIBILITY_TYPE_ICON,
+  GROUP_VISIBILITY_TYPE,
+} from '~/visibility_level/constants';
+import { ITEM_TYPE } from '../constants';
 
 import eventHub from '../event_hub';
 

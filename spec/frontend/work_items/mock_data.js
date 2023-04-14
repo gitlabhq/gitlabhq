@@ -288,6 +288,8 @@ export const objectiveType = {
 export const workItemResponseFactory = ({
   canUpdate = false,
   canDelete = false,
+  notificationsWidgetPresent = true,
+  subscribed = true,
   allowsMultipleAssignees = true,
   assigneesWidgetPresent = true,
   datesWidgetPresent = true,
@@ -470,6 +472,13 @@ export const workItemResponseFactory = ({
           ? {
               __typename: 'WorkItemWidgetNotes',
               type: 'NOTES',
+            }
+          : { type: 'MOCK TYPE' },
+        notificationsWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetNotifications',
+              type: 'NOTIFICATIONS',
+              subscribed,
             }
           : { type: 'MOCK TYPE' },
       ],

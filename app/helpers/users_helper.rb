@@ -191,7 +191,8 @@ module UsersHelper
       followees: user.followees.count,
       followers: user.followers.count,
       user_calendar_path: user_calendar_path(user, :json),
-      utc_offset: local_timezone_instance(user.timezone).now.utc_offset
+      utc_offset: local_timezone_instance(user.timezone).now.utc_offset,
+      user_id: user.id
     }
   end
 

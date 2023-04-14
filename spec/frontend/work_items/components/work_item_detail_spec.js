@@ -35,6 +35,7 @@ import workItemAssigneesSubscription from '~/work_items/graphql/work_item_assign
 import workItemMilestoneSubscription from '~/work_items/graphql/work_item_milestone.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_task.mutation.graphql';
+
 import {
   mockParent,
   workItemDatesSubscriptionResponse,

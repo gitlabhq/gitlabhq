@@ -132,16 +132,6 @@ module GroupsHelper
     }
   end
 
-  def verification_for_group_creation_data
-    # overridden in EE
-    {}
-  end
-
-  def require_verification_for_namespace_creation_enabled?
-    # overridden in EE
-    false
-  end
-
   def group_name_and_path_app_data
     {
       base_path: root_url,

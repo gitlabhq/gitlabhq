@@ -93,3 +93,14 @@
     top: -8px;
   }
 }
+
+
+.work-item-notifications-form {
+  .gl-toggle {
+    @include gl-ml-auto;
+  }
+
+  .gl-toggle-label {
+    @include gl-font-weight-normal;
+  }
+}

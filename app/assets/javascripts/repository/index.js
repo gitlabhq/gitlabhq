@@ -32,7 +32,16 @@ Vue.use(PerformancePlugin, {
 export default function setupVueRepositoryList() {
   const el = document.getElementById('js-tree-list');
   const { dataset } = el;
-  const { projectPath, projectShortPath, ref, escapedRef, fullName, resourceId, userId } = dataset;
+  const {
+    projectPath,
+    projectShortPath,
+    ref,
+    escapedRef,
+    fullName,
+    resourceId,
+    userId,
+    explainCodeAvailable,
+  } = dataset;
   const router = createRouter(projectPath, escapedRef);
 
   apolloProvider.clients.defaultClient.cache.writeQuery({
@@ -281,7 +290,7 @@ export default function setupVueRepositoryList() {
     store: createStore(),
     router,
     apolloProvider,
-    provide: { resourceId, userId },
+    provide: { resourceId, userId, explainCodeAvailable: parseBoolean(explainCodeAvailable) },
     render(h) {
       return h(App);
     },

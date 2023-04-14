@@ -25,6 +25,7 @@ RSpec.describe GroupDeployKeyEntity do
         fingerprint: group_deploy_key.fingerprint,
         fingerprint_sha256: group_deploy_key.fingerprint_sha256,
         created_at: group_deploy_key.created_at,
+        expires_at: group_deploy_key.expires_at,
         updated_at: group_deploy_key.updated_at,
         can_edit: false,
         group_deploy_keys_groups: [

@@ -14,6 +14,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     allow(model).to receive(:puts)
   end
 
+  it { expect(model.singleton_class.ancestors).to include(described_class::WraparoundVacuumHelpers) }
+
   describe 'overridden dynamic model helpers' do
     let(:test_table) { '_test_batching_table' }
 

@@ -143,6 +143,8 @@ RSpec.describe Notify do
         it_behaves_like 'an unsubscribeable thread'
         it_behaves_like 'appearance header and footer enabled'
         it_behaves_like 'appearance header and footer not enabled'
+        it_behaves_like 'email with default notification reason'
+        it_behaves_like 'email with link to issue'
 
         it 'is sent as the author' do
           expect_sender(current_user)
@@ -152,11 +154,7 @@ RSpec.describe Notify do
           aggregate_failures do
             is_expected.to have_referable_subject(issue, reply: true)
             is_expected.to have_body_text("Assignee changed from <strong>#{previous_assignee.name}</strong> to <strong>#{assignee.name}</strong>")
-            is_expected.to have_body_text(%(<a href="#{project_issue_url(project, issue)}">view it on GitLab</a>))
-            is_expected.to have_body_text("You're receiving this email because of your account")
             is_expected.to have_plain_text_content("Assignee changed from #{previous_assignee.name} to #{assignee.name}")
-            is_expected.to have_plain_text_content("view it on GitLab: #{project_issue_url(project, issue)}")
-            is_expected.to have_plain_text_content("You're receiving this email because of your account")
           end
         end
 
@@ -165,26 +163,24 @@ RSpec.describe Notify do
             issue.update!(assignees: [])
           end
 
+          it_behaves_like 'email with default notification reason'
+          it_behaves_like 'email with link to issue'
+
           it 'uses "Unassigned" placeholder' do
             is_expected.to have_body_text("Assignee changed from <strong>#{previous_assignee.name}</strong> to <strong>Unassigned</strong>")
-            is_expected.to have_body_text(%(<a href="#{project_issue_url(project, issue)}">view it on GitLab</a>))
-            is_expected.to have_body_text("You're receiving this email because of your account")
             is_expected.to have_plain_text_content("Assignee changed from #{previous_assignee.name} to Unassigned")
-            is_expected.to have_plain_text_content("view it on GitLab: #{project_issue_url(project, issue)}")
-            is_expected.to have_plain_text_content("You're receiving this email because of your account")
           end
         end
 
         context 'without previous assignees' do
           subject { described_class.reassigned_issue_email(recipient.id, issue.id, [], current_user.id) }
 
+          it_behaves_like 'email with default notification reason'
+          it_behaves_like 'email with link to issue'
+
           it 'uses short text' do
             is_expected.to have_body_text("Assignee changed to <strong>#{assignee.name}</strong>")
-            is_expected.to have_body_text(%(<a href="#{project_issue_url(project, issue)}">view it on GitLab</a>))
-            is_expected.to have_body_text("You're receiving this email because of your account")
             is_expected.to have_plain_text_content("Assignee changed to #{assignee.name}")
-            is_expected.to have_plain_text_content("view it on GitLab: #{project_issue_url(project, issue)}")
-            is_expected.to have_plain_text_content("You're receiving this email because of your account")
           end
         end
 
@@ -297,6 +293,81 @@ RSpec.describe Notify do
             is_expected.to have_body_text(status)
             is_expected.to have_body_text(current_user_sanitized)
             is_expected.to have_body_text(project_issue_path(project, issue))
+          end
+        end
+      end
+
+      describe 'closed' do
+        subject { described_class.closed_issue_email(recipient.id, issue.id, current_user.id) }
+
+        it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+          let(:model) { issue }
+        end
+
+        it_behaves_like 'it should show Gmail Actions View Issue link'
+        it_behaves_like 'an unsubscribeable thread'
+        it_behaves_like 'appearance header and footer enabled'
+        it_behaves_like 'appearance header and footer not enabled'
+        it_behaves_like 'email with default notification reason'
+        it_behaves_like 'email with link to issue'
+
+        it 'is sent as the author' do
+          expect_sender(current_user)
+        end
+
+        it 'has the correct subject and body' do
+          aggregate_failures do
+            is_expected.to have_referable_subject(issue, reply: true)
+            is_expected.to have_body_text("Issue was closed by #{current_user_sanitized}")
+            is_expected.to have_plain_text_content("Issue was closed by #{current_user_sanitized}")
+          end
+        end
+
+        context 'via commit' do
+          let(:closing_commit) { project.commit }
+
+          subject { described_class.closed_issue_email(recipient.id, issue.id, current_user.id, closed_via: closing_commit.id) }
+
+          before do
+            allow(Ability).to receive(:allowed?).with(recipient, :mark_note_as_internal, anything).and_return(true)
+            allow(Ability).to receive(:allowed?).with(recipient, :download_code, project).and_return(true)
+          end
+
+          it_behaves_like 'email with default notification reason'
+          it_behaves_like 'email with link to issue'
+
+          it 'has the correct subject and body' do
+            aggregate_failures do
+              is_expected.to have_referable_subject(issue, reply: true)
+              is_expected.to have_body_text("Issue was closed by #{current_user_sanitized} via #{closing_commit.id}")
+              is_expected.to have_plain_text_content("Issue was closed by #{current_user_sanitized} via #{closing_commit.id}")
+            end
+          end
+        end
+
+        context 'via merge request' do
+          let(:closing_merge_request) { merge_request }
+
+          subject { described_class.closed_issue_email(recipient.id, issue.id, current_user.id, closed_via: closing_merge_request) }
+
+          before do
+            allow(Ability).to receive(:allowed?).with(recipient, :read_cross_project, :global).and_return(true)
+            allow(Ability).to receive(:allowed?).with(recipient, :mark_note_as_internal, anything).and_return(true)
+            allow(Ability).to receive(:allowed?).with(recipient, :read_merge_request, anything).and_return(true)
+          end
+
+          it_behaves_like 'email with default notification reason'
+          it_behaves_like 'email with link to issue'
+
+          it 'has the correct subject and body' do
+            aggregate_failures do
+              url = project_merge_request_url(project, closing_merge_request)
+              is_expected.to have_referable_subject(issue, reply: true)
+              is_expected.to have_body_text("Issue was closed by #{current_user_sanitized} via merge request " +
+                                            %(<a href="#{url}">#{closing_merge_request.to_reference}</a>))
+              is_expected.to have_plain_text_content("Issue was closed by #{current_user_sanitized} via merge request " \
+                                                     "#{closing_merge_request.to_reference} (#{url})")
+            end
           end
         end
       end
@@ -2378,21 +2449,6 @@ RSpec.describe Notify do
 
       expect(mail.subject).to eq('Go farther with GitLab')
       expect(mail.body.parts.first.to_s).to include('Start a GitLab Ultimate trial today in less than one minute, no credit card required.')
-    end
-  end
-
-  # can be replaced with https://github.com/email-spec/email-spec/pull/196 in the future
-  RSpec::Matchers.define :have_plain_text_content do |expected_text|
-    match do |actual_email|
-      plain_text_body(actual_email).include? expected_text
-    end
-
-    failure_message do |actual_email|
-      "Expected email\n#{plain_text_body(actual_email).indent(2)}\nto contain\n#{expected_text.indent(2)}"
-    end
-
-    def plain_text_body(email)
-      email.text_part.body.to_s
     end
   end
 end

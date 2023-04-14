@@ -17,9 +17,11 @@ RSpec.shared_examples 'a deploy token in settings' do
   it 'add a new deploy token', :js do
     visit page_path
 
-    fill_in _('Name'), with: 'new_deploy_key'
-    fill_in _('Expiration date (optional)'), with: (Date.today + 1.month).to_s
-    fill_in _('Username (optional)'), with: 'deployer'
+    within('#js-deploy-tokens') do
+      fill_in _('Name'), with: 'new_deploy_key'
+      fill_in _('Expiration date (optional)'), with: (Date.today + 1.month).to_s
+      fill_in _('Username (optional)'), with: 'deployer'
+    end
     check 'read_repository'
     check 'read_registry'
     click_button 'Create deploy token'

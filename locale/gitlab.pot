@@ -1860,6 +1860,9 @@ msgstr ""
 msgid "AI|Explain the code from %{filePath} in human understandable language presented in Markdown format. In the response add neither original code snippet nor any title. `%{text}`"
 msgstr ""
 
+msgid "AI|Give feedback on code explanation"
+msgstr ""
+
 msgid "AI|Something went wrong. Please try again later"
 msgstr ""
 
@@ -9131,6 +9134,9 @@ msgstr ""
 msgid "CiCatalog|Repositories of pipeline components available in this namespace."
 msgstr ""
 
+msgid "CiCatalog|There was an error fetching CI/CD Catalog resources."
+msgstr ""
+
 msgid "CiCdAnalytics|Date range: %{range}"
 msgstr ""
 
@@ -15917,6 +15923,12 @@ msgid "Edited %{timeago} by %{author}"
 msgstr ""
 
 msgid "Editing"
+msgstr ""
+
+msgid "Editing markdown"
+msgstr ""
+
+msgid "Editing rich text"
 msgstr ""
 
 msgid "Elapsed time"
@@ -47960,6 +47972,9 @@ msgstr ""
 msgid "UserProfile|Activity"
 msgstr ""
 
+msgid "UserProfile|An error occurred loading the personal projects. Please refresh the page to try again."
+msgstr ""
+
 msgid "UserProfile|Blocked user"
 msgstr ""
 
@@ -48662,13 +48677,7 @@ msgstr ""
 msgid "Viewing commit"
 msgstr ""
 
-msgid "Viewing markdown"
-msgstr ""
-
 msgid "Viewing projects and designs data from a primary site is not possible when using a unified URL. Visit the secondary site directly. %{geo_help_url}"
-msgstr ""
-
-msgid "Viewing rich text"
 msgstr ""
 
 msgid "Violation"
@@ -50108,6 +50117,15 @@ msgid "WorkItem|No tasks are currently assigned. Use tasks to break down this is
 msgstr ""
 
 msgid "WorkItem|None"
+msgstr ""
+
+msgid "WorkItem|Notifications"
+msgstr ""
+
+msgid "WorkItem|Notifications turned off."
+msgstr ""
+
+msgid "WorkItem|Notifications turned on."
 msgstr ""
 
 msgid "WorkItem|Objective"

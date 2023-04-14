@@ -136,9 +136,25 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
+
+    context 'when deploy key has expiry date' do
+      let(:deploy_key) { create(:deploy_key, :expired, public: true) }
+      let(:deploy_keys_project) { create(:deploy_keys_project, project: project, deploy_key: deploy_key) }
+
+      it 'returns expiry date' do
+        get api("#{project_path}/#{deploy_key.id}", admin, admin_mode: true)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(Time.parse(json_response['expires_at'])).to be_like_time(deploy_key.expires_at)
+      end
+    end
   end
 
   describe 'POST /projects/:id/deploy_keys' do
+    around do |example|
+      freeze_time { example.run }
+    end
+
     it_behaves_like 'POST request permissions for admin mode', :not_found do
       let(:params) { attributes_for :another_key }
       let(:path) { project_path }
@@ -194,6 +210,15 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['can_push']).to eq(true)
+    end
+
+    it 'accepts expires_at parameter' do
+      key_attrs = attributes_for(:another_key).merge(expires_at: 2.days.since.iso8601)
+
+      post api(project_path, admin, admin_mode: true), params: key_attrs
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(Time.parse(json_response['expires_at'])).to be_like_time(2.days.since)
     end
   end
 

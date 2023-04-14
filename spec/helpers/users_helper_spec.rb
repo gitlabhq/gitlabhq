@@ -520,7 +520,8 @@ RSpec.describe UsersHelper do
         followees: 3,
         followers: 2,
         user_calendar_path: '/users/root/calendar.json',
-        utc_offset: 0
+        utc_offset: 0,
+        user_id: user.id
       })
     end
   end
