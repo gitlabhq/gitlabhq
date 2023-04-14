@@ -249,6 +249,7 @@ gem 're2', '~> 1.6.0'
 
 # Misc
 
+gem 'semver_dialects', '~> 1.2.1'
 gem 'version_sorter', '~> 2.3'
 
 # Export Ruby Regex to Javascript

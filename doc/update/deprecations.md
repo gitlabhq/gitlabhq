@@ -1043,15 +1043,16 @@ To be prepared for this change, you should do the following before GitLab 16.0:
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
-### Jira GitHub Enterprise DVCS integration
+### Jira DVCS connector for Jira Cloud
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.1</span>
 - [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
 </div>
 
-The [Jira DVCS Connector](https://docs.gitlab.com/ee/integration/jira/dvcs/) (which enables the [Jira Development Panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/)), will no longer support Jira Cloud users starting with GitLab 16.0. The [GitLab for Jira App](https://docs.gitlab.com/ee/integration/jira/connect-app.html) has always been recommended for Jira Cloud users, and it will be required instead of the DVCS connector. If you are a Jira Cloud user, we recommended you begin migrating to the GitLab for Jira App.
-Any Jira Server and Jira Data Center users will need to confirm they are not using the GitHub Enterprise Connector to enable the GitLab DVCS integration, but they may continue to use the [native GitLab DVCS integration](https://docs.gitlab.com/ee/integration/jira/dvcs/) (supported in Jira 8.14 and later).
+The [Jira DVCS connector](https://docs.gitlab.com/ee/integration/jira/dvcs/) for Jira Cloud has been deprecated and will be removed in GitLab 16.0. If you're using the Jira DVCS connector with Jira Cloud, migrate to the [GitLab for Jira Cloud app](https://docs.gitlab.com/ee/integration/jira/connect-app.html).
+
+The Jira DVCS connector is also deprecated for Jira 8.13 and earlier. You can only use the Jira DVCS connector with Jira Server or Jira Data Center in Jira 8.14 and later.
 
 </div>
 

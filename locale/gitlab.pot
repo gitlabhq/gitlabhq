@@ -13084,7 +13084,16 @@ msgstr ""
 msgid "DNS"
 msgstr ""
 
+msgid "DORA4Metrics|Accept testing terms"
+msgstr ""
+
+msgid "DORA4Metrics|Accept testing terms of use?"
+msgstr ""
+
 msgid "DORA4Metrics|Average (last %{days}d)"
+msgstr ""
+
+msgid "DORA4Metrics|By enabling this feature, you accept the %{url}"
 msgstr ""
 
 msgid "DORA4Metrics|Change Failure Rate"
@@ -13118,6 +13127,9 @@ msgid "DORA4Metrics|Deploys"
 msgstr ""
 
 msgid "DORA4Metrics|Failed to load charts"
+msgstr ""
+
+msgid "DORA4Metrics|Forecast"
 msgstr ""
 
 msgid "DORA4Metrics|Go to docs"
@@ -13162,9 +13174,6 @@ msgstr ""
 msgid "DORA4Metrics|No merge requests were deployed during this period"
 msgstr ""
 
-msgid "DORA4Metrics|Number of deployments"
-msgstr ""
-
 msgid "DORA4Metrics|Number of incidents divided by the number of deployments to a production environment in the given time period."
 msgstr ""
 
@@ -13172,6 +13181,12 @@ msgid "DORA4Metrics|Past 6 Months"
 msgstr ""
 
 msgid "DORA4Metrics|Percentage of failed deployments"
+msgstr ""
+
+msgid "DORA4Metrics|Predicted number of deployments"
+msgstr ""
+
+msgid "DORA4Metrics|Show forecast"
 msgstr ""
 
 msgid "DORA4Metrics|Something went wrong while getting change failure rate data."
@@ -17455,6 +17470,9 @@ msgid "Expand variable reference"
 msgstr ""
 
 msgid "Expected documents: %{expected_documents}"
+msgstr ""
+
+msgid "Experiment"
 msgstr ""
 
 msgid "Experiments"
@@ -28353,6 +28371,9 @@ msgid "ModalButton|Add projects"
 msgstr ""
 
 msgid "Modal|Close"
+msgstr ""
+
+msgid "Model experiments"
 msgstr ""
 
 msgid "Modified"

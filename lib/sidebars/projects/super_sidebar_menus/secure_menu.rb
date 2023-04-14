@@ -18,13 +18,13 @@ module Sidebars
         def configure_menu_items
           [
             :discover_project_security,
-            :audit_events,
             :dashboard,
             :vulnerability_report,
-            :on_demand_scans,
-            :scan_policies,
             :dependency_list,
             :license_compliance,
+            :audit_events,
+            :scan_policies,
+            :on_demand_scans,
             :configuration
           ].each { |id| add_item(::Sidebars::NilMenuItem.new(item_id: id)) }
         end

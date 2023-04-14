@@ -32,7 +32,10 @@ module Tooling
     end
 
     def execute
-      Tooling::FindChanges.new(rspec_changed_files_path).execute
+      Tooling::FindChanges.new(
+        from: :api,
+        changed_files_pathname: rspec_changed_files_path
+      ).execute
       Tooling::FindTests.new(rspec_changed_files_path, rspec_matching_tests_path).execute
       Tooling::Mappings::PartialToViewsMappings.new(
         rspec_changed_files_path, rspec_views_including_partials_path).execute
@@ -41,7 +44,11 @@ module Tooling
       Tooling::Mappings::GraphqlBaseTypeMappings.new(rspec_changed_files_path, rspec_matching_tests_path).execute
       Tooling::Mappings::ViewToSystemSpecsMappings.new(rspec_changed_files_path, rspec_matching_tests_path).execute
       Tooling::FindChanges.new(
-        rspec_changed_files_path, rspec_matching_tests_path, frontend_fixtures_mapping_path).execute
+        from: :changed_files,
+        changed_files_pathname: rspec_changed_files_path,
+        predictive_tests_pathname: rspec_matching_tests_path,
+        frontend_fixtures_mapping_pathname: frontend_fixtures_mapping_path
+      ).execute
       Tooling::Mappings::ViewToJsMappings.new(rspec_changed_files_path, rspec_matching_js_files_path).execute
     end
 

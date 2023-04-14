@@ -376,7 +376,7 @@ export default {
         v-if="isReviewable && showLocalFileReviews"
         v-gl-tooltip.hover
         data-testid="fileReviewCheckbox"
-        class="gl-mr-5 gl-display-flex gl-align-items-center"
+        class="gl-mr-5 gl-mb-n3 gl-display-flex gl-align-items-center"
         :title="$options.i18n.fileReviewTooltip"
         :checked="reviewed"
         @change="toggleReview"

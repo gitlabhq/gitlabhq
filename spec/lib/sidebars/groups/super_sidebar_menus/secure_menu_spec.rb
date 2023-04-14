@@ -15,9 +15,9 @@ RSpec.describe Sidebars::Groups::SuperSidebarMenus::SecureMenu, feature_category
   it 'defines list of NilMenuItem placeholders' do
     expect(items.map(&:class).uniq).to eq([Sidebars::NilMenuItem])
     expect(items.map(&:item_id)).to eq([
-      :audit_events,
       :security_dashboard,
       :vulnerability_report,
+      :audit_events,
       :compliance,
       :scan_policies
     ])

@@ -3,7 +3,7 @@
 
 require_relative '../lib/tooling/find_changes'
 
-if Tooling::FindChanges.new.only_js_files_changed
+if Tooling::FindChanges.new(from: :api).only_js_files_changed
   puts "Only JS files were changed"
   exit 0
 else

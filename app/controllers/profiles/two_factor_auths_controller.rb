@@ -169,18 +169,6 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     gon.push(webauthn: { options: options, app_id: u2f_app_id })
   end
 
-  # Adds delete path to u2f registrations
-  # to reduce logic in view template
-  def u2f_registrations
-    current_user.u2f_registrations.map do |u2f_registration|
-      {
-        name: u2f_registration.name,
-        created_at: u2f_registration.created_at,
-        delete_path: profile_u2f_registration_path(u2f_registration)
-      }
-    end
-  end
-
   def webauthn_registrations
     current_user.webauthn_registrations.map do |webauthn_registration|
       {
@@ -235,10 +223,6 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     @qr_code = build_qr_code
     @account_string = account_string
 
-    if Feature.enabled?(:webauthn)
-      setup_webauthn_registration
-    else
-      setup_u2f_registration
-    end
+    setup_webauthn_registration
   end
 end

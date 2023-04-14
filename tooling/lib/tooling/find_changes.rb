@@ -9,8 +9,15 @@ module Tooling
     include Helpers::FileHandler
 
     def initialize(
-      changed_files_pathname = nil, predictive_tests_pathname = nil, frontend_fixtures_mapping_pathname = nil
+      from:,
+      changed_files_pathname: nil,
+      predictive_tests_pathname: nil,
+      frontend_fixtures_mapping_pathname: nil
     )
+
+      raise ArgumentError, ':from can only be :api or :changed_files' unless
+        %i[api changed_files].include?(from)
+
       @gitlab_token                       = ENV['PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE'] || ''
       @gitlab_endpoint                    = ENV['CI_API_V4_URL']
       @mr_project_path                    = ENV['CI_MERGE_REQUEST_PROJECT_PATH']
@@ -18,20 +25,23 @@ module Tooling
       @changed_files_pathname             = changed_files_pathname
       @predictive_tests_pathname          = predictive_tests_pathname
       @frontend_fixtures_mapping_pathname = frontend_fixtures_mapping_pathname
+      @from                               = from
     end
 
     def execute
       if changed_files_pathname.nil?
-        raise ArgumentError, "A path to the changed files file must be given as first argument."
+        raise ArgumentError, "A path to the changed files file must be given as :changed_files_pathname"
       end
 
-      add_frontend_fixture_files!
-      write_array_to_file(changed_files_pathname, file_changes, overwrite: true)
+      case @from
+      when :api
+        write_array_to_file(changed_files_pathname, file_changes + frontend_fixture_files, append: false)
+      else
+        write_array_to_file(changed_files_pathname, frontend_fixture_files, append: true)
+      end
     end
 
     def only_js_files_changed
-      @changed_files_pathname = nil # We ensure that we'll get the diff from the MR directly, not from a file.
-
       file_changes.any? && file_changes.all? { |file| file.end_with?('.js') }
     end
 
@@ -55,25 +65,26 @@ module Tooling
       predictive_tests_pathname && frontend_fixtures_mapping_pathname
     end
 
-    def add_frontend_fixture_files!
-      return unless add_frontend_fixture_files?
-
+    def frontend_fixture_files
       # If we have a `test file -> JSON frontend fixture` mapping file, we add the files JSON frontend fixtures
       # files to the list of changed files so that Jest can automatically run the dependent tests
       # using --findRelatedTests flag.
-      test_files.each do |test_file|
-        file_changes.concat(frontend_fixtures_mapping[test_file]) if frontend_fixtures_mapping.key?(test_file)
+      empty = [].freeze
+
+      test_files.flat_map do |test_file|
+        frontend_fixtures_mapping[test_file] || empty
       end
     end
 
     def file_changes
       @file_changes ||=
-        if changed_files_pathname && File.exist?(changed_files_pathname)
-          read_array_from_file(changed_files_pathname)
-        else
+        case @from
+        when :api
           mr_changes.changes.flat_map do |change|
             change.to_h.values_at('old_path', 'new_path')
           end.uniq
+        else
+          read_array_from_file(changed_files_pathname)
         end
     end
 

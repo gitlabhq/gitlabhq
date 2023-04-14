@@ -16,13 +16,13 @@ RSpec.describe Sidebars::Projects::SuperSidebarMenus::SecureMenu, feature_catego
     expect(items.map(&:class).uniq).to eq([Sidebars::NilMenuItem])
     expect(items.map(&:item_id)).to eq([
       :discover_project_security,
-      :audit_events,
       :dashboard,
       :vulnerability_report,
-      :on_demand_scans,
-      :scan_policies,
       :dependency_list,
       :license_compliance,
+      :audit_events,
+      :scan_policies,
+      :on_demand_scans,
       :configuration
     ])
   end

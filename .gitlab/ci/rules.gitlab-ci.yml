@@ -860,14 +860,27 @@
     - <<: *if-not-canonical-namespace
       when: never
     - <<: *if-merge-request-targeting-stable-branch
+    - <<: *if-ruby2-branch
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-merge-request-labels-run-all-e2e
     - <<: *if-auto-deploy-branches
-    - <<: *if-ruby2-branch
     - <<: *if-default-refs
       changes: *ci-build-images-patterns
     - <<: *if-default-refs
       changes: *code-qa-patterns
+    # Rules to support .qa:rules:package-and-test-mrs
+    - <<: *if-merge-request
+      changes: *dependency-patterns
+    - <<: *if-merge-request-labels-run-all-e2e
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
+      changes: *feature-flag-development-config-patterns
+    - <<: *if-merge-request
+      changes: *feature-flag-development-config-patterns
+    - <<: *if-merge-request
+      changes: *nodejs-patterns
+    - <<: *if-merge-request
+      changes: *ci-qa-patterns
+    - <<: *if-force-ci
 
 .build-images:rules:build-assets-image-as-if-foss:
   rules:
@@ -1305,7 +1318,7 @@
       allow_failure: true
     - <<: *if-ruby2-branch
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+    - <<: *if-merge-request
       changes: *dependency-patterns
       allow_failure: true
       variables:
@@ -1316,30 +1329,30 @@
       changes: *feature-flag-development-config-patterns
       when: manual
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+    - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+    - <<: *if-merge-request
       changes: *initializers-patterns
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+    - <<: *if-merge-request
       changes: *nodejs-patterns
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+    - <<: *if-merge-request
       changes: *ci-qa-patterns
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+    - <<: *if-merge-request
       changes:
         - qa/Gemfile.lock # qa/Gemfile.lock is a part of *qa-patterns, so this rule must be placed before the one with *qa-patterns changes
       variables:
         UPDATE_QA_CACHE: "true"
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+    - <<: *if-merge-request
       changes: *qa-patterns
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
       changes: *code-patterns
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+    - <<: *if-merge-request
       changes: *code-patterns
       when: manual
       allow_failure: true

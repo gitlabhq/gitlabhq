@@ -40,7 +40,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
    ```ruby
    gitlab_rails['omniauth_providers'] = [
      {
-       name: "openid_connect",
+       name: "openid_connect", # do not change this parameter
        label: "Provider name", # optional label for login button, defaults to "Openid Connect"
        icon: "<custom_provider_icon>",
        args: {
@@ -66,7 +66,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
    For installation from source:
 
    ```yaml
-     - { name: 'openid_connect',
+     - { name: 'openid_connect', # do not change this parameter
          label: 'Provider name', # optional label for login button, defaults to "Openid Connect"
          icon: '<custom_provider_icon>',
          args: {
@@ -165,7 +165,7 @@ for more details:
 ```ruby
 gitlab_rails['omniauth_providers'] = [
   {
-    name: "openid_connect",
+    name: "openid_connect", # do not change this parameter
     label: "Google OpenID", # optional label for login button, defaults to "Openid Connect"
     args: {
       name: "openid_connect",
@@ -203,7 +203,7 @@ Example Omnibus configuration block:
 ```ruby
 gitlab_rails['omniauth_providers'] = [
   {
-    name: "openid_connect",
+    name: "openid_connect", # do not change this parameter
     label: "Azure OIDC", # optional label for login button, defaults to "Openid Connect"
     args: {
       name: "openid_connect",
@@ -335,7 +335,7 @@ but `LocalAccounts` authenticates against local Active Directory accounts. Befor
    ```ruby
    gitlab_rails['omniauth_providers'] = [
    {
-     name: "openid_connect",
+     name: "openid_connect", # do not change this parameter
      label: "Azure B2C OIDC", # optional label for login button, defaults to "Openid Connect"
      args: {
        name: "openid_connect",
@@ -395,7 +395,7 @@ Example Omnibus configuration block:
 ```ruby
 gitlab_rails['omniauth_providers'] = [
   {
-    name: "openid_connect",
+    name: "openid_connect", # do not change this parameter
     label: "Keycloak", # optional label for login button, defaults to "Openid Connect"
     args: {
       name: "openid_connect",
@@ -475,7 +475,7 @@ To use symmetric key encryption:
    ```ruby
    gitlab_rails['omniauth_providers'] = [
      {
-       name: "openid_connect",
+       name: "openid_connect", # do not change this parameter
        label: "Keycloak", # optional label for login button, defaults to "Openid Connect"
        args: {
          name: "openid_connect",
@@ -519,7 +519,7 @@ Example Omnibus GitLab configuration (file path: `/etc/gitlab/gitlab.rb`):
 ```ruby
 gitlab_rails['omniauth_providers'] = [
     {
-        name: "openid_connect",
+        name: "openid_connect", # do not change this parameter
         label: "Casdoor", # optional label for login button, defaults to "Openid Connect"
         args: {
             name: "openid_connect",
@@ -542,7 +542,7 @@ gitlab_rails['omniauth_providers'] = [
 Example installations from source configuration (file path: `config/gitlab.yml`):
 
 ```yaml
-  - { name: 'openid_connect',
+  - { name: 'openid_connect', # do not change this parameter
       label: 'Casdoor', # optional label for login button, defaults to "Openid Connect"
       args: {
         name: 'openid_connect',

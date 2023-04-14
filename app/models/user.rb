@@ -1087,8 +1087,6 @@ class User < ApplicationRecord
   end
 
   def two_factor_webauthn_enabled?
-    return false unless Feature.enabled?(:webauthn)
-
     (webauthn_registrations.loaded? && webauthn_registrations.any?) || (!webauthn_registrations.loaded? && webauthn_registrations.exists?)
   end
 

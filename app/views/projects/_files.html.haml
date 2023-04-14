@@ -6,7 +6,7 @@
 - if readme_path = @project.repository.readme_path
   - add_page_startup_api_call project_blob_path(@project, tree_join(@ref, readme_path), viewer: "rich", format: "json")
 
-#tree-holder.tree-holder.clearfix.js-per-page{ data: { blame_per_page: Projects::BlameService::PER_PAGE } }
+#tree-holder.tree-holder.clearfix.js-per-page{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
   .info-well.gl-display-none.gl-sm-display-flex.project-last-commit.gl-flex-direction-column.gl-mt-5
     #js-last-commit.gl-m-auto
       = gl_loading_icon(size: 'md')

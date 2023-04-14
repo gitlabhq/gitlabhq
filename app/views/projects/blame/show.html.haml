@@ -2,7 +2,7 @@
 - add_page_specific_style 'page_bundles/tree'
 - blame_streaming_url = blame_pages_streaming_url(@id, @project)
 
-- if @blame_mode.streaming? && total_extra_pages > 0
+- if @blame_mode.streaming? && @blame_pagination.total_extra_pages > 0
   - content_for :startup_js do
     = javascript_tag do
       :plain
@@ -11,7 +11,7 @@
           url.searchParams.set('page', 2);
           return fetch(url).then(response => response.body);
         })();
-- dataset = { testid: 'blob-content-holder', qa_selector: 'blame_file_content', per_page: @blame_per_page, total_extra_pages: total_extra_pages - 1, pages_url: blame_streaming_url }
+- dataset = { testid: 'blob-content-holder', qa_selector: 'blame_file_content', per_page: @blame_pagination.per_page, total_extra_pages: @blame_pagination.total_extra_pages - 1, pages_url: blame_streaming_url }
 
 #blob-content-holder.tree-holder.js-per-page{ data: dataset }
   = render "projects/blob/breadcrumb", blob: @blob, blame: true
@@ -53,5 +53,4 @@
           = _('Loading full blame...')
 
   - if @blame_mode.pagination?
-    = paginate(@blame_pagination, theme: "gitlab")
-
+    = paginate(@blame_pagination.paginator, theme: "gitlab")

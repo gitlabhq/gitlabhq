@@ -26609,6 +26609,7 @@ Attributes for defining a CI/CD variable.
 | <a id="complianceviolationinputmergedafter"></a>`mergedAfter` | [`Date`](#date) | Merge requests merged after this date (inclusive). |
 | <a id="complianceviolationinputmergedbefore"></a>`mergedBefore` | [`Date`](#date) | Merge requests merged before this date (inclusive). |
 | <a id="complianceviolationinputprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter compliance violations by project. |
+| <a id="complianceviolationinputtargetbranch"></a>`targetBranch` | [`String`](#string) | Filter compliance violations by target branch. |
 
 ### `DastProfileCadenceInput`
 

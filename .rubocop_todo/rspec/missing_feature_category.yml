@@ -5524,7 +5524,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/presenters/packages/pypi/simple_index_presenter_spec.rb'
     - 'spec/presenters/packages/pypi/simple_package_versions_presenter_spec.rb'
     - 'spec/presenters/pages_domain_presenter_spec.rb'
-    - 'spec/presenters/project_clusterable_presenter_spec.rb'
     - 'spec/presenters/project_hook_presenter_spec.rb'
     - 'spec/presenters/project_member_presenter_spec.rb'
     - 'spec/presenters/project_presenter_spec.rb'

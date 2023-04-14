@@ -315,6 +315,27 @@ NOTE:
 WARNING:
 `stub_method` is supposed to be used in factories only. It's strongly discouraged to be used elsewhere. Please consider using [RSpec mocks](https://rspec.info/features/3-12/rspec-mocks/) if available.
 
+#### Stubbing member access level
+
+To stub [member access level](../../user/permissions.md#roles) for factory stubs like `Project` or `Group` use
+[`stub_member_access_level`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/stub_member_access_level.rb):
+
+```ruby
+let(:project) { build_stubbed(:project) }
+let(:maintainer) { build_stubbed(:user) }
+let(:policy) { ProjectPolicy.new(maintainer, project) }
+
+it 'allows admin_project ability' do
+  stub_member_access_level(project, maintainer: maintainer)
+
+  expect(policy).to be_allowed(:admin_project)
+end
+```
+
+NOTE:
+Refrain from using this stub helper if the test code relies on persisting
+`project_authorizations` or `Member` records. Use `Project#add_member` or `Group#add_member` instead.
+
 #### Identify slow tests
 
 Running a spec with profiling is a good way to start optimizing a spec. This can

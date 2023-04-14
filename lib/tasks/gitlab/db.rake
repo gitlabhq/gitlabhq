@@ -109,9 +109,11 @@ namespace :gitlab do
       load_database = connection.tables.count <= 1
 
       if load_database
+        puts "Running db:schema:load#{database_name} rake task"
         Gitlab::Database.add_post_migrate_path_to_rails(force: true)
         Rake::Task["db:schema:load#{database_name}"].invoke
       else
+        puts "Running db:migrate#{database_name} rake task"
         Rake::Task["db:migrate#{database_name}"].invoke
       end
 

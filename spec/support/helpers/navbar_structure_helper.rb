@@ -114,6 +114,14 @@ module NavbarStructureHelper
     )
   end
 
+  def insert_model_experiments_nav(within)
+    insert_after_sub_nav_item(
+      within,
+      within: _('Packages and registries'),
+      new_sub_nav_item_name: _('Model experiments')
+    )
+  end
+
   def project_analytics_sub_nav_item
     [
       _('Value stream'),

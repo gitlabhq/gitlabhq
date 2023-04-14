@@ -10858,6 +10858,38 @@ CREATE SEQUENCE agent_project_authorizations_id_seq
 
 ALTER SEQUENCE agent_project_authorizations_id_seq OWNED BY agent_project_authorizations.id;
 
+CREATE TABLE agent_user_access_group_authorizations (
+    id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    agent_id bigint NOT NULL,
+    config jsonb NOT NULL
+);
+
+CREATE SEQUENCE agent_user_access_group_authorizations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE agent_user_access_group_authorizations_id_seq OWNED BY agent_user_access_group_authorizations.id;
+
+CREATE TABLE agent_user_access_project_authorizations (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    agent_id bigint NOT NULL,
+    config jsonb NOT NULL
+);
+
+CREATE SEQUENCE agent_user_access_project_authorizations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE agent_user_access_project_authorizations_id_seq OWNED BY agent_user_access_project_authorizations.id;
+
 CREATE TABLE alert_management_alert_assignees (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -24534,6 +24566,10 @@ ALTER TABLE ONLY agent_group_authorizations ALTER COLUMN id SET DEFAULT nextval(
 
 ALTER TABLE ONLY agent_project_authorizations ALTER COLUMN id SET DEFAULT nextval('agent_project_authorizations_id_seq'::regclass);
 
+ALTER TABLE ONLY agent_user_access_group_authorizations ALTER COLUMN id SET DEFAULT nextval('agent_user_access_group_authorizations_id_seq'::regclass);
+
+ALTER TABLE ONLY agent_user_access_project_authorizations ALTER COLUMN id SET DEFAULT nextval('agent_user_access_project_authorizations_id_seq'::regclass);
+
 ALTER TABLE ONLY alert_management_alert_assignees ALTER COLUMN id SET DEFAULT nextval('alert_management_alert_assignees_id_seq'::regclass);
 
 ALTER TABLE ONLY alert_management_alert_metric_images ALTER COLUMN id SET DEFAULT nextval('alert_management_alert_metric_images_id_seq'::regclass);
@@ -26233,6 +26269,12 @@ ALTER TABLE ONLY agent_group_authorizations
 
 ALTER TABLE ONLY agent_project_authorizations
     ADD CONSTRAINT agent_project_authorizations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY agent_user_access_group_authorizations
+    ADD CONSTRAINT agent_user_access_group_authorizations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY agent_user_access_project_authorizations
+    ADD CONSTRAINT agent_user_access_project_authorizations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY alert_management_alert_assignees
     ADD CONSTRAINT alert_management_alert_assignees_pkey PRIMARY KEY (id);
@@ -29408,6 +29450,14 @@ CREATE INDEX index_agent_group_authorizations_on_group_id ON agent_group_authori
 CREATE UNIQUE INDEX index_agent_project_authorizations_on_agent_id_and_project_id ON agent_project_authorizations USING btree (agent_id, project_id);
 
 CREATE INDEX index_agent_project_authorizations_on_project_id ON agent_project_authorizations USING btree (project_id);
+
+CREATE UNIQUE INDEX index_agent_user_access_on_agent_id_and_group_id ON agent_user_access_group_authorizations USING btree (agent_id, group_id);
+
+CREATE UNIQUE INDEX index_agent_user_access_on_agent_id_and_project_id ON agent_user_access_project_authorizations USING btree (agent_id, project_id);
+
+CREATE INDEX index_agent_user_access_on_group_id ON agent_user_access_group_authorizations USING btree (group_id);
+
+CREATE INDEX index_agent_user_access_on_project_id ON agent_user_access_project_authorizations USING btree (project_id);
 
 CREATE INDEX index_alert_assignees_on_alert_id ON alert_management_alert_assignees USING btree (alert_id);
 
@@ -34320,6 +34370,9 @@ ALTER TABLE ONLY epics
 ALTER TABLE ONLY environments
     ADD CONSTRAINT fk_01a033a308 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY agent_user_access_project_authorizations
+    ADD CONSTRAINT fk_0250c0ad51 FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT fk_0314ee86eb FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -34617,6 +34670,9 @@ ALTER TABLE ONLY alert_management_alerts
 ALTER TABLE ONLY path_locks
     ADD CONSTRAINT fk_5265c98f24 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY agent_user_access_group_authorizations
+    ADD CONSTRAINT fk_53fd98ccbf FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY clusters_applications_prometheus
     ADD CONSTRAINT fk_557e773639 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
@@ -34737,6 +34793,9 @@ ALTER TABLE ONLY vulnerabilities
 ALTER TABLE ONLY oauth_openid_requests
     ADD CONSTRAINT fk_77114b3b09 FOREIGN KEY (access_grant_id) REFERENCES oauth_access_grants(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY agent_user_access_project_authorizations
+    ADD CONSTRAINT fk_78034b05d8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY users
     ADD CONSTRAINT fk_789cd90b35 FOREIGN KEY (accepted_term_id) REFERENCES application_setting_terms(id) ON DELETE CASCADE;
 
@@ -34853,6 +34912,9 @@ ALTER TABLE ONLY boards_epic_list_user_preferences
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_96b1dd429c FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY agent_user_access_group_authorizations
+    ADD CONSTRAINT fk_97ce8e8284 FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_occurrences
     ADD CONSTRAINT fk_97ffe77653 FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE SET NULL;

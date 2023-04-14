@@ -172,6 +172,7 @@ RSpec.configure do |config|
   config.include RailsHelpers
   config.include SidekiqMiddleware
   config.include StubActionCableConnection, type: :channel
+  config.include StubMemberAccessLevel
   config.include StubSpamServices
   config.include SnowplowHelpers
   config.include RenderedHelpers

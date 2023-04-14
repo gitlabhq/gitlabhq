@@ -20,28 +20,14 @@ class Projects::BlameController < Projects::ApplicationController
     end
 
     load_environment
-
-    @blame_mode = Gitlab::Git::BlameMode.new(@commit.project, blame_params)
-    blame_service = Projects::BlameService.new(@blob, @commit, @blame_mode, blame_params)
-
-    @blame = Gitlab::View::Presenter::Factory.new(blame_service.blame, project: @project, path: @path, page: blame_service.page).fabricate!
-
-    @blame_pagination = blame_service.pagination
-
-    @blame_per_page = blame_service.per_page
-
-    render locals: { total_extra_pages: blame_service.total_extra_pages }
+    load_blame
   end
 
   def page
     @blob = @repository.blob_at(@commit.id, @path)
 
     load_environment
-
-    @blame_mode = Gitlab::Git::BlameMode.new(@commit.project, blame_params)
-    blame_service = Projects::BlameService.new(@blob, @commit, @blame_mode, blame_params)
-
-    @blame = Gitlab::View::Presenter::Factory.new(blame_service.blame, project: @project, path: @path, page: blame_service.page).fabricate!
+    load_blame
 
     render partial: 'page'
   end
@@ -52,6 +38,14 @@ class Projects::BlameController < Projects::ApplicationController
     environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
     environment_params[:find_latest] = true
     @environment = ::Environments::EnvironmentsByDeploymentsFinder.new(@project, current_user, environment_params).execute.last
+  end
+
+  def load_blame
+    @blame_mode = Gitlab::Git::BlameMode.new(@commit.project, blame_params)
+    @blame_pagination = Gitlab::Git::BlamePagination.new(@blob, @blame_mode, blame_params)
+
+    blame = Gitlab::Blame.new(@blob, @commit, range: @blame_pagination.blame_range)
+    @blame = Gitlab::View::Presenter::Factory.new(blame, project: @project, path: @path, page: @blame_pagination.page).fabricate!
   end
 
   def blame_params

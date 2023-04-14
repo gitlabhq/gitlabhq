@@ -10,6 +10,7 @@ module Sidebars
           add_item(container_registry_menu_item)
           add_item(infrastructure_registry_menu_item)
           add_item(harbor_registry_menu_item)
+          add_item(model_experiments_menu_item)
           true
         end
 
@@ -86,6 +87,20 @@ module Sidebars
             super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
             active_routes: { controller: 'projects/harbor/repositories' },
             item_id: :harbor_registry
+          )
+        end
+
+        def model_experiments_menu_item
+          if Feature.disabled?(:ml_experiment_tracking, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :model_experiments)
+          end
+
+          ::Sidebars::MenuItem.new(
+            title: _('Model experiments'),
+            link: project_ml_experiments_path(context.project),
+            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::AnalyzeMenu,
+            active_routes: { controller: %w[projects/ml/experiments projects/ml/candidates] },
+            item_id: :model_experiments
           )
         end
 

@@ -11,12 +11,17 @@ RSpec.describe Tooling::FindChanges, feature_category: :tooling do
   attr_accessor :changed_files_file, :predictive_tests_file, :frontend_fixtures_mapping_file
 
   let(:instance) do
-    described_class.new(changed_files_pathname, predictive_tests_pathname, frontend_fixtures_mapping_pathname)
+    described_class.new(
+      changed_files_pathname: changed_files_pathname,
+      predictive_tests_pathname: predictive_tests_pathname,
+      frontend_fixtures_mapping_pathname: frontend_fixtures_mapping_pathname,
+      from: from)
   end
 
   let(:changed_files_pathname)             { changed_files_file.path }
   let(:predictive_tests_pathname)          { predictive_tests_file.path }
   let(:frontend_fixtures_mapping_pathname) { frontend_fixtures_mapping_file.path }
+  let(:from)                               { :api }
   let(:gitlab_client)                      { double('GitLab') } # rubocop:disable RSpec/VerifiedDoubles
 
   around do |example|
@@ -45,24 +50,50 @@ RSpec.describe Tooling::FindChanges, feature_category: :tooling do
       'CI_MERGE_REQUEST_PROJECT_PATH' => 'dummy-project',
       'PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE' => 'dummy-token'
     )
+  end
 
-    allow(instance).to receive(:gitlab).and_return(gitlab_client)
+  describe '#initialize' do
+    context 'when fetching changes from unknown' do
+      let(:from) { :unknown }
+
+      it 'raises an ArgumentError' do
+        expect { instance }.to raise_error(
+          ArgumentError, ":from can only be :api or :changed_files"
+        )
+      end
+    end
   end
 
   describe '#execute' do
     subject { instance.execute }
+
+    before do
+      allow(instance).to receive(:gitlab).and_return(gitlab_client)
+    end
 
     context 'when there is no changed files file' do
       let(:changed_files_pathname) { nil }
 
       it 'raises an ArgumentError' do
         expect { subject }.to raise_error(
-          ArgumentError, "A path to the changed files file must be given as first argument."
+          ArgumentError, "A path to the changed files file must be given as :changed_files_pathname"
         )
       end
     end
 
-    context 'when an changed files file is provided' do
+    context 'when fetching changes from API' do
+      let(:from) { :api }
+
+      it 'calls GitLab API to retrieve the MR diff' do
+        expect(gitlab_client).to receive_message_chain(:merge_request_changes, :changes).and_return([])
+
+        subject
+      end
+    end
+
+    context 'when fetching changes from changed files' do
+      let(:from) { :changed_files }
+
       it 'does not call GitLab API to retrieve the MR diff' do
         expect(gitlab_client).not_to receive(:merge_request_changes)
 
@@ -154,68 +185,96 @@ RSpec.describe Tooling::FindChanges, feature_category: :tooling do
   describe '#only_js_files_changed' do
     subject { instance.only_js_files_changed }
 
-    let(:mr_changes_array) { [] }
+    context 'when fetching changes from changed files' do
+      let(:from) { :changed_files }
 
-    before do
-      # The class from the GitLab gem isn't public, so we cannot use verified doubles for it.
-      #
-      # rubocop:disable RSpec/VerifiedDoubles
-      allow(gitlab_client).to receive(:merge_request_changes)
-        .with('dummy-project', '1234')
-        .and_return(double(changes: mr_changes_array))
-      # rubocop:enable RSpec/VerifiedDoubles
-    end
+      before do
+        File.write(changed_files_pathname, changed_files_file_content)
+      end
 
-    context 'when a file is passed as an argument' do
-      let(:changed_files_pathname) { 'does-not-exist.out' }
+      context 'when changed files contain only *.js changes' do
+        let(:changed_files_file_content) { 'a.js b.js' }
 
-      it 'calls GitLab API' do
-        expect(gitlab_client).to receive(:merge_request_changes)
-        .with('dummy-project', '1234')
+        it 'returns true' do
+          expect(subject).to be true
+        end
+      end
 
-        subject
+      context 'when changed files contain not only *.js changes' do
+        let(:changed_files_file_content) { 'a.js b.rb' }
+
+        it 'returns false' do
+          expect(subject).to be false
+        end
       end
     end
 
-    context 'when there are no file changes' do
+    context 'when fetching changes from API' do
+      let(:from) { :api }
+
       let(:mr_changes_array) { [] }
 
-      it 'returns false' do
-        expect(subject).to be false
-      end
-    end
+      before do
+        allow(instance).to receive(:gitlab).and_return(gitlab_client)
 
-    context 'when there are changes to files other than JS files' do
-      let(:mr_changes_array) do
-        [
-          {
-            "new_path" => "scripts/gitlab_component_helpers.sh",
-            "old_path" => "scripts/gitlab_component_helpers.sh"
-          },
-          {
-            "new_path" => "scripts/test.js",
-            "old_path" => "scripts/test.js"
-          }
-        ]
+        # The class from the GitLab gem isn't public, so we cannot use verified doubles for it.
+        #
+        # rubocop:disable RSpec/VerifiedDoubles
+        allow(gitlab_client).to receive(:merge_request_changes)
+          .with('dummy-project', '1234')
+          .and_return(double(changes: mr_changes_array))
+        # rubocop:enable RSpec/VerifiedDoubles
       end
 
-      it 'returns false' do
-        expect(subject).to be false
-      end
-    end
+      context 'when a file is passed as an argument' do
+        it 'calls GitLab API' do
+          expect(gitlab_client).to receive(:merge_request_changes)
+          .with('dummy-project', '1234')
 
-    context 'when there are changes only to JS files' do
-      let(:mr_changes_array) do
-        [
-          {
-            "new_path" => "scripts/test.js",
-            "old_path" => "scripts/test.js"
-          }
-        ]
+          subject
+        end
       end
 
-      it 'returns true' do
-        expect(subject).to be true
+      context 'when there are no file changes' do
+        let(:mr_changes_array) { [] }
+
+        it 'returns false' do
+          expect(subject).to be false
+        end
+      end
+
+      context 'when there are changes to files other than JS files' do
+        let(:mr_changes_array) do
+          [
+            {
+              "new_path" => "scripts/gitlab_component_helpers.sh",
+              "old_path" => "scripts/gitlab_component_helpers.sh"
+            },
+            {
+              "new_path" => "scripts/test.js",
+              "old_path" => "scripts/test.js"
+            }
+          ]
+        end
+
+        it 'returns false' do
+          expect(subject).to be false
+        end
+      end
+
+      context 'when there are changes only to JS files' do
+        let(:mr_changes_array) do
+          [
+            {
+              "new_path" => "scripts/test.js",
+              "old_path" => "scripts/test.js"
+            }
+          ]
+        end
+
+        it 'returns true' do
+          expect(subject).to be true
+        end
       end
     end
   end

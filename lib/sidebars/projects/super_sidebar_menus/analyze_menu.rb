@@ -25,7 +25,8 @@ module Sidebars
             :code_review,
             :merge_requests,
             :issues,
-            :insights
+            :insights,
+            :model_experiments
           ].each { |id| add_item(::Sidebars::NilMenuItem.new(item_id: id)) }
         end
       end

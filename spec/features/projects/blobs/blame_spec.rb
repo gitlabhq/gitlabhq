@@ -44,7 +44,7 @@ RSpec.describe 'File blame', :js, feature_category: :projects do
 
   context 'when blob length is over the blame range limit' do
     before do
-      stub_const('Projects::BlameService::PER_PAGE', 2)
+      stub_const('Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE', 2)
     end
 
     it 'displays two first lines of the file with pagination' do
@@ -112,7 +112,7 @@ RSpec.describe 'File blame', :js, feature_category: :projects do
 
     context 'when streaming is enabled' do
       before do
-        stub_const('Projects::BlameService::STREAMING_PER_PAGE', 50)
+        stub_const('Gitlab::Git::BlamePagination::STREAMING_PER_PAGE', 50)
       end
 
       it_behaves_like 'a full blame page'
@@ -143,7 +143,7 @@ RSpec.describe 'File blame', :js, feature_category: :projects do
 
   context 'when blob length is over global max page limit' do
     before do
-      stub_const('Projects::BlameService::PER_PAGE', 200)
+      stub_const('Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE', 200)
     end
 
     let(:path) { 'files/markdown/ruby-style-guide.md' }

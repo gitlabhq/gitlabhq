@@ -67,10 +67,10 @@ RSpec.describe Tooling::Helpers::FileHandler, feature_category: :tooling do
   end
 
   describe '#write_array_to_file' do
-    let(:content_array)  { %w[new_entry] }
-    let(:overwrite_flag) { false }
+    let(:content_array) { %w[new_entry] }
+    let(:append_flag) { true }
 
-    subject { instance.write_array_to_file(output_file_path, content_array, overwrite: overwrite_flag) }
+    subject { instance.write_array_to_file(output_file_path, content_array, append: append_flag) }
 
     context 'when the output file does not exist' do
       let(:non_existing_output_file) { 'tmp/another_file.out' }
@@ -113,8 +113,8 @@ RSpec.describe Tooling::Helpers::FileHandler, feature_category: :tooling do
           .to((initial_content.split(' ') + content_array).join(' '))
       end
 
-      context 'when the overwrite flag is set to true' do
-        let(:overwrite_flag) { true }
+      context 'when the append flag is set to false' do
+        let(:append_flag) { false }
 
         it 'overwrites the previous content' do
           expect { subject }.to change { File.read(output_file_path) }

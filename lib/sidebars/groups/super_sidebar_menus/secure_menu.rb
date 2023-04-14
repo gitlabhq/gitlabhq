@@ -17,9 +17,9 @@ module Sidebars
         override :configure_menu_items
         def configure_menu_items
           [
-            :audit_events,
             :security_dashboard,
             :vulnerability_report,
+            :audit_events,
             :compliance,
             :scan_policies
           ].each { |id| add_item(::Sidebars::NilMenuItem.new(item_id: id)) }

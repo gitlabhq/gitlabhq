@@ -23,7 +23,8 @@ RSpec.describe Sidebars::Projects::SuperSidebarMenus::AnalyzeMenu, feature_categ
       :code_review,
       :merge_requests,
       :issues,
-      :insights
+      :insights,
+      :model_experiments
     ])
   end
 end

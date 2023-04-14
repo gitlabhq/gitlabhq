@@ -83,6 +83,17 @@ of an incident.
 
 ![Incident timeline event for severity change](img/timeline_event_for_severity_change_v15_6.png)
 
+### When labels change (Experiment)
+
+> [Introduced]([issue-link](https://gitlab.com/gitlab-org/gitlab/-/issues/365489)) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `incident_timeline_events_from_labels`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `incident_timeline_events_from_labels`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+A new timeline event is created when someone adds or removes [labels](../../user/project/labels.md) on an incident.
+
 ## Delete an event
 
 > Ability to delete an event when editing it [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372265) in GitLab 15.7.
