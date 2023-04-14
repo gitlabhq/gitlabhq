@@ -13007,6 +13007,9 @@ msgstr ""
 msgid "CycleAnalytics|New value stream…"
 msgstr ""
 
+msgid "CycleAnalytics|No data"
+msgstr ""
+
 msgid "CycleAnalytics|Number of tasks"
 msgstr ""
 
@@ -42810,12 +42813,6 @@ msgstr ""
 msgid "Subscriptions|Activation date"
 msgstr ""
 
-msgid "Subscriptions|Chat with sales"
-msgstr ""
-
-msgid "Subscriptions|Close"
-msgstr ""
-
 msgid "Subscriptions|End date"
 msgstr ""
 
@@ -42828,16 +42825,7 @@ msgstr ""
 msgid "Subscriptions|None"
 msgstr ""
 
-msgid "Subscriptions|Not ready to buy yet?"
-msgstr ""
-
-msgid "Subscriptions|Start a free trial"
-msgstr ""
-
 msgid "Subscriptions|Start date"
-msgstr ""
-
-msgid "Subscriptions|We understand. Maybe you have some questions for our sales team, or maybe you'd like to try some of the paid features first. What would you like to do?"
 msgstr ""
 
 msgid "Subscription|Your subscription for %{strong}%{namespace_name}%{strong_close} has expired and you are now on %{pricing_link_start}the GitLab Free tier%{pricing_link_end}. Don't worry, your data is safe. Get in touch with our support team (%{support_email}). They'll gladly help with your subscription renewal."

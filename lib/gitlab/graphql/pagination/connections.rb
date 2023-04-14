@@ -14,6 +14,10 @@ module Gitlab
             Gitlab::Graphql::Pagination::Keyset::Connection)
 
           schema.connections.add(
+            Gitlab::Graphql::Loaders::LazyRelationLoader::RelationProxy,
+            Gitlab::Graphql::Pagination::Keyset::Connection)
+
+          schema.connections.add(
             Gitlab::Graphql::ExternallyPaginatedArray,
             Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection)
 
