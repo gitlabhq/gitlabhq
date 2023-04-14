@@ -1375,9 +1375,14 @@ module API
       params do
         requires :runner_type, type: String, values: ::Ci::Runner.runner_types.keys,
                  desc: %q(Specifies the scope of the runner)
-        given runner_type: ->(runner_type) { %i[group_type project_type].include? runner_type } do
-          requires :namespace_id, type: Integer,
-                   desc: 'The ID of the project or group that the runner is created in',
+        given runner_type: ->(runner_type) { runner_type == 'group_type' } do
+          requires :group_id, type: Integer,
+                   desc: 'The ID of the group that the runner is created in',
+                   documentation: { example: 1 }
+        end
+        given runner_type: ->(runner_type) { runner_type == 'project_type' } do
+          requires :project_id, type: Integer,
+                   desc: 'The ID of the project that the runner is created in',
                    documentation: { example: 1 }
         end
         optional :description, type: String, desc: %q(Description of the runner)
@@ -1397,18 +1402,15 @@ module API
       end
       post 'runners', urgency: :low, feature_category: :runner_fleet do
         attributes = attributes_for_keys(
-          %i[runner_type namespace_id description maintenance_note paused locked run_untagged tag_list
+          %i[runner_type group_id project_id description maintenance_note paused locked run_untagged tag_list
             access_level maximum_timeout]
         )
 
-        namespace_id = attributes.delete(:namespace_id)
-        if namespace_id
-          case attributes[:runner_type]
-          when 'group_type'
-            attributes[:scope] = ::Group.find(namespace_id)
-          when 'project_type'
-            attributes[:scope] = ::Project.find(namespace_id)
-          end
+        case attributes[:runner_type]
+        when 'group_type'
+          attributes[:scope] = ::Group.find_by_id(attributes.delete(:group_id))
+        when 'project_type'
+          attributes[:scope] = ::Project.find_by_id(attributes.delete(:project_id))
         end
 
         result = ::Ci::Runners::CreateRunnerService.new(user: current_user, params: attributes).execute

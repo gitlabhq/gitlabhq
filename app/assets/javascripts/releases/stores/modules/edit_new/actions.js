@@ -274,3 +274,9 @@ export const deleteRelease = ({ commit, getters, dispatch, state }) => {
       });
     });
 };
+
+export const setSearching = ({ commit }) => commit(types.SET_SEARCHING);
+export const setCreating = ({ commit }) => commit(types.SET_CREATING);
+
+export const setExistingTag = ({ commit }) => commit(types.SET_EXISTING_TAG);
+export const setNewTag = ({ commit }) => commit(types.SET_NEW_TAG);

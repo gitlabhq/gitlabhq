@@ -65,6 +65,10 @@ class ProjectSetting < ApplicationRecord
   end
   strong_memoize_attr :show_diff_preview_in_email?
 
+  def runner_registration_enabled
+    Gitlab::CurrentSettings.valid_runner_registrars.include?('project') && read_attribute(:runner_registration_enabled)
+  end
+
   private
 
   def validates_mr_default_target_self

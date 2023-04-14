@@ -518,6 +518,25 @@ RSpec.describe Projects::UpdateService, feature_category: :projects do
       end
     end
 
+    context 'when updating #runner_registration_enabled' do
+      it 'updates the attribute' do
+        expect { update_project(project, user, runner_registration_enabled: false) }
+          .to change { project.runner_registration_enabled }
+          .to(false)
+      end
+
+      context 'when runner registration is disabled for all projects' do
+        before do
+          stub_application_setting(valid_runner_registrars: [])
+        end
+
+        it 'restricts updating the attribute' do
+          expect { update_project(project, user, runner_registration_enabled: false) }
+            .not_to change { project.runner_registration_enabled }
+        end
+      end
+    end
+
     context 'when updating runners settings' do
       let(:settings) do
         { instance_runners_enabled: true, namespace_traversal_ids: [123] }

@@ -14,6 +14,19 @@ RSpec.describe Gitlab::GithubImport::Attachments::ImportMergeRequestWorker, feat
 
     let(:client) { instance_double('Gitlab::GithubImport::Client') }
 
+    let(:mr_hash) do
+      {
+        'record_db_id' => rand(100),
+        'record_type' => 'MergeRequest',
+        'iid' => 2,
+        'text' => <<-TEXT
+          Some text...
+
+          ![special-image](https://user-images.githubusercontent.com...)
+        TEXT
+      }
+    end
+
     it 'imports an merge request attachments' do
       expect_next_instance_of(
         Gitlab::GithubImport::Importer::NoteAttachmentsImporter,
@@ -28,7 +41,7 @@ RSpec.describe Gitlab::GithubImport::Attachments::ImportMergeRequestWorker, feat
         .to receive(:increment)
         .and_call_original
 
-      worker.import(project, client, {})
+      worker.import(project, client, mr_hash)
     end
   end
 end

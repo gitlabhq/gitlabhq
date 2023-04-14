@@ -2810,6 +2810,14 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
           it { is_expected.to be_allowed(:register_project_runners) }
         end
+
+        context 'with specific project runner registration disabled' do
+          before do
+            project.update!(runner_registration_enabled: false)
+          end
+
+          it { is_expected.to be_allowed(:register_project_runners) }
+        end
       end
 
       context 'when admin mode is disabled' do
@@ -2825,6 +2833,14 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       context 'with project runner registration disabled' do
         before do
           stub_application_setting(valid_runner_registrars: ['group'])
+        end
+
+        it { is_expected.to be_disallowed(:register_project_runners) }
+      end
+
+      context 'with specific project runner registration disabled' do
+        before do
+          project.update!(runner_registration_enabled: false)
         end
 
         it { is_expected.to be_disallowed(:register_project_runners) }
@@ -2881,6 +2897,14 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
             it { is_expected.to be_allowed(:create_runner) }
           end
+
+          context 'with specific project runner registration disabled' do
+            before do
+              project.update!(runner_registration_enabled: false)
+            end
+
+            it { is_expected.to be_allowed(:create_runner) }
+          end
         end
 
         context 'when admin mode is disabled' do
@@ -2896,6 +2920,14 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         context 'with project runner registration disabled' do
           before do
             stub_application_setting(valid_runner_registrars: ['group'])
+          end
+
+          it { is_expected.to be_disallowed(:create_runner) }
+        end
+
+        context 'with specific project runner registration disabled' do
+          before do
+            project.update!(runner_registration_enabled: false)
           end
 
           it { is_expected.to be_disallowed(:create_runner) }
@@ -2951,6 +2983,14 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
             it { is_expected.to be_disallowed(:create_runner) }
           end
+
+          context 'with specific project runner registration disabled' do
+            before do
+              project.update!(runner_registration_enabled: false)
+            end
+
+            it { is_expected.to be_disallowed(:create_runner) }
+          end
         end
 
         context 'when admin mode is disabled' do
@@ -2966,6 +3006,14 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         context 'with project runner registration disabled' do
           before do
             stub_application_setting(valid_runner_registrars: ['group'])
+          end
+
+          it { is_expected.to be_disallowed(:create_runner) }
+        end
+
+        context 'with specific project runner registration disabled' do
+          before do
+            project.update!(runner_registration_enabled: false)
           end
 
           it { is_expected.to be_disallowed(:create_runner) }

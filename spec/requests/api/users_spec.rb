@@ -4705,8 +4705,8 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
     context 'when runner_type is :group_type' do
       let(:post_args) { {} }
 
-      context 'when namespace_id is specified' do
-        let(:runner_attrs) { { runner_type: 'group_type', namespace_id: group.id } }
+      context 'when group_id is specified' do
+        let(:runner_attrs) { { runner_type: 'group_type', group_id: group.id } }
 
         context 'when user has sufficient permissions' do
           let(:current_user) { group_owner }
@@ -4717,12 +4717,17 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
         it_behaves_like 'returns forbidden when user does not have sufficient permissions'
       end
 
-      context 'when namespace_id is not specified' do
+      context 'when group_id is not specified' do
         let(:runner_attrs) { { runner_type: 'group_type' } }
         let(:current_user) { group_owner }
 
-        it_behaves_like 'fails to create runner with :bad_request' do
-          let(:expected_error) { 'Missing/invalid scope' }
+        it 'fails to create runner with :bad_request' do
+          expect do
+            request
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error']).to include('group_id is missing')
+          end.not_to change { Ci::Runner.count }
         end
       end
     end
@@ -4730,8 +4735,8 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
     context 'when runner_type is :project_type' do
       let(:post_args) { {} }
 
-      context 'when namespace_id is specified' do
-        let(:runner_attrs) { { runner_type: 'project_type', namespace_id: project.id } }
+      context 'when project_id is specified' do
+        let(:runner_attrs) { { runner_type: 'project_type', project_id: project.id } }
 
         context 'when user has sufficient permissions' do
           let(:current_user) { group_owner }
@@ -4742,12 +4747,17 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
         it_behaves_like 'returns forbidden when user does not have sufficient permissions'
       end
 
-      context 'when namespace_id is not specified' do
+      context 'when project_id is not specified' do
         let(:runner_attrs) { { runner_type: 'project_type' } }
         let(:current_user) { group_owner }
 
-        it_behaves_like 'fails to create runner with :bad_request' do
-          let(:expected_error) { 'Missing/invalid scope' }
+        it 'fails to create runner with :bad_request' do
+          expect do
+            request
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error']).to include('project_id is missing')
+          end.not_to change { Ci::Runner.count }
         end
       end
     end

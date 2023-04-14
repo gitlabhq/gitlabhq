@@ -1112,6 +1112,44 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         end
       end
 
+      context 'reading fingerprints from UploadedFile instance' do
+        let(:file) { Packages::Package.last.package_files.with_format('%.jar').last }
+
+        subject { upload_file_with_token(params: params) }
+
+        before do
+          allow_next_instance_of(UploadedFile) do |uploaded_file|
+            allow(uploaded_file).to receive(:size).and_return(123)
+            allow(uploaded_file).to receive(:sha1).and_return('sha1')
+            allow(uploaded_file).to receive(:md5).and_return('md5')
+          end
+        end
+
+        context 'when feature flag is enabled' do
+          it 'sets size, sha1 and md5 fingerprints from uploaded file' do
+            subject
+
+            expect(file.size).to eq(123)
+            expect(file.file_sha1).to eq('sha1')
+            expect(file.file_md5).to eq('md5')
+          end
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(read_fingerprints_from_uploaded_file_in_maven_upload: false)
+          end
+
+          it 'does not read fingerprints from uploaded file' do
+            subject
+
+            expect(file.size).not_to eq(123)
+            expect(file.file_sha1).not_to eq('sha1')
+            expect(file.file_md5).not_to eq('md5')
+          end
+        end
+      end
+
       def expect_use_primary
         lb_session = ::Gitlab::Database::LoadBalancing::Session.current
 

@@ -33,7 +33,8 @@ module Gitlab
 
         def github_identifiers
           {
-            oid: oid
+            oid: oid,
+            size: size
           }
         end
       end

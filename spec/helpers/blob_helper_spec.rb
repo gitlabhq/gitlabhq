@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe BlobHelper do
   include TreeHelper
+  include FakeBlobHelpers
 
   describe "#sanitize_svg_data" do
     let(:input_svg_path) { File.join(Rails.root, 'spec', 'fixtures', 'unsanitized.svg') }
@@ -57,8 +58,6 @@ RSpec.describe BlobHelper do
   end
 
   describe "#relative_raw_path" do
-    include FakeBlobHelpers
-
     let_it_be(:project) { create(:project) }
 
     before do
@@ -82,8 +81,6 @@ RSpec.describe BlobHelper do
   end
 
   context 'viewer related' do
-    include FakeBlobHelpers
-
     let_it_be(:project) { create(:project, lfs_enabled: true) }
 
     before do
@@ -524,6 +521,27 @@ RSpec.describe BlobHelper do
       end
 
       it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#vue_blob_app_data' do
+    let(:blob) { fake_blob(path: 'file.md', size: 2.megabytes) }
+    let(:project) { build_stubbed(:project) }
+    let(:user) { build_stubbed(:user) }
+    let(:ref) { 'main' }
+
+    it 'returns data related to blob app' do
+      allow(helper).to receive(:current_user).and_return(user)
+      assign(:ref, ref)
+
+      expect(helper.vue_blob_app_data(project, blob, ref)).to include({
+        blob_path: blob.path,
+        project_path: project.full_path,
+        resource_id: project.to_global_id,
+        user_id: user.to_global_id,
+        target_branch: ref,
+        original_branch: ref
+      })
     end
   end
 end

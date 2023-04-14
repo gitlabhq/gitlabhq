@@ -77,7 +77,7 @@ RSpec.describe Gitlab::GithubImport::Representation::PullRequestReview do
     it 'returns a hash with needed identifiers' do
       github_identifiers = {
         review_id: 999,
-        merge_request_id: 42
+        merge_request_iid: 1
       }
       other_attributes = { something_else: '_something_else_' }
       review = described_class.new(github_identifiers.merge(other_attributes))

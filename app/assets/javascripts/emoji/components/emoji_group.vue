@@ -24,7 +24,7 @@ export default {
 
 <!-- eslint-disable-next-line vue/no-deprecated-functional-template -->
 <template functional>
-  <div class="gl-display-flex gl-flex-wrap-wrap gl-mb-2">
+  <div class="gl-display-flex gl-flex-wrap gl-mb-2">
     <template v-if="props.renderGroup">
       <button
         v-for="emoji in props.emojis"

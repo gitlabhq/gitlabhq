@@ -15,21 +15,21 @@ module Features
     include ListboxHelpers
 
     def select_new_tag_name(tag_name)
-      page.within '[data-testid="tag-name-field"]' do
-        find('button').click
-        wait_for_all_requests
+      open_tag_popover
 
-        find('input[aria-label="Search or create tag"]').set(tag_name)
+      page.within '[data-testid="tag-name-search"]' do
+        find('input[type="search"]').set(tag_name)
         wait_for_all_requests
 
         click_button("Create tag #{tag_name}")
-        click_button tag_name
       end
     end
 
     def select_create_from(branch_name)
+      open_tag_popover
+
       page.within '[data-testid="create-from-field"]' do
-        find('button').click
+        find('.ref-selector button').click
 
         wait_for_all_requests
 
@@ -38,6 +38,8 @@ module Features
         wait_for_all_requests
 
         select_listbox_item(branch_name.to_s, exact_text: true)
+
+        click_button _('Save')
       end
     end
 
@@ -72,6 +74,13 @@ module Features
     # Click "Add another link" and tab back to the beginning of the new row
     def add_another_asset_link
       click_button('Add another link')
+    end
+
+    def open_tag_popover(name = s_('Release|Search or create tag name'))
+      return if page.has_css? '.release-tag-selector'
+
+      click_button name
+      wait_for_all_requests
     end
   end
 end

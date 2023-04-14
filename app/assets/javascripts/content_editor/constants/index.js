@@ -12,6 +12,11 @@ export const INPUT_RULE_TRACKING_ACTION = 'execute_input_rule';
 
 export const TEXT_STYLE_DROPDOWN_ITEMS = [
   {
+    contentType: 'paragraph',
+    editorCommand: 'setParagraph',
+    label: __('Normal text'),
+  },
+  {
     contentType: 'heading',
     commandParams: { level: 1 },
     editorCommand: 'setHeading',
@@ -34,11 +39,6 @@ export const TEXT_STYLE_DROPDOWN_ITEMS = [
     editorCommand: 'setHeading',
     commandParams: { level: 4 },
     label: __('Heading 4'),
-  },
-  {
-    contentType: 'paragraph',
-    editorCommand: 'setParagraph',
-    label: __('Normal text'),
   },
 ];
 

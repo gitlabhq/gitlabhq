@@ -2208,18 +2208,19 @@ it again.
 POST /user/runners
 ```
 
-| Attribute          | Type         | Required | Description                                                                                                                             |
-|--------------------|--------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| `runner_type`      | string       | yes      | Specifies the scope of the runner; `instance_type`, `group_type`, or `project_type`.                                                    |
-| `namespace_id`     | integer      | no       | The ID of the project or group that the runner is created in. Required if `runner_type` is `group_type` or `project_type`.              |
-| `description`      | string       | no       | Description of the runner.                                                                                                              |
-| `paused`           | boolean      | no       | Specifies if the runner should ignore new jobs.                                                                                         |
-| `locked`           | boolean      | no       | Specifies if the runner should be locked for the current project.                                                                       |
-| `run_untagged`     | boolean      | no       | Specifies if the runner should handle untagged jobs.                                                                                    |
-| `tag_list`         | string array | no       | A list of runner tags.                                                                                                                  |
-| `access_level`     | string       | no       | The access level of the runner; `not_protected` or `ref_protected`.                                                                     |
-| `maximum_timeout`  | integer      | no       | Maximum timeout that limits the amount of time (in seconds) that runners can run jobs.                                                  |
-| `maintenance_note` | string       | no       | Free-form maintenance notes for the runner (1024 characters).                                                                           |
+| Attribute          | Type         | Required | Description                                                                                       |
+|--------------------|--------------|----------|---------------------------------------------------------------------------------------------------|
+| `runner_type`      | string       | yes      | Specifies the scope of the runner; `instance_type`, `group_type`, or `project_type`.              |
+| `group_id`         | integer      | no       | The ID of the group that the runner is created in. Required if `runner_type` is `group_type`.     |
+| `project_id`       | integer      | no       | The ID of the project that the runner is created in. Required if `runner_type` is `project_type`. |
+| `description`      | string       | no       | Description of the runner.                                                                        |
+| `paused`           | boolean      | no       | Specifies if the runner should ignore new jobs.                                                   |
+| `locked`           | boolean      | no       | Specifies if the runner should be locked for the current project.                                 |
+| `run_untagged`     | boolean      | no       | Specifies if the runner should handle untagged jobs.                                              |
+| `tag_list`         | string array | no       | A list of runner tags.                                                                            |
+| `access_level`     | string       | no       | The access level of the runner; `not_protected` or `ref_protected`.                               |
+| `maximum_timeout`  | integer      | no       | Maximum timeout that limits the amount of time (in seconds) that runners can run jobs.            |
+| `maintenance_note` | string       | no       | Free-form maintenance notes for the runner (1024 characters).                                     |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "runner_type=instance_type" \

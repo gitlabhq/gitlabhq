@@ -134,6 +134,8 @@ module Gitlab
       end
 
       def add_identifiers_to_failure(failure, external_identifiers)
+        external_identifiers[:object_type] = object_type
+
         failure.update_column(:external_identifiers, external_identifiers)
       end
     end

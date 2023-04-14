@@ -349,10 +349,13 @@ module API
               file: params[:file],
               size: params['file.size'],
               file_name: file_name,
-              file_type: params['file.type'],
               file_sha1: params['file.sha1'],
               file_md5: params['file.md5']
             }
+
+            if Feature.enabled?(:read_fingerprints_from_uploaded_file_in_maven_upload, user_project)
+              file_params.merge!(size: params[:file].size, file_sha1: params[:file].sha1, file_md5: params[:file].md5)
+            end
 
             ::Packages::CreatePackageFileService.new(package, file_params.merge(build: current_authenticated_job)).execute
             track_package_event('push_package', :maven, project: user_project, namespace: user_project.namespace) if jar_file?(format)

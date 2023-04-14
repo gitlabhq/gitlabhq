@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UploadedFile do
+RSpec.describe UploadedFile, feature_category: :package_registry do
   let(:temp_dir) { Dir.tmpdir }
   let(:temp_file) { Tempfile.new(%w[test test], temp_dir) }
 
@@ -15,7 +15,7 @@ RSpec.describe UploadedFile do
   end
 
   context 'from_params functions' do
-    RSpec.shared_examples 'using the file path' do |filename:, content_type:, sha256:, path_suffix:, upload_duration:|
+    RSpec.shared_examples 'using the file path' do |filename:, content_type:, sha256:, path_suffix:, upload_duration:, sha1:, md5:|
       it { is_expected.not_to be_nil }
 
       it 'sets properly the attributes' do
@@ -25,6 +25,8 @@ RSpec.describe UploadedFile do
         expect(subject.remote_id).to be_nil
         expect(subject.path).to end_with(path_suffix)
         expect(subject.upload_duration).to eq(upload_duration)
+        expect(subject.sha1).to eq(sha1)
+        expect(subject.md5).to eq(md5)
       end
 
       it 'handles a blank path' do
@@ -38,7 +40,7 @@ RSpec.describe UploadedFile do
       end
     end
 
-    RSpec.shared_examples 'using the remote id' do |filename:, content_type:, sha256:, size:, remote_id:, upload_duration:|
+    RSpec.shared_examples 'using the remote id' do |filename:, content_type:, sha256:, size:, remote_id:, upload_duration:, sha1:, md5:|
       it { is_expected.not_to be_nil }
 
       it 'sets properly the attributes' do
@@ -49,6 +51,8 @@ RSpec.describe UploadedFile do
         expect(subject.size).to eq(size)
         expect(subject.remote_id).to eq(remote_id)
         expect(subject.upload_duration).to eq(upload_duration)
+        expect(subject.sha1).to eq(sha1)
+        expect(subject.md5).to eq(md5)
       end
     end
 
@@ -81,7 +85,9 @@ RSpec.describe UploadedFile do
                 'name' => 'dir/my file&.txt',
                 'type' => 'my/type',
                 'upload_duration' => '5.05',
-                'sha256' => 'sha256' }
+                'sha256' => 'sha256',
+                'sha1' => 'sha1',
+                'md5' => 'md5' }
             end
 
             it_behaves_like 'using the file path',
@@ -89,7 +95,9 @@ RSpec.describe UploadedFile do
                             content_type: 'my/type',
                             sha256: 'sha256',
                             path_suffix: 'test',
-                            upload_duration: 5.05
+                            upload_duration: 5.05,
+                            sha1: 'sha1',
+                            md5: 'md5'
           end
 
           context 'with a remote id' do
@@ -101,7 +109,9 @@ RSpec.describe UploadedFile do
                 'remote_id' => '1234567890',
                 'etag' => 'etag1234567890',
                 'upload_duration' => '5.05',
-                'size' => '123456'
+                'size' => '123456',
+                'sha1' => 'sha1',
+                'md5' => 'md5'
               }
             end
 
@@ -111,7 +121,9 @@ RSpec.describe UploadedFile do
                             sha256: 'sha256',
                             size: 123456,
                             remote_id: '1234567890',
-                            upload_duration: 5.05
+                            upload_duration: 5.05,
+                            sha1: 'sha1',
+                            md5: 'md5'
           end
 
           context 'with a path and a remote id' do
@@ -124,7 +136,9 @@ RSpec.describe UploadedFile do
                 'remote_id' => '1234567890',
                 'etag' => 'etag1234567890',
                 'upload_duration' => '5.05',
-                'size' => '123456'
+                'size' => '123456',
+                'sha1' => 'sha1',
+                'md5' => 'md5'
               }
             end
 
@@ -134,7 +148,9 @@ RSpec.describe UploadedFile do
                             sha256: 'sha256',
                             size: 123456,
                             remote_id: '1234567890',
-                            upload_duration: 5.05
+                            upload_duration: 5.05,
+                            sha1: 'sha1',
+                            md5: 'md5'
           end
         end
       end
@@ -260,6 +276,14 @@ RSpec.describe UploadedFile do
             expect(file.upload_duration).to be_zero
           end
         end
+      end
+    end
+
+    context 'when unknown keyword params are provided' do
+      it 'raises an exception' do
+        expect do
+          described_class.new(temp_file.path, foo: 'param1', bar: 'param2')
+        end.to raise_error(ArgumentError, 'unknown keyword(s): foo, bar')
       end
     end
   end

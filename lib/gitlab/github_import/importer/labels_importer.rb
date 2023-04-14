@@ -53,8 +53,17 @@ module Gitlab
           :label
         end
 
+        private
+
         def model
           Label
+        end
+
+        def github_identifiers(label)
+          {
+            title: label[:name],
+            object_type: object_type
+          }
         end
       end
     end

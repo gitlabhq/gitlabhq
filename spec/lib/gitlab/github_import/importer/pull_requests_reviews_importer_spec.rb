@@ -53,6 +53,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsReviewsImporter do
       subject.each_object_to_import {}
 
       expect(review[:merge_request_id]).to eq(merge_request.id)
+      expect(review[:merge_request_iid]).to eq(merge_request.iid)
     end
 
     it 'skips cached pages' do

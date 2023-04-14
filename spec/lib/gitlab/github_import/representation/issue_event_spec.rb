@@ -156,7 +156,11 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
 
     describe '#github_identifiers' do
       it 'returns a hash with needed identifiers' do
-        expect(issue_event.github_identifiers).to eq({ id: 6501124486 })
+        expect(issue_event.github_identifiers).to eq(
+          id: 6501124486,
+          iid: 2,
+          event: 'closed'
+        )
       end
     end
   end

@@ -57,7 +57,7 @@ export default {
     <div class="gl-mt-3 gl-mb-6">
       <label>{{ s__('Runners|Operating systems') }}</label>
 
-      <div class="gl-display-flex gl-flex-wrap-wrap gl-gap-5">
+      <div class="gl-display-flex gl-flex-wrap gl-gap-5">
         <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
         <runner-platforms-radio v-model="model" :value="$options.LINUX_PLATFORM">
           Linux
@@ -74,7 +74,7 @@ export default {
     <div class="gl-mt-3 gl-mb-6">
       <label>{{ s__('Runners|Cloud templates') }}</label>
       <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
-      <div class="gl-display-flex gl-flex-wrap-wrap gl-gap-5">
+      <div class="gl-display-flex gl-flex-wrap gl-gap-5">
         <runner-platforms-radio
           v-model="model"
           :image="$options.AWS_LOGO_URL"
@@ -88,7 +88,7 @@ export default {
     <div class="gl-mt-3 gl-mb-6">
       <label>{{ s__('Runners|Containers') }}</label>
 
-      <div class="gl-display-flex gl-flex-wrap-wrap gl-gap-5">
+      <div class="gl-display-flex gl-flex-wrap gl-gap-5">
         <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
         <runner-platforms-radio :image="$options.DOCKER_LOGO_URL">
           <gl-link :href="$options.DOCKER_HELP_URL" target="_blank">

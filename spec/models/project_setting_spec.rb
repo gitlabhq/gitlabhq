@@ -207,4 +207,34 @@ RSpec.describe ProjectSetting, type: :model do
       end
     end
   end
+
+  describe '#runner_registration_enabled' do
+    let_it_be(:settings) { create(:project_setting) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, project_setting: settings, group: group) }
+
+    it 'returns true' do
+      expect(project.runner_registration_enabled).to eq true
+    end
+
+    context 'when project has runner registration disabled' do
+      before do
+        project.update!(runner_registration_enabled: false)
+      end
+
+      it 'returns false' do
+        expect(project.runner_registration_enabled).to eq false
+      end
+    end
+
+    context 'when all projects have runner registration disabled' do
+      before do
+        stub_application_setting(valid_runner_registrars: ['group'])
+      end
+
+      it 'returns false' do
+        expect(project.runner_registration_enabled).to eq false
+      end
+    end
+  end
 end

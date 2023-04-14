@@ -330,4 +330,17 @@ module BlobHelper
     @path.to_s.end_with?(Ci::Pipeline::CONFIG_EXTENSION) ||
       @path.to_s == @project.ci_config_path_or_default
   end
+
+  def vue_blob_app_data(project, blob, ref)
+    {
+      blob_path: blob.path,
+      project_path: project.full_path,
+      resource_id: project.to_global_id,
+      user_id: current_user.present? ? current_user.to_global_id : '',
+      target_branch: project.empty_repo? ? ref : @ref,
+      original_branch: @ref
+    }
+  end
 end
+
+BlobHelper.prepend_mod_with('BlobHelper')

@@ -433,11 +433,19 @@ lib/gitlab/checks/** @proglottis @toon
 /doc/administration/logs/index.md @msedlakjakubowski
 /doc/administration/maintenance_mode/ @axil
 /doc/administration/merge_request_diffs.md @aqualls
-/doc/administration/monitoring/ @msedlakjakubowski
+/doc/administration/monitoring/github_imports.md @eread
+/doc/administration/monitoring/gitlab_self_monitoring_project/ @msedlakjakubowski
+/doc/administration/monitoring/index.md @msedlakjakubowski
 /doc/administration/monitoring/ip_allowlist.md @jglassman1
+/doc/administration/monitoring/performance/gitlab_configuration.md @msedlakjakubowski
+/doc/administration/monitoring/performance/grafana_configuration.md @msedlakjakubowski
+/doc/administration/monitoring/performance/index.md @jglassman1
 /doc/administration/monitoring/performance/performance_bar.md @jglassman1
 /doc/administration/monitoring/prometheus/gitlab_exporter.md @jglassman1
 /doc/administration/monitoring/prometheus/index.md @axil
+/doc/administration/monitoring/prometheus/pgbouncer_exporter.md @aqualls
+/doc/administration/monitoring/prometheus/postgres_exporter.md @aqualls
+/doc/administration/monitoring/prometheus/registry_exporter.md @marcel.amirault
 /doc/administration/monitoring/prometheus/web_exporter.md @jglassman1
 /doc/administration/nfs.md @axil
 /doc/administration/object_storage.md @axil
@@ -465,6 +473,7 @@ lib/gitlab/checks/** @proglottis @toon
 /doc/administration/server_hooks.md @eread
 /doc/administration/sidekiq/ @axil
 /doc/administration/sidekiq/sidekiq_memory_killer.md @jglassman1
+/doc/administration/silent_mode/ @axil
 /doc/administration/smime_signing_email.md @axil
 /doc/administration/snippets/ @aqualls
 /doc/administration/static_objects_external_storage.md @ashrafkhamis
@@ -655,7 +664,6 @@ lib/gitlab/checks/** @proglottis @toon
 /doc/ci/pipeline_editor/ @marcel.amirault
 /doc/ci/pipelines/downstream_pipelines.md @marcel.amirault
 /doc/ci/pipelines/index.md @marcel.amirault
-/doc/ci/pipelines/job_artifacts.md @marcel.amirault
 /doc/ci/pipelines/pipeline_architectures.md @marcel.amirault
 /doc/ci/pipelines/pipeline_artifacts.md @marcel.amirault
 /doc/ci/quick_start/ @marcel.amirault
@@ -795,6 +803,7 @@ lib/gitlab/checks/** @proglottis @toon
 /doc/raketasks/spdx.md @rdickenson
 /doc/raketasks/x509_signatures.md @aqualls
 /doc/security/ @jglassman1
+/doc/security/email_verification.md @phillipwells
 /doc/subscriptions/ @fneill
 /doc/subscriptions/gitlab_dedicated/ @drcatherinepope
 /doc/topics/authentication/ @jglassman1
@@ -806,6 +815,9 @@ lib/gitlab/checks/** @proglottis @toon
 /doc/topics/plan_and_track.md @msedlakjakubowski
 /doc/topics/your_work.md @sselhorn
 /doc/tutorials/ @kpaizee
+/doc/tutorials/create_compliance_pipeline.md @eread
+/doc/tutorials/fuzz_testing_tutorial.md @rdickenson
+/doc/tutorials/scan_result_policy.md @dianalogan
 /doc/update/ @axil
 /doc/update/background_migrations.md @aqualls
 /doc/user/admin_area/analytics/ @lciutacu
@@ -844,6 +856,7 @@ lib/gitlab/checks/** @proglottis @toon
 /doc/user/admin_area/settings/rate_limit_on_projects_api.md @lciutacu
 /doc/user/admin_area/settings/rate_limit_on_users_api.md @jglassman1
 /doc/user/admin_area/settings/scim_setup.md @jglassman1
+/doc/user/admin_area/settings/security_and_compliance.md @rdickenson
 /doc/user/admin_area/settings/terraform_limits.md @phillipwells
 /doc/user/admin_area/settings/third_party_offers.md @lciutacu
 /doc/user/admin_area/settings/usage_statistics.md @lciutacu
@@ -879,6 +892,7 @@ lib/gitlab/checks/** @proglottis @toon
 /doc/user/group/issues_analytics/ @msedlakjakubowski
 /doc/user/group/iterations/ @msedlakjakubowski
 /doc/user/group/manage.md @lciutacu
+/doc/user/group/moderate_users.md @phillipwells
 /doc/user/group/planning_hierarchy/ @msedlakjakubowski
 /doc/user/group/reporting/ @phillipwells
 /doc/user/group/repositories_analytics/ @drcatherinepope
@@ -910,7 +924,7 @@ lib/gitlab/checks/** @proglottis @toon
 /doc/user/project/changelogs.md @aqualls
 /doc/user/project/clusters/ @phillipwells
 /doc/user/project/code_intelligence.md @aqualls
-/doc/user/project/code_owners.md @aqualls
+/doc/user/project/codeowners/ @aqualls
 /doc/user/project/deploy_boards.md @phillipwells
 /doc/user/project/deploy_keys/ @phillipwells
 /doc/user/project/deploy_tokens/ @phillipwells
@@ -953,6 +967,7 @@ lib/gitlab/checks/** @proglottis @toon
 /doc/user/project/settings/import_export_troubleshooting.md @eread
 /doc/user/project/settings/index.md @lciutacu
 /doc/user/project/settings/project_access_tokens.md @jglassman1
+/doc/user/project/system_notes.md @aqualls
 /doc/user/project/time_tracking.md @msedlakjakubowski
 /doc/user/project/web_ide/ @ashrafkhamis
 /doc/user/project/web_ide_beta/ @ashrafkhamis
@@ -967,6 +982,7 @@ lib/gitlab/checks/** @proglottis @toon
 /doc/user/tasks.md @msedlakjakubowski
 /doc/user/todos.md @msedlakjakubowski
 /doc/user/usage_quotas.md @fneill
+/doc/user/workspace/quick_start/ @ashrafkhamis
 # End rake-managed-docs-block
 
 [Authentication and Authorization]

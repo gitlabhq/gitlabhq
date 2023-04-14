@@ -14,6 +14,19 @@ RSpec.describe Gitlab::GithubImport::Attachments::ImportIssueWorker, feature_cat
 
     let(:client) { instance_double('Gitlab::GithubImport::Client') }
 
+    let(:issue_hash) do
+      {
+        'record_db_id' => rand(100),
+        'record_type' => 'Issue',
+        'iid' => 2,
+        'text' => <<-TEXT
+          Some text...
+
+          ![special-image](https://user-images.githubusercontent.com...)
+        TEXT
+      }
+    end
+
     it 'imports an issue attachments' do
       expect_next_instance_of(
         Gitlab::GithubImport::Importer::NoteAttachmentsImporter,
@@ -28,7 +41,7 @@ RSpec.describe Gitlab::GithubImport::Attachments::ImportIssueWorker, feature_cat
         .to receive(:increment)
         .and_call_original
 
-      worker.import(project, client, {})
+      worker.import(project, client, issue_hash)
     end
   end
 end

@@ -53,8 +53,6 @@ module API
         end
 
         def current_runner_manager
-          return if Feature.disabled?(:create_runner_machine)
-
           strong_memoize(:current_runner_manager) do
             system_xid = params.fetch(:system_id, LEGACY_SYSTEM_XID)
             current_runner&.ensure_manager(system_xid) { |m| m.contacted_at = Time.current }
@@ -96,7 +94,7 @@ module API
           # the heartbeat should be triggered.
           if heartbeat_runner
             job.runner&.heartbeat(get_runner_ip)
-            job.runner_manager&.heartbeat(get_runner_ip) if Feature.enabled?(:runner_machine_heartbeat)
+            job.runner_manager&.heartbeat(get_runner_ip)
           end
 
           job

@@ -133,7 +133,9 @@ retrieve-frontend-fixtures:
   stage: fixtures
   needs: ["setup-test-env", "retrieve-tests-metadata", "retrieve-frontend-fixtures"]
   variables:
-    CRYSTALBALL: "false"
+    # Don't add `CRYSTALBALL: "false"` here as we're enabling Crystalball for scheduled pipelines (in `.gitlab-ci.yml`), so that we get coverage data
+    # for the `frontend fixture RSpec files` that will be added to the Crystalball mapping in `update-tests-metadata`.
+    # More information in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74003.
     WEBPACK_VENDOR_DLL: "true"
   script:
     - source scripts/utils.sh
@@ -181,6 +183,7 @@ rspec-all frontend_fixture as-if-foss:
     - .frontend:rules:frontend_fixture-as-if-foss
     - .as-if-foss
   variables:
+    # We explicitely disable Crystalball here so as even in scheduled pipelines we don't need it since it's already enabled for `rspec-all frontend_fixture` there.
     CRYSTALBALL: "false"
     WEBPACK_VENDOR_DLL: "true"
     KNAPSACK_GENERATE_REPORT: ""

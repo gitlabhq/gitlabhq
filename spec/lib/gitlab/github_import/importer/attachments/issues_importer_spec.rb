@@ -17,6 +17,8 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::IssuesImporter do
     let(:importer_attrs) { [instance_of(Gitlab::GithubImport::Representation::NoteText), project, client] }
 
     it 'imports each project issue attachments' do
+      expect(project.issues).to receive(:select).with(:id, :description, :iid).and_call_original
+
       expect_next_instances_of(
         Gitlab::GithubImport::Importer::NoteAttachmentsImporter, 2, false, *importer_attrs
       ) do |note_attachments_importer|

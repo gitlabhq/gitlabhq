@@ -567,6 +567,53 @@ Example
   });
 ```
 
+### Testing local-only Apollo queries and mutations
+
+To add a new query or mutation before it is added to the backend, we can use the `@client` directive. For example:
+
+```graphql
+mutation setActiveBoardItemEE($boardItem: LocalBoardItem, $isIssue: Boolean = true) {
+  setActiveBoardItem(boardItem: $boardItem) @client {
+    ...Issue @include(if: $isIssue)
+    ...EpicDetailed @skip(if: $isIssue)
+  }
+}
+```
+
+When writing test cases for such calls, we can use resolvers to make sure they are called with the correct parameters.
+
+For example, when creating the wrapper, we should make sure the resolver is mapped to the query or mutation.
+The mutation we are mocking here is `setActiveBoardItem`:
+
+```javascript
+const mockSetActiveBoardItemResolver = jest.fn();
+const mockApollo = createMockApollo([], {
+    Mutation: {
+      setActiveBoardItem: mockSetActiveBoardItemResolver,
+    },
+});
+```
+
+In the following code, we must pass four arguments. The second one must be the collection of input variables of the query or mutation mocked.
+To test that the mutation is called with the correct parameters:
+
+```javascript
+it('calls setActiveBoardItemMutation on close', async () => {
+    wrapper.findComponent(GlDrawer).vm.$emit('close');
+
+    await waitForPromises();
+
+    expect(mockSetActiveBoardItemResolver).toHaveBeenCalledWith(
+        {},
+        {
+            boardItem: null,
+        },
+        expect.anything(),
+        expect.anything(),
+    );
+});
+```
+
 ### Jest best practices
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34209) in GitLab 13.2.

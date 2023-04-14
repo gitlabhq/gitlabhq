@@ -192,7 +192,8 @@ RSpec.describe Gitlab::GithubImport::Representation::Issue do
     it 'returns a hash with needed identifiers' do
       github_identifiers = {
         iid: 42,
-        issuable_type: 'MergeRequest'
+        issuable_type: 'MergeRequest',
+        title: 'Implement cool feature'
       }
       other_attributes = { pull_request: true, something_else: '_something_else_' }
       issue = described_class.new(github_identifiers.merge(other_attributes))

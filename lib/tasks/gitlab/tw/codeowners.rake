@@ -42,7 +42,7 @@ namespace :tw do
       CodeOwnerRule.new('Distribution (Omnibus)', '@axil'),
       CodeOwnerRule.new('Documentation Guidelines', '@sselhorn'),
       CodeOwnerRule.new('Dynamic Analysis', '@rdickenson'),
-      CodeOwnerRule.new('Editor', '@ashrafkhamis'),
+      CodeOwnerRule.new('IDE', '@ashrafkhamis'),
       CodeOwnerRule.new('Foundations', '@sselhorn'),
       # CodeOwnerRule.new('Fulfillment Platform', ''),
       CodeOwnerRule.new('Fuzz Testing', '@rdickenson'),

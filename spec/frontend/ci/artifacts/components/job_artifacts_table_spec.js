@@ -17,16 +17,20 @@ import FeedbackBanner from '~/ci/artifacts/components/feedback_banner.vue';
 import ArtifactsTableRowDetails from '~/ci/artifacts/components/artifacts_table_row_details.vue';
 import ArtifactDeleteModal from '~/ci/artifacts/components/artifact_delete_modal.vue';
 import ArtifactsBulkDelete from '~/ci/artifacts/components/artifacts_bulk_delete.vue';
+import BulkDeleteModal from '~/ci/artifacts/components/bulk_delete_modal.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import getJobArtifactsQuery from '~/ci/artifacts/graphql/queries/get_job_artifacts.query.graphql';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import bulkDestroyArtifactsMutation from '~/ci/artifacts/graphql/mutations/bulk_destroy_job_artifacts.mutation.graphql';
+import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import {
   ARCHIVE_FILE_TYPE,
   JOBS_PER_PAGE,
   I18N_FETCH_ERROR,
   INITIAL_CURRENT_PAGE,
   BULK_DELETE_FEATURE_FLAG,
+  I18N_BULK_DELETE_ERROR,
 } from '~/ci/artifacts/constants';
 import { totalArtifactsSizeForJob } from '~/ci/artifacts/utils';
 import { createAlert } from '~/alert';
@@ -52,7 +56,8 @@ describe('JobArtifactsTable component', () => {
   const findCount = () => wrapper.findByTestId('job-artifacts-count');
   const findCountAt = (i) => wrapper.findAllByTestId('job-artifacts-count').at(i);
 
-  const findModal = () => wrapper.findComponent(GlModal);
+  const findDeleteModal = () => wrapper.findComponent(ArtifactDeleteModal);
+  const findBulkDeleteModal = () => wrapper.findComponent(BulkDeleteModal);
 
   const findStatuses = () => wrapper.findAllByTestId('job-artifacts-job-status');
   const findSuccessfulJobStatus = () => findStatuses().at(0);
@@ -73,15 +78,18 @@ describe('JobArtifactsTable component', () => {
   const findArtifactDeleteButton = () => wrapper.findByTestId('job-artifact-row-delete-button');
 
   // first checkbox is a "select all", this finder should get the first job checkbox
-  const findJobCheckbox = () => wrapper.findAllComponents(GlFormCheckbox).at(1);
+  const findJobCheckbox = (i = 1) => wrapper.findAllComponents(GlFormCheckbox).at(i);
   const findAnyCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findBulkDelete = () => wrapper.findComponent(ArtifactsBulkDelete);
+  const findBulkDeleteContainer = () => wrapper.findByTestId('bulk-delete-container');
 
   const findPagination = () => wrapper.findComponent(GlPagination);
   const setPage = async (page) => {
     findPagination().vm.$emit('input', page);
     await waitForPromises();
   };
+
+  const projectId = 'some/project/id';
 
   let enoughJobsToPaginate = [...getJobArtifactsResponse.data.project.jobs.nodes];
   while (enoughJobsToPaginate.length <= JOBS_PER_PAGE) {
@@ -105,10 +113,20 @@ describe('JobArtifactsTable component', () => {
   const archiveArtifact = job.artifacts.nodes.find(
     (artifact) => artifact.fileType === ARCHIVE_FILE_TYPE,
   );
+  const job2 = getJobArtifactsResponse.data.project.jobs.nodes[1];
+
+  const destroyedCount = job.artifacts.nodes.length;
+  const destroyedIds = job.artifacts.nodes.map((node) => node.id);
+  const bulkDestroyMutationHandler = jest.fn().mockResolvedValue({
+    data: {
+      bulkDestroyJobArtifacts: { errors: [], destroyedCount, destroyedIds },
+    },
+  });
 
   const createComponent = ({
     handlers = {
       getJobArtifactsQuery: jest.fn().mockResolvedValue(getJobArtifactsResponse),
+      bulkDestroyArtifactsMutation: bulkDestroyMutationHandler,
     },
     data = {},
     canDestroyArtifacts = true,
@@ -118,10 +136,11 @@ describe('JobArtifactsTable component', () => {
     wrapper = mountExtended(JobArtifactsTable, {
       apolloProvider: createMockApollo([
         [getJobArtifactsQuery, requestHandlers.getJobArtifactsQuery],
+        [bulkDestroyArtifactsMutation, requestHandlers.bulkDestroyArtifactsMutation],
       ]),
       provide: {
         projectPath: 'project/path',
-        projectId: 'gid://projects/id',
+        projectId,
         canDestroyArtifacts,
         artifactsManagementFeedbackImagePath: 'banner/image/path',
         glFeatures,
@@ -265,12 +284,12 @@ describe('JobArtifactsTable component', () => {
         expect(findDetailsInRow(0).exists()).toBe(false);
         expect(findDetailsInRow(1).exists()).toBe(true);
 
-        findArtifactDeleteButton().trigger('click');
+        findArtifactDeleteButton().vm.$emit('click');
         await waitForPromises();
 
-        expect(findModal().props('visible')).toBe(true);
+        expect(findDeleteModal().findComponent(GlModal).props('visible')).toBe(true);
 
-        wrapper.findComponent(ArtifactDeleteModal).vm.$emit('primary');
+        findDeleteModal().vm.$emit('primary');
         await waitForPromises();
 
         expect(findDetailsInRow(0).exists()).toBe(false);
@@ -332,24 +351,132 @@ describe('JobArtifactsTable component', () => {
   });
 
   describe('delete button', () => {
-    it('does not show when user does not have permission', async () => {
-      createComponent({ canDestroyArtifacts: false });
+    const artifactsFromJob = job.artifacts.nodes.map((node) => node.id);
+
+    describe('with delete permission and bulk delete feature flag enabled', () => {
+      beforeEach(async () => {
+        createComponent({
+          canDestroyArtifacts: true,
+          glFeatures: { [BULK_DELETE_FEATURE_FLAG]: true },
+        });
+
+        await waitForPromises();
+      });
+
+      it('opens the confirmation modal with the artifacts from the job', async () => {
+        await findDeleteButton().vm.$emit('click');
+
+        expect(findBulkDeleteModal().props()).toMatchObject({
+          visible: true,
+          artifactsToDelete: artifactsFromJob,
+        });
+      });
+
+      it('on confirm, deletes the artifacts from the job and shows a toast', async () => {
+        findDeleteButton().vm.$emit('click');
+        findBulkDeleteModal().vm.$emit('primary');
+
+        expect(bulkDestroyMutationHandler).toHaveBeenCalledWith({
+          projectId: convertToGraphQLId(TYPENAME_PROJECT, projectId),
+          ids: artifactsFromJob,
+        });
+
+        await waitForPromises();
+
+        expect(mockToastShow).toHaveBeenCalledWith(
+          `${artifactsFromJob.length} selected artifacts deleted`,
+        );
+      });
+
+      it('does not clear selected artifacts on success', async () => {
+        // select job 2 via checkbox
+        findJobCheckbox(2).vm.$emit('input', true);
+
+        // click delete button job 1
+        findDeleteButton().vm.$emit('click');
+
+        // job 2's artifacts should still be selected
+        expect(findBulkDelete().props('selectedArtifacts')).toStrictEqual(
+          job2.artifacts.nodes.map((node) => node.id),
+        );
+
+        // confirm delete
+        findBulkDeleteModal().vm.$emit('primary');
+
+        // job 1's artifacts should be deleted
+        expect(bulkDestroyMutationHandler).toHaveBeenCalledWith({
+          projectId: convertToGraphQLId(TYPENAME_PROJECT, projectId),
+          ids: artifactsFromJob,
+        });
+
+        await waitForPromises();
+
+        // job 2's artifacts should still be selected
+        expect(findBulkDelete().props('selectedArtifacts')).toStrictEqual(
+          job2.artifacts.nodes.map((node) => node.id),
+        );
+      });
+    });
+
+    it('shows an alert and does not clear selected artifacts on error', async () => {
+      createComponent({
+        canDestroyArtifacts: true,
+        glFeatures: { [BULK_DELETE_FEATURE_FLAG]: true },
+        handlers: {
+          getJobArtifactsQuery: jest.fn().mockResolvedValue(getJobArtifactsResponse),
+          bulkDestroyArtifactsMutation: jest.fn().mockRejectedValue(),
+        },
+      });
+      await waitForPromises();
+
+      // select job 2 via checkbox
+      findJobCheckbox(2).vm.$emit('input', true);
+
+      // click delete button job 1
+      findDeleteButton().vm.$emit('click');
+
+      // confirm delete
+      findBulkDeleteModal().vm.$emit('primary');
 
       await waitForPromises();
 
-      expect(findDeleteButton().exists()).toBe(false);
+      // job 2's artifacts should still be selected
+      expect(findBulkDelete().props('selectedArtifacts')).toStrictEqual(
+        job2.artifacts.nodes.map((node) => node.id),
+      );
+      expect(createAlert).toHaveBeenCalledWith({
+        captureError: true,
+        error: expect.any(Error),
+        message: I18N_BULK_DELETE_ERROR,
+      });
     });
 
-    it('shows a disabled delete button for now (coming soon)', async () => {
-      createComponent();
+    it('is disabled when bulk delete feature flag is disabled', async () => {
+      createComponent({
+        canDestroyArtifacts: true,
+        glFeatures: { [BULK_DELETE_FEATURE_FLAG]: false },
+      });
 
       await waitForPromises();
 
       expect(findDeleteButton().attributes('disabled')).toBe('disabled');
     });
+
+    it('is hidden when user does not have delete permission', async () => {
+      createComponent({
+        canDestroyArtifacts: false,
+        glFeatures: { [BULK_DELETE_FEATURE_FLAG]: false },
+      });
+
+      await waitForPromises();
+
+      expect(findDeleteButton().exists()).toBe(false);
+    });
   });
 
   describe('bulk delete', () => {
+    const selectedArtifacts = job.artifacts.nodes.map((node) => node.id);
+
     describe('with permission and feature flag enabled', () => {
       beforeEach(async () => {
         createComponent({
@@ -361,33 +488,84 @@ describe('JobArtifactsTable component', () => {
       });
 
       it('shows selected artifacts when a job is checked', async () => {
-        expect(findBulkDelete().exists()).toBe(false);
+        expect(findBulkDeleteContainer().exists()).toBe(false);
 
         await findJobCheckbox().vm.$emit('input', true);
 
-        expect(findBulkDelete().exists()).toBe(true);
-        expect(findBulkDelete().props('selectedArtifacts')).toStrictEqual(
-          job.artifacts.nodes.map((node) => node.id),
-        );
+        expect(findBulkDeleteContainer().exists()).toBe(true);
+        expect(findBulkDelete().props('selectedArtifacts')).toStrictEqual(selectedArtifacts);
       });
 
       it('disappears when selected artifacts are cleared', async () => {
         await findJobCheckbox().vm.$emit('input', true);
 
-        expect(findBulkDelete().exists()).toBe(true);
+        expect(findBulkDeleteContainer().exists()).toBe(true);
 
         await findBulkDelete().vm.$emit('clearSelectedArtifacts');
 
-        expect(findBulkDelete().exists()).toBe(false);
+        expect(findBulkDeleteContainer().exists()).toBe(false);
       });
 
-      it('shows a toast when artifacts are deleted', async () => {
-        const count = job.artifacts.nodes.length;
+      it('shows a modal to confirm bulk delete', async () => {
+        findJobCheckbox().vm.$emit('input', true);
+        findBulkDelete().vm.$emit('showBulkDeleteModal');
 
-        await findJobCheckbox().vm.$emit('input', true);
-        findBulkDelete().vm.$emit('deleted', count);
+        await waitForPromises();
 
-        expect(mockToastShow).toHaveBeenCalledWith(`${count} selected artifacts deleted`);
+        expect(findBulkDeleteModal().props('visible')).toBe(true);
+      });
+
+      it('deletes the selected artifacts and shows a toast', async () => {
+        findJobCheckbox().vm.$emit('input', true);
+        findBulkDelete().vm.$emit('showBulkDeleteModal');
+        findBulkDeleteModal().vm.$emit('primary');
+
+        expect(bulkDestroyMutationHandler).toHaveBeenCalledWith({
+          projectId: convertToGraphQLId(TYPENAME_PROJECT, projectId),
+          ids: selectedArtifacts,
+        });
+
+        await waitForPromises();
+
+        expect(mockToastShow).toHaveBeenCalledWith(
+          `${selectedArtifacts.length} selected artifacts deleted`,
+        );
+      });
+
+      it('clears selected artifacts on success', async () => {
+        findJobCheckbox().vm.$emit('input', true);
+        findBulkDelete().vm.$emit('showBulkDeleteModal');
+        findBulkDeleteModal().vm.$emit('primary');
+
+        await waitForPromises();
+
+        expect(findBulkDelete().props('selectedArtifacts')).toStrictEqual([]);
+      });
+    });
+
+    it('shows an alert and does not clear selected artifacts on error', async () => {
+      createComponent({
+        canDestroyArtifacts: true,
+        glFeatures: { [BULK_DELETE_FEATURE_FLAG]: true },
+        handlers: {
+          getJobArtifactsQuery: jest.fn().mockResolvedValue(getJobArtifactsResponse),
+          bulkDestroyArtifactsMutation: jest.fn().mockRejectedValue(),
+        },
+      });
+
+      await waitForPromises();
+
+      findJobCheckbox().vm.$emit('input', true);
+      findBulkDelete().vm.$emit('showBulkDeleteModal');
+      findBulkDeleteModal().vm.$emit('primary');
+
+      await waitForPromises();
+
+      expect(findBulkDelete().props('selectedArtifacts')).toStrictEqual(selectedArtifacts);
+      expect(createAlert).toHaveBeenCalledWith({
+        captureError: true,
+        error: expect.any(Error),
+        message: I18N_BULK_DELETE_ERROR,
       });
     });
 

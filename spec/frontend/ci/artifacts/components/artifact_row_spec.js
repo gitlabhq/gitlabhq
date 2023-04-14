@@ -1,4 +1,4 @@
-import { GlBadge, GlButton, GlFriendlyWrap, GlFormCheckbox } from '@gitlab/ui';
+import { GlBadge, GlFriendlyWrap, GlFormCheckbox } from '@gitlab/ui';
 import mockGetJobArtifactsResponse from 'test_fixtures/graphql/ci/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -27,7 +27,7 @@ describe('ArtifactRow component', () => {
         isLastRow: false,
       },
       provide: { canDestroyArtifacts, glFeatures },
-      stubs: { GlBadge, GlButton, GlFriendlyWrap },
+      stubs: { GlBadge, GlFriendlyWrap },
     });
   };
 
@@ -70,7 +70,7 @@ describe('ArtifactRow component', () => {
 
       expect(wrapper.emitted('delete')).toBeUndefined();
 
-      findDeleteButton().trigger('click');
+      findDeleteButton().vm.$emit('click');
       await waitForPromises();
 
       expect(wrapper.emitted('delete')).toBeDefined();

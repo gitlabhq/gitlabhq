@@ -123,7 +123,7 @@ export default {
       />
     </gl-form-group>
 
-    <div class="gl-display-flex gl-flex-wrap-wrap">
+    <div class="gl-display-flex gl-flex-wrap">
       <gl-button
         type="submit"
         class="gl-sm-mr-3 gl-w-full gl-sm-w-auto"

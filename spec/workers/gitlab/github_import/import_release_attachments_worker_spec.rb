@@ -17,8 +17,10 @@ RSpec.describe Gitlab::GithubImport::ImportReleaseAttachmentsWorker, feature_cat
 
     let(:release_hash) do
       {
-        'release_db_id' => rand(100),
-        'description' => <<-TEXT
+        'record_db_id' => rand(100),
+        'record_type' => 'Release',
+        'tag' => 'v1.0',
+        'text' => <<-TEXT
           Some text...
 
           ![special-image](https://user-images.githubusercontent.com...)

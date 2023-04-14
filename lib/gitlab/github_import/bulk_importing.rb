@@ -27,8 +27,13 @@ module Gitlab
           build_record = model.new(attrs)
 
           if build_record.invalid?
-            log_error(object[:id], build_record.errors.full_messages)
-            errors << build_record.errors
+            github_identifiers = github_identifiers(object)
+
+            log_error(github_identifiers, build_record.errors.full_messages)
+            errors << {
+              validation_errors: build_record.errors,
+              github_identifiers: github_identifiers
+            }
             next
           end
 
@@ -53,17 +58,18 @@ module Gitlab
         raise NotImplementedError
       end
 
-      def bulk_insert_failures(validation_errors)
-        rows = validation_errors.map do |error|
+      def bulk_insert_failures(errors)
+        rows = errors.map do |error|
           correlation_id_value = Labkit::Correlation::CorrelationId.current_or_new_id
 
           {
             source: self.class.name,
             exception_class: 'ActiveRecord::RecordInvalid',
-            exception_message: error.full_messages.first.truncate(255),
+            exception_message: error[:validation_errors].full_messages.first.truncate(255),
             correlation_id_value: correlation_id_value,
             retry_count: nil,
-            created_at: Time.zone.now
+            created_at: Time.zone.now,
+            external_identifiers: error[:github_identifiers]
           }
         end
 
@@ -88,14 +94,18 @@ module Gitlab
         )
       end
 
-      def log_error(object_id, messages)
+      def log_error(github_identifiers, messages)
         Gitlab::Import::Logger.error(
           import_type: :github,
           project_id: project.id,
           importer: self.class.name,
           message: messages,
-          github_identifier: object_id
+          github_identifiers: github_identifiers
         )
+      end
+
+      def github_identifiers(object)
+        raise NotImplementedError
       end
     end
   end

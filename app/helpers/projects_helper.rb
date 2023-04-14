@@ -847,4 +847,12 @@ def can_admin_group_clusters?(project)
   project.group && project.group.clusters.any? && can?(current_user, :admin_cluster, project.group)
 end
 
+def can_view_branch_rules?
+  can?(current_user, :maintainer_access, @project)
+end
+
+def branch_rules_path
+  project_settings_repository_path(@project, anchor: 'js-branch-rules')
+end
+
 ProjectsHelper.prepend_mod_with('ProjectsHelper')

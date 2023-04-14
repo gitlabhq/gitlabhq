@@ -34,7 +34,10 @@ module Gitlab
         end
 
         def github_identifiers
-          { id: id }
+          {
+            id: id,
+            login: login
+          }
         end
       end
     end

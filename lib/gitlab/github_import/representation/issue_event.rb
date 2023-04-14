@@ -20,7 +20,11 @@ module Gitlab
         end
 
         def github_identifiers
-          { id: id }
+          {
+            id: id,
+            iid: issuable_id,
+            event: event
+          }
         end
 
         def issuable_type

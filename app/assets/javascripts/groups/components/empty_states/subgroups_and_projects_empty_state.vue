@@ -53,7 +53,7 @@ export default {
 
 <template>
   <div v-if="canCreateSubgroups || canCreateProjects" class="gl-mt-5">
-    <div class="gl-display-flex gl-mx-n3 gl-my-n3 gl-flex-wrap-wrap">
+    <div class="gl-display-flex gl-mx-n3 gl-my-n3 gl-flex-wrap">
       <div v-if="canCreateSubgroups" class="gl-p-3 gl-w-full gl-sm-w-half">
         <gl-link :href="newSubgroupPath" :class="$options.linkClasses">
           <div class="svg-content gl-w-15 gl-flex-shrink-0 gl-mr-5">

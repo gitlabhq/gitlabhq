@@ -18,6 +18,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
 
   let(:github_release) do
     {
+      id: 123456,
       tag_name: '1.0',
       name: github_release_name,
       body: 'This is my release',
@@ -144,7 +145,10 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
 
       expect(releases).to be_empty
       expect(errors.length).to eq(1)
-      expect(errors[0].full_messages).to match_array(['Description is too long (maximum is 1000000 characters)'])
+      expect(errors[0][:validation_errors].full_messages).to match_array(
+        ['Description is too long (maximum is 1000000 characters)']
+      )
+      expect(errors[0][:github_identifiers]).to eq({ tag: '1.0', object_type: :release })
     end
   end
 

@@ -21071,6 +21071,7 @@ CREATE TABLE project_settings (
     emails_enabled boolean DEFAULT true NOT NULL,
     pages_unique_domain_enabled boolean DEFAULT false NOT NULL,
     pages_unique_domain text,
+    runner_registration_enabled boolean DEFAULT true,
     CONSTRAINT check_1a30456322 CHECK ((char_length(pages_unique_domain) <= 63)),
     CONSTRAINT check_2981f15877 CHECK ((char_length(jitsu_key) <= 100)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),

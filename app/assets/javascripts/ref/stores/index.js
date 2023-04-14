@@ -14,3 +14,11 @@ export default () =>
     mutations,
     state: createState(),
   });
+
+export const createRefModule = () => ({
+  namespaced: true,
+  actions,
+  getters,
+  mutations,
+  state: createState(),
+});

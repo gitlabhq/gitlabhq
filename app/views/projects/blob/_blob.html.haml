@@ -10,7 +10,7 @@
     %ul.blob-commit-info
       = render 'projects/commits/commit', commit: @last_commit, project: @project, ref: @ref
 
-  #js-code-owners{ data: { blob_path: blob.path, project_path: @project.full_path, branch: @ref, branch_rules_path: project_settings_repository_path(project, anchor: 'js-branch-rules') } }
+  #js-code-owners{ data: { blob_path: blob.path, project_path: @project.full_path, branch: @ref, can_view_branch_rules: can_view_branch_rules?, branch_rules_path: branch_rules_path } }
   = render "projects/blob/auxiliary_viewer", blob: blob
 
 - if project.forked?
@@ -22,12 +22,7 @@
   - if !expanded
     -# Data info will be removed once we migrate this to use GraphQL
     -# Follow-up issue: https://gitlab.com/gitlab-org/gitlab/-/issues/330406
-    #js-view-blob-app{ data: { blob_path: blob.path,
-                              project_path: @project.full_path,
-                              resource_id: @project.to_global_id,
-                              user_id: current_user.present? ? current_user.to_global_id : '',
-                              target_branch: project.empty_repo? ? ref : @ref,
-                              original_branch: @ref } }
+    #js-view-blob-app{ data: vue_blob_app_data(project, blob, ref) }
       = gl_loading_icon(size: 'md')
   - else
     %article.file-holder

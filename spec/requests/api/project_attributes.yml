@@ -164,6 +164,7 @@ project_setting:
     - emails_enabled
     - pages_unique_domain_enabled
     - pages_unique_domain
+    - runner_registration_enabled
 
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:

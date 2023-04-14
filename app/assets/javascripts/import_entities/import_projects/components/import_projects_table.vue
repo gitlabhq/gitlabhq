@@ -135,7 +135,7 @@ export default {
     <template v-if="hasIncompatibleRepos">
       <slot name="incompatible-repos-warning"></slot>
     </template>
-    <div class="gl-display-flex gl-justify-content-space-between gl-flex-wrap-wrap gl-mb-5">
+    <div class="gl-display-flex gl-justify-content-space-between gl-flex-wrap gl-mb-5">
       <gl-button
         variant="confirm"
         :loading="isImportingAnyRepo"

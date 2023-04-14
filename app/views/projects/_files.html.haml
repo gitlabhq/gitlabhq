@@ -10,7 +10,7 @@
   .info-well.gl-display-none.gl-sm-display-flex.project-last-commit.gl-flex-direction-column.gl-mt-5
     #js-last-commit.gl-m-auto
       = gl_loading_icon(size: 'md')
-    #js-code-owners{ data: { branch: @ref, branch_rules_path: project_settings_repository_path(project, anchor: 'js-branch-rules') } }
+    #js-code-owners{ data: { branch: @ref, can_view_branch_rules: can_view_branch_rules?, branch_rules_path: branch_rules_path } }
 
   .nav-block.gl-display-flex.gl-xs-flex-direction-column.gl-align-items-stretch
     = render 'projects/tree/tree_header', tree: @tree, is_project_overview: is_project_overview

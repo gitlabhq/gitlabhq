@@ -96,7 +96,6 @@ export default {
   data() {
     return {
       isEditing: false,
-      isSubmitting: false,
     };
   },
   computed: {
@@ -182,8 +181,8 @@ export default {
       updateDraft(this.autosaveKey, this.note.body);
     },
     async updateNote(newText) {
-      this.isSubmitting = true;
       try {
+        this.isEditing = false;
         await this.$apollo.mutate({
           mutation: updateWorkItemNoteMutation,
           variables: {
@@ -202,24 +201,12 @@ export default {
             },
           },
         });
-        /**
-         * https://gitlab.com/gitlab-org/gitlab/-/issues/388314
-         *
-         * Once form is successfully submitted,
-         * mark isSubmitting to false and clear storage before hiding the form.
-         * This will restrict comment form to restore the value while textarea
-         * input triggered due to keyboard event meta+enter.
-         *
-         */
         clearDraft(this.autosaveKey);
-        this.isEditing = false;
       } catch (error) {
         updateDraft(this.autosaveKey, newText);
         this.isEditing = true;
         this.$emit('error', __('Something went wrong when updating a comment. Please try again'));
         Sentry.captureException(error);
-      } finally {
-        this.isSubmitting = false;
       }
     },
     getNewAssigneesAndWidget() {

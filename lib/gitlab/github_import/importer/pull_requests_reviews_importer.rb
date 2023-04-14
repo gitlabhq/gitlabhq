@@ -55,6 +55,7 @@ module Gitlab
               Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
 
               review[:merge_request_id] = merge_request.id
+              review[:merge_request_iid] = merge_request.iid
               yield(review)
 
               mark_as_imported(review)

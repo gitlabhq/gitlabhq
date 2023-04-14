@@ -11,12 +11,15 @@ import {
   GlFormCheckbox,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import getJobArtifactsQuery from '../graphql/queries/get_job_artifacts.query.graphql';
 import { totalArtifactsSizeForJob, mapArchivesToJobNodes, mapBooleansToJobNodes } from '../utils';
+import bulkDestroyJobArtifactsMutation from '../graphql/mutations/bulk_destroy_job_artifacts.mutation.graphql';
+import { removeArtifactFromStore } from '../graphql/cache_update';
 import {
   STATUS_BADGE_VARIANTS,
   I18N_DOWNLOAD,
@@ -36,10 +39,13 @@ import {
   JOBS_PER_PAGE,
   INITIAL_LAST_PAGE_SIZE,
   BULK_DELETE_FEATURE_FLAG,
+  I18N_BULK_DELETE_ERROR,
+  I18N_BULK_DELETE_PARTIAL_ERROR,
   I18N_BULK_DELETE_CONFIRMATION_TOAST,
 } from '../constants';
 import JobCheckbox from './job_checkbox.vue';
 import ArtifactsBulkDelete from './artifacts_bulk_delete.vue';
+import BulkDeleteModal from './bulk_delete_modal.vue';
 import ArtifactsTableRowDetails from './artifacts_table_row_details.vue';
 import FeedbackBanner from './feedback_banner.vue';
 
@@ -67,11 +73,12 @@ export default {
     TimeAgo,
     JobCheckbox,
     ArtifactsBulkDelete,
+    BulkDeleteModal,
     ArtifactsTableRowDetails,
     FeedbackBanner,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['projectPath', 'canDestroyArtifacts'],
+  inject: ['projectId', 'projectPath', 'canDestroyArtifacts'],
   apollo: {
     jobArtifacts: {
       query: getJobArtifactsQuery,
@@ -106,6 +113,9 @@ export default {
       expandedJobs: [],
       selectedArtifacts: [],
       pagination: INITIAL_PAGINATION_STATE,
+      isBulkDeleteModalVisible: false,
+      jobArtifactsToDelete: [],
+      isBulkDeleting: false,
     };
   },
   computed: {
@@ -143,6 +153,12 @@ export default {
     },
     canBulkDestroyArtifacts() {
       return this.glFeatures[BULK_DELETE_FEATURE_FLAG] && this.canDestroyArtifacts;
+    },
+    isDeletingArtifactsForJob() {
+      return this.jobArtifactsToDelete.length > 0;
+    },
+    artifactsToDelete() {
+      return this.isDeletingArtifactsForJob ? this.jobArtifactsToDelete : this.selectedArtifacts;
     },
   },
   methods: {
@@ -191,11 +207,69 @@ export default {
         this.selectedArtifacts.splice(this.selectedArtifacts.indexOf(artifactNode.id), 1);
       }
     },
+    onConfirmBulkDelete(e) {
+      // don't close modal until deletion is complete
+      if (e) {
+        e.preventDefault();
+      }
+      this.isBulkDeleting = true;
+
+      this.$apollo
+        .mutate({
+          mutation: bulkDestroyJobArtifactsMutation,
+          variables: {
+            projectId: convertToGraphQLId(TYPENAME_PROJECT, this.projectId),
+            ids: this.artifactsToDelete,
+          },
+          update: (store, { data }) => {
+            const { errors, destroyedCount, destroyedIds } = data.bulkDestroyJobArtifacts;
+            if (errors?.length) {
+              createAlert({
+                message: I18N_BULK_DELETE_PARTIAL_ERROR,
+                captureError: true,
+                error: new Error(errors.join(' ')),
+              });
+            }
+            if (destroyedIds?.length) {
+              this.$toast.show(I18N_BULK_DELETE_CONFIRMATION_TOAST(destroyedCount));
+
+              // Remove deleted artifacts from the cache
+              destroyedIds.forEach((id) => {
+                removeArtifactFromStore(store, id, getJobArtifactsQuery, this.queryVariables);
+              });
+              store.gc();
+
+              if (!this.isDeletingArtifactsForJob) {
+                this.clearSelectedArtifacts();
+              }
+            }
+          },
+        })
+        .catch((error) => {
+          this.onError(error);
+        })
+        .finally(() => {
+          this.isBulkDeleting = false;
+          this.isBulkDeleteModalVisible = false;
+          this.jobArtifactsToDelete = [];
+        });
+    },
+    onError(error) {
+      createAlert({
+        message: I18N_BULK_DELETE_ERROR,
+        captureError: true,
+        error,
+      });
+    },
+    handleBulkDeleteModalShow() {
+      this.isBulkDeleteModalVisible = true;
+    },
+    handleBulkDeleteModalHidden() {
+      this.isBulkDeleteModalVisible = false;
+      this.jobArtifactsToDelete = [];
+    },
     clearSelectedArtifacts() {
       this.selectedArtifacts = [];
-    },
-    showDeletedToast(deletedCount) {
-      this.$toast.show(I18N_BULK_DELETE_CONFIRMATION_TOAST(deletedCount));
     },
     downloadPath(job) {
       return job.archive?.downloadPath;
@@ -205,6 +279,13 @@ export default {
     },
     browseButtonDisabled(job) {
       return !job.browseArtifactsPath;
+    },
+    deleteButtonDisabled(job) {
+      return !job.hasArtifacts || !this.canBulkDestroyArtifacts;
+    },
+    deleteArtifactsForJob(job) {
+      this.jobArtifactsToDelete = job.artifacts.nodes.map((node) => node.id);
+      this.handleBulkDeleteModalShow();
     },
   },
   fields: [
@@ -257,11 +338,17 @@ export default {
   <div>
     <feedback-banner />
     <artifacts-bulk-delete
-      v-if="canBulkDestroyArtifacts && anyArtifactsSelected"
+      v-if="canBulkDestroyArtifacts"
       :selected-artifacts="selectedArtifacts"
-      :query-variables="queryVariables"
       @clearSelectedArtifacts="clearSelectedArtifacts"
-      @deleted="showDeletedToast"
+      @showBulkDeleteModal="handleBulkDeleteModalShow"
+    />
+    <bulk-delete-modal
+      :visible="isBulkDeleteModalVisible"
+      :artifacts-to-delete="artifactsToDelete"
+      :is-deleting="isBulkDeleting"
+      @primary="onConfirmBulkDelete"
+      @hidden="handleBulkDeleteModalHidden"
     />
     <gl-table
       :items="jobArtifacts"
@@ -382,10 +469,11 @@ export default {
           <gl-button
             v-if="canDestroyArtifacts"
             icon="remove"
+            :disabled="deleteButtonDisabled(item)"
             :title="$options.i18n.delete"
             :aria-label="$options.i18n.delete"
             data-testid="job-artifacts-delete-button"
-            disabled
+            @click="deleteArtifactsForJob(item)"
           />
         </gl-button-group>
       </template>

@@ -186,4 +186,19 @@ RSpec.describe "Admin::Projects", feature_category: :projects do
       end
     end
   end
+
+  describe 'project runner registration edit' do
+    it 'updates runner registration' do
+      visit edit_admin_namespace_project_path({ id: project.to_param, namespace_id: project.namespace.to_param })
+
+      expect(find_field('New project runners can be registered')).to be_checked
+
+      uncheck 'New project runners can be registered'
+      click_button 'Save changes'
+
+      visit edit_admin_namespace_project_path({ id: project.to_param, namespace_id: project.namespace.to_param })
+
+      expect(find_field('New project runners can be registered')).not_to be_checked
+    end
+  end
 end

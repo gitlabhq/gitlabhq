@@ -134,9 +134,7 @@ export default {
 </script>
 
 <template>
-  <div
-    class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-flex-wrap-wrap"
-  >
+  <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-flex-wrap">
     <template v-if="showLoadingState">
       <div>
         <gl-loading-icon class="gl-mr-auto gl-display-inline-block" size="sm" />
@@ -173,7 +171,7 @@ export default {
           </gl-sprintf>
         </span>
       </div>
-      <div class="gl-display-flex gl-flex-wrap-wrap">
+      <div class="gl-display-flex gl-flex-wrap">
         <pipeline-editor-mini-graph :pipeline="pipeline" v-on="$listeners" />
         <gl-button
           class="gl-ml-3"

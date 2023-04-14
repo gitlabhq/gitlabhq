@@ -1376,6 +1376,9 @@ msgstr ""
 msgid "(removed)"
 msgstr ""
 
+msgid "(required)"
+msgstr ""
+
 msgid "(revoked)"
 msgstr ""
 
@@ -1386,9 +1389,6 @@ msgid "(we need your current password to confirm your changes)"
 msgstr ""
 
 msgid "* All times are in UTC unless specified"
-msgstr ""
-
-msgid "*Required"
 msgstr ""
 
 msgid "+ %{amount} more"
@@ -11117,6 +11117,9 @@ msgstr ""
 msgid "Configure a %{codeStart}.gitlab-webide.yml%{codeEnd} file in the %{codeStart}.gitlab%{codeEnd} directory to start using the Web Terminal. %{helpStart}Learn more.%{helpEnd}"
 msgstr ""
 
+msgid "Configure advanced permissions"
+msgstr ""
+
 msgid "Configure advanced permissions, Large File Storage, two-factor authentication, and CI/CD settings."
 msgstr ""
 
@@ -12356,9 +12359,6 @@ msgstr ""
 msgid "Create snippet"
 msgstr ""
 
-msgid "Create tag %{tagName}"
-msgstr ""
-
 msgid "Create testing scenarios by defining project conditions in your development platform."
 msgstr ""
 
@@ -12383,7 +12383,7 @@ msgstr ""
 msgid "Create, update, or delete a merge request."
 msgstr ""
 
-msgid "CreateGitTag|Add a message to the tag. Leaving this blank creates a %{linkStart}lightweight tag%{linkEnd}."
+msgid "CreateGitTag|Add a message to the tag. Leaving this blank creates a lightweight tag."
 msgstr ""
 
 msgid "CreateGitTag|Set tag message"
@@ -29424,9 +29424,6 @@ msgstr ""
 msgid "No suggestions found"
 msgstr ""
 
-msgid "No tag selected"
-msgstr ""
-
 msgid "No template"
 msgstr ""
 
@@ -31805,6 +31802,9 @@ msgstr ""
 msgid "Permissions and group features"
 msgstr ""
 
+msgid "Permissions and project features"
+msgstr ""
+
 msgid "Personal Access Token"
 msgstr ""
 
@@ -33425,6 +33425,9 @@ msgstr ""
 msgid "Proceed"
 msgstr ""
 
+msgid "Product Analytics"
+msgstr ""
+
 msgid "Product analytics"
 msgstr ""
 
@@ -33548,6 +33551,9 @@ msgstr ""
 msgid "ProductAnalytics|Instrumentation details"
 msgstr ""
 
+msgid "ProductAnalytics|Loading instance"
+msgstr ""
+
 msgid "ProductAnalytics|Measure All tracked Events"
 msgstr ""
 
@@ -33587,6 +33593,9 @@ msgstr ""
 msgid "ProductAnalytics|Set up product analytics"
 msgstr ""
 
+msgid "ProductAnalytics|Set up to track how your product is performing and optimize your product and development processes."
+msgstr ""
+
 msgid "ProductAnalytics|Steps to add product analytics as a CommonJS module"
 msgstr ""
 
@@ -33621,6 +33630,9 @@ msgid "ProductAnalytics|User activity"
 msgstr ""
 
 msgid "ProductAnalytics|Users"
+msgstr ""
+
+msgid "ProductAnalytics|Waiting for events"
 msgstr ""
 
 msgid "ProductAnalytics|What do you want to measure?"
@@ -36607,6 +36619,12 @@ msgstr ""
 msgid "Release|Create a new release"
 msgstr ""
 
+msgid "Release|Create tag"
+msgstr ""
+
+msgid "Release|Create tag %{tag}"
+msgstr ""
+
 msgid "Release|Getting started with releases"
 msgstr ""
 
@@ -36619,10 +36637,19 @@ msgstr ""
 msgid "Release|More information"
 msgstr ""
 
+msgid "Release|Or type a new tag name"
+msgstr ""
+
 msgid "Release|Release %{createdRelease} has been successfully created."
 msgstr ""
 
 msgid "Release|Releases are based on Git tags and mark specific points in a project's development history. They can contain information about the type of changes and can also deliver binaries, like compiled versions of your software."
+msgstr ""
+
+msgid "Release|Search or create tag name"
+msgstr ""
+
+msgid "Release|Select another tag"
 msgstr ""
 
 msgid "Release|Something went wrong while creating a new release."
@@ -38080,6 +38107,9 @@ msgstr ""
 msgid "Runners|Existing runners are not affected. To permit runner registration for all groups, enable this setting in the Admin Area in Settings &gt; CI/CD."
 msgstr ""
 
+msgid "Runners|Existing runners are not affected. To permit runner registration for all projects, enable this setting in the Admin Area in Settings &gt; CI/CD."
+msgstr ""
+
 msgid "Runners|Fetch GitLab Runner release version data from GitLab.com"
 msgstr ""
 
@@ -38180,6 +38210,9 @@ msgid "Runners|New group runners can be registered"
 msgstr ""
 
 msgid "Runners|New instance runner"
+msgstr ""
+
+msgid "Runners|New project runners can be registered"
 msgstr ""
 
 msgid "Runners|New registration token generated!"
@@ -39072,9 +39105,6 @@ msgid "Search merge requests"
 msgstr ""
 
 msgid "Search milestones"
-msgstr ""
-
-msgid "Search or create tag"
 msgstr ""
 
 msgid "Search or filter commits"
@@ -40879,6 +40909,9 @@ msgid "Set time estimate to %{time_estimate}."
 msgstr ""
 
 msgid "Set to 0 for no size limit."
+msgstr ""
+
+msgid "Set up"
 msgstr ""
 
 msgid "Set up CI/CD"

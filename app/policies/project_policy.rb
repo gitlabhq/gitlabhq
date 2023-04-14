@@ -222,8 +222,8 @@ class ProjectPolicy < BasePolicy
     condition(:"#{f}_disabled", score: 32) { !access_allowed_to?(f.to_sym) }
   end
 
-  condition(:project_runner_registration_allowed) do
-    Gitlab::CurrentSettings.valid_runner_registrars.include?('project')
+  condition(:project_runner_registration_allowed, scope: :subject) do
+    Gitlab::CurrentSettings.valid_runner_registrars.include?('project') && @subject.runner_registration_enabled
   end
 
   condition :registry_enabled do

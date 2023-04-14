@@ -497,6 +497,7 @@ class Project < ApplicationRecord
            to: :project_setting, allow_nil: true
 
   delegate :show_diff_preview_in_email, :show_diff_preview_in_email=, :show_diff_preview_in_email?,
+           :runner_registration_enabled, :runner_registration_enabled?, :runner_registration_enabled=,
            to: :project_setting
 
   delegate :squash_always?, :squash_never?, :squash_enabled_by_default?, :squash_readonly?, to: :project_setting
