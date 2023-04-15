@@ -14,6 +14,7 @@ issues:
 - resource_milestone_events
 - resource_state_events
 - resource_iteration_events
+- assignment_events
 - sent_notifications
 - sentry_issue
 - issuable_severity
@@ -180,6 +181,7 @@ merge_requests:
 - resource_milestone_events
 - resource_state_events
 - resource_iteration_events
+- assignment_events
 - label_links
 - labels
 - last_edited_by

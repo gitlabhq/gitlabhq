@@ -37,6 +37,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     it { is_expected.to have_many(:issue_customer_relations_contacts) }
     it { is_expected.to have_many(:customer_relations_contacts) }
     it { is_expected.to have_many(:incident_management_timeline_events) }
+    it { is_expected.to have_many(:assignment_events).class_name('ResourceEvents::IssueAssignmentEvent').inverse_of(:issue) }
 
     describe 'versions.most_recent' do
       it 'returns the most recent version' do

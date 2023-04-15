@@ -122,6 +122,7 @@ class MergeRequest < ApplicationRecord
   has_many :reviews, inverse_of: :merge_request
   has_many :reviewed_by_users, -> { distinct }, through: :reviews, source: :author
   has_many :created_environments, class_name: 'Environment', foreign_key: :merge_request_id, inverse_of: :merge_request
+  has_many :assignment_events, class_name: 'ResourceEvents::MergeRequestAssignmentEvent', inverse_of: :merge_request
 
   KNOWN_MERGE_PARAMS = [
     :auto_merge_strategy,

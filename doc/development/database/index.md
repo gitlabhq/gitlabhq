@@ -64,6 +64,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - [Hash indexes](hash_indexes.md)
 - [Insert into tables in batches](insert_into_tables_in_batches.md)
 - [Iterating tables in batches](iterating_tables_in_batches.md)
+- [Load balancing](load_balancing.md)
 - [`NOT NULL` constraints](not_null_constraints.md)
 - [Ordering table columns](ordering_table_columns.md)
 - [Pagination guidelines](pagination_guidelines.md)

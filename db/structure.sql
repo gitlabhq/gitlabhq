@@ -17296,6 +17296,23 @@ CREATE TABLE issue_assignees (
     issue_id integer NOT NULL
 );
 
+CREATE TABLE issue_assignment_events (
+    id bigint NOT NULL,
+    user_id bigint,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    action smallint DEFAULT 1 NOT NULL
+);
+
+CREATE SEQUENCE issue_assignment_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE issue_assignment_events_id_seq OWNED BY issue_assignment_events.id;
+
 CREATE TABLE issue_customer_relations_contacts (
     id bigint NOT NULL,
     issue_id bigint NOT NULL,
@@ -17962,6 +17979,23 @@ CREATE SEQUENCE merge_request_assignees_id_seq
     CACHE 1;
 
 ALTER SEQUENCE merge_request_assignees_id_seq OWNED BY merge_request_assignees.id;
+
+CREATE TABLE merge_request_assignment_events (
+    id bigint NOT NULL,
+    user_id bigint,
+    merge_request_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    action smallint DEFAULT 1 NOT NULL
+);
+
+CREATE SEQUENCE merge_request_assignment_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE merge_request_assignment_events_id_seq OWNED BY merge_request_assignment_events.id;
 
 CREATE TABLE merge_request_blocks (
     id bigint NOT NULL,
@@ -25083,6 +25117,8 @@ ALTER TABLE ONLY issuable_severities ALTER COLUMN id SET DEFAULT nextval('issuab
 
 ALTER TABLE ONLY issuable_slas ALTER COLUMN id SET DEFAULT nextval('issuable_slas_id_seq'::regclass);
 
+ALTER TABLE ONLY issue_assignment_events ALTER COLUMN id SET DEFAULT nextval('issue_assignment_events_id_seq'::regclass);
+
 ALTER TABLE ONLY issue_customer_relations_contacts ALTER COLUMN id SET DEFAULT nextval('issue_customer_relations_contacts_id_seq'::regclass);
 
 ALTER TABLE ONLY issue_email_participants ALTER COLUMN id SET DEFAULT nextval('issue_email_participants_id_seq'::regclass);
@@ -25142,6 +25178,8 @@ ALTER TABLE ONLY member_tasks ALTER COLUMN id SET DEFAULT nextval('member_tasks_
 ALTER TABLE ONLY members ALTER COLUMN id SET DEFAULT nextval('members_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_request_assignees ALTER COLUMN id SET DEFAULT nextval('merge_request_assignees_id_seq'::regclass);
+
+ALTER TABLE ONLY merge_request_assignment_events ALTER COLUMN id SET DEFAULT nextval('merge_request_assignment_events_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_request_blocks ALTER COLUMN id SET DEFAULT nextval('merge_request_blocks_id_seq'::regclass);
 
@@ -27174,6 +27212,9 @@ ALTER TABLE ONLY issuable_slas
 ALTER TABLE ONLY issue_assignees
     ADD CONSTRAINT issue_assignees_pkey PRIMARY KEY (issue_id, user_id);
 
+ALTER TABLE ONLY issue_assignment_events
+    ADD CONSTRAINT issue_assignment_events_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY issue_customer_relations_contacts
     ADD CONSTRAINT issue_customer_relations_contacts_pkey PRIMARY KEY (id);
 
@@ -27272,6 +27313,9 @@ ALTER TABLE ONLY members
 
 ALTER TABLE ONLY merge_request_assignees
     ADD CONSTRAINT merge_request_assignees_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY merge_request_assignment_events
+    ADD CONSTRAINT merge_request_assignment_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY merge_request_blocks
     ADD CONSTRAINT merge_request_blocks_pkey PRIMARY KEY (id);
@@ -30850,6 +30894,8 @@ CREATE UNIQUE INDEX index_issuable_slas_on_issue_id ON issuable_slas USING btree
 
 CREATE INDEX index_issue_assignees_on_user_id_and_issue_id ON issue_assignees USING btree (user_id, issue_id);
 
+CREATE INDEX index_issue_assignment_events_on_user_id ON issue_assignment_events USING btree (user_id);
+
 CREATE UNIQUE INDEX index_issue_crm_contacts_on_issue_id_and_contact_id ON issue_customer_relations_contacts USING btree (issue_id, contact_id);
 
 CREATE INDEX index_issue_customer_relations_contacts_on_contact_id ON issue_customer_relations_contacts USING btree (contact_id);
@@ -31081,6 +31127,8 @@ CREATE INDEX index_merge_request_assignees_on_merge_request_id ON merge_request_
 CREATE UNIQUE INDEX index_merge_request_assignees_on_merge_request_id_and_user_id ON merge_request_assignees USING btree (merge_request_id, user_id);
 
 CREATE INDEX index_merge_request_assignees_on_user_id ON merge_request_assignees USING btree (user_id);
+
+CREATE INDEX index_merge_request_assignment_events_on_user_id ON merge_request_assignment_events USING btree (user_id);
 
 CREATE INDEX index_merge_request_blocks_on_blocked_merge_request_id ON merge_request_blocks USING btree (blocked_merge_request_id);
 
@@ -31404,6 +31452,8 @@ CREATE INDEX index_on_identities_lower_extern_uid_and_provider ON identities USI
 
 CREATE UNIQUE INDEX index_on_instance_statistics_recorded_at_and_identifier ON analytics_usage_trends_measurements USING btree (identifier, recorded_at);
 
+CREATE INDEX index_on_issue_assignment_events_issue_id_action_created_at_id ON issue_assignment_events USING btree (issue_id, action, created_at, id);
+
 CREATE INDEX index_on_issues_closed_incidents_by_project_id_and_closed_at ON issues USING btree (project_id, closed_at) WHERE ((issue_type = 1) AND (state_id = 2));
 
 CREATE INDEX index_on_issues_health_status_asc_order ON issues USING btree (project_id, health_status, id DESC, state_id, issue_type);
@@ -31417,6 +31467,8 @@ CREATE INDEX index_on_merge_request_reviewers_user_id_and_state ON merge_request
 CREATE INDEX index_on_merge_requests_for_latest_diffs ON merge_requests USING btree (target_project_id) INCLUDE (id, latest_merge_request_diff_id);
 
 COMMENT ON INDEX index_on_merge_requests_for_latest_diffs IS 'Index used to efficiently obtain the oldest merge request for a commit SHA';
+
+CREATE INDEX index_on_mr_assignment_events_mr_id_action_created_at_id ON merge_request_assignment_events USING btree (merge_request_id, action, created_at, id);
 
 CREATE INDEX index_on_namespaces_lower_name ON namespaces USING btree (lower((name)::text));
 
@@ -34398,6 +34450,9 @@ ALTER TABLE ONLY merge_requests
 ALTER TABLE ONLY user_interacted_projects
     ADD CONSTRAINT fk_0894651f08 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY merge_request_assignment_events
+    ADD CONSTRAINT fk_08f7602bfd FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY dast_sites
     ADD CONSTRAINT fk_0a57f2271b FOREIGN KEY (dast_site_validation_id) REFERENCES dast_site_validations(id) ON DELETE SET NULL;
 
@@ -35160,6 +35215,9 @@ ALTER TABLE ONLY todos
 ALTER TABLE ONLY dast_site_profiles_pipelines
     ADD CONSTRAINT fk_cf05cf8fe1 FOREIGN KEY (dast_site_profile_id) REFERENCES dast_site_profiles(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY issue_assignment_events
+    ADD CONSTRAINT fk_cfd2073177 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_cff7185ad2 FOREIGN KEY (reset_checksum_event_id) REFERENCES geo_reset_checksum_events(id) ON DELETE CASCADE;
 
@@ -35411,6 +35469,9 @@ ALTER TABLE ONLY terraform_state_versions
 
 ALTER TABLE ONLY search_namespace_index_assignments
     ADD CONSTRAINT fk_rails_06f9b905d3 FOREIGN KEY (namespace_id) REFERENCES namespaces(id);
+
+ALTER TABLE ONLY issue_assignment_events
+    ADD CONSTRAINT fk_rails_07683f8e80 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY work_item_hierarchy_restrictions
     ADD CONSTRAINT fk_rails_08cd7fef58 FOREIGN KEY (child_type_id) REFERENCES work_item_types(id) ON DELETE CASCADE;
@@ -35834,6 +35895,9 @@ ALTER TABLE ONLY batched_background_migration_jobs
 
 ALTER TABLE ONLY operations_strategies_user_lists
     ADD CONSTRAINT fk_rails_43241e8d29 FOREIGN KEY (strategy_id) REFERENCES operations_strategies(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY merge_request_assignment_events
+    ADD CONSTRAINT fk_rails_4378a2e8d7 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY lfs_file_locks
     ADD CONSTRAINT fk_rails_43df7a0412 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
