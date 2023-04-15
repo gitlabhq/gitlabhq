@@ -118,8 +118,9 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resources :boards, only: [:index, :show], constraints: { id: /\d+/ }
 
-    resources :runners, only: [:index, :edit, :update, :destroy, :show] do
+    resources :runners, only: [:index, :new, :edit, :update, :destroy, :show] do
       member do
+        get :register
         post :resume
         post :pause
       end

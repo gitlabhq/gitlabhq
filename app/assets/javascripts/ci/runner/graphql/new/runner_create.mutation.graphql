@@ -2,7 +2,7 @@ mutation runnerCreate($input: RunnerCreateInput!) {
   runnerCreate(input: $input) {
     runner {
       id
-      registerAdminUrl
+      ephemeralRegisterUrl
     }
     errors
   }

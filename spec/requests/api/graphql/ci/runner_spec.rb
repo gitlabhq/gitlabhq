@@ -378,6 +378,86 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
     end
   end
 
+  describe 'ephemeralRegisterUrl' do
+    let(:query) do
+      %(
+        query {
+          runner(id: "#{runner.to_global_id}") {
+            ephemeralRegisterUrl
+          }
+        }
+      )
+    end
+
+    shared_examples 'has register url' do
+      it 'retrieves register url' do
+        post_graphql(query, current_user: user)
+        expect(graphql_data_at(:runner, :ephemeral_register_url)).to eq(expected_url)
+      end
+    end
+
+    shared_examples 'has no register url' do
+      it 'retrieves no register url' do
+        post_graphql(query, current_user: user)
+        expect(graphql_data_at(:runner, :ephemeral_register_url)).to eq(nil)
+      end
+    end
+
+    context 'with an instance runner' do
+      context 'with registration available' do
+        let_it_be(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
+
+        it_behaves_like 'has register url' do
+          let(:expected_url) { "http://localhost/admin/runners/#{runner.id}/register" }
+        end
+      end
+
+      context 'with no registration available' do
+        let_it_be(:runner) { create(:ci_runner) }
+
+        it_behaves_like 'has no register url'
+      end
+    end
+
+    context 'with a group runner' do
+      context 'with registration available' do
+        let_it_be(:runner) { create(:ci_runner, :group, groups: [group], registration_type: :authenticated_user) }
+
+        it_behaves_like 'has register url' do
+          let(:expected_url) { "http://localhost/groups/#{group.path}/-/runners/#{runner.id}/register" }
+        end
+      end
+
+      context 'with no group' do
+        let(:destroyed_group) { create(:group) }
+        let(:runner) { create(:ci_runner, :group, groups: [destroyed_group], registration_type: :authenticated_user) }
+
+        before do
+          destroyed_group.destroy!
+        end
+
+        it_behaves_like 'has no register url'
+      end
+
+      context 'with no registration available' do
+        let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+        it_behaves_like 'has no register url'
+      end
+
+      context 'with no access' do
+        let_it_be(:user) { create(:user) }
+        let_it_be(:runner) { create(:ci_runner, :group, groups: [group], registration_type: :authenticated_user) }
+
+        before do
+          group.add_maintainer(user)
+        end
+
+        it_behaves_like 'has no register url'
+      end
+    end
+  end
+
   describe 'for runner with status' do
     let_it_be(:stale_runner) { create(:ci_runner, description: 'Stale runner 1', created_at: 3.months.ago) }
     let_it_be(:never_contacted_instance_runner) { create(:ci_runner, description: 'Missing runner 1', created_at: 1.month.ago, contacted_at: nil) }

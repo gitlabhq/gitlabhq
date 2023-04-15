@@ -226,3 +226,33 @@ RSpec.shared_examples 'submits edit runner form' do
     end
   end
 end
+
+RSpec.shared_examples 'creates runner and shows register page' do
+  context 'when runner is saved' do
+    before do
+      fill_in s_('Runners|Runner description'), with: 'runner-foo'
+      fill_in s_('Runners|Tags'), with: 'tag1'
+      click_on _('Submit')
+      wait_for_requests
+    end
+
+    it 'navigates to registration page and opens install instructions drawer' do
+      expect(page.find('[data-testid="alert-success"]')).to have_content(s_('Runners|Runner created.'))
+      expect(current_url).to match(register_path_pattern)
+
+      click_on 'How do I install GitLab Runner?'
+      expect(page.find('[data-testid="runner-platforms-drawer"]')).to have_content('gitlab-runner install')
+    end
+
+    it 'warns from leaving page without finishing registration' do
+      click_on s_('Runners|Go to runners page')
+
+      alert = page.driver.browser.switch_to.alert
+
+      expect(alert).not_to be_nil
+      alert.dismiss
+
+      expect(current_url).to match(register_path_pattern)
+    end
+  end
+end

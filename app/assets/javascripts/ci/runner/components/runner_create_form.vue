@@ -4,7 +4,7 @@ import RunnerFormFields from '~/ci/runner/components/runner_form_fields.vue';
 import runnerCreateMutation from '~/ci/runner/graphql/new/runner_create.mutation.graphql';
 import { modelToUpdateMutationVariables } from 'ee_else_ce/ci/runner/runner_update_form_utils';
 import { captureException } from '../sentry_utils';
-import { DEFAULT_ACCESS_LEVEL, INSTANCE_TYPE } from '../constants';
+import { RUNNER_TYPES, DEFAULT_ACCESS_LEVEL, GROUP_TYPE, INSTANCE_TYPE } from '../constants';
 
 export default {
   name: 'RunnerCreateForm',
@@ -13,11 +13,22 @@ export default {
     GlButton,
     RunnerFormFields,
   },
+  props: {
+    runnerType: {
+      type: String,
+      required: true,
+      validator: (t) => RUNNER_TYPES.includes(t),
+    },
+    groupId: {
+      type: String,
+      required: false,
+      default: null,
+    },
+  },
   data() {
     return {
       saving: false,
       runner: {
-        runnerType: INSTANCE_TYPE,
         description: '',
         maintenanceNote: '',
         paused: false,
@@ -27,6 +38,23 @@ export default {
         maximumTimeout: '',
       },
     };
+  },
+  computed: {
+    mutationInput() {
+      const { input } = modelToUpdateMutationVariables(this.runner);
+
+      if (this.runnerType === GROUP_TYPE) {
+        return {
+          ...input,
+          runnerType: GROUP_TYPE,
+          groupId: this.groupId,
+        };
+      }
+      return {
+        ...input,
+        runnerType: INSTANCE_TYPE,
+      };
+    },
   },
   methods: {
     async onSubmit() {
@@ -38,7 +66,9 @@ export default {
           },
         } = await this.$apollo.mutate({
           mutation: runnerCreateMutation,
-          variables: modelToUpdateMutationVariables(this.runner),
+          variables: {
+            input: this.mutationInput,
+          },
         });
 
         if (errors?.length) {

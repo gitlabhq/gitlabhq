@@ -16,10 +16,12 @@ RSpec.describe "Group Runners", feature_category: :runner_fleet do
   end
 
   describe "Group runners page", :js do
-    describe "runners registration" do
+    describe "legacy runners registration" do
       let_it_be(:group_registration_token) { group.runners_token }
 
       before do
+        stub_feature_flags(create_runner_workflow_for_namespace: false)
+
         visit group_runners_path(group)
       end
 
@@ -191,6 +193,16 @@ RSpec.describe "Group Runners", feature_category: :runner_fleet do
         let(:found_runner) { runner_1.description }
         let(:missing_runner) { runner_2.description }
       end
+    end
+  end
+
+  describe "Group runner create page", :js do
+    before do
+      visit new_group_runner_path(group)
+    end
+
+    it_behaves_like 'creates runner and shows register page' do
+      let(:register_path_pattern) { register_group_runner_path(group, '.*') }
     end
   end
 

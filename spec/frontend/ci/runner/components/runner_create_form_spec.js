@@ -6,7 +6,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
 import RunnerFormFields from '~/ci/runner/components/runner_form_fields.vue';
-import { DEFAULT_ACCESS_LEVEL, INSTANCE_TYPE } from '~/ci/runner/constants';
+import { DEFAULT_ACCESS_LEVEL, INSTANCE_TYPE, GROUP_TYPE } from '~/ci/runner/constants';
 import runnerCreateMutation from '~/ci/runner/graphql/new/runner_create.mutation.graphql';
 import { captureException } from '~/ci/runner/sentry_utils';
 import { runnerCreateResult } from '../mock_data';
@@ -16,7 +16,6 @@ jest.mock('~/ci/runner/sentry_utils');
 const mockCreatedRunner = runnerCreateResult.data.runnerCreate.runner;
 
 const defaultRunnerModel = {
-  runnerType: INSTANCE_TYPE,
   description: '',
   accessLevel: DEFAULT_ACCESS_LEVEL,
   paused: false,
@@ -36,30 +35,42 @@ describe('RunnerCreateForm', () => {
   const findRunnerFormFields = () => wrapper.findComponent(RunnerFormFields);
   const findSubmitBtn = () => wrapper.find('[type="submit"]');
 
-  const createComponent = () => {
+  const createComponent = ({ props } = {}) => {
     wrapper = shallowMountExtended(RunnerCreateForm, {
+      propsData: {
+        runnerType: INSTANCE_TYPE,
+        ...props,
+      },
       apolloProvider: createMockApollo([[runnerCreateMutation, runnerCreateHandler]]),
     });
   };
 
   beforeEach(() => {
     runnerCreateHandler = jest.fn().mockResolvedValue(runnerCreateResult);
-
-    createComponent();
   });
 
   it('shows default runner values', () => {
+    createComponent();
+
     expect(findRunnerFormFields().props('value')).toEqual(defaultRunnerModel);
   });
 
   it('shows a submit button', () => {
+    createComponent();
+
     expect(findSubmitBtn().exists()).toBe(true);
   });
 
-  describe('when user submits', () => {
+  describe.each`
+    typeName                | props                                                           | scopeData
+    ${'an instance runner'} | ${{ runnerType: INSTANCE_TYPE }}                                | ${{ runnerType: INSTANCE_TYPE }}
+    ${'a group runner'}     | ${{ runnerType: GROUP_TYPE, groupId: 'gid://gitlab/Group/72' }} | ${{ runnerType: GROUP_TYPE, groupId: 'gid://gitlab/Group/72' }}
+  `('when user submits $typeName', ({ props, scopeData }) => {
     let preventDefault;
 
     beforeEach(() => {
+      createComponent({ props });
+
       preventDefault = jest.fn();
 
       findRunnerFormFields().vm.$emit('input', {
@@ -87,6 +98,7 @@ describe('RunnerCreateForm', () => {
         expect(runnerCreateHandler).toHaveBeenCalledWith({
           input: {
             ...defaultRunnerModel,
+            ...scopeData,
             description: 'My runner',
             maximumTimeout: 0,
             tagList: ['tag1', 'tag2'],

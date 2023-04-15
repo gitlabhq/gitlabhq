@@ -42,6 +42,9 @@ module Types
             description: 'Ephemeral authentication token used for runner manager registration. Only available for the creator of the runner for a limited time during registration.',
             authorize: :read_ephemeral_token,
             alpha: { milestone: '15.9' }
+      field :ephemeral_register_url, GraphQL::Types::String, null: true,
+            description: 'URL of the registration page of the runner manager. Only available for the creator of the runner for a limited time during registration.',
+            alpha: { milestone: '15.11' }
       field :executor_name, GraphQL::Types::String, null: true,
                                                     description: 'Executor last advertised by the runner.',
                                                     method: :executor_name
@@ -147,6 +150,17 @@ module Types
         Gitlab::Routing.url_helpers.edit_admin_runner_url(runner) if can_admin_runners?
       end
 
+      def ephemeral_register_url
+        return unless ephemeral_register_url_access_allowed?(runner)
+
+        case runner.runner_type
+        when 'instance_type'
+          Gitlab::Routing.url_helpers.register_admin_runner_url(runner)
+        when 'group_type'
+          Gitlab::Routing.url_helpers.register_group_runner_url(runner.groups[0], runner)
+        end
+      end
+
       def register_admin_url
         return unless can_admin_runners? && runner.registration_available?
 
@@ -186,6 +200,19 @@ module Types
 
       def can_admin_runners?
         context[:current_user]&.can_admin_all_resources?
+      end
+
+      def ephemeral_register_url_access_allowed?(runner)
+        return unless runner.registration_available?
+
+        case runner.runner_type
+        when 'instance_type'
+          can_admin_runners?
+        when 'group_type'
+          group = runner.groups[0]
+
+          group && context[:current_user]&.can?(:register_group_runners, group)
+        end
       end
     end
   end

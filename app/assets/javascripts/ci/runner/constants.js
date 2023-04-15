@@ -141,6 +141,7 @@ export const PARAM_KEY_PLATFORM = 'platform';
 export const INSTANCE_TYPE = 'INSTANCE_TYPE';
 export const GROUP_TYPE = 'GROUP_TYPE';
 export const PROJECT_TYPE = 'PROJECT_TYPE';
+export const RUNNER_TYPES = [INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE];
 
 // CiRunnerStatus
 

@@ -38087,6 +38087,12 @@ msgstr ""
 msgid "Runners|Copy registration token"
 msgstr ""
 
+msgid "Runners|Create a group runner"
+msgstr ""
+
+msgid "Runners|Create a group runner to generate a command that registers the runner with all its configurations. %{linkStart}Prefer to use a registration token to create a runner?%{linkEnd}"
+msgstr ""
+
 msgid "Runners|Create an instance runner"
 msgstr ""
 
@@ -38173,6 +38179,9 @@ msgstr ""
 msgid "Runners|Group"
 msgstr ""
 
+msgid "Runners|Group area › Runners"
+msgstr ""
+
 msgid "Runners|How do runners pick up jobs?"
 msgstr ""
 
@@ -38249,6 +38258,9 @@ msgid "Runners|Never expires"
 msgstr ""
 
 msgid "Runners|New"
+msgstr ""
+
+msgid "Runners|New group runner"
 msgstr ""
 
 msgid "Runners|New group runners can be registered"

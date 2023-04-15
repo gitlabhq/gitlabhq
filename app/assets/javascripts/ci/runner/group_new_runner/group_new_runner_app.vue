@@ -6,11 +6,11 @@ import { s__ } from '~/locale';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
-import { DEFAULT_PLATFORM, PARAM_KEY_PLATFORM, INSTANCE_TYPE } from '../constants';
+import { DEFAULT_PLATFORM, GROUP_TYPE, PARAM_KEY_PLATFORM } from '../constants';
 import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_local_storage';
 
 export default {
-  name: 'AdminNewRunnerApp',
+  name: 'GroupNewRunnerApp',
   components: {
     GlLink,
     GlSprintf,
@@ -22,6 +22,10 @@ export default {
     GlModal: GlModalDirective,
   },
   props: {
+    groupId: {
+      type: String,
+      required: true,
+    },
     legacyRegistrationToken: {
       type: String,
       required: true,
@@ -48,18 +52,18 @@ export default {
     },
   },
   modalId: 'runners-legacy-registration-instructions-modal',
-  INSTANCE_TYPE,
+  GROUP_TYPE,
 };
 </script>
 
 <template>
   <div>
-    <h1 class="gl-font-size-h2">{{ s__('Runners|New instance runner') }}</h1>
+    <h1 class="gl-font-size-h2">{{ s__('Runners|New group runner') }}</h1>
     <p>
       <gl-sprintf
         :message="
           s__(
-            'Runners|Create an instance runner to generate a command that registers the runner with all its configurations. %{linkStart}Prefer to use a registration token to create a runner?%{linkEnd}',
+            'Runners|Create a group runner to generate a command that registers the runner with all its configurations. %{linkStart}Prefer to use a registration token to create a runner?%{linkEnd}',
           )
         "
       >
@@ -84,6 +88,11 @@ export default {
 
     <hr aria-hidden="true" />
 
-    <runner-create-form :runner-type="$options.INSTANCE_TYPE" @saved="onSaved" @error="onError" />
+    <runner-create-form
+      :runner-type="$options.GROUP_TYPE"
+      :group-id="groupId"
+      @saved="onSaved"
+      @error="onError"
+    />
   </div>
 </template>
