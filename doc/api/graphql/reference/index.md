@@ -14469,10 +14469,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 Find Project Wiki Repository registries on this Geo node. Ignored if `geo_project_wiki_repository_replication` feature flag is disabled.
 
-WARNING:
-**Introduced** in 15.10.
-This feature is an Experiment. It can be changed or removed at any time.
-
 Returns [`ProjectWikiRepositoryRegistryConnection`](#projectwikirepositoryregistryconnection).
 
 This field returns a [connection](#connections). It accepts the

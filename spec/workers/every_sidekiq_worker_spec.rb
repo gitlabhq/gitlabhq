@@ -410,6 +410,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'ProjectScheduleBulkRepositoryShardMovesWorker' => 3,
         'ProjectTemplateExportWorker' => false,
         'ProjectUpdateRepositoryStorageWorker' => 3,
+        'Projects::DeregisterSuggestedReviewersProjectWorker' => 3,
         'Projects::DisableLegacyOpenSourceLicenseForInactiveProjectsWorker' => 3,
         'Projects::GitGarbageCollectWorker' => false,
         'Projects::InactiveProjectsDeletionNotificationWorker' => 3,

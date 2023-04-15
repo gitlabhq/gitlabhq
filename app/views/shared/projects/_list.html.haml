@@ -10,7 +10,6 @@
 - skip_pagination = false unless local_assigns[:skip_pagination] == true
 - compact_mode = false unless local_assigns[:compact_mode] == true
 - css_classes = "#{'compact' if compact_mode} #{'explore' if explore_projects_tab?}"
-- contributed_projects_illustration_path = 'illustrations/profile-page/contributed-projects.svg'
 - contributed_projects_current_user_empty_message_header = s_('UserProfile|Explore public groups to find projects to contribute to.')
 - contributed_projects_visitor_empty_message = s_('UserProfile|This user hasn\'t contributed to any projects')
 - starred_projects_illustration_path = 'illustrations/empty-state/empty-projects-starred-md.svg'
@@ -43,7 +42,7 @@
     = paginate_collection(projects, remote: remote) unless skip_pagination
   - else
     - if @contributed_projects
-      = render partial: 'shared/empty_states/profile_tabs', locals: { illustration_path: contributed_projects_illustration_path,
+      = render partial: 'shared/empty_states/profile_tabs', locals: { illustration_path: own_projects_illustration_path,
         current_user_empty_message_header: contributed_projects_current_user_empty_message_header,
         primary_button_label: new_project_button_label,
         primary_button_link: new_project_button_link,

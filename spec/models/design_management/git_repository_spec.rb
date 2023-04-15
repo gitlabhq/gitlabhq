@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe DesignManagement::GitRepository, feature_category: :design_management do
-  let_it_be(:project) { create(:project) }
-  let(:git_repository) { described_class.new(project) }
+  let_it_be(:container_repo) { DesignManagement::Repository.new(project: create(:project)) }
+  let(:git_repository) { container_repo.repository }
 
   shared_examples 'returns parsed git attributes that enable LFS for all file types' do
     it do
@@ -13,6 +13,12 @@ RSpec.describe DesignManagement::GitRepository, feature_category: :design_manage
       expect(subject.patterns['/designs/*']).to eql(
         { "filter" => "lfs", "diff" => "lfs", "merge" => "lfs", "text" => false }
       )
+    end
+  end
+
+  describe '.container' do
+    it 'is of class DesignManagement::Repository' do
+      expect(git_repository.container).to be_a_kind_of(DesignManagement::Repository)
     end
   end
 

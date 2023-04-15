@@ -159,6 +159,7 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
 
   describe '#restore' do
     let_it_be(:project) { create(:project, :repository) }
+
     let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: project.first_owner) }
     let_it_be(:project_snippet) { create(:project_snippet, :repository, project: project, author: project.first_owner) }
 

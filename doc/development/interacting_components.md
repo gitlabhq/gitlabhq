@@ -29,5 +29,5 @@ See also [File Storage in GitLab](file_storage.md).
 ### Forks
 
 GitLab supports a great amount of features for [merge requests](../user/project/merge_requests/index.md). One
-of them is the ability to create merge requests from and to [forks](../user/project/repository/forking_workflow.md#creating-a-fork),
+of them is the ability to create merge requests from and to [forks](../user/project/repository/forking_workflow.md#create-a-fork),
 which should also be highly considered and tested upon development phase.

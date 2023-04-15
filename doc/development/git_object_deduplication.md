@@ -23,15 +23,17 @@ At the Git level, we achieve deduplication by using
 Git alternates is a mechanism that lets a repository borrow objects from
 another repository on the same machine.
 
-If we want repository A to borrow from repository B, we first write a
-path that resolves to `B.git/objects` in the special file
-`A.git/objects/info/alternates`. This establishes the alternates link.
-Next, we must perform a Git repack in A. After the repack, any objects
-that are duplicated between A and B are deleted from A. Repository
-A is now no longer self-contained, but it still has its own refs and
-configuration. Objects in A that are not in B remain in A. For this
-to work, it is of course critical that **no objects ever get deleted from
-B** because A might need them.
+To make repository A borrow from repository B:
+
+1. Establish the alternates link in the special file `A.git/objects/info/alternates`
+   by writing a path that resolves to `B.git/objects`.
+1. In repository A, run `git repack` to remove all objects in repository A that
+   also exist in repository B.
+
+After the repack, repository A is no longer self-contained, but still contains its
+own refs and configuration. Objects in A that are not in B remain in A. For this
+configuration to work, **objects must not be deleted from repository B** because
+repository A might need them.
 
 WARNING:
 Do not run `git prune` or `git gc` in object pool repositories, which are

@@ -427,6 +427,8 @@
   - 1
 - - projects_delete_branch
   - 1
+- - projects_deregister_suggested_reviewers_project
+  - 1
 - - projects_finalize_project_statistics_refresh
   - 1
 - - projects_forks_sync

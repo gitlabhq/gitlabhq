@@ -7,8 +7,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
   let_it_be(:head_sha) { project.repository.head_commit.id }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: head_sha) }
   let(:index) { 1 }
+  let(:cache_prefix) { index }
 
-  let(:processor) { described_class.new(pipeline, config, index) }
+  let(:processor) { described_class.new(pipeline, config, cache_prefix) }
 
   describe '#attributes' do
     subject { processor.attributes }
@@ -32,18 +33,38 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
         }
       end
 
-      it { is_expected.to include(config.merge(key: "a_key")) }
+      it { is_expected.to include(config.merge(key: 'a_key')) }
     end
 
     context 'with cache:key:files' do
+      context 'with ci_fix_for_runner_cache_prefix disabled' do
+        before do
+          stub_feature_flags(ci_fix_for_runner_cache_prefix: false)
+        end
+
+        shared_examples 'default key' do
+          let(:config) do
+            { key: { files: files } }
+          end
+
+          context 'without a prefix' do
+            it 'uses default key with an index as a prefix' do
+              expected = { key: '1-default' }
+
+              is_expected.to include(expected)
+            end
+          end
+        end
+      end
+
       shared_examples 'default key' do
         let(:config) do
           { key: { files: files } }
         end
 
         context 'without a prefix' do
-          it 'uses default key with an index as a prefix' do
-            expected = { key: '1-default' }
+          it 'uses default key with an index and file names as a prefix' do
+            expected = { key: "#{cache_prefix}-default" }
 
             is_expected.to include(expected)
           end
@@ -61,9 +82,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
         end
 
         context 'without a prefix' do
-          it 'builds a string key with an index as a prefix' do
+          it 'builds a string key with an index and file names as a prefix' do
             expected = {
-                  key: '1-703ecc8fef1635427a1f86a8a1a308831c122392',
+                  key: "#{cache_prefix}-703ecc8fef1635427a1f86a8a1a308831c122392",
                   paths: ['vendor/ruby']
               }
 
@@ -74,30 +95,41 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
 
       context 'with existing files' do
         let(:files) { ['VERSION', 'Gemfile.zip'] }
+        let(:cache_prefix) { '1_VERSION_Gemfile' }
 
         it_behaves_like 'version and gemfile files'
       end
 
       context 'with files starting with ./' do
         let(:files) { ['Gemfile.zip', './VERSION'] }
+        let(:cache_prefix) { '1_Gemfile_' }
 
         it_behaves_like 'version and gemfile files'
       end
 
+      context 'with no files' do
+        let(:files) { [] }
+
+        it_behaves_like 'default key'
+      end
+
       context 'with files ending with /' do
         let(:files) { ['Gemfile.zip/'] }
+        let(:cache_prefix) { '1_Gemfile' }
 
         it_behaves_like 'default key'
       end
 
       context 'with new line in filenames' do
-        let(:files) { ["Gemfile.zip\nVERSION"] }
+        let(:files) { ['Gemfile.zip\nVERSION'] }
+        let(:cache_prefix) { '1_Gemfile' }
 
         it_behaves_like 'default key'
       end
 
       context 'with missing files' do
         let(:files) { ['project-gemfile.lock', ''] }
+        let(:cache_prefix) { '1_project-gemfile_' }
 
         it_behaves_like 'default key'
       end
@@ -113,8 +145,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
           end
 
           context 'without a prefix' do
-            it 'builds a string key with an index as a prefix' do
-              expected = { key: '1-74bf43fb1090f161bdd4e265802775dbda2f03d1' }
+            it 'builds a string key with an index and file names as a prefix' do
+              expected = { key: "#{cache_prefix}-74bf43fb1090f161bdd4e265802775dbda2f03d1" }
 
               is_expected.to include(expected)
             end
@@ -123,18 +155,21 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
 
         context 'with directory' do
           let(:files) { ['foo/bar'] }
+          let(:cache_prefix) { '1_foo/bar' }
 
           it_behaves_like 'foo/bar directory key'
         end
 
         context 'with directory ending in slash' do
           let(:files) { ['foo/bar/'] }
+          let(:cache_prefix) { '1_foo/bar/' }
 
           it_behaves_like 'foo/bar directory key'
         end
 
         context 'with directories ending in slash star' do
           let(:files) { ['foo/bar/*'] }
+          let(:cache_prefix) { '1_foo/bar/*' }
 
           it_behaves_like 'foo/bar directory key'
         end

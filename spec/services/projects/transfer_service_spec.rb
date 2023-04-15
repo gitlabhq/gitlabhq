@@ -695,10 +695,15 @@ RSpec.describe Projects::TransferService, feature_category: :projects do
       project.design_repository
     end
 
+    def clear_design_repo_memoization
+      project.design_management_repository.clear_memoization(:repository)
+      project.clear_memoization(:design_repository)
+    end
+
     it 'does not create a design repository' do
       expect(subject.execute(group)).to be true
 
-      project.clear_memoization(:design_repository)
+      clear_design_repo_memoization
 
       expect(design_repository.exists?).to be false
     end
@@ -714,7 +719,7 @@ RSpec.describe Projects::TransferService, feature_category: :projects do
         it 'moves the repository' do
           expect(subject.execute(group)).to be true
 
-          project.clear_memoization(:design_repository)
+          clear_design_repo_memoization
 
           expect(design_repository).to have_attributes(
             disk_path: new_full_path,
@@ -726,7 +731,7 @@ RSpec.describe Projects::TransferService, feature_category: :projects do
           allow(subject).to receive(:execute_system_hooks).and_raise('foo')
           expect { subject.execute(group) }.to raise_error('foo')
 
-          project.clear_memoization(:design_repository)
+          clear_design_repo_memoization
 
           expect(design_repository).to have_attributes(
             disk_path: old_full_path,
@@ -743,7 +748,7 @@ RSpec.describe Projects::TransferService, feature_category: :projects do
 
           expect(subject.execute(group)).to be true
 
-          project.clear_memoization(:design_repository)
+          clear_design_repo_memoization
 
           expect(design_repository).to have_attributes(
             disk_path: old_disk_path,
@@ -757,7 +762,7 @@ RSpec.describe Projects::TransferService, feature_category: :projects do
           allow(subject).to receive(:execute_system_hooks).and_raise('foo')
           expect { subject.execute(group) }.to raise_error('foo')
 
-          project.clear_memoization(:design_repository)
+          clear_design_repo_memoization
 
           expect(design_repository).to have_attributes(
             disk_path: old_disk_path,

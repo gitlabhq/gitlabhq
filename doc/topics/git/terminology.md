@@ -27,7 +27,7 @@ In GitLab, a repository is contained in a **project**.
 ## Fork
 
 When you want to contribute to someone else's repository, you make a copy of it.
-This copy is called a [**fork**](../../user/project/repository/forking_workflow.md#creating-a-fork).
+This copy is called a [**fork**](../../user/project/repository/forking_workflow.md#create-a-fork).
 The process is called "creating a fork."
 
 When you fork a repository, you create a copy of the project in your own

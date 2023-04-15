@@ -15,7 +15,7 @@ A fork is a personal copy of the repository and all its branches, which you crea
 in a namespace of your choice. Make changes in your own fork and
 submit them through a merge request to the repository you don't have access to.
 
-## Creating a fork
+## Create a fork
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15013) a new form in GitLab 13.11 [with a flag](../../../user/feature_flags.md) named `fork_project_form`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77181) in GitLab 14.8. Feature flag `fork_project_form` removed.
@@ -39,7 +39,7 @@ GitLab creates your fork, and redirects you to the new fork's page.
 ## Update your fork
 
 To copy the latest changes from the upstream repository into your fork, update it
-[from the command line](#from-the-command-line). GitLab Premium and higher tiers can also
+from the command line. GitLab Premium and higher tiers can also
 [configure forks as pull mirrors](#with-repository-mirroring)
 of the upstream repository.
 
@@ -113,7 +113,7 @@ For instructions, read [Configure pull mirroring](mirror/pull.md#configure-pull-
 WARNING:
 With mirroring, before approving a merge request, you are asked to sync. You should automate it.
 
-## Merging upstream
+## Merge changes back upstream
 
 When you are ready to send your code back to the upstream project,
 [create a merge request](../merge_requests/creating_merge_requests.md). For **Source branch**,
@@ -128,15 +128,33 @@ Then you can add labels, a milestone, and assign the merge request to someone wh
 your changes. Then select **Submit merge request** to conclude the process. When successfully merged, your
 changes are added to the repository and branch you're merging into.
 
-## Removing a fork relationship
+## Unlink a fork
 
-You can unlink your fork from its upstream project in the [advanced settings](../settings/index.md#remove-a-fork-relationship).
+Removing a fork relationship unlinks your fork from its upstream project.
+Your fork then becomes an independent project.
 
-If you unlink a fork in this way and if [pool repositories](../../../development/git_object_deduplication.md#pool-repositories) are used, all objects are
-copied from the pool into the fork.
+Prerequisites:
 
-After this copy is complete, the relationship is broken and the fork becomes an independent project. From this point, any updates to objects in the pool are
-not propagated to the project that was previously a fork.
+- You must be a project owner to unlink a fork.
+
+WARNING:
+If you remove a fork relationship, you can't send merge requests to the source.
+If anyone has forked your project, their fork also loses the relationship.
+To restore the fork relationship, [use the API](../../../api/projects.md#create-a-forked-fromto-relation-between-existing-projects).
+
+To remove a fork relationship:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Advanced**.
+1. In the **Remove fork relationship** section, select **Remove fork relationship**.
+1. To confirm, enter the project path and select **Confirm**.
+
+When you unlink a fork that uses a [hashed storage pool](../../../administration/repository_storage_types.md#hashed-object-pools)
+to share objects with another repository:
+
+- All objects are copied from the pool into your fork.
+- After the copy process completes, no further updates from the storage pool are propagated to your fork.
 
 ## Related topics
 
@@ -145,8 +163,20 @@ not propagated to the project that was previously a fork.
 
 ## Troubleshooting
 
-### An error occurred while forking the project. Please try again
+### Error: `An error occurred while forking the project. Please try again`
 
 This error can be due to a mismatch in shared runner settings between the forked project
 and the new namespace. See [Forks](../../../ci/runners/configure_runners.md#forks)
 in the Runner documentation for more information.
+
+### Removing fork relationship fails
+
+If removing the fork through the UI or API is not working, you can attempt the
+fork relationship removal in a
+[Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+p = Project.find_by_full_path('<project_path>')
+u = User.find_by_username('<username>')
+Projects::UnlinkForkService.new(p, u).execute
+```

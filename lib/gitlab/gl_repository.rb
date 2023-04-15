@@ -34,8 +34,9 @@ module Gitlab
     DESIGN = ::Gitlab::GlRepository::RepoType.new(
       name: :design,
       access_checker_class: ::Gitlab::GitAccessDesign,
-      repository_resolver: -> (project) { ::DesignManagement::Repository.new(project: project) },
-      suffix: :design
+      repository_resolver: -> (project) { project.design_management_repository.repository },
+      suffix: :design,
+      container_class: DesignManagement::Repository
     ).freeze
 
     TYPES = {

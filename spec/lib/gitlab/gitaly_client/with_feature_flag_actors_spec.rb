@@ -131,23 +131,23 @@ RSpec.describe Gitlab::GitalyClient::WithFeatureFlagActors do
     end
 
     context 'when project design' do
-      let_it_be(:project) { create(:project, group: create(:group)) }
-      let(:issue) { create(:issue, project: project) }
-      let(:design) { create(:design, issue: issue) }
+      let_it_be(:design_repo) do
+        create(:design_management_repository, project: create(:project, group: create(:group)))
+      end
 
-      let(:expected_project) { project }
-      let(:expected_group) { project.group }
+      let(:expected_project) { design_repo.project }
+      let(:expected_group) { design_repo.project.group }
 
       it_behaves_like 'Gitaly feature flag actors are inferred from repository' do
-        let(:repository) { design.repository }
+        let(:repository) { design_repo.repository }
       end
 
       it_behaves_like 'Gitaly feature flag actors are inferred from repository' do
-        let(:repository) { design.repository.raw }
+        let(:repository) { design_repo.repository.raw }
       end
 
       it_behaves_like 'Gitaly feature flag actors are inferred from repository' do
-        let(:repository) { raw_repo_without_container(design.repository) }
+        let(:repository) { raw_repo_without_container(design_repo.repository) }
       end
     end
   end

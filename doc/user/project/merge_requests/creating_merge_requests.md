@@ -50,7 +50,7 @@ instead of immediately creating the merge request.
 - Your project is private and the issue is confidential.
 
 To make this button appear, one possible workaround is to
-[remove your project's fork relationship](../settings/index.md#remove-a-fork-relationship).
+[remove your project's fork relationship](../repository/forking_workflow.md#unlink-a-fork).
 After removal, the fork relationship cannot be restored. This project can no longer
 be able to receive or send merge requests to the source project, or other forks.
 
@@ -151,9 +151,8 @@ You can create a merge request from your fork to contribute back to the main pro
 1. Select **Create merge request**.
 
 After your work is merged, if you don't intend to
-make any other contributions to the upstream project, you can unlink your
-fork from its upstream project. Go to **Settings > Advanced Settings** and
-[remove the forking relationship](../settings/index.md#remove-a-fork-relationship).
+make any other contributions to the upstream project, you can
+[unlink your fork](../repository/forking_workflow.md#unlink-a-fork) from its upstream project.
 
 For more information, [see the forking workflow documentation](../repository/forking_workflow.md).
 

@@ -12,28 +12,6 @@ module DesignManagement
       /#{DesignManagement.designs_directory}/* filter=lfs diff=lfs merge=lfs -text
     GA
 
-    # Passing the `project` explicitly saves on one query on the `project` table
-    # in Mutations::DesignManagement::Delete
-
-    def initialize(project)
-      @project = project
-
-      full_path = @project.full_path + Gitlab::GlRepository::DESIGN.path_suffix
-      disk_path = @project.disk_path + Gitlab::GlRepository::DESIGN.path_suffix
-
-      # Ideally a DesignManagement::Repository, not a project would be
-      # the container to this Git repository.
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/394816.
-
-      super(
-        full_path,
-        @project,
-        shard: @project.repository_storage,
-        disk_path: disk_path,
-        repo_type: Gitlab::GlRepository::DESIGN
-      )
-    end
-
     # Override of a method called on Repository instances but sent via
     # method_missing to Gitlab::Git::Repository where it is defined
     def info_attributes
