@@ -49031,6 +49031,9 @@ msgstr ""
 msgid "Vulnerability|%{scannerName} (version %{scannerVersion})"
 msgstr ""
 
+msgid "Vulnerability|AI-Assisted Remediation"
+msgstr ""
+
 msgid "Vulnerability|Activity"
 msgstr ""
 
@@ -49101,6 +49104,12 @@ msgid "Vulnerability|Evidence"
 msgstr ""
 
 msgid "Vulnerability|Evidence:"
+msgstr ""
+
+msgid "Vulnerability|Experiment"
+msgstr ""
+
+msgid "Vulnerability|Explain this vulnerability"
 msgstr ""
 
 msgid "Vulnerability|External Security Report"
@@ -49200,6 +49209,12 @@ msgid "Vulnerability|The scanner determined this vulnerability to be a false pos
 msgstr ""
 
 msgid "Vulnerability|The unmodified response is the original response that had no mutations done to the request"
+msgstr ""
+
+msgid "Vulnerability|There was an unexpected error. %{linkStart}Please try again%{linkEnd}."
+msgstr ""
+
+msgid "Vulnerability|This is an experimental alpha feature that leverages a large language model to provide recommendations. Please use this with caution as we continue to iterate. To learn more about what we have planned, please check out %{linkStart}this issue%{linkEnd} and give us feedback."
 msgstr ""
 
 msgid "Vulnerability|Tool"
