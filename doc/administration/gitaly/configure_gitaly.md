@@ -760,27 +760,6 @@ Configure Gitaly with TLS in one of two ways:
 For information on observing the type of Gitaly connections being served, see the
 [relevant documentation](monitoring.md#queries).
 
-## `gitaly-ruby`
-
-Gitaly was developed to replace the Ruby application code in GitLab.
-
-To save time and avoid the risk of rewriting existing application logic, we chose to copy some
-application code from GitLab into Gitaly.
-
-To be able to run that code, `gitaly-ruby` was created, which is a "sidecar" process for the main
-Gitaly Go process. Some examples of things that are implemented in `gitaly-ruby` are:
-
-- RPCs that deal with wikis.
-- RPCs that create commits on behalf of a user, such as merge commits.
-
-Recommended settings:
-
-- At least 300 MB memory per worker.
-- No more than one worker per core.
-
-NOTE:
-[Epic 2862](https://gitlab.com/groups/gitlab-org/-/epics/2862) proposes to remove `gitaly-ruby`.
-
 ## Limit RPC concurrency
 
 WARNING:

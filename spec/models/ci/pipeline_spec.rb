@@ -546,6 +546,17 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '.order_id_desc' do
+    subject(:pipelines_ordered_by_id) { described_class.order_id_desc }
+
+    let(:older_pipeline) { create(:ci_pipeline, id: 99, project: project) }
+    let(:newest_pipeline) { create(:ci_pipeline, id: 100, project: project) }
+
+    it 'only returns the pipelines ordered by id' do
+      expect(pipelines_ordered_by_id).to eq([newest_pipeline, older_pipeline])
+    end
+  end
+
   describe '.jobs_count_in_alive_pipelines' do
     before do
       ::Ci::HasStatus::ALIVE_STATUSES.each do |status|

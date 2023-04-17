@@ -39,22 +39,12 @@
   <<: *ruby-gems-cache
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
-.gitaly-ruby-gems-cache: &gitaly-ruby-gems-cache
-  key: "gitaly-ruby-gems-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}"
-  paths:
-    - vendor/gitaly-ruby/
-  policy: pull
-
-.gitaly-ruby-gems-cache-push: &gitaly-ruby-gems-cache-push
-  <<: *gitaly-ruby-gems-cache
-  policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
-
 .gitaly-binaries-cache: &gitaly-binaries-cache
   key:
     files:
       - GITALY_SERVER_VERSION
       - lib/gitlab/setup_helper.rb
-    prefix: "gitaly-binaries-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}"
+    prefix: "gitaly-binaries-debian-${DEBIAN_VERSION}"
   paths:
     - ${TMP_TEST_FOLDER}/gitaly/_build/bin/
     - ${TMP_TEST_FOLDER}/gitaly/_build/deps/git/install/
@@ -66,7 +56,6 @@
     - ${TMP_TEST_FOLDER}/gitaly/Makefile
     - ${TMP_TEST_FOLDER}/gitaly/praefect.config.toml
     - ${TMP_TEST_FOLDER}/gitaly/praefect-db.config.toml
-    - ${TMP_TEST_FOLDER}/gitaly/ruby/
   policy: pull
 
 .go-pkg-cache: &go-pkg-cache
@@ -140,14 +129,12 @@
 .setup-test-env-cache:
   cache:
     - *ruby-gems-cache
-    - *gitaly-ruby-gems-cache
     - *gitaly-binaries-cache
     - *go-pkg-cache
 
 .setup-test-env-cache-push:
   cache:
     - *ruby-gems-cache-push
-    - *gitaly-ruby-gems-cache-push
     - *go-pkg-cache-push
 
 .gitaly-binaries-cache-push:
@@ -162,7 +149,6 @@
 .rails-cache:
   cache:
     - *ruby-gems-cache
-    - *gitaly-ruby-gems-cache
 
 .static-analysis-cache:
   cache:

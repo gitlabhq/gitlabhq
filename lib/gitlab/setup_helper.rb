@@ -80,7 +80,7 @@ module Gitlab
         # because it uses a Unix socket.
         # For development and testing purposes, an extra storage is added to gitaly,
         # which is not known to Rails, but must be explicitly stubbed.
-        def configuration_toml(gitaly_dir, storage_paths, options, gitaly_ruby: true)
+        def configuration_toml(gitaly_dir, storage_paths, options)
           storages = []
           address = nil
 
@@ -128,7 +128,6 @@ module Gitlab
           FileUtils.mkdir(runtime_dir) unless File.exist?(runtime_dir)
           config[:runtime_dir] = runtime_dir
 
-          config[:'gitaly-ruby'] = { dir: File.join(gitaly_dir, 'ruby') } if gitaly_ruby
           config[:'gitlab-shell'] = { dir: Gitlab.config.gitlab_shell.path }
           config[:bin_dir] = File.expand_path(File.join(gitaly_dir, '_build', 'bin')) # binaries by default are in `_build/bin`
           config[:gitlab] = { url: Gitlab.config.gitlab.url }

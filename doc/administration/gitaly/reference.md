@@ -202,7 +202,6 @@ The following values configure logging in Gitaly under the `[logging]` section.
 | `level`  | string | no | Log level: `debug`, `info`, `warn`, `error`, `fatal`, or `panic`. Default: `info`. |
 | `sentry_dsn` | string | no | Sentry DSN (Data Source Name) for exception monitoring. |
 | `sentry_environment` | string | no | [Sentry Environment](https://docs.sentry.io/product/sentry-basics/environments/) for exception monitoring. |
-| `ruby_sentry_dsn` | string | no | Sentry DSN (Data Source Name) for `gitaly-ruby` exception monitoring. |
 
 While the main Gitaly application logs go to `stdout`, there are some extra log
 files that go to a configured directory, like the GitLab Shell logs.

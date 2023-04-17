@@ -26,17 +26,8 @@ Usage: rake "gitlab:gitaly:install[/installation/dir,/storage/path]")
       Gitlab::SetupHelper::Gitaly.create_configuration(args.dir, storage_paths)
 
       Dir.chdir(args.dir) do
-        Bundler.with_original_env do
-          env = { "RUBYOPT" => nil, "BUNDLE_GEMFILE" => nil }
-
-          if Rails.env.test?
-            env["GEM_HOME"] = Bundler.bundle_path.to_s
-            env["BUNDLE_DEPLOYMENT"] = 'false'
-          end
-
-          output, status = Gitlab::Popen.popen([make_cmd, 'clean', 'all'], nil, env)
-          raise "Gitaly failed to compile: #{output}" unless status&.zero?
-        end
+        output, status = Gitlab::Popen.popen([make_cmd, 'clean', 'all'])
+        raise "Gitaly failed to compile: #{output}" unless status&.zero?
       end
     end
 
