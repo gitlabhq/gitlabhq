@@ -28,8 +28,15 @@ RSpec.describe Gitlab::Ci::Ansi2json::SignedState, feature_category: :continuous
     end
 
     it 'ignores unsigned prior state', :aggregate_failures do
-      unsigned = build_state(Gitlab::Ci::Ansi2json::State)
-      new_state = described_class.new(unsigned.encode, 0)
+      unsigned = build_state(Gitlab::Ci::Ansi2json::State).encode
+      expect(::Gitlab::AppLogger).to(
+        receive(:warn).with(
+          message: a_string_matching(/signature missing or invalid/),
+          invalid_state: unsigned
+        )
+      )
+
+      new_state = described_class.new(unsigned, 0)
 
       expect(new_state.offset).to eq(0)
       expect(new_state.inherited_style).to eq({})
@@ -37,6 +44,13 @@ RSpec.describe Gitlab::Ci::Ansi2json::SignedState, feature_category: :continuous
     end
 
     it 'ignores bad input', :aggregate_failures do
+      expect(::Gitlab::AppLogger).to(
+        receive(:warn).with(
+          message: a_string_matching(/signature missing or invalid/),
+          invalid_state: 'abcd'
+        )
+      )
+
       new_state = described_class.new('abcd', 0)
 
       expect(new_state.offset).to eq(0)

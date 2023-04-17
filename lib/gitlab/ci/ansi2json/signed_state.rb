@@ -28,8 +28,6 @@ module Gitlab
         end
 
         def verify(signed_message)
-          return unless signed_message.present?
-
           signature_length = signature_digest.digest_length * 2 # a byte is exactly two hexadecimals
           message_length = signed_message.length - SEPARATOR.length - signature_length
           return if message_length <= 0
@@ -48,8 +46,13 @@ module Gitlab
         end
 
         def decode_state(data)
+          return if data.blank?
+
           encoded_state = verify(data)
-          return unless encoded_state.present?
+          if encoded_state.blank?
+            ::Gitlab::AppLogger.warn(message: "#{self.class}: signature missing or invalid", invalid_state: data)
+            return
+          end
 
           decoded_state = Base64.urlsafe_decode64(encoded_state)
           return unless decoded_state.present?

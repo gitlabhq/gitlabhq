@@ -34,13 +34,29 @@ RSpec.describe Gitlab::Ci::Ansi2json::State, feature_category: :continuous_integ
       signed_state.set_last_line_offset
       signed_state.open_section('hello', 111, {})
 
-      new_state = described_class.new(signed_state.encode, 1000)
+      encoded = signed_state.encode
+      expect(::Gitlab::AppLogger).to(
+        receive(:warn).with(
+          message: a_string_matching(/decode error/),
+          invalid_state: encoded,
+          error: an_instance_of(JSON::ParserError)
+        )
+      )
+      new_state = described_class.new(encoded, 1000)
       expect(new_state.offset).to eq(0)
       expect(new_state.inherited_style).to eq({})
       expect(new_state.open_sections).to eq({})
     end
 
-    it 'ignores invalid Base64', :aggregate_failures do
+    it 'ignores invalid Base64 and logs a warning', :aggregate_failures do
+      expect(::Gitlab::AppLogger).to(
+        receive(:warn).with(
+          message: a_string_matching(/decode error/),
+          invalid_state: '.',
+          error: an_instance_of(ArgumentError)
+        )
+      )
+
       new_state = described_class.new('.', 0)
 
       expect(new_state.offset).to eq(0)
@@ -48,9 +64,17 @@ RSpec.describe Gitlab::Ci::Ansi2json::State, feature_category: :continuous_integ
       expect(new_state.open_sections).to eq({})
     end
 
-    it 'ignores invalid JSON', :aggregate_failures do
-      new_state = described_class.new(Base64.urlsafe_encode64('.'), 0)
+    it 'ignores invalid JSON and logs a warning', :aggregate_failures do
+      encoded = Base64.urlsafe_encode64('.')
+      expect(::Gitlab::AppLogger).to(
+        receive(:warn).with(
+          message: a_string_matching(/decode error/),
+          invalid_state: encoded,
+          error: an_instance_of(JSON::ParserError)
+        )
+      )
 
+      new_state = described_class.new(encoded, 0)
       expect(new_state.offset).to eq(0)
       expect(new_state.inherited_style).to eq({})
       expect(new_state.open_sections).to eq({})

@@ -93,7 +93,7 @@ module Gitlab
           return unless decoded_state.present?
 
           ::Gitlab::Json.parse(decoded_state)
-        rescue ArgumentError, JSON::ParserError
+        rescue ArgumentError, JSON::ParserError => error
           # This rescue is so that we don't break during the rollout or rollback
           # of `sign_and_verify_ansi2json_state`, because we may receive a
           # signed state even when the flag is disabled, and this would result
@@ -103,6 +103,9 @@ module Gitlab
           # Once the flag has been fully rolled out this should not
           # be possible (it would imply a backend bug) and we not rescue from
           # this.
+          ::Gitlab::AppLogger.warn(message: "#{self.class}: decode error", invalid_state: state, error: error)
+
+          nil
         end
       end
     end

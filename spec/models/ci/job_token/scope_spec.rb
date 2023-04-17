@@ -63,12 +63,14 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
     subject { scope.add!(new_project, direction: direction, user: user) }
 
     [:inbound, :outbound].each do |d|
-      let(:direction) { d }
+      context "with #{d}" do
+        let(:direction) { d }
 
-      it 'adds the project' do
-        subject
+        it 'adds the project' do
+          subject
 
-        expect(scope.send("#{direction}_projects")).to contain_exactly(current_project, new_project)
+          expect(scope.send("#{direction}_projects")).to contain_exactly(current_project, new_project)
+        end
       end
     end
 
