@@ -1,5 +1,6 @@
 import $ from 'jquery';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlSessionsNew from 'test_fixtures/sessions/new.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import preserveUrlFragment from '~/pages/sessions/new/preserve_url_fragment';
 
 describe('preserve_url_fragment', () => {
@@ -8,7 +9,7 @@ describe('preserve_url_fragment', () => {
   };
 
   beforeEach(() => {
-    loadHTMLFixture('sessions/new.html');
+    setHTMLFixture(htmlSessionsNew);
   });
 
   afterEach(() => {

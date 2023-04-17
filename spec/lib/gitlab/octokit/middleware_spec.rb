@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Octokit::Middleware, feature_category: :importers do
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
 
-  shared_examples 'Public URL' do
+  shared_examples 'Allowed URL' do
     it 'does not raise an error' do
       expect(app).to receive(:call).with(env)
 
@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Octokit::Middleware, feature_category: :importers do
     end
   end
 
-  shared_examples 'Local URL' do
+  shared_examples 'Blocked URL' do
     it 'raises an error' do
       expect { middleware.call(env) }.to raise_error(Gitlab::UrlBlocker::BlockedUrlError)
     end
@@ -24,7 +24,24 @@ RSpec.describe Gitlab::Octokit::Middleware, feature_category: :importers do
     context 'when the URL is a public URL' do
       let(:env) { { url: 'https://public-url.com' } }
 
-      it_behaves_like 'Public URL'
+      it_behaves_like 'Allowed URL'
+
+      context 'with failed address check' do
+        before do
+          stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
+          allow(Addrinfo).to receive(:getaddrinfo).and_raise(SocketError)
+        end
+
+        it_behaves_like 'Blocked URL'
+
+        context 'with disabled dns rebinding check' do
+          before do
+            stub_application_setting(dns_rebinding_protection_enabled: false)
+          end
+
+          it_behaves_like 'Allowed URL'
+        end
+      end
     end
 
     context 'when the URL is a localhost address' do
@@ -35,7 +52,7 @@ RSpec.describe Gitlab::Octokit::Middleware, feature_category: :importers do
           stub_application_setting(allow_local_requests_from_web_hooks_and_services: false)
         end
 
-        it_behaves_like 'Local URL'
+        it_behaves_like 'Blocked URL'
       end
 
       context 'when localhost requests are allowed' do
@@ -43,7 +60,7 @@ RSpec.describe Gitlab::Octokit::Middleware, feature_category: :importers do
           stub_application_setting(allow_local_requests_from_web_hooks_and_services: true)
         end
 
-        it_behaves_like 'Public URL'
+        it_behaves_like 'Allowed URL'
       end
     end
 
@@ -55,7 +72,7 @@ RSpec.describe Gitlab::Octokit::Middleware, feature_category: :importers do
           stub_application_setting(allow_local_requests_from_web_hooks_and_services: false)
         end
 
-        it_behaves_like 'Local URL'
+        it_behaves_like 'Blocked URL'
       end
 
       context 'when local network requests are allowed' do
@@ -63,7 +80,7 @@ RSpec.describe Gitlab::Octokit::Middleware, feature_category: :importers do
           stub_application_setting(allow_local_requests_from_web_hooks_and_services: true)
         end
 
-        it_behaves_like 'Public URL'
+        it_behaves_like 'Allowed URL'
       end
     end
 

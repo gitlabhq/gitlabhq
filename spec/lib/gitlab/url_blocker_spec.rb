@@ -248,10 +248,25 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
       context 'when domain cannot be resolved' do
         let(:import_url) { 'http://foobar.x' }
 
-        it 'raises an error' do
+        before do
           stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
+        end
 
+        it 'raises an error' do
           expect { subject }.to raise_error(described_class::BlockedUrlError)
+        end
+
+        context 'with HTTP_PROXY' do
+          let(:import_url) { 'http://foobar.x' }
+
+          before do
+            allow(Gitlab).to receive(:http_proxy_env?).and_return(true)
+          end
+
+          it_behaves_like 'validates URI and hostname' do
+            let(:expected_uri) { import_url }
+            let(:expected_hostname) { nil }
+          end
         end
       end
 
@@ -300,6 +315,28 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
       end
 
       it_behaves_like 'a URI exempt from `deny_all_requests_except_allowed`'
+
+      context 'with HTTP_PROXY' do
+        before do
+          allow(Gitlab).to receive(:http_proxy_env?).and_return(true)
+        end
+
+        it_behaves_like 'validates URI and hostname' do
+          let(:expected_uri) { import_url }
+          let(:expected_hostname) { nil }
+        end
+
+        context 'when domain is in no_proxy env' do
+          before do
+            stub_env('no_proxy', 'a.192.168.0.120.3times.127.0.0.1.1time.repeat.rebind.network')
+          end
+
+          it_behaves_like 'validates URI and hostname' do
+            let(:expected_uri) { 'http://192.168.0.120:9121/scrape?target=unix:///var/opt/gitlab/redis/redis.socket&amp;check-keys=*' }
+            let(:expected_hostname) { 'a.192.168.0.120.3times.127.0.0.1.1time.repeat.rebind.network' }
+          end
+        end
+      end
     end
 
     context 'with disabled DNS rebinding protection' do

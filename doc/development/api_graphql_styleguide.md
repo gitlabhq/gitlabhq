@@ -294,13 +294,13 @@ or by calling `#to_global_id` on an object that has mixed in the
 `GlobalID::Identification` module.
 
 Using an example from
-[`Types::Notes::DiscussionType`](https://gitlab.com/gitlab-org/gitlab/-/blob/3c95bd9/app/graphql/types/notes/discussion_type.rb#L24-26):
+[`Types::Notes::DiscussionType`](https://gitlab.com/gitlab-org/gitlab/-/blob/af48df44/app/graphql/types/notes/discussion_type.rb#L22-30):
 
 ```ruby
-field :reply_id, GraphQL::Types::ID
+field :reply_id, Types::GlobalIDType[Discussion]
 
 def reply_id
-  ::Gitlab::GlobalId.build(object, id: object.reply_id)
+  Gitlab::GlobalId.build(object, id: object.reply_id)
 end
 ```
 
