@@ -229,6 +229,36 @@ class NotifyPreview < ActionMailer::Preview
     end
   end
 
+  def service_desk_verification_result_email_for_verified_state
+    cleanup do
+      setup_service_desk_custom_email_objects
+
+      custom_email_verification.update!(state: 1)
+
+      Notify.service_desk_verification_result_email(service_desk_setting, 'owner@example.com').message
+    end
+  end
+
+  def service_desk_verification_result_email_for_incorrect_token_error
+    service_desk_verification_result_email_for_error_state(error: :incorrect_token)
+  end
+
+  def service_desk_verification_result_email_for_incorrect_from_error
+    service_desk_verification_result_email_for_error_state(error: :incorrect_from)
+  end
+
+  def service_desk_verification_result_email_for_mail_not_received_within_timeframe_error
+    service_desk_verification_result_email_for_error_state(error: :mail_not_received_within_timeframe)
+  end
+
+  def service_desk_verification_result_email_for_invalid_credentials_error
+    service_desk_verification_result_email_for_error_state(error: :invalid_credentials)
+  end
+
+  def service_desk_verification_result_email_for_smtp_host_issue_error
+    service_desk_verification_result_email_for_error_state(error: :smtp_host_issue)
+  end
+
   def merge_when_pipeline_succeeds_email
     Notify.merge_when_pipeline_succeeds_email(user.id, merge_request.id, user.id).message
   end
@@ -261,6 +291,16 @@ class NotifyPreview < ActionMailer::Preview
 
   def project
     @project ||= Project.first
+  end
+
+  def service_desk_verification_result_email_for_error_state(error:)
+    cleanup do
+      setup_service_desk_custom_email_objects
+
+      custom_email_verification.update!(state: 2, error: error)
+
+      Notify.service_desk_verification_result_email(service_desk_setting, 'owner@example.com').message
+    end
   end
 
   def setup_service_desk_custom_email_objects

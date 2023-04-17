@@ -102,6 +102,19 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     end
   end
 
+  shared_examples 'a custom email verification process result email with error' do |error_identifier, expected_text|
+    context "when having #{error_identifier} error" do
+      before do
+        service_desk_setting.custom_email_verification.error = error_identifier
+      end
+
+      it 'contains correct error message headline in text part' do
+        # look for text part because we can ignore HTML tags then
+        expect(subject.text_part.body).to match(expected_text)
+      end
+    end
+  end
+
   describe '.service_desk_thank_you_email' do
     let_it_be(:reply_in_subject) { true }
     let_it_be(:default_text) do
@@ -363,5 +376,22 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     it 'contains triggerer username' do
       is_expected.to have_body_text("@#{user.username}")
     end
+  end
+
+  describe '.service_desk_verification_result_email' do
+    before do
+      service_desk_setting.custom_email_verification.triggerer = user
+    end
+
+    subject { Notify.service_desk_verification_result_email(service_desk_setting, 'owner@example.com') }
+
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'a custom email verification process email'
+    it_behaves_like 'a custom email verification process notification email'
+    it_behaves_like 'a custom email verification process result email with error', 'smtp_host_issue', 'SMTP host issue'
+    it_behaves_like 'a custom email verification process result email with error', 'invalid_credentials', 'Invalid credentials'
+    it_behaves_like 'a custom email verification process result email with error', 'mail_not_received_within_timeframe', 'Verification email not received within timeframe'
+    it_behaves_like 'a custom email verification process result email with error', 'incorrect_from', 'Incorrect From header'
+    it_behaves_like 'a custom email verification process result email with error', 'incorrect_token', 'Incorrect verification token'
   end
 end

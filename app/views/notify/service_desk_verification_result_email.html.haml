@@ -1,0 +1,58 @@
+- project_link = @service_desk_setting.project.web_url
+- project_link_start = '<a href="%{project_link}" target="_blank" rel="noopener noreferrer" class="highlight">'.html_safe % { project_link: project_link }
+- project_name = @service_desk_setting.project.human_name
+- project_link_end = '</a>'.html_safe
+- settings_link = edit_project_url(@service_desk_setting.project, anchor: 'js-service-desk')
+- settings_link_start = '<a href="%{settings_link}" target="_blank" rel="noopener noreferrer" class="highlight">'.html_safe % { settings_link: settings_link }
+- settings_link_end = '</a>'.html_safe
+- strong_open = '<strong>'.html_safe
+- strong_close = '</strong>'.html_safe
+- email_address = @service_desk_setting.custom_email
+- verify_email_address = @service_desk_setting.custom_email_address_for_verification
+- code_open = '<code>'.html_safe
+- code_end = '</code>'.html_safe
+
+%tr
+  %td.text-content
+    - if @verification.verified?
+      %h1{ :style => "margin-top:0;" }
+        = s_("Notify|Email successfully verified")
+      %p
+        = html_escape(s_('Notify|Your email address %{strong_open}%{email_address}%{strong_close} for the Service Desk of %{project_link_start}%{project_name}%{project_link_end} was verified successfully.')) % { email_address: email_address, project_link_start: project_link_start, project_name: project_name, project_link_end: project_link_end, strong_open: strong_open, strong_close: strong_close }
+      %p
+        = html_escape(s_('Notify|To enable the custom email address, go to your %{settings_link_start}project\'s Service Desk settings page%{settings_link_end}.')) % { settings_link_start: settings_link_start, settings_link_end: settings_link_end }
+    - else
+      %h1{ :style => "margin-top:0;" }
+        = s_("Notify|Email could not be verified")
+      %p
+        = html_escape(s_('Notify|We could not verify your email address %{strong_open}%{email_address}%{strong_close} for the Service Desk of %{project_link_start}%{project_name}%{project_link_end}.')) % { email_address: email_address, project_link_start: project_link_start, project_name: project_name, project_link_end: project_link_end, strong_open: strong_open, strong_close: strong_close }
+      - if @verification.smtp_host_issue?
+        %p
+          %b
+            = s_('Notify|SMTP host issue:')
+          = s_('Notify|We were not able to make a connection to the specified host or there was an SSL issue.')
+      - if @verification.invalid_credentials?
+        %p
+          %b
+            = s_('Notify|Invalid credentials:')
+          = s_('Notify|The given credentials (username and password) were rejected by the SMTP server.')
+      - if @verification.mail_not_received_within_timeframe?
+        %p
+          %b
+            = s_('Notify|Verification email not received within timeframe:')
+          = html_escape(s_('Notify|We did not receive the verification email we sent out to %{strong_open}%{email_address}%{strong_close} in time.')) % { email_address: verify_email_address, strong_open: strong_open, strong_close: strong_close }
+        %p
+          = s_('Notify|We wait for 30 minutes for messages to appear in your instance\'s Service Desk inbox.')
+          = s_('Notify|Please check that your service provider supports email subaddressing and that you have set up email forwarding correctly.')
+      - if @verification.incorrect_from?
+        %p
+          %b
+            = html_escape(s_('Notify|Incorrect %{code_open}From%{code_end} header:')) % { code_open: code_open, code_end: code_end }
+          = html_escape(s_('Notify|Check your forwarding settings and make sure the original email sender remains in the %{code_open}From%{code_end} header.')) % { code_open: code_open, code_end: code_end }
+      - if @verification.incorrect_token?
+        %p
+          %b
+            = s_('Notify|Incorrect verification token:')
+          = s_('Notify|We could not verify that we received the email we sent to your email inbox.')
+      %p
+        = html_escape(s_('Notify|To restart the verification process, go to your %{settings_link_start}project\'s Service Desk settings page%{settings_link_end}.')) % { settings_link_start: settings_link_start, settings_link_end: settings_link_end }

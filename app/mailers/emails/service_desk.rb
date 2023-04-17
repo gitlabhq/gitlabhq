@@ -86,6 +86,18 @@ module Emails
       email_with_layout(to: recipient, subject: subject)
     end
 
+    def service_desk_verification_result_email(service_desk_setting, recipient)
+      @service_desk_setting = service_desk_setting
+      @verification = @service_desk_setting.custom_email_verification
+
+      subject = format(s_("Notify|Verification result for custom email %{email} for %{project_name}"),
+        email: @service_desk_setting.custom_email,
+        project_name: @service_desk_setting.project.name
+      )
+
+      email_with_layout(to: recipient, subject: subject)
+    end
+
     private
 
     def setup_service_desk_mail(issue_id)

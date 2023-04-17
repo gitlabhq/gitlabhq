@@ -29896,6 +29896,9 @@ msgstr ""
 msgid "Notify|CI/CD project settings"
 msgstr ""
 
+msgid "Notify|Check your forwarding settings and make sure the original email sender remains in the %{code_open}From%{code_end} header."
+msgstr ""
+
 msgid "Notify|Click here to set your password"
 msgstr ""
 
@@ -29906,6 +29909,12 @@ msgid "Notify|Committed by"
 msgstr ""
 
 msgid "Notify|Don't want to receive updates from GitLab administrators?"
+msgstr ""
+
+msgid "Notify|Email could not be verified"
+msgstr ""
+
+msgid "Notify|Email successfully verified"
 msgstr ""
 
 msgid "Notify|Error parsing CSV file. Please make sure it has the correct format: a delimited text file that uses a comma to separate values."
@@ -29939,6 +29948,15 @@ msgid "Notify|If this was a mistake you can change these settings or deactivate 
 msgstr ""
 
 msgid "Notify|If you no longer wish to use this domain with GitLab Pages, please remove it from your GitLab project and delete any related DNS records."
+msgstr ""
+
+msgid "Notify|Incorrect %{code_open}From%{code_end} header:"
+msgstr ""
+
+msgid "Notify|Incorrect verification token:"
+msgstr ""
+
+msgid "Notify|Invalid credentials:"
 msgstr ""
 
 msgid "Notify|Issue was %{issue_status} by %{updated_by}"
@@ -30004,6 +30022,9 @@ msgstr ""
 msgid "Notify|Pipeline has been fixed and #%{pipeline_id} has passed!"
 msgstr ""
 
+msgid "Notify|Please check that your service provider supports email subaddressing and that you have set up email forwarding correctly."
+msgstr ""
+
 msgid "Notify|Please fix the lines with errors and try the CSV import again."
 msgstr ""
 
@@ -30017,6 +30038,9 @@ msgid "Notify|Project %{project_name} was exported successfully."
 msgstr ""
 
 msgid "Notify|Remote mirror"
+msgstr ""
+
+msgid "Notify|SMTP host issue:"
 msgstr ""
 
 msgid "Notify|Some values in the \"type\" column could not be matched with supported work item types:"
@@ -30040,6 +30064,9 @@ msgstr ""
 msgid "Notify|The errors we encountered were:"
 msgstr ""
 
+msgid "Notify|The given credentials (username and password) were rejected by the SMTP server."
+msgstr ""
+
 msgid "Notify|The project is now located under %{project_full_name_link_start}%{project_full_name}%{link_end}."
 msgstr ""
 
@@ -30055,13 +30082,40 @@ msgstr ""
 msgid "Notify|This link is valid for %{password_reset_token_valid_time}."
 msgstr ""
 
+msgid "Notify|To enable the custom email address, go to your %{settings_link_start}project's Service Desk settings page%{settings_link_end}."
+msgstr ""
+
+msgid "Notify|To restart the verification process, go to your %{settings_link_start}project's Service Desk settings page%{settings_link_end}."
+msgstr ""
+
 msgid "Notify|Unless you verify your domain by %{time_start}%{time}%{time_end} it will be removed from your GitLab project."
+msgstr ""
+
+msgid "Notify|Verification email not received within timeframe:"
 msgstr ""
 
 msgid "Notify|Verification for custom email %{email} for %{project_name} triggered"
 msgstr ""
 
+msgid "Notify|Verification result for custom email %{email} for %{project_name}"
+msgstr ""
+
 msgid "Notify|Verify custom email address %{email} for %{project_name}"
+msgstr ""
+
+msgid "Notify|We could not verify that we received the email we sent to your email inbox."
+msgstr ""
+
+msgid "Notify|We could not verify your email address %{strong_open}%{email_address}%{strong_close} for the Service Desk of %{project_link_start}%{project_name}%{project_link_end}."
+msgstr ""
+
+msgid "Notify|We did not receive the verification email we sent out to %{strong_open}%{email_address}%{strong_close} in time."
+msgstr ""
+
+msgid "Notify|We wait for 30 minutes for messages to appear in your instance's Service Desk inbox."
+msgstr ""
+
+msgid "Notify|We were not able to make a connection to the specified host or there was an SSL issue."
 msgstr ""
 
 msgid "Notify|You don't have access to the project."
@@ -30080,6 +30134,9 @@ msgid "Notify|Your CSV import for project %{project_link} has been completed."
 msgstr ""
 
 msgid "Notify|Your account has been created successfully."
+msgstr ""
+
+msgid "Notify|Your email address %{strong_open}%{email_address}%{strong_close} for the Service Desk of %{project_link_start}%{project_name}%{project_link_end} was verified successfully."
 msgstr ""
 
 msgid "Notify|Your request to join the %{target_to_join} %{target_type} has been %{denied_tag}."
