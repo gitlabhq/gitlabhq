@@ -30580,8 +30580,6 @@ CREATE INDEX index_events_for_group_activity ON events USING btree (group_id, ta
 
 CREATE INDEX index_events_for_project_activity ON events USING btree (project_id, target_type, action, id);
 
-CREATE INDEX index_events_on_action ON events USING btree (action);
-
 CREATE INDEX index_events_on_author_id_and_created_at ON events USING btree (author_id, created_at);
 
 CREATE INDEX index_events_on_author_id_and_created_at_merge_requests ON events USING btree (author_id, created_at) WHERE ((target_type)::text = 'MergeRequest'::text);

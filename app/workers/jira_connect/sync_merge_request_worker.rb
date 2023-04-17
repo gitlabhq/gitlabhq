@@ -18,7 +18,9 @@ module JiraConnect
 
       return unless merge_request && project
 
-      branches = [project.repository.find_branch(merge_request.source_branch)].compact
+      branches = if Feature.enabled?(:jira_include_keys_from_associated_mr_for_branch, project) && merge_request.open?
+                   [project.repository.find_branch(merge_request.source_branch)].compact.presence
+                 end
 
       JiraConnect::SyncService.new(project).execute(merge_requests: [merge_request], branches: branches, update_sequence_id: update_sequence_id)
     end

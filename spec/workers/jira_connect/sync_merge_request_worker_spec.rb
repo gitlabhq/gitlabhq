@@ -37,6 +37,23 @@ RSpec.describe JiraConnect::SyncMergeRequestWorker, feature_category: :integrati
       end
     end
 
+    shared_examples 'does not send any branch data' do
+      it 'calls JiraConnect::SyncService correctly with nil branches' do
+        expect_next(JiraConnect::SyncService).to receive(:execute)
+        .with(merge_requests: [merge_request], branches: nil, update_sequence_id: update_sequence_id)
+
+        perform
+      end
+    end
+
+    context 'when the merge request is closed' do
+      before do
+        merge_request.close!
+      end
+
+      it_behaves_like 'does not send any branch data'
+    end
+
     context 'when source branch cannot be found' do
       before do
         allow_next_found_instance_of(MergeRequest) do |mr|
@@ -44,12 +61,15 @@ RSpec.describe JiraConnect::SyncMergeRequestWorker, feature_category: :integrati
         end
       end
 
-      it 'calls JiraConnect::SyncService will an empty branch' do
-        expect_next(JiraConnect::SyncService).to receive(:execute)
-        .with(merge_requests: [merge_request], branches: [], update_sequence_id: update_sequence_id)
+      it_behaves_like 'does not send any branch data'
+    end
 
-        perform
+    context 'when flag is disabled' do
+      before do
+        stub_feature_flags(jira_include_keys_from_associated_mr_for_branch: false)
       end
+
+      it_behaves_like 'does not send any branch data'
     end
   end
 end
