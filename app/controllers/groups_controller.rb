@@ -38,10 +38,6 @@ class GroupsController < Groups::ApplicationController
     push_force_frontend_feature_flag(:work_items, group.work_items_feature_flag_enabled?)
   end
 
-  before_action only: :show do
-    push_frontend_feature_flag(:show_group_readme, group)
-  end
-
   helper_method :captcha_required?
 
   skip_cross_project_access_check :index, :new, :create, :edit, :update, :destroy, :projects

@@ -11,63 +11,27 @@ RSpec.describe 'groups/show', feature_category: :subgroups do
       assign(:group, group)
     end
 
-    describe 'with :show_group_readme FF true' do
+    context 'with readme project' do
       before do
-        stub_feature_flags(show_group_readme: true)
+        allow(group).to receive(:group_readme).and_return(readme_project)
       end
 
-      context 'with readme project' do
-        before do
-          allow(group).to receive(:group_readme).and_return(readme_project)
-        end
+      it 'renders #js-group-readme' do
+        render
 
-        it 'renders #js-group-readme' do
-          render
-
-          expect(rendered).to have_selector('#js-group-readme')
-        end
-      end
-
-      context 'without readme project' do
-        before do
-          allow(group).to receive(:group_readme).and_return(nil)
-        end
-
-        it 'does not render #js-group-readme' do
-          render
-
-          expect(rendered).not_to have_selector('#js-group-readme')
-        end
+        expect(rendered).to have_selector('#js-group-readme')
       end
     end
 
-    describe 'with :show_group_readme FF false' do
+    context 'without readme project' do
       before do
-        stub_feature_flags(show_group_readme: false)
+        allow(group).to receive(:group_readme).and_return(nil)
       end
 
-      context 'with readme project' do
-        before do
-          allow(group).to receive(:group_readme).and_return(readme_project)
-        end
+      it 'does not render #js-group-readme' do
+        render
 
-        it 'does not render #js-group-readme' do
-          render
-
-          expect(rendered).not_to have_selector('#js-group-readme')
-        end
-      end
-
-      context 'without readme project' do
-        before do
-          allow(group).to receive(:group_readme).and_return(nil)
-        end
-
-        it 'does not render #js-group-readme' do
-          render
-
-          expect(rendered).not_to have_selector('#js-group-readme')
-        end
+        expect(rendered).not_to have_selector('#js-group-readme')
       end
     end
   end

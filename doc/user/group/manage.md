@@ -249,8 +249,6 @@ To change this setting globally, see [Default project creation protection](../ad
 
 ## Add Group README
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390230) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `show_group_readme`. Disabled by default.
-
 As a group owner or member, you can use a README to provide more information about your team, and invite users to contribute to your projects.
 The README is displayed on the group overview page, and can be changed in the group settings. All group members can edit the README.
 

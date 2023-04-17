@@ -513,39 +513,15 @@ RSpec.describe 'Group', feature_category: :subgroups do
   end
 
   describe 'group README', :js do
-    describe 'with :show_group_readme FF true' do
-      before do
-        stub_feature_flags(show_group_readme: true)
-      end
+    context 'with gitlab-profile project and README.md' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, :readme, namespace: group) }
 
-      context 'with gitlab-profile project and README.md' do
-        let_it_be(:group) { create(:group) }
-        let_it_be(:project) { create(:project, :readme, namespace: group) }
+      it 'renders README block on group page' do
+        visit group_path(group)
+        wait_for_requests
 
-        it 'renders README block on group page' do
-          visit group_path(group)
-          wait_for_requests
-
-          expect(page).to have_text('README.md')
-        end
-      end
-    end
-
-    describe 'with :show_group_readme FF false' do
-      before do
-        stub_feature_flags(show_group_readme: false)
-      end
-
-      context 'with gitlab-profile project and README.md' do
-        let_it_be(:group) { create(:group) }
-        let_it_be(:project) { create(:project, :readme, namespace: group) }
-
-        it 'does not render README block on group page' do
-          visit group_path(group)
-          wait_for_requests
-
-          expect(page).not_to have_text('README.md')
-        end
+        expect(page).to have_text('README.md')
       end
     end
   end

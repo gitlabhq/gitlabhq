@@ -305,16 +305,6 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
         end
       end
     end
-
-    describe 'with :show_group_readme FF false' do
-      before do
-        stub_feature_flags(show_group_readme: false)
-      end
-
-      it 'does not render Group README settings' do
-        expect(page).not_to have_text('README')
-      end
-    end
   end
 
   def update_path(new_group_path)

@@ -167,7 +167,7 @@ module GroupsHelper
   end
 
   def show_group_readme?(group)
-    Feature.enabled?(:show_group_readme, group) && group.group_readme
+    group.group_readme
   end
 
   def group_settings_readme_app_data(group)
