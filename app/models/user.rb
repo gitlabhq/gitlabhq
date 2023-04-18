@@ -1717,10 +1717,11 @@ class User < ApplicationRecord
   def forkable_namespaces
     strong_memoize(:forkable_namespaces) do
       personal_namespace = Namespace.where(id: namespace_id)
+      groups_allowing_project_creation = Groups::AcceptingProjectCreationsFinder.new(self).execute
 
       Namespace.from_union(
         [
-          manageable_groups(include_groups_with_developer_maintainer_access: true),
+          groups_allowing_project_creation,
           personal_namespace
         ])
     end

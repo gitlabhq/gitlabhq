@@ -8,28 +8,16 @@ module QA
           module Settings
             extend QA::Page::PageConcern
 
-            def go_to_general_settings
-              open_settings_submenu('General')
-            end
+            def self.included(base)
+              super
 
-            def go_to_integrations_settings
-              open_settings_submenu('Integrations')
-            end
-
-            def go_to_access_token_settings
-              open_settings_submenu('Access Tokens')
-            end
-
-            def go_to_repository_settings
-              open_settings_submenu('Repository')
+              base.class_eval do
+                include QA::Page::SubMenus::SuperSidebar::Settings
+              end
             end
 
             def go_to_merge_request_settings
               open_settings_submenu('Merge requests')
-            end
-
-            def go_to_ci_cd_settings
-              open_settings_submenu('CI/CD')
             end
 
             def go_to_pages_settings

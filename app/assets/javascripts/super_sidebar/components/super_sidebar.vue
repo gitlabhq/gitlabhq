@@ -78,10 +78,12 @@ export default {
           <context-switcher-toggle
             :context="sidebarData.current_context_header"
             :expanded="contextSwitcherOpen"
+            data-qa-selector="context_switcher"
           />
           <gl-collapse
             id="context-switcher"
             v-model="contextSwitcherOpen"
+            data-qa-selector="context_section"
             @shown="onContextSwitcherShown"
           >
             <context-switcher

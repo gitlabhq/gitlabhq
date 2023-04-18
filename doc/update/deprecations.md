@@ -87,6 +87,19 @@ Due to limited customer usage, Browser Performance Testing is deprecated and wil
 
 </div>
 
+<div class="deprecation " data-milestone="17.0">
+
+### Deprecate legacy shell escaping and quoting runner shell executor
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">15.11</span>
+- End of Support: GitLab <span class="milestone">17.9</span>
+</div>
+
+The runner's legacy escape sequence mechanism to handle variable expansion implements a sub-optimal implementation of Ansi-C quoting. This method means that the runner would expand arguments included in double quotes. As of 15.11, we are deprecating the legacy escaping and quoting methods in the runner shell executor.
+
+</div>
+
 <div class="deprecation breaking-change" data-milestone="17.0">
 
 ### DingTalk OmniAuth provider
@@ -438,6 +451,28 @@ During the transition to the GitLab Observability UI, we will migrate the [GitLa
 - [Observability](https://about.gitlab.com/direction/monitor/observability/data-visualization/).
 - The [Observability Backend](https://about.gitlab.com/direction/monitor/observability/data-management/).
 - [Data visualization](https://about.gitlab.com/direction/monitor/observability/data-visualization/).
+
+</div>
+</div>
+
+<div class="milestone-wrapper" data-milestone="16.1">
+
+## GitLab 16.1
+
+<div class="deprecation " data-milestone="16.1">
+
+### GitLab Runner images based on Alpine 3.12, 3.13, 3.14
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">15.11</span>
+- End of Support: GitLab <span class="milestone">16.1</span>
+</div>
+
+We will stop publishing runner images based on the following, end-of-life Alpine versions:
+
+- Alpine 3.12
+- Alpine 3.13
+- Alpine 3.14 (end-of-life on 2023-05-23)
 
 </div>
 </div>

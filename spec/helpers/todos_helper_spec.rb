@@ -301,7 +301,7 @@ RSpec.describe TodosHelper do
   end
 
   describe '#no_todos_messages' do
-    context 'when getting todos messsages' do
+    context 'when getting todos messages' do
       it 'return these sentences' do
         expected_sentences = [
           s_('Todos|Good job! Looks like you don\'t have anything left on your To-Do List'),

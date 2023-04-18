@@ -2372,6 +2372,18 @@ RSpec.describe User, feature_category: :user_profile do
 
           expect(user.forkable_namespaces).to contain_exactly(user.namespace, group, subgroup, developer_group)
         end
+
+        it 'includes groups where the user has access via group shares to create projects' do
+          shared_group = create(:group)
+          create(:group_group_link, :maintainer,
+                shared_with_group: group,
+                shared_group: shared_group
+          )
+
+          expect(user.forkable_namespaces).to contain_exactly(
+            user.namespace, group, subgroup, shared_group
+          )
+        end
       end
 
       describe '#manageable_groups' do

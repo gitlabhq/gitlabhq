@@ -29,17 +29,38 @@ RSpec.describe ForkTargetsFinder do
     create(:group).tap { |g| g.add_guest(user) }
   end
 
+  let_it_be(:shared_group_to_group_with_owner_access) do
+    create(:group)
+  end
+
   before do
     project.namespace.add_owner(user)
+    create(:group_group_link, :maintainer,
+      shared_with_group: owned_group,
+      shared_group: shared_group_to_group_with_owner_access
+    )
   end
 
   shared_examples 'returns namespaces and groups' do
     it 'returns all user manageable namespaces' do
-      expect(finder.execute).to match_array([user.namespace, maintained_group, owned_group, project.namespace, developer_group])
+      expect(finder.execute).to match_array([
+        user.namespace,
+        maintained_group,
+        owned_group,
+        project.namespace,
+        developer_group,
+        shared_group_to_group_with_owner_access
+      ])
     end
 
     it 'returns only groups when only_groups option is passed' do
-      expect(finder.execute(only_groups: true)).to match_array([maintained_group, owned_group, project.namespace, developer_group])
+      expect(finder.execute(only_groups: true)).to match_array([
+        maintained_group,
+        owned_group,
+        project.namespace,
+        developer_group,
+        shared_group_to_group_with_owner_access
+      ])
     end
 
     it 'returns groups relation when only_groups option is passed' do

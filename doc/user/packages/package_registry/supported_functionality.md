@@ -35,7 +35,7 @@ Packages can be pulled from your project, group, or instance.
 | Package type                                        | Project | Group | Instance |
 |-----------------------------------------------------|---------|-------|----------|
 | [Maven](../maven_repository/index.md)               | Y       | Y     | Y        |
-| [npm](../npm_registry/index.md)                     | Y       | Y     | Y        |
+| [npm](../npm_registry/index.md)                     | Y       | N     | Y        |
 | [NuGet](../nuget_repository/index.md)               | Y       | Y     | N        |
 | [PyPI](../pypi_repository/index.md)                 | Y       | Y     | N        |
 | [Generic packages](../generic_packages/index.md)    | Y       | N     | N        |

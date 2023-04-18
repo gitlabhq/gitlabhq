@@ -1,10 +1,12 @@
 import axios from 'axios';
+import { GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
-import Vue, { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import MemoryUsage from '~/vue_merge_request_widget/components/deployment/memory_usage.vue';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
+import MemoryGraph from '~/vue_shared/components/memory_graph.vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 const url = '/root/acets-review-apps/environments/15/deployments/1/metrics';
 const monitoringUrl = '/root/acets-review-apps/environments/15/metrics';
@@ -35,50 +37,49 @@ const metricsMockData = {
   deployment_time: 1493718485,
 };
 
-const createComponent = () => {
-  const Component = Vue.extend(MemoryUsage);
-
-  return new Component({
-    el: document.createElement('div'),
-    propsData: {
-      metricsUrl: url,
-      metricsMonitoringUrl: monitoringUrl,
-      memoryMetrics: [],
-      deploymentTime: 0,
-      hasMetrics: false,
-      loadFailed: false,
-      loadingMetrics: true,
-      backOffRequestCounter: 0,
-    },
-  });
-};
-
 const messages = {
   loadingMetrics: 'Loading deployment statistics',
-  hasMetrics: 'Memory  usage is  unchanged  at 0MB',
+  hasMetrics: 'Memory  usage is  unchanged  at 0.00MB',
   loadFailed: 'Failed to load deployment statistics',
   metricsUnavailable: 'Deployment statistics are not available currently',
 };
 
 describe('MemoryUsage', () => {
-  let vm;
-  let el;
+  let wrapper;
   let mock;
+
+  const createComponent = () => {
+    wrapper = shallowMountExtended(MemoryUsage, {
+      propsData: {
+        metricsUrl: url,
+        metricsMonitoringUrl: monitoringUrl,
+        memoryMetrics: [],
+        deploymentTime: 0,
+        hasMetrics: false,
+        loadFailed: false,
+        loadingMetrics: true,
+        backOffRequestCounter: 0,
+      },
+      stubs: {
+        GlSprintf,
+      },
+    });
+  };
+
+  const findGlLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findUsageInfo = () => wrapper.find('.js-usage-info');
+  const findUsageInfoFailed = () => wrapper.find('.usage-info-failed');
+  const findUsageInfoUnavailable = () => wrapper.find('.usage-info-unavailable');
+  const findMemoryGraph = () => wrapper.findComponent(MemoryGraph);
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
     mock.onGet(`${url}.json`).reply(HTTP_STATUS_OK);
-
-    vm = createComponent();
-    el = vm.$el;
-  });
-
-  afterEach(() => {
-    mock.restore();
   });
 
   describe('data', () => {
     it('should have default data', () => {
+      createComponent();
       const data = MemoryUsage.data();
 
       expect(Array.isArray(data.memoryMetrics)).toBe(true);
@@ -103,126 +104,182 @@ describe('MemoryUsage', () => {
 
   describe('computed', () => {
     describe('memoryChangeMessage', () => {
-      it('should contain "increased" if memoryFrom value is less than memoryTo value', () => {
-        vm.memoryFrom = 4.28;
-        vm.memoryTo = 9.13;
+      it('should contain "increased" if memoryFrom value is less than memoryTo value', async () => {
+        jest.spyOn(MRWidgetService, 'fetchMetrics').mockResolvedValue({
+          data: {
+            ...metricsMockData,
+            metrics: {
+              ...metricsMockData.metrics,
+              memory_after: [
+                {
+                  metric: {},
+                  value: [1495787020.607, '54858853.130206379'],
+                },
+              ],
+            },
+          },
+        });
 
-        expect(vm.memoryChangeMessage.indexOf('increased')).not.toEqual('-1');
+        createComponent();
+        await waitForPromises();
+
+        expect(findUsageInfo().text().indexOf('increased')).not.toEqual(-1);
       });
 
-      it('should contain "decreased" if memoryFrom value is less than memoryTo value', () => {
-        vm.memoryFrom = 9.13;
-        vm.memoryTo = 4.28;
+      it('should contain "decreased" if memoryFrom value is less than memoryTo value', async () => {
+        jest.spyOn(MRWidgetService, 'fetchMetrics').mockResolvedValue({
+          data: metricsMockData,
+        });
 
-        expect(vm.memoryChangeMessage.indexOf('decreased')).not.toEqual('-1');
+        createComponent();
+        await waitForPromises();
+
+        expect(findUsageInfo().text().indexOf('decreased')).not.toEqual(-1);
       });
 
-      it('should contain "unchanged" if memoryFrom value equal to memoryTo value', () => {
-        vm.memoryFrom = 1;
-        vm.memoryTo = 1;
+      it('should contain "unchanged" if memoryFrom value equal to memoryTo value', async () => {
+        jest.spyOn(MRWidgetService, 'fetchMetrics').mockResolvedValue({
+          data: {
+            ...metricsMockData,
+            metrics: {
+              ...metricsMockData.metrics,
+              memory_after: [
+                {
+                  metric: {},
+                  value: [1495785220.607, '9572875.906976745'],
+                },
+              ],
+            },
+          },
+        });
 
-        expect(vm.memoryChangeMessage.indexOf('unchanged')).not.toEqual('-1');
+        createComponent();
+        await waitForPromises();
+
+        expect(findUsageInfo().text().indexOf('unchanged')).not.toEqual(-1);
       });
     });
   });
 
   describe('methods', () => {
-    const { metrics, deployment_time } = metricsMockData;
+    beforeEach(async () => {
+      jest.spyOn(MRWidgetService, 'fetchMetrics').mockResolvedValue({
+        data: metricsMockData,
+      });
+
+      createComponent();
+      await waitForPromises();
+    });
 
     describe('getMegabytes', () => {
       it('should return Megabytes from provided Bytes value', () => {
-        const memoryInBytes = '9572875.906976745';
-
-        expect(vm.getMegabytes(memoryInBytes)).toEqual('9.13');
+        expect(findUsageInfo().text()).toContain('9.13MB');
       });
     });
 
     describe('computeGraphData', () => {
       it('should populate sparkline graph', () => {
-        // ignore BoostrapVue warnings
-        jest.spyOn(console, 'warn').mockImplementation();
-
-        vm.computeGraphData(metrics, deployment_time);
-        const { hasMetrics, memoryMetrics, deploymentTime, memoryFrom, memoryTo } = vm;
-
-        expect(hasMetrics).toBe(true);
-        expect(memoryMetrics.length).toBeGreaterThan(0);
-        expect(deploymentTime).toEqual(deployment_time);
-        expect(memoryFrom).toEqual('9.13');
-        expect(memoryTo).toEqual('4.28');
+        expect(findMemoryGraph().exists()).toBe(true);
+        expect(findMemoryGraph().props('metrics')).toHaveLength(1);
+        expect(findUsageInfo().text()).toContain('9.13MB');
+        expect(findUsageInfo().text()).toContain('4.28MB');
       });
     });
 
     describe('loadMetrics', () => {
+      beforeEach(async () => {
+        createComponent();
+        await waitForPromises();
+      });
+
       it('should load metrics data using MRWidgetService', async () => {
         jest.spyOn(MRWidgetService, 'fetchMetrics').mockResolvedValue({
           data: metricsMockData,
         });
-        jest.spyOn(vm, 'computeGraphData').mockImplementation(() => {});
-
-        vm.loadMetrics();
 
         await waitForPromises();
 
         expect(MRWidgetService.fetchMetrics).toHaveBeenCalledWith(url);
-        expect(vm.computeGraphData).toHaveBeenCalledWith(metrics, deployment_time);
       });
     });
   });
 
   describe('template', () => {
-    it('should render template elements correctly', () => {
-      expect(el.classList.contains('mr-memory-usage')).toBe(true);
-      expect(el.querySelector('.js-usage-info')).toBeDefined();
+    it('should render template elements correctly', async () => {
+      jest.spyOn(MRWidgetService, 'fetchMetrics').mockResolvedValue({
+        data: metricsMockData,
+      });
+
+      createComponent();
+      await waitForPromises();
+
+      expect(wrapper.classes()).toContain('mr-memory-usage');
+      expect(findUsageInfo().exists()).toBe(true);
     });
 
-    it('should show loading metrics message while metrics are being loaded', async () => {
-      vm.loadingMetrics = true;
-      vm.hasMetrics = false;
-      vm.loadFailed = false;
+    it('should show loading metrics message while metrics are being loaded', () => {
+      createComponent();
 
-      await nextTick();
-
-      expect(el.querySelector('.js-usage-info.usage-info-loading')).toBeDefined();
-      expect(el.querySelector('.js-usage-info .usage-info-load-spinner')).toBeDefined();
-      expect(el.querySelector('.js-usage-info').innerText).toContain(messages.loadingMetrics);
+      expect(findGlLoadingIcon().exists()).toBe(true);
+      expect(findUsageInfo().exists()).toBe(true);
+      expect(findUsageInfo().text()).toBe(messages.loadingMetrics);
     });
 
     it('should show deployment memory usage when metrics are loaded', async () => {
-      // ignore BoostrapVue warnings
-      jest.spyOn(console, 'warn').mockImplementation();
+      jest.spyOn(MRWidgetService, 'fetchMetrics').mockResolvedValue({
+        data: {
+          ...metricsMockData,
+          metrics: {
+            ...metricsMockData.metrics,
+            memory_after: [
+              {
+                metric: {},
+                value: [0, '0'],
+              },
+            ],
+            memory_before: [
+              {
+                metric: {},
+                value: [0, '0'],
+              },
+            ],
+          },
+        },
+      });
 
-      vm.loadingMetrics = false;
-      vm.hasMetrics = true;
-      vm.loadFailed = false;
-      vm.memoryMetrics = metricsMockData.metrics.memory_values[0].values;
+      createComponent();
+      await waitForPromises();
 
-      await nextTick();
-
-      expect(el.querySelector('.memory-graph-container')).toBeDefined();
-      expect(el.querySelector('.js-usage-info').innerText).toContain(messages.hasMetrics);
+      expect(findMemoryGraph().exists()).toBe(true);
+      expect(findUsageInfo().text()).toBe(messages.hasMetrics);
     });
 
     it('should show failure message when metrics loading failed', async () => {
-      vm.loadingMetrics = false;
-      vm.hasMetrics = false;
-      vm.loadFailed = true;
+      jest.spyOn(MRWidgetService, 'fetchMetrics').mockRejectedValue({});
 
-      await nextTick();
+      createComponent();
+      await waitForPromises();
 
-      expect(el.querySelector('.js-usage-info.usage-info-failed')).toBeDefined();
-      expect(el.querySelector('.js-usage-info').innerText).toContain(messages.loadFailed);
+      expect(findUsageInfoFailed().exists()).toBe(true);
+      expect(findUsageInfo().text()).toBe(messages.loadFailed);
     });
 
     it('should show metrics unavailable message when metrics loading failed', async () => {
-      vm.loadingMetrics = false;
-      vm.hasMetrics = false;
-      vm.loadFailed = false;
+      jest.spyOn(MRWidgetService, 'fetchMetrics').mockResolvedValue({
+        data: {
+          ...metricsMockData,
+          metrics: {
+            ...metricsMockData.metrics,
+            memory_values: [],
+          },
+        },
+      });
 
-      await nextTick();
+      createComponent();
+      await waitForPromises();
 
-      expect(el.querySelector('.js-usage-info.usage-info-unavailable')).toBeDefined();
-      expect(el.querySelector('.js-usage-info').innerText).toContain(messages.metricsUnavailable);
+      expect(findUsageInfoUnavailable().exists()).toBe(true);
+      expect(findUsageInfo().text()).toBe(messages.metricsUnavailable);
     });
   });
 });

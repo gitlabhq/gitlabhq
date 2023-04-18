@@ -40,7 +40,7 @@ function prometheusMetricQueryParams(timeRange) {
  * Extract error messages from API or HTTP request errors.
  *
  * - API errors are in `error.response.data.message`
- * - HTTP (axios) errors are in `error.messsage`
+ * - HTTP (axios) errors are in `error.message`
  *
  * @param {Object} error
  * @returns {String} User friendly error message

@@ -38,6 +38,19 @@ A vulnerability's status can be:
 - **Resolved**: The vulnerability has been fixed or is no longer present. Resolved vulnerabilities
   that are reintroduced and detected by subsequent scans have a _new_ vulnerability record created.
 
+## Vulnerability dismissal reasons
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4942) in GitLab 15.11 with a feature flag named `dismissal_reason`.
+> - Enabled on GitLab.com in GitLab 15.11. For self-managed customers, [contact Support](https://about.gitlab.com/support/) if you would like to use this feature in GitLab 15.11.
+
+When dismissing a vulnerability, one of the following reasons must be chosen to clarify why it is being dismissed:
+
+- **Acceptable risk**: The vulnerability is known, and has not been remediated or mitigated, but is considered to be an acceptable business risk.
+- **False positive**: An error in reporting in which a test result incorrectly indicates the presence of a vulnerability in a system when the vulnerability is not present.
+- **Mitigating control**: A management, operational, or technical control (that is, safeguard or countermeasure) employed by an organization that provides equivalent or comparable protection for an information system.
+- **Used in tests**: The finding is not a vulnerability because it is part of a test or is test data.
+- **Not applicable**: The vulnerability is known, and has not been remediated or mitigated, but is considered to be in a part of the application that will not be updated.
+
 ## Change status of a vulnerability
 
 To change a vulnerability's status from its Vulnerability Page:
@@ -46,6 +59,9 @@ To change a vulnerability's status from its Vulnerability Page:
 1. On the left sidebar, select **Security and Compliance > Vulnerability report**.
 1. Select the vulnerability's description.
 1. From the **Status** dropdown list select a status, then select **Change status**.
+
+   In GitLab 15.11 and later, you must select a [dismissal reason](#vulnerability-dismissal-reasons) when you change a vulnerability's status to **Dismissed**.
+
 1. Optionally, at the bottom of the page, add a comment to the log entry.
 
 Details of the status change, including who made the change and when, are recorded in the

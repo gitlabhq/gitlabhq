@@ -28,6 +28,8 @@ module QA
         end
 
         def click_merge_requests
+          return go_to_merge_requests if Runtime::Env.super_sidebar_enabled?
+
           within_sidebar do
             click_element(:sidebar_menu_link, menu_item: 'Merge requests')
           end

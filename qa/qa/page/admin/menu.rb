@@ -4,6 +4,13 @@ module QA
   module Page
     module Admin
       class Menu < Page::Base
+        include SubMenus::Common
+
+        if QA::Runtime::Env.super_sidebar_enabled?
+          prepend Sidebar::Overview
+          prepend Sidebar::Settings
+        end
+
         view 'lib/sidebars/admin/menus/admin_overview_menu.rb' do
           element :admin_overview_submenu_content
         end

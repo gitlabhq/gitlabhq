@@ -332,6 +332,7 @@ export default {
         </div>
         <conflicts-modal
           ref="modal"
+          :selected-branch="selectedBranch"
           :source-name="sourceName"
           :source-path="sourcePath"
           :source-default-branch="sourceDefaultBranch"

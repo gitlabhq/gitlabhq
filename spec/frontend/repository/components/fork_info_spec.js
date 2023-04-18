@@ -206,7 +206,7 @@ describe('ForkInfo component', () => {
       await createComponent({}, null);
     });
 
-    it('renders limited visibility messsage when forkDetails are empty', () => {
+    it('renders limited visibility message when forkDetails are empty', () => {
       expect(findDivergenceMessage().text()).toBe(i18n.limitedVisibility);
     });
 

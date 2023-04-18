@@ -51,5 +51,3 @@ class Admin::PlanLimitsController < Admin::ApplicationController
               ])
   end
 end
-
-Admin::PlanLimitsController.prepend_mod_with('Admin::PlanLimitsController')

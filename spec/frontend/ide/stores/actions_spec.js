@@ -440,7 +440,7 @@ describe('Multi-file store actions', () => {
   });
 
   describe('setErrorMessage', () => {
-    it('commis error messsage', () => {
+    it('commis error message', () => {
       return testAction(
         setErrorMessage,
         'error',

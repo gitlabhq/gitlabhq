@@ -5,7 +5,11 @@ module QA
     module Main
       class Menu < Page::Base
         prepend Mobile::Page::Main::Menu if Runtime::Env.mobile_layout?
-        prepend SubMenus::CreateNewMenu if Runtime::Env.super_sidebar_enabled?
+
+        if Runtime::Env.super_sidebar_enabled?
+          prepend SubMenus::CreateNewMenu
+          include SubMenus::SuperSidebar::ContextSwitcher
+        end
 
         if QA::Runtime::Env.super_sidebar_enabled?
           # Define alternative navbar (super sidebar) which does not yet implement all the same elements
@@ -144,7 +148,7 @@ module QA
         end
 
         def go_to_admin_area
-          click_admin_area
+          Runtime::Env.super_sidebar_enabled? ? super : click_admin_area
 
           return unless has_text?('Enter Admin Mode', wait: 1.0)
 

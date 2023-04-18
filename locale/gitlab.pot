@@ -18657,10 +18657,7 @@ msgstr ""
 msgid "ForksDivergence|%{messages} the upstream repository."
 msgstr ""
 
-msgid "ForksDivergence|Check out to a new branch, and merge the changes from the upstream project's default branch. You likely need to resolve conflicts during this step."
-msgstr ""
-
-msgid "ForksDivergence|Create a merge request to your project's default branch."
+msgid "ForksDivergence|Check out to a branch, and merge the changes from the upstream project's default branch. You likely need to resolve conflicts during this step."
 msgstr ""
 
 msgid "ForksDivergence|Create merge request"
@@ -28667,6 +28664,12 @@ msgstr ""
 msgid "Namespace:"
 msgstr ""
 
+msgid "NamespaceLimits|Free Tier"
+msgstr ""
+
+msgid "NamespaceLimit|Storage Phased Notification"
+msgstr ""
+
 msgid "NamespaceStorageSize|%{namespace_name} contains %{locked_project_count} locked project"
 msgid_plural "NamespaceStorageSize|%{namespace_name} contains %{locked_project_count} locked projects"
 msgstr[0] ""
@@ -32904,12 +32907,6 @@ msgid "Plan"
 msgstr ""
 
 msgid "Plan:"
-msgstr ""
-
-msgid "PlanLimits|Free Tier"
-msgstr ""
-
-msgid "PlanLimit|Storage Phased Notification"
 msgstr ""
 
 msgid "Planning hierarchy"
