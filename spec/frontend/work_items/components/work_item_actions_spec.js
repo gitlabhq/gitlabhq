@@ -173,31 +173,59 @@ describe('WorkItemActions component', () => {
   });
 
   describe('notifications action', () => {
+    const errorMessage = 'Failed to subscribe';
+    const notificationToggledOffMessage = 'Notifications turned off.';
+    const notificationToggledOnMessage = 'Notifications turned on.';
+
     const workItemQueryResponse = workItemResponseFactory({ canUpdate: true, canDelete: true });
-    const inputVariables = {
+    const inputVariablesOff = {
       id: workItemQueryResponse.data.workItem.id,
       notificationsWidget: {
         subscribed: false,
       },
     };
 
-    const notificationExpectedResponse = workItemResponseFactory({
+    const inputVariablesOn = {
+      id: workItemQueryResponse.data.workItem.id,
+      notificationsWidget: {
+        subscribed: true,
+      },
+    };
+
+    const notificationsOffExpectedResponse = workItemResponseFactory({
       subscribed: false,
     });
 
-    const toggleNotificationsHandler = jest.fn().mockResolvedValue({
+    const toggleNotificationsOffHandler = jest.fn().mockResolvedValue({
       data: {
         workItemUpdate: {
-          workItem: notificationExpectedResponse.data.workItem,
+          workItem: notificationsOffExpectedResponse.data.workItem,
           errors: [],
         },
       },
     });
 
-    const errorMessage = 'Failed to subscribe';
+    const notificationsOnExpectedResponse = workItemResponseFactory({
+      subscribed: true,
+    });
+
+    const toggleNotificationsOnHandler = jest.fn().mockResolvedValue({
+      data: {
+        workItemUpdate: {
+          workItem: notificationsOnExpectedResponse.data.workItem,
+          errors: [],
+        },
+      },
+    });
+
     const toggleNotificationsFailureHandler = jest.fn().mockRejectedValue(new Error(errorMessage));
 
-    const notificationsMock = [updateWorkItemNotificationsMutation, toggleNotificationsHandler];
+    const notificationsOffMock = [
+      updateWorkItemNotificationsMutation,
+      toggleNotificationsOffHandler,
+    ];
+
+    const notificationsOnMock = [updateWorkItemNotificationsMutation, toggleNotificationsOnHandler];
 
     const notificationsFailureMock = [
       updateWorkItemNotificationsMutation,
@@ -213,20 +241,27 @@ describe('WorkItemActions component', () => {
       expect(findNotificationsToggleButton().exists()).toBe(true);
     });
 
-    it('calls notification mutation and displays a toast when the notification widget is toggled', async () => {
-      createComponent({ notificationsMock });
+    it.each`
+      scenario        | subscribedToNotifications | notificationsMock       | inputVariables       | toastMessage
+      ${'turned off'} | ${false}                  | ${notificationsOffMock} | ${inputVariablesOff} | ${notificationToggledOffMessage}
+      ${'turned on'}  | ${true}                   | ${notificationsOnMock}  | ${inputVariablesOn}  | ${notificationToggledOnMessage}
+    `(
+      'calls mutation and displays toast when notification toggle is $scenario',
+      async ({ subscribedToNotifications, notificationsMock, inputVariables, toastMessage }) => {
+        createComponent({ notificationsMock });
 
-      await waitForPromises();
+        await waitForPromises();
 
-      findNotificationsToggle().vm.$emit('change', false);
+        findNotificationsToggle().vm.$emit('change', subscribedToNotifications);
 
-      await waitForPromises();
+        await waitForPromises();
 
-      expect(notificationsMock[1]).toHaveBeenCalledWith({
-        input: inputVariables,
-      });
-      expect(toast).toHaveBeenCalledWith('Notifications turned off.');
-    });
+        expect(notificationsMock[1]).toHaveBeenCalledWith({
+          input: inputVariables,
+        });
+        expect(toast).toHaveBeenCalledWith(toastMessage);
+      },
+    );
 
     it('emits error when the update notification mutation fails', async () => {
       createComponent({ notificationsMock: notificationsFailureMock });

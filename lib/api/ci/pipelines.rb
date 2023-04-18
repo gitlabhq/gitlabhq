@@ -125,7 +125,7 @@ module API
 
         desc 'Gets the latest pipeline for the project branch' do
           detail 'This feature was introduced in GitLab 12.3'
-          success status: 200, model: Entities::Ci::Pipeline
+          success status: 200, model: Entities::Ci::PipelineWithMetadata
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
@@ -139,12 +139,12 @@ module API
         get ':id/pipelines/latest', urgency: :low, feature_category: :continuous_integration do
           authorize! :read_pipeline, latest_pipeline
 
-          present latest_pipeline, with: Entities::Ci::Pipeline
+          present latest_pipeline, with: Entities::Ci::PipelineWithMetadata
         end
 
         desc 'Gets a specific pipeline for the project' do
           detail 'This feature was introduced in GitLab 8.11'
-          success status: 200, model: Entities::Ci::Pipeline
+          success status: 200, model: Entities::Ci::PipelineWithMetadata
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
@@ -157,7 +157,7 @@ module API
         get ':id/pipelines/:pipeline_id', urgency: :low, feature_category: :continuous_integration do
           authorize! :read_pipeline, pipeline
 
-          present pipeline, with: Entities::Ci::Pipeline
+          present pipeline, with: Entities::Ci::PipelineWithMetadata
         end
 
         desc 'Get pipeline jobs' do

@@ -86,12 +86,27 @@ export default {
       default: false,
     },
   },
+  data() {
+    return {
+      initialSubscribed: this.subscribedToNotifications,
+    };
+  },
   computed: {
     i18n() {
       return {
         deleteWorkItem: sprintfWorkItem(I18N_WORK_ITEM_DELETE, this.workItemType),
         areYouSureDelete: sprintfWorkItem(I18N_WORK_ITEM_ARE_YOU_SURE_DELETE, this.workItemType),
       };
+    },
+  },
+  watch: {
+    subscribedToNotifications() {
+      /**
+       * To toggle the value if mutation fails, assign the
+       * subscribedToNotifications boolean value directly
+       * to data prop.
+       */
+      this.initialSubscribed = this.subscribedToNotifications;
     },
   },
   methods: {
@@ -180,7 +195,7 @@ export default {
         >
           <div class="gl-px-5 gl-pb-2 gl-pt-1">
             <gl-toggle
-              :value="subscribedToNotifications"
+              v-model="initialSubscribed"
               :label="$options.i18n.notifications"
               :data-testid="$options.notificationsToggleTestId"
               label-position="left"

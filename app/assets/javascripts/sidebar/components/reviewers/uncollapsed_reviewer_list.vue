@@ -6,6 +6,7 @@ import ReviewerAvatarLink from './reviewer_avatar_link.vue';
 
 const LOADING_STATE = 'loading';
 const SUCCESS_STATE = 'success';
+const JUST_APPROVED = 'approved';
 
 export default {
   i18n: {
@@ -42,7 +43,7 @@ export default {
   },
   watch: {
     users: {
-      handler(users) {
+      handler(users, previousUsers) {
         this.loadingStates = users.reduce(
           (acc, user) => ({
             ...acc,
@@ -50,11 +51,35 @@ export default {
           }),
           this.loadingStates,
         );
+        if (previousUsers) {
+          users.forEach((user) => {
+            const userPreviousState = previousUsers.find(({ id }) => id === user.id);
+            if (
+              userPreviousState &&
+              user.mergeRequestInteraction.approved &&
+              !userPreviousState.mergeRequestInteraction.approved
+            ) {
+              this.showApprovalAnimation(user.id);
+            }
+          });
+        }
       },
       immediate: true,
     },
   },
   methods: {
+    showApprovalAnimation(userId) {
+      this.loadingStates[userId] = JUST_APPROVED;
+
+      setTimeout(() => {
+        this.loadingStates[userId] = null;
+      }, 1500);
+    },
+    approveAnimation(userId) {
+      return {
+        'merge-request-approved-icon': this.loadingStates[userId] === JUST_APPROVED,
+      };
+    },
     approvedByTooltipTitle(user) {
       return sprintf(s__('MergeRequest|Approved by @%{username}'), user);
     },
@@ -128,6 +153,7 @@ export default {
         :title="approvedByTooltipTitle(user)"
         name="status-success"
         class="float-right gl-my-2 gl-ml-auto gl-text-green-500 gl-flex-shrink-0"
+        :class="approveAnimation(user.id)"
         data-testid="approved"
       />
       <gl-icon

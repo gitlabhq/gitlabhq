@@ -1511,21 +1511,6 @@ This could be a breaking change for anyone that developed their own runner that 
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
-### Remove offset pagination from Jobs API
-
-<div class="deprecation-notes">
-- Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
-</div>
-
-A request to the API for `/api/v4/projects/:id/jobs` can return a paginated list of jobs. Projects can contain hundreds or thousands of jobs, so using an offset to paginate through them is slow. Users should instead use [`keyset-based pagination`](https://docs.gitlab.com/ee/api/rest/index.html#keyset-based-pagination) when requesting consecutive pages of results.
-
-In milestone 16.0 we will remove offset-based pagination.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
 ### Required Pipeline Configuration is deprecated
 
 <div class="deprecation-notes">

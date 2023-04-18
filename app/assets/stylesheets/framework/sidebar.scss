@@ -271,6 +271,24 @@
   }
 }
 
+.merge-request-approved-icon {
+  animation: approval-animate 350ms ease-in;
+}
+
+@include keyframes(approval-animate) {
+  0% {
+    transform: scale(0);
+  }
+
+  75% {
+    transform: scale(1.4);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
 .assignee-grid,
 .reviewer-grid {
   [data-css-area='attention'] {

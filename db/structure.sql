@@ -34733,9 +34733,6 @@ ALTER TABLE ONLY path_locks
 ALTER TABLE ONLY agent_user_access_group_authorizations
     ADD CONSTRAINT fk_53fd98ccbf FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY clusters_applications_prometheus
-    ADD CONSTRAINT fk_557e773639 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY terraform_states
     ADD CONSTRAINT fk_558901b030 FOREIGN KEY (locked_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -35594,9 +35591,6 @@ ALTER TABLE ONLY security_orchestration_policy_rule_schedules
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT fk_rails_17dbea07a6 FOREIGN KEY (policy_id) REFERENCES incident_management_escalation_policies(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY clusters_applications_jupyter
-    ADD CONSTRAINT fk_rails_17df21c98c FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY cluster_providers_aws
     ADD CONSTRAINT fk_rails_18983d9ea4 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
@@ -35671,9 +35665,6 @@ ALTER TABLE ONLY user_statuses
 
 ALTER TABLE ONLY users_ops_dashboard_projects
     ADD CONSTRAINT fk_rails_220a0562db FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY clusters_applications_runners
-    ADD CONSTRAINT fk_rails_22388594e9 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY service_desk_settings
     ADD CONSTRAINT fk_rails_223a296a85 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -35789,9 +35780,6 @@ ALTER TABLE ONLY zoom_meetings
 ALTER TABLE ONLY container_repositories
     ADD CONSTRAINT fk_rails_32f7bf5aad FOREIGN KEY (project_id) REFERENCES projects(id);
 
-ALTER TABLE ONLY clusters_applications_jupyter
-    ADD CONSTRAINT fk_rails_331f0aff78 FOREIGN KEY (oauth_application_id) REFERENCES oauth_applications(id) ON DELETE SET NULL;
-
 ALTER TABLE ONLY alert_management_alert_metric_images
     ADD CONSTRAINT fk_rails_338e55b408 FOREIGN KEY (alert_id) REFERENCES alert_management_alerts(id) ON DELETE CASCADE;
 
@@ -35860,9 +35848,6 @@ ALTER TABLE ONLY note_diff_files
 
 ALTER TABLE ONLY snippet_user_mentions
     ADD CONSTRAINT fk_rails_3e00189191 FOREIGN KEY (snippet_id) REFERENCES snippets(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY clusters_applications_helm
-    ADD CONSTRAINT fk_rails_3e2b1c06bc FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY epic_user_mentions
     ADD CONSTRAINT fk_rails_3eaf4d88cc FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE CASCADE;
@@ -36017,9 +36002,6 @@ ALTER TABLE ONLY analytics_cycle_analytics_group_value_streams
 ALTER TABLE ONLY geo_node_namespace_links
     ADD CONSTRAINT fk_rails_546bf08d3e FOREIGN KEY (geo_node_id) REFERENCES geo_nodes(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY clusters_applications_knative
-    ADD CONSTRAINT fk_rails_54fc91e0a0 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY issuable_metric_images
     ADD CONSTRAINT fk_rails_56417a5a7f FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
@@ -36037,9 +36019,6 @@ ALTER TABLE ONLY incident_management_timeline_event_tag_links
 
 ALTER TABLE ONLY packages_debian_project_architectures
     ADD CONSTRAINT fk_rails_5808663adf FOREIGN KEY (distribution_id) REFERENCES packages_debian_project_distributions(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY clusters_applications_cilium
-    ADD CONSTRAINT fk_rails_59dc12eea6 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY analytics_cycle_analytics_group_stages
     ADD CONSTRAINT fk_rails_5a22f40223 FOREIGN KEY (start_event_label_id) REFERENCES labels(id) ON DELETE CASCADE;
@@ -36254,9 +36233,6 @@ ALTER TABLE ONLY group_crm_settings
 ALTER TABLE ONLY pm_package_version_licenses
     ADD CONSTRAINT fk_rails_7520ea026d FOREIGN KEY (pm_license_id) REFERENCES pm_licenses(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY clusters_applications_ingress
-    ADD CONSTRAINT fk_rails_753a7b41c1 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY incident_management_timeline_event_tag_links
     ADD CONSTRAINT fk_rails_753b8b6ee3 FOREIGN KEY (timeline_event_tag_id) REFERENCES incident_management_timeline_event_tags(id) ON DELETE CASCADE;
 
@@ -36349,9 +36325,6 @@ ALTER TABLE ONLY analytics_language_trend_repository_languages
 
 ALTER TABLE ONLY merge_request_diff_details
     ADD CONSTRAINT fk_rails_86f4d24ecd FOREIGN KEY (merge_request_diff_id) REFERENCES merge_request_diffs(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY clusters_applications_crossplane
-    ADD CONSTRAINT fk_rails_87186702df FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_package_file_build_infos
     ADD CONSTRAINT fk_rails_871ca3ae21 FOREIGN KEY (package_file_id) REFERENCES packages_package_files(id) ON DELETE CASCADE;
@@ -36520,9 +36493,6 @@ ALTER TABLE ONLY badges
 
 ALTER TABLE ONLY vulnerability_finding_signatures
     ADD CONSTRAINT fk_rails_9e0baf9dcd FOREIGN KEY (finding_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY clusters_applications_cert_managers
-    ADD CONSTRAINT fk_rails_9e4f2cb4b2 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY timelog_categories
     ADD CONSTRAINT fk_rails_9f27b821a8 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -36748,9 +36718,6 @@ ALTER TABLE ONLY design_management_designs
 
 ALTER TABLE ONLY atlassian_identities
     ADD CONSTRAINT fk_rails_c02928bc18 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY serverless_domain_cluster
-    ADD CONSTRAINT fk_rails_c09009dee1 FOREIGN KEY (pages_domain_id) REFERENCES pages_domains(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY slack_integrations_scopes
     ADD CONSTRAINT fk_rails_c0e018a6fe FOREIGN KEY (slack_api_scope_id) REFERENCES slack_api_scopes(id) ON DELETE CASCADE;
@@ -36983,9 +36950,6 @@ ALTER TABLE ONLY vulnerability_occurrence_identifiers
 ALTER TABLE ONLY vulnerability_flags
     ADD CONSTRAINT fk_rails_e59393b48b FOREIGN KEY (vulnerability_occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY serverless_domain_cluster
-    ADD CONSTRAINT fk_rails_e59e868733 FOREIGN KEY (clusters_applications_knative_id) REFERENCES clusters_applications_knative(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY incident_management_escalation_policies
     ADD CONSTRAINT fk_rails_e5b513daa7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -37144,9 +37108,6 @@ ALTER TABLE ONLY operations_feature_flags_issues
 
 ALTER TABLE ONLY board_project_recent_visits
     ADD CONSTRAINT fk_rails_fb6fc419cb FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY serverless_domain_cluster
-    ADD CONSTRAINT fk_rails_fbdba67eb1 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY ci_job_variables
     ADD CONSTRAINT fk_rails_fbf3b34792_p FOREIGN KEY (partition_id, job_id) REFERENCES ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;

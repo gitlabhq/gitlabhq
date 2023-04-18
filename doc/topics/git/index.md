@@ -82,7 +82,6 @@ If you have problems with Git, the following may help:
 ## Branching strategies
 
 - [Feature branch workflow](../../gitlab-basics/feature_branch_workflow.md)
-- [Develop on a feature branch](feature_branch_development.md)
 - [GitLab Flow](../gitlab_flow.md)
 - [Git Branching - Branches in a Nutshell](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
 - [Git Branching - Branching Workflows](https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows)

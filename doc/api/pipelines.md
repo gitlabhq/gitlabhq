@@ -86,7 +86,14 @@ Example of response
 
 ## Get a single pipeline
 
-> `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
+> - `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
+> - `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the `name` field is not available.
+To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md)
+named `pipeline_name_in_api`. This feature is not ready for production use.
+On GitLab.com, this feature is not available.
 
 Get one pipeline from a project.
 
@@ -113,6 +120,7 @@ Example of response
   "id": 46,
   "iid": 11,
   "project_id": 1,
+  "name": "Build pipeline",
   "status": "success",
   "ref": "main",
   "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
@@ -281,6 +289,14 @@ Sample response:
 
 ## Get the latest pipeline
 
+> `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the `name` field is not available.
+To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md)
+named `pipeline_name_in_api`. This feature is not ready for production use.
+On GitLab.com, this feature is not available.
+
 Get the latest pipeline for a specific ref in a project.
 
 ```plaintext
@@ -302,6 +318,7 @@ Example of response
     "id": 287,
     "iid": 144,
     "project_id": 21,
+    "name": "Build pipeline",
     "sha": "50f0acb76a40e34a4ff304f7347dcc6587da8a14",
     "ref": "main",
     "status": "success",

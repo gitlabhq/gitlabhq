@@ -27,7 +27,7 @@ Parameters:
 | `search`                 | string            | no       | Return the list of authorized groups matching the search criteria |
 | `order_by`               | string            | no       | Order groups by `name`, `path`, `id`, or `similarity` (if searching, [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332889) in GitLab 14.1). Default is `name` |
 | `sort`                   | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
-| `statistics`             | boolean           | no       | Include group statistics (administrators only) |
+| `statistics`             | boolean           | no       | Include group statistics (administrators only).<br>*Note:* The REST API response does not provide the full `RootStorageStatistics` data that is shown in the UI. To match the data in the UI, use GraphQL instead of REST. For more information, see the [Group GraphQL reference](../api/graphql/reference/index.md#group).|
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
 | `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles) |

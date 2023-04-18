@@ -6,10 +6,10 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   include CycleAnalyticsParams
   include GracefulTimeoutHandling
   include ProductAnalyticsTracking
+  include Gitlab::Utils::StrongMemoize
   extend ::Gitlab::Utils::Override
 
   before_action :authorize_read_cycle_analytics!
-  before_action :load_value_stream, only: :show
 
   track_event :show,
     name: 'p_analytics_valuestream',
@@ -51,12 +51,13 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
 
   override :all_cycle_analytics_params
   def all_cycle_analytics_params
-    super.merge({ namespace: @project.project_namespace, value_stream: @value_stream })
+    super.merge({ namespace: @project.project_namespace, value_stream: value_stream })
   end
 
-  def load_value_stream
-    @value_stream = Analytics::CycleAnalytics::ValueStream.build_default_value_stream(@project.project_namespace)
+  def value_stream
+    Analytics::CycleAnalytics::ValueStream.build_default_value_stream(@project.project_namespace)
   end
+  strong_memoize_attr :value_stream
 
   def cycle_analytics_json
     {
@@ -74,3 +75,5 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
     project
   end
 end
+
+Projects::CycleAnalyticsController.prepend_mod

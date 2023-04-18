@@ -17,6 +17,22 @@ RSpec.describe 'Database schema', feature_category: :database do
 
   TABLE_PARTITIONS = %w[ci_builds_metadata].freeze
 
+  # If splitting FK and table removal into two MRs as suggested in the docs, use this constant in the initial FK removal MR.
+  # In the subsequent table removal MR, remove the entries.
+  # See: https://docs.gitlab.com/ee/development/migration_style_guide.html#dropping-a-database-table
+  REMOVED_FKS = {
+    clusters_applications_cert_managers: %w[cluster_id],
+    clusters_applications_cilium: %w[cluster_id],
+    clusters_applications_crossplane: %w[cluster_id],
+    clusters_applications_helm: %w[cluster_id],
+    clusters_applications_ingress: %w[cluster_id],
+    clusters_applications_jupyter: %w[cluster_id oauth_application_id],
+    clusters_applications_knative: %w[cluster_id],
+    clusters_applications_prometheus: %w[cluster_id],
+    clusters_applications_runners: %w[cluster_id],
+    serverless_domain_cluster: %w[clusters_applications_knative_id creator_id pages_domain_id]
+  }.with_indifferent_access.freeze
+
   # List of columns historically missing a FK, don't add more columns
   # See: https://docs.gitlab.com/ee/development/database/foreign_keys.html#naming-foreign-keys
   IGNORED_FK_COLUMNS = {
@@ -371,7 +387,7 @@ RSpec.describe 'Database schema', feature_category: :database do
   end
 
   def ignored_fk_columns(table)
-    IGNORED_FK_COLUMNS.fetch(table, [])
+    REMOVED_FKS.merge(IGNORED_FK_COLUMNS).fetch(table, [])
   end
 
   def ignored_index_columns(table)

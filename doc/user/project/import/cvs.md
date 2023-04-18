@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Migrating from CVS **(FREE)**
 
 [CVS](https://savannah.nongnu.org/projects/cvs) is an old centralized version
-control system similar to [SVN](svn.md).
+control system similar to [SVN](https://subversion.apache.org/).
 
 ## CVS vs Git
 
