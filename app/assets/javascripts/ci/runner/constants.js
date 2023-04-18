@@ -93,6 +93,7 @@ export const I18N_LOCKED_RUNNER_DESCRIPTION = s__(
 export const I18N_VERSION_LABEL = s__('Runners|Version %{version}');
 export const I18N_LAST_CONTACT_LABEL = s__('Runners|Last contact: %{timeAgo}');
 export const I18N_CREATED_AT_LABEL = s__('Runners|Created %{timeAgo}');
+export const I18N_CREATED_AT_BY_LABEL = s__('Runners|Created %{timeAgo} by %{avatar}');
 export const I18N_SHOW_ONLY_INHERITED = s__('Runners|Show only inherited');
 export const I18N_ADMIN = s__('Runners|Administrator');
 

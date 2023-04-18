@@ -27,7 +27,7 @@
   display: flex;
   flex-direction: column;
   position: fixed;
-  top: $calc-application-header-height;
+  top: calc(#{$header-height} + #{$calc-application-bars-height});
   bottom: $calc-application-footer-height;
   left: 0;
   background-color: var(--gray-10, $gray-10);
@@ -218,15 +218,6 @@
     .super-sidebar-toggle {
       display: block;
     }
-  }
-}
-
-.container-limited .super-sidebar-toggle {
-  @media (min-width: $super-sidebar-toggle-position-breakpoint) {
-    position: absolute;
-    left: $gl-spacing-scale-3;
-    top: $gl-spacing-scale-3;
-    margin: 0;
   }
 }
 

@@ -36,23 +36,8 @@ body {
 }
 
 .layout-page {
-  padding-top: $header-height;
-
-  .with-performance-bar & {
-    padding-top: calc(#{$performance-bar-height} + #{$header-height});
-  }
-
-  .with-system-header & {
-    padding-top: calc(#{$system-header-height} + #{$header-height});
-  }
-
-  .with-performance-bar.with-system-header & {
-    padding-top: calc(#{$performance-bar-height} + #{$system-header-height} + #{$header-height});
-  }
-
-  .with-system-footer & {
-    padding-bottom: $system-footer-height;
-  }
+  padding-top: $calc-application-header-height;
+  padding-bottom: $calc-application-footer-height;
 }
 
 .content-wrapper {

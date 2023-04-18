@@ -11,9 +11,9 @@ $contextual-sidebar-width: 256px;
 $contextual-sidebar-collapsed-width: 56px;
 $toggle-sidebar-height: 48px;
 $super-sidebar-width: 256px;
-$super-sidebar-toggle-position-breakpoint: 1360px;
 $super-sidebar-z-index: 600;
 $super-sidebar-overlay-z-index: 599;
+$top-bar-z-index: 210;
 
 /**
   🚨 Do not use this spacing scale — it is deprecated and being removed. 🚨
@@ -501,7 +501,7 @@ $pages-group-name-color: #4c4e54;
  * Calculated heights
  */
 $calc-application-bars-height: calc(var(--system-header-height) + var(--performance-bar-height));
-$calc-application-header-height: calc(#{$header-height} + #{$calc-application-bars-height});
+$calc-application-header-height: calc(#{$header-height} + #{$calc-application-bars-height} + var(--top-bar-height));
 $calc-application-footer-height: var(--system-footer-height);
 $calc-application-viewport-height: calc(100vh - #{$calc-application-header-height} - #{$calc-application-footer-height});
 

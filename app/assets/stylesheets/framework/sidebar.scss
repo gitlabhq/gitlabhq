@@ -288,7 +288,7 @@
 
 @mixin right-sidebar {
   position: fixed;
-  top: $calc-application-header-height;
+  top: calc(#{$header-height} + #{$calc-application-bars-height});
   bottom: calc(#{$calc-application-footer-height} + var(--mr-review-bar-height));
   right: 0;
   transition: width $gl-transition-duration-medium;
@@ -300,6 +300,10 @@
 .right-sidebar {
   &:not(.right-sidebar-merge-requests) {
     @include right-sidebar;
+
+    @include media-breakpoint-down(sm) {
+      z-index: 251;
+    }
   }
 
   &.right-sidebar-merge-requests {
@@ -307,10 +311,6 @@
       @include right-sidebar;
       z-index: 251;
     }
-  }
-
-  @include media-breakpoint-down(sm) {
-    z-index: 251;
   }
 
   a:not(.btn) {

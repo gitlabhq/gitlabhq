@@ -2,12 +2,8 @@
 
 module QA
   RSpec.describe 'Manage' do
-    # TODO: `:reliable` should be added back once https://gitlab.com/gitlab-org/gitlab/-/issues/403001 is resolved
-    describe 'User', :requires_admin, product_group: :authentication_and_authorization, quarantine: {
-      type: :bug,
-      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/403001',
-      except: { subdomain: /(staging.)?/, domain: 'gitlab' }
-    } do
+    # TODO: `:reliable` should be added back once https://gitlab.com/gitlab-org/gitlab/-/issues/359278 is resolved
+    describe 'User', :requires_admin, product_group: :authentication_and_authorization do
       before(:all) do
         admin_api_client = Runtime::API::Client.as_admin
 
@@ -17,14 +13,20 @@ module QA
 
         @user_api_client = Runtime::API::Client.new(:gitlab, user: @user)
 
-        @group = QA::Resource::Group.fabricate_via_api! do |group|
-          group.path = "group-to-test-access-termination-#{SecureRandom.hex(8)}"
+        @sandbox = Resource::Sandbox.fabricate! do |sandbox_group|
+          sandbox_group.path = "sandbox-for-access-termination-#{SecureRandom.hex(4)}"
+          sandbox_group.api_client = admin_api_client
         end
 
-        @group.sandbox.add_member(@user)
+        group = QA::Resource::Group.fabricate_via_api! do |group|
+          group.path = "group-to-test-access-termination-#{SecureRandom.hex(8)}"
+          group.sandbox = @sandbox
+        end
+
+        @sandbox.add_member(@user)
 
         @project = Resource::Project.fabricate_via_api! do |project|
-          project.group = @group
+          project.group = group
           project.name = "project-for-user-group-access-termination"
           project.initialize_with_readme = true
         end
@@ -32,7 +34,7 @@ module QA
 
       context 'after parent group membership termination' do
         before do
-          @group.sandbox.remove_member(@user)
+          @sandbox.remove_member(@user)
         end
 
         it 'is not allowed to push code via the CLI', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347863' do
@@ -82,9 +84,7 @@ module QA
       end
 
       after(:all) do
-        @user.remove_via_api!
-        @project.remove_via_api!
-        @group.remove_via_api!
+        @sandbox.remove_via_api!
       end
     end
   end

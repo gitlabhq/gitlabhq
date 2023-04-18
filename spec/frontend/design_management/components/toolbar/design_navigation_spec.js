@@ -9,7 +9,10 @@ import { DESIGN_ROUTE_NAME } from '~/design_management/router/constants';
 import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { designListQueryResponse, designListQueryResponseNodes } from '../../mock_data/apollo_mock';
+import {
+  getDesignListQueryResponse,
+  designListQueryResponseNodes,
+} from '../../mock_data/apollo_mock';
 
 const push = jest.fn();
 const $router = {
@@ -25,8 +28,7 @@ describe('Design management pagination component', () => {
   let wrapper;
 
   const buildMockHandler = (nodes = designListQueryResponseNodes) => {
-    designListQueryResponse.data.project.issue.designCollection.designs.nodes = nodes;
-    return jest.fn().mockResolvedValue(designListQueryResponse);
+    return jest.fn().mockResolvedValue(getDesignListQueryResponse({ designs: nodes }));
   };
 
   const createMockApolloProvider = (handler) => {

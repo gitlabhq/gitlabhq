@@ -38159,6 +38159,9 @@ msgstr ""
 msgid "Runners|Created %{timeAgo}"
 msgstr ""
 
+msgid "Runners|Created %{timeAgo} by %{avatar}"
+msgstr ""
+
 msgid "Runners|Delete %d runner"
 msgid_plural "Runners|Delete %d runners"
 msgstr[0] ""

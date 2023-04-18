@@ -40,7 +40,10 @@ export const designListQueryResponseNodes = [
   },
 ];
 
-export const designListQueryResponse = {
+export const getDesignListQueryResponse = ({
+  versions = [],
+  designs = designListQueryResponseNodes,
+} = {}) => ({
   data: {
     project: {
       __typename: 'Project',
@@ -53,17 +56,17 @@ export const designListQueryResponse = {
           copyState: 'READY',
           designs: {
             __typename: 'DesignConnection',
-            nodes: designListQueryResponseNodes,
+            nodes: designs,
           },
           versions: {
-            __typename: 'DesignVersion',
-            nodes: [],
+            __typename: 'DesignVersionConnection',
+            nodes: versions,
           },
         },
       },
     },
   },
-};
+});
 
 export const designUploadMutationCreatedResponse = {
   data: {

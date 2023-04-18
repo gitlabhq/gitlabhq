@@ -32,7 +32,7 @@ import {
 import { createAlert } from '~/alert';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import {
-  designListQueryResponse,
+  getDesignListQueryResponse,
   designUploadMutationCreatedResponse,
   designUploadMutationUpdatedResponse,
   getPermissionsQueryResponse,
@@ -183,7 +183,7 @@ describe('Design management index page', () => {
     moveDesignHandler = moveHandler;
 
     const requestHandlers = [
-      [getDesignListQuery, jest.fn().mockResolvedValue(designListQueryResponse)],
+      [getDesignListQuery, jest.fn().mockResolvedValue(getDesignListQueryResponse())],
       [permissionsQuery, permissionsQueryHandler],
       [moveDesignMutation, moveDesignHandler],
     ];
