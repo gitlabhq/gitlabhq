@@ -40125,7 +40125,7 @@ msgstr ""
 msgid "SecurityReports|Add a comment or reason for dismissal"
 msgstr ""
 
-msgid "SecurityReports|Add comment and dismiss"
+msgid "SecurityReports|Add comment & dismiss"
 msgstr ""
 
 msgid "SecurityReports|Add or remove projects to monitor in the security area. Projects included in this list will have their results displayed in the security dashboard and vulnerability report."

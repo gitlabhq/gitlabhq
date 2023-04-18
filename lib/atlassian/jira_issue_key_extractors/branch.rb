@@ -16,10 +16,6 @@ module Atlassian
       # Use BatchLoader to load this data without N+1 queries when serializing multiple branches
       # in `Atlassian::JiraConnect::Serializers::BranchEntity`.
       def issue_keys
-        unless Feature.enabled?(:jira_include_keys_from_associated_mr_for_branch, project)
-          return JiraIssueKeyExtractor.new(branch_name).issue_keys
-        end
-
         BatchLoader.for(branch_name).batch do |branch_names, loader|
           merge_requests = MergeRequest
             .select(:description, :source_branch, :title)

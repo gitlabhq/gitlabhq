@@ -22,6 +22,10 @@ RSpec.describe IssuableExportCsvWorker, feature_category: :team_planning do
       subject
     end
 
+    it 'defines the loggable_arguments' do
+      expect(described_class.loggable_arguments).to match_array([0, 1, 2, 3])
+    end
+
     it 'removes sort parameter' do
       expect(IssuesFinder).to receive(:new).with(anything, hash_not_including(:sort)).and_call_original
 

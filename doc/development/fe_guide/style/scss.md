@@ -76,7 +76,7 @@ These mixins should be used to replace _magic values_ in our code.
 For example a `margin-top: 8px` is a good candidate for the `@include gl-mt-3` mixin replacement.
 
 Avoid using utility mixins for [pre-defined CSS keywords](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Values_and_Units#pre-defined_keyword_values).
-For example prefer `display: flex` over `@include gl-display-flex`.
+For example prefer `display: flex` over `@include gl-display-flex`. Utility mixins are particularly useful for encapsulating our design system but there is no need to encapsulate simple properties.
 
 ```scss
 // Bad

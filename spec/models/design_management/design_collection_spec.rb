@@ -128,7 +128,7 @@ RSpec.describe DesignManagement::DesignCollection do
 
   describe "#repository" do
     it "builds a design repository" do
-      expect(collection.repository).to be_a(DesignManagement::GitRepository)
+      expect(collection.repository).to be_a(DesignManagement::Repository)
     end
   end
 

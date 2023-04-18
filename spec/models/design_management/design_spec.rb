@@ -463,7 +463,7 @@ RSpec.describe DesignManagement::Design, feature_category: :design_management do
     it 'is a design repository' do
       design = build(:design, issue: issue)
 
-      expect(design.repository).to be_a(DesignManagement::GitRepository)
+      expect(design.repository).to be_a(DesignManagement::Repository)
     end
   end
 

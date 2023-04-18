@@ -1223,10 +1223,12 @@ $tabs-holder-z-index: 250;
 }
 
 .mr-state-loader {
-  max-width: 334px;
-
   svg {
     vertical-align: middle;
+  }
+
+  .gl-skeleton-loader {
+    max-width: 334px;
   }
 }
 

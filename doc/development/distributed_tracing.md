@@ -85,6 +85,18 @@ In this example, we have the following hypothetical values:
   they should be URL encoded.
   Multiple values should be separated by `&` characters like a URL.
 
+GitLab Rails provides pre-implemented instrumentations for common types of
+operations that offer a detailed view of the requests. However, the detailed
+information comes at a cost. The resulting traces are long and can be difficult
+to process, making it hard to identify bigger underlying issues. To address this
+concern, some instrumentations are disabled by default. To enable those disabled
+instrumentations, set the following environment variables:
+
+- `GITLAB_TRACING_TRACK_CACHES`: enable tracking cache operations, such as cache
+read, write, or delete.
+- `GITLAB_TRACING_TRACK_REDIS`: enable tracking Redis operations. Most Redis
+operations are for caching, though.
+
 ## Using Jaeger in the GitLab Development Kit
 
 The first tracing implementation that GitLab supports is Jaeger, and the

@@ -960,6 +960,7 @@ Input type: `AiActionInput`
 | ---- | ---- | ----------- |
 | <a id="mutationaiactionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiactionexplaincode"></a>`explainCode` | [`AiExplainCodeInput`](#aiexplaincodeinput) | Input for explain_code AI action. |
+| <a id="mutationaiactionexplainvulnerability"></a>`explainVulnerability` | [`AiExplainVulnerabilityInput`](#aiexplainvulnerabilityinput) | Input for explain_vulnerability AI action. |
 | <a id="mutationaiactionsummarizecomments"></a>`summarizeComments` | [`AiSummarizeCommentsInput`](#aisummarizecommentsinput) | Input for summarize_comments AI action. |
 
 #### Fields
@@ -26509,6 +26510,14 @@ see the associated mutation type above.
 | ---- | ---- | ----------- |
 | <a id="aiexplaincodemessageinputcontent"></a>`content` | [`String!`](#string) | Content of the message. |
 | <a id="aiexplaincodemessageinputrole"></a>`role` | [`String!`](#string) | Role of the message (system, user, assistant). |
+
+### `AiExplainVulnerabilityInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiexplainvulnerabilityinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | GID of the resource to mutate. |
 
 ### `AiSummarizeCommentsInput`
 

@@ -1129,53 +1129,7 @@ We use [subscriptions](https://www.apollographql.com/docs/react/data/subscriptio
 **NOTE:**
 We cannot test subscriptions using GraphiQL, because they require an ActionCable client, which GraphiQL does not support at the moment.
 
-Subscriptions don't require any additional configuration of Apollo Client instance, you can use them in the application right away. To distinguish subscriptions from queries and mutations, we recommend naming them with `.subscription.graphql` extension:
-
-```graphql
-// ~/sidebar/queries/issuable_assignees.subscription.graphql
-
-subscription issuableAssigneesUpdated($issuableId: IssuableID!) {
-  issuableAssigneesUpdated(issuableId: $issuableId) {
-    ... on Issue {
-      assignees {
-        nodes {
-          ...User
-          status {
-            availability
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-When using GraphQL subscriptions in Vue application, we recommend updating existing Apollo query results with [subscribeToMore](https://apollo.vuejs.org/guide/apollo/subscriptions.html#subscribe-to-more) option:
-
-```javascript
-import issuableAssigneesSubscription from '~/sidebar/queries/issuable_assignees.subscription.graphql'
-
-apollo: {
-  issuable: {
-    query() {
-      return assigneesQueries[this.issuableType].query;
-    },
-    subscribeToMore: {
-      // Specify the subscription that will update the query
-      document() {
-        return issuableAssigneesSubscription;
-      },
-      variables() {
-        return {
-          issuableId: convertToGraphQLId(this.issuableClass, this.issuableId),
-        };
-      },
-    },
-  },
-},
-```
-
-We would need also to define a field policy similarly like we do it for the [paginated queries](#defining-field-merge-policy)
+Refer to the [Real-time widgets developer guide](../real_time.md) for a comprehensive introduction to subscriptions.
 
 ### Best Practices
 

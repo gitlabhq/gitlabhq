@@ -63,13 +63,5 @@ RSpec.describe JiraConnect::SyncMergeRequestWorker, feature_category: :integrati
 
       it_behaves_like 'does not send any branch data'
     end
-
-    context 'when flag is disabled' do
-      before do
-        stub_feature_flags(jira_include_keys_from_associated_mr_for_branch: false)
-      end
-
-      it_behaves_like 'does not send any branch data'
-    end
   end
 end

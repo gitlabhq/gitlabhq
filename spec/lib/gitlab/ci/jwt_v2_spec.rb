@@ -5,7 +5,13 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::JwtV2 do
   let(:namespace) { build_stubbed(:namespace) }
   let(:project) { build_stubbed(:project, namespace: namespace) }
-  let(:user) { build_stubbed(:user) }
+  let(:user) do
+    build_stubbed(
+      :user,
+      identities: [build_stubbed(:identity, extern_uid: '1', provider: 'github')]
+    )
+  end
+
   let(:pipeline) { build_stubbed(:ci_pipeline, ref: 'auto-deploy-2020-03-19') }
   let(:aud) { described_class::DEFAULT_AUD }
 
@@ -31,6 +37,18 @@ RSpec.describe Gitlab::Ci::JwtV2 do
         expect(payload[:aud]).to eq(Settings.gitlab.base_url)
         expect(payload[:sub]).to eq("project_path:#{project.full_path}:ref_type:branch:ref:#{pipeline.source_ref}")
       end
+    end
+
+    it 'includes user identities when enabled' do
+      expect(user).to receive(:pass_user_identities_to_ci_jwt).and_return(true)
+      identities = payload[:user_identities].map { |identity| identity.slice(:extern_uid, :provider) }
+      expect(identities).to eq([{ extern_uid: '1', provider: 'github' }])
+    end
+
+    it 'does not include user identities when disabled' do
+      expect(user).to receive(:pass_user_identities_to_ci_jwt).and_return(false)
+
+      expect(payload).not_to include(:user_identities)
     end
 
     context 'when given an aud' do

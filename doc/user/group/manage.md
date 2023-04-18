@@ -495,7 +495,7 @@ disabled for the group and its subgroups.
 
 Prerequisite:
 
-- You must be assigned the Owner role) for the group.
+- You must be assigned the Owner role for the group.
 
 To specify a user cap:
 

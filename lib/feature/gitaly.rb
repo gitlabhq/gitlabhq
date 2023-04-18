@@ -53,19 +53,11 @@ module Feature
       end
 
       def project_actor(container)
-        return actor_wrapper(::Project, container.id) if container.is_a?(::Project)
-        return actor_wrapper(::Project, container.project.id) if container.is_a?(DesignManagement::Repository)
+        ::Feature::Gitaly::ActorWrapper.new(::Project, container.id) if container.is_a?(::Project)
       end
 
       def group_actor(container)
-        return actor_wrapper(::Group, container.namespace_id) if container.is_a?(::Project)
-        return actor_wrapper(::Group, container.project.namespace_id) if container.is_a?(DesignManagement::Repository)
-      end
-
-      private
-
-      def actor_wrapper(actor_type, id)
-        ::Feature::Gitaly::ActorWrapper.new(actor_type, id)
+        ::Feature::Gitaly::ActorWrapper.new(::Group, container.namespace_id) if container.is_a?(::Project)
       end
     end
   end

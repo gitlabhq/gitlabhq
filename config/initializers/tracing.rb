@@ -6,14 +6,14 @@ if Labkit::Tracing.enabled?
     config.middleware.insert_after Rack::MethodOverride, ::Labkit::Tracing::RackMiddleware
   end
 
-  # Instrument Redis
-  Labkit::Tracing::Redis.instrument
+  # Instrument external calls
   Labkit::Tracing::ExternalHttp.instrument
+  Labkit::Tracing::Redis.instrument if ENV['GITLAB_TRACING_TRACK_REDIS'].present?
 
   # Instrument Rails
   Labkit::Tracing::Rails::ActiveRecordSubscriber.instrument
   Labkit::Tracing::Rails::ActionViewSubscriber.instrument
-  Labkit::Tracing::Rails::ActiveSupportSubscriber.instrument
+  Labkit::Tracing::Rails::ActiveSupportSubscriber.instrument if ENV['GITLAB_TRACING_TRACK_CACHES'].present?
 
   # In multi-processed clustered architectures (e.g. Puma cluster) don't
   # start tracing until the worker processes are spawned. This works

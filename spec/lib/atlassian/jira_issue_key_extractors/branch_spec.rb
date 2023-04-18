@@ -51,14 +51,6 @@ RSpec.describe Atlassian::JiraIssueKeyExtractors::Branch, feature_category: :int
         end
 
         it { is_expected.to eq(%w[BRANCH-1 OPEN_MR_TITLE-1 OPEN_MR_DESC-1]) }
-
-        context 'when the flag is disabled' do
-          before do
-            stub_feature_flags(jira_include_keys_from_associated_mr_for_branch: false)
-          end
-
-          it { is_expected.to eq(['BRANCH-1']) }
-        end
       end
     end
   end

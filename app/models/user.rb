@@ -357,6 +357,7 @@ class User < ApplicationRecord
             :time_format_in_24h, :time_format_in_24h=,
             :show_whitespace_in_diffs, :show_whitespace_in_diffs=,
             :view_diffs_file_by_file, :view_diffs_file_by_file=,
+            :pass_user_identities_to_ci_jwt, :pass_user_identities_to_ci_jwt=,
             :tab_width, :tab_width=,
             :sourcegraph_enabled, :sourcegraph_enabled=,
             :gitpod_enabled, :gitpod_enabled=,

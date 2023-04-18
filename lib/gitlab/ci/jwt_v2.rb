@@ -20,11 +20,23 @@ module Gitlab
       attr_reader :aud
 
       def reserved_claims
-        super.merge(
+        super.merge({
           iss: Settings.gitlab.base_url,
           sub: "project_path:#{project.full_path}:ref_type:#{ref_type}:ref:#{source_ref}",
-          aud: aud
-        )
+          aud: aud,
+          user_identities: user_identities
+        }.compact)
+      end
+
+      def user_identities
+        return unless user&.pass_user_identities_to_ci_jwt
+
+        user.identities.map do |identity|
+          {
+            provider: identity.provider.to_s,
+            extern_uid: identity.extern_uid.to_s
+          }
+        end
       end
     end
   end

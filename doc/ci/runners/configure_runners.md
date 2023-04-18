@@ -334,6 +334,7 @@ globally or for individual jobs:
 - [`GIT_CLEAN_FLAGS`](#git-clean-flags)
 - [`GIT_FETCH_EXTRA_FLAGS`](#git-fetch-extra-flags)
 - [`GIT_SUBMODULE_UPDATE_FLAGS`](#git-submodule-update-flags)
+- [`GIT_SUBMODULE_FORCE_HTTPS`](#rewrite-submodule-urls-to-https)
 - [`GIT_DEPTH`](#shallow-cloning) (shallow cloning)
 - [`GIT_SUBMODULE_DEPTH`](#git-submodule-depth)
 - [`GIT_CLONE_PATH`](#custom-build-directories) (custom build directories)
@@ -589,6 +590,23 @@ WARNING:
 You should be aware of the implications for the security, stability, and reproducibility of
 your builds when using the `--remote` flag. In most cases, it is better to explicitly track
 submodule commits as designed, and update them using an auto-remediation/dependency bot.
+
+### Rewrite submodule URLs to HTTPS
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3198) in GitLab Runner 15.11.
+
+Use the `GIT_SUBMODULE_FORCE_HTTPS` variable to force a rewrite of all Git and SSH submodule URLs to HTTPS.
+This allows you to clone submodules on the same GitLab instance that use absolute URLs, even if they were
+configured with a Git or SSH protocol.
+
+```yaml
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_FORCE_HTTPS: "true"
+```
+
+When enabled, GitLab Runner uses a [CI/CD job token](../jobs/ci_job_token.md) to clone the submodules with
+the permissions of the user executing the job, and does not require SSH credentials.
 
 ### Shallow cloning
 

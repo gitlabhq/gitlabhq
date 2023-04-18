@@ -39,7 +39,7 @@ export default {
     newCommentTemplatePath: {
       default: null,
     },
-    issuableId: { default: null },
+    resourceGlobalId: { default: null },
   },
   props: {
     previewMarkdown: {
@@ -123,7 +123,7 @@ export default {
     },
     showAiActions() {
       return (
-        this.issuableId &&
+        this.resourceGlobalId &&
         this.glFeatures.openaiExperimentation &&
         this.glFeatures.summarizeNotes &&
         this.glFeatures.summarizeComments
@@ -280,7 +280,7 @@ export default {
               </gl-button>
             </gl-popover>
           </template>
-          <ai-actions-dropdown v-if="showAiActions" :issuable-id="issuableId" />
+          <ai-actions-dropdown v-if="showAiActions" :resource-global-id="resourceGlobalId" />
           <toolbar-button
             tag="**"
             :button-title="

@@ -926,6 +926,21 @@ To avoid any disruptions to your workflow, please stop using the `external` fiel
 
 </div>
 
+<div class="deprecation " data-milestone="16.0">
+
+### Geo: Project repository redownload is deprecated
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">15.11</span>
+</div>
+
+In secondary Geo sites, the button to "Redownload" a project repository is
+deprecated. The redownload logic has inherent data consistency issues which
+are difficult to resolve when encountered. The button will be removed in
+GitLab 16.0.
+
+</div>
+
 <div class="deprecation breaking-change" data-milestone="16.0">
 
 ### GitLab self-monitoring project
