@@ -11,6 +11,8 @@ type: reference, concepts
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/320783) in GitLab 14.1.
 > - `failed` status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329636) in GitLab 14.9.
 
+Status checks are API calls to external systems that request the status of an external requirement.
+
 You can create a status check that sends merge request data to third-party tools.
 When users create, change, or close merge requests, GitLab sends a notification. The users or automated workflows
 can then update the status of merge requests from outside of GitLab.
