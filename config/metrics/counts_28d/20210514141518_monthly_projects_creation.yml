@@ -5,7 +5,6 @@ description: 'Count number of projects created monthly'
 product_section: dev
 product_stage: plan
 product_group: project_management
-product_category: ''
 value_type: number
 status: active
 milestone: "14.0"

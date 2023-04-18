@@ -6,7 +6,6 @@ description: A weekly count of users that have published a generic package to th
 product_section: ops
 product_stage: package
 product_group: package
-product_category: package registry
 value_type: number
 status: active
 time_frame: 7d

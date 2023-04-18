@@ -2633,7 +2633,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/graphql/types/x509_certificate_type_spec.rb'
     - 'spec/graphql/types/x509_issuer_type_spec.rb'
     - 'spec/haml_lint/linter/inline_javascript_spec.rb'
-    - 'spec/haml_lint/linter/no_plain_nodes_spec.rb'
     - 'spec/helpers/access_tokens_helper_spec.rb'
     - 'spec/helpers/admin/application_settings/settings_helper_spec.rb'
     - 'spec/helpers/admin/background_migrations_helper_spec.rb'

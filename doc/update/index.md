@@ -1629,9 +1629,24 @@ gitaly['configuration'] = {
       },
     ],
   },
-  # gitaly['storage']. While the structure is the same, the string keys in the array elements
-  # should be replaced by symbols as elsewhere. {'key' => 'value'}, should become {key: 'value'}.
-  storage: ...,
+  # Storage could previously be configured through either gitaly['storage'] or 'git_data_dirs'. Migrate
+  # the relevant configuration according to the instructions below.
+  storage: [
+    {
+      # gitaly['storage'][<index>]['name']
+      #
+      # git_data_dirs[<name>]. The storage name was configured as a key in the map.
+      name: ...,
+      # gitaly['storage'][<index>]['path']
+      #
+      # git_data_dirs[<name>]['path']. Use the value from git_data_dirs[<name>]['path'] and append '/repositories' to it.
+      #
+      # For example, if the path in 'git_data_dirs' was '/var/opt/gitlab/git-data', use
+      # '/var/opt/gitlab/git-data/repositories'. The '/repositories' extension was automatically
+      # appended to the path configured in `git_data_dirs`.
+      path: ...,
+    },
+  ],
   hooks: {
     # gitaly['custom_hooks_dir']
     custom_hooks_dir: ...,

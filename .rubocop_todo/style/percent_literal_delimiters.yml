@@ -644,7 +644,6 @@ Style/PercentLiteralDelimiters:
     - 'spec/graphql/types/boards/board_issue_input_type_spec.rb'
     - 'spec/graphql/types/design_management/design_collection_copy_state_enum_spec.rb'
     - 'spec/graphql/types/issue_type_spec.rb'
-    - 'spec/haml_lint/linter/no_plain_nodes_spec.rb'
     - 'spec/helpers/appearances_helper_spec.rb'
     - 'spec/helpers/application_settings_helper_spec.rb'
     - 'spec/helpers/auth_helper_spec.rb'

@@ -5,7 +5,6 @@ description: A count of manifests that have been deleted
 product_section: ops
 product_stage: package
 product_group: package
-product_category: container registry
 value_type: number
 status: active
 milestone: "15.10"

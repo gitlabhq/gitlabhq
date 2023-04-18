@@ -61,7 +61,7 @@ Management of detected secrets will remain distinct from the
 When a detected secret is identified, it has already been compromised due to
 their presence in the target object (that is a repository). Alternatively, managed
 secrets should be stored with stricter standards for secure storage, including
-encryption and masking when visible (such as jog logs or in the UI).
+encryption and masking when visible (such as job logs or in the UI).
 
 As a long-term priority we should consider unifying the management of the two
 secret types however that work is out of scope for the current blueprints goals,

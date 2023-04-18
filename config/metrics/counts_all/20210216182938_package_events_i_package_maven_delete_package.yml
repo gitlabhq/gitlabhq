@@ -5,7 +5,6 @@ description: A count of Maven packages that have been deleted
 product_section: ops
 product_stage: package
 product_group: package
-product_category: package registry
 value_type: number
 status: active
 time_frame: all

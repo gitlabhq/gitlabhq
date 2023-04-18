@@ -6,7 +6,7 @@ require 'haml_lint/spec'
 
 require_relative '../../../haml_lint/linter/no_plain_nodes'
 
-RSpec.describe HamlLint::Linter::NoPlainNodes do
+RSpec.describe HamlLint::Linter::NoPlainNodes, feature_category: :tooling do
   include_context 'linter'
 
   context 'reports when a tag has an inline plain node' do
@@ -68,27 +68,27 @@ RSpec.describe HamlLint::Linter::NoPlainNodes do
   end
 
   context 'does not report multiline when one or more html entities' do
-    %w(&nbsp;&gt; &#x000A9; &#187;).each do |elem|
-      let(:haml) { <<-HAML }
-        %tag
-          #{elem}
-      HAML
+    %w[&nbsp;&gt; &#x000A9; &#187;].each do |elem|
+      context "with #{elem}" do
+        let(:haml) { <<-HAML }
+          %tag
+            #{elem}
+        HAML
 
-      it elem do
-        is_expected.not_to report_lint
+        it { is_expected.not_to report_lint }
       end
     end
   end
 
   context 'does report multiline when one or more html entities amidst plain text' do
-    %w(&nbsp;Test Test&gt; &#x000A9;Hello &nbsp;Hello&#187;).each do |elem|
-      let(:haml) { <<-HAML }
-        %tag
-          #{elem}
-      HAML
+    %w[&nbsp;Test Test&gt; &#x000A9;Hello &nbsp;Hello&#187;].each do |elem|
+      context "with #{elem}" do
+        let(:haml) { <<-HAML }
+          %tag
+            #{elem}
+        HAML
 
-      it elem do
-        is_expected.to report_lint
+        it { is_expected.to report_lint }
       end
     end
   end
