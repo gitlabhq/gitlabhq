@@ -180,7 +180,7 @@ export default {
       </div>
     </td>
     <td data-testid="fullPath" data-qa-selector="project_path_content">
-      <div class="gl-display-flex gl-sm-flex-wrap-wrap">
+      <div class="gl-display-flex gl-sm-flex-wrap">
         <template v-if="repo.importSource.target">{{ repo.importSource.target }}</template>
         <template v-else-if="isImportNotStarted || isSelectedForReimport">
           <div class="gl-display-flex gl-align-items-stretch gl-w-full">

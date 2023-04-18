@@ -6,6 +6,10 @@ module Gitlab
       class ActionCable < ActiveSupport::Subscriber
         include Gitlab::Utils::StrongMemoize
 
+        BROADCASTING_GRAPHQL_EVENT = 'graphql-event'
+        BROADCASTING_GRAPHQL_SUBSCRIPTION = 'graphql-subscription'
+        BROADCASTING_OTHER = 'other'
+
         attach_to :action_cable
 
         SINGLE_CLIENT_TRANSMISSION = :action_cable_single_client_transmissions_total
@@ -35,10 +39,24 @@ module Gitlab
         end
 
         def broadcast(event)
-          broadcast_counter.increment
+          broadcast_counter.increment({ broadcasting: broadcasting_from(event.payload) })
         end
 
         private
+
+        # Since broadcastings can have high dimensionality when they carry IDs, we need to
+        # collapse them. If it's not a well-know broadcast, we report it as "other".
+        def broadcasting_from(payload)
+          broadcasting = payload[:broadcasting]
+          if broadcasting.start_with?(BROADCASTING_GRAPHQL_EVENT)
+            # Take at most two levels of topic namespacing.
+            broadcasting.split(':').reject(&:empty?).take(2).join(':') # rubocop: disable CodeReuse/ActiveRecord
+          elsif broadcasting.start_with?(BROADCASTING_GRAPHQL_SUBSCRIPTION)
+            BROADCASTING_GRAPHQL_SUBSCRIPTION
+          else
+            BROADCASTING_OTHER
+          end
+        end
 
         # When possible tries to query operation name
         def operation_name_from(payload)

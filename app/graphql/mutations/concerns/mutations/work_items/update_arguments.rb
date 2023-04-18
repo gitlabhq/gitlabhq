@@ -44,6 +44,10 @@ module Mutations
                  ::Types::WorkItems::Widgets::CurrentUserTodosInputType,
                  required: false,
                  description: 'Input for to-dos widget.'
+        argument :award_emoji_widget,
+                 ::Types::WorkItems::Widgets::AwardEmojiUpdateInputType,
+                 required: false,
+                 description: 'Input for award emoji widget.'
       end
     end
   end

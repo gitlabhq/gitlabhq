@@ -384,7 +384,7 @@ export default {
               </template>
             </label>
           </p>
-          <div class="gl-display-flex gl-flex-wrap-wrap gl-mb-n3">
+          <div class="gl-display-flex gl-flex-wrap gl-mb-n3">
             <gl-button
               :disabled="isDisabled"
               category="primary"
@@ -418,7 +418,7 @@ export default {
           </div>
         </template>
         <template v-else>
-          <div class="gl-display-sm-flex gl-flex-wrap-wrap">
+          <div class="gl-display-sm-flex gl-flex-wrap">
             <gl-button
               :disabled="isDisabled"
               category="primary"

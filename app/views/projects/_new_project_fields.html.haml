@@ -16,7 +16,7 @@
   .form-group.project-path.col-sm-6.gl-pr-0
     = f.label :namespace_id, class: 'label-bold' do
       %span= _('Project URL')
-    .input-group.gl-flex-wrap-nowrap
+    .input-group.gl-flex-nowrap
       - if current_user.can_select_namespace?
         - namespace_id = namespace_id_from(params)
         .js-vue-new-project-url-select{ data: { namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id)&.full_path || @current_user_group&.full_path,

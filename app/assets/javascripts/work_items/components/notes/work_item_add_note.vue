@@ -134,8 +134,7 @@ export default {
     },
     parentClass() {
       return {
-        'gl-relative gl-display-flex gl-align-items-flex-start gl-flex-wrap-nowrap': !this
-          .isEditing,
+        'gl-relative gl-display-flex gl-align-items-flex-start gl-flex-nowrap': !this.isEditing,
       };
     },
     isProjectArchived() {

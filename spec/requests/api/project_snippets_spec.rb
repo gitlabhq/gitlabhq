@@ -412,7 +412,10 @@ RSpec.describe API::ProjectSnippets, :aggregate_failures, feature_category: :sou
     let(:path) { "/projects/#{snippet.project.id}/snippets/#{snippet.id}/raw" }
 
     it_behaves_like 'GET request permissions for admin mode' do
-      let(:failed_status_code) { :ok }
+      let_it_be(:snippet_with_empty_repo) { create(:project_snippet, :empty_repo, author: admin, project: project) }
+
+      let(:snippet) { snippet_with_empty_repo }
+      let(:failed_status_code) { :not_found }
     end
 
     it 'returns raw text' do

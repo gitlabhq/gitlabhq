@@ -8,7 +8,6 @@ import {
   GlFormInputGroup,
   GlModal,
   GlModalDirective,
-  GlSkeletonLoader,
   GlSprintf,
 } from '@gitlab/ui';
 import { __, s__, n__, sprintf } from '~/locale';
@@ -30,7 +29,6 @@ export default {
     GlFormGroup,
     GlFormInputGroup,
     GlModal,
-    GlSkeletonLoader,
     GlSprintf,
     ClipboardButton,
     TitleArea,
@@ -208,23 +206,20 @@ export default {
       </template>
     </gl-form-group>
 
-    <gl-skeleton-loader v-if="$apollo.queries.group.loading" />
+    <manifests-list
+      v-if="manifests && manifests.length"
+      :loading="$apollo.queries.group.loading"
+      :manifests="manifests"
+      :pagination="pageInfo"
+      @prev-page="fetchPreviousPage"
+      @next-page="fetchNextPage"
+    />
 
-    <div v-else data-testid="main-area">
-      <manifests-list
-        v-if="manifests && manifests.length"
-        :manifests="manifests"
-        :pagination="pageInfo"
-        @prev-page="fetchPreviousPage"
-        @next-page="fetchNextPage"
-      />
-
-      <gl-empty-state
-        v-else
-        :svg-path="noManifestsIllustration"
-        :title="$options.i18n.noManifestTitle"
-      />
-    </div>
+    <gl-empty-state
+      v-else
+      :svg-path="noManifestsIllustration"
+      :title="$options.i18n.noManifestTitle"
+    />
 
     <gl-modal
       :modal-id="$options.confirmClearCacheModal"

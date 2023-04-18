@@ -16,7 +16,7 @@ A top-level group can also have one complete
 [Security Dashboard and Center](../application_security/security_dashboard/index.md),
 [Vulnerability](../application_security/vulnerability_report/index.md#vulnerability-report) and
 [Compliance Report](../compliance/compliance_report/index.md), and
-[Value stream analytics](../group/value_stream_analytics/index.md#value-stream-analytics-for-groups).
+[Value stream analytics](../group/value_stream_analytics/index.md).
 
 ## View groups
 

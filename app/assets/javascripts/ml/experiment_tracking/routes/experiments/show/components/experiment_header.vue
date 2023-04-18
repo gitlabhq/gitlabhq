@@ -35,7 +35,7 @@ export default {
 </script>
 
 <template>
-  <div class="detail-page-header gl-flex-wrap-wrap">
+  <div class="detail-page-header gl-flex-wrap">
     <div class="detail-page-header-body">
       <h1 class="page-title gl-font-size-h-display flex-fill">{{ title }}</h1>
 

@@ -45,6 +45,14 @@ relevant feature flags.
 
 From GitLab 15.11, importing a JSON-formatted project file exports is not supported.
 
+### openSUSE Leap 15.3 packages
+
+Distribution support and security updates for openSUSE Leap 15.3 [ended December 2022](https://en.opensuse.org/Lifetime#Discontinued_distributions).
+
+Starting in GitLab 15.7 we started providing packages for openSUSE Leap 15.4, and in GitLab 15.11 we stopped providing packages for openSUSE Leap 15.3.
+
+To continue using GitLab, [upgrade](https://en.opensuse.org/SDB:System_upgrade) to openSUSE Leap 15.4.
+
 ## Removed in 15.9
 
 ### Live Preview no longer available in the Web IDE

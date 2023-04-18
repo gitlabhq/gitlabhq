@@ -139,7 +139,7 @@ export default {
       :disabled="!action.canPlayJob"
       @click="onClickAction(action)"
     >
-      <div class="gl-display-flex gl-justify-content-space-between gl-flex-wrap-wrap">
+      <div class="gl-display-flex gl-justify-content-space-between gl-flex-wrap">
         {{ action.name }}
         <span v-if="action.scheduledAt">
           <gl-icon name="clock" />

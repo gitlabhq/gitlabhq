@@ -130,7 +130,7 @@ export default {
         </div>
         <div class="gl-w-full gl-display-flex">
           <ul
-            class="merge-request-tabs nav-tabs nav nav-links gl-display-flex gl-flex-wrap-nowrap gl-m-0 gl-p-0 gl-border-b-0"
+            class="merge-request-tabs nav-tabs nav nav-links gl-display-flex gl-flex-nowrap gl-m-0 gl-p-0 gl-border-b-0"
           >
             <li
               v-for="(tab, index) in tabs"

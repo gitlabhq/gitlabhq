@@ -1215,11 +1215,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
   describe 'POST /projects' do
     let(:path) { '/projects' }
 
-    it_behaves_like 'POST request permissions for admin mode' do
-      let(:params) { { name: 'Foo Project' } }
-      let(:failed_status_code) { :created }
-    end
-
     context 'maximum number of projects reached' do
       it 'does not create new project and respond with 403' do
         allow_any_instance_of(User).to receive(:projects_limit_left).and_return(0)
@@ -1667,11 +1662,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
   describe 'GET /users/:user_id/projects/' do
     let!(:public_project) { create(:project, :public, name: 'public_project', creator_id: user4.id, namespace: user4.namespace) }
 
-    it_behaves_like 'GET request permissions for admin mode' do
-      let(:path) { "/users/#{user.id}/projects/" }
-      let(:failed_status_code) { :ok }
-    end
-
     it 'returns error when user not found' do
       get api("/users/#{non_existing_record_id}/projects/")
 
@@ -1821,15 +1811,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
     end
 
     let(:path) { "/users/#{user3.id}/starred_projects/" }
-
-    it_behaves_like 'GET request permissions for admin mode' do
-      before do
-        user3.update!(private_profile: true)
-        user3.reload
-      end
-
-      let(:failed_status_code) { :ok }
-    end
 
     it 'returns error when user not found' do
       get api("/users/#{non_existing_record_id}/starred_projects/")

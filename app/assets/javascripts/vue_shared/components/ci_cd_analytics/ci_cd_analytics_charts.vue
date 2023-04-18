@@ -39,7 +39,7 @@ export default {
 </script>
 <template>
   <div>
-    <div class="gl-display-flex gl-flex-wrap-wrap gl-gap-5">
+    <div class="gl-display-flex gl-flex-wrap gl-gap-5">
       <segmented-control-button-group v-model="selectedChart" :options="chartRanges" />
       <slot name="extend-button-group"></slot>
     </div>

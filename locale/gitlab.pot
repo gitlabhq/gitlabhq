@@ -778,6 +778,9 @@ msgstr ""
 msgid "%{key} is not a valid URL."
 msgstr ""
 
+msgid "%{key} is not a valid action."
+msgstr ""
+
 msgid "%{labelStart}Actual response:%{labelEnd} %{headers}"
 msgstr ""
 

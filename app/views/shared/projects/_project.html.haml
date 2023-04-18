@@ -27,7 +27,7 @@
             = render Pajamas::AvatarComponent.new(project, size: 48, alt: '', class: 'gl-mr-5')
   .project-cell{ class: css_class }
     .project-details.gl-pr-9.gl-sm-pr-0.gl-w-full.gl-display-flex.gl-flex-direction-column{ data: { qa_selector: 'project_content', qa_project_name: project.name } }
-      .gl-display-flex.gl-align-items-center.gl-flex-wrap-wrap
+      .gl-display-flex.gl-align-items-center.gl-flex-wrap
         %h2.gl-font-base.gl-line-height-20.gl-my-0
           = link_to project_path(project), class: 'text-plain gl-mr-3 js-prefetch-document' do
             %span.namespace-name.gl-font-weight-normal

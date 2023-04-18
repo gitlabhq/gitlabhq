@@ -61,7 +61,7 @@ export default {
 <template>
   <li
     :class="liClasses"
-    class="toggle-replies-widget gl-display-flex! gl-align-items-center gl-flex-wrap-wrap gl-bg-gray-10 gl-py-3 gl-px-5 gl-border"
+    class="toggle-replies-widget gl-display-flex! gl-align-items-center gl-flex-wrap gl-bg-gray-10 gl-py-3 gl-px-5 gl-border"
   >
     <gl-button
       ref="toggle"

@@ -59,7 +59,7 @@ The following table lists project permissions available for each role:
 |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|----------|-----------|------------|----------|
 | [Analytics](analytics/index.md):<br>View [issue analytics](analytics/issue_analytics.md)                                                                                             | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [Analytics](analytics/index.md):<br>View [merge request analytics](analytics/merge_request_analytics.md)                                                                             | ✓        | ✓        | ✓         | ✓          | ✓        |
-| [Analytics](analytics/index.md):<br>View [value stream analytics](analytics/value_stream_analytics.md)                                                                               | ✓        | ✓        | ✓         | ✓          | ✓        |
+| [Analytics](analytics/index.md):<br>View [value stream analytics](group/value_stream_analytics/index.md)                                                                               | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [Analytics](analytics/index.md):<br>View [DORA metrics](analytics/ci_cd_analytics.md)                                                                                                |          | ✓        | ✓         | ✓          | ✓        |
 | [Analytics](analytics/index.md):<br>View [CI/CD analytics](analytics/ci_cd_analytics.md)                                                                                             |          | ✓        | ✓         | ✓          | ✓        |
 | [Analytics](analytics/index.md):<br>View [code review analytics](analytics/code_review_analytics.md)                                                                                 |          | ✓        | ✓         | ✓          | ✓        |
@@ -429,7 +429,7 @@ For more information, see
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in GitLab 13.4.
 > - Support for inviting users with Minimal Access role [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106438) in GitLab 15.9.
 
-Users with the Minimal Access role:
+Users with the Minimal Access role do not:
 
 - Count as licensed seats on self-managed Ultimate subscriptions or any GitLab.com subscriptions.
 - Automatically have access to projects and subgroups in that root group.
@@ -455,7 +455,7 @@ To work around the issue, give these users the Guest role or higher to any proje
 - [Members](project/members/index.md)
 - Customize permissions on [protected branches](project/protected_branches.md)
 - [LDAP user permissions](group/access_and_permissions.md#manage-group-memberships-via-ldap)
-- [Value stream analytics permissions](analytics/value_stream_analytics.md#access-permissions-for-value-stream-analytics)
+- [Value stream analytics permissions](group/value_stream_analytics/index.md#access-permissions-for-value-stream-analytics)
 - [Project aliases](../user/project/import/index.md#project-aliases)
 - [Auditor users](../administration/auditor_users.md)
 - [Confidential issues](project/issues/confidential_issues.md)

@@ -17,7 +17,7 @@
         .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
           .fade-left= sprite_icon('chevron-lg-left', size: 12)
           .fade-right= sprite_icon('chevron-lg-right', size: 12)
-          %ul.merge-request-tabs.nav.nav-tabs.nav-links.no-top.no-bottom.gl-display-flex.gl-flex-wrap-nowrap.gl-m-0.gl-p-0.js-tabs-affix
+          %ul.merge-request-tabs.nav.nav-tabs.nav-links.no-top.no-bottom.gl-display-flex.gl-flex-nowrap.gl-m-0.gl-p-0.js-tabs-affix
             %li.commits-tab.new-tab
               = link_to url_for(safe_params), data: {target: 'div#commits', action: 'new', toggle: 'tabvue'} do
                 = _("Commits")
@@ -34,7 +34,7 @@
         .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
           .fade-left= sprite_icon('chevron-lg-left', size: 12)
           .fade-right= sprite_icon('chevron-lg-right', size: 12)
-          %ul.merge-request-tabs.nav.nav-tabs.nav-links.no-top.no-bottom.gl-display-flex.gl-flex-wrap-nowrap.gl-m-0.gl-p-0.js-tabs-affix
+          %ul.merge-request-tabs.nav.nav-tabs.nav-links.no-top.no-bottom.gl-display-flex.gl-flex-nowrap.gl-m-0.gl-p-0.js-tabs-affix
             %li.commits-tab.new-tab
               = link_to url_for(safe_params), data: {target: 'div#commits', action: 'new', toggle: 'tabvue'} do
                 = _("Commits")

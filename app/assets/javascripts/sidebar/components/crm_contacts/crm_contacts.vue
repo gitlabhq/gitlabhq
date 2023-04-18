@@ -111,7 +111,7 @@ export default {
     <div class="title hide-collapsed gl-mb-2 gl-line-height-20 gl-font-weight-bold">
       {{ contactsLabel }}
     </div>
-    <div class="hide-collapsed gl-display-flex gl-flex-wrap-wrap">
+    <div class="hide-collapsed gl-display-flex gl-flex-wrap">
       <div
         v-for="(contact, index) in contacts"
         :id="`contact_container_${index}`"

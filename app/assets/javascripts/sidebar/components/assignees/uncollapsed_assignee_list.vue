@@ -72,7 +72,7 @@ export default {
 
 <template>
   <div>
-    <div class="gl-display-flex gl-flex-wrap-wrap">
+    <div class="gl-display-flex gl-flex-wrap">
       <div
         v-for="(user, index) in uncollapsedUsers"
         :key="user.id"

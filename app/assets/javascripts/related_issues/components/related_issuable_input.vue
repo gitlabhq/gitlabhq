@@ -187,7 +187,7 @@ export default {
     @click="onIssuableFormWrapperClick"
   >
     <ul
-      class="gl-display-flex gl-flex-wrap-wrap gl-align-items-baseline gl-list-style-none gl-m-0 gl-p-0"
+      class="gl-display-flex gl-flex-wrap gl-align-items-baseline gl-list-style-none gl-m-0 gl-p-0"
     >
       <li
         v-for="(reference, index) in references"

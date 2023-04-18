@@ -224,7 +224,7 @@ export default {
         </span>
         <div
           v-if="!rebaseInProgress && canPushToSourceBranch && !isMakingRequest"
-          class="accept-merge-holder clearfix js-toggle-container media gl-md-display-flex gl-flex-wrap-wrap gl-flex-grow-1"
+          class="accept-merge-holder clearfix js-toggle-container media gl-md-display-flex gl-flex-wrap gl-flex-grow-1"
         >
           <span
             v-if="!rebasingError"

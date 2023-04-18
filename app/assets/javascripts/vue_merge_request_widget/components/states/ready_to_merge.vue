@@ -523,12 +523,10 @@ export default {
         class="mr-widget-body mr-widget-body-ready-merge media gl-display-flex gl-align-items-center"
       >
         <div class="media-body">
-          <div
-            class="mr-widget-body-controls gl-display-flex gl-align-items-center gl-flex-wrap-wrap"
-          >
+          <div class="mr-widget-body-controls gl-display-flex gl-align-items-center gl-flex-wrap">
             <template v-if="shouldShowMergeControls">
               <div
-                class="gl-display-flex gl-sm-flex-direction-column gl-md-align-items-center gl-flex-wrap-wrap gl-w-full gl-md-pb-2"
+                class="gl-display-flex gl-sm-flex-direction-column gl-md-align-items-center gl-flex-wrap gl-w-full gl-md-pb-2"
               >
                 <gl-form-checkbox
                   v-if="canRemoveSourceBranch"

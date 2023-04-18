@@ -2,7 +2,7 @@
 - badge_classes = 'issuable-status-badge gl-mr-3'
 
 .detail-page-header
-  .detail-page-header-body.gl-flex-wrap-wrap
+  .detail-page-header-body.gl-flex-wrap
     = gl_badge_tag({ variant: :info, icon: 'issue-closed', icon_classes: 'gl-mr-0!' }, { class: "#{issue_status_visibility(issuable, status_box: :closed)} #{badge_classes} issuable-status-badge-closed" }) do
       .gl-display-none.gl-sm-display-block.gl-ml-2
         = issue_closed_text(issuable, current_user)

@@ -9,10 +9,6 @@ module Subscriptions
         required: false,
         description: 'ID of the noteable.'
 
-      def subscribe(*args)
-        nil
-      end
-
       def authorized?(noteable_id:)
         noteable = force(GitlabSchema.find_by_gid(noteable_id))
 

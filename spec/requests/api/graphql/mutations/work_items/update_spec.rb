@@ -1222,6 +1222,139 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       end
     end
 
+    context 'when updating awardEmoji' do
+      let_it_be(:current_user) { work_item.author }
+      let_it_be(:upvote) { create(:award_emoji, :upvote, awardable: work_item, user: current_user) }
+      let(:award_action) { 'ADD' }
+      let(:award_name) { 'star' }
+      let(:input) { { 'awardEmojiWidget' => { 'action' => award_action, 'name' => award_name } } }
+
+      let(:fields) do
+        <<~FIELDS
+          workItem {
+            widgets {
+              type
+              ... on WorkItemWidgetAwardEmoji {
+                upvotes
+                downvotes
+                awardEmoji {
+                  nodes {
+                    name
+                    user { id }
+                  }
+                }
+              }
+            }
+          }
+          errors
+        FIELDS
+      end
+
+      subject(:update_work_item) { post_graphql_mutation(mutation, current_user: current_user) }
+
+      context 'when user cannot award work item' do
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?)
+                        .with(current_user, :award_emoji, work_item).and_return(false)
+        end
+
+        it 'ignores the update request' do
+          expect do
+            update_work_item
+          end.to not_change(AwardEmoji, :count)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(mutation_response['errors']).to be_empty
+          expect(graphql_errors).to be_blank
+        end
+      end
+
+      context 'when user can award work item' do
+        shared_examples 'request with error' do |message|
+          it 'ignores update and returns an error' do
+            expect do
+              update_work_item
+            end.not_to change(AwardEmoji, :count)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mutation_response['workItem']).to be_nil
+            expect(mutation_response['errors'].first).to include(message)
+          end
+        end
+
+        shared_examples 'request that removes emoji' do
+          it "updates work item's award emoji" do
+            expect do
+              update_work_item
+            end.to change(AwardEmoji, :count).by(-1)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mutation_response['workItem']['widgets']).to include(
+              {
+                'upvotes' => 0,
+                'downvotes' => 0,
+                'awardEmoji' => { 'nodes' => [] },
+                'type' => 'AWARD_EMOJI'
+              }
+            )
+          end
+        end
+
+        shared_examples 'request that adds emoji' do
+          it "updates work item's award emoji" do
+            expect do
+              update_work_item
+            end.to change(AwardEmoji, :count).by(1)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mutation_response['workItem']['widgets']).to include(
+              {
+                'upvotes' => 1,
+                'downvotes' => 0,
+                'awardEmoji' => { 'nodes' => [
+                  { 'name' => 'thumbsup', 'user' => { 'id' => current_user.to_gid.to_s } },
+                  { 'name' => award_name, 'user' => { 'id' => current_user.to_gid.to_s } }
+                ] },
+                'type' => 'AWARD_EMOJI'
+              }
+            )
+          end
+        end
+
+        context 'when adding award emoji' do
+          it_behaves_like 'request that adds emoji'
+
+          context 'when the emoji name is not valid' do
+            let(:award_name) { 'xxqq' }
+
+            it_behaves_like 'request with error', 'Name is not a valid emoji name'
+          end
+        end
+
+        context 'when removing award emoji' do
+          let(:award_action) { 'REMOVE' }
+
+          context 'when emoji was awarded by current user' do
+            let(:award_name) { 'thumbsup' }
+
+            it_behaves_like 'request that removes emoji'
+          end
+
+          context 'when emoji was awarded by a different user' do
+            let(:award_name) { 'thumbsdown' }
+
+            before do
+              create(:award_emoji, :downvote, awardable: work_item)
+            end
+
+            it_behaves_like 'request with error',
+              'User has not awarded emoji of type thumbsdown on the awardable'
+          end
+        end
+      end
+    end
+
     context 'when unsupported widget input is sent' do
       let_it_be(:work_item) { create(:work_item, :incident, project: project) }
 

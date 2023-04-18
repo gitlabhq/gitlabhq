@@ -6746,6 +6746,7 @@ Input type: `WorkItemUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationworkitemupdateassigneeswidget"></a>`assigneesWidget` | [`WorkItemWidgetAssigneesInput`](#workitemwidgetassigneesinput) | Input for assignees widget. |
+| <a id="mutationworkitemupdateawardemojiwidget"></a>`awardEmojiWidget` | [`WorkItemWidgetAwardEmojiUpdateInput`](#workitemwidgetawardemojiupdateinput) | Input for award emoji widget. |
 | <a id="mutationworkitemupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitemupdateconfidential"></a>`confidential` | [`Boolean`](#boolean) | Sets the work item confidentiality. |
 | <a id="mutationworkitemupdatecurrentusertodoswidget"></a>`currentUserTodosWidget` | [`WorkItemWidgetCurrentUserTodosInput`](#workitemwidgetcurrentusertodosinput) | Input for to-dos widget. |
@@ -25020,6 +25021,15 @@ Weight ID wildcard values.
 | <a id="weightwildcardidany"></a>`ANY` | Weight is assigned. |
 | <a id="weightwildcardidnone"></a>`NONE` | No weight is assigned. |
 
+### `WorkItemAwardEmojiUpdateAction`
+
+Values for work item award emoji update enum.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="workitemawardemojiupdateactionadd"></a>`ADD` | Adds the emoji. |
+| <a id="workitemawardemojiupdateactionremove"></a>`REMOVE` | Removes the emoji. |
+
 ### `WorkItemSort`
 
 Values for sorting work items.
@@ -27081,6 +27091,7 @@ A time-frame defined as a closed inclusive range of two dates.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemupdatedtaskinputassigneeswidget"></a>`assigneesWidget` | [`WorkItemWidgetAssigneesInput`](#workitemwidgetassigneesinput) | Input for assignees widget. |
+| <a id="workitemupdatedtaskinputawardemojiwidget"></a>`awardEmojiWidget` | [`WorkItemWidgetAwardEmojiUpdateInput`](#workitemwidgetawardemojiupdateinput) | Input for award emoji widget. |
 | <a id="workitemupdatedtaskinputconfidential"></a>`confidential` | [`Boolean`](#boolean) | Sets the work item confidentiality. |
 | <a id="workitemupdatedtaskinputcurrentusertodoswidget"></a>`currentUserTodosWidget` | [`WorkItemWidgetCurrentUserTodosInput`](#workitemwidgetcurrentusertodosinput) | Input for to-dos widget. |
 | <a id="workitemupdatedtaskinputdescriptionwidget"></a>`descriptionWidget` | [`WorkItemWidgetDescriptionInput`](#workitemwidgetdescriptioninput) | Input for description widget. |
@@ -27100,6 +27111,15 @@ A time-frame defined as a closed inclusive range of two dates.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetassigneesinputassigneeids"></a>`assigneeIds` | [`[UserID!]!`](#userid) | Global IDs of assignees. |
+
+### `WorkItemWidgetAwardEmojiUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetawardemojiupdateinputaction"></a>`action` | [`WorkItemAwardEmojiUpdateAction!`](#workitemawardemojiupdateaction) | Action for the update. |
+| <a id="workitemwidgetawardemojiupdateinputname"></a>`name` | [`String!`](#string) | Emoji name. |
 
 ### `WorkItemWidgetCurrentUserTodosInput`
 

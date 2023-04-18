@@ -217,7 +217,7 @@ export default {
 
 <template>
   <gl-form-group
-    class="work-item-dropdown gl-flex-wrap-nowrap"
+    class="work-item-dropdown gl-flex-nowrap"
     :label="$options.i18n.MILESTONE"
     label-for="milestone-value"
     label-class="gl-pb-0! gl-mt-3 gl-overflow-wrap-break"
