@@ -17,10 +17,22 @@ RSpec.describe Resolvers::Ci::RunnerStatusResolver, feature_category: :runner_fl
           { legacy_mode: '14.5' }
         end
 
-        it 'calls runner.status with specified legacy_mode' do
-          expect(runner).to receive(:status).with('14.5').once.and_return(:online)
+        it 'calls runner.status with nil' do
+          expect(runner).to receive(:status).with(nil).once.and_return(:stale)
 
-          expect(resolve_subject).to eq(:online)
+          expect(resolve_subject).to eq(:stale)
+        end
+
+        context 'when disable_runner_graphql_legacy_mode feature is disabled' do
+          before do
+            stub_feature_flags(disable_runner_graphql_legacy_mode: false)
+          end
+
+          it 'calls runner.status with specified legacy_mode' do
+            expect(runner).to receive(:status).with('14.5').once.and_return(:online)
+
+            expect(resolve_subject).to eq(:online)
+          end
         end
       end
 
@@ -29,7 +41,7 @@ RSpec.describe Resolvers::Ci::RunnerStatusResolver, feature_category: :runner_fl
           { legacy_mode: nil }
         end
 
-        it 'calls runner.status with specified legacy_mode' do
+        it 'calls runner.status with nil' do
           expect(runner).to receive(:status).with(nil).once.and_return(:stale)
 
           expect(resolve_subject).to eq(:stale)

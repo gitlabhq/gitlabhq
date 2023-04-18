@@ -141,6 +141,25 @@ create(:project, name: 'No longer throws error', owner: @owner, namespace: creat
 create(:epic, group: create(:group), author: @owner)
 ```
 
+#### `parsing id "my id" as "my_id"`
+
+See [specifying variables](#specify-a-variable)
+
+#### `id is invalid`
+
+Given that non-Ruby parsers parse IDs as Ruby Objects, the [naming conventions](https://docs.ruby-lang.org/en/2.0.0/syntax/methods_rdoc.html#label-Method+Names) of Ruby must be followed when specifying an ID.
+
+Examples of invalid IDs:
+
+- IDs that start with a number
+- IDs that have special characters (-, !, $, @, `, =, <, >, ;, :)
+
+#### ActiveRecord::AssociationTypeMismatch: Model expected, got ... which is an instance of String
+
+This is currently a limitation for the seeder.
+
+See the issue for [allowing parsing of raw Ruby objects](https://gitlab.com/gitlab-org/gitlab/-/issues/403079).
+
 ## YAML Factories
 
 ### Generator to generate _n_ amount of records
@@ -210,3 +229,50 @@ epics:
     start_date: <%= 1.day.ago %>
     due_date: <%= 1.month.from_now %>
 ```
+
+## Variables
+
+Each created factory can be assigned an identifier to be used in future seeding.
+
+You can specify an ID for any created factory that you may use later in the seed file.
+
+### Specify a variable
+
+You may pass an `_id` attribute on any factory to refer back to it later in non-Ruby parsers.
+
+Variables are under the factory definitions that they reside in.
+
+```yaml
+---
+group_labels:
+  - _id: my_label #=> group_labels.my_label
+
+projects:
+  - _id: my_project #=> projects.my_project
+```
+
+Variables:
+
+NOTE:
+It is not advised, but you may specify variables with spaces. These variables may be referred back to with underscores.
+
+### Referencing a variable
+
+Given a YAML seed file:
+
+```yaml
+---
+group_labels:
+  - _id: my_group_label #=> group_labels.my_group_label
+    name: My Group Label
+    color: "#FF0000"
+  - _id: my_other_group_label #=> group_labels.my_other_group_label
+    color: <%= group_labels.my_group_label.color %>
+
+projects:
+  - _id: my_project #=> projects.my_project
+    name: My Project
+```
+
+When referring to a variable, the variable refers to the _already seeded_ models. In other words, the model's `id` attribute will
+be populated.

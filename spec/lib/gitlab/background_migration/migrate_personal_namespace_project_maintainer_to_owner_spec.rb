@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::MigratePersonalNamespaceProjectMaintainerToOwner, :migration, schema: 20220208080921 do
+RSpec.describe Gitlab::BackgroundMigration::MigratePersonalNamespaceProjectMaintainerToOwner, :migration, schema: 20220314184009 do
   let(:migration) { described_class.new }
   let(:users_table) { table(:users) }
   let(:members_table) { table(:members) }

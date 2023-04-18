@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 `gitlab-sshd` is [a standalone SSH server](https://gitlab.com/gitlab-org/gitlab-shell/-/tree/main/internal/sshd)
 written in Go. It is provided as a part of the `gitlab-shell` package. It has a lower memory
 use as a OpenSSH alternative, and supports
-[group access restriction by IP address](../../user/group/index.md) for applications
+[group access restriction by IP address](../../user/group/access_and_permissions.md#restrict-group-access-by-ip-address) for applications
 running behind the proxy.
 
 `gitlab-sshd` is a lightweight alternative to OpenSSH for providing

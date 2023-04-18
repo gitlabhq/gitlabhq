@@ -22,6 +22,8 @@ module Resolvers
                }
 
       def resolve(legacy_mode:, **args)
+        legacy_mode = nil if Feature.enabled?(:disable_runner_graphql_legacy_mode)
+
         runner.status(legacy_mode)
       end
     end

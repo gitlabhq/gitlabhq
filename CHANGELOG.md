@@ -1552,6 +1552,12 @@ entry.
 - [Remove Gitlab::Redis::DuplicateJobs](gitlab-org/gitlab@73d863b0a49175cce7649c0936b2e16157f61665) ([merge request](gitlab-org/gitlab!109122))
 - [Clean-up feature flag `hash_based_cache_for_protected_branches`](gitlab-org/gitlab@96e8a07564bac07a100556e00ce4af3f21dca293) ([merge request](gitlab-org/gitlab!108724))
 
+## 15.8.6 (2023-04-18)
+
+### Fixed (1 change)
+
+- [Fix automatically-retried jobs stuck in pending state](gitlab-org/gitlab@6db2bf65f0273af547dc84e338db952de0206ada) ([merge request](gitlab-org/gitlab!117283))
+
 ## 15.8.5 (2023-03-30)
 
 ### Security (16 changes)

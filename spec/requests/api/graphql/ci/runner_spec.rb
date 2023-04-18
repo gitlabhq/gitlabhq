@@ -91,7 +91,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
         locked: false,
         active: runner.active,
         paused: !runner.active,
-        status: runner.status('14.5').to_s.upcase,
+        status: runner.status.to_s.upcase,
         job_execution_status: runner.builds.running.any? ? 'RUNNING' : 'IDLE',
         maximum_timeout: runner.maximum_timeout,
         access_level: runner.access_level.to_s.upcase,
@@ -492,8 +492,8 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
 
       paused_runner_data = graphql_data_at(:paused_runner)
       expect(paused_runner_data).to match a_hash_including(
-        'status' => 'PAUSED',
-        'legacyStatusWithExplicitVersion' => 'PAUSED',
+        'status' => 'OFFLINE',
+        'legacyStatusWithExplicitVersion' => 'OFFLINE',
         'newStatus' => 'OFFLINE'
       )
 
@@ -503,6 +503,37 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
         'legacyStatusWithExplicitVersion' => 'NEVER_CONTACTED',
         'newStatus' => 'NEVER_CONTACTED'
       )
+    end
+
+    context 'when disable_runner_graphql_legacy_mode is enabled' do
+      before do
+        stub_feature_flags(disable_runner_graphql_legacy_mode: false)
+      end
+
+      it 'retrieves status fields with expected values' do
+        post_graphql(query, current_user: user)
+
+        stale_runner_data = graphql_data_at(:stale_runner)
+        expect(stale_runner_data).to match a_hash_including(
+          'status' => 'STALE',
+          'legacyStatusWithExplicitVersion' => 'STALE',
+          'newStatus' => 'STALE'
+        )
+
+        paused_runner_data = graphql_data_at(:paused_runner)
+        expect(paused_runner_data).to match a_hash_including(
+          'status' => 'PAUSED',
+          'legacyStatusWithExplicitVersion' => 'PAUSED',
+          'newStatus' => 'OFFLINE'
+        )
+
+        never_contacted_instance_runner_data = graphql_data_at(:never_contacted_instance_runner)
+        expect(never_contacted_instance_runner_data).to match a_hash_including(
+          'status' => 'NEVER_CONTACTED',
+          'legacyStatusWithExplicitVersion' => 'NEVER_CONTACTED',
+          'newStatus' => 'NEVER_CONTACTED'
+        )
+      end
     end
   end
 

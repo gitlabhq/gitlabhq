@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillMemberNamespaceForGroupMembers, :migration, schema: 20220120211832 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillMemberNamespaceForGroupMembers, :migration, schema: 20220314184009 do
   let(:migration) { described_class.new }
   let(:members_table) { table(:members) }
   let(:namespaces_table) { table(:namespaces) }

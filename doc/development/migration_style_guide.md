@@ -156,7 +156,7 @@ regenerate a clean `db/structure.sql` for the migrations you're
 adding. This script applies all migrations found in `db/migrate`
 or `db/post_migrate`, so if there are any migrations you don't want to
 commit to the schema, rename or remove them. If your branch is not
-targeting `main` you can set the `TARGET` environment variable.
+targeting the default Git branch, you can set the `TARGET` environment variable.
 
 ```shell
 # Regenerate schema against `main`
