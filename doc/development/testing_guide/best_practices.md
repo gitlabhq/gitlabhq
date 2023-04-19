@@ -472,6 +472,10 @@ You can use `if: Gitlab.ee?` or `unless: Gitlab.ee?` on context/spec blocks to e
 
 Example: [SchemaValidator reads a different path depending on the license](https://gitlab.com/gitlab-org/gitlab/-/blob/7cdcf9819cfa02c701d6fa9f18c1e7a8972884ed/spec/lib/gitlab/ci/parsers/security/validators/schema_validator_spec.rb#L571)
 
+### Tests depending on SaaS
+
+You can use the `:saas` RSpec metadata tag helper on context/spec blocks to test code that only runs on GitLab.com. This helper sets `Gitlab.config.gitlab['url']` to `Gitlab::Saas.com_url`.
+
 ### Coverage
 
 [`simplecov`](https://github.com/colszowka/simplecov) is used to generate code test coverage reports.

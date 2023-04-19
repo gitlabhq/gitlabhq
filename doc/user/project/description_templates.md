@@ -16,7 +16,7 @@ You might want to use these templates:
 
 - For different stages of your workflow, for example, feature proposal, feature improvement, or a bug report.
 - For every issue or merge request for a specific project, so the layout is consistent.
-- For a [Service Desk email template](service_desk.md#new-service-desk-issues).
+- For a [Service Desk email template](service_desk.md#use-a-custom-template-for-service-desk-issues).
 
 For description templates to work, they must be:
 

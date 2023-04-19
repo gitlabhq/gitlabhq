@@ -27,7 +27,7 @@ export default {
 <template>
   <gl-tab :title="$options.i18n.title">
     <activity-calendar />
-    <div class="gl-mx-n3 gl-display-flex gl-flex-wrap-wrap">
+    <div class="gl-mx-n3 gl-display-flex gl-flex-wrap">
       <div class="gl-px-3 gl-w-full gl-lg-w-half"></div>
       <div class="gl-px-3 gl-w-full gl-lg-w-half" data-testid="personal-projects-section">
         <div

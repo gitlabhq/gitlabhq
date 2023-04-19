@@ -142,7 +142,7 @@ export default {
         <!-- If there is no room beside the path, meta attributes are put ABOVE it (flex-wrap-reverse). -->
         <!-- See design: https://gitlab-org.gitlab.io/gitlab-design/hosted/pedro/%2383-issue-mr-rows-cards-spec-previews/#artboard16 -->
         <div
-          class="item-meta gl-display-flex gl-md-justify-content-space-between gl-gap-3 gl-flex-wrap-wrap-reverse"
+          class="item-meta gl-display-flex gl-md-justify-content-space-between gl-gap-3 gl-flex-wrap-reverse"
         >
           <!-- Path area: status icon (<XL), path, issue # -->
           <div

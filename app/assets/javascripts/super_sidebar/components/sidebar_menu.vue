@@ -134,7 +134,7 @@ export default {
       <ul class="gl-p-0 gl-m-0">
         <nav-item v-for="item in staticItems" :key="item.id" :item="item" is-static />
       </ul>
-      <hr class="gl-my-2 gl-mx-4" />
+      <hr aria-hidden="true" class="gl-my-2 gl-mx-4" />
     </section>
 
     <pinned-section

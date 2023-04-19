@@ -29,6 +29,11 @@ This integration method supports [Smart Commits](dvcs/index.md#smart-commits).
 For an overview, see
 [Configure the GitLab for Jira Cloud app from the Atlassian Marketplace](https://youtu.be/SwR-g1s1zTo).
 
+Prerequisites:
+
+- You must have at least the Maintainer role for the GitLab namespace.
+- You must have administrator access to the Jira instance.
+
 To install the GitLab for Jira Cloud app:
 
 1. In Jira, go to **Jira Settings > Apps > Find new apps**, then search for GitLab.
@@ -47,8 +52,6 @@ To install the GitLab for Jira Cloud app:
 1. To open the list of available namespaces, select **Add namespace**.
 
 1. Identify the namespace you want to link, and select **Link**.
-   - You must have at least the Maintainer role for the namespace.
-   - Only Jira site administrators can add or remove namespaces for an installation.
 
    ![Link namespace in GitLab for Jira Cloud app](img/jira_dev_panel_setup_com_4_v13_9.png)
 

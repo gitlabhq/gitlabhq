@@ -99,6 +99,6 @@ export default {
         {{ $options.i18n.emptyHint }}
       </div>
     </gl-collapse>
-    <hr class="gl-my-2 gl-mx-4" />
+    <hr aria-hidden="true" class="gl-my-2 gl-mx-4" />
   </section>
 </template>

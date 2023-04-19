@@ -97,7 +97,7 @@ export default {
 
     <div
       v-else-if="podStats && !error"
-      class="gl-display-flex gl-flex-wrap-wrap gl-sm-flex-nowrap gl-mx-n3 gl-mt-n3"
+      class="gl-display-flex gl-flex-wrap gl-sm-flex-nowrap gl-mx-n3 gl-mt-n3"
     >
       <gl-single-stat
         v-for="(stat, index) in podStats"

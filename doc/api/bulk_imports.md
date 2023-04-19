@@ -4,9 +4,10 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group migration by direct transfer API **(FREE)**
+# Group and project migration by direct transfer API **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64335) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64335) in GitLab 14.1.
+> - Project migration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
 
 With the group migration by direct transfer API, you can start and view the progress of migrations initiated with
 [group migration by direct transfer](../user/group/import/index.md#migrate-groups-by-direct-transfer-recommended).
@@ -16,10 +17,15 @@ With the group migration by direct transfer API, you can start and view the prog
 For information on prerequisites for group migration by direct transfer API, see
 prerequisites for [migrating groups by direct transfer](../user/group/import/index.md#prerequisites).
 
-## Start a new group migration
+## Start a new group or project migration
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66353) in GitLab 14.2.
 > - `project_entity` source type [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
+
+Use this endpoint to start a new group or project migration. Specify:
+
+- `entities[group_entity]` to migrate a group.
+- `entities[project_entity]` to migrate a project.
 
 ```plaintext
 POST /bulk_imports
@@ -60,7 +66,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 { "id": 1, "status": "created", "source_type": "gitlab", "created_at": "2021-06-18T09:45:55.358Z", "updated_at": "2021-06-18T09:46:27.003Z" }
 ```
 
-## List all group migrations
+## List all group or project migrations
 
 ```plaintext
 GET /bulk_imports
@@ -103,7 +109,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 ]
 ```
 
-## List all group migrations' entities
+## List all group or project migrations' entities
 
 ```plaintext
 GET /bulk_imports/entities
@@ -171,7 +177,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 ]
 ```
 
-## Get group migration details
+## Get group or project migration details
 
 ```plaintext
 GET /bulk_imports/:id
@@ -191,7 +197,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 }
 ```
 
-## List group migration entities
+## List group or project migration entities
 
 ```plaintext
 GET /bulk_imports/:id/entities
@@ -227,7 +233,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 ]
 ```
 
-## Get group migration entity details
+## Get group or project migration entity details
 
 ```plaintext
 GET /bulk_imports/:id/entities/:entity_id

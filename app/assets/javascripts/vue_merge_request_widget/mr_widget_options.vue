@@ -13,7 +13,6 @@ import { createAlert } from '~/alert';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import notify from '~/lib/utils/notify';
 import { sprintf, s__, __ } from '~/locale';
-import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -479,7 +478,6 @@ export default {
             el.innerHTML = res.data;
             document.body.appendChild(el);
             document.dispatchEvent(new CustomEvent('merged:UpdateActions'));
-            Project.initRefSwitcher();
           }
         })
         .catch(() =>

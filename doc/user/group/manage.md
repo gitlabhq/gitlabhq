@@ -477,6 +477,10 @@ You can export a list of members in a group or subgroup as a CSV.
 1. Select **Export as CSV**.
 1. After the CSV file has been generated, it is emailed as an attachment to the user that requested it.
 
+The output lists direct members and members inherited from the ancestor groups.
+For members with `Minimal Access` in the selected group, their `Max Role` and `Source` are derived from their membership in subgroups.
+[Issue 390358](https://gitlab.com/gitlab-org/gitlab/-/issues/390358) tracks the discussion about the group members CSV export list not matching the UI members list.
+
 ## User cap for groups
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330027) in GitLab 14.7.

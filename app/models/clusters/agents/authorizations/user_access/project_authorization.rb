@@ -15,6 +15,16 @@ module Clusters
           def config_project
             agent.project
           end
+
+          class << self
+            def upsert_configs(configs)
+              upsert_all(configs, unique_by: [:agent_id, :project_id])
+            end
+
+            def delete_unlisted(project_ids)
+              where.not(project_id: project_ids).delete_all
+            end
+          end
         end
       end
     end

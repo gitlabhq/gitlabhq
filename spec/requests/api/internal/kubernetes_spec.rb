@@ -147,6 +147,14 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :kubernetes_manageme
           projects: [
             { id: project.full_path, default_namespace: 'staging' }
           ]
+        },
+        user_access: {
+          groups: [
+            { id: group.full_path }
+          ],
+          projects: [
+            { id: project.full_path }
+          ]
         }
       }
     end
@@ -160,6 +168,8 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :kubernetes_manageme
         expect(response).to have_gitlab_http_status(:no_content)
         expect(agent.ci_access_authorized_groups).to contain_exactly(group)
         expect(agent.ci_access_authorized_projects).to contain_exactly(project)
+        expect(agent.user_access_authorized_groups).to contain_exactly(group)
+        expect(agent.user_access_authorized_projects).to contain_exactly(project)
       end
     end
 
