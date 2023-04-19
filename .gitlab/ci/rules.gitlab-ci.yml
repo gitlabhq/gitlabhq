@@ -1406,6 +1406,19 @@
       when: manual
       allow_failure: true
 
+.qa:rules:package-and-test-sidebar:
+  rules:
+    - !reference [".qa:rules:package-and-test-mrs", rules]
+    - <<: *if-dot-com-gitlab-org-schedule
+      allow_failure: true
+      variables:
+        SKIP_REPORT_IN_ISSUES: "true"
+        PROCESS_TEST_RESULTS: "false"
+        KNAPSACK_GENERATE_REPORT: "false"
+        UPDATE_QA_CACHE: "false"
+        QA_SAVE_TEST_METRICS: "true"
+        QA_EXPORT_TEST_METRICS: "false" # on main runs, metrics are exported to separate bucket via rake task for better consistency
+
 ###############
 # Rails rules #
 ###############

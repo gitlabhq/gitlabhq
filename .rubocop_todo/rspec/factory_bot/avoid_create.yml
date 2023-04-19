@@ -50,7 +50,7 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/helpers/ee/security_orchestration_helper_spec.rb'
     - 'ee/spec/helpers/ee/subscribable_banner_helper_spec.rb'
     - 'ee/spec/helpers/ee/todos_helper_spec.rb'
-    - 'ee/spec/helpers/ee/trial_helper_spec.rb'
+    - 'ee/spec/helpers/trials_helper_spec.rb'
     - 'ee/spec/helpers/ee/users/callouts_helper_spec.rb'
     - 'ee/spec/helpers/ee/welcome_helper_spec.rb'
     - 'ee/spec/helpers/ee/wiki_helper_spec.rb'

@@ -191,7 +191,6 @@ Style/PercentLiteralDelimiters:
     - 'ee/app/helpers/ee/issues_helper.rb'
     - 'ee/app/helpers/ee/labels_helper.rb'
     - 'ee/app/helpers/ee/nav_helper.rb'
-    - 'ee/app/helpers/ee/trial_helper.rb'
     - 'ee/app/mailers/previews/ci_minutes_usage_mailer_preview.rb'
     - 'ee/app/mailers/previews/emails/namespace_storage_usage_mailer_preview.rb'
     - 'ee/app/mailers/previews/license_mailer_preview.rb'

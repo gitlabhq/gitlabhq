@@ -46,7 +46,6 @@ Layout/FirstHashElementIndentation:
     - 'ee/app/graphql/mutations/iterations/update.rb'
     - 'ee/app/helpers/ee/geo_helper.rb'
     - 'ee/app/helpers/ee/groups/group_members_helper.rb'
-    - 'ee/app/helpers/ee/trial_helper.rb'
     - 'ee/app/models/ee/list.rb'
     - 'ee/app/services/app_sec/dast/profiles/update_service.rb'
     - 'ee/app/services/elastic/cluster_reindexing_service.rb'

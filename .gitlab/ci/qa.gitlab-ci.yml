@@ -108,7 +108,9 @@ e2e:package-and-test-ce:
     PIPELINE_NAME: E2E Omnibus GitLab CE
 
 e2e:package-and-test-super-sidebar:
-  extends: e2e:package-and-test-ee
+  extends:
+    - e2e:package-and-test-ee
+    - .qa:rules:package-and-test-sidebar
   when: manual
   variables:
     QA_SUPER_SIDEBAR_ENABLED: "true"
