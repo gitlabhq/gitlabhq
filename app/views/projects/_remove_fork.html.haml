@@ -7,5 +7,5 @@
 
   = form_for @project, url: remove_fork_project_path(@project), method: :delete, html: { id: remove_form_id } do |f|
     %p
-      %strong= _('Once removed, the fork relationship cannot be restored. This project will no longer be able to receive or send merge requests to the source project or other forks.')
+      %strong= _('After it is removed, the fork relationship can only be restored by using the API. This project will no longer be able to receive or send merge requests to the upstream project or other forks.')
     .js-confirm-danger{ data: remove_fork_project_confirm_json(@project, remove_form_id) }

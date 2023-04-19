@@ -4,7 +4,9 @@ module QA
   module Page
     module Main
       class Menu < Page::Base
-        prepend Mobile::Page::Main::Menu if Runtime::Env.mobile_layout?
+        # We need to check phone_layout? instead of mobile_layout? here
+        # since tablets have the regular top navigation bar
+        prepend Mobile::Page::Main::Menu if Runtime::Env.phone_layout?
 
         if Runtime::Env.super_sidebar_enabled?
           prepend SubMenus::CreateNewMenu
@@ -15,8 +17,8 @@ module QA
           # Define alternative navbar (super sidebar) which does not yet implement all the same elements
           view 'app/assets/javascripts/super_sidebar/components/super_sidebar.vue' do
             element :navbar, required: true # TODO: rename to sidebar once it's default implementation
-            element :user_menu, required: !QA::Runtime::Env.mobile_layout?
-            element :user_avatar_content, required: !QA::Runtime::Env.mobile_layout?
+            element :user_menu, required: !Runtime::Env.phone_layout?
+            element :user_avatar_content, required: !Runtime::Env.phone_layout?
           end
 
           view 'app/assets/javascripts/super_sidebar/components/user_menu.vue' do
@@ -27,12 +29,12 @@ module QA
           view 'app/views/layouts/header/_default.html.haml' do
             element :navbar, required: true
             element :canary_badge_link
-            element :user_avatar_content, required: !QA::Runtime::Env.mobile_layout?
-            element :user_menu, required: !QA::Runtime::Env.mobile_layout?
+            element :user_avatar_content, required: !Runtime::Env.phone_layout?
+            element :user_menu, required: !Runtime::Env.phone_layout?
             element :stop_impersonation_link
-            element :issues_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
-            element :merge_requests_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
-            element :todos_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
+            element :issues_shortcut_button, required: !Runtime::Env.phone_layout?
+            element :merge_requests_shortcut_button, required: !Runtime::Env.phone_layout?
+            element :todos_shortcut_button, required: !Runtime::Env.phone_layout?
           end
 
           view 'app/views/layouts/header/_current_user_dropdown.html.haml' do

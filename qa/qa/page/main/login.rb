@@ -41,6 +41,7 @@ module QA
         view 'app/helpers/auth_helper.rb' do
           element :saml_login_button
           element :github_login_button
+          element :oidc_login_button
         end
 
         view 'app/views/layouts/devise.html.haml' do
@@ -188,6 +189,11 @@ module QA
           click_element :saml_login_button
         end
 
+        def sign_in_with_oidc
+          set_initial_password_if_present
+          click_element :oidc_login_button
+        end
+
         def sign_out_and_sign_in_as(user:)
           Menu.perform(&:sign_out_if_signed_in)
           has_sign_in_tab?
@@ -231,6 +237,10 @@ module QA
           click_element :sign_in_button
 
           Support::WaitForRequests.wait_for_requests
+
+          wait_until(sleep_interval: 5, message: '502 - GitLab is taking too much time to respond') do
+            has_no_text?('GitLab is taking too much time to respond')
+          end
 
           # For debugging invalid login attempts
           has_notice?('Invalid login or password')

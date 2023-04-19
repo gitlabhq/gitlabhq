@@ -4,9 +4,7 @@ module QA
   module Page
     module SubMenus
       module Common
-        # We need to check remote_mobile_device_name instead of mobile_layout? here
-        # since tablets have the regular top navigation bar but still close the left nav
-        prepend Mobile::Page::SubMenus::Common if QA::Runtime::Env.remote_mobile_device_name
+        prepend Mobile::Page::SubMenus::Common if QA::Runtime::Env.mobile_layout?
 
         def hover_element(element)
           within_sidebar do

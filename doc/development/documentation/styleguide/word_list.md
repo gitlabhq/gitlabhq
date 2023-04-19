@@ -536,6 +536,17 @@ Filtering is different from [searching](#search).
 
 Do not use **foo** in product documentation. You can use it in our API and contributor documentation, but try to use a clearer and more meaningful example instead.
 
+## fork
+
+A **fork** is a project that was created from a **upstream project** by using the
+[forking process](../../../topics/git/terminology.md#fork).
+
+The **upstream project** (also known as the **source project**) and the **fork** have a **fork relationship** and are
+**linked**.
+
+If the [**fork relationship** is removed](../../../user/project/repository/forking_workflow.md#unlink-a-fork), the
+**fork** is **unlinked** from the **upstream project**.
+
 ## future tense
 
 When possible, use present tense instead of future tense. For example, use **after you execute this command, GitLab displays the result** instead of **after you execute this command, GitLab will display the result**. ([Vale](../testing.md#vale) rule: [`FutureTense.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FutureTense.yml))

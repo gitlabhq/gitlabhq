@@ -1,6 +1,7 @@
 <script>
-import { GlAccordion, GlAccordionItem, GlBadge, GlIcon } from '@gitlab/ui';
+import { GlAccordion, GlAccordionItem, GlBadge, GlIcon, GlLink } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { STATISTIC_ITEMS } from '~/import/constants';
 import { STATUSES } from '../constants';
@@ -55,6 +56,13 @@ export default {
     GlAccordionItem,
     GlBadge,
     GlIcon,
+    GlLink,
+  },
+  mixins: [glFeatureFlagMixin()],
+  inject: {
+    detailsPath: {
+      default: undefined,
+    },
   },
   props: {
     status: {
@@ -80,10 +88,13 @@ export default {
       return this.stats && this.knownStats.length > 0;
     },
 
+    isIncomplete() {
+      return this.status === STATUSES.FINISHED && this.stats && isIncompleteImport(this.stats);
+    },
+
     mappedStatus() {
       if (this.status === STATUSES.FINISHED) {
-        const isIncomplete = this.stats && isIncompleteImport(this.stats);
-        return isIncomplete
+        return this.isIncomplete
           ? {
               icon: 'status-alert',
               text: s__('Import|Partially completed'),
@@ -97,6 +108,10 @@ export default {
       }
 
       return STATUS_MAP[this.status];
+    },
+
+    showDetails() {
+      return Boolean(this.detailsPath) && this.glFeatures.importDetailsPage && this.isIncomplete;
     },
   },
 
@@ -118,6 +133,9 @@ export default {
   },
 
   STATISTIC_ITEMS,
+  i18n: {
+    detailsLink: s__('Import|See failures'),
+  },
 };
 </script>
 
@@ -130,7 +148,7 @@ export default {
     </div>
     <gl-accordion v-if="hasStats" :header-level="3">
       <gl-accordion-item :title="__('Details')">
-        <ul class="gl-p-0 gl-list-style-none gl-font-sm">
+        <ul class="gl-p-0 gl-mb-3 gl-list-style-none gl-font-sm">
           <li v-for="key in knownStats" :key="key">
             <div class="gl-display-flex gl-w-20 gl-align-items-center">
               <gl-icon
@@ -145,6 +163,7 @@ export default {
             </div>
           </li>
         </ul>
+        <gl-link v-if="showDetails" :href="detailsPath">{{ $options.i18n.detailsLink }}</gl-link>
       </gl-accordion-item>
     </gl-accordion>
   </div>

@@ -58,6 +58,22 @@ module QA
         browser == :chrome && interception_enabled?
       end
 
+      def release
+        ENV['RELEASE']
+      end
+
+      def release_registry_url
+        ENV['RELEASE_REGISTRY_URL']
+      end
+
+      def release_registry_username
+        ENV['RELEASE_REGISTRY_USERNAME']
+      end
+
+      def release_registry_password
+        ENV['RELEASE_REGISTRY_PASSWORD']
+      end
+
       def ci_job_url
         ENV['CI_JOB_URL']
       end
@@ -187,14 +203,38 @@ module QA
         ENV['QA_BROWSER'].nil? ? :chrome : ENV['QA_BROWSER'].to_sym
       end
 
+      def browser_version
+        ENV['QA_BROWSER_VERSION'] || 'latest'
+      end
+
       def remote_mobile_device_name
-        ENV['QA_REMOTE_MOBILE_DEVICE_NAME']
+        ENV['QA_REMOTE_MOBILE_DEVICE_NAME']&.downcase
+      end
+
+      def layout
+        ENV['QA_LAYOUT']&.downcase || ''
+      end
+
+      def tablet_layout?
+        return true if remote_mobile_device_name && !phone_layout?
+
+        layout.include?('tablet')
+      end
+
+      def phone_layout?
+        return true if layout.include?('phone')
+
+        return false unless remote_mobile_device_name
+
+        !(remote_mobile_device_name.include?('ipad') || remote_mobile_device_name.include?('tablet'))
       end
 
       def mobile_layout?
-        return false if ENV['QA_REMOTE_MOBILE_DEVICE_NAME'].blank?
+        phone_layout? || tablet_layout? || remote_mobile_device_name
+      end
 
-        !(ENV['QA_REMOTE_MOBILE_DEVICE_NAME'].downcase.include?('ipad') || ENV['QA_REMOTE_MOBILE_DEVICE_NAME'].downcase.include?('tablet'))
+      def record_video?
+        enabled?(ENV['QA_RECORD_VIDEO'], default: false)
       end
 
       def user_username

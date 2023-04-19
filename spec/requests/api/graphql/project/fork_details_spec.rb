@@ -24,12 +24,23 @@ RSpec.describe 'getting project fork details', feature_category: :source_code_ma
     )
   end
 
-  it 'returns fork details' do
-    post_graphql(query, current_user: current_user)
+  context 'when a ref is specified' do
+    using RSpec::Parameterized::TableSyntax
 
-    expect(graphql_data['project']['forkDetails']).to eq(
-      { 'ahead' => 1, 'behind' => 29 }
-    )
+    where(:ref, :counts) do
+      'feature' | { 'ahead' => 1, 'behind' => 29 }
+      'v1.1.1' | { 'ahead' => 5, 'behind' => 0 }
+      '7b5160f9bb23a3d58a0accdbe89da13b96b1ece9' | { 'ahead' => 9, 'behind' => 0 }
+      'non-existent-branch' | { 'ahead' => nil, 'behind' => nil }
+    end
+
+    with_them do
+      it 'returns fork details' do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data['project']['forkDetails']).to eq(counts)
+      end
+    end
   end
 
   context 'when a project is not a fork' do
@@ -46,16 +57,6 @@ RSpec.describe 'getting project fork details', feature_category: :source_code_ma
     it 'does not return fork details' do
       project.team.truncate
 
-      post_graphql(query, current_user: current_user)
-
-      expect(graphql_data['project']['forkDetails']).to be_nil
-    end
-  end
-
-  context 'when the specified ref does not exist' do
-    let(:ref) { 'non-existent-branch' }
-
-    it 'does not return fork details' do
       post_graphql(query, current_user: current_user)
 
       expect(graphql_data['project']['forkDetails']).to be_nil

@@ -7,7 +7,7 @@
   .gl-display-flex.gl-flex-wrap{ class: restyle_login_page_enabled ? 'gl-justify-content-center' : 'gl-justify-content-between' }
     - providers.each do |provider|
       - has_icon = provider_has_icon?(provider)
-      = button_to omniauth_authorize_path(:user, provider), id: "oauth-login-#{provider}", class: "btn gl-button btn-default gl-ml-2 gl-mr-2 gl-mb-2 js-oauth-login #{qa_class_for_provider(provider)} #{'gl-w-full' unless restyle_login_page_enabled}", form: { class: restyle_login_page_enabled ? 'gl-mb-3' : 'gl-w-full gl-mb-3' } do
+      = button_to omniauth_authorize_path(:user, provider), id: "oauth-login-#{provider}", data: { qa_selector: "#{qa_selector_for_provider(provider)}" }, class: "btn gl-button btn-default gl-ml-2 gl-mr-2 gl-mb-2 js-oauth-login #{'gl-w-full' unless restyle_login_page_enabled}", form: { class: restyle_login_page_enabled ? 'gl-mb-3' : 'gl-w-full gl-mb-3' } do
         - if has_icon
           = provider_image_tag(provider)
         %span.gl-button-text

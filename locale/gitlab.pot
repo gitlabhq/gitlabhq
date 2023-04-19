@@ -3849,6 +3849,9 @@ msgstr ""
 msgid "After a successful password update, you will be redirected to the login page where you can log in with your new password."
 msgstr ""
 
+msgid "After it is removed, the fork relationship can only be restored by using the API. This project will no longer be able to receive or send merge requests to the upstream project or other forks."
+msgstr ""
+
 msgid "After the Apple App Store Connect integration is activated, the following protected variables will be created for CI/CD use."
 msgstr ""
 
@@ -22361,6 +22364,9 @@ msgstr ""
 msgid "Import|Partially completed"
 msgstr ""
 
+msgid "Import|See failures"
+msgstr ""
+
 msgid "Import|The repository could not be imported."
 msgstr ""
 
@@ -30655,9 +30661,6 @@ msgid "OnDemandScans|at"
 msgstr ""
 
 msgid "Once imported, repositories can be mirrored over SSH. Read more %{link_start}here%{link_end}."
-msgstr ""
-
-msgid "Once removed, the fork relationship cannot be restored. This project will no longer be able to receive or send merge requests to the source project or other forks."
 msgstr ""
 
 msgid "One more item"

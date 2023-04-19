@@ -14,7 +14,6 @@ module Resolvers
       def resolve(**args)
         return unless project.forked?
         return unless authorized_fork_source?
-        return unless project.repository.branch_exists?(args[:ref])
 
         ::Projects::Forks::Details.new(project, args[:ref])
       end

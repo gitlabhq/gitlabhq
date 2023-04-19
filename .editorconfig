@@ -17,5 +17,18 @@ charset = utf-8
 [*.{md,markdown,js.snap}]
 trim_trailing_whitespace = false
 
+[doc/**/*.md]
+trim_trailing_whitespace = true
+
 [*.rb]
 max_line_length = 120
+
+# Don't apply editorconfig rules to vendor/ resources
+[vendor/**]
+charset = unset
+end_of_line = unset
+indent_size = unset
+indent_style = unset
+insert_final_newline = unset
+trim_trailing_whitespace = unset
+max_line_length = unset

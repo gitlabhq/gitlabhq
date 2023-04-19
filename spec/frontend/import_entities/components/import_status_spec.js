@@ -1,4 +1,4 @@
-import { GlAccordionItem, GlBadge, GlIcon } from '@gitlab/ui';
+import { GlAccordionItem, GlBadge, GlIcon, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import ImportStatus from '~/import_entities/components/import_status.vue';
 import { STATUSES } from '~/import_entities/constants';
@@ -6,11 +6,16 @@ import { STATUSES } from '~/import_entities/constants';
 describe('Import entities status component', () => {
   let wrapper;
 
-  const createComponent = (propsData) => {
+  const mockStatItems = { label: 100, note: 200 };
+
+  const createComponent = (propsData, { provide } = {}) => {
     wrapper = shallowMount(ImportStatus, {
       propsData,
+      provide,
     });
   };
+
+  const findGlLink = () => wrapper.findComponent(GlLink);
 
   describe('success status', () => {
     const getStatusText = () => wrapper.findComponent(GlBadge).text();
@@ -24,13 +29,11 @@ describe('Import entities status component', () => {
     });
 
     it('displays finished status as complete when all stats items were processed', () => {
-      const statItems = { label: 100, note: 200 };
-
       createComponent({
         status: STATUSES.FINISHED,
         stats: {
-          fetched: { ...statItems },
-          imported: { ...statItems },
+          fetched: { ...mockStatItems },
+          imported: { ...mockStatItems },
         },
       });
 
@@ -39,13 +42,11 @@ describe('Import entities status component', () => {
     });
 
     it('displays finished status as partial when all stats items were processed', () => {
-      const statItems = { label: 100, note: 200 };
-
       createComponent({
         status: STATUSES.FINISHED,
         stats: {
-          fetched: { ...statItems },
-          imported: { ...statItems, label: 50 },
+          fetched: { ...mockStatItems },
+          imported: { ...mockStatItems, label: 50 },
         },
       });
 
@@ -150,5 +151,54 @@ describe('Import entities status component', () => {
 
       expect(getStatusIcon()).toBe('status-success');
     });
+  });
+
+  describe('show details link', () => {
+    const mockDetailsPath = 'details_path';
+    const mockCompleteStats = {
+      fetched: { ...mockStatItems },
+      imported: { ...mockStatItems },
+    };
+    const mockIncompleteStats = {
+      fetched: { ...mockStatItems },
+      imported: { ...mockStatItems, label: 50 },
+    };
+
+    describe.each`
+      detailsPath        | importDetailsPage | partialImport | expectLink
+      ${undefined}       | ${false}          | ${false}      | ${false}
+      ${undefined}       | ${false}          | ${true}       | ${false}
+      ${undefined}       | ${true}           | ${false}      | ${false}
+      ${undefined}       | ${true}           | ${true}       | ${false}
+      ${mockDetailsPath} | ${false}          | ${false}      | ${false}
+      ${mockDetailsPath} | ${false}          | ${true}       | ${false}
+      ${mockDetailsPath} | ${true}           | ${false}      | ${false}
+      ${mockDetailsPath} | ${true}           | ${true}       | ${true}
+    `(
+      'when detailsPath is $detailsPath, feature flag importDetailsPage is $importDetailsPage, partial import is $partialImport',
+      ({ detailsPath, importDetailsPage, partialImport, expectLink }) => {
+        beforeEach(() => {
+          createComponent(
+            {
+              status: STATUSES.FINISHED,
+              stats: partialImport ? mockIncompleteStats : mockCompleteStats,
+            },
+            {
+              provide: {
+                detailsPath,
+                glFeatures: { importDetailsPage },
+              },
+            },
+          );
+        });
+
+        it(`${expectLink ? 'renders' : 'does not render'} import details link`, () => {
+          expect(findGlLink().exists()).toBe(expectLink);
+          if (expectLink) {
+            expect(findGlLink().attributes('href')).toBe(mockDetailsPath);
+          }
+        });
+      },
+    );
   });
 });

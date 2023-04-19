@@ -25,6 +25,8 @@ module Mutations
         return respond(nil, ['Feature flag is disabled']) unless Feature.enabled?(:synchronize_fork,
           project.fork_source)
 
+        return respond(nil, ['Target branch does not exist']) unless project.repository.branch_exists?(target_branch)
+
         details_resolver = Resolvers::Projects::ForkDetailsResolver.new(object: project, context: context, field: nil)
         details = details_resolver.resolve(ref: target_branch)
 

@@ -11,6 +11,10 @@ class Import::GithubController < Import::BaseController
   before_action :provider_auth, only: [:status, :realtime_changes, :create]
   before_action :expire_etag_cache, only: [:status, :create]
 
+  before_action only: [:status] do
+    push_frontend_feature_flag(:import_details_page)
+  end
+
   rescue_from Octokit::Unauthorized, with: :provider_unauthorized
   rescue_from Octokit::TooManyRequests, with: :provider_rate_limit
   rescue_from Gitlab::GithubImport::RateLimitError, with: :rate_limit_threshold_exceeded

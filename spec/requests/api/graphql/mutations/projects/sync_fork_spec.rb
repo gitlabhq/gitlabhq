@@ -110,6 +110,14 @@ RSpec.describe "Sync project fork", feature_category: :source_code_management do
         end
       end
 
+      context 'when the specified branch does not exist' do
+        let(:target_branch) { 'non-existent-branch' }
+
+        it 'returns an error' do
+          expect_error_response('Target branch does not exist')
+        end
+      end
+
       context 'when the previous execution resulted in a conflict' do
         it 'returns an error' do
           expect_next_instance_of(::Projects::Forks::Details) do |instance|

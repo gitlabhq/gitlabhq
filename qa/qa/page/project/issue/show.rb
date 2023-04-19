@@ -8,7 +8,9 @@ module QA
           include Page::Component::Note
           include Page::Component::DesignManagement
           include Page::Component::Issuable::Sidebar
-          prepend Mobile::Page::Project::Issue::Show if Runtime::Env.mobile_layout?
+          # We need to check phone_layout? instead of mobile_layout? here
+          # since tablets have the regular top navigation bar
+          prepend Mobile::Page::Project::Issue::Show if Runtime::Env.phone_layout?
 
           view 'app/assets/javascripts/issuable/components/related_issuable_item.vue' do
             element :remove_related_issue_button

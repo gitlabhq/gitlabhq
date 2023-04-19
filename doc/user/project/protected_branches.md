@@ -100,8 +100,8 @@ To protect a branch for all the projects in a group:
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. In the **Branch** text box, type the branch name or a wildcard.
-1. From the **Allowed to merge** list, select a role, group, or user that can merge into this branch.
-1. From the **Allowed to push** list, select a role, group, or user that can push to this branch.
+1. From the **Allowed to merge** list, select a role that can merge into this branch.
+1. From the **Allowed to push** list, select a role that can push to this branch.
 1. Select **Protect**.
 
 The protected branch is added to the list of protected branches.

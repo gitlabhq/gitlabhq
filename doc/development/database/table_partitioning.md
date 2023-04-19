@@ -555,3 +555,48 @@ class Model < ApplicationRecord
   self.sequence_name = 'model_id_seq'
 end
 ```
+
+If the partitioning constraint migration takes [more than 10 minutes](../migration_style_guide.md#how-long-a-migration-should-take) to finish,
+it can be made to run asynchronously to avoid running the post-migration during busy hours.
+
+Prepend the following migration `AsyncPrepareTableConstraintsForListPartitioning`
+and use `async: true` option. This change marks the partitioning constraint as `NOT VALID`
+and enqueues a scheduled job to validate the existing data in the table during the weekend.
+
+Then the second post-migration `PrepareTableConstraintsForListPartitioning` only
+marks the partitioning constraint as validated, because the existing data is already
+tested during the previous weekend.
+
+For example:
+
+```ruby
+class AsyncPrepareTableConstraintsForListPartitioning < Gitlab::Database::Migration[2.1]
+  include Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers
+
+  disable_ddl_transaction!
+
+  TABLE_NAME = :table_name
+  PARENT_TABLE_NAME = :p_table_name
+  FIRST_PARTITION = 100
+  PARTITION_COLUMN = :partition_id
+
+  def up
+    prepare_constraint_for_list_partitioning(
+      table_name: TABLE_NAME,
+      partitioning_column: PARTITION_COLUMN,
+      parent_table_name: PARENT_TABLE_NAME,
+      initial_partitioning_value: FIRST_PARTITION,
+      async: true
+    )
+  end
+
+  def down
+    revert_preparing_constraint_for_list_partitioning(
+      table_name: TABLE_NAME,
+      partitioning_column: PARTITION_COLUMN,
+      parent_table_name: PARENT_TABLE_NAME,
+      initial_partitioning_value: FIRST_PARTITION
+    )
+  end
+end
+```

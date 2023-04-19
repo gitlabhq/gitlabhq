@@ -8,7 +8,7 @@
       %td
         .clipboard-group
           .input-group
-            %input.label.label-monospace.monospace{ id: "application_id", type: "text", autocomplete: 'off', value: @application.uid, readonly: true }
+            %input.label.label-monospace.monospace{ id: "application_id", type: "text", autocomplete: 'off', value: @application.uid, readonly: true, data: { qa_selector: 'application_id_field' } }
             .input-group-append
               = clipboard_button(target: '#application_id', title: _("Copy ID"), class: "gl-button btn btn-default")
     %tr
@@ -46,3 +46,6 @@
       = link_to _('Continue'), index_path, class: 'btn btn-confirm btn-md gl-button gl-mr-3'
     = link_to _('Edit'), edit_path, class: 'btn btn-default btn-md gl-button'
   = render 'shared/doorkeeper/applications/delete_form', path: delete_path
+
+-# Create a hidden field to save the ID of application created
+= hidden_field_tag(:id_of_application, @application.id, data: { qa_selector: 'id_of_application_field' })

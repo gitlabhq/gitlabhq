@@ -7,6 +7,10 @@
   aggregation: weekly
 - name: i_package_conan_user
   aggregation: weekly
+- name: i_package_debian_deploy_token
+  aggregation: weekly
+- name: i_package_debian_user
+  aggregation: weekly
 - name: i_package_generic_deploy_token
   aggregation: weekly
 - name: i_package_generic_user

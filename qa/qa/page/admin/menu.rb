@@ -67,6 +67,10 @@ module QA
           click_element :admin_overview_groups_link
         end
 
+        def go_to_applications
+          click_element(:sidebar_menu_link, menu_item: 'Applications')
+        end
+
         private
 
         def hover_element(element)

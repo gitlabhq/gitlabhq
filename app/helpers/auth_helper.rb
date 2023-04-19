@@ -45,10 +45,11 @@ module AuthHelper
     provider_has_builtin_icon?(name) || provider_has_custom_icon?(name)
   end
 
-  def qa_class_for_provider(provider)
+  def qa_selector_for_provider(provider)
     {
-      github: 'qa-github-login-button',
-      saml: 'qa-saml-login-button'
+      saml: 'saml_login_button',
+      openid_connect: 'oidc_login_button',
+      github: 'qa-github-login-button'
     }[provider.to_sym]
   end
 

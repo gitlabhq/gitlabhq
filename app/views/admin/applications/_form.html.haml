@@ -4,13 +4,13 @@
   = content_tag :div, class: 'form-group row' do
     .col-12
       = f.label :name
-      = f.text_field :name, class: 'form-control gl-form-input'
+      = f.text_field :name, class: 'form-control gl-form-input', data: { qa_selector: 'name_field' }
       = doorkeeper_errors_for application, :name
 
   = content_tag :div, class: 'form-group row' do
     .col-12
       = f.label :redirect_uri
-      = f.text_area :redirect_uri, class: 'form-control gl-form-input'
+      = f.text_area :redirect_uri, class: 'form-control gl-form-input', data: { qa_selector: 'redirect_uri_field' }
       = doorkeeper_errors_for application, :redirect_uri
       %span.form-text.text-muted
         Use one line per URI
@@ -18,7 +18,7 @@
   = content_tag :div, class: 'form-group row' do
     .col-12
       = f.label :trusted
-      = f.gitlab_ui_checkbox_component :trusted, _('Trusted applications are automatically authorized on GitLab OAuth flow. It\'s highly recommended for the security of users that trusted applications have the confidential setting set to true.')
+      = f.gitlab_ui_checkbox_component :trusted, _('Trusted applications are automatically authorized on GitLab OAuth flow. It\'s highly recommended for the security of users that trusted applications have the confidential setting set to true.'), checkbox_options: { data: { qa_selector: 'trusted_checkbox' } }
 
   = content_tag :div, class: 'form-group row' do
     .col-12
@@ -31,5 +31,5 @@
       = render 'shared/tokens/scopes_form', prefix: 'doorkeeper_application', token: application, scopes: @scopes, f: f
 
   .gl-mt-5
-    = f.submit _('Save application'), pajamas_button: true
+    = f.submit _('Save application'), pajamas_button: true, data: { qa_selector: 'save_application_button' }
     = link_to _('Cancel'), admin_applications_path, class: "gl-button btn btn-default btn-cancel"

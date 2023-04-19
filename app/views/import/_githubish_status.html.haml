@@ -5,6 +5,7 @@
 - paginatable = local_assigns.fetch(:paginatable, false)
 - default_namespace_path = (local_assigns[:default_namespace] || current_user.namespace).full_path
 - cancel_path = local_assigns.fetch(:cancel_path, nil)
+- details_path = local_assigns.fetch(:details_path, nil)
 - provider_title = Gitlab::ImportSources.title(local_assigns.fetch(:provider))
 - optional_stages = local_assigns.fetch(:optional_stages, [])
 
@@ -19,6 +20,7 @@
                                default_target_namespace: default_namespace_path,
                                import_path: url_for([:import, provider, { format: :json }]),
                                cancel_path: cancel_path,
+                               details_path: details_path,
                                filterable: filterable.to_s,
                                paginatable: paginatable.to_s,
                                optional_stages: optional_stages.to_json }.merge(extra_data) }

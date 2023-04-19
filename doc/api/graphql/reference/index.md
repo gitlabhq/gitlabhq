@@ -6525,6 +6525,26 @@ Input type: `VulnerabilityFindingDismissInput`
 | <a id="mutationvulnerabilityfindingdismisserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationvulnerabilityfindingdismissfinding"></a>`finding` | [`PipelineSecurityReportFinding`](#pipelinesecurityreportfinding) | Finding after dismissal. |
 
+### `Mutation.vulnerabilityIssueLinkCreate`
+
+Input type: `VulnerabilityIssueLinkCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilityissuelinkcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilityissuelinkcreateissueid"></a>`issueId` | [`IssueID!`](#issueid) | ID of the issue to link to. |
+| <a id="mutationvulnerabilityissuelinkcreatevulnerabilityids"></a>`vulnerabilityIds` | [`[VulnerabilityID!]!`](#vulnerabilityid) | IDs of vulnerabilities to link to the given issue. Up to 100 can be provided. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilityissuelinkcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilityissuelinkcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationvulnerabilityissuelinkcreateissuelinks"></a>`issueLinks` | [`[VulnerabilityIssueLink!]`](#vulnerabilityissuelink) | Created issue links. |
+
 ### `Mutation.vulnerabilityResolve`
 
 Input type: `VulnerabilityResolveInput`
