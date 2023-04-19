@@ -1,5 +1,7 @@
 - return unless @search_service_presenter.show_results_status?
-.gl-md-pl-5
+- statusBarClass = !show_super_sidebar? ? 'gl-md-pl-5' : ''
+
+.section{ class: statusBarClass }
   .search-results-status
     .gl-display-flex.gl-flex-direction-column
       .gl-p-5.gl-display-flex

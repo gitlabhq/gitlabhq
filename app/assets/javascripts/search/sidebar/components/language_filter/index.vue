@@ -38,7 +38,7 @@ export default {
     reset: s__('GlobalSearch|Reset filters'),
   },
   computed: {
-    ...mapState(['aggregations', 'sidebarDirty']),
+    ...mapState(['aggregations', 'sidebarDirty', 'useNewNavigation']),
     ...mapGetters([
       'languageAggregationBuckets',
       'currentUrlQueryHasLanguageFilters',
@@ -117,7 +117,7 @@ export default {
     class="gl-pt-5 gl-md-pt-0 language-filter-checkbox"
     @submit.prevent="submitQuery"
   >
-    <hr :class="dividerClasses" />
+    <hr v-if="!useNewNavigation" :class="dividerClasses" />
     <div
       v-if="!aggregations.error"
       class="gl-overflow-x-hidden gl-overflow-y-auto"
@@ -147,7 +147,7 @@ export default {
       </gl-button>
     </div>
     <div v-if="!aggregations.error">
-      <hr :class="$options.HR_DEFAULT_CLASSES" />
+      <hr v-if="!useNewNavigation" :class="$options.HR_DEFAULT_CLASSES" />
       <div
         class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-mt-4 gl-mx-5"
       >

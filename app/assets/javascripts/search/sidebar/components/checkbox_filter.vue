@@ -27,7 +27,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['query']),
+    ...mapState(['query', 'useNewNavigation']),
     ...mapGetters(['queryLanguageFilters']),
     dataFilters() {
       return Object.values(this.filtersData?.filters || []);
@@ -69,7 +69,7 @@ export default {
 
 <template>
   <div class="gl-mx-5">
-    <h5 class="gl-mt-0">{{ filtersData.header }}</h5>
+    <h5 class="gl-mt-0" :class="{ 'gl-font-sm': useNewNavigation }">{{ filtersData.header }}</h5>
     <gl-form-checkbox-group v-model="selectedFilter">
       <gl-form-checkbox
         v-for="f in dataFilters"

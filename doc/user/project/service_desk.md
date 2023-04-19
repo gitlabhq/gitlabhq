@@ -62,7 +62,7 @@ To enable Service Desk in your project:
 1. Expand **Service Desk**.
 1. Turn on the **Activate Service Desk** toggle.
 1. Optional. Complete the fields.
-   - [Add a suffix](#configuring-a-custom-email-address-suffix) to your Service Desk email address.
+   - [Add a suffix](#configure-a-custom-email-address-suffix) to your Service Desk email address.
    - If the list below **Template to append to all Service Desk issues** is empty, create a
      [description template](description_templates.md) in your repository.
 1. Select **Save changes**.
@@ -178,25 +178,27 @@ To edit the custom email display name:
 1. Below **Email display name**, enter a new name.
 1. Select **Save changes**.
 
-### Using a custom email address **(FREE SELF)**
+### Use a custom email address **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2201) in GitLab 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284656) in GitLab 13.8.
 
-It is possible to customize the email address used by Service Desk. To do this, you must configure
-a [custom mailbox](#configuring-a-custom-mailbox). If you want you can also configure a
-[custom suffix](#configuring-a-custom-email-address-suffix).
+You can use a custom email address with Service Desk.
 
-#### Configuring a custom mailbox
+To do this, you must configure
+a [custom mailbox](#configure-a-custom-mailbox). You can also configure a
+[custom suffix](#configure-a-custom-email-address-suffix).
+
+#### Configure a custom mailbox
 
 NOTE:
 On GitLab.com a custom mailbox is already configured with `contact-project+%{key}@incoming.gitlab.com` as the email address, you can still configure the
-[custom suffix](#configuring-a-custom-email-address-suffix) in project settings.
+[custom suffix](#configure-a-custom-email-address-suffix) in project settings.
 
 Service Desk uses the [incoming email](../../administration/incoming_email.md)
 configuration by default. However, by using the `service_desk_email` configuration,
 you can customize the mailbox used by Service Desk. This allows you to have
-a separate email address for Service Desk by also configuring a [custom suffix](#configuring-a-custom-email-address-suffix)
+a separate email address for Service Desk by also configuring a [custom suffix](#configure-a-custom-email-address-suffix)
 in project settings.
 
 Prerequisites:
@@ -392,7 +394,8 @@ read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secre
 > - Alternative Azure deployments [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5978) in GitLab 14.9.
 
 Service Desk can be configured to read Microsoft Exchange Online mailboxes with the Microsoft
-Graph API instead of IMAP. Follow the [documentation in the incoming email section for setting up an OAuth 2.0 application for Microsoft Graph](../../administration/incoming_email.md#microsoft-graph).
+Graph API instead of IMAP. Set up an OAuth 2.0 application for Microsoft Graph
+[the same way as for incoming email](../../administration/incoming_email.md#microsoft-graph).
 
 - Example for Omnibus GitLab installations:
 
@@ -411,31 +414,43 @@ Graph API instead of IMAP. Follow the [documentation in the incoming email secti
   }
   ```
 
-For Microsoft Cloud for US Government or [other Azure deployments](https://learn.microsoft.com/en-us/graph/deployments), configure the `azure_ad_endpoint` and `graph_endpoint` settings.
+For Microsoft Cloud for US Government or [other Azure deployments](https://learn.microsoft.com/en-us/graph/deployments),
+configure the `azure_ad_endpoint` and `graph_endpoint` settings.
 
 - Example for Microsoft Cloud for US Government:
 
 ```ruby
-  gitlab_rails['service_desk_email_inbox_options'] = {
-   'azure_ad_endpoint': 'https://login.microsoftonline.us',
-   'graph_endpoint': 'https://graph.microsoft.us',
-   'tenant_id': '<YOUR-TENANT-ID>',
-   'client_id': '<YOUR-CLIENT-ID>',
-   'client_secret': '<YOUR-CLIENT-SECRET>',
-   'poll_interval': 60  # Optional
-  }
+gitlab_rails['service_desk_email_inbox_options'] = {
+ 'azure_ad_endpoint': 'https://login.microsoftonline.us',
+ 'graph_endpoint': 'https://graph.microsoft.us',
+ 'tenant_id': '<YOUR-TENANT-ID>',
+ 'client_id': '<YOUR-CLIENT-ID>',
+ 'client_secret': '<YOUR-CLIENT-SECRET>',
+ 'poll_interval': 60  # Optional
 }
 ```
 
-The Microsoft Graph API is not yet supported in source installations. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/326169) for more details.
+The Microsoft Graph API is not yet supported in source installations.
+For more information, see [issue 326169](https://gitlab.com/gitlab-org/gitlab/-/issues/326169).
 
-#### Configuring a custom email address suffix
+#### Configure a custom email address suffix
 
-You can set a custom suffix in your project's Service Desk settings after you have configured a [custom mailbox](#configuring-a-custom-mailbox).
-It can contain only lowercase letters (`a-z`), numbers (`0-9`), or underscores (`_`).
+You can set a custom suffix in your project's Service Desk settings.
+
+A suffix can contain only lowercase letters (`a-z`), numbers (`0-9`), or underscores (`_`).
 
 When configured, the custom suffix creates a new Service Desk email address, consisting of the
 `service_desk_email_address` setting and a key of the format: `<project_full_path>-<custom_suffix>`
+
+Prerequisites:
+
+- You must have configured a [custom mailbox](#configure-a-custom-mailbox).
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Service Desk**.
+1. Below **Email address suffix**, enter the suffix to use.
+1. Select **Save changes**.
 
 For example, suppose the `mygroup/myproject` project Service Desk settings has the following configured:
 
@@ -445,12 +460,22 @@ For example, suppose the `mygroup/myproject` project Service Desk settings has t
 The Service Desk email address for this project is: `contact+mygroup-myproject-support@example.com`.
 The [incoming email](../../administration/incoming_email.md) address still works.
 
-If you don't configure the custom suffix, the default project identification is used for identifying the project. You can see that email address in the project settings.
+If you don't configure a custom suffix, the default project identification is used for identifying
+the project.
 
 ## Use Service Desk
 
 You can use Service Desk to [create an issue](#as-an-end-user-issue-creator) or [respond to one](#as-a-responder-to-the-issue).
 In these issues, you can also see our friendly neighborhood [Support Bot](#support-bot-user).
+
+### View Service Desk email address
+
+To check what the Service Desk email address is for your project:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Issues > Service Desk**.
+
+The email address is available at the top of the issue list.
 
 ### As an end user (issue creator)
 

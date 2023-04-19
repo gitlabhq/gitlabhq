@@ -12177,6 +12177,25 @@ CREATE SEQUENCE audit_events_id_seq
 
 ALTER SEQUENCE audit_events_id_seq OWNED BY audit_events.id;
 
+CREATE TABLE audit_events_instance_external_audit_event_destinations (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    destination_url text NOT NULL,
+    encrypted_verification_token bytea NOT NULL,
+    encrypted_verification_token_iv bytea NOT NULL,
+    CONSTRAINT check_4dc67167ce CHECK ((char_length(destination_url) <= 255))
+);
+
+CREATE SEQUENCE audit_events_instance_external_audit_event_destinations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE audit_events_instance_external_audit_event_destinations_id_seq OWNED BY audit_events_instance_external_audit_event_destinations.id;
+
 CREATE TABLE audit_events_streaming_event_type_filters (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -24674,6 +24693,8 @@ ALTER TABLE ONLY audit_events ALTER COLUMN id SET DEFAULT nextval('audit_events_
 
 ALTER TABLE ONLY audit_events_external_audit_event_destinations ALTER COLUMN id SET DEFAULT nextval('audit_events_external_audit_event_destinations_id_seq'::regclass);
 
+ALTER TABLE ONLY audit_events_instance_external_audit_event_destinations ALTER COLUMN id SET DEFAULT nextval('audit_events_instance_external_audit_event_destinations_id_seq'::regclass);
+
 ALTER TABLE ONLY audit_events_streaming_event_type_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_event_type_filters_id_seq'::regclass);
 
 ALTER TABLE ONLY audit_events_streaming_headers ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_headers_id_seq'::regclass);
@@ -26424,6 +26445,9 @@ ALTER TABLE ONLY atlassian_identities
 
 ALTER TABLE ONLY audit_events_external_audit_event_destinations
     ADD CONSTRAINT audit_events_external_audit_event_destinations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY audit_events_instance_external_audit_event_destinations
+    ADD CONSTRAINT audit_events_instance_external_audit_event_destinations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY audit_events
     ADD CONSTRAINT audit_events_pkey PRIMARY KEY (id, created_at);

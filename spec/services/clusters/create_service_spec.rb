@@ -50,7 +50,7 @@ RSpec.describe Clusters::CreateService, feature_category: :deployment_management
     end
 
     context 'when project has a cluster' do
-      include_context 'valid cluster create params'
+      include_context 'with valid cluster create params'
       let!(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
 
       it 'creates another cluster' do

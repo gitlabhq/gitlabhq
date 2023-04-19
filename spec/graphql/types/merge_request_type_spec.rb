@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['MergeRequest'] do
+RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_review_workflow do
   include GraphqlHelpers
 
   specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::MergeRequest) }
@@ -36,7 +36,7 @@ RSpec.describe GitlabSchema.types['MergeRequest'] do
       commit_count current_user_todos conflicts auto_merge_enabled approved_by source_branch_protected
       squash_on_merge available_auto_merge_strategies
       has_ci mergeable commits committers commits_without_merge_commits squash security_auto_fix default_squash_commit_message
-      auto_merge_strategy merge_user
+      auto_merge_strategy merge_user award_emoji
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields).at_least

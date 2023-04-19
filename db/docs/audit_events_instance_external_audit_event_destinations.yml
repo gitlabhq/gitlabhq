@@ -1,0 +1,10 @@
+---
+table_name: audit_events_instance_external_audit_event_destinations
+classes:
+  - AuditEvents::InstanceExternalAuditEventDestination
+feature_categories:
+  - audit_events
+description: Stores external destination urls for instance level audit events.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116909
+milestone: '15.11'
+gitlab_schema: gitlab_main

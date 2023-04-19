@@ -2,7 +2,6 @@
 
 require 'spec_helper'
 require 'rspec-parameterized'
-require "support/graphql/fake_query_type"
 
 RSpec.describe Gitlab::Graphql::Tracers::MetricsTracer do
   using RSpec::Parameterized::TableSyntax

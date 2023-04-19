@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlLink } from '@gitlab/ui';
 import { mapActions, mapState, mapGetters } from 'vuex';
+import { HR_DEFAULT_CLASSES } from '../constants/index';
 import { confidentialFilterData } from '../constants/confidential_filter_data';
 import { stateFilterData } from '../constants/state_filter_data';
 import ConfidentialityFilter from './confidentiality_filter.vue';
@@ -15,7 +16,7 @@ export default {
     ConfidentialityFilter,
   },
   computed: {
-    ...mapState(['urlQuery', 'sidebarDirty']),
+    ...mapState(['urlQuery', 'sidebarDirty', 'useNewNavigation']),
     ...mapGetters(['currentScope']),
     showReset() {
       return this.urlQuery.state || this.urlQuery.confidential;
@@ -26,6 +27,9 @@ export default {
     showStatusFilter() {
       return Object.values(stateFilterData.scopes).includes(this.currentScope);
     },
+    hrClasses() {
+      return [...HR_DEFAULT_CLASSES, 'gl-display-none', 'gl-md-display-block'];
+    },
   },
   methods: {
     ...mapActions(['applyQuery', 'resetQuery']),
@@ -35,7 +39,7 @@ export default {
 
 <template>
   <form class="gl-pt-5 gl-md-pt-0" @submit.prevent="applyQuery">
-    <hr class="gl-my-5 gl-mx-5 gl-border-gray-100 gl-display-none gl-md-display-block" />
+    <hr v-if="!useNewNavigation" :class="hrClasses" />
     <status-filter v-if="showStatusFilter" />
     <confidentiality-filter v-if="showConfidentialityFilter" />
     <div class="gl-display-flex gl-align-items-center gl-mt-4 gl-px-5">

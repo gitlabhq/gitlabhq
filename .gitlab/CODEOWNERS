@@ -1445,3 +1445,19 @@ ee/lib/ee/api/entities/project.rb @gitlab-org/manage/manage-workspace/backend-ap
 [Manage::Foundations]
 /lib/sidebars/ @gitlab-org/manage/foundations/engineering
 /ee/lib/sidebars/ @gitlab-org/manage/foundations/engineering
+
+# JiHu GitLab rules. See https://gitlab.com/gitlab-jh/gitlab-jh-enablement/-/issues/213#note_1024367528
+
+[JH Frontend] @jihulab/maintainers/frontend
+/jh/app/assets/
+/jh/*.scss
+/jh/*.js
+/jh/*.vue
+
+[JH Rails Backend] @jihulab/maintainers/rails-backend
+/jh/*.rb
+/jh/*.rake
+/jh/qa/ @jihulab/maintainers/quality
+
+[JH Technical Writer] @jihulab/maintainers/technical-writer
+/jh/doc/

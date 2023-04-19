@@ -27,6 +27,28 @@ RSpec.describe Resolvers::Ci::RunnerProjectsResolver, feature_category: :runner_
         end
       end
 
+      context 'with sort argument' do
+        let(:args) { { sort: sort } }
+
+        context 'when :id_asc' do
+          let(:sort) { :id_asc }
+
+          it 'returns a lazy value with projects sorted by :id_asc' do
+            expect(subject).to be_a(GraphQL::Execution::Lazy)
+            expect(subject.value.items).to eq([project1, project2, project3])
+          end
+        end
+
+        context 'when :id_desc' do
+          let(:sort) { :id_desc }
+
+          it 'returns a lazy value with projects sorted by :id_desc' do
+            expect(subject).to be_a(GraphQL::Execution::Lazy)
+            expect(subject.value.items).to eq([project3, project2, project1])
+          end
+        end
+      end
+
       context 'with supported arguments' do
         let(:args) { { membership: true, search_namespaces: true, topics: %w[xyz] } }
 
@@ -47,9 +69,9 @@ RSpec.describe Resolvers::Ci::RunnerProjectsResolver, feature_category: :runner_
       end
 
       context 'without arguments' do
-        it 'returns a lazy value with all projects' do
+        it 'returns a lazy value with all projects sorted by :id_asc' do
           expect(subject).to be_a(GraphQL::Execution::Lazy)
-          expect(subject.value).to contain_exactly(project1, project2, project3)
+          expect(subject.value.items).to eq([project1, project2, project3])
         end
       end
     end

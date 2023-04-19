@@ -25,6 +25,9 @@ export default {
     showBlobFilter() {
       return this.currentScope === SCOPE_BLOB;
     },
+    showOldNavigation() {
+      return Boolean(this.currentScope);
+    },
   },
 };
 </script>

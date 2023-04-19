@@ -219,6 +219,10 @@ module Types
     field :timelogs, Types::TimelogType.connection_type, null: false,
                                                          description: 'Timelogs on the merge request.'
 
+    field :award_emoji, Types::AwardEmojis::AwardEmojiType.connection_type,
+      null: true,
+      description: 'List of award emojis associated with the merge request.'
+
     markdown_field :title_html, null: true
     markdown_field :description_html, null: true
 

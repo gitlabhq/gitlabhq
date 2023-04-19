@@ -2,7 +2,6 @@
 
 require 'fast_spec_helper'
 require 'rspec-parameterized'
-require "support/graphql/fake_query_type"
 
 RSpec.describe Gitlab::Graphql::KnownOperations do
   using RSpec::Parameterized::TableSyntax

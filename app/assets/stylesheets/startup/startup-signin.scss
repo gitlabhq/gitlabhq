@@ -672,6 +672,7 @@ body.navless {
 :root {
   --performance-bar-height: 0px;
   --system-header-height: 0px;
+  --top-bar-height: 0px;
   --system-footer-height: 0px;
   --mr-review-bar-height: 0px;
 }
@@ -702,7 +703,11 @@ hr {
 }
 .flash-container.sticky {
   position: sticky;
-  top: 48px;
+  top: calc(
+    var(--header-height, 48px) +
+      calc(var(--system-header-height) + var(--performance-bar-height)) +
+      var(--top-bar-height)
+  );
   z-index: 251;
 }
 .flash-container.flash-container-page {

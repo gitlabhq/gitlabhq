@@ -353,7 +353,7 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
     end
 
     context 'when award emoji votes' do
-      let(:requested_fields) { [:upvotes, :downvotes] }
+      let(:requested_fields) { 'upvotes downvotes awardEmoji { nodes { name } }' }
 
       before do
         create_list(:award_emoji, 2, name: 'thumbsup', awardable: merge_request_a)

@@ -40,6 +40,7 @@ module ResolvesMergeRequests
   def preloads
     {
       assignees: [:assignees],
+      award_emoji: { award_emoji: [:awardable] },
       reviewers: [:reviewers],
       participants: MergeRequest.participant_includes,
       author: [:author],

@@ -81,7 +81,7 @@
   resolved "https://registry.yarnpkg.com/@babel/compat-data/-/compat-data-7.19.0.tgz#2a592fd89bacb1fcde68de31bee4f2f2dacb0e86"
   integrity sha512-y5rqgTTPTmaF5e2nVhOxw+Ur9HDJLsWb6U/KpgUzRZEdPfE6VOubXBKLdbcUTijzRptednSBDQbYZBOSqJxpJw==
 
-"@babel/core@^7.11.6", "@babel/core@^7.12.3", "@babel/core@^7.17.0", "@babel/core@^7.18.5":
+"@babel/core@^7.11.6", "@babel/core@^7.12.3", "@babel/core@^7.18.5":
   version "7.19.0"
   resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.19.0.tgz#d2f5f4f2033c00de8096be3c9f45772563e150c3"
   integrity sha512-reM4+U7B9ss148rh2n1Qs9ASS+w94irYXga7c2jaQv9RVzpS7Mv1a9rnYYwuDa45G+DkORt9g6An2k/V4d9LbQ==
@@ -101,22 +101,6 @@
     gensync "^1.0.0-beta.2"
     json5 "^2.2.1"
     semver "^6.3.0"
-
-"@babel/eslint-parser@^7.17.0":
-  version "7.17.0"
-  resolved "https://registry.yarnpkg.com/@babel/eslint-parser/-/eslint-parser-7.17.0.tgz#eabb24ad9f0afa80e5849f8240d0e5facc2d90d6"
-  integrity sha512-PUEJ7ZBXbRkbq3qqM/jZ2nIuakUBqCYc7Qf52Lj7dlZ6zERnqisdHioL0l4wwQZnmskMeasqUNzLBFKs3nylXA==
-  dependencies:
-    eslint-scope "^5.1.1"
-    eslint-visitor-keys "^2.1.0"
-    semver "^6.3.0"
-
-"@babel/eslint-plugin@^7.17.7":
-  version "7.17.7"
-  resolved "https://registry.yarnpkg.com/@babel/eslint-plugin/-/eslint-plugin-7.17.7.tgz#4ee1d5b29b79130f3bb5a933358376bcbee172b8"
-  integrity sha512-JATUoJJXSgwI0T8juxWYtK1JSgoLpIGUsCHIv+NMXcUDA2vIe6nvAHR9vnuJgs/P1hOFw7vPwibixzfqBBLIVw==
-  dependencies:
-    eslint-rule-composer "^0.3.0"
 
 "@babel/generator@^7.19.0", "@babel/generator@^7.7.2":
   version "7.19.0"
@@ -1093,18 +1077,13 @@
     axios "^0.24.0"
     core-js "^3.29.1"
 
-"@gitlab/eslint-plugin@18.3.2":
-  version "18.3.2"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-18.3.2.tgz#dc4d5b487e26a1473106c1a3e34ae3ea219d4dd1"
-  integrity sha512-Lz0RnEW5isZ/jkeHcr2k6NqaHISwgKeWN/vkWUU5J4Ax7oYPR0CgA2KO/dEnOvIPmGfbnUKowsekBmmy5SUQHA==
-
+"@gitlab/eslint-plugin@19.0.0":
+  version "19.0.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-19.0.0.tgz#bbf5b535876421f000255f0e9ac8f971b8aa6042"
+  integrity sha512-clAN/hIs3fVWIJtGLUJy4cL/cXP0jOPCLHOFhlPyYCUpEZXIka73FtPYfaC3NJoRheLA3u2Ue5KKOAj6pi1ZrA==
   dependencies:
-    "@babel/core" "^7.17.0"
-    "@babel/eslint-parser" "^7.17.0"
-    "@babel/eslint-plugin" "^7.17.7"
     eslint-config-airbnb-base "^15.0.0"
     eslint-config-prettier "^6.10.0"
-    eslint-plugin-babel "^5.3.0"
     eslint-plugin-import "^2.26.0"
     eslint-plugin-jest "^27.2.1"
     eslint-plugin-promise "^6.0.1"
@@ -5575,13 +5554,6 @@ eslint-module-utils@^2.7.4:
   dependencies:
     debug "^3.2.7"
 
-eslint-plugin-babel@^5.3.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-babel/-/eslint-plugin-babel-5.3.0.tgz#2e7f251ccc249326da760c1a4c948a91c32d0023"
-  integrity sha512-HPuNzSPE75O+SnxHIafbW5QB45r2w78fxqwK3HmjqIUoPfPzVrq6rD+CINU3yzoDSzEhUkX07VUphbF73Lth/w==
-  dependencies:
-    eslint-rule-composer "^0.3.0"
-
 eslint-plugin-import@^2.26.0, eslint-plugin-import@^2.27.5:
   version "2.27.5"
   resolved "https://registry.yarnpkg.com/eslint-plugin-import/-/eslint-plugin-import-2.27.5.tgz#876a6d03f52608a3e5bb439c2550588e51dd6c65"
@@ -5658,11 +5630,6 @@ eslint-plugin-vue@^9.3.0:
     vue-eslint-parser "^9.0.1"
     xml-name-validator "^4.0.0"
 
-eslint-rule-composer@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/eslint-rule-composer/-/eslint-rule-composer-0.3.0.tgz#79320c927b0c5c0d3d3d2b76c8b4a488f25bbaf9"
-  integrity sha512-bt+Sh8CtDmn2OajxvNO+BX7Wn4CIWMpTRm3MaiKPCQcnnlm0CS2mhui6QaoeQugs+3Kj2ESKEEGJUdVafwhiCg==
-
 eslint-scope@^4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/eslint-scope/-/eslint-scope-4.0.3.tgz#ca03833310f6889a3264781aa82e63eb9cfe7848"
@@ -5694,7 +5661,7 @@ eslint-utils@^3.0.0:
   dependencies:
     eslint-visitor-keys "^2.0.0"
 
-eslint-visitor-keys@^2.0.0, eslint-visitor-keys@^2.1.0:
+eslint-visitor-keys@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-2.1.0.tgz#f65328259305927392c938ed44eb0a5c9b2bd303"
   integrity sha512-0rSmRBzXgDzIsD6mGdJgevzgezI534Cer5L/vyMX0kHzT/jiB43jRhd9YUlMGYLQy2zprNmoT8qasCGtY+QaKw==
