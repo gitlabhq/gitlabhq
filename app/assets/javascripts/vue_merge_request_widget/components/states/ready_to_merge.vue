@@ -24,6 +24,7 @@ import SmartInterval from '~/smart_interval';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/ready_to_merge.subscription.graphql';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import {
   AUTO_MERGE_STRATEGIES,
   WARNING,
@@ -144,6 +145,7 @@ export default {
       ),
     AddedCommitMessage,
     RelatedLinks,
+    HelpPopover,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -262,7 +264,10 @@ export default {
       if (this.isMergingImmediately) {
         return __('Merge in progress');
       }
-      if (this.isAutoMergeAvailable) {
+      if (this.isAutoMergeAvailable && !this.autoMergeLabelsEnabled) {
+        return this.autoMergeTextLegacy;
+      }
+      if (this.isAutoMergeAvailable && this.autoMergeLabelsEnabled) {
         return this.autoMergeText;
       }
 
@@ -271,6 +276,15 @@ export default {
       }
 
       return __('Merge');
+    },
+    autoMergeLabelsEnabled() {
+      return window.gon?.features?.autoMergeLabelsMrWidget;
+    },
+    showAutoMergeHelperText() {
+      return (
+        !(this.status === PIPELINE_FAILED_STATE || this.isPipelineFailed) &&
+        this.isAutoMergeAvailable
+      );
     },
     hasPipelineMustSucceedConflict() {
       return !this.hasCI && this.stateData.onlyAllowMergeIfPipelineSucceeds;
@@ -331,6 +345,11 @@ export default {
     },
     showMergeDetailsHeader() {
       return !['readyToMerge'].includes(this.mr.state);
+    },
+    autoMergeHelpPopoverOptions() {
+      return {
+        title: this.autoMergePopoverSettings.title,
+      };
     },
   },
   mounted() {
@@ -677,7 +696,31 @@ export default {
                   @cancel="isPipelineFailedModalVisibleNormalMerge = false"
                 />
               </gl-button-group>
-              <merge-train-helper-icon v-if="shouldRenderMergeTrainHelperIcon" class="gl-mx-3" />
+              <merge-train-helper-icon
+                v-if="shouldRenderMergeTrainHelperIcon && !autoMergeLabelsEnabled"
+                class="gl-mx-3"
+              />
+              <template v-if="showAutoMergeHelperText && autoMergeLabelsEnabled">
+                <div
+                  class="gl-ml-4 gl-text-gray-500 gl-font-sm"
+                  data-qa-selector="auto_merge_helper_text"
+                >
+                  {{ autoMergeHelperText }}
+                </div>
+                <help-popover class="gl-ml-2" :options="autoMergeHelpPopoverOptions">
+                  <gl-sprintf :message="autoMergePopoverSettings.bodyText">
+                    <template #link="{ content }">
+                      <gl-link
+                        :href="autoMergePopoverSettings.helpLink"
+                        target="_blank"
+                        class="gl-font-sm"
+                      >
+                        {{ content }}
+                      </gl-link>
+                    </template>
+                  </gl-sprintf>
+                </help-popover>
+              </template>
             </template>
             <div
               v-else

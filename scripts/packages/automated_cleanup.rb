@@ -123,4 +123,8 @@ if $PROGRAM_NAME == __FILE__
   timed('"assets" packages cleanup') do
     automated_cleanup.perform_gitlab_package_cleanup!(package_name: 'assets', days_for_delete: 7)
   end
+
+  timed('"fixtures" packages cleanup') do
+    automated_cleanup.perform_gitlab_package_cleanup!(package_name: 'fixtures', days_for_delete: 14)
+  end
 end

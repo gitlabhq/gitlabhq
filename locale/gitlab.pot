@@ -1680,6 +1680,9 @@ msgstr ""
 msgid "A %{incident_docs_start}modified issue%{incident_docs_end} to guide the resolution of incidents."
 msgstr ""
 
+msgid "A %{linkStart}merge train%{linkEnd} is a queued list of merge requests, each waiting to be merged into the target branch."
+msgstr ""
+
 msgid "A .NET Core console application template, customizable for any .NET Core project"
 msgstr ""
 
@@ -27421,6 +27424,9 @@ msgstr ""
 msgid "Merge requests can't be merged if the status checks did not succeed or are still running."
 msgstr ""
 
+msgid "Merge trains"
+msgstr ""
+
 msgid "Merge unverified changes"
 msgstr ""
 
@@ -32462,9 +32468,6 @@ msgstr ""
 msgid "Pipelines|2. Configure deployment pipeline"
 msgstr ""
 
-msgid "Pipelines|A GitLab Runner is an application that works with GitLab CI/CD to run jobs in a pipeline. Install GitLab Runner and register your own runners to get started with CI/CD."
-msgstr ""
-
 msgid "Pipelines|API"
 msgstr ""
 
@@ -32540,9 +32543,6 @@ msgstr ""
 msgid "Pipelines|GitLab Runner is an application that works with GitLab CI/CD to run jobs in a pipeline."
 msgstr ""
 
-msgid "Pipelines|GitLab Runner is an application that works with GitLab CI/CD to run jobs in a pipeline. There are active runners available to run your jobs right now. If you prefer, you can %{settingsLinkStart}configure your runners%{settingsLinkEnd} or %{docsLinkStart}learn more%{docsLinkEnd} about runners."
-msgstr ""
-
 msgid "Pipelines|Go to the pipeline editor"
 msgstr ""
 
@@ -32550,9 +32550,6 @@ msgid "Pipelines|If you are unsure, ask a project maintainer to review it for yo
 msgstr ""
 
 msgid "Pipelines|If you are unsure, please ask a project maintainer to review it for you."
-msgstr ""
-
-msgid "Pipelines|Install GitLab Runner"
 msgstr ""
 
 msgid "Pipelines|It is recommended the code is reviewed thoroughly before running this pipeline with the parent project's CI resource."
@@ -32585,9 +32582,6 @@ msgstr ""
 msgid "Pipelines|Need more information to set up your runner? %{linkStart}Check out our documentation%{linkEnd}."
 msgstr ""
 
-msgid "Pipelines|No runners detected"
-msgstr ""
-
 msgid "Pipelines|No triggers have been created yet. Add one using the form above."
 msgstr ""
 
@@ -32613,9 +32607,6 @@ msgid "Pipelines|Rebasing creates a pipeline that runs code originating from a f
 msgstr ""
 
 msgid "Pipelines|Revoke trigger"
-msgstr ""
-
-msgid "Pipelines|Runners are available to run your jobs now"
 msgstr ""
 
 msgid "Pipelines|Set up a runner"
@@ -41062,6 +41053,9 @@ msgid "Set time estimate to %{time_estimate}."
 msgstr ""
 
 msgid "Set to 0 for no size limit."
+msgstr ""
+
+msgid "Set to auto-merge"
 msgstr ""
 
 msgid "Set up"
@@ -49838,6 +49832,9 @@ msgstr ""
 msgid "When merge requests and commits in the default branch close, any issues they reference also close."
 msgstr ""
 
+msgid "When the pipeline for this merge request succeeds, it will %{linkStart}automatically merge%{linkEnd}."
+msgstr ""
+
 msgid "When this merge request is accepted"
 msgid_plural "When these merge requests are accepted"
 msgstr[0] ""
@@ -50407,16 +50404,55 @@ msgstr ""
 msgid "Workspaces"
 msgstr ""
 
+msgid "Workspaces|A devfile is a configuration file for your workspace. Without a devfile, a default workspace is created for this project. You can change that workspace at any time."
+msgstr ""
+
+msgid "Workspaces|A workspace is a virtual sandbox environment for your code in GitLab. You can create a workspace on its own or as part of a project."
+msgstr ""
+
+msgid "Workspaces|Cancel"
+msgstr ""
+
+msgid "Workspaces|Could not retrieve cluster agents for this project"
+msgstr ""
+
+msgid "Workspaces|Create workspace"
+msgstr ""
+
 msgid "Workspaces|Develop anywhere"
 msgstr ""
 
-msgid "Workspaces|Get started with GitLab Workspaces"
+msgid "Workspaces|Failed to create workspace"
 msgstr ""
 
 msgid "Workspaces|GitLab Workspaces is a powerful collaborative platform that provides a comprehensive set of tools for software development teams to manage their entire development lifecycle."
 msgstr ""
 
+msgid "Workspaces|New workspace"
+msgstr ""
+
+msgid "Workspaces|Select cluster agent"
+msgstr ""
+
+msgid "Workspaces|Select default editor"
+msgstr ""
+
+msgid "Workspaces|Select project"
+msgstr ""
+
+msgid "Workspaces|This project doesn't have a devfile"
+msgstr ""
+
+msgid "Workspaces|To create a workspace for this project, an administrator must configure an agent for the project's group."
+msgstr ""
+
 msgid "Workspaces|Workspaces"
+msgstr ""
+
+msgid "Workspaces|You can create a workspace for Premium projects only."
+msgstr ""
+
+msgid "Workspaces|You can't create a workspace for this project"
 msgstr ""
 
 msgid "Would you like to create a new branch?"

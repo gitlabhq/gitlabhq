@@ -280,23 +280,6 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
     end
   end
 
-  describe 'GET #index' do
-    before do
-      stub_application_setting(auto_devops_enabled: false)
-    end
-
-    context 'with runners_availability_section experiment' do
-      it 'tracks the assignment', :experiment do
-        stub_experiments(runners_availability_section: true)
-
-        expect(experiment(:runners_availability_section))
-          .to track(:assignment).with_context(namespace: project.namespace).on_next_instance
-
-        get :index, params: { namespace_id: project.namespace, project_id: project }
-      end
-    end
-  end
-
   describe 'GET #show' do
     def get_pipeline_html
       get :show, params: { namespace_id: project.namespace, project_id: project, id: pipeline }, format: :html

@@ -101,13 +101,8 @@ module Ci
         has_gitlab_ci: has_gitlab_ci?(project).to_s,
         pipeline_editor_path: can?(current_user, :create_pipeline, project) && project_ci_pipeline_editor_path(project),
         suggested_ci_templates: suggested_ci_templates.to_json,
-        ci_runner_settings_path: project_settings_ci_cd_path(project, anchor: 'js-runners-settings'),
         full_path: project.full_path
       }
-
-      experiment(:runners_availability_section, namespace: project.root_ancestor) do |e|
-        e.candidate { data[:any_runners_available] = project.active_runners.exists?.to_s }
-      end
 
       experiment(:ios_specific_templates, actor: current_user, project: project, sticky_to: project) do |e|
         e.candidate do

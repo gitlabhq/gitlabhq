@@ -46,6 +46,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:saved_replies, current_user)
     push_frontend_feature_flag(:code_quality_inline_drawer, project)
     push_frontend_feature_flag(:hide_create_issue_resolve_all, project)
+    push_frontend_feature_flag(:auto_merge_labels_mr_widget, project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :discussions]

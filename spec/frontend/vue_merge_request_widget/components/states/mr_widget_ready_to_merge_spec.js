@@ -113,6 +113,11 @@ const createComponent = (customConfig = {}, createState = true) => {
       GlSprintf,
     },
     apolloProvider: createMockApollo([[readyToMergeQuery, readyToMergeResponseSpy]]),
+    provide: {
+      glFeatures: {
+        autoMergeLabelsMrWidget: false,
+      },
+    },
   });
 };
 

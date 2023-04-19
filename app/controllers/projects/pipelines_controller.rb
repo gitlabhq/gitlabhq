@@ -61,9 +61,7 @@ class Projects::PipelinesController < Projects::ApplicationController
     @pipelines_count = limited_pipelines_count(project)
 
     respond_to do |format|
-      format.html do
-        enable_runners_availability_section_experiment
-      end
+      format.html
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: POLLING_INTERVAL)
 
@@ -317,17 +315,6 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def index_params
     params.permit(:scope, :username, :ref, :status, :source)
-  end
-
-  def enable_runners_availability_section_experiment
-    return unless current_user
-    return unless can?(current_user, :create_pipeline, project)
-    return if @pipelines_count.to_i > 0
-    return if helpers.has_gitlab_ci?(project)
-
-    experiment(:runners_availability_section, namespace: project.root_ancestor) do |e|
-      e.candidate {}
-    end
   end
 
   def should_track_ci_cd_pipelines?

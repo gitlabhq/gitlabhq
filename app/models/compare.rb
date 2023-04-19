@@ -30,7 +30,7 @@ class Compare
   # See `namespace_project_compare_url`
   def to_param
     {
-      from: @straight ? start_commit_sha : base_commit_sha,
+      from: @straight ? start_commit_sha : (base_commit_sha || start_commit_sha),
       to: head_commit_sha
     }
   end

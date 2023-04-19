@@ -68,9 +68,17 @@ is held for a brief amount of time, the time `add_column` needs to complete its 
 depending on how frequently the table is accessed. For example, acquiring an exclusive lock for a very
 frequently accessed table may take minutes in GitLab.com and requires the use of `with_lock_retries`.
 
-For these reasons, it is advised to add the text limit on a separate migration than the `add_column` one.
+When adding a text limit, transactions must be disabled with `disable_ddl_transaction!`. This means adding the column is not rolled back
+in case the migration fails afterwards. An attempt to re-run the migration will raise an error because of the already existing column.
 
-For example, consider a migration that adds a new text column `extended_title` to table `sprints`,
+For these reasons, adding a text column to an existing table can be done by either:
+
+- [Add the column and limit in separate migrations.](#add-the-column-and-limit-in-separate-migrations)
+- [Add the column and limit in one migration with checking if the column already exists.](#add-the-column-and-limit-in-one-migration-with-checking-if-the-column-already-exists)
+
+### Add the column and limit in separate migrations
+
+Consider a migration that adds a new text column `extended_title` to table `sprints`,
 `db/migrate/20200501000001_add_extended_title_to_sprints.rb`:
 
 ```ruby
@@ -99,6 +107,33 @@ class AddTextLimitToSprintsExtendedTitle < Gitlab::Database::Migration[2.1]
   def down
     # Down is required as `add_text_limit` is not reversible
     remove_text_limit :sprints, :extended_title
+  end
+end
+```
+
+### Add the column and limit in one migration with checking if the column already exists
+
+Consider a migration that adds a new text column `extended_title` to table `sprints`,
+`db/migrate/20200501000001_add_extended_title_to_sprints.rb`:
+
+```ruby
+class AddExtendedTitleToSprints < Gitlab::Database::Migration[2.1]
+  disable_ddl_transaction!
+
+  def up
+    with_lock_retries do
+      add_column :sprints, :extended_title, :text, if_not_exists: true
+    end
+
+    add_text_limit :sprints, :extended_title, 512
+  end
+
+  def down
+    remove_text_limit :sprints, :extended_title
+
+    with_lock_retries do
+      remove_column :sprints, :extended_title, if_exists: true
+    end
   end
 end
 ```
