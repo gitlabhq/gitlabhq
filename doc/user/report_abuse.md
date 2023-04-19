@@ -50,7 +50,7 @@ A URL to the reported user's comment is pre-filled in the abuse report's
 
 ## Report abuse from an issue
 
-1. On the issue, in the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**).
+1. On the issue, in the upper-right corner, select **Issue actions** (**{ellipsis_v}**).
 1. Select **Report abuse to administrator**.
 1. Select a reason for reporting the user.
 1. Complete an abuse report.
@@ -58,7 +58,7 @@ A URL to the reported user's comment is pre-filled in the abuse report's
 
 ## Report abuse from a merge request
 
-1. On the merge request, in the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**).
+1. On the merge request, in the upper-right corner, select **Merge request actions** (**{ellipsis_v}**).
 1. Select **Report abuse to administrator**.
 1. Select a reason for reporting this user.
 1. Complete an abuse report.

@@ -36,10 +36,6 @@
   width: $super-sidebar-width;
   z-index: $super-sidebar-z-index;
 
-  &:focus-visible {
-    @include gl-focus;
-  }
-
   &.super-sidebar-loading {
     transform: translate3d(-100%, 0, 0);
 
@@ -49,7 +45,9 @@
   }
 
   &:not(.super-sidebar-loading) {
-    transition: transform $gl-transition-duration-medium;
+    @media (prefers-reduced-motion: no-preference) {
+      transition: transform $gl-transition-duration-medium;
+    }
   }
 
   .user-bar {
@@ -178,9 +176,25 @@
   display: none;
 }
 
+.super-sidebar-peek {
+  @include gl-shadow;
+  border-right: 0;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: transform 100ms !important;
+  }
+}
+
+.super-sidebar-hover-area {
+  z-index: $super-sidebar-z-index;
+}
+
 .page-with-super-sidebar {
   padding-left: 0;
-  transition: padding-left $gl-transition-duration-medium;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: padding-left $gl-transition-duration-medium;
+  }
 
   &:not(.page-with-super-sidebar-collapsed) {
     .super-sidebar-overlay {
@@ -211,6 +225,10 @@
 .page-with-super-sidebar-collapsed {
   .super-sidebar {
     transform: translate3d(-100%, 0, 0);
+
+    &.super-sidebar-peek {
+      transform: translate3d(0, 0, 0);
+    }
   }
 
   @include media-breakpoint-up(xl) {

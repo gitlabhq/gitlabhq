@@ -4725,9 +4725,9 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       [:closed, :merged].each do |state|
-        let(:state) { state }
-
         context state do
+          let(:state) { state }
+
           it 'does not notify' do
             expect(notification_service).not_to receive(:merge_request_unmergeable)
             expect(todo_service).not_to receive(:merge_request_became_unmergeable)

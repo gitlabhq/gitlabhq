@@ -165,6 +165,7 @@ project_setting:
     - pages_unique_domain_enabled
     - pages_unique_domain
     - runner_registration_enabled
+    - product_analytics_instrumentation_key
 
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:

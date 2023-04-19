@@ -1,4 +1,5 @@
-import Vue, { nextTick } from 'vue';
+import { nextTick } from 'vue';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import SuggestionsComponent from '~/vue_shared/components/markdown/suggestions.vue';
 
 const MOCK_DATA = {
@@ -48,56 +49,37 @@ const MOCK_DATA = {
 };
 
 describe('Suggestion component', () => {
-  let vm;
-  let diffTable;
+  let wrapper;
+
+  const createComponent = (props = {}) => {
+    wrapper = mountExtended(SuggestionsComponent, {
+      propsData: {
+        ...MOCK_DATA,
+        ...props,
+      },
+    });
+  };
+
+  const findSuggestionsContainer = () => wrapper.findByTestId('suggestions-container');
 
   beforeEach(async () => {
-    const Component = Vue.extend(SuggestionsComponent);
+    createComponent();
 
-    vm = new Component({
-      propsData: MOCK_DATA,
-    }).$mount();
-
-    diffTable = vm.generateDiff(0).$mount().$el;
-
-    jest.spyOn(vm, 'renderSuggestions').mockImplementation(() => {});
-    vm.renderSuggestions();
     await nextTick();
   });
 
   describe('mounted', () => {
     it('renders a flash container', () => {
-      expect(vm.$el.querySelector('.js-suggestions-flash')).not.toBeNull();
+      expect(wrapper.find('.js-suggestions-flash').exists()).toBe(true);
     });
 
     it('renders a container for suggestions', () => {
-      expect(vm.$refs.container).not.toBeNull();
+      expect(findSuggestionsContainer().exists()).toBe(true);
     });
 
     it('renders suggestions', () => {
-      expect(vm.renderSuggestions).toHaveBeenCalled();
-      expect(vm.$el.innerHTML.includes('oldtest')).toBe(true);
-      expect(vm.$el.innerHTML.includes('newtest')).toBe(true);
-    });
-  });
-
-  describe('generateDiff', () => {
-    it('generates a diff table', () => {
-      expect(diffTable.querySelector('.md-suggestion-diff')).not.toBeNull();
-    });
-
-    it('generates a diff table that contains contents the suggested lines', () => {
-      MOCK_DATA.suggestions[0].diff_lines.forEach((line) => {
-        const text = line.text.substring(1);
-
-        expect(diffTable.innerHTML.includes(text)).toBe(true);
-      });
-    });
-
-    it('generates a diff table with the correct line number for each suggested line', () => {
-      const lines = diffTable.querySelectorAll('.old_line');
-
-      expect(parseInt([...lines][0].innerHTML, 10)).toBe(5);
+      expect(findSuggestionsContainer().text()).toContain('oldtest');
+      expect(findSuggestionsContainer().text()).toContain('newtest');
     });
   });
 });

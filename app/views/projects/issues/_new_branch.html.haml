@@ -11,18 +11,18 @@
 
   .create-mr-dropdown-wrap.d-inline-block.full-width-mobile.js-create-mr{ data: { project_path: @project.full_path, project_id: @project.id, can_create_path: can_create_path, create_mr_path: create_mr_path(from: @issue.to_branch_name, source_project: @project, to: @project.default_branch, mr_params: { issue_iid: @issue.iid }), create_branch_path: create_branch_path, refs_path: refs_path, is_confidential: can_create_confidential_merge_request?.to_s } }
     .btn-group.unavailable
-      %button.gl-button.btn{ type: 'button', disabled: 'disabled' }
+      = render Pajamas::ButtonComponent.new(button_options: { disabled: 'disabled' }) do
         = gl_loading_icon(inline: true, css_class: 'js-create-mr-spinner gl-button-icon gl-display-none')
         %span.text
-          Checking branch availability…
+          = _('Checking branch availability…')
+
 
     .btn-group.available.hidden
-      %button.gl-button.btn.js-create-merge-request.btn-confirm{ type: 'button', data: { action: data_action } }
-        = gl_loading_icon(css_class: 'js-create-mr-spinner js-spinner gl-mr-2 gl-display-none')
+      = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { class: 'js-create-merge-request', data: { action: data_action } }) do
+        = gl_loading_icon(inline: true , css_class: 'js-create-mr-spinner js-spinner gl-display-none')
         = value
 
-      %button.gl-button.btn.btn-confirm.btn-icon.dropdown-toggle.create-merge-request-dropdown-toggle.js-dropdown-toggle{ type: 'button', data: { dropdown: { trigger: '#create-merge-request-dropdown' }, display: 'static' } }
-        = sprite_icon('chevron-down')
+      = render Pajamas::ButtonComponent.new(variant: :confirm, icon: 'chevron-down', button_options: { class: 'js-dropdown-toggle dropdown-toggle create-merge-request-dropdown-toggle', data: { 'dropdown-trigger': '#create-merge-request-dropdown', display: 'static' } })
 
       .droplab-dropdown
         %ul#create-merge-request-dropdown.create-merge-request-dropdown-menu.dropdown-menu.dropdown-menu-right.gl-show-field-errors{ class: ("create-confidential-merge-request-dropdown-menu" if can_create_confidential_merge_request?), data: { dropdown: true } }
@@ -57,7 +57,7 @@
               %span.js-ref-message.form-text
 
             .form-group
-              %button.btn.gl-button.btn-confirm.js-create-target{ type: 'button', data: { action: 'create-mr' } }
+              = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { class: 'js-create-target', data: { action: 'create-mr' } }) do
                 = create_mr_text
 
             - if can_create_confidential_merge_request?

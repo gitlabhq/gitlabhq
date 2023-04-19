@@ -533,7 +533,6 @@ RSpec/ContextWording:
     - 'ee/spec/policies/project_snippet_policy_spec.rb'
     - 'ee/spec/policies/protected_branch_policy_spec.rb'
     - 'ee/spec/policies/saml_provider_policy_spec.rb'
-    - 'ee/spec/presenters/approval_rule_presenter_spec.rb'
     - 'ee/spec/presenters/audit_event_presenter_spec.rb'
     - 'ee/spec/presenters/ci/build_runner_presenter_spec.rb'
     - 'ee/spec/presenters/ee/issue_presenter_spec.rb'

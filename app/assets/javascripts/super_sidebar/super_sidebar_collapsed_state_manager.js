@@ -1,7 +1,7 @@
 import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/dist/utils';
 import { debounce } from 'lodash';
 import { setCookie, getCookie } from '~/lib/utils/common_utils';
-import { SIDEBAR_VISIBILITY_CLASS } from './constants';
+import { sidebarState } from './constants';
 
 export const SIDEBAR_COLLAPSED_CLASS = 'page-with-super-sidebar-collapsed';
 export const SIDEBAR_COLLAPSED_COOKIE = 'super_sidebar_collapsed';
@@ -10,7 +10,6 @@ export const SIDEBAR_TRANSITION_DURATION = 200;
 
 export const findPage = () => document.querySelector('.page-with-super-sidebar');
 export const findSidebar = () => document.querySelector('.super-sidebar');
-export const findToggle = () => document.querySelector('.js-super-sidebar-toggle');
 
 export const isCollapsed = () => findPage().classList.contains(SIDEBAR_COLLAPSED_CLASS);
 
@@ -21,35 +20,14 @@ export const isDesktopBreakpoint = () => bp.windowWidth() >= breakpoints.xl;
 
 export const getCollapsedCookie = () => getCookie(SIDEBAR_COLLAPSED_COOKIE) === 'true';
 
-const show = (sidebar, isUserAction) => {
-  sidebar.classList.remove(SIDEBAR_VISIBILITY_CLASS);
-  if (isUserAction) {
-    sidebar.focus();
-  }
-};
+export const toggleSuperSidebarCollapsed = (collapsed, saveCookie) => {
+  clearTimeout(sidebarState.openPeekTimer);
+  clearTimeout(sidebarState.closePeekTimer);
 
-const hide = (sidebar, toggle, isUserAction) => {
-  setTimeout(() => {
-    sidebar.classList.add(SIDEBAR_VISIBILITY_CLASS);
-    if (isUserAction) {
-      toggle?.focus();
-    }
-  }, SIDEBAR_TRANSITION_DURATION);
-};
+  findPage().classList.toggle(SIDEBAR_COLLAPSED_CLASS, collapsed);
 
-export const toggleSuperSidebarCollapsed = (collapsed, saveCookie, isUserAction) => {
-  const page = findPage();
-  const toggle = findToggle();
-  const sidebar = findSidebar();
-
-  page.classList.toggle(SIDEBAR_COLLAPSED_CLASS, collapsed);
-  sidebar.inert = collapsed;
-
-  if (collapsed) {
-    hide(sidebar, toggle, isUserAction);
-  } else {
-    show(sidebar, isUserAction);
-  }
+  sidebarState.isPeek = false;
+  sidebarState.isCollapsed = collapsed;
 
   if (saveCookie && isDesktopBreakpoint()) {
     setCookie(SIDEBAR_COLLAPSED_COOKIE, collapsed, {
@@ -64,9 +42,5 @@ export const initSuperSidebarCollapsedState = () => {
 };
 
 export const bindSuperSidebarCollapsedEvents = () => {
-  findToggle()?.addEventListener('click', () => {
-    toggleSuperSidebarCollapsed(!isCollapsed(), true, true);
-  });
-
   window.addEventListener('resize', debounce(initSuperSidebarCollapsedState, 100));
 };

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Reportable note on issue', :js, feature_category: :team_planning do
+  include CookieHelper
+
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:issue) { create(:issue, project: project) }
@@ -11,7 +13,7 @@ RSpec.describe 'Reportable note on issue', :js, feature_category: :team_planning
   before do
     project.add_maintainer(user)
     sign_in(user)
-
+    set_cookie('new-actions-popover-viewed', 'true')
     visit project_issue_path(project, issue)
   end
 

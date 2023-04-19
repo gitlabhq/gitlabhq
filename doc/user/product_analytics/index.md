@@ -75,16 +75,17 @@ Prerequisite:
 1. Select **Enable product analytics** and enter the configuration values.
    The following table shows the required configuration parameters and example values:
 
-    | Name                         | Value                                                      |
-    |------------------------------|------------------------------------------------------------|
-    | Jitsu host                   | `https://jitsu.gitlab.com`                                 |
-    | Jitsu project ID             | `g0maofw84gx5sjxgse2k`                                     |
-    | Jitsu administrator email    | `jitsu.admin@gitlab.com`                                   |
-    | Jitsu administrator password | `<your_password>`                                          |
-    | Collector host               | `https://collector.gitlab.com`                             |
-    | Clickhouse URL               | `https://<username>:<password>@clickhouse.gitlab.com:8123` |
-    | Cube API URL                 | `https://cube.gitlab.com`                                  |
-    | Cube API key                 | `25718201b3e9...ae6bbdc62dbb`                              |
+    | Name                           | Value                                                      |
+    |--------------------------------|------------------------------------------------------------|
+    | Configurator connection string | `https://test:test@configurator.gitlab.com`                |
+    | Jitsu host                     | `https://jitsu.gitlab.com`                                 |
+    | Jitsu project ID               | `g0maofw84gx5sjxgse2k`                                     |
+    | Jitsu administrator email      | `jitsu.admin@gitlab.com`                                   |
+    | Jitsu administrator password   | `<your_password>`                                          |
+    | Collector host                 | `https://collector.gitlab.com`                             |
+    | ClickHouse URL                 | `https://<username>:<password>@clickhouse.gitlab.com:8123` |
+    | Cube API URL                   | `https://cube.gitlab.com`                                  |
+    | Cube API key                   | `25718201b3e9...ae6bbdc62dbb`                              |
 
 1. Select **Save changes**.
 

@@ -623,7 +623,7 @@ GEM
       net-imap (>= 0.2.1)
       oauth2 (>= 1.4.4, < 3)
     gitlab-markup (1.9.0)
-    gitlab-net-dns (0.9.1)
+    gitlab-net-dns (0.9.2)
     gitlab-styles (10.0.0)
       rubocop (~> 1.43.0)
       rubocop-graphql (~> 0.18)
@@ -1753,7 +1753,7 @@ DEPENDENCIES
   gitlab-license (~> 2.2.1)
   gitlab-mail_room (~> 0.0.23)
   gitlab-markup (~> 1.9.0)
-  gitlab-net-dns (~> 0.9.1)
+  gitlab-net-dns (~> 0.9.2)
   gitlab-sidekiq-fetcher!
   gitlab-styles (~> 10.0.0)
   gitlab_chronic_duration (~> 0.10.6.2)

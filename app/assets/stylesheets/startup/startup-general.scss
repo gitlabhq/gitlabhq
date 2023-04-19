@@ -1486,8 +1486,12 @@ kbd {
     transform: translate3d(0, 0, 0);
   }
 }
+@media (prefers-reduced-motion: no-preference) {
+}
 .page-with-super-sidebar {
   padding-left: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
 }
 @media (min-width: 1200px) {
   .page-with-super-sidebar {

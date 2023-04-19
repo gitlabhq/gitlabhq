@@ -4,11 +4,12 @@ import { __, s__, sprintf } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { highCountTrim } from '~/lib/utils/text_utility';
 import logo from '../../../../views/shared/_logo.svg';
-import { toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
+import { JS_TOGGLE_COLLAPSE_CLASS } from '../constants';
 import CreateMenu from './create_menu.vue';
 import Counter from './counter.vue';
 import MergeRequestMenu from './merge_request_menu.vue';
 import UserMenu from './user_menu.vue';
+import SuperSidebarToggle from './super_sidebar_toggle.vue';
 import { SEARCH_MODAL_ID } from './global_search/constants';
 
 export default {
@@ -16,6 +17,7 @@ export default {
   /* eslint-disable-next-line @gitlab/require-i18n-strings */
   NEXT_LABEL: 'Next',
   logo,
+  JS_TOGGLE_COLLAPSE_CLASS,
   SEARCH_MODAL_ID,
   components: {
     Counter,
@@ -28,14 +30,13 @@ export default {
       import(
         /* webpackChunkName: 'global_search_modal' */ './global_search/components/global_search.vue'
       ),
+    SuperSidebarToggle,
   },
   i18n: {
-    collapseSidebar: __('Collapse sidebar'),
     createNew: __('Create new...'),
     homepage: __('Homepage'),
     issues: __('Issues'),
     mergeRequests: __('Merge requests'),
-    navigationSidebar: __('Navigation sidebar'),
     search: __('Search'),
     searchKbdHelp: sprintf(
       s__('GlobalSearch|Search GitLab %{kbdOpen}/%{kbdClose}'),
@@ -52,6 +53,11 @@ export default {
   },
   inject: ['rootPath', 'isImpersonating'],
   props: {
+    hasCollapseButton: {
+      default: true,
+      type: Boolean,
+      required: false,
+    },
     sidebarData: {
       type: Object,
       required: true,
@@ -75,9 +81,6 @@ export default {
     document.removeEventListener('todo:toggle', this.updateTodos);
   },
   methods: {
-    collapseSidebar() {
-      toggleSuperSidebarCollapsed(true, true, true);
-    },
     updateTodos(e) {
       this.todoCount = e.detail.count || 0;
     },
@@ -114,14 +117,12 @@ export default {
         {{ $options.NEXT_LABEL }}
       </gl-badge>
       <div class="gl-flex-grow-1"></div>
-      <gl-button
-        v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.collapseSidebar"
-        aria-controls="super-sidebar"
-        aria-expanded="true"
-        :aria-label="$options.i18n.navigationSidebar"
-        icon="sidebar"
-        category="tertiary"
-        @click="collapseSidebar"
+      <super-sidebar-toggle
+        v-if="hasCollapseButton"
+        :class="$options.JS_TOGGLE_COLLAPSE_CLASS"
+        tooltip-placement="bottom"
+        tooltip-container="super-sidebar"
+        data-testid="super-sidebar-collapse-button"
       />
       <create-menu :groups="sidebarData.create_new_menu_groups" />
 

@@ -2,7 +2,7 @@
 status: proposed
 creation-date: "2023-02-02"
 authors: [ "@nhxnguyen" ]
-coach: "@grzesiek" 
+coach: "@grzesiek"
 approvers: [ "@dorrino", "@nhxnguyen" ]
 owning-stage: "~devops::data_stores"
 participating-stages: ["~section::ops", "~section::dev"]
@@ -52,3 +52,7 @@ Note that we are still formulating proposals and will update the blueprint accor
 ## Best Practices
 
 Best practices and guidelines for developing performant and scalable features using ClickHouse are located in the [ClickHouse developer documentation](../../../development/database/clickhouse/index.md).
+
+## Cost and maintenance analysis
+
+ClickHouse components cost and maintenance analysis is located in the [ClickHouse Self-Managed component costs and maintenance requirements](self_managed_costs_and_requirements/index.md).

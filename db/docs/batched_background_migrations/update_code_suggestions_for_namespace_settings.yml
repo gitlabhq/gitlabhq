@@ -1,0 +1,6 @@
+---
+migration_job_name: UpdateCodeSuggestionsForNamespaceSettings
+description: Enables Code Suggestions for all namespaces by default
+feature_category: code_suggestions
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117899
+milestone: 16.0

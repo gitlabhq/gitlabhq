@@ -12462,6 +12462,15 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="commitpipelinesupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Pipelines updated before this date. |
 | <a id="commitpipelinesusername"></a>`username` | [`String`](#string) | Filter pipelines by the user that triggered the pipeline. |
 
+### `CommitParentNames`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="commitparentnamesnames"></a>`names` | [`[String!]`](#string) | Names of the commit parent (branch or tag). |
+| <a id="commitparentnamestotalcount"></a>`totalCount` | [`Int`](#int) | Total of parent branches or tags. |
+
 ### `ComplianceFramework`
 
 Represents a ComplianceFramework associated with a Project.
@@ -18711,6 +18720,19 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="projectboardsid"></a>`id` | [`BoardID`](#boardid) | Find a board by its ID. |
 
+##### `Project.branchesTippingAtCommit`
+
+Get branch names tipping at a given commit.
+
+Returns [`CommitParentNames`](#commitparentnames).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectbranchestippingatcommitcommitsha"></a>`commitSha` | [`String!`](#string) | Project commit SHA identifier. For example, `287774414568010855642518513f085491644061`. |
+| <a id="projectbranchestippingatcommitlimit"></a>`limit` | [`Int`](#int) | Number of branch names to return. |
+
 ##### `Project.ciConfigVariables`
 
 CI/CD config variable.
@@ -19721,6 +19743,19 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="projectsnippetsids"></a>`ids` | [`[SnippetID!]`](#snippetid) | Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`. |
 | <a id="projectsnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | Visibility of the snippet. |
+
+##### `Project.tagsTippingAtCommit`
+
+Get tag names tipping at a given commit.
+
+Returns [`CommitParentNames`](#commitparentnames).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projecttagstippingatcommitcommitsha"></a>`commitSha` | [`String!`](#string) | Project commit SHA identifier. For example, `287774414568010855642518513f085491644061`. |
+| <a id="projecttagstippingatcommitlimit"></a>`limit` | [`Int`](#int) | Number of branch names to return. |
 
 ##### `Project.terraformState`
 

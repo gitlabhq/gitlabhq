@@ -159,14 +159,13 @@ Prerequisites:
 
 - You must have at least the Reporter role for the epic's group.
 
-Whenever you decide that there is no longer need for that epic,
-close the epic by:
+To close an epic, at the top of an epic, select **Close epic**.
 
-- Selecting **Close epic**.
+<!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
+If you don't see this action at the top of an epic, your project or instance might have
+enabled a feature flag for [moved actions](../../project/merge_requests/index.md#move-sidebar-actions)
 
-  ![close epic - button](img/button_close_epic.png)
-
-- Using the `/close` [quick action](../../project/quick_actions.md).
+You can also use the `/close` [quick action](../../project/quick_actions.md).
 
 ## Reopen a closed epic
 

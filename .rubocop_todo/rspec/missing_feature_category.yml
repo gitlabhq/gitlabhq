@@ -1346,7 +1346,6 @@ RSpec/MissingFeatureCategory:
     - 'ee/spec/policies/user_policy_spec.rb'
     - 'ee/spec/policies/vulnerability_policy_spec.rb'
     - 'ee/spec/presenters/analytics/cycle_analytics/stage_presenter_spec.rb'
-    - 'ee/spec/presenters/approval_rule_presenter_spec.rb'
     - 'ee/spec/presenters/audit_event_presenter_spec.rb'
     - 'ee/spec/presenters/ci/build_presenter_spec.rb'
     - 'ee/spec/presenters/ci/build_runner_presenter_spec.rb'

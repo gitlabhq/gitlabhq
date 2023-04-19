@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_category: :code_review_workflow do
   include ListboxHelpers
+  include CookieHelper
 
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
@@ -17,6 +18,7 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
   before do
     project.add_maintainer(user)
     sign_in(user)
+    set_cookie('new-actions-popover-viewed', 'true')
   end
 
   it 'selects the source branch sha when a tag with the same name exists' do

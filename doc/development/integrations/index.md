@@ -236,9 +236,7 @@ module Integrations
 end
 ```
 
-### Expose the integration in the API
-
-#### REST API
+### Expose the integration in the REST API
 
 To expose the integration in the [REST API](../../api/integrations.md):
 
@@ -256,46 +254,6 @@ Sensitive fields are not exposed over the API. Sensitive fields are those fields
 - `secret`
 - `token`
 - `webhook`
-
-#### GraphQL API
-
-Integrations use the `Types::Projects::ServiceType` type by default,
-which only exposes the `type` and `active` properties.
-
-To expose additional properties, you can write a class implementing `ServiceType`:
-
-```ruby
-# in app/graphql/types/project/services/foo_bar_service_type.rb
-module Types
-  module Projects
-    module Services
-      class FooBarServiceType < BaseObject
-        graphql_name 'FooBarService'
-        implements(Types::Projects::ServiceType)
-        authorize :read_project
-
-        field :frobinity,
-            GraphQL::Types::Float,
-            null: true,
-            description: 'The level of frobinity.'
-
-        field :foo_label,
-            GraphQL::Types::String,
-            null: true,
-            description: 'The foo label to apply.'
-      end
-    end
-  end
-end
-```
-
-Each property you want to expose should have a field defined for it. You can also expose any public instance method of the integration.
-
-Contact a member of the Integrations team to discuss the best authorization.
-
-Reference documentation for GraphQL is automatically generated.
-
-You can also refer to our [GraphQL API style guide](../api_graphql_styleguide.md).
 
 ## Availability of integrations
 

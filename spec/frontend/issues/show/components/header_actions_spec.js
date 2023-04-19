@@ -2,6 +2,8 @@ import Vue, { nextTick } from 'vue';
 import { GlDropdownItem, GlLink, GlModal, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
+import VueApollo from 'vue-apollo';
+import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking } from 'helpers/tracking_helper';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { STATUS_CLOSED, STATUS_OPEN, TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
@@ -14,17 +16,22 @@ import promoteToEpicMutation from '~/issues/show/queries/promote_to_epic.mutatio
 import * as urlUtility from '~/lib/utils/url_utility';
 import eventHub from '~/notes/event_hub';
 import createStore from '~/notes/stores';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import issueReferenceQuery from '~/sidebar/queries/issue_reference.query.graphql';
+import updateIssueMutation from '~/issues/show/queries/update_issue.mutation.graphql';
+import toast from '~/vue_shared/plugins/global_toast';
 
 jest.mock('~/alert');
 jest.mock('~/issues/show/event_hub', () => ({ $emit: jest.fn() }));
+jest.mock('~/vue_shared/plugins/global_toast');
 
 describe('HeaderActions component', () => {
   let dispatchEventSpy;
-  let mutateMock;
   let wrapper;
   let visitUrlSpy;
 
   Vue.use(Vuex);
+  Vue.use(VueApollo);
 
   const store = createStore();
 
@@ -45,15 +52,28 @@ describe('HeaderActions component', () => {
     reportedUserId: 1,
     reportedFromUrl: 'http://localhost:/gitlab-org/-/issues/32',
     submitAsSpamPath: 'gitlab-org/gitlab-test/-/issues/32/submit_as_spam',
+    issuableEmailAddress: null,
+    fullPath: 'full-path',
   };
 
-  const updateIssueMutationResponse = { data: { updateIssue: { errors: [] } } };
+  const updateIssueMutationResponse = {
+    data: {
+      updateIssue: {
+        errors: [],
+        issuable: {
+          id: 'gid://gitlab/Issue/511',
+          state: STATUS_OPEN,
+        },
+      },
+    },
+  };
 
   const promoteToEpicMutationResponse = {
     data: {
       promoteToEpic: {
         errors: [],
         epic: {
+          id: 'gid://gitlab/Epic/1',
           webPath: '/groups/gitlab-org/-/epics/1',
         },
       },
@@ -69,6 +89,20 @@ describe('HeaderActions component', () => {
     },
   };
 
+  const mockIssueReferenceData = {
+    data: {
+      workspace: {
+        id: 'gid://gitlab/Project/7',
+        issuable: {
+          id: 'gid://gitlab/Issue/511',
+          reference: 'flightjs/Flight#33',
+          __typename: 'Issue',
+        },
+        __typename: 'Project',
+      },
+    },
+  };
+
   const findToggleIssueStateButton = () => wrapper.find(`[data-testid="toggle-button"]`);
   const findEditButton = () => wrapper.find(`[data-testid="edit-button"]`);
 
@@ -77,33 +111,54 @@ describe('HeaderActions component', () => {
   const findDesktopDropdown = () => findDropdownBy('desktop-dropdown');
   const findMobileDropdownItems = () => findMobileDropdown().findAllComponents(GlDropdownItem);
   const findDesktopDropdownItems = () => findDesktopDropdown().findAllComponents(GlDropdownItem);
+  const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
+  const findReportAbuseSelectorItem = () => wrapper.find(`[data-testid="report-abuse-item"]`);
+  const findNotificationWidget = () => wrapper.find(`[data-testid="notification-toggle"]`);
+  const findLockIssueWidget = () => wrapper.find(`[data-testid="lock-issue-toggle"]`);
+  const findCopyRefenceDropdownItem = () => wrapper.find(`[data-testid="copy-reference"]`);
+  const findCopyEmailItem = () => wrapper.find(`[data-testid="copy-email"]`);
 
   const findModal = () => wrapper.findComponent(GlModal);
 
   const findModalLinkAt = (index) => findModal().findAllComponents(GlLink).at(index);
 
+  const issueReferenceSuccessHandler = jest.fn().mockResolvedValue(mockIssueReferenceData);
+  const updateIssueMutationResponseHandler = jest
+    .fn()
+    .mockResolvedValue(updateIssueMutationResponse);
+  const promoteToEpicMutationSuccessResponseHandler = jest
+    .fn()
+    .mockResolvedValue(promoteToEpicMutationResponse);
+  const promoteToEpicMutationErrorHandler = jest
+    .fn()
+    .mockResolvedValue(promoteToEpicMutationErrorResponse);
+
   const mountComponent = ({
     props = {},
     issueState = STATUS_OPEN,
     blockedByIssues = [],
-    mutateResponse = {},
+    movedMrSidebarEnabled = false,
+    promoteToEpicHandler = promoteToEpicMutationSuccessResponseHandler,
   } = {}) => {
-    mutateMock = jest.fn().mockResolvedValue(mutateResponse);
-
     store.dispatch('setNoteableData', {
       blocked_by_issues: blockedByIssues,
       state: issueState,
     });
 
+    const handlers = [
+      [issueReferenceQuery, issueReferenceSuccessHandler],
+      [updateIssueMutation, updateIssueMutationResponseHandler],
+      [promoteToEpicMutation, promoteToEpicHandler],
+    ];
+
     return shallowMount(HeaderActions, {
+      apolloProvider: createMockApollo(handlers),
       store,
       provide: {
         ...defaultProps,
         ...props,
-      },
-      mocks: {
-        $apollo: {
-          mutate: mutateMock,
+        glFeatures: {
+          movedMrSidebar: movedMrSidebarEnabled,
         },
       },
       stubs: {
@@ -138,7 +193,6 @@ describe('HeaderActions component', () => {
           wrapper = mountComponent({
             props: { issueType },
             issueState,
-            mutateResponse: updateIssueMutationResponse,
           });
         });
 
@@ -149,23 +203,19 @@ describe('HeaderActions component', () => {
         it('calls apollo mutation', () => {
           findToggleIssueStateButton().vm.$emit('click');
 
-          expect(mutateMock).toHaveBeenCalledWith(
-            expect.objectContaining({
-              variables: {
-                input: {
-                  iid: defaultProps.iid,
-                  projectPath: defaultProps.projectPath,
-                  stateEvent: newIssueState,
-                },
-              },
-            }),
-          );
+          expect(updateIssueMutationResponseHandler).toHaveBeenCalledWith({
+            input: {
+              iid: defaultProps.iid,
+              projectPath: defaultProps.projectPath,
+              stateEvent: newIssueState,
+            },
+          });
         });
 
         it('dispatches a custom event to update the issue page', async () => {
           findToggleIssueStateButton().vm.$emit('click');
 
-          await nextTick();
+          await waitForPromises();
 
           expect(dispatchEventSpy).toHaveBeenCalledTimes(1);
         });
@@ -290,28 +340,25 @@ describe('HeaderActions component', () => {
 
   describe('when "Promote to epic" button is clicked', () => {
     describe('when response is successful', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         visitUrlSpy = jest.spyOn(urlUtility, 'visitUrl').mockReturnValue({});
 
         wrapper = mountComponent({
-          mutateResponse: promoteToEpicMutationResponse,
+          promoteToEpicHandler: promoteToEpicMutationSuccessResponseHandler,
         });
 
         wrapper.find('[data-testid="promote-button"]').vm.$emit('click');
+
+        await waitForPromises();
       });
 
       it('invokes GraphQL mutation when clicked', () => {
-        expect(mutateMock).toHaveBeenCalledWith(
-          expect.objectContaining({
-            mutation: promoteToEpicMutation,
-            variables: {
-              input: {
-                iid: defaultProps.iid,
-                projectPath: defaultProps.projectPath,
-              },
-            },
-          }),
-        );
+        expect(promoteToEpicMutationSuccessResponseHandler).toHaveBeenCalledWith({
+          input: {
+            iid: defaultProps.iid,
+            projectPath: defaultProps.projectPath,
+          },
+        });
       });
 
       it('shows a success message and tells the user they are being redirected', () => {
@@ -329,14 +376,16 @@ describe('HeaderActions component', () => {
     });
 
     describe('when response contains errors', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         visitUrlSpy = jest.spyOn(urlUtility, 'visitUrl').mockReturnValue({});
 
         wrapper = mountComponent({
-          mutateResponse: promoteToEpicMutationErrorResponse,
+          promoteToEpicHandler: promoteToEpicMutationErrorHandler,
         });
 
         wrapper.find('[data-testid="promote-button"]').vm.$emit('click');
+
+        await waitForPromises();
       });
 
       it('shows an error message', () => {
@@ -349,21 +398,17 @@ describe('HeaderActions component', () => {
 
   describe('when `toggle.issuable.state` event is emitted', () => {
     it('invokes a method to toggle the issue state', () => {
-      wrapper = mountComponent({ mutateResponse: updateIssueMutationResponse });
+      wrapper = mountComponent();
 
       eventHub.$emit('toggle.issuable.state');
 
-      expect(mutateMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          variables: {
-            input: {
-              iid: defaultProps.iid,
-              projectPath: defaultProps.projectPath,
-              stateEvent: ISSUE_STATE_EVENT_CLOSE,
-            },
-          },
-        }),
-      );
+      expect(updateIssueMutationResponseHandler).toHaveBeenCalledWith({
+        input: {
+          iid: defaultProps.iid,
+          projectPath: defaultProps.projectPath,
+          stateEvent: ISSUE_STATE_EVENT_CLOSE,
+        },
+      });
     });
   });
 
@@ -392,17 +437,13 @@ describe('HeaderActions component', () => {
     it('calls apollo mutation when primary button is clicked', () => {
       findModal().vm.$emit('primary');
 
-      expect(mutateMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          variables: {
-            input: {
-              iid: defaultProps.iid.toString(),
-              projectPath: defaultProps.projectPath,
-              stateEvent: ISSUE_STATE_EVENT_CLOSE,
-            },
-          },
-        }),
-      );
+      expect(updateIssueMutationResponseHandler).toHaveBeenCalledWith({
+        input: {
+          iid: defaultProps.iid.toString(),
+          projectPath: defaultProps.projectPath,
+          stateEvent: ISSUE_STATE_EVENT_CLOSE,
+        },
+      });
     });
 
     describe.each`
@@ -434,8 +475,6 @@ describe('HeaderActions component', () => {
   });
 
   describe('abuse category selector', () => {
-    const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
-
     beforeEach(() => {
       wrapper = mountComponent({ props: { isIssueAuthor: false } });
     });
@@ -445,7 +484,7 @@ describe('HeaderActions component', () => {
     });
 
     it('opens the drawer', async () => {
-      findDesktopDropdownItems().at(2).vm.$emit('click');
+      findReportAbuseSelectorItem().vm.$emit('click');
 
       await nextTick();
 
@@ -453,10 +492,160 @@ describe('HeaderActions component', () => {
     });
 
     it('closes the drawer', async () => {
-      await findDesktopDropdownItems().at(2).vm.$emit('click');
+      await findReportAbuseSelectorItem().vm.$emit('click');
       await findAbuseCategorySelector().vm.$emit('close-drawer');
 
       expect(findAbuseCategorySelector().exists()).toEqual(false);
+    });
+  });
+
+  describe('notification toggle', () => {
+    describe('visibility', () => {
+      describe.each`
+        movedMrSidebarEnabled | issueType        | visible
+        ${true}               | ${TYPE_ISSUE}    | ${true}
+        ${true}               | ${TYPE_INCIDENT} | ${true}
+        ${false}              | ${TYPE_ISSUE}    | ${false}
+        ${false}              | ${TYPE_INCIDENT} | ${false}
+      `(
+        `when movedMrSidebarEnabled flag is "$movedMrSidebarEnabled" with issue type "$issueType"`,
+        ({ movedMrSidebarEnabled, issueType, visible }) => {
+          beforeEach(() => {
+            wrapper = mountComponent({
+              props: {
+                issueType,
+              },
+              movedMrSidebarEnabled,
+            });
+          });
+
+          it(`${visible ? 'shows' : 'hides'} Notification toggle`, () => {
+            expect(findNotificationWidget().exists()).toBe(visible);
+          });
+        },
+      );
+    });
+  });
+
+  describe('lock issue option', () => {
+    describe('visibility', () => {
+      describe.each`
+        movedMrSidebarEnabled | issueType        | visible
+        ${true}               | ${TYPE_ISSUE}    | ${true}
+        ${true}               | ${TYPE_INCIDENT} | ${false}
+        ${false}              | ${TYPE_ISSUE}    | ${false}
+        ${false}              | ${TYPE_INCIDENT} | ${false}
+      `(
+        `when movedMrSidebarEnabled flag is "$movedMrSidebarEnabled" with issue type "$issueType"`,
+        ({ movedMrSidebarEnabled, issueType, visible }) => {
+          beforeEach(() => {
+            wrapper = mountComponent({
+              props: {
+                issueType,
+              },
+              movedMrSidebarEnabled,
+            });
+          });
+
+          it(`${visible ? 'shows' : 'hides'} Lock issue option`, () => {
+            expect(findLockIssueWidget().exists()).toBe(visible);
+          });
+        },
+      );
+    });
+  });
+
+  describe('copy reference option', () => {
+    describe('visibility', () => {
+      describe.each`
+        movedMrSidebarEnabled | issueType        | visible
+        ${true}               | ${TYPE_ISSUE}    | ${true}
+        ${true}               | ${TYPE_INCIDENT} | ${true}
+        ${false}              | ${TYPE_ISSUE}    | ${false}
+        ${false}              | ${TYPE_INCIDENT} | ${false}
+      `(
+        'when movedMrSidebarFlagEnabled is "$movedMrSidebarEnabled" with issue type "$issueType"',
+        ({ movedMrSidebarEnabled, issueType, visible }) => {
+          beforeEach(() => {
+            wrapper = mountComponent({
+              props: {
+                issueType,
+              },
+              movedMrSidebarEnabled,
+            });
+          });
+
+          it(`${visible ? 'shows' : 'hides'} Copy reference option`, () => {
+            expect(findCopyRefenceDropdownItem().exists()).toBe(visible);
+          });
+        },
+      );
+    });
+
+    describe('clicking when visible', () => {
+      beforeEach(() => {
+        wrapper = mountComponent({
+          props: {
+            issueType: TYPE_ISSUE,
+          },
+          movedMrSidebarEnabled: true,
+        });
+      });
+
+      it('shows toast message', () => {
+        findCopyRefenceDropdownItem().vm.$emit('click');
+
+        expect(toast).toHaveBeenCalledWith('Reference copied');
+      });
+    });
+  });
+
+  describe('copy email option', () => {
+    describe('visibility', () => {
+      describe.each`
+        movedMrSidebarEnabled | issueType        | issuableEmailAddress    | visible
+        ${true}               | ${TYPE_ISSUE}    | ${'mock-email-address'} | ${true}
+        ${true}               | ${TYPE_ISSUE}    | ${''}                   | ${false}
+        ${true}               | ${TYPE_INCIDENT} | ${'mock-email-address'} | ${true}
+        ${true}               | ${TYPE_INCIDENT} | ${''}                   | ${false}
+        ${false}              | ${TYPE_ISSUE}    | ${'mock-email-address'} | ${false}
+        ${false}              | ${TYPE_INCIDENT} | ${'mock-email-address'} | ${false}
+      `(
+        'when movedMrSidebarEnabled flag is "$movedMrSidebarEnabled" issue type is "$issueType" and issuableEmailAddress="$issuableEmailAddress"',
+        ({ movedMrSidebarEnabled, issueType, issuableEmailAddress, visible }) => {
+          beforeEach(() => {
+            wrapper = mountComponent({
+              props: {
+                issueType,
+                issuableEmailAddress,
+              },
+              movedMrSidebarEnabled,
+            });
+          });
+
+          it(`${visible ? 'shows' : 'hides'} Copy email option`, () => {
+            expect(findCopyEmailItem().exists()).toBe(visible);
+          });
+        },
+      );
+    });
+
+    describe('clicking when visible', () => {
+      beforeEach(() => {
+        wrapper = mountComponent({
+          props: {
+            issueType: TYPE_ISSUE,
+            issuableEmailAddress: 'mock-email-address',
+          },
+          movedMrSidebarEnabled: true,
+        });
+      });
+
+      it('shows toast message', () => {
+        findCopyEmailItem().vm.$emit('click');
+
+        expect(toast).toHaveBeenCalledWith('Email address copied');
+      });
     });
   });
 });

@@ -28,6 +28,7 @@ describe('UserBar component', () => {
   const findTodosCounter = () => findCounter(2);
   const findMergeRequestMenu = () => wrapper.findComponent(MergeRequestMenu);
   const findBrandLogo = () => wrapper.findByTestId('brand-header-custom-logo');
+  const findCollapseButton = () => wrapper.findByTestId('super-sidebar-collapse-button');
   const findSearchButton = () => wrapper.findByTestId('super-sidebar-search-button');
   const findSearchModal = () => wrapper.findComponent(SearchModal);
   const findStopImpersonationButton = () => wrapper.findByTestId('stop-impersonation-btn');
@@ -39,9 +40,14 @@ describe('UserBar component', () => {
       searchOptions: () => MOCK_DEFAULT_SEARCH_OPTIONS,
     },
   });
-  const createWrapper = ({ extraSidebarData = {}, provideOverrides = {} } = {}) => {
+  const createWrapper = ({
+    hasCollapseButton = true,
+    extraSidebarData = {},
+    provideOverrides = {},
+  } = {}) => {
     wrapper = shallowMountExtended(UserBar, {
       propsData: {
+        hasCollapseButton,
         sidebarData: { ...sidebarData, ...extraSidebarData },
       },
       provide: {
@@ -118,6 +124,15 @@ describe('UserBar component', () => {
 
     it('does not render the "Stop impersonating" button', () => {
       expect(findStopImpersonationButton().exists()).toBe(false);
+    });
+
+    it('renders collapse button when hasCollapseButton is true', () => {
+      expect(findCollapseButton().exists()).toBe(true);
+    });
+
+    it('does not render collapse button when hasCollapseButton is false', () => {
+      createWrapper({ hasCollapseButton: false });
+      expect(findCollapseButton().exists()).toBe(false);
     });
   });
 

@@ -100,7 +100,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/mailers/emails/user_cap_spec.rb'
     - 'ee/spec/mailers/license_mailer_spec.rb'
     - 'ee/spec/mailers/notify_spec.rb'
-    - 'ee/spec/presenters/approval_rule_presenter_spec.rb'
     - 'ee/spec/presenters/audit_event_presenter_spec.rb'
     - 'ee/spec/presenters/ci/build_runner_presenter_spec.rb'
     - 'ee/spec/presenters/ci/minutes/usage_presenter_spec.rb'

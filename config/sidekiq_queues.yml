@@ -413,6 +413,8 @@
   - 3
 - - product_analytics_initialize_analytics
   - 1
+- - product_analytics_initialize_snowplow_product_analytics
+  - 1
 - - project_cache
   - 1
 - - project_destroy

@@ -44,10 +44,10 @@
           = render Pajamas::ButtonComponent.new(button_options: { class: "js-unsubscribe-button #{'hidden' if status.unsubscribed?}", data: { url: toggle_subscription_path, toggle: 'tooltip', container: 'body' }, title: tooltip_title }) do
             = _('Unsubscribe')
           .dropdown.dropdown-group-label{ class: ('hidden' unless status.unsubscribed?) }
-            = render Pajamas::ButtonComponent.new(button_options: { class: 'gl-w-full', data: { toggle: 'dropdown' } }) do
+            = render Pajamas::ButtonComponent.new(button_options: { data: { toggle: 'dropdown' } }) do
               = _('Subscribe')
               = sprite_icon('chevron-down')
-            .dropdown-menu.dropdown-open-left
+            .dropdown-menu.dropdown-menu-right
               %ul
                 %li
                   = render Pajamas::ButtonComponent.new(category: :tertiary, button_options: { class: "js-subscribe-button #{'hidden' unless status.unsubscribed?}", data: { status: status, url: toggle_subscription_project_label_path(@project, label) } }) do

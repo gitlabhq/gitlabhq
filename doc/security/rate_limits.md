@@ -148,6 +148,14 @@ There is a rate limit for the endpoint `project/:id/jobs`, which is enforced to 
 
 The **rate limit** is 600 calls per minute per authenticated user.
 
+### AI action
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118010) in GitLab 16.0.
+
+There is a rate limit for the GraphQL `aiAction` mutation, which is enforced to prevent from abusing this endpoint.
+
+The **rate limit** is 20 calls per hour per authenticated user.
+
 ## Troubleshooting
 
 ### Rack Attack is denylisting the load balancer
