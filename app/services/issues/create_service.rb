@@ -93,6 +93,7 @@ module Issues
       return if issue.assignees == old_assignees
 
       create_assignee_note(issue, old_assignees)
+      Gitlab::ResourceEvents::AssignmentEventRecorder.new(parent: issue, old_assignees: old_assignees).record
     end
 
     def resolve_discussions_with_issue(issue)

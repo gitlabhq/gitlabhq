@@ -11,8 +11,11 @@ import { s__, __, sprintf } from '~/locale';
 import NewNavToggle from '~/nav/components/new_nav_toggle.vue';
 import Tracking from '~/tracking';
 import PersistentUserCallout from '~/persistent_user_callout';
-import { USER_MENU_TRACKING_DEFAULTS } from '../constants';
+import { USER_MENU_TRACKING_DEFAULTS, DROPDOWN_Y_OFFSET } from '../constants';
 import UserNameGroup from './user_name_group.vue';
+
+// Left offset required for the dropdown to be aligned with the super sidebar
+const DROPDOWN_X_OFFSET = -211;
 
 export default {
   feedbackUrl: 'https://gitlab.com/gitlab-org/gitlab/-/issues/403059',
@@ -216,6 +219,16 @@ export default {
       });
     },
   },
+  popperOptions: {
+    modifiers: [
+      {
+        name: 'offset',
+        options: {
+          offset: [DROPDOWN_X_OFFSET, DROPDOWN_Y_OFFSET],
+        },
+      },
+    ],
+  },
 };
 </script>
 
@@ -223,7 +236,7 @@ export default {
   <div>
     <gl-disclosure-dropdown
       ref="userDropdown"
-      placement="right"
+      :popper-options="$options.popperOptions"
       data-testid="user-dropdown"
       data-qa-selector="user_menu"
       @shown="onShow"

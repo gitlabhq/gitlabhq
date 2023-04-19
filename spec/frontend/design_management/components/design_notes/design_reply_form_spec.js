@@ -124,7 +124,7 @@ describe('Design reply form component', () => {
     ${'gid://gitlab/DiffDiscussion/123'} | ${123}
   `(
     'initializes autosave support on discussion with proper key',
-    async ({ discussionId, shortDiscussionId }) => {
+    ({ discussionId, shortDiscussionId }) => {
       createComponent({ props: { discussionId } });
 
       expect(Autosave).toHaveBeenCalledWith(expect.any(Element), [
@@ -136,7 +136,7 @@ describe('Design reply form component', () => {
   );
 
   describe('when form has no text', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       createComponent();
     });
 
@@ -148,7 +148,7 @@ describe('Design reply form component', () => {
       key       | keyData
       ${'ctrl'} | ${ctrlKey}
       ${'meta'} | ${metaKey}
-    `('does not perform mutation on textarea $key+enter keydown', async ({ keyData }) => {
+    `('does not perform mutation on textarea $key+enter keydown', ({ keyData }) => {
       findTextarea().trigger('keydown.enter', keyData);
 
       expect(mockMutationHandler).not.toHaveBeenCalled();
@@ -266,7 +266,7 @@ describe('Design reply form component', () => {
       expect(wrapper.emitted('cancel-form')).toHaveLength(1);
     });
 
-    it('opens confirmation modal on Escape key when text has changed', async () => {
+    it('opens confirmation modal on Escape key when text has changed', () => {
       createComponent();
 
       findTextarea().setValue(mockComment);

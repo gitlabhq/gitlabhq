@@ -37,26 +37,6 @@ RSpec.describe Onboarding::Completion, feature_category: :onboarding do
 
       it { is_expected.to eq(100) }
     end
-
-    context 'with security_actions_continuous_onboarding experiment' do
-      let(:completed_actions) { Hash[tracked_action_columns.first, Time.current] }
-
-      context 'when control' do
-        before do
-          stub_experiments(security_actions_continuous_onboarding: :control)
-        end
-
-        it { is_expected.to eq(10) }
-      end
-
-      context 'when candidate' do
-        before do
-          stub_experiments(security_actions_continuous_onboarding: :candidate)
-        end
-
-        it { is_expected.to eq(8) }
-      end
-    end
   end
 
   describe '#completed?' do
@@ -84,18 +64,18 @@ RSpec.describe Onboarding::Completion, feature_category: :onboarding do
       end
     end
 
-    context 'when security_scan_enabled' do
-      let(:column) { :security_scan_enabled_at }
-      let(:completed_actions) { { security_scan_enabled_at: security_scan_enabled_at } }
+    context 'when secure_dast_run' do
+      let(:column) { :secure_dast_run_at }
+      let(:completed_actions) { { secure_dast_run_at: secure_dast_run_at } }
 
       context 'when is completed' do
-        let(:security_scan_enabled_at) { Time.current }
+        let(:secure_dast_run_at) { Time.current }
 
         it { is_expected.to eq(true) }
       end
 
       context 'when is not completed' do
-        let(:security_scan_enabled_at) { nil }
+        let(:secure_dast_run_at) { nil }
 
         it { is_expected.to eq(false) }
       end

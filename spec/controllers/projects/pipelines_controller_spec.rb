@@ -199,22 +199,6 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
           check_pipeline_response(returned: 6, all: 6)
         end
       end
-
-      context "with lazy_load_pipeline_dropdown_actions feature flag disabled" do
-        before do
-          stub_feature_flags(lazy_load_pipeline_dropdown_actions: false)
-        end
-
-        it 'returns manual and scheduled actions' do
-          get_pipelines_index_json
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to match_response_schema('pipeline')
-
-          expect(json_response.dig('pipelines', 0, 'details')).to include('manual_actions')
-          expect(json_response.dig('pipelines', 0, 'details')).to include('scheduled_actions')
-        end
-      end
     end
 
     def get_pipelines_index_html(params = {})

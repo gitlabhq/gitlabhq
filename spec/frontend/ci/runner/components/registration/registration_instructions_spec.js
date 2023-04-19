@@ -280,7 +280,7 @@ describe('RegistrationInstructions', () => {
       });
 
       describe('when the page is closing', () => {
-        it('warns the user against closing', async () => {
+        it('warns the user against closing', () => {
           const { event, preventDefault, returnValueSetter } = mockBeforeunload();
 
           expect(preventDefault).not.toHaveBeenCalled();

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::API::Admin::InstanceClusters, feature_category: :kubernetes_management do
+RSpec.describe ::API::Admin::InstanceClusters, feature_category: :deployment_management do
   include KubernetesHelpers
 
   let_it_be(:admin_user) { create(:admin) }

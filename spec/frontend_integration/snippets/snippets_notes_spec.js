@@ -6,7 +6,7 @@ import initDeprecatedNotes from '~/init_deprecated_notes';
 import { setHTMLFixture } from 'helpers/fixtures';
 
 describe('Integration Snippets notes', () => {
-  beforeEach(async () => {
+  beforeEach(() => {
     setHTMLFixture(htmlSnippetsShow);
 
     // Check if we have to Load GFM Input

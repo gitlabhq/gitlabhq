@@ -1,8 +1,0 @@
----
-name: lazy_load_pipeline_dropdown_actions
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114490
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/393846
-milestone: '15.10'
-type: development
-group: group::pipeline execution
-default_enabled: false

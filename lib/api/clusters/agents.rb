@@ -7,7 +7,7 @@ module API
 
       before { authenticate! }
 
-      feature_category :kubernetes_management
+      feature_category :deployment_management
       urgency :low
 
       params do

@@ -33,3 +33,5 @@ export const HELP_MENU_TRACKING_DEFAULTS = {
 
 export const SIDEBAR_PINS_EXPANDED_COOKIE = 'sidebar_pinned_section_expanded';
 export const SIDEBAR_COOKIE_EXPIRATION = 365 * 10;
+
+export const DROPDOWN_Y_OFFSET = 4;

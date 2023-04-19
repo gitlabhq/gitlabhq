@@ -61,6 +61,9 @@ export default {
     hasEditAction() {
       return this.userActions.includes('edit');
     },
+    hasEditActionOnly() {
+      return this.hasEditAction === true && this.hasDeleteActions === false;
+    },
     userPaths() {
       return generateUserPaths(this.paths, this.user.username);
     },
@@ -91,10 +94,13 @@ export default {
     class="gl-display-flex gl-justify-content-end gl-my-n2 gl-mx-n2"
     :data-testid="`user-actions-${user.id}`"
   >
-    <div v-if="hasEditAction" class="gl-p-2">
-      <gl-button v-if="showButtonLabels" v-bind="editButtonAttrs" icon="pencil-square">{{
-        $options.i18n.edit
-      }}</gl-button>
+    <div v-if="hasEditAction" class="gl-p-2" :class="{ 'gl-mr-3': hasEditActionOnly }">
+      <gl-button
+        v-if="showButtonLabels"
+        v-bind="editButtonAttrs"
+        :class="{ 'gl-mr-7': hasEditActionOnly }"
+        >{{ $options.i18n.edit }}</gl-button
+      >
       <gl-button
         v-else
         v-gl-tooltip="$options.i18n.edit"
@@ -106,11 +112,14 @@ export default {
 
     <div v-if="hasDropdownActions" class="gl-p-2">
       <gl-disclosure-dropdown
+        icon="ellipsis_v"
+        category="tertiary"
         :toggle-text="$options.i18n.userAdministration"
+        text-sr-only
         data-testid="dropdown-toggle"
         data-qa-selector="user_actions_dropdown_toggle"
         :data-qa-username="user.username"
-        placement="left"
+        no-caret
       >
         <template v-for="action in dropdownSafeActions">
           <component

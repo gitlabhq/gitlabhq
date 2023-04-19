@@ -5,6 +5,7 @@ description: Total GitLab Managed disabled clusters attached to groups
 product_section: ops
 product_stage: configure
 product_group: configure
+product_category: deployment_management
 value_type: number
 status: active
 time_frame: all

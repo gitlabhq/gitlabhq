@@ -6,7 +6,7 @@ class Projects::ClusterAgentsController < Projects::ApplicationController
   before_action :authorize_read_cluster_agent!
   before_action :set_kas_cookie, only: [:show], if: -> { current_user }
 
-  feature_category :kubernetes_management
+  feature_category :deployment_management
   urgency :low
 
   def show

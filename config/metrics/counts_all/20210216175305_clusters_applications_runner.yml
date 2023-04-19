@@ -5,6 +5,7 @@ description: Total GitLab Managed clusters with GitLab Managed App:Runner instal
 product_section: ops
 product_stage: configure
 product_group: configure
+product_category: deployment_management
 value_type: number
 status: removed
 time_frame: all

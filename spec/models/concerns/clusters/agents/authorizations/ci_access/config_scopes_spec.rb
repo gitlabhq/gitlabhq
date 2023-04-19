@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Agents::Authorizations::CiAccess::ConfigScopes, feature_category: :kubernetes_management do
+RSpec.describe Clusters::Agents::Authorizations::CiAccess::ConfigScopes, feature_category: :deployment_management do
   describe '.with_available_ci_access_fields' do
     let(:project) { create(:project) }
 

@@ -160,7 +160,7 @@ export default {
       ></div>
       <div class="gl-flex-shrink-0 gl-w-6 gl-mx-3">
         <slot name="icon">
-          <gl-icon v-if="item.icon" :name="item.icon" class="gl-ml-2" />
+          <gl-icon v-if="item.icon" :name="item.icon" class="gl-ml-2 item-icon" />
           <gl-icon
             v-else-if="draggable"
             name="grip"

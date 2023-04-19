@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BulkInsertClusterEnabledGrants, :migration, feature_category: :kubernetes_management do
+RSpec.describe BulkInsertClusterEnabledGrants, :migration, feature_category: :deployment_management do
   let(:migration) { described_class.new }
 
   let(:cluster_enabled_grants) { table(:cluster_enabled_grants) }

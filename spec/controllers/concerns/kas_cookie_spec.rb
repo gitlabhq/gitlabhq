@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe KasCookie, feature_category: :kubernetes_management do
+RSpec.describe KasCookie, feature_category: :deployment_management do
   describe '#set_kas_cookie' do
     controller(ApplicationController) do
       include KasCookie

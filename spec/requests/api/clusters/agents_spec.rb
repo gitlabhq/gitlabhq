@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Clusters::Agents, feature_category: :kubernetes_management do
+RSpec.describe API::Clusters::Agents, feature_category: :deployment_management do
   let_it_be(:agent) { create(:cluster_agent) }
 
   let(:user) { agent.created_by_user }

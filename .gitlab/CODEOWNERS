@@ -751,7 +751,7 @@ lib/gitlab/checks/** @proglottis @toon
 /doc/development/policies.md @jglassman1
 /doc/development/project_templates.md @aqualls
 /doc/development/prometheus_metrics.md @msedlakjakubowski
-/doc/development/real_time.md @msedlakjakubowski
+/doc/development/real_time.md @jglassman1
 /doc/development/rubocop_development_guide.md @sselhorn
 /doc/development/search/ @ashrafkhamis
 /doc/development/sec/ @rdickenson
@@ -817,7 +817,7 @@ lib/gitlab/checks/** @proglottis @toon
 /doc/tutorials/ @kpaizee
 /doc/tutorials/create_compliance_pipeline.md @eread
 /doc/tutorials/fuzz_testing_tutorial.md @rdickenson
-/doc/tutorials/scan_result_policy.md @dianalogan
+/doc/tutorials/scan_result_policy.md @rdickenson
 /doc/update/ @axil
 /doc/update/background_migrations.md @aqualls
 /doc/user/admin_area/analytics/ @lciutacu
@@ -834,7 +834,7 @@ lib/gitlab/checks/** @proglottis @toon
 /doc/user/admin_area/monitoring/ @msedlakjakubowski
 /doc/user/admin_area/reporting/git_abuse_rate_limit.md @phillipwells
 /doc/user/admin_area/reporting/spamcheck.md @axil
-/doc/user/admin_area/review_abuse_reports.md @jglassman1
+/doc/user/admin_area/review_abuse_reports.md @phillipwells
 /doc/user/admin_area/settings/account_and_limit_settings.md @aqualls
 /doc/user/admin_area/settings/continuous_integration.md @drcatherinepope
 /doc/user/admin_area/settings/deprecated_api_rate_limits.md @aqualls
@@ -864,17 +864,12 @@ lib/gitlab/checks/** @proglottis @toon
 /doc/user/analytics/ @lciutacu
 /doc/user/analytics/ci_cd_analytics.md @phillipwells
 /doc/user/application_security/ @rdickenson
-/doc/user/application_security/policies/ @dianalogan
 /doc/user/asciidoc.md @aqualls
 /doc/user/award_emojis.md @msedlakjakubowski
 /doc/user/clusters/ @phillipwells
+/doc/user/compliance/ @rdickenson
 /doc/user/compliance/compliance_report/ @eread
 /doc/user/compliance/index.md @eread
-/doc/user/compliance/license_approval_policies.md @dianalogan
-/doc/user/compliance/license_check_rules.md @dianalogan
-/doc/user/compliance/license_compliance/ @rdickenson
-/doc/user/compliance/license_list.md @rdickenson
-/doc/user/compliance/license_scanning_of_cyclonedx_files/ @rdickenson
 /doc/user/crm/ @msedlakjakubowski
 /doc/user/discussions/ @aqualls
 /doc/user/enterprise_user/ @jglassman1

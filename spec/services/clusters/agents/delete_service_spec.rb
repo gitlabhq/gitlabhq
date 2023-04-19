@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Agents::DeleteService, feature_category: :kubernetes_management do
+RSpec.describe Clusters::Agents::DeleteService, feature_category: :deployment_management do
   subject(:service) { described_class.new(container: project, current_user: user) }
 
   let(:cluster_agent) { create(:cluster_agent) }

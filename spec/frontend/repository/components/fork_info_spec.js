@@ -224,7 +224,7 @@ describe('ForkInfo component', () => {
       );
     });
 
-    it('does not render Update Fork button', async () => {
+    it('does not render Update Fork button', () => {
       expect(findUpdateForkButton().exists()).toBe(false);
     });
   });

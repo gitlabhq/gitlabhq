@@ -33,25 +33,6 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
         end
       end
 
-      context 'when the FF ci_simplify_dag_status_calculation_for_processing is disabled' do
-        before do
-          stub_feature_flags(ci_simplify_dag_status_calculation_for_processing: false)
-        end
-
-        # This is duplicate of the one above but it is temporary
-        it 'follows transitions' do
-          expect(pipeline).to be_persisted
-          Sidekiq::Worker.drain_all # ensure that all async jobs are executed
-          check_expectation(test_file.dig('init', 'expect'), "init")
-
-          test_file['transitions'].each_with_index do |transition, idx|
-            process_events(transition)
-            Sidekiq::Worker.drain_all # ensure that all async jobs are executed
-            check_expectation(transition['expect'], "transition:#{idx}")
-          end
-        end
-      end
-
       private
 
       def check_expectation(expectation, message)

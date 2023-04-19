@@ -75,6 +75,7 @@ module Issues
       return if issue.assignees == old_assignees
 
       create_assignee_note(issue, old_assignees)
+      Gitlab::ResourceEvents::AssignmentEventRecorder.new(parent: issue, old_assignees: old_assignees).record
       notification_service.async.reassigned_issue(issue, current_user, old_assignees)
       todo_service.reassigned_assignable(issue, current_user, old_assignees)
       track_incident_action(current_user, issue, :incident_assigned)

@@ -78,8 +78,9 @@
     }
   }
 
-  .counter .gl-icon {
-    color: var(--gray-500, $gray-500);
+  .counter .gl-icon,
+  .item-icon {
+    color: var(--gray-600, $gray-500);
   }
 
   .counter:hover,

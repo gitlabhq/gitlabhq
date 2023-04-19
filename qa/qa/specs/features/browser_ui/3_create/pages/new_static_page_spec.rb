@@ -7,8 +7,7 @@ module QA
     except: { job: 'review-qa-*' },
     quarantine: {
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383215',
-      type: :test_environment,
-      only: { subdomain: 'staging-ref' }
+      type: :flaky
     },
     feature_flag: { name: 'show_pages_in_deployments_menu' } do
     # TODO: Convert back to :smoke once proved to be stable. Related issue: https://gitlab.com/gitlab-org/gitlab/-/issues/300906

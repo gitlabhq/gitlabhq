@@ -262,19 +262,21 @@ RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
 
   describe '.strong_memoize_attr' do
     [nil, false, true, 'value', 0, [0]].each do |value|
-      let(:value) { value }
+      context "with value '#{value}'" do
+        let(:value) { value }
 
-      context "memoized after method definition with value #{value}" do
-        let(:method_name) { :method_name_attr }
+        context 'memoized after method definition' do
+          let(:method_name) { :method_name_attr }
 
-        it_behaves_like 'caching the value'
+          it_behaves_like 'caching the value'
 
-        it 'calls the existing .method_added' do
-          expect(klass.method_added_list).to include(:method_name_attr)
-        end
+          it 'calls the existing .method_added' do
+            expect(klass.method_added_list).to include(:method_name_attr)
+          end
 
-        it 'retains method arity' do
-          expect(klass.instance_method(method_name).arity).to eq(0)
+          it 'retains method arity' do
+            expect(klass.instance_method(method_name).arity).to eq(0)
+          end
         end
       end
     end

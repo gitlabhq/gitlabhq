@@ -135,7 +135,7 @@ export default {
       </template>
 
       <template #cell(settings)="{ item: user }">
-        <user-actions :user="user" :paths="paths" />
+        <user-actions :user="user" :paths="paths" :show-button-labels="true" />
       </template>
     </gl-table>
   </div>

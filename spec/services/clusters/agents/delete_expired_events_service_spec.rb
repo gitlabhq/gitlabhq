@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Agents::DeleteExpiredEventsService, feature_category: :kubernetes_management do
+RSpec.describe Clusters::Agents::DeleteExpiredEventsService, feature_category: :deployment_management do
   let_it_be(:agent) { create(:cluster_agent) }
 
   describe '#execute' do

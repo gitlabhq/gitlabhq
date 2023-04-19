@@ -626,7 +626,7 @@ describe('Ci Variable Shared Component', () => {
             }
           });
 
-          it('report custom validator error on wrong data', async () => {
+          it('report custom validator error on wrong data', () => {
             expect(() =>
               assertProps(
                 ciVariableShared,

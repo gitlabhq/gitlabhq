@@ -45,6 +45,8 @@ geo_migration_created = !git.added_files.grep(%r{\Aee/db/geo/(post_)?migrate/}).
 
 format_str = helper.ci? ? SCHEMA_NOT_UPDATED_MESSAGE_FULL : SCHEMA_NOT_UPDATED_MESSAGE_SHORT
 
+return if stable_branch.valid_stable_branch?
+
 if non_geo_migration_created && !non_geo_db_schema_updated
   warn format(format_str, migrations: 'migrations', schema: helper.html_link("db/structure.sql"))
 end

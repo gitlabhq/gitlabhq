@@ -69,7 +69,7 @@ describe('Delete tag modal', () => {
       expect(submitFormSpy).toHaveBeenCalled();
     });
 
-    it('calls show on the modal when a `openModal` event is received through the event hub', async () => {
+    it('calls show on the modal when a `openModal` event is received through the event hub', () => {
       const showSpy = jest.spyOn(wrapper.vm.$refs.modal, 'show');
 
       eventHub.$emit('openModal', {

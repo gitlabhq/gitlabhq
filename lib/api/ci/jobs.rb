@@ -250,7 +250,7 @@ module API
           ]
         end
         route_setting :authentication, job_token_allowed: true
-        get '/allowed_agents', urgency: :low, feature_category: :kubernetes_management do
+        get '/allowed_agents', urgency: :low, feature_category: :deployment_management do
           validate_current_authenticated_job
 
           status 200

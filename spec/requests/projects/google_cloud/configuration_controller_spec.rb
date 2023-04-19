@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::GoogleCloud::ConfigurationController, feature_category: :kubernetes_management do
+RSpec.describe Projects::GoogleCloud::ConfigurationController, feature_category: :deployment_management do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:url) { project_google_cloud_configuration_path(project) }
 

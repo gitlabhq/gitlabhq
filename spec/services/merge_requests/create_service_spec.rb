@@ -445,12 +445,20 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
             }
           end
 
-          it 'invalidates open merge request counter for assignees when merge request is assigned' do
+          before do
             project.add_maintainer(user2)
+          end
 
+          it 'invalidates open merge request counter for assignees when merge request is assigned' do
             described_class.new(project: project, current_user: user, params: opts).execute
 
             expect(user2.assigned_open_merge_requests_count).to eq 1
+          end
+
+          it 'records the assignee assignment event', :sidekiq_inline do
+            mr = described_class.new(project: project, current_user: user, params: opts).execute.reload
+
+            expect(mr.assignment_events).to match([have_attributes(user_id: user2.id, action: 'add')])
           end
         end
 

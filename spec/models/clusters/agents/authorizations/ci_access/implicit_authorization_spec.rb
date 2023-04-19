@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Agents::Authorizations::CiAccess::ImplicitAuthorization, feature_category: :kubernetes_management do
+RSpec.describe Clusters::Agents::Authorizations::CiAccess::ImplicitAuthorization, feature_category: :deployment_management do
   let_it_be(:agent) { create(:cluster_agent) }
 
   subject { described_class.new(agent: agent) }

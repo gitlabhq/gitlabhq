@@ -1,8 +1,0 @@
----
-name: ci_simplify_dag_status_calculation_for_processing
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115684
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/403005
-milestone: '15.11'
-type: development
-group: group::pipeline authoring
-default_enabled: false

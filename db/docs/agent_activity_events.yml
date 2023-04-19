@@ -3,7 +3,7 @@ table_name: agent_activity_events
 classes:
 - Clusters::Agents::ActivityEvent
 feature_categories:
-- kubernetes_management
+- deployment_management
 description: Historical timeline events belonging to a cluster agent
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74577
 milestone: '14.6'

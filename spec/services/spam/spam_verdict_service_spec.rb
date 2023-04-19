@@ -318,11 +318,13 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
            ::Spam::SpamConstants::CONDITIONAL_ALLOW,
            ::Spam::SpamConstants::DISALLOW,
            ::Spam::SpamConstants::BLOCK_USER].each do |verdict_value|
-            let(:verdict) { verdict_value }
-            let(:expected) { [verdict_value, attribs] }
+            context "with verdict_value:#{verdict_value}" do
+              let(:verdict) { verdict_value }
+              let(:expected) { [verdict_value, attribs] }
 
-            it "returns expected spam constant" do
-              expect(subject).to eq(expected)
+              it "returns expected spam constant" do
+                expect(subject).to eq(expected)
+              end
             end
           end
         end

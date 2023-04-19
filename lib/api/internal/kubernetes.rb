@@ -85,7 +85,7 @@ module API
             detail 'Retrieves agent info for the given token'
           end
           route_setting :authentication, cluster_agent_token_allowed: true
-          get '/agent_info', feature_category: :kubernetes_management, urgency: :low do
+          get '/agent_info', feature_category: :deployment_management, urgency: :low do
             project = agent.project
 
             status 200
@@ -103,7 +103,7 @@ module API
             detail 'Retrieves project info (if authorized)'
           end
           route_setting :authentication, cluster_agent_token_allowed: true
-          get '/project_info', feature_category: :kubernetes_management, urgency: :low do
+          get '/project_info', feature_category: :deployment_management, urgency: :low do
             project = find_project(params[:id])
 
             not_found! unless agent_has_access_to_project?(project)
@@ -126,7 +126,7 @@ module API
             requires :agent_id, type: Integer, desc: 'ID of the configured Agent'
             requires :agent_config, type: JSON, desc: 'Configuration for the Agent'
           end
-          post '/', feature_category: :kubernetes_management, urgency: :low do
+          post '/', feature_category: :deployment_management, urgency: :low do
             agent = ::Clusters::Agent.find(params[:agent_id])
 
             ::Clusters::Agents::Authorizations::CiAccess::RefreshService.new(agent, config: params[:agent_config]).execute
@@ -146,7 +146,7 @@ module API
               requires :csrf_token, type: String, allow_blank: false, desc: 'CSRF token that must be checked when access_type is "session_cookie", to ensure the request originates from a GitLab browsing session.'
             end
           end
-          post '/', feature_category: :kubernetes_management do
+          post '/', feature_category: :deployment_management do
             # Load session
             public_session_id_string =
               begin
@@ -193,7 +193,7 @@ module API
               optional :agent_users_using_ci_tunnel, type: Array[Integer], desc: 'An array of user ids that have interacted with CI Tunnel'
             end
           end
-          post '/', feature_category: :kubernetes_management do
+          post '/', feature_category: :deployment_management do
             increment_count_events
             increment_unique_events
 

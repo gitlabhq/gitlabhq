@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Internal::Kubernetes, feature_category: :kubernetes_management do
+RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_management do
   let(:jwt_auth_headers) do
     jwt_token = JWT.encode({ 'iss' => Gitlab::Kas::JWT_ISSUER }, Gitlab::Kas.secret, 'HS256')
 

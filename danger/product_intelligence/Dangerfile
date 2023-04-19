@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+return if stable_branch.valid_stable_branch?
+
 product_intelligence.check!
 
 product_intelligence.check_affected_scopes!

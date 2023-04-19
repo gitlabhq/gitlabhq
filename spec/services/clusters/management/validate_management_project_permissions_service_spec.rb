@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Management::ValidateManagementProjectPermissionsService, feature_category: :kubernetes_management do
+RSpec.describe Clusters::Management::ValidateManagementProjectPermissionsService, feature_category: :deployment_management do
   describe '#execute' do
     subject { described_class.new(user).execute(cluster, management_project_id) }
 

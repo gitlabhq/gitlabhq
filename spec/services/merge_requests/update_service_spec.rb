@@ -782,6 +782,27 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           expect(user3.assigned_open_merge_requests_count).to eq 0
           expect(user2.assigned_open_merge_requests_count).to eq 1
         end
+
+        it 'records the assignment history', :sidekiq_inline do
+          original_assignee = merge_request.assignees.first!
+
+          update_merge_request(assignee_ids: [user2.id])
+
+          expected_events = [
+            have_attributes({
+              merge_request_id: merge_request.id,
+              user_id: original_assignee.id,
+              action: 'remove'
+            }),
+            have_attributes({
+              merge_request_id: merge_request.id,
+              user_id: user2.id,
+              action: 'add'
+            })
+          ]
+
+          expect(merge_request.assignment_events).to match_array(expected_events)
+        end
       end
 
       context 'when the target branch changes' do

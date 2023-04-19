@@ -45,11 +45,6 @@ module Gitlab
             if @dag && any_skipped_or_ignored?
               # The DAG job is skipped if one of the needs does not run at all.
               'skipped'
-            elsif ::Feature.disabled?(:ci_simplify_dag_status_calculation_for_processing, @project) &&
-                @dag &&
-                !only_of?(:success, :failed, :canceled, :skipped, :success_with_warnings)
-              # DAG is blocked from executing if a dependent is not "complete"
-              'pending'
             elsif only_of?(:skipped, :ignored)
               'skipped'
             elsif only_of?(:success, :skipped, :success_with_warnings, :ignored)

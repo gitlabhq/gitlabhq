@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Cluster agent registration', :js, feature_category: :kubernetes_management do
+RSpec.describe 'Cluster agent registration', :js, feature_category: :deployment_management do
   let_it_be(:project) { create(:project, :custom_repo, files: { '.gitlab/agents/example-agent-1/config.yaml' => '' }) }
   let_it_be(:current_user) { create(:user, maintainer_projects: [project]) }
   let_it_be(:token) { Devise.friendly_token }

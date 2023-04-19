@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::DestroyService, feature_category: :kubernetes_management do
+RSpec.describe Clusters::DestroyService, feature_category: :deployment_management do
   describe '#execute' do
     subject { described_class.new(cluster.user, params).execute(cluster) }
 

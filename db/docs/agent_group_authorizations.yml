@@ -3,7 +3,7 @@ table_name: agent_group_authorizations
 classes:
 - Clusters::Agents::Authorizations::CiAccess::GroupAuthorization
 feature_categories:
-- kubernetes_management
+- deployment_management
 description: Configuration for a group that is authorized to use a particular cluster agent
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68023
 milestone: '14.3'

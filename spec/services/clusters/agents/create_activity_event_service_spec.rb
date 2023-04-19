@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Agents::CreateActivityEventService, feature_category: :kubernetes_management do
+RSpec.describe Clusters::Agents::CreateActivityEventService, feature_category: :deployment_management do
   let_it_be(:agent) { create(:cluster_agent) }
   let_it_be(:token) { create(:cluster_agent_token, agent: agent) }
   let_it_be(:user) { create(:user) }

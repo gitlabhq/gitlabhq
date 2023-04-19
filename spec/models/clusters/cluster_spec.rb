@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
-feature_category: :kubernetes_management do
+feature_category: :deployment_management do
   include ReactiveCachingHelpers
   include KubernetesHelpers
 

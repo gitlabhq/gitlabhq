@@ -88,6 +88,12 @@ describe('HelpCenter component', () => {
       ]);
     });
 
+    it('passes popper options to the dropdown', () => {
+      expect(findDropdown().props('popperOptions')).toEqual({
+        modifiers: [{ name: 'offset', options: { offset: [-4, 4] } }],
+      });
+    });
+
     describe('with Gitlab version check feature enabled', () => {
       beforeEach(() => {
         createWrapper({ ...sidebarData, show_version_check: true });

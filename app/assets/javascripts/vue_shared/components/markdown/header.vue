@@ -122,12 +122,7 @@ export default {
       return [`<details><summary>${expandText}</summary>`, `{text}`, '</details>'].join('\n');
     },
     showAiActions() {
-      return (
-        this.resourceGlobalId &&
-        this.glFeatures.openaiExperimentation &&
-        this.glFeatures.summarizeNotes &&
-        this.glFeatures.summarizeComments
-      );
+      return this.resourceGlobalId && this.glFeatures.summarizeComments;
     },
   },
   watch: {

@@ -3,8 +3,8 @@ import { GlNav, GlNavItem, GlIcon } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
+import { formatSearchResultCount, addCountOverLimit } from '~/search/store/utils';
 import { NAV_LINK_DEFAULT_CLASSES, NAV_LINK_COUNT_DEFAULT_CLASSES } from '../constants';
-import { formatSearchResultCount } from '../../store/utils';
 import { slugifyWithUnderscore } from '../../../lib/utils/text_utility';
 
 export default {
@@ -28,11 +28,11 @@ export default {
   },
   methods: {
     ...mapActions(['fetchSidebarCount']),
-    showFormatedCount(count) {
-      return formatSearchResultCount(count);
+    showFormatedCount(countString) {
+      return formatSearchResultCount(countString);
     },
-    isCountOverLimit(count) {
-      return count.includes('+');
+    isCountOverLimit(countString) {
+      return Boolean(addCountOverLimit(countString));
     },
     handleClick(scope) {
       this.track('click_menu_item', { label: `vertical_navigation_${scope}` });

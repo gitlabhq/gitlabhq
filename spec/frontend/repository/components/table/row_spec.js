@@ -63,7 +63,7 @@ describe('Repository table row component', () => {
   const findRouterLink = () => wrapper.findComponent(RouterLinkStub);
   const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
 
-  it('renders table row', async () => {
+  it('renders table row', () => {
     factory({
       propsData: {
         id: '1',
@@ -77,7 +77,7 @@ describe('Repository table row component', () => {
     expect(wrapper.element).toMatchSnapshot();
   });
 
-  it('renders a symlink table row', async () => {
+  it('renders a symlink table row', () => {
     factory({
       propsData: {
         id: '1',
@@ -92,7 +92,7 @@ describe('Repository table row component', () => {
     expect(wrapper.element).toMatchSnapshot();
   });
 
-  it('renders table row for path with special character', async () => {
+  it('renders table row for path with special character', () => {
     factory({
       propsData: {
         id: '1',
@@ -128,7 +128,7 @@ describe('Repository table row component', () => {
     ${'tree'}   | ${RouterLinkStub} | ${'RouterLink'}
     ${'blob'}   | ${RouterLinkStub} | ${'RouterLink'}
     ${'commit'} | ${'a'}            | ${'hyperlink'}
-  `('renders a $componentName for type $type', async ({ type, component }) => {
+  `('renders a $componentName for type $type', ({ type, component }) => {
     factory({
       propsData: {
         id: '1',
@@ -146,7 +146,7 @@ describe('Repository table row component', () => {
     path
     ${'test#'}
     ${'Änderungen'}
-  `('renders link for $path', async ({ path }) => {
+  `('renders link for $path', ({ path }) => {
     factory({
       propsData: {
         id: '1',
@@ -162,7 +162,7 @@ describe('Repository table row component', () => {
     });
   });
 
-  it('renders link for directory with hash', async () => {
+  it('renders link for directory with hash', () => {
     factory({
       propsData: {
         id: '1',
@@ -176,7 +176,7 @@ describe('Repository table row component', () => {
     expect(wrapper.find('.tree-item-link').props('to')).toEqual({ path: '/-/tree/main/test%23' });
   });
 
-  it('renders commit ID for submodule', async () => {
+  it('renders commit ID for submodule', () => {
     factory({
       propsData: {
         id: '1',
@@ -190,7 +190,7 @@ describe('Repository table row component', () => {
     expect(wrapper.find('.commit-sha').text()).toContain('1');
   });
 
-  it('renders link with href', async () => {
+  it('renders link with href', () => {
     factory({
       propsData: {
         id: '1',
@@ -205,7 +205,7 @@ describe('Repository table row component', () => {
     expect(wrapper.find('a').attributes('href')).toEqual('https://test.com');
   });
 
-  it('renders LFS badge', async () => {
+  it('renders LFS badge', () => {
     factory({
       propsData: {
         id: '1',
@@ -220,7 +220,7 @@ describe('Repository table row component', () => {
     expect(findBadge().exists()).toBe(true);
   });
 
-  it('renders commit and web links with href for submodule', async () => {
+  it('renders commit and web links with href for submodule', () => {
     factory({
       propsData: {
         id: '1',
@@ -237,7 +237,7 @@ describe('Repository table row component', () => {
     expect(wrapper.findComponent(GlLink).attributes('href')).toEqual('https://test.com/commit');
   });
 
-  it('renders lock icon', async () => {
+  it('renders lock icon', () => {
     factory({
       propsData: {
         id: '1',

@@ -1,7 +1,7 @@
 ---
 table_name: clusters_applications_helm
 feature_categories:
-- kubernetes_management
+- deployment_management
 description: "(Deprecated) A GitLab managed Helm installation in a Kubernetes cluster"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/64be8d70ae20928df351e495a3442bb6036bc3e7
 milestone: '10.2'

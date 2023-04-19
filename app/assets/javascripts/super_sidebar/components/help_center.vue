@@ -6,7 +6,10 @@ import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { STORAGE_KEY } from '~/whats_new/utils/notification';
 import Tracking from '~/tracking';
-import { HELP_MENU_TRACKING_DEFAULTS } from '../constants';
+import { DROPDOWN_Y_OFFSET, HELP_MENU_TRACKING_DEFAULTS } from '../constants';
+
+// Left offset required for the dropdown to be aligned with the super sidebar
+const DROPDOWN_X_OFFSET = -4;
 
 export default {
   components: {
@@ -185,12 +188,23 @@ export default {
       });
     },
   },
+  popperOptions: {
+    modifiers: [
+      {
+        name: 'offset',
+        options: {
+          offset: [DROPDOWN_X_OFFSET, DROPDOWN_Y_OFFSET],
+        },
+      },
+    ],
+  },
 };
 </script>
 
 <template>
   <gl-disclosure-dropdown
     ref="dropdown"
+    :popper-options="$options.popperOptions"
     @shown="trackDropdownToggle(true)"
     @hidden="trackDropdownToggle(false)"
   >

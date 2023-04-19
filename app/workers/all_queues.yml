@@ -131,7 +131,7 @@
   :tags: []
 - :name: cluster_agent:clusters_agents_delete_expired_events
   :worker_name: Clusters::Agents::DeleteExpiredEventsWorker
-  :feature_category: :kubernetes_management
+  :feature_category: :deployment_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -950,7 +950,7 @@
   :tags: []
 - :name: gcp_cluster:cluster_configure_istio
   :worker_name: ClusterConfigureIstioWorker
-  :feature_category: :kubernetes_management
+  :feature_category: :deployment_management
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -959,7 +959,7 @@
   :tags: []
 - :name: gcp_cluster:cluster_install_app
   :worker_name: ClusterInstallAppWorker
-  :feature_category: :kubernetes_management
+  :feature_category: :deployment_management
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -968,7 +968,7 @@
   :tags: []
 - :name: gcp_cluster:cluster_patch_app
   :worker_name: ClusterPatchAppWorker
-  :feature_category: :kubernetes_management
+  :feature_category: :deployment_management
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -977,7 +977,7 @@
   :tags: []
 - :name: gcp_cluster:cluster_provision
   :worker_name: ClusterProvisionWorker
-  :feature_category: :kubernetes_management
+  :feature_category: :deployment_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -986,7 +986,7 @@
   :tags: []
 - :name: gcp_cluster:cluster_update_app
   :worker_name: ClusterUpdateAppWorker
-  :feature_category: :kubernetes_management
+  :feature_category: :deployment_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -995,7 +995,7 @@
   :tags: []
 - :name: gcp_cluster:cluster_upgrade_app
   :worker_name: ClusterUpgradeAppWorker
-  :feature_category: :kubernetes_management
+  :feature_category: :deployment_management
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -1004,7 +1004,7 @@
   :tags: []
 - :name: gcp_cluster:cluster_wait_for_app_installation
   :worker_name: ClusterWaitForAppInstallationWorker
-  :feature_category: :kubernetes_management
+  :feature_category: :deployment_management
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :cpu
@@ -1013,7 +1013,7 @@
   :tags: []
 - :name: gcp_cluster:cluster_wait_for_app_update
   :worker_name: ClusterWaitForAppUpdateWorker
-  :feature_category: :kubernetes_management
+  :feature_category: :deployment_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -1022,7 +1022,7 @@
   :tags: []
 - :name: gcp_cluster:cluster_wait_for_ingress_ip_address
   :worker_name: ClusterWaitForIngressIpAddressWorker
-  :feature_category: :kubernetes_management
+  :feature_category: :deployment_management
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -1031,7 +1031,7 @@
   :tags: []
 - :name: gcp_cluster:clusters_applications_activate_integration
   :worker_name: Clusters::Applications::ActivateIntegrationWorker
-  :feature_category: :kubernetes_management
+  :feature_category: :deployment_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -1040,7 +1040,7 @@
   :tags: []
 - :name: gcp_cluster:clusters_applications_deactivate_integration
   :worker_name: Clusters::Applications::DeactivateIntegrationWorker
-  :feature_category: :kubernetes_management
+  :feature_category: :deployment_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -1049,7 +1049,7 @@
   :tags: []
 - :name: gcp_cluster:clusters_applications_uninstall
   :worker_name: Clusters::Applications::UninstallWorker
-  :feature_category: :kubernetes_management
+  :feature_category: :deployment_management
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -1058,7 +1058,7 @@
   :tags: []
 - :name: gcp_cluster:clusters_applications_wait_for_uninstall_app
   :worker_name: Clusters::Applications::WaitForUninstallAppWorker
-  :feature_category: :kubernetes_management
+  :feature_category: :deployment_management
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :cpu
@@ -1067,7 +1067,7 @@
   :tags: []
 - :name: gcp_cluster:clusters_cleanup_project_namespace
   :worker_name: Clusters::Cleanup::ProjectNamespaceWorker
-  :feature_category: :kubernetes_management
+  :feature_category: :deployment_management
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -1076,7 +1076,7 @@
   :tags: []
 - :name: gcp_cluster:clusters_cleanup_service_account
   :worker_name: Clusters::Cleanup::ServiceAccountWorker
-  :feature_category: :kubernetes_management
+  :feature_category: :deployment_management
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -1085,7 +1085,7 @@
   :tags: []
 - :name: gcp_cluster:wait_for_cluster_creation
   :worker_name: WaitForClusterCreationWorker
-  :feature_category: :kubernetes_management
+  :feature_category: :deployment_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

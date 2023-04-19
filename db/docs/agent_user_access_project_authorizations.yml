@@ -3,7 +3,7 @@ table_name: agent_user_access_project_authorizations
 classes:
 - Clusters::Agents::Authorizations::UserAccess::ProjectAuthorization
 feature_categories:
-- kubernetes_management
+- deployment_management
 description: Configuration for a project that is authorized to use a particular cluster agent through user_access keyword
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116901
 milestone: '15.11'

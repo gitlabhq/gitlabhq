@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::Clusters::Agents::Authorizations::CiAccess, feature_category: :kubernetes_management do
+RSpec.describe API::Entities::Clusters::Agents::Authorizations::CiAccess, feature_category: :deployment_management do
   subject { described_class.new(authorization).as_json }
 
   shared_examples 'generic authorization' do

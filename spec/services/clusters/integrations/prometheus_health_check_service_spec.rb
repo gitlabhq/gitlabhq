@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Integrations::PrometheusHealthCheckService, '#execute', feature_category: :kubernetes_management do
+RSpec.describe Clusters::Integrations::PrometheusHealthCheckService, '#execute', feature_category: :deployment_management do
   let(:service) { described_class.new(cluster) }
 
   subject { service.execute }

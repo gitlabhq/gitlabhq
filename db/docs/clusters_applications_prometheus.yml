@@ -1,7 +1,7 @@
 ---
 table_name: clusters_applications_prometheus
 feature_categories:
-- kubernetes_management
+- deployment_management
 description: Information about installed instance of Prometheus in the cluster
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/0d4548026f3060ca0a8f7aa8d8fc89838bc66130
 milestone: '10.4'

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Kas::UserAccess, feature_category: :kubernetes_management do
+RSpec.describe Gitlab::Kas::UserAccess, feature_category: :deployment_management do
   describe '.enabled?' do
     subject { described_class.enabled? }
 

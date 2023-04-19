@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Agents::Authorizations::CiAccess::Finder, feature_category: :kubernetes_management do
+RSpec.describe Clusters::Agents::Authorizations::CiAccess::Finder, feature_category: :deployment_management do
   describe '#execute' do
     let_it_be(:top_level_group) { create(:group) }
     let_it_be(:subgroup1) { create(:group, parent: top_level_group) }

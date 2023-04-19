@@ -135,6 +135,7 @@ overrides:
     rules:
       '@gitlab/require-i18n-strings': off
       '@gitlab/no-runtime-template-compiler': off
+      'require-await': error
       'import/no-dynamic-require': off
       'no-import-assign': off
       'no-restricted-syntax':

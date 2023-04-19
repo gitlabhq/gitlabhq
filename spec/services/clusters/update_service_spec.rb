@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::UpdateService, feature_category: :kubernetes_management do
+RSpec.describe Clusters::UpdateService, feature_category: :deployment_management do
   include KubernetesHelpers
 
   describe '#execute' do

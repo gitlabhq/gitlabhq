@@ -3,7 +3,7 @@ table_name: cluster_platforms_kubernetes
 classes:
 - Clusters::Platforms::Kubernetes
 feature_categories:
-- kubernetes_management
+- deployment_management
 description: "(Deprecated) Kubernetes specific details for a cluster integration"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/d0cff7f5855f91b5479f9fdaa39d8d95ec691a9e
 milestone: '10.2'

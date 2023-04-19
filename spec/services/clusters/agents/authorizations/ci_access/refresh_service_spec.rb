@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Agents::Authorizations::CiAccess::RefreshService, feature_category: :kubernetes_management do
+RSpec.describe Clusters::Agents::Authorizations::CiAccess::RefreshService, feature_category: :deployment_management do
   describe '#execute' do
     let_it_be(:root_ancestor) { create(:group) }
 

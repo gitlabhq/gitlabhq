@@ -381,6 +381,13 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
 
           expect(assignee.assigned_open_issues_count).to eq 1
         end
+
+        it 'records the assignee assignment event' do
+          result = described_class.new(container: project, current_user: user, params: opts, spam_params: spam_params).execute
+
+          issue = result.payload[:issue]
+          expect(issue.assignment_events).to match([have_attributes(user_id: assignee.id, action: 'add')])
+        end
       end
 
       context 'when duplicate label titles are given' do

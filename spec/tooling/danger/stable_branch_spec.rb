@@ -351,4 +351,26 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
       it { is_expected.to eq(result) }
     end
   end
+
+  describe '#valid_stable_branch?' do
+    it "returns false when on the default branch" do
+      allow(fake_helper).to receive(:mr_target_branch).and_return('main')
+
+      expect(stable_branch.valid_stable_branch?).to be(false)
+    end
+
+    it "returns true when on a stable branch" do
+      allow(fake_helper).to receive(:mr_target_branch).and_return('15-1-stable-ee')
+      allow(fake_helper).to receive(:security_mr?).and_return(false)
+
+      expect(stable_branch.valid_stable_branch?).to be(true)
+    end
+
+    it "returns false when on a stable branch on a security MR" do
+      allow(fake_helper).to receive(:mr_target_branch).and_return('15-1-stable-ee')
+      allow(fake_helper).to receive(:security_mr?).and_return(true)
+
+      expect(stable_branch.valid_stable_branch?).to be(false)
+    end
+  end
 end

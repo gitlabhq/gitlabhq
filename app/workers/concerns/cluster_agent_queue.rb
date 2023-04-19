@@ -5,6 +5,6 @@ module ClusterAgentQueue
 
   included do
     queue_namespace :cluster_agent
-    feature_category :kubernetes_management
+    feature_category :deployment_management
   end
 end

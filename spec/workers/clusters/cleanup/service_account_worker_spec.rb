@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Cleanup::ServiceAccountWorker, feature_category: :kubernetes_management do
+RSpec.describe Clusters::Cleanup::ServiceAccountWorker, feature_category: :deployment_management do
   describe '#perform' do
     let!(:cluster) { create(:cluster, :cleanup_removing_service_account) }
 

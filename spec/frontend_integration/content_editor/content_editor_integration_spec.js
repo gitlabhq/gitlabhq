@@ -66,7 +66,7 @@ describe('content_editor', () => {
         expect(wrapper.findByTestId('content-editor-loading-indicator').exists()).toBe(false);
       });
 
-      it('displays the initial content', async () => {
+      it('displays the initial content', () => {
         expect(wrapper.html()).toContain(initialContent);
       });
     });

@@ -1,7 +1,7 @@
 ---
 table_name: clusters_applications_runners
 feature_categories:
-- kubernetes_management
+- deployment_management
 description: "(Deprecated) A GitLab managed Runner installation in a Kubernetes cluster"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/c607008ee55e35465e04a938a341f2f24cb6761f
 milestone: '10.6'

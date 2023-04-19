@@ -14,7 +14,8 @@ describe('UserMenu component', () => {
 
   const GlEmoji = { template: '<img/>' };
   const toggleNewNavEndpoint = invalidUrl;
-  const showDropdown = () => wrapper.findComponent(GlDisclosureDropdown).vm.$emit('shown');
+  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const showDropdown = () => findDropdown().vm.$emit('shown');
 
   const createWrapper = (userDataChanges = {}) => {
     wrapper = mountExtended(UserMenu, {
@@ -35,6 +36,14 @@ describe('UserMenu component', () => {
 
     trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
   };
+
+  it('passes popper options to the dropdown', () => {
+    createWrapper();
+
+    expect(findDropdown().props('popperOptions')).toEqual({
+      modifiers: [{ name: 'offset', options: { offset: [-211, 4] } }],
+    });
+  });
 
   describe('Toggle button', () => {
     let toggle;

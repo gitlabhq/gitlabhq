@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Kubernetes::FetchKubernetesTokenService, feature_category: :kubernetes_management do
+RSpec.describe Clusters::Kubernetes::FetchKubernetesTokenService, feature_category: :deployment_management do
   include KubernetesHelpers
 
   describe '#execute' do

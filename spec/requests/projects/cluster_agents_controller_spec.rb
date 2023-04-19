@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ClusterAgentsController, feature_category: :kubernetes_management do
+RSpec.describe Projects::ClusterAgentsController, feature_category: :deployment_management do
   let_it_be(:cluster_agent) { create(:cluster_agent) }
 
   let(:project) { cluster_agent.project }

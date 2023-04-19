@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Integrations::CreateService, '#execute', feature_category: :kubernetes_management do
+RSpec.describe Clusters::Integrations::CreateService, '#execute', feature_category: :deployment_management do
   let_it_be(:project) { create(:project) }
   let_it_be_with_reload(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 

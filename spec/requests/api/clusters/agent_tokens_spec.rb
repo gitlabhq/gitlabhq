@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Clusters::AgentTokens, feature_category: :kubernetes_management do
+RSpec.describe API::Clusters::AgentTokens, feature_category: :deployment_management do
   let_it_be(:agent) { create(:cluster_agent) }
   let_it_be(:agent_token_one) { create(:cluster_agent_token, agent: agent) }
   let_it_be(:revoked_agent_token) { create(:cluster_agent_token, :revoked, agent: agent) }

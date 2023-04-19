@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Kubernetes, feature_category: :kubernetes_management do
+RSpec.describe Clusters::Kubernetes, feature_category: :deployment_management do
   it { is_expected.to be_const_defined(:GITLAB_SERVICE_ACCOUNT_NAME) }
   it { is_expected.to be_const_defined(:GITLAB_SERVICE_ACCOUNT_NAMESPACE) }
   it { is_expected.to be_const_defined(:GITLAB_ADMIN_TOKEN_NAME) }
