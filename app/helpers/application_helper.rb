@@ -281,7 +281,7 @@ module ApplicationHelper
   end
 
   def startup_css_enabled?
-    !params.has_key?(:no_startup_css)
+    !Feature.enabled?(:remove_startup_css) && !params.has_key?(:no_startup_css)
   end
 
   def sign_in_with_redirect?

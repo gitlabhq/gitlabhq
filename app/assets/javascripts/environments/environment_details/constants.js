@@ -30,7 +30,7 @@ export const ENVIRONMENT_DETAILS_TABLE_FIELDS = [
   {
     key: 'job',
     label: __('Job'),
-    columnClass: 'gl-w-20p',
+    columnClass: 'gl-w-15p',
     tdClass: 'gl-vertical-align-middle!',
   },
   {
@@ -48,7 +48,7 @@ export const ENVIRONMENT_DETAILS_TABLE_FIELDS = [
   {
     key: 'actions',
     label: __('Actions'),
-    columnClass: 'gl-w-10p',
+    columnClass: 'gl-w-15p',
     tdClass: 'gl-vertical-align-middle! gl-white-space-nowrap',
   },
 ];

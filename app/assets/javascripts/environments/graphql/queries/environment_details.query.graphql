@@ -1,3 +1,7 @@
+#import "ee_else_ce/environments/graphql/fragments/environment_protected_data.fragment.graphql"
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "~/environments/graphql/fragments/deployment_job.fragment.graphql"
+
 query getEnvironmentDetails(
   $projectFullPath: ID!
   $environmentName: String
@@ -11,8 +15,9 @@ query getEnvironmentDetails(
     name
     fullPath
     environment(name: $environmentName) {
-      id
+      ...ProtectedEnvironment
       name
+      tier
       lastDeployment(status: SUCCESS) {
         id
         job {
@@ -40,19 +45,13 @@ query getEnvironmentDetails(
           ref
           tag
           job {
-            name
-            id
-            webPath
-            playable
+            ...DeploymentJob
             deploymentPipeline: pipeline {
               id
               jobs(whenExecuted: ["manual"], retried: false) {
                 nodes {
-                  id
-                  name
-                  playable
+                  ...DeploymentJob
                   scheduledAt
-                  webPath
                 }
               }
             }
@@ -66,17 +65,11 @@ query getEnvironmentDetails(
             authorName
             authorEmail
             author {
-              id
-              name
-              avatarUrl
-              webUrl
+              ...User
             }
           }
           triggerer {
-            id
-            webUrl
-            name
-            avatarUrl
+            ...User
           }
           createdAt
           finishedAt

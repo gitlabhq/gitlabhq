@@ -11,7 +11,8 @@ RSpec.describe ResourceEvents::SyntheticMilestoneNotesBuilderService, feature_ca
     let_it_be(:events) do
       [
         create(:resource_milestone_event, issue: issue, milestone: milestone, action: :add, created_at: '2020-01-01 04:00'),
-        create(:resource_milestone_event, issue: issue, milestone: milestone, action: :remove, created_at: '2020-01-02 08:00')
+        create(:resource_milestone_event, issue: issue, milestone: milestone, action: :remove, created_at: '2020-01-02 08:00'),
+        create(:resource_milestone_event, issue: issue, milestone: nil, action: :remove, created_at: '2020-01-02 08:00')
       ]
     end
 
@@ -22,7 +23,8 @@ RSpec.describe ResourceEvents::SyntheticMilestoneNotesBuilderService, feature_ca
       expect(notes.map(&:note)).to eq(
         [
           "changed milestone to %#{milestone.iid}",
-          'removed milestone'
+          "removed milestone %#{milestone.iid}",
+          "removed milestone "
         ])
     end
 

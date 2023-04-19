@@ -40,11 +40,15 @@ describe('~/environments/environment_details/page.vue', () => {
     environmentToRollbackMock.mockReturnValue(
       environmentToRollbackData || emptyEnvironmentToRollbackData,
     );
+    const projectFullPath = 'gitlab-group/test-project';
 
     return mountExtended(EnvironmentsDetailPage, {
       apolloProvider: mockApollo,
+      provide: {
+        projectPath: projectFullPath,
+      },
       propsData: {
-        projectFullPath: 'gitlab-group/test-project',
+        projectFullPath,
         environmentName: 'test-environment-name',
       },
     });

@@ -290,6 +290,8 @@ class IssuableBaseService < ::BaseContainerService
   end
 
   def update(issuable)
+    old_associations = associations_before_update(issuable)
+
     initialize_callbacks!(issuable)
 
     prepare_update_params(issuable)
@@ -297,7 +299,6 @@ class IssuableBaseService < ::BaseContainerService
     filter_params(issuable)
 
     change_additional_attributes(issuable)
-    old_associations = associations_before_update(issuable)
 
     assign_requested_labels(issuable)
     assign_requested_assignees(issuable)

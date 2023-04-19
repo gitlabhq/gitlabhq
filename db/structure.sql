@@ -29348,8 +29348,6 @@ CREATE INDEX idx_merge_requests_on_merged_state ON merge_requests USING btree (i
 
 CREATE INDEX idx_merge_requests_on_source_project_and_branch_state_opened ON merge_requests USING btree (source_project_id, source_branch) WHERE (state_id = 1);
 
-CREATE INDEX idx_merge_requests_on_state_id_and_merge_status ON merge_requests USING btree (state_id, merge_status) WHERE ((state_id = 1) AND ((merge_status)::text = 'can_be_merged'::text));
-
 CREATE INDEX idx_merge_requests_on_target_project_id_and_iid_opened ON merge_requests USING btree (target_project_id, iid) WHERE (state_id = 1);
 
 CREATE INDEX idx_merge_requests_on_target_project_id_and_locked_state ON merge_requests USING btree (target_project_id) WHERE (state_id = 4);
@@ -32355,6 +32353,8 @@ CREATE UNIQUE INDEX index_suggestions_on_note_id_and_relative_order ON suggestio
 CREATE UNIQUE INDEX index_system_note_metadata_on_description_version_id ON system_note_metadata USING btree (description_version_id) WHERE (description_version_id IS NOT NULL);
 
 CREATE UNIQUE INDEX index_system_note_metadata_on_note_id ON system_note_metadata USING btree (note_id);
+
+CREATE UNIQUE INDEX index_system_note_metadata_on_note_id_convert_to_bigint ON system_note_metadata USING btree (note_id_convert_to_bigint);
 
 CREATE INDEX index_taggings_on_tag_id ON taggings USING btree (tag_id);
 
@@ -37141,6 +37141,9 @@ ALTER TABLE ONLY integrations
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_source_project FOREIGN KEY (source_project_id) REFERENCES projects(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY system_note_metadata
+    ADD CONSTRAINT fk_system_note_metadata_note_id_convert_to_bigint FOREIGN KEY (note_id_convert_to_bigint) REFERENCES notes(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY timelogs
     ADD CONSTRAINT fk_timelogs_issues_issue_id FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

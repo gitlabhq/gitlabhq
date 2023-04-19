@@ -4,10 +4,15 @@ import { translations } from '~/environments/environment_details/constants';
 import ActionsComponent from '~/environments/components/environment_actions.vue';
 import setEnvironmentToRollback from '~/environments/graphql/mutations/set_environment_to_rollback.mutation.graphql';
 
+const EnvironmentApprovalComponent = import(
+  'ee_component/environments/components/environment_approval.vue'
+);
+
 export default {
   components: {
     GlButton,
     ActionsComponent,
+    EnvironmentApproval: () => EnvironmentApprovalComponent,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -43,6 +48,23 @@ export default {
       required: false,
       default: null,
     },
+    // approvalEnvironment shape:
+    /* {
+         isApprovalActionAvailable: boolean,
+         deploymentIid: string,
+         environment: {
+           name: string,
+           tier: string,
+           requiredApprovalCount: number,
+       },
+    */
+    approvalEnvironment: {
+      type: Object,
+      required: false,
+      default: () => ({
+        isApprovalActionAvailable: false,
+      }),
+    },
   },
   computed: {
     isRollbackAvailable() {
@@ -53,6 +75,12 @@ export default {
     },
     isActionsShown() {
       return this.actions.length > 0;
+    },
+    deploymentIid() {
+      return this.approvalEnvironment.deploymentIid;
+    },
+    environment() {
+      return this.approvalEnvironment.environment;
     },
     rollbackButtonTitle() {
       return this.rollback.lastDeployment?.isLast
@@ -83,6 +111,12 @@ export default {
       :title="rollbackButtonTitle"
       :icon="rollbackIcon"
       @click="onRollbackClick"
+    />
+    <environment-approval
+      v-if="approvalEnvironment.isApprovalActionAvailable"
+      :environment="environment"
+      :deployment-iid="deploymentIid"
+      :show-text="false"
     />
   </div>
 </template>

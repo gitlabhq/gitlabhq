@@ -148,6 +148,9 @@ export default {
 
       return now < autoStopDate;
     },
+    upcomingDeploymentIid() {
+      return this.environment.upcomingDeployment?.iid.toString() || '';
+    },
     autoStopPath() {
       return this.environment?.cancelAutoStopPath ?? '';
     },
@@ -351,7 +354,11 @@ export default {
             class="gl-pl-4"
           >
             <template #approval>
-              <environment-approval :environment="environment" @change="$emit('change')" />
+              <environment-approval
+                :deployment-iid="upcomingDeploymentIid"
+                :environment="environment"
+                @change="$emit('change')"
+              />
             </template>
           </deployment>
         </div>

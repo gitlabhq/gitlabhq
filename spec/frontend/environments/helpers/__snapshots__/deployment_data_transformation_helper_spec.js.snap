@@ -26,6 +26,9 @@ Object {
   },
   "created": "2022-10-17T07:44:17Z",
   "deployed": "2022-10-17T07:44:43Z",
+  "deploymentApproval": Object {
+    "isApprovalActionAvailable": false,
+  },
   "id": "31",
   "job": Object {
     "label": "deploy-prod (#860)",
@@ -83,6 +86,9 @@ Object {
   },
   "created": "2022-10-17T07:44:17Z",
   "deployed": "2022-10-17T07:44:43Z",
+  "deploymentApproval": Object {
+    "isApprovalActionAvailable": false,
+  },
   "id": "31",
   "job": undefined,
   "rollback": null,
@@ -115,6 +121,9 @@ Object {
   },
   "created": "2022-10-17T07:44:17Z",
   "deployed": "",
+  "deploymentApproval": Object {
+    "isApprovalActionAvailable": false,
+  },
   "id": "31",
   "job": null,
   "rollback": null,

@@ -54,7 +54,11 @@ export default {
       <time-ago-tooltip :time="item.deployed" />
     </template>
     <template #cell(actions)="{ item }">
-      <deployment-actions :actions="item.actions" :rollback="item.rollback" />
+      <deployment-actions
+        :actions="item.actions"
+        :rollback="item.rollback"
+        :approval-environment="item.deploymentApproval"
+      />
     </template>
   </gl-table-lite>
 </template>

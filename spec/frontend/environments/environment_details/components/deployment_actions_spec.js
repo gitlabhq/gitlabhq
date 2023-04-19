@@ -3,10 +3,10 @@ import VueApollo from 'vue-apollo';
 import { GlButton } from '@gitlab/ui';
 import DeploymentActions from '~/environments/environment_details/components/deployment_actions.vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { translations } from '~/environments/environment_details/constants';
 import ActionsComponent from '~/environments/components/environment_actions.vue';
-import createMockApollo from '../../../__helpers__/mock_apollo_helper';
-import waitForPromises from '../../../__helpers__/wait_for_promises';
 
 describe('~/environments/environment_details/components/deployment_actions.vue', () => {
   Vue.use(VueApollo);
@@ -39,13 +39,17 @@ describe('~/environments/environment_details/components/deployment_actions.vue',
       setEnvironmentToRollback: mockSetEnvironmentToRollback,
     },
   };
-  const createWrapper = ({ actions, rollback }) => {
+  const createWrapper = ({ actions, rollback, approvalEnvironment }) => {
     const mockApollo = createMockApollo([], mockResolvers);
     return mountExtended(DeploymentActions, {
       apolloProvider: mockApollo,
+      provide: {
+        projectPath: 'fullProjectPath',
+      },
       propsData: {
         actions,
         rollback,
+        approvalEnvironment,
       },
     });
   };
