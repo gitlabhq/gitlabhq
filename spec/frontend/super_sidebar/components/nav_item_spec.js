@@ -53,6 +53,13 @@ describe('NavItem component', () => {
     expect(findLink().attributes('class')).toContain(customClass);
   });
 
+  it('applies custom classes set in the backend', () => {
+    const customClass = 'customBackendClass';
+    createWrapper({ title: 'Foo', link_classes: customClass });
+
+    expect(findLink().attributes('class')).toContain(customClass);
+  });
+
   describe('Data Tracking Attributes', () => {
     it('adds no labels on sections', () => {
       const id = 'my-id';

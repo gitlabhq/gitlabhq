@@ -61,7 +61,8 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
               icon: nil,
               link: "foo2",
               is_active: true,
-              pill_count: nil
+              pill_count: nil,
+              link_classes: nil
             },
             {
               id: 'id2',
@@ -69,7 +70,8 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
               icon: nil,
               link: "foo3",
               is_active: false,
-              pill_count: 10
+              pill_count: 10,
+              link_classes: nil
             }
           ]
         })

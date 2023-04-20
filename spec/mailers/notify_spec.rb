@@ -21,19 +21,25 @@ RSpec.describe Notify do
   let_it_be(:reviewer, reload: true) { create(:user, email: 'reviewer@example.com', name: 'Jane Doe') }
 
   let_it_be(:merge_request) do
-    create(:merge_request, source_project: project,
-                           target_project: project,
-                           author: current_user,
-                           assignees: [assignee],
-                           reviewers: [reviewer],
-                           description: 'Awesome description')
+    create(
+      :merge_request,
+      source_project: project,
+      target_project: project,
+      author: current_user,
+      assignees: [assignee],
+      reviewers: [reviewer],
+      description: 'Awesome description'
+    )
   end
 
   let_it_be(:issue, reload: true) do
-    create(:issue, author: current_user,
-                   assignees: [assignee],
-                   project: project,
-                   description: 'My awesome description!')
+    create(
+      :issue,
+      author: current_user,
+      assignees: [assignee],
+      project: project,
+      description: 'My awesome description!'
+    )
   end
 
   describe 'with HTML-encoded entities' do
@@ -824,9 +830,11 @@ RSpec.describe Notify do
         end
 
         it 'has References header including the notes and issue of the discussion' do
-          expect(subject.header['References'].message_ids).to include("issue_#{first_note.noteable.id}@#{host}",
-                                                                   "note_#{first_note.id}@#{host}",
-                                                                   "note_#{second_note.id}@#{host}")
+          expect(subject.header['References'].message_ids).to include(
+            "issue_#{first_note.noteable.id}@#{host}",
+            "note_#{first_note.id}@#{host}",
+            "note_#{second_note.id}@#{host}"
+          )
         end
 
         it 'has X-GitLab-Discussion-ID header' do
@@ -899,9 +907,11 @@ RSpec.describe Notify do
       end
 
       it 'links to the project snippet' do
-        target_url = project_snippet_url(project,
-                                         project_snippet_note.noteable,
-                                         { anchor: "note_#{project_snippet_note.id}" })
+        target_url = project_snippet_url(
+          project,
+          project_snippet_note.noteable,
+          { anchor: "note_#{project_snippet_note.id}" }
+        )
         is_expected.to have_body_text target_url
       end
     end
@@ -910,9 +920,7 @@ RSpec.describe Notify do
       let_it_be(:design) { create(:design, :with_file) }
       let_it_be(:recipient) { create(:user) }
       let_it_be(:note) do
-        create(:diff_note_on_design,
-           noteable: design,
-           note: "Hello #{recipient.to_reference}")
+        create(:diff_note_on_design, noteable: design, note: "Hello #{recipient.to_reference}")
       end
 
       let(:header_name) { 'X-Gitlab-DesignManagement-Design-ID' }
@@ -1078,9 +1086,10 @@ RSpec.describe Notify do
           is_expected.to have_body_text project.full_name
           is_expected.to have_body_text project_member.human_access.downcase
           is_expected.to have_body_text project_member.invite_token
-          is_expected.to have_link('Join now',
-                                   href: invite_url(project_member.invite_token,
-                                                    invite_type: Emails::Members::INITIAL_INVITE))
+          is_expected.to have_link(
+            'Join now',
+            href: invite_url(project_member.invite_token, invite_type: Emails::Members::INITIAL_INVITE)
+          )
           is_expected.to have_content("#{inviter.name} invited you to join the")
           is_expected.to have_content('Project details')
           is_expected.to have_content("What's it about?")
@@ -1096,9 +1105,10 @@ RSpec.describe Notify do
           is_expected.to have_body_text project.full_name
           is_expected.to have_body_text project_member.human_access.downcase
           is_expected.to have_body_text project_member.invite_token
-          is_expected.to have_link('Join now',
-                                   href: invite_url(project_member.invite_token,
-                                                    invite_type: Emails::Members::INITIAL_INVITE))
+          is_expected.to have_link(
+            'Join now',
+            href: invite_url(project_member.invite_token, invite_type: Emails::Members::INITIAL_INVITE)
+          )
           is_expected.to have_content('Project details')
           is_expected.to have_content("What's it about?")
         end

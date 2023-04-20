@@ -7,11 +7,11 @@ RSpec.describe Projects::RecordTargetPlatformsWorker, feature_category: :project
 
   let_it_be(:swift) { create(:programming_language, name: 'Swift') }
   let_it_be(:objective_c) { create(:programming_language, name: 'Objective-C') }
-  let_it_be(:java) { create(:programming_language, name: 'Java') }
-  let_it_be(:kotlin) { create(:programming_language, name: 'Kotlin') }
   let_it_be(:project) { create(:project, :repository, detected_repository_languages: true) }
 
   let(:worker) { described_class.new }
+  let(:service_result) { %w(ios osx watchos) }
+  let(:service_double) { instance_double(Projects::RecordTargetPlatformsService, execute: service_result) }
   let(:lease_key) { "#{described_class.name.underscore}:#{project.id}" }
   let(:lease_timeout) { described_class::LEASE_TIMEOUT }
 
@@ -49,68 +49,19 @@ RSpec.describe Projects::RecordTargetPlatformsWorker, feature_category: :project
     end
   end
 
-  def create_language(language)
-    create(:repository_language, project: project, programming_language: language)
+  context 'when project uses Swift programming language' do
+    let!(:repository_language) { create(:repository_language, project: project, programming_language: swift) }
+
+    include_examples 'performs detection', Projects::AppleTargetPlatformDetectorService
   end
 
-  context 'when project uses programming language for Apple platform' do
-    let(:service_result) { %w(ios osx watchos) }
+  context 'when project uses Objective-C programming language' do
+    let!(:repository_language) { create(:repository_language, project: project, programming_language: objective_c) }
 
-    context 'when project uses Swift programming language' do
-      before do
-        create_language(swift)
-      end
-
-      it_behaves_like 'performs detection', Projects::AppleTargetPlatformDetectorService
-    end
-
-    context 'when project uses Objective-C programming language' do
-      before do
-        create_language(objective_c)
-      end
-
-      it_behaves_like 'performs detection', Projects::AppleTargetPlatformDetectorService
-    end
+    include_examples 'performs detection', Projects::AppleTargetPlatformDetectorService
   end
 
-  context 'when project uses programming language for Android platform' do
-    let(:feature_enabled) { true }
-    let(:service_result) { %w(android) }
-
-    before do
-      stub_feature_flags(detect_android_projects: feature_enabled)
-    end
-
-    context 'when project uses Java' do
-      before do
-        create_language(java)
-      end
-
-      it_behaves_like 'performs detection', Projects::AndroidTargetPlatformDetectorService
-
-      context 'when feature flag is disabled' do
-        let(:feature_enabled) { false }
-
-        it_behaves_like 'does nothing'
-      end
-    end
-
-    context 'when project uses Kotlin' do
-      before do
-        create_language(kotlin)
-      end
-
-      it_behaves_like 'performs detection', Projects::AndroidTargetPlatformDetectorService
-
-      context 'when feature flag is disabled' do
-        let(:feature_enabled) { false }
-
-        it_behaves_like 'does nothing'
-      end
-    end
-  end
-
-  context 'when the project does not use programming languages for Apple or Android platforms' do
+  context 'when the project does not contain programming languages for Apple platforms' do
     it_behaves_like 'does nothing'
   end
 

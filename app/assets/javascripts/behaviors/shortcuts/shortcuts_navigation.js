@@ -33,7 +33,7 @@ export default class ShortcutsNavigation extends Shortcuts {
       findAndFollowLink('.shortcuts-project-activity'),
     );
     Mousetrap.bind(keysFor(GO_TO_PROJECT_RELEASES), () =>
-      findAndFollowLink('.shortcuts-project-releases'),
+      findAndFollowLink('.shortcuts-deployments-releases'),
     );
     Mousetrap.bind(keysFor(GO_TO_PROJECT_FILES), () => findAndFollowLink('.shortcuts-tree'));
     Mousetrap.bind(keysFor(GO_TO_PROJECT_COMMITS), () => findAndFollowLink('.shortcuts-commits'));

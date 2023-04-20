@@ -4,7 +4,7 @@ class IssuablePolicy < BasePolicy
   delegate { subject_container }
 
   condition(:locked, scope: :subject, score: 0) { @subject.discussion_locked? }
-  condition(:is_project_member) { @user && subject_container.member?(@user) }
+  condition(:is_project_member) { subject_container.member?(@user) }
   condition(:can_read_issuable) { can?(:"read_#{@subject.to_ability_name}") }
 
   desc "User is the assignee or author"

@@ -114,6 +114,17 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
           end
         end
 
+        context 'allow_dots_on_tf_state_names is disabled, and the state name contains a dot' do
+          let(:state_name) { 'state-name-with-dot' }
+          let(:state_path) { "/projects/#{project_id}/terraform/state/#{state_name}.tfstate" }
+
+          before do
+            stub_feature_flags(allow_dots_on_tf_state_names: false)
+          end
+
+          it_behaves_like 'can access terraform state'
+        end
+
         context 'for a project that does not exist' do
           let(:project_id) { '0000' }
 
@@ -266,6 +277,21 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
             expect(Gitlab::Json.parse(response.body)).to be_empty
           end
         end
+
+        context 'allow_dots_on_tf_state_names is disabled, and the state name contains a dot' do
+          let(:non_existing_state_name) { 'state-name-with-dot.tfstate' }
+
+          before do
+            stub_feature_flags(allow_dots_on_tf_state_names: false)
+          end
+
+          it 'strips characters after the dot' do
+            expect { request }.to change { Terraform::State.count }.by(1)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(Terraform::State.last.name).to eq('state-name-with-dot')
+          end
+        end
       end
 
       context 'without body' do
@@ -373,6 +399,18 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
         it_behaves_like 'schedules the state for deletion'
       end
 
+      context 'allow_dots_on_tf_state_names is disabled, and the state name contains a dot' do
+        let(:state_name) { 'state-name-with-dot' }
+        let(:state_name_with_dot) { "#{state_name}.tfstate" }
+        let(:state_path) { "/projects/#{project_id}/terraform/state/#{state_name_with_dot}" }
+
+        before do
+          stub_feature_flags(allow_dots_on_tf_state_names: false)
+        end
+
+        it_behaves_like 'schedules the state for deletion'
+      end
+
       context 'with invalid state name' do
         let(:state_name) { 'foo/bar' }
 
@@ -462,10 +500,30 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
     context 'with a dot in the state name' do
       let(:state_name) { 'test.state' }
 
-      it 'locks the terraform state' do
-        request
+      context 'with allow_dots_on_tf_state_names ff enabled' do
+        before do
+          stub_feature_flags(allow_dots_on_tf_state_names: true)
+        end
 
-        expect(response).to have_gitlab_http_status(:ok)
+        let(:state_name) { 'test.state' }
+
+        it 'locks the terraform state' do
+          request
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'with allow_dots_on_tf_state_names ff disabled' do
+        before do
+          stub_feature_flags(allow_dots_on_tf_state_names: false)
+        end
+
+        it 'returns 404' do
+          request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
   end
@@ -486,6 +544,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
     before do
       state.lock_xid = '123.456'
       state.save!
+      stub_feature_flags(allow_dots_on_tf_state_names: true)
     end
 
     subject(:request) { delete api("#{state_path}/lock"), headers: auth_header, params: params }
@@ -513,6 +572,23 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
           request
 
           expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'with allow_dots_on_tf_state_names ff disabled' do
+        before do
+          stub_feature_flags(allow_dots_on_tf_state_names: false)
+        end
+
+        context 'with dots in the state name' do
+          let(:lock_id) { '123.456' }
+          let(:state_name) { 'test.state' }
+
+          it 'returns 404' do
+            request
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
         end
       end
 

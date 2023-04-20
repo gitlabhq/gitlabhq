@@ -113,6 +113,7 @@ module Sidebars
             link: project_boards_path(context.project),
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu,
             active_routes: { controller: :boards },
+            container_html_options: { class: 'shortcuts-issue-boards' },
             item_id: :boards
           )
         end

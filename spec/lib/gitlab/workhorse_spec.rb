@@ -458,17 +458,41 @@ RSpec.describe Gitlab::Workhorse do
   describe '.send_url' do
     let(:url) { 'http://example.com' }
 
-    subject { described_class.send_url(url) }
-
     it 'sets the header correctly' do
-      key, command, params = decode_workhorse_header(subject)
+      key, command, params = decode_workhorse_header(
+        described_class.send_url(url)
+      )
 
       expect(key).to eq("Gitlab-Workhorse-Send-Data")
       expect(command).to eq("send-url")
       expect(params).to eq({
         'URL' => url,
-        'AllowRedirects' => false
+        'AllowRedirects' => false,
+        'Body' => '',
+        'Method' => 'GET'
       }.deep_stringify_keys)
+    end
+
+    context 'when body, headers and method are specified' do
+      let(:body) { 'body' }
+      let(:headers) { { Authorization: ['Bearer token'] } }
+      let(:method) { 'POST' }
+
+      it 'sets the header correctly' do
+        key, command, params = decode_workhorse_header(
+          described_class.send_url(url, body: body, headers: headers, method: method)
+        )
+
+        expect(key).to eq("Gitlab-Workhorse-Send-Data")
+        expect(command).to eq("send-url")
+        expect(params).to eq({
+          'URL' => url,
+          'AllowRedirects' => false,
+          'Body' => body,
+          'Header' => headers,
+          'Method' => method
+        }.deep_stringify_keys)
+      end
     end
   end
 

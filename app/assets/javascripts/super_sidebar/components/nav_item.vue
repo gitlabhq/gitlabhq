@@ -126,6 +126,7 @@ export default {
         'gl-bg-t-gray-a-08': this.isActive,
         'gl-py-2': this.isPinnable,
         'gl-py-3': !this.isPinnable,
+        [this.item.link_classes]: this.item.link_classes,
         ...this.linkClasses,
       };
     },

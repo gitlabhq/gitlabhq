@@ -15,24 +15,20 @@ RSpec.describe RequireEmailVerification, feature_category: :insider_threat do
 
   using RSpec::Parameterized::TableSyntax
 
-  where(:feature_flag_enabled, :two_factor_enabled, :skipped, :overridden) do
-    false | false | false | false
-    false | false | true  | false
-    false | true  | false | false
-    false | true  | true  | false
-    true  | false | false | true
-    true  | false | true  | false
-    true  | true  | false | false
-    true  | true  | true  | false
-  end
+  where(feature_flag_enabled: [true, false],
+    two_factor_enabled: [true, false],
+    oauth_user: [true, false],
+    skipped: [true, false])
 
   with_them do
     let(:instance) { model.new(id: 1) }
     let(:another_instance) { model.new(id: 2) }
+    let(:overridden) { feature_flag_enabled && !two_factor_enabled && !oauth_user && !skipped }
 
     before do
       stub_feature_flags(require_email_verification: feature_flag_enabled ? instance : another_instance)
       allow(instance).to receive(:two_factor_enabled?).and_return(two_factor_enabled)
+      allow(instance).to receive(:identities).and_return(oauth_user ? [:google] : [])
       stub_feature_flags(skip_require_email_verification: skipped ? instance : another_instance)
     end
 

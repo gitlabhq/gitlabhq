@@ -160,3 +160,12 @@ If your `TF_HTTP_ADDRESS`, `TF_HTTP_LOCK_ADDRESS` and `TF_HTTP_UNLOCK_ADDRESS` a
 to update the state names there.
 
 Alternatively, you can [migrate your terraform state](terraform_state.md#migrate-to-a-gitlab-managed-terraform-state).
+
+#### Self-managed GitLab instances
+
+By default, support for state names with periods is not enabled on self-managed GitLab.
+You can enable it from the Rails console:
+
+```ruby
+Feature.enable(:allow_dots_on_tf_state_names)
+```

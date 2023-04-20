@@ -57,6 +57,7 @@ module Sidebars
             link: project_tree_path(context.project, context.current_ref),
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             active_routes: { controller: %w[tree blob blame edit_tree new_tree find_file] },
+            container_html_options: { class: 'shortcuts-tree' },
             item_id: :files
           )
         end
@@ -70,7 +71,7 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             active_routes: { controller: %w(commit commits) },
             item_id: :commits,
-            container_html_options: { id: 'js-onboarding-commits-link' }
+            container_html_options: { id: 'js-onboarding-commits-link', class: 'shortcuts-commits' }
           )
         end
 
@@ -117,6 +118,7 @@ module Sidebars
             link: link,
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             active_routes: { controller: :network },
+            container_html_options: { class: 'shortcuts-network' },
             item_id: :graphs
           )
         end

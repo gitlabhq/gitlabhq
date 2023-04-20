@@ -156,7 +156,7 @@ class Snippet < ApplicationRecord
     def for_project_with_user(project, user = nil)
       return none unless project.snippets_visible?(user)
 
-      if user && project.team.member?(user)
+      if project.team.member?(user)
         project.snippets
       else
         project.snippets.public_to_user(user)

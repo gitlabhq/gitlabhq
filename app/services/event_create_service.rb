@@ -12,7 +12,7 @@ class EventCreateService
 
   DEGIGN_EVENT_LABEL = 'usage_activity_by_stage_monthly.create.action_monthly_active_users_design_management'
   MR_EVENT_LABEL = 'usage_activity_by_stage_monthly.create.merge_requests_users'
-  MR_EVENT_PROPERTY = 'merge_requests_users'
+  MR_EVENT_PROPERTY = 'merge_request_action'
 
   def open_issue(issue, current_user)
     create_record_event(issue, current_user, :created)

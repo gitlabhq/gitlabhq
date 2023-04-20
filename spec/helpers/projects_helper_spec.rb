@@ -212,6 +212,80 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
+  describe '#last_pipeline_from_status_cache' do
+    before do
+      # clear cross-example caches
+      project_with_repo.pipeline_status.delete_from_cache
+      project_with_repo.instance_variable_set(:@pipeline_status, nil)
+    end
+
+    context 'without a pipeline' do
+      it 'returns nil', :aggregate_failures do
+        expect(::Gitlab::GitalyClient).to receive(:call).at_least(:once).and_call_original
+        actual_pipeline = last_pipeline_from_status_cache(project_with_repo)
+        expect(actual_pipeline).to be_nil
+      end
+
+      context 'when pipeline_status is loaded' do
+        before do
+          project_with_repo.pipeline_status # this loads the status
+        end
+
+        it 'returns nil without calling gitaly when there is no pipeline', :aggregate_failures do
+          expect(::Gitlab::GitalyClient).not_to receive(:call)
+          actual_pipeline = last_pipeline_from_status_cache(project_with_repo)
+          expect(actual_pipeline).to be_nil
+        end
+      end
+
+      context 'when FF load_last_pipeline_from_pipeline_status is disabled' do
+        before do
+          stub_feature_flags(last_pipeline_from_pipeline_status: false)
+        end
+
+        it 'returns nil', :aggregate_failures do
+          expect(project_with_repo).not_to receive(:pipeline_status)
+          actual_pipeline = last_pipeline_from_status_cache(project_with_repo)
+          expect(actual_pipeline).to be_nil
+        end
+      end
+    end
+
+    context 'with a pipeline' do
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project_with_repo) }
+
+      it 'returns the latest pipeline', :aggregate_failures do
+        expect(::Gitlab::GitalyClient).to receive(:call).at_least(:once).and_call_original
+        actual_pipeline = last_pipeline_from_status_cache(project_with_repo)
+        expect(actual_pipeline).to eq pipeline
+      end
+
+      context 'when pipeline_status is loaded' do
+        before do
+          project_with_repo.pipeline_status # this loads the status
+        end
+
+        it 'returns the latest pipeline without calling gitaly' do
+          expect(::Gitlab::GitalyClient).not_to receive(:call)
+          actual_pipeline = last_pipeline_from_status_cache(project_with_repo)
+          expect(actual_pipeline).to eq pipeline
+        end
+
+        context 'when FF load_last_pipeline_from_pipeline_status is disabled' do
+          before do
+            stub_feature_flags(last_pipeline_from_pipeline_status: false)
+          end
+
+          it 'returns the latest pipeline', :aggregate_failures do
+            expect(project_with_repo).not_to receive(:pipeline_status)
+            actual_pipeline = last_pipeline_from_status_cache(project_with_repo)
+            expect(actual_pipeline).to eq pipeline
+          end
+        end
+      end
+    end
+  end
+
   describe '#show_no_ssh_key_message?' do
     before do
       allow(helper).to receive(:current_user).and_return(user)

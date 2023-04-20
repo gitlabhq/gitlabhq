@@ -229,6 +229,18 @@ module ProjectsHelper
       .load_in_batch_for_projects(projects)
   end
 
+  def last_pipeline_from_status_cache(project)
+    if Feature.enabled?(:last_pipeline_from_pipeline_status, project)
+      pipeline_status = project.pipeline_status
+      return unless pipeline_status.has_status?
+
+      # commits have far more attributes than id, but last_pipeline only requires sha
+      return Commit.from_hash({ id: pipeline_status.sha }, project).last_pipeline
+    end
+
+    project.last_pipeline
+  end
+
   def show_no_ssh_key_message?
     Gitlab::CurrentSettings.user_show_add_ssh_key_message? &&
       cookies[:hide_no_ssh_message].blank? &&

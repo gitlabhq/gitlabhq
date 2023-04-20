@@ -9495,7 +9495,6 @@
 - './spec/services/projects/alerting/notify_service_spec.rb'
 - './spec/services/projects/all_issues_count_service_spec.rb'
 - './spec/services/projects/all_merge_requests_count_service_spec.rb'
-- './spec/services/projects/android_target_platform_detector_service_spec.rb'
 - './spec/services/projects/apple_target_platform_detector_service_spec.rb'
 - './spec/services/projects/autocomplete_service_spec.rb'
 - './spec/services/projects/auto_devops/disable_service_spec.rb'

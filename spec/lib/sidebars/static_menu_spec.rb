@@ -25,7 +25,8 @@ RSpec.describe Sidebars::StaticMenu, feature_category: :navigation do
             icon: nil,
             link: "foo2",
             is_active: true,
-            pill_count: nil
+            pill_count: nil,
+            link_classes: nil
           },
           {
             id: 'id2',
@@ -33,7 +34,8 @@ RSpec.describe Sidebars::StaticMenu, feature_category: :navigation do
             icon: nil,
             link: "foo3",
             is_active: false,
-            pill_count: nil
+            pill_count: nil,
+            link_classes: nil
           }
         ]
       )

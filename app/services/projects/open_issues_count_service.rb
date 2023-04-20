@@ -26,7 +26,7 @@ module Projects
 
     def user_is_at_least_reporter?
       strong_memoize(:user_is_at_least_reporter) do
-        @user && @project.team.member?(@user, Gitlab::Access::REPORTER)
+        @project.team.member?(@user, Gitlab::Access::REPORTER)
       end
     end
 

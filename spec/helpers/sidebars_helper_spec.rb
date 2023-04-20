@@ -66,9 +66,10 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     let_it_be(:group) { build(:group) }
     let_it_be(:panel) { {} }
     let_it_be(:panel_type) { 'project' }
+    let(:project) { nil }
 
     subject do
-      helper.super_sidebar_context(user, group: group, project: nil, panel: panel, panel_type: panel_type)
+      helper.super_sidebar_context(user, group: group, project: project, panel: panel, panel_type: panel_type)
     end
 
     before do
@@ -158,6 +159,47 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           }
         ]
       })
+    end
+
+    describe "shortcut links" do
+      let(:global_shortcut_links) do
+        [
+          {
+            title: _('Milestones'),
+            href: dashboard_milestones_path,
+            css_class: 'dashboard-shortcuts-milestones'
+          },
+          {
+            title: _('Snippets'),
+            href: dashboard_snippets_path,
+            css_class: 'dashboard-shortcuts-snippets'
+          },
+          {
+            title: _('Activity'),
+            href: activity_dashboard_path,
+            css_class: 'dashboard-shortcuts-activity'
+          }
+        ]
+      end
+
+      it 'returns global shortcut links' do
+        expect(subject[:shortcut_links]).to eq(global_shortcut_links)
+      end
+
+      context 'in a project' do
+        let(:project) { build(:project) }
+
+        it 'returns project-specific shortcut links' do
+          expect(subject[:shortcut_links]).to eq([
+            *global_shortcut_links,
+            {
+              title: _('Create a new issue'),
+              href: new_project_issue_path(project),
+              css_class: 'shortcuts-new-issue'
+            }
+          ])
+        end
+      end
     end
 
     it 'returns "Merge requests" menu', :use_clean_rails_memory_store_caching do

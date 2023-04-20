@@ -8,12 +8,16 @@ module QA
           Page::Project::Menu.perform(&:go_to_monitor_incidents)
           Page::Project::Monitor::Incidents::Index.perform do |index|
             # Open tab is displayed by default
-            expect(index).to have_incident(title: unresolve_title)
-            expect(index).to have_no_incident(title: resolve_title)
+            expect(index).to have_incident(title: unresolve_title),
+              'Expected to see the unresolved incident in the Open tab'
+            expect(index).to have_no_incident(title: resolve_title),
+              'Did not expect to see the resolved incident in the Open tab'
 
             index.go_to_tab('Closed')
-            expect(index).to have_incident(title: resolve_title)
-            expect(index).to have_no_incident(title: unresolve_title)
+            expect(index).to have_incident(title: resolve_title),
+              'Expected to see the resolved incident in the Closed tab'
+            expect(index).to have_no_incident(title: unresolve_title),
+              'Did not expect to see the unresolved incident in the Closed tab'
           end
         end
       end

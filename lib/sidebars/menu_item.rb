@@ -38,7 +38,8 @@ module Sidebars
         icon: sprite_icon,
         link: link,
         active_routes: active_routes,
-        pill_count: has_pill ? pill_count : nil
+        pill_count: has_pill ? pill_count : nil,
+        link_classes: container_html_options[:class]
         # Check whether support is needed for the following properties,
         # in order to get feature parity with the HAML renderer
         # https://gitlab.com/gitlab-org/gitlab/-/issues/391864

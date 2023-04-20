@@ -25,8 +25,13 @@ RSpec.describe Emails::Pipelines do
       let(:pipeline) { create(:ci_pipeline, ref: 'master', sha: sha, project: project) }
 
       let!(:merge_request) do
-        create(:merge_request, source_branch: 'master', target_branch: 'feature',
-                               source_project: project, target_project: project)
+        create(
+          :merge_request,
+          source_branch: 'master',
+          target_branch: 'feature',
+          source_project: project,
+          target_project: project
+        )
       end
 
       it 'has correct information that there is no merge request link' do
@@ -55,8 +60,13 @@ RSpec.describe Emails::Pipelines do
 
     context 'when branch pipeline is set to a merge request as a head pipeline' do
       let(:pipeline) do
-        create(:ci_pipeline, project: project, ref: ref, sha: sha,
-                             merge_requests_as_head_pipeline: [merge_request])
+        create(
+          :ci_pipeline,
+          project: project,
+          ref: ref,
+          sha: sha,
+          merge_requests_as_head_pipeline: [merge_request]
+        )
       end
 
       let(:merge_request) do

@@ -90,7 +90,7 @@ module SidebarsHelper
       update_pins_url: pins_url,
       is_impersonating: impersonating?,
       stop_impersonation_path: admin_impersonation_path,
-      shortcut_links: shortcut_links
+      shortcut_links: shortcut_links(user, project: project)
     }
   end
 
@@ -340,8 +340,8 @@ module SidebarsHelper
     !!session[:impersonator_id]
   end
 
-  def shortcut_links
-    [
+  def shortcut_links(user, project: nil)
+    shortcut_links = [
       {
         title: _('Milestones'),
         href: dashboard_milestones_path,
@@ -358,6 +358,16 @@ module SidebarsHelper
         css_class: 'dashboard-shortcuts-activity'
       }
     ]
+
+    if project && can?(user, :create_issue, project)
+      shortcut_links << {
+        title: _('Create a new issue'),
+        href: new_project_issue_path(project),
+        css_class: 'shortcuts-new-issue'
+      }
+    end
+
+    shortcut_links
   end
 end
 
