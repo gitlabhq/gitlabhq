@@ -233,7 +233,7 @@ The following actions on projects generate project audit events:
 - Project repository was downloaded
 - Project was archived
 - Project was unarchived
-- Added, removed, or updated protected branches
+- Branch protection was added, removed, or updated
 - Release was added to a project
 - Release was updated
 - Release was deleted. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94793/) in GitLab 15.3.

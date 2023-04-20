@@ -7,12 +7,20 @@ module Resolvers
 
       type ::Types::Achievements::AchievementType.connection_type, null: true
 
+      argument :ids, [::Types::GlobalIDType[::Achievements::Achievement]],
+        required: false,
+        description: 'Filter achievements by IDs.'
+
       alias_method :namespace, :object
 
-      def resolve_with_lookahead
+      def resolve_with_lookahead(**args)
         return ::Achievements::Achievement.none if Feature.disabled?(:achievements, namespace)
 
-        apply_lookahead(namespace.achievements)
+        params = {}
+        params[:ids] = args[:ids].map(&:model_id) if args[:ids].present?
+
+        achievements = ::Achievements::AchievementsFinder.new(namespace, params).execute
+        apply_lookahead(achievements)
       end
 
       private

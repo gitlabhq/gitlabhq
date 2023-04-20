@@ -39,7 +39,7 @@
 {"name":"aws-sdk-cloudformation","version":"1.41.0","platform":"ruby","checksum":"31e47539719734413671edf9b1a31f8673fbf9688549f50c41affabbcb1c6b26"},
 {"name":"aws-sdk-core","version":"3.171.0","platform":"ruby","checksum":"69c82d00b872dacf7fdf2a7c68f8b82aec0d3ade4d07ad5d11ff98f8d1de621c"},
 {"name":"aws-sdk-kms","version":"1.63.0","platform":"ruby","checksum":"025864a5ca61637efeca31ea92841da65dcb58a3ce87b4d7d9b9ba8644fc076d"},
-{"name":"aws-sdk-s3","version":"1.120.1","platform":"ruby","checksum":"23212ce52e56ba368c674e6c2fda134139a539d47bc3a0d81562e793ea6f57d5"},
+{"name":"aws-sdk-s3","version":"1.121.0","platform":"ruby","checksum":"683a3a30a1d426e06beafc7f45bad9cfde529500b49dfd4699f1c49bd219bbe8"},
 {"name":"aws-sigv4","version":"1.5.1","platform":"ruby","checksum":"d68c87fff4ee843b4b92b23c7f31f957f254ec6eb064181f7119124aab8b8bb4"},
 {"name":"axe-core-api","version":"4.6.0","platform":"ruby","checksum":"1b0ddec3353f108dc10363baf2282f43a5ff7f13d4e25f99071294e78f8a6c62"},
 {"name":"axe-core-rspec","version":"4.6.0","platform":"ruby","checksum":"11c25bc9dd388c137ba4e5e63d64d20092bf22c884d8ffc829a22acfbacd747f"},

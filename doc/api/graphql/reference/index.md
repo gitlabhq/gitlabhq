@@ -14607,7 +14607,6 @@ GPG signature for a signed commit.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupachievements"></a>`achievements` **{warning-solid}** | [`AchievementConnection`](#achievementconnection) | **Introduced** in 15.8. This feature is an Experiment. It can be changed or removed at any time. Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled. |
 | <a id="groupactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for repositories in the namespace in bytes. |
 | <a id="groupadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
 | <a id="groupallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean!`](#boolean) | Indicates whether to regularly prune stale group runners. Defaults to false. |
@@ -14666,6 +14665,26 @@ GPG signature for a signed commit.
 | <a id="groupweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the group. |
 
 #### Fields with arguments
+
+##### `Group.achievements`
+
+Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled.
+
+WARNING:
+**Introduced** in 15.8.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`AchievementConnection`](#achievementconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupachievementsids"></a>`ids` | [`[AchievementsAchievementID!]`](#achievementsachievementid) | Filter achievements by IDs. |
 
 ##### `Group.billableMembersCount`
 
@@ -17587,7 +17606,6 @@ Contains statistics about a milestone.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="namespaceachievements"></a>`achievements` **{warning-solid}** | [`AchievementConnection`](#achievementconnection) | **Introduced** in 15.8. This feature is an Experiment. It can be changed or removed at any time. Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled. |
 | <a id="namespaceactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for repositories in the namespace in bytes. |
 | <a id="namespaceadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
 | <a id="namespacecontainslockedprojects"></a>`containsLockedProjects` | [`Boolean!`](#boolean) | Includes at least one project where the repository size exceeds the limit. |
@@ -17614,6 +17632,26 @@ Contains statistics about a milestone.
 | <a id="namespacevisibility"></a>`visibility` | [`String`](#string) | Visibility of the namespace. |
 
 #### Fields with arguments
+
+##### `Namespace.achievements`
+
+Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled.
+
+WARNING:
+**Introduced** in 15.8.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`AchievementConnection`](#achievementconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespaceachievementsids"></a>`ids` | [`[AchievementsAchievementID!]`](#achievementsachievementid) | Filter achievements by IDs. |
 
 ##### `Namespace.complianceFrameworks`
 

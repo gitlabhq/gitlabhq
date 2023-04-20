@@ -52,7 +52,7 @@ export default {
   <section
     v-if="isVisible"
     id="se-toolbar"
-    class="gl-py-3 gl-px-5 gl-bg-white gl-border-t gl-border-b gl-display-flex gl-align-items-center"
+    class="gl-py-3 gl-px-5 gl-bg-white gl-border-b gl-display-flex gl-align-items-center"
   >
     <gl-button-group v-if="hasGroupItems($options.groups.file)">
       <source-editor-toolbar-button
