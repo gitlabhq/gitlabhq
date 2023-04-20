@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.7.9 (2023-04-20)
+
+### Fixed (1 change)
+
+- [Fix automatically-retried jobs stuck in pending state](gitlab-org/gitlab@0243a8419734e5c1a2fdfc4ea607731e6c497ec5) ([merge request](gitlab-org/gitlab!117284))
+
 ## 15.7.8 (2023-03-02)
 
 ### Security (12 changes)
