@@ -7,7 +7,6 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import DeleteModal from '~/packages_and_registries/package_registry/components/delete_modal.vue';
-import DeletePackageModal from '~/packages_and_registries/shared/components/delete_package_modal.vue';
 import PackageVersionsList from '~/packages_and_registries/package_registry/components/details/package_versions_list.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
@@ -46,7 +45,6 @@ describe('PackageVersionsList', () => {
     findListRow: () => wrapper.findComponent(VersionRow),
     findAllListRow: () => wrapper.findAllComponents(VersionRow),
     findDeletePackagesModal: () => wrapper.findComponent(DeleteModal),
-    findPackageListDeleteModal: () => wrapper.findComponent(DeletePackageModal),
   };
 
   const mountComponent = ({
@@ -247,7 +245,7 @@ describe('PackageVersionsList', () => {
   `('$description', ({ finderFunction, deletePayload }) => {
     let eventSpy;
     const category = 'UI::NpmPackages';
-    const { findPackageListDeleteModal } = uiElements;
+    const { findDeletePackagesModal } = uiElements;
 
     beforeEach(async () => {
       eventSpy = jest.spyOn(Tracking, 'event');
@@ -256,10 +254,10 @@ describe('PackageVersionsList', () => {
       finderFunction().vm.$emit('delete', deletePayload);
     });
 
-    it('passes itemToBeDeleted to the modal', () => {
-      expect(findPackageListDeleteModal().props('itemToBeDeleted')).toStrictEqual(
+    it('passes itemsToBeDeleted to the modal', () => {
+      expect(findDeletePackagesModal().props('itemsToBeDeleted')).toStrictEqual([
         packageVersions()[0],
-      );
+      ]);
     });
 
     it('requesting delete tracks the right action', () => {
@@ -272,7 +270,7 @@ describe('PackageVersionsList', () => {
 
     describe('when modal confirms', () => {
       beforeEach(() => {
-        findPackageListDeleteModal().vm.$emit('ok');
+        findDeletePackagesModal().vm.$emit('confirm');
       });
 
       it('emits delete when modal confirms', () => {
@@ -288,14 +286,14 @@ describe('PackageVersionsList', () => {
       });
     });
 
-    it.each(['ok', 'cancel'])('resets itemToBeDeleted when modal emits %s', async (event) => {
-      await findPackageListDeleteModal().vm.$emit(event);
+    it.each(['confirm', 'cancel'])('resets itemsToBeDeleted when modal emits %s', async (event) => {
+      await findDeletePackagesModal().vm.$emit(event);
 
-      expect(findPackageListDeleteModal().props('itemToBeDeleted')).toBeNull();
+      expect(findDeletePackagesModal().props('itemsToBeDeleted')).toEqual([]);
     });
 
     it('canceling delete tracks the right action', () => {
-      findPackageListDeleteModal().vm.$emit('cancel');
+      findDeletePackagesModal().vm.$emit('cancel');
 
       expect(eventSpy).toHaveBeenCalledWith(
         category,
@@ -381,6 +379,17 @@ describe('PackageVersionsList', () => {
           expect.any(Object),
         );
       });
+    });
+  });
+
+  describe('with isRequestForwardingEnabled prop', () => {
+    const { findDeletePackagesModal } = uiElements;
+
+    it.each([true, false])('sets modal prop showRequestForwardingContent to %s', async (value) => {
+      mountComponent({ props: { isRequestForwardingEnabled: value } });
+      await waitForPromises();
+
+      expect(findDeletePackagesModal().props('showRequestForwardingContent')).toBe(value);
     });
   });
 });

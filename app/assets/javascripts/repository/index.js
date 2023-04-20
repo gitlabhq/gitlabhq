@@ -84,10 +84,10 @@ export default function setupVueRepositoryList() {
       sourcePath,
       sourceDefaultBranch,
       createMrPath,
+      viewMrPath,
       canSyncBranch,
       aheadComparePath,
       behindComparePath,
-      canUserCreateMrInFork,
     } = forkEl.dataset;
     return new Vue({
       el: forkEl,
@@ -104,7 +104,7 @@ export default function setupVueRepositoryList() {
             aheadComparePath,
             behindComparePath,
             createMrPath,
-            canUserCreateMrInFork,
+            viewMrPath,
           },
         });
       },

@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Troubleshooting Jira DVCS connector **(FREE)**
 
-Refer to the items in this section if you're having problems with your DVCS connector.
+Refer to the items in this section if you're having problems with your Jira DVCS connector.
 
 ## Jira cannot access GitLab server
 
@@ -32,12 +32,12 @@ Problems with SSL and TLS can cause this error message:
 Error obtaining access token. Cannot access https://gitlab.example.com from Jira.
 ```
 
-- The [GitLab Jira integration](../index.md) requires
+- The [Jira integration](../index.md) requires
   GitLab to connect to Jira. Any TLS issues that arise from a private certificate
   authority or self-signed certificate are resolved
   [on the GitLab server](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates),
   as GitLab is the TLS client.
-- The Jira Development panel integration requires Jira to connect to GitLab, which
+- The Jira development panel requires Jira to connect to GitLab, which
   causes Jira to be the TLS client. If your GitLab server's certificate is not
   issued by a public certificate authority, add the appropriate certificate
   (such as your organization's root certificate) to the Java Truststore on Jira Server.
@@ -125,7 +125,7 @@ For more information, see the
 
 ## `Sync Failed` error when refreshing repository data
 
-If you get a `Sync Failed` error in Jira when [refreshing repository data](index.md#refresh-data-imported-to-jira) for specific projects, check your DVCS connector logs. Look for errors that occur when executing requests to API resources in GitLab. For example:
+If you get a `Sync Failed` error in Jira when [refreshing repository data](index.md#refresh-data-imported-to-jira) for specific projects, check your Jira DVCS connector logs. Look for errors that occur when executing requests to API resources in GitLab. For example:
 
 ```plaintext
 Failed to execute request [https://gitlab.com/api/v4/projects/:id/merge_requests?page=1&per_page=100 GET https://gitlab.com/api/v4/projects/:id/merge_requests?page=1&per_page=100 returned a response status of 403 Forbidden] errors:

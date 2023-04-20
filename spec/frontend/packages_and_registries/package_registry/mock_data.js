@@ -16,7 +16,7 @@ export const packagePipelines = (extend) => [
     ref: 'master',
     sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0',
     project: {
-      id: '1',
+      id: '14',
       name: 'project14',
       webUrl: 'http://gdk.test:3000/namespace14/project14',
       __typename: 'Project',
@@ -219,7 +219,10 @@ export const pagination = (extend) => ({
   ...extend,
 });
 
-export const packageDetailsQuery = (extendPackage) => ({
+export const packageDetailsQuery = ({
+  extendPackage = {},
+  packageSettings = defaultPackageGroupSettings,
+} = {}) => ({
   data: {
     package: {
       ...packageData(),
@@ -235,6 +238,12 @@ export const packageDetailsQuery = (extendPackage) => ({
         path: 'projectPath',
         name: 'gitlab-test',
         fullPath: 'gitlab-test',
+        group: {
+          id: '1',
+          packageSettings,
+          __typename: 'Group',
+        },
+        __typename: 'Project',
       },
       tags: {
         nodes: packageTags(),

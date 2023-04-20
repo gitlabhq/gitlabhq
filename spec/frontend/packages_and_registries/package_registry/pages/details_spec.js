@@ -1,4 +1,4 @@
-import { GlEmptyState, GlModal, GlTabs, GlTab, GlSprintf } from '@gitlab/ui';
+import { GlEmptyState, GlModal, GlTabs, GlTab, GlSprintf, GlLink } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 
 import VueApollo from 'vue-apollo';
@@ -18,6 +18,7 @@ import PackageTitle from '~/packages_and_registries/package_registry/components/
 import DeletePackages from '~/packages_and_registries/package_registry/components/functional/delete_packages.vue';
 import PackageVersionsList from '~/packages_and_registries/package_registry/components/details/package_versions_list.vue';
 import {
+  REQUEST_FORWARDING_HELP_PAGE_PATH,
   FETCH_PACKAGE_DETAILS_ERROR_MESSAGE,
   PACKAGE_TYPE_COMPOSER,
   DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
@@ -43,6 +44,7 @@ import {
   packageFiles,
   packageDestroyFilesMutation,
   packageDestroyFilesMutationError,
+  defaultPackageGroupSettings,
 } from '../mock_data';
 
 jest.mock('~/alert');
@@ -125,6 +127,7 @@ describe('PackagesApp', () => {
   const findDependencyRows = () => wrapper.findAllComponents(DependencyRow);
   const findDeletePackageModal = () => wrapper.findAllComponents(DeletePackages).at(1);
   const findDeletePackages = () => wrapper.findComponent(DeletePackages);
+  const findLink = () => wrapper.findComponent(GlLink);
 
   it('renders an empty state component', async () => {
     createComponent({ resolver: jest.fn().mockResolvedValue(emptyPackageDetailsQuery) });
@@ -184,7 +187,9 @@ describe('PackagesApp', () => {
         createComponent({
           resolver: jest.fn().mockResolvedValue(
             packageDetailsQuery({
-              packageType,
+              extendPackage: {
+                packageType,
+              },
             }),
           ),
         });
@@ -239,16 +244,55 @@ describe('PackagesApp', () => {
       });
     });
 
-    it('shows the delete confirmation modal when delete is clicked', async () => {
-      createComponent();
+    describe('when delete button is clicked', () => {
+      describe('with request forwarding enabled', () => {
+        beforeEach(async () => {
+          const resolver = jest.fn().mockResolvedValue(
+            packageDetailsQuery({
+              packageSettings: {
+                ...defaultPackageGroupSettings,
+                npmPackageRequestsForwarding: true,
+              },
+            }),
+          );
+          createComponent({ resolver });
 
-      await waitForPromises();
+          await waitForPromises();
 
-      await findDeleteButton().trigger('click');
+          await findDeleteButton().trigger('click');
+        });
 
-      expect(findDeleteModal().text()).toBe(
-        'You are about to delete version 1.0.0 of @gitlab-org/package-15. Are you sure?',
-      );
+        it('shows the delete confirmation modal with request forwarding content', () => {
+          expect(findDeleteModal().text()).toBe(
+            'Deleting this package while request forwarding is enabled for the project can pose a security risk. Do you want to delete @gitlab-org/package-15 version 1.0.0 anyway? What are the risks?',
+          );
+        });
+
+        it('contains link to help page', () => {
+          expect(findLink().exists()).toBe(true);
+          expect(findLink().attributes('href')).toBe(REQUEST_FORWARDING_HELP_PAGE_PATH);
+        });
+      });
+
+      it('shows the delete confirmation modal without request forwarding content', async () => {
+        const resolver = jest.fn().mockResolvedValue(
+          packageDetailsQuery({
+            packageSettings: {
+              ...defaultPackageGroupSettings,
+              npmPackageRequestsForwarding: false,
+            },
+          }),
+        );
+        createComponent({ resolver });
+
+        await waitForPromises();
+
+        await findDeleteButton().trigger('click');
+
+        expect(findDeleteModal().text()).toBe(
+          'You are about to delete version 1.0.0 of @gitlab-org/package-15. Are you sure?',
+        );
+      });
     });
 
     describe('successful request', () => {
@@ -302,7 +346,9 @@ describe('PackagesApp', () => {
       createComponent({
         resolver: jest
           .fn()
-          .mockResolvedValue(packageDetailsQuery({ packageType: PACKAGE_TYPE_COMPOSER })),
+          .mockResolvedValue(
+            packageDetailsQuery({ extendPackage: { packageType: PACKAGE_TYPE_COMPOSER } }),
+          ),
       });
 
       await waitForPromises();
@@ -341,12 +387,18 @@ describe('PackagesApp', () => {
         const [packageFile] = packageFiles();
         const resolver = jest.fn().mockResolvedValue(
           packageDetailsQuery({
-            packageFiles: {
-              pageInfo: {
-                hasNextPage: false,
+            extendPackage: {
+              packageFiles: {
+                pageInfo: {
+                  hasNextPage: false,
+                },
+                nodes: [packageFile],
+                __typename: 'PackageFileConnection',
               },
-              nodes: [packageFile],
-              __typename: 'PackageFileConnection',
+            },
+            packageSettings: {
+              ...defaultPackageGroupSettings,
+              npmPackageRequestsForwarding: false,
             },
           }),
         );
@@ -523,11 +575,17 @@ describe('PackagesApp', () => {
       it('opens the delete package confirmation modal', async () => {
         const resolver = jest.fn().mockResolvedValue(
           packageDetailsQuery({
-            packageFiles: {
-              pageInfo: {
-                hasNextPage: false,
+            extendPackage: {
+              packageFiles: {
+                pageInfo: {
+                  hasNextPage: false,
+                },
+                nodes: packageFiles(),
               },
-              nodes: packageFiles(),
+            },
+            packageSettings: {
+              ...defaultPackageGroupSettings,
+              npmPackageRequestsForwarding: false,
             },
           }),
         );
@@ -565,8 +623,10 @@ describe('PackagesApp', () => {
       createComponent({
         resolver: jest.fn().mockResolvedValue(
           packageDetailsQuery({
-            versions: {
-              count: 0,
+            extendPackage: {
+              versions: {
+                count: 0,
+              },
             },
           }),
         ),
@@ -591,6 +651,7 @@ describe('PackagesApp', () => {
         count: packageVersions().length,
         isMutationLoading: false,
         packageId: 'gid://gitlab/Packages::Package/1',
+        isRequestForwardingEnabled: true,
       });
     });
 
@@ -646,8 +707,10 @@ describe('PackagesApp', () => {
       createComponent({
         resolver: jest.fn().mockResolvedValue(
           packageDetailsQuery({
-            packageType: PACKAGE_TYPE_NUGET,
-            dependencyLinks: { nodes: [] },
+            extendPackage: {
+              packageType: PACKAGE_TYPE_NUGET,
+              dependencyLinks: { nodes: [] },
+            },
           }),
         ),
       });
@@ -663,7 +726,9 @@ describe('PackagesApp', () => {
       createComponent({
         resolver: jest.fn().mockResolvedValue(
           packageDetailsQuery({
-            packageType: PACKAGE_TYPE_NUGET,
+            extendPackage: {
+              packageType: PACKAGE_TYPE_NUGET,
+            },
           }),
         ),
       });

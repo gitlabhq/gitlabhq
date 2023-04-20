@@ -1359,11 +1359,16 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'when fork source is available' do
-      it 'returns the data related to fork divergence' do
-        source_project = project_with_repo
+      let_it_be(:fork_network) { create(:fork_network, root_project: project_with_repo) }
+      let_it_be(:source_project) { project_with_repo }
 
-        allow(helper).to receive(:visible_fork_source).with(project).and_return(source_project)
-        allow(helper).to receive(:can_user_create_mr_in_fork).with(source_project).and_return(false)
+      before_all do
+        project.fork_network = fork_network
+        project.add_developer(user)
+        source_project.add_developer(user)
+      end
+
+      it 'returns the data related to fork divergence' do
         allow(helper).to receive(:current_user).and_return(user)
 
         ahead_path =
@@ -1382,8 +1387,43 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
           behind_compare_path: behind_path,
           source_default_branch: source_project.default_branch,
           create_mr_path: create_mr_path,
-          can_user_create_mr_in_fork: false
+          view_mr_path: nil
         })
+      end
+
+      it 'returns view_mr_path if a merge request for the branch exists' do
+        allow(helper).to receive(:current_user).and_return(user)
+
+        merge_request =
+          create(:merge_request, source_project: project, target_project: project_with_repo,
+            source_branch: 'ref', target_branch: project_with_repo.default_branch)
+
+        expect(helper.vue_fork_divergence_data(project, 'ref')).to include({
+          create_mr_path: nil,
+          view_mr_path: "/#{source_project.full_path}/-/merge_requests/#{merge_request.iid}"
+        })
+      end
+
+      context 'when a user cannot create a merge request' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:project_role, :source_project_role) do
+          :guest | :developer
+          :developer | :guest
+        end
+
+        with_them do
+          it 'create_mr_path is nil' do
+            allow(helper).to receive(:current_user).and_return(user)
+
+            project.add_member(user, project_role)
+            source_project.add_member(user, source_project_role)
+
+            expect(helper.vue_fork_divergence_data(project, 'ref')).to include({
+              create_mr_path: nil, view_mr_path: nil
+            })
+          end
+        end
       end
     end
   end

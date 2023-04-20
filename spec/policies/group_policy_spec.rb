@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe GroupPolicy, feature_category: :system_access do
   include AdminModeHelper
   include_context 'GroupPolicy context'
+  using RSpec::Parameterized::TableSyntax
 
   context 'public group with no user' do
     let(:group) { create(:group, :public, :crm_enabled) }
@@ -668,6 +669,59 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         it { is_expected.to be_allowed(:create_projects) }
       end
     end
+
+    context 'with visibility levels restricted by the administrator' do
+      let_it_be(:public) { Gitlab::VisibilityLevel::PUBLIC }
+      let_it_be(:internal) { Gitlab::VisibilityLevel::INTERNAL }
+      let_it_be(:private) { Gitlab::VisibilityLevel::PRIVATE }
+      let_it_be(:policy) { :create_projects }
+
+      where(:restricted_visibility_levels, :group_visibility, :can_create_project?) do
+        []                                            | ref(:public)   | true
+        []                                            | ref(:internal) | true
+        []                                            | ref(:private)  | true
+        [ref(:public)]                                | ref(:public)   | true
+        [ref(:public)]                                | ref(:internal) | true
+        [ref(:public)]                                | ref(:private)  | true
+        [ref(:internal)]                              | ref(:public)   | true
+        [ref(:internal)]                              | ref(:internal) | true
+        [ref(:internal)]                              | ref(:private)  | true
+        [ref(:private)]                               | ref(:public)   | true
+        [ref(:private)]                               | ref(:internal) | true
+        [ref(:private)]                               | ref(:private)  | false
+        [ref(:public), ref(:internal)]                | ref(:public)   | true
+        [ref(:public), ref(:internal)]                | ref(:internal) | true
+        [ref(:public), ref(:internal)]                | ref(:private)  | true
+        [ref(:public), ref(:private)]                 | ref(:public)   | true
+        [ref(:public), ref(:private)]                 | ref(:internal) | true
+        [ref(:public), ref(:private)]                 | ref(:private)  | false
+        [ref(:private), ref(:internal)]               | ref(:public)   | true
+        [ref(:private), ref(:internal)]               | ref(:internal) | false
+        [ref(:private), ref(:internal)]               | ref(:private)  | false
+        [ref(:public), ref(:internal), ref(:private)] | ref(:public)   | false
+        [ref(:public), ref(:internal), ref(:private)] | ref(:internal) | false
+        [ref(:public), ref(:internal), ref(:private)] | ref(:private)  | false
+      end
+
+      with_them do
+        before do
+          group.update!(visibility_level: group_visibility)
+          stub_application_setting(restricted_visibility_levels: restricted_visibility_levels)
+        end
+
+        context 'with non-admin user' do
+          let(:current_user) { owner }
+
+          it { is_expected.to(can_create_project? ? be_allowed(policy) : be_disallowed(policy)) }
+        end
+
+        context 'with admin user', :enable_admin_mode do
+          let(:current_user) { admin }
+
+          it { is_expected.to be_allowed(policy) }
+        end
+      end
+    end
   end
 
   context 'import_projects' do
@@ -878,7 +932,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       end
     end
 
-    %w(guest reporter developer maintainer owner).each do |role|
+    %w[guest reporter developer maintainer owner].each do |role|
       context role do
         let(:current_user) { send(role) }
 
@@ -1046,8 +1100,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   describe 'observability' do
-    using RSpec::Parameterized::TableSyntax
-
     let(:allowed_admin) { be_allowed(:read_observability) && be_allowed(:admin_observability) }
     let(:allowed_read) { be_allowed(:read_observability) && be_disallowed(:admin_observability) }
     let(:disallowed) { be_disallowed(:read_observability) && be_disallowed(:admin_observability) }
@@ -1661,8 +1713,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   describe 'read_usage_quotas policy' do
     context 'reading usage quotas' do
-      using RSpec::Parameterized::TableSyntax
-
       let(:policy) { :read_usage_quotas }
 
       where(:role, :admin_mode, :allowed) do

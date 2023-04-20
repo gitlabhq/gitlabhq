@@ -10,7 +10,7 @@ If your organization uses [Jira](https://www.atlassian.com/software/jira) issues
 you can [migrate your issues from Jira](../../user/project/import/jira.md) and work
 exclusively in GitLab. However, if you'd like to continue to use Jira, you can
 integrate it with GitLab. GitLab offers two types of Jira integrations, and you
-can use one or both depending on the capabilities you need. We recommend you enable both.
+can use one or both depending on the capabilities you need.
 
 ## Compare integrations
 
@@ -19,29 +19,25 @@ in your GitLab project with any of your projects in Jira.
 
 ### Jira integration
 
-This integration connects one or more GitLab projects to a Jira instance. You can host
+The Jira integration connects one or more GitLab projects to a Jira instance. You can host
 the Jira instance yourself or in [Atlassian Cloud](https://www.atlassian.com/migration/assess/why-cloud).
 The supported Jira versions are `6.x`, `7.x`, `8.x`, and `9.x`.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Agile Management - GitLab-Jira Basic Integration](https://www.youtube.com/watch?v=fWvwkx5_00E&feature=youtu.be).
+For more information, see [Jira integration](configure.md).
 
-To set up the integration, [configure the settings](configure.md) in GitLab.
+### Jira development panel
 
-### Jira development panel integration
+The [Jira development panel](development_panel.md) connects all GitLab projects in a group or personal namespace.
+When you configure the Jira development panel, you can
+[view GitLab activity for an issue](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/)
+including related branches, commits, and merge requests.
 
-The [Jira development panel integration](development_panel.md)
-connects all GitLab projects under a group or personal namespace. When configured,
-relevant GitLab information, including related branches, commits, and merge requests,
-displays in the [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/).
-
-To set up the Jira development panel integration, use the GitLab for Jira Cloud app
-or the Jira DVCS (distributed version control system) connector,
-[depending on your installation](development_panel.md#configure-the-panel).
+To set up the Jira development panel, use the GitLab for Jira Cloud app
+or the Jira DVCS connector. For more information, see [Configure the panel](development_panel.md#configure-the-panel).
 
 ### Direct feature comparison
 
-| Capability | Jira integration | Jira development panel integration |
+| Capability | Jira integration | Jira development panel |
 |-|-|-|
 | Mention a Jira issue ID in a GitLab commit or merge request, and a link to the Jira issue is created. | Yes. | No. |
 | Mention a Jira issue ID in GitLab and the Jira issue shows the GitLab issue or merge request. | Yes. A Jira comment with the GitLab issue or MR title links to GitLab. The first mention is also added to the Jira issue under **Web links**. | Yes, in the issue's [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/). |
@@ -72,8 +68,8 @@ All Jira integrations share data with Jira to make it visible outside of GitLab.
 If you integrate a private GitLab project with Jira, the private data is
 shared with users who have access to your Jira project.
 
-The [**Jira project integration**](#jira-integration) posts GitLab data in the form of comments in Jira issues.
-The GitLab for Jira Cloud app and Jira DVCS connector share this data through the [**Jira Development Panel**](development_panel.md).
+The [Jira integration](#jira-integration) posts GitLab data in the form of comments in Jira issues.
+The GitLab for Jira Cloud app and Jira DVCS connector share this data through the [Jira development panel](development_panel.md).
 This method provides more fine-grained access control because access can be restricted to certain user groups or roles.
 
 ## Third-party Jira integrations

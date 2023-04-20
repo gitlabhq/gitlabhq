@@ -115,8 +115,8 @@ const initForkInfo = () => {
     canSyncBranch,
     aheadComparePath,
     behindComparePath,
-    canUserCreateMrInFork,
     createMrPath,
+    viewMrPath,
   } = forkEl.dataset;
   return new Vue({
     el: forkEl,
@@ -132,8 +132,8 @@ const initForkInfo = () => {
           sourceDefaultBranch,
           aheadComparePath,
           behindComparePath,
-          canUserCreateMrInFork,
           createMrPath,
+          viewMrPath,
         },
       });
     },

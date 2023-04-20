@@ -8,12 +8,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Use the Import API to import repositories from GitHub or Bitbucket Server.
 
-Related APIs include:
-
-- [Group migration by direct transfer API](bulk_imports.md).
-- [Group import and export API](group_import_export.md).
-- [Project import and export API](project_import_export.md).
-
 ## Prerequisites
 
 For information on prerequisites for using the Import API, see:
@@ -214,3 +208,9 @@ curl --request POST \
 
 For information on automating user, group, and project import API calls, see
 [Automate group and project import](../user/project/import/index.md#automate-group-and-project-import).
+
+## Related topics
+
+- [Group migration by direct transfer API](bulk_imports.md).
+- [Group import and export API](group_import_export.md).
+- [Project import and export API](project_import_export.md).

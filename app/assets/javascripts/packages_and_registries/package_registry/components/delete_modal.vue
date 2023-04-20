@@ -16,10 +16,6 @@ import {
 
 export default {
   name: 'DeleteModal',
-  i18n: {
-    DELETE_MODAL_CONTENT,
-    DELETE_PACKAGES_MODAL_DESCRIPTION,
-  },
   components: {
     GlLink,
     GlModal,
@@ -38,14 +34,20 @@ export default {
   },
   computed: {
     itemToBeDeleted() {
-      if (this.itemsToBeDeleted.length === 1) {
-        const [itemToBeDeleted] = this.itemsToBeDeleted;
-        return itemToBeDeleted;
-      }
-      return null;
+      return this.itemsToBeDeleted.length === 1 ? this.itemsToBeDeleted[0] : null;
     },
     title() {
       return this.itemToBeDeleted ? DELETE_MODAL_TITLE : DELETE_PACKAGES_MODAL_TITLE;
+    },
+    packageDescription() {
+      return this.showRequestForwardingContent
+        ? DELETE_PACKAGE_REQUEST_FORWARDING_MODAL_CONTENT
+        : DELETE_MODAL_CONTENT;
+    },
+    packagesDescription() {
+      return this.showRequestForwardingContent
+        ? DELETE_PACKAGES_REQUEST_FORWARDING_MODAL_CONTENT
+        : DELETE_PACKAGES_MODAL_DESCRIPTION;
     },
     packagesDeletePrimaryActionProps() {
       let text = DELETE_PACKAGE_MODAL_PRIMARY_ACTION;
@@ -61,11 +63,6 @@ export default {
         text,
         attributes: { variant: 'danger', category: 'primary' },
       };
-    },
-    requestForwardingContentMessage() {
-      return this.itemToBeDeleted
-        ? DELETE_PACKAGE_REQUEST_FORWARDING_MODAL_CONTENT
-        : DELETE_PACKAGES_REQUEST_FORWARDING_MODAL_CONTENT;
     },
   },
   modal: {
@@ -95,24 +92,23 @@ export default {
     @primary="$emit('confirm')"
     @cancel="$emit('cancel')"
   >
-    <p v-if="showRequestForwardingContent">
-      <gl-sprintf :message="requestForwardingContentMessage">
-        <template #docLink="{ content }">
+    <p>
+      <gl-sprintf v-if="itemToBeDeleted" :message="packageDescription">
+        <template v-if="showRequestForwardingContent" #docLink="{ content }">
           <gl-link :href="$options.links.REQUEST_FORWARDING_HELP_PAGE_PATH">{{ content }}</gl-link>
         </template>
-      </gl-sprintf>
-    </p>
-    <p v-else>
-      <gl-sprintf v-if="itemToBeDeleted" :message="$options.i18n.DELETE_MODAL_CONTENT">
         <template #version>
           <strong>{{ itemToBeDeleted.version }}</strong>
         </template>
-
         <template #name>
           <strong>{{ itemToBeDeleted.name }}</strong>
         </template>
       </gl-sprintf>
-      <gl-sprintf v-else :message="$options.i18n.DELETE_PACKAGES_MODAL_DESCRIPTION">
+      <gl-sprintf v-else :message="packagesDescription">
+        <template v-if="showRequestForwardingContent" #docLink="{ content }">
+          <gl-link :href="$options.links.REQUEST_FORWARDING_HELP_PAGE_PATH">{{ content }}</gl-link>
+        </template>
+
         <template #count>
           {{ itemsToBeDeleted.length }}
         </template>

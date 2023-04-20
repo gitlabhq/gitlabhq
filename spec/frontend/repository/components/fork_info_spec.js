@@ -86,6 +86,7 @@ describe('ForkInfo component', () => {
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findUpdateForkButton = () => wrapper.findByTestId('update-fork-button');
   const findCreateMrButton = () => wrapper.findByTestId('create-mr-button');
+  const findViewMrButton = () => wrapper.findByTestId('view-mr-button');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findDivergenceMessage = () => wrapper.findByTestId('divergence-message');
   const findInaccessibleMessage = () => wrapper.findByTestId('inaccessible-project');
@@ -145,8 +146,14 @@ describe('ForkInfo component', () => {
     expect(findCreateMrButton().attributes('href')).toBe(propsForkInfo.createMrPath);
   });
 
-  it('does not render create MR button if user had no permission to Create MR in fork', async () => {
-    await createComponent({ canUserCreateMrInFork: false });
+  it('renders View MR Button with correct path', async () => {
+    const viewMrPath = 'path/to/view/mr';
+    await createComponent({ viewMrPath });
+    expect(findViewMrButton().attributes('href')).toBe(viewMrPath);
+  });
+
+  it('does not render create MR button if create MR path is blank', async () => {
+    await createComponent({ createMrPath: '' });
     expect(findCreateMrButton().exists()).toBe(false);
   });
 

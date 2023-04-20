@@ -18,7 +18,7 @@ RSpec.describe API::DebianGroupPackages, feature_category: :package_registry do
 
     shared_examples 'not a Debian package tracking event' do
       include_context 'Debian repository access', :public, :developer, :basic do
-        it_behaves_like 'not a package tracking event'
+        it_behaves_like 'not a package tracking event', described_class.name, /.*/
       end
     end
 

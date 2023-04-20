@@ -26,6 +26,7 @@ export const i18n = {
   error: s__('ForksDivergence|Failed to fetch fork details. Try again later.'),
   updateFork: s__('ForksDivergence|Update fork'),
   createMergeRequest: s__('ForksDivergence|Create merge request'),
+  viewMergeRequest: s__('ForksDivergence|View merge request'),
   successMessage: s__(
     'ForksDivergence|Successfully fetched and merged from the upstream repository.',
   ),
@@ -121,10 +122,10 @@ export default {
       required: false,
       default: '',
     },
-    canUserCreateMrInFork: {
-      type: Boolean,
+    viewMrPath: {
+      type: String,
       required: false,
-      default: false,
+      default: '',
     },
   },
   data() {
@@ -203,7 +204,10 @@ export default {
       );
     },
     hasCreateMrButton() {
-      return this.canUserCreateMrInFork && this.ahead && this.createMrPath;
+      return this.ahead && this.createMrPath;
+    },
+    hasViewMrButton() {
+      return this.viewMrPath;
     },
     forkDivergenceMessage() {
       if (!this.forkDetails) {
@@ -318,6 +322,14 @@ export default {
             data-testid="create-mr-button"
           >
             <span>{{ $options.i18n.createMergeRequest }}</span>
+          </gl-button>
+          <gl-button
+            v-if="hasViewMrButton"
+            class="gl-ml-4"
+            :href="viewMrPath"
+            data-testid="view-mr-button"
+          >
+            <span>{{ $options.i18n.viewMergeRequest }}</span>
           </gl-button>
           <gl-button
             v-if="hasUpdateButton"

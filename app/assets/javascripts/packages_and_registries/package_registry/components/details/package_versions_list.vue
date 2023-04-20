@@ -6,7 +6,6 @@ import VersionRow from '~/packages_and_registries/package_registry/components/de
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
 import DeleteModal from '~/packages_and_registries/package_registry/components/delete_modal.vue';
-import DeletePackageModal from '~/packages_and_registries/shared/components/delete_package_modal.vue';
 import {
   CANCEL_DELETE_PACKAGE_VERSION_TRACKING_ACTION,
   CANCEL_DELETE_PACKAGE_VERSIONS_TRACKING_ACTION,
@@ -24,7 +23,6 @@ import getPackageVersionsQuery from '~/packages_and_registries/package_registry/
 export default {
   components: {
     DeleteModal,
-    DeletePackageModal,
     GlAlert,
     VersionRow,
     PackagesListLoader,
@@ -47,6 +45,11 @@ export default {
       required: false,
       default: false,
     },
+    isRequestForwardingEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     packageId: {
       type: String,
       required: true,
@@ -54,7 +57,6 @@ export default {
   },
   data() {
     return {
-      itemToBeDeleted: null,
       itemsToBeDeleted: [],
       packageVersions: {},
       fetchPackageVersionsError: false,
@@ -79,6 +81,9 @@ export default {
     },
   },
   computed: {
+    itemToBeDeleted() {
+      return this.itemsToBeDeleted.length === 1 ? this.itemsToBeDeleted[0] : null;
+    },
     isListEmpty() {
       return this.count === 0;
     },
@@ -110,36 +115,31 @@ export default {
     },
   },
   methods: {
-    deleteItemConfirmation() {
-      this.$emit('delete', [this.itemToBeDeleted]);
-      this.track(DELETE_PACKAGE_VERSION_TRACKING_ACTION);
-      this.itemToBeDeleted = null;
-    },
-    deleteItemCanceled() {
-      this.track(CANCEL_DELETE_PACKAGE_VERSION_TRACKING_ACTION);
-      this.itemToBeDeleted = null;
-    },
     deleteItemsCanceled() {
-      this.track(CANCEL_DELETE_PACKAGE_VERSIONS_TRACKING_ACTION);
+      if (this.itemToBeDeleted) {
+        this.track(CANCEL_DELETE_PACKAGE_VERSION_TRACKING_ACTION);
+      } else {
+        this.track(CANCEL_DELETE_PACKAGE_VERSIONS_TRACKING_ACTION);
+      }
+
       this.itemsToBeDeleted = [];
     },
     deleteItemsConfirmation() {
       this.$emit('delete', this.itemsToBeDeleted);
-      this.track(DELETE_PACKAGE_VERSIONS_TRACKING_ACTION);
+      if (this.itemToBeDeleted) {
+        this.track(DELETE_PACKAGE_VERSION_TRACKING_ACTION);
+      } else {
+        this.track(DELETE_PACKAGE_VERSIONS_TRACKING_ACTION);
+      }
       this.itemsToBeDeleted = [];
     },
-    setItemToBeDeleted(item) {
-      this.itemToBeDeleted = { ...item };
-      this.track(REQUEST_DELETE_PACKAGE_VERSION_TRACKING_ACTION);
-    },
     setItemsToBeDeleted(items) {
-      if (items.length === 1) {
-        const [item] = items;
-        this.setItemToBeDeleted(item);
-        return;
-      }
       this.itemsToBeDeleted = items;
-      this.track(REQUEST_DELETE_PACKAGE_VERSIONS_TRACKING_ACTION);
+      if (items.length === 1) {
+        this.track(REQUEST_DELETE_PACKAGE_VERSION_TRACKING_ACTION);
+      } else {
+        this.track(REQUEST_DELETE_PACKAGE_VERSIONS_TRACKING_ACTION);
+      }
       this.$refs.deletePackagesModal.show();
     },
     fetchPreviousVersionsPage() {
@@ -196,21 +196,16 @@ export default {
             :first="first"
             :package-entity="item"
             :selected="isSelected(item)"
-            @delete="setItemToBeDeleted(item)"
+            @delete="setItemsToBeDeleted([item])"
             @select="selectItem(item)"
           />
         </template>
       </registry-list>
 
-      <delete-package-modal
-        :item-to-be-deleted="itemToBeDeleted"
-        @ok="deleteItemConfirmation"
-        @cancel="deleteItemCanceled"
-      />
-
       <delete-modal
         ref="deletePackagesModal"
         :items-to-be-deleted="itemsToBeDeleted"
+        :show-request-forwarding-content="isRequestForwardingEnabled"
         @confirm="deleteItemsConfirmation"
         @cancel="deleteItemsCanceled"
       />

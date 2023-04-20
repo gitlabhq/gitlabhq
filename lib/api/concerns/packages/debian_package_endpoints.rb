@@ -100,7 +100,7 @@ module API
           end
 
           authenticate_with do |accept|
-            accept.token_types(:personal_access_token, :deploy_token, :job_token)
+            accept.token_types(:personal_access_token_with_username, :deploy_token_with_username, :job_token_with_username)
                   .sent_through(:http_basic_auth)
           end
 
@@ -126,7 +126,6 @@ module API
               tags %w[debian_packages]
             end
 
-            route_setting :authentication, authenticate_non_public: true
             get 'Release.gpg' do
               distribution_from!(project_or_group).file_signature
             end
@@ -145,7 +144,6 @@ module API
               tags %w[debian_packages]
             end
 
-            route_setting :authentication, authenticate_non_public: true
             get 'Release' do
               distribution = distribution_from!(project_or_group)
               track_debian_package_event LIST_PACKAGE
@@ -166,7 +164,6 @@ module API
               tags %w[debian_packages]
             end
 
-            route_setting :authentication, authenticate_non_public: true
             get 'InRelease' do
               distribution = distribution_from!(project_or_group)
               track_debian_package_event LIST_PACKAGE
@@ -200,7 +197,6 @@ module API
                   tags %w[debian_packages]
                 end
 
-                route_setting :authentication, authenticate_non_public: true
                 get 'Packages' do
                   present_index_file!(:di_packages)
                 end
@@ -222,7 +218,6 @@ module API
                   tags %w[debian_packages]
                 end
 
-                route_setting :authentication, authenticate_non_public: true
                 get 'by-hash/SHA256/:file_sha256' do
                   present_index_file!(:di_packages)
                 end
@@ -246,7 +241,6 @@ module API
                   tags %w[debian_packages]
                 end
 
-                route_setting :authentication, authenticate_non_public: true
                 get 'Sources' do
                   present_index_file!(:sources)
                 end
@@ -268,7 +262,6 @@ module API
                   tags %w[debian_packages]
                 end
 
-                route_setting :authentication, authenticate_non_public: true
                 get 'by-hash/SHA256/:file_sha256' do
                   present_index_file!(:sources)
                 end
@@ -296,7 +289,6 @@ module API
                   tags %w[debian_packages]
                 end
 
-                route_setting :authentication, authenticate_non_public: true
                 get 'Packages' do
                   present_index_file!(:packages)
                 end
@@ -318,7 +310,6 @@ module API
                   tags %w[debian_packages]
                 end
 
-                route_setting :authentication, authenticate_non_public: true
                 get 'by-hash/SHA256/:file_sha256' do
                   present_index_file!(:packages)
                 end

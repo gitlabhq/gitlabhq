@@ -18729,6 +18729,9 @@ msgstr ""
 msgid "ForksDivergence|Update fork"
 msgstr ""
 
+msgid "ForksDivergence|View merge request"
+msgstr ""
+
 msgid "Format: %{dateFormat}"
 msgstr ""
 
@@ -31270,7 +31273,7 @@ msgstr ""
 msgid "PackageRegistry|Deleting the last package asset will remove version %{version} of %{name}. Are you sure?"
 msgstr ""
 
-msgid "PackageRegistry|Deleting this package while request forwarding is enabled for the project can pose a security risk. Do you want to delete the package anyway? %{docLinkStart}What are the risks?%{docLinkEnd}"
+msgid "PackageRegistry|Deleting this package while request forwarding is enabled for the project can pose a security risk. Do you want to delete %{name} version %{version} anyway? %{docLinkStart}What are the risks?%{docLinkEnd}"
 msgstr ""
 
 msgid "PackageRegistry|Duplicate packages"

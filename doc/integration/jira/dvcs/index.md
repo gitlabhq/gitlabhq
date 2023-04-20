@@ -81,7 +81,7 @@ or with a [user-owned application](../../oauth_provider.md#create-a-user-owned-a
 1. In the **Redirect URI** text box, enter the generated **Redirect URL** from
    [linking GitLab accounts](https://confluence.atlassian.com/adminjiraserver/linking-gitlab-accounts-1027142272.html).
 1. In **Scopes**, select `api` and clear any other checkboxes.
-   The DVCS connector requires a **write-enabled** `api` scope to automatically create and manage required webhooks.
+   The Jira DVCS connector requires a **write-enabled** `api` scope to automatically create and manage required webhooks.
 1. Select **Submit**.
 1. Copy the **Application ID** and **Secret** values.
    You need these values to configure Jira.

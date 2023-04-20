@@ -19,6 +19,10 @@ RSpec.shared_examples 'packages list' do |check_project_name: false|
 end
 
 RSpec.shared_examples 'package details link' do |property|
+  before do
+    stub_application_setting(npm_package_requests_forwarding: false)
+  end
+
   it 'navigates to the correct url' do
     page.within(packages_table_selector) do
       click_link package.name

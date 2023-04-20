@@ -510,6 +510,33 @@ RSpec.describe 'Group', feature_category: :subgroups do
         end
       end
     end
+
+    context 'when in a private group' do
+      before do
+        group.update!(
+          visibility_level: Gitlab::VisibilityLevel::PRIVATE,
+          project_creation_level: Gitlab::Access::MAINTAINER_PROJECT_ACCESS
+        )
+      end
+
+      context 'when visibility levels have been restricted to private only by an administrator' do
+        before do
+          stub_application_setting(
+            restricted_visibility_levels: [
+              Gitlab::VisibilityLevel::PRIVATE
+            ]
+          )
+        end
+
+        it 'does not display the "New project" button' do
+          visit group_path(group)
+
+          page.within '[data-testid="group-buttons"]' do
+            expect(page).not_to have_link('New project')
+          end
+        end
+      end
+    end
   end
 
   describe 'group README', :js do

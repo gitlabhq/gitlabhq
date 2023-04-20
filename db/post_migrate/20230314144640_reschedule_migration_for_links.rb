@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop: disable BackgroundMigration/MissingDictionaryFile
-
 class RescheduleMigrationForLinks < Gitlab::Database::Migration[2.1]
   MIGRATION = 'MigrateLinksForVulnerabilityFindings'
   DELAY_INTERVAL = 2.minutes
@@ -13,20 +11,10 @@ class RescheduleMigrationForLinks < Gitlab::Database::Migration[2.1]
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
   def up
-    delete_batched_background_migration(MIGRATION, :vulnerability_occurrences, :id, [])
-
-    queue_batched_background_migration(
-      MIGRATION,
-      :vulnerability_occurrences,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op as it is rescheduled via db/post_migrate/20230412141541_reschedule_links_avoiding_duplication.rb
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :vulnerability_occurrences, :id, [])
+    # no-op as it is rescheduled via db/post_migrate/20230412141541_reschedule_links_avoiding_duplication.rb
   end
 end
-# rubocop: enable BackgroundMigration/MissingDictionaryFile

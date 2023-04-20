@@ -10,7 +10,7 @@ With the [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/
 you can integrate GitLab and Jira Cloud.
 
 If you use GitLab.com and Jira Cloud, you can install the GitLab for Jira Cloud app.
-If you do not use both of these environments, use the [Jira DVCS Connector](dvcs/index.md) instead
+If you do not use both of these environments, use the [Jira DVCS connector](dvcs/index.md) instead
 or [install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually).
 You should use the GitLab for Jira Cloud app because data is synchronized
 in real time. The Jira DVCS connector updates data only once per hour.
@@ -79,7 +79,7 @@ To create an OAuth application:
 1. Select **Save application**.
 1. Copy the **Application ID** value.
 1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).
-1. Expand the **GitLab for Jira App** section.
+1. Expand **GitLab for Jira App**.
 1. Paste the **Application ID** value into **Jira Connect Application ID**.
 1. Select **Save changes**.
 1. Optional. Enable the `jira_connect_oauth` [feature flag](../../administration/feature_flags.md) to avoid [authentication problems in some browsers](#browser-displays-a-sign-in-message-when-already-signed-in).
@@ -113,7 +113,7 @@ To set up your self-managed instance for the GitLab for Jira Cloud app in GitLab
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).
-1. Expand the **GitLab for Jira App** section.
+1. Expand **GitLab for Jira App**.
 1. In **Jira Connect Proxy URL**, enter `https://gitlab.com`.
 1. Select **Save changes**.
 
@@ -207,7 +207,7 @@ To configure your GitLab instance to serve as a proxy:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).
-1. Expand the **GitLab for Jira App** section.
+1. Expand **GitLab for Jira App**.
 1. Select **Enable public key storage**.
 1. Select **Save changes**.
 1. [Install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually).
@@ -270,7 +270,7 @@ You might get an error if you have installed the GitLab for Jira Cloud app from 
 
   1. On the top bar, select **Main menu > Admin**.
   1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).
-  1. Expand the **GitLab for Jira App** section.
+  1. Expand **GitLab for Jira App**.
   1. Clear the **Jira Connect Proxy URL** text box.
   1. Select **Save changes**.
 
@@ -296,7 +296,7 @@ To resolve this issue on GitLab self-managed, follow one of the solutions below,
   - In GitLab 14.9 and later:
     - Contact the [Jira Software Cloud support](https://support.atlassian.com/jira-software-cloud/) and ask to trigger a new installed lifecycle event for the GitLab for Jira Cloud app in your namespace.
   - In all GitLab versions:
-    - Re-install the GitLab for Jira Cloud app. This might remove all already synced development panel data.
+    - Re-install the GitLab for Jira Cloud app. This method might remove all synced data from the Jira development panel.
 
 ### `Failed to update GitLab version` error when setting up the GitLab for Jira Cloud app for self-managed instances
 

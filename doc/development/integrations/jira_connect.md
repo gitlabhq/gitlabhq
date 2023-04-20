@@ -104,7 +104,7 @@ The following steps describe setting up an environment to test the GitLab OAuth 
    - Confidential: **No**
 1. Copy the Application ID.
 1. Go to **Admin > Settings > General**.
-1. Scroll down and expand the GitLab for Jira App section.
+1. Expand **GitLab for Jira App**.
 1. Go to [gitpod.io/variables](https://gitpod.io/variables).
 1. Paste the Application ID into the **Jira Connect Application ID** field and select **Save changes**.
 

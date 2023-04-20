@@ -3,14 +3,20 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RescheduleMigrationForLinks, :migration, feature_category: :vulnerability_management do
+RSpec.describe RescheduleLinksAvoidingDuplication, :migration, feature_category: :vulnerability_management do
   let(:migration) { described_class::MIGRATION }
 
   describe '#up' do
     it 'schedules a batched background migration' do
       migrate!
 
-      expect(migration).not_to have_scheduled_batched_migration
+      expect(migration).to have_scheduled_batched_migration(
+        table_name: :vulnerability_occurrences,
+        column_name: :id,
+        interval: described_class::DELAY_INTERVAL,
+        batch_size: described_class::BATCH_SIZE,
+        sub_batch_size: described_class::SUB_BATCH_SIZE
+      )
     end
   end
 

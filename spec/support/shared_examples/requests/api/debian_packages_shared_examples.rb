@@ -166,6 +166,18 @@ RSpec.shared_examples 'Debian packages write endpoint' do |desired_behavior, suc
   it_behaves_like 'rejects Debian access with unknown container id', :unauthorized, :basic
 end
 
+RSpec.shared_examples 'Debian packages endpoint catching ObjectStorage::RemoteStoreError' do
+  include_context 'Debian repository access', :public, :developer, :basic do
+    it "returns forbidden" do
+      expect(::Packages::Debian::CreatePackageFileService).to receive(:new).and_raise ObjectStorage::RemoteStoreError
+
+      subject
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+  end
+end
+
 RSpec.shared_examples 'Debian packages index endpoint' do |success_body|
   it_behaves_like 'Debian packages read endpoint', 'GET', :success, success_body
 

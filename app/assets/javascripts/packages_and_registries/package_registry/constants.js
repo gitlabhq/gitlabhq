@@ -136,7 +136,7 @@ export const DELETE_PACKAGES_WITH_REQUEST_FORWARDING_PRIMARY_ACTION = s__(
   'PackageRegistry|Yes, delete selected packages',
 );
 export const DELETE_PACKAGE_REQUEST_FORWARDING_MODAL_CONTENT = s__(
-  'PackageRegistry|Deleting this package while request forwarding is enabled for the project can pose a security risk. Do you want to delete the package anyway? %{docLinkStart}What are the risks?%{docLinkEnd}',
+  'PackageRegistry|Deleting this package while request forwarding is enabled for the project can pose a security risk. Do you want to delete %{name} version %{version} anyway? %{docLinkStart}What are the risks?%{docLinkEnd}',
 );
 export const DELETE_PACKAGES_REQUEST_FORWARDING_MODAL_CONTENT = s__(
   'PackageRegistry|Some of the selected package formats allow request forwarding. Deleting a package while request forwarding is enabled for the project can pose a security risk. Do you want to proceed with deleting the selected packages? %{docLinkStart}What are the risks?%{docLinkEnd}',

@@ -36,7 +36,20 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:request_access_enabled) { @subject.request_access_enabled }
 
   condition(:create_projects_disabled, scope: :subject) do
-    @subject.project_creation_level == ::Gitlab::Access::NO_ONE_PROJECT_ACCESS
+    next true if @user.nil?
+
+    visibility_levels = if @user.can_admin_all_resources?
+                          # admin can create projects even with restricted visibility levels
+                          Gitlab::VisibilityLevel.values
+                        else
+                          Gitlab::VisibilityLevel.allowed_levels
+                        end
+
+    allowed_visibility_levels = visibility_levels.select do |level|
+      Project.new(namespace: @subject).visibility_level_allowed?(level)
+    end
+
+    @subject.project_creation_level == ::Gitlab::Access::NO_ONE_PROJECT_ACCESS || allowed_visibility_levels.empty?
   end
 
   condition(:developer_maintainer_access, scope: :subject) do

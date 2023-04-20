@@ -12,7 +12,7 @@ module Gitlab
       end
 
       def prefixed_error_message(message, prefix)
-        "#{prefix}: #{message}"
+        "#{prefix} #{message}"
       end
     end
   end

@@ -2,6 +2,7 @@
 import {
   GlBadge,
   GlButton,
+  GlLink,
   GlModal,
   GlModalDirective,
   GlTooltipDirective,
@@ -37,6 +38,7 @@ import {
   DELETE_PACKAGE_FILE_TRACKING_ACTION,
   DELETE_PACKAGE_FILES_TRACKING_ACTION,
   REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION,
+  REQUEST_FORWARDING_HELP_PAGE_PATH,
   CANCEL_DELETE_PACKAGE_FILE_TRACKING_ACTION,
   SHOW_DELETE_SUCCESS_ALERT,
   FETCH_PACKAGE_DETAILS_ERROR_MESSAGE,
@@ -44,6 +46,7 @@ import {
   DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
   DELETE_PACKAGE_FILES_ERROR_MESSAGE,
   DELETE_PACKAGE_FILES_SUCCESS_MESSAGE,
+  DELETE_PACKAGE_REQUEST_FORWARDING_MODAL_CONTENT,
   DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION,
   DELETE_MODAL_TITLE,
   DELETE_MODAL_CONTENT,
@@ -64,6 +67,7 @@ export default {
     GlButton,
     GlEmptyState,
     GlModal,
+    GlLink,
     GlTab,
     GlTabs,
     GlSprintf,
@@ -124,6 +128,11 @@ export default {
     },
   },
   computed: {
+    deleteModalContent() {
+      return this.isRequestForwardingEnabled
+        ? DELETE_PACKAGE_REQUEST_FORWARDING_MODAL_CONTENT
+        : this.deletePackageModalContent;
+    },
     projectName() {
       return this.packageEntity.project?.name;
     },
@@ -169,6 +178,12 @@ export default {
     },
     showFiles() {
       return this.packageType !== PACKAGE_TYPE_COMPOSER;
+    },
+    groupSettings() {
+      return this.packageEntity.project?.group?.packageSettings ?? {};
+    },
+    isRequestForwardingEnabled() {
+      return this.groupSettings[`${this.packageType.toLowerCase()}PackageRequestsForwarding`];
     },
     showMetadata() {
       return [
@@ -291,6 +306,9 @@ export default {
     ),
     otherVersionsTabTitle: s__('PackageRegistry|Other versions'),
   },
+  links: {
+    REQUEST_FORWARDING_HELP_PAGE_PATH,
+  },
   modal: {
     packageDeletePrimaryAction: {
       text: s__('PackageRegistry|Permanently delete'),
@@ -398,6 +416,7 @@ export default {
               :can-destroy="packageEntity.canDestroy"
               :count="packageVersionsCount"
               :is-mutation-loading="versionsMutationLoading"
+              :is-request-forwarding-enabled="isRequestForwardingEnabled"
               :package-id="packageEntity.id"
               @delete="deletePackages"
             >
@@ -429,15 +448,23 @@ export default {
           @canceled="track($options.trackingActions.CANCEL_DELETE_PACKAGE)"
         >
           <template #modal-title>{{ $options.i18n.DELETE_MODAL_TITLE }}</template>
-          <gl-sprintf :message="deletePackageModalContent">
-            <template #version>
-              <strong>{{ packageEntity.version }}</strong>
-            </template>
+          <p>
+            <gl-sprintf :message="deleteModalContent">
+              <template v-if="isRequestForwardingEnabled" #docLink="{ content }">
+                <gl-link :href="$options.links.REQUEST_FORWARDING_HELP_PAGE_PATH">{{
+                  content
+                }}</gl-link>
+              </template>
 
-            <template #name>
-              <strong>{{ packageEntity.name }}</strong>
-            </template>
-          </gl-sprintf>
+              <template #version>
+                <strong>{{ packageEntity.version }}</strong>
+              </template>
+
+              <template #name>
+                <strong>{{ packageEntity.name }}</strong>
+              </template>
+            </gl-sprintf>
+          </p>
         </gl-modal>
       </template>
     </delete-packages>

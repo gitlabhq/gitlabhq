@@ -10,7 +10,6 @@ module Ci
     include Presentable
     include ChronicDurationAttribute
     include Gitlab::Utils::StrongMemoize
-    include IgnorableColumns
     include SafelyChangeColumnDefault
 
     self.table_name = 'p_ci_builds_metadata'
@@ -18,8 +17,6 @@ module Ci
     columns_changing_default :partition_id
 
     partitionable scope: :build
-
-    ignore_column :runner_machine_id, remove_with: '16.0', remove_after: '2023-04-22'
 
     belongs_to :build, class_name: 'CommitStatus'
     belongs_to :project
