@@ -85,11 +85,11 @@ module Tooling
           !has_flaky_failure_label?
       end
 
-      private
-
       def valid_stable_branch?
         !!stable_target_branch && !helper.security_mr?
       end
+
+      private
 
       def package_and_test_bridge_and_pipeline_status
         mr_head_pipeline_id = gitlab.mr_json.dig('head_pipeline', 'id')

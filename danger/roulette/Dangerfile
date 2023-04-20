@@ -104,6 +104,9 @@ categories << :product_intelligence if helper.mr_labels.include?("product intell
 # Skip Product intelligence reviews for growth experiment MRs
 categories.delete(:product_intelligence) if helper.mr_labels.include?("growth experiment")
 
+# Skip specialty reviews for stable branch MRs since they have already been merged to the default branch
+categories.subtract([:database, :ux, :product_intelligence]) if stable_branch.valid_stable_branch?
+
 if changes.any?
   random_roulette_spins = roulette.spin(nil, categories, timezone_experiment: false)
 
