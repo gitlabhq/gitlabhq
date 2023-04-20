@@ -25,8 +25,8 @@ import {
 } from '../../constants/index';
 import getContainerRepositoryTagsQuery from '../../graphql/queries/get_container_repository_tags.query.graphql';
 import deleteContainerRepositoryTagsMutation from '../../graphql/mutations/delete_container_repository_tags.mutation.graphql';
+import DeleteModal from '../delete_modal.vue';
 import TagsListRow from './tags_list_row.vue';
-import DeleteModal from './delete_modal.vue';
 
 export default {
   name: 'TagsList',

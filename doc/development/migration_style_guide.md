@@ -935,6 +935,20 @@ NOTE:
 `add_sequence` should be avoided for columns with foreign keys.
 Adding sequence to these columns is **only allowed** in the down method (restore previous schema state).
 
+## Truncate a table
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117373) in GitLab 15.11.
+
+Truncating a table is uncommon, but you can use the `truncate_tables!` method provided by the database team.
+
+Under the hood, it works like this:
+
+- Finds the `gitlab_schema` for the tables to be truncated.
+- If the `gitlab_schema` for the tables is included in the connection's gitlab_schemas,
+  it then executes the `TRUNCATE` statement.
+- If the `gitlab_schema` for the tables is not included in the connection's
+  gitlab_schemas, it does nothing.
+
 ## Swapping primary key
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98645) in GitLab 15.5.

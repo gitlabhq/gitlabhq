@@ -9,8 +9,6 @@ class Wiki
 
   extend ActiveModel::Naming
 
-  DuplicatePageError = Class.new(StandardError)
-
   MARKUPS = { # rubocop:disable Style/MultilineIfModifier
     markdown: {
       name: 'Markdown',
@@ -287,9 +285,7 @@ class Wiki
 
   def create_page(title, content, format = :markdown, message = nil)
     with_valid_format(format) do |default_extension|
-      if file_exists_by_regex?(title)
-        raise_duplicate_page_error!
-      end
+      next duplicated_page_error if file_exists_by_regex?(title)
 
       capture_git_error(:created) do
         create_wiki_repository unless repository_exists?
@@ -300,13 +296,9 @@ class Wiki
 
         true
       rescue Gitlab::Git::Index::IndexError
-        raise_duplicate_page_error!
+        duplicated_page_error
       end
     end
-  rescue DuplicatePageError => e
-    @error_message = _("Duplicate page: %{error_message}" % { error_message: e.message })
-
-    false
   end
 
   def update_page(page, content:, title: nil, format: :markdown, message: nil)
@@ -335,6 +327,8 @@ class Wiki
         after_wiki_activity
 
         true
+      rescue Gitlab::Git::Index::IndexError
+        duplicated_page_error
       end
     end
   end
@@ -403,13 +397,11 @@ class Wiki
   # Callbacks for synchronous processing after wiki changes.
   # These will be executed after any change made through GitLab itself (web UI and API),
   # but not for Git pushes.
-  def after_wiki_activity
-  end
+  def after_wiki_activity; end
 
   # Callbacks for background processing after wiki changes.
   # These will be executed after any change to the wiki repository.
-  def after_post_receive
-  end
+  def after_post_receive; end
 
   override :git_garbage_collect_worker_klass
   def git_garbage_collect_worker_klass
@@ -423,10 +415,12 @@ class Wiki
   def capture_git_error(action, &block)
     yield block
   rescue Gitlab::Git::Index::IndexError,
-         Gitlab::Git::CommitError,
-         Gitlab::Git::PreReceiveError,
-         Gitlab::Git::CommandError,
-         ArgumentError => e
+    Gitlab::Git::CommitError,
+    Gitlab::Git::PreReceiveError,
+    Gitlab::Git::CommandError,
+    ArgumentError => e
+
+    @error_message = e.message
 
     Gitlab::ErrorTracking.log_exception(e, action: action, wiki_id: id)
 
@@ -476,8 +470,9 @@ class Wiki
     repository.ls_files(default_branch).any? { |s| s =~ regex }
   end
 
-  def raise_duplicate_page_error!
-    raise ::Wiki::DuplicatePageError, _('A page with that title already exists')
+  def duplicated_page_error
+    @error_message = _("Duplicate page: A page with that title already exists")
+    false
   end
 
   def sluggified_full_path(title, extension)

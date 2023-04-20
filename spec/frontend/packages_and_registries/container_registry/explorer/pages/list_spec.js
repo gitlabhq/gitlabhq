@@ -36,13 +36,13 @@ import {
   graphQLProjectImageRepositoriesDetailsMock,
   dockerCommands,
 } from '../mock_data';
-import { GlModal, GlEmptyState } from '../stubs';
+import { GlEmptyState, DeleteModal } from '../stubs';
 
 describe('List Page', () => {
   let wrapper;
   let apolloProvider;
 
-  const findDeleteModal = () => wrapper.findComponent(GlModal);
+  const findDeleteModal = () => wrapper.findComponent(DeleteModal);
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
 
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -89,7 +89,7 @@ describe('List Page', () => {
     wrapper = shallowMount(component, {
       apolloProvider,
       stubs: {
-        GlModal,
+        DeleteModal,
         GlEmptyState,
         GlSprintf,
         RegistryHeader,
@@ -306,7 +306,7 @@ describe('List Page', () => {
 
           await selectImageForDeletion();
 
-          findDeleteModal().vm.$emit('primary');
+          findDeleteModal().vm.$emit('confirmDelete');
 
           expect(mutationResolver).toHaveBeenCalledWith({ id: deletedContainerRepository.id });
         });
@@ -464,11 +464,15 @@ describe('List Page', () => {
       expect(findDeleteModal().exists()).toBe(true);
     });
 
-    it('contains a description with the path of the item to delete', async () => {
+    it('contains the deleted image as props', async () => {
       await waitForPromises();
-      findImageList().vm.$emit('delete', { path: 'foo' });
-      await waitForPromises();
-      expect(findDeleteModal().html()).toContain('foo');
+      findImageList().vm.$emit('delete', deletedContainerRepository);
+      await nextTick();
+
+      expect(findDeleteModal().props()).toEqual({
+        itemsToBeDeleted: [deletedContainerRepository],
+        deleteImage: true,
+      });
     });
   });
 

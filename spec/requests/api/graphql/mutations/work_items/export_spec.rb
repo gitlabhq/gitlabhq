@@ -61,6 +61,10 @@ RSpec.describe 'Export work items', feature_category: :team_planning do
 
       post_graphql_mutation(mutation, current_user: current_user)
 
+      expect(mutation_response['message']).to eq(
+        'Your CSV export request has succeeded. The result will be emailed to ' \
+        "#{reporter.notification_email_or_default}."
+      )
       expect(mutation_response['errors']).to be_empty
     end
   end

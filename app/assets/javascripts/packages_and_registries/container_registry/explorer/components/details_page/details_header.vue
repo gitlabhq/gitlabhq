@@ -25,6 +25,7 @@ import {
 } from '../../constants/index';
 
 import getContainerRepositoryMetadata from '../../graphql/queries/get_container_repository_metadata.query.graphql';
+import { getImageName } from '../../utils';
 
 export default {
   name: 'DetailsHeader',
@@ -100,7 +101,7 @@ export default {
       return !this.imageDetails.name ? ROOT_IMAGE_TOOLTIP : '';
     },
     imageName() {
-      return this.imageDetails.name || this.imageDetails.project?.path;
+      return getImageName(this.imageDetails);
     },
     formattedSize() {
       const { size } = this.imageDetails;

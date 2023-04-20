@@ -63,7 +63,8 @@ RSpec.describe 'Container Registry', :js, feature_category: :projects do
       expect(DeleteContainerRepositoryWorker).not_to receive(:perform_async)
 
       find('[title="Remove repository"]').click
-      expect(find('.modal .modal-title')).to have_content _('Remove repository')
+      expect(find('.modal .modal-title')).to have_content _('Delete image repository?')
+      find('.modal .modal-body input').set('my/image')
       find('.modal .modal-footer .btn-danger').click
     end
 

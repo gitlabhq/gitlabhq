@@ -6,7 +6,7 @@ import {
 } from '@gitlab/ui';
 import { RouterLinkStub } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
-import RealDeleteModal from '~/packages_and_registries/container_registry/explorer/components/details_page/delete_modal.vue';
+import RealDeleteModal from '~/packages_and_registries/container_registry/explorer/components/delete_modal.vue';
 import RealListItem from '~/vue_shared/components/registry/list_item.vue';
 
 export const GlModal = stubComponent(RealGlModal, {

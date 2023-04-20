@@ -1791,9 +1791,6 @@ msgstr ""
 msgid "A non-confidential work item cannot have a confidential parent."
 msgstr ""
 
-msgid "A page with that title already exists"
-msgstr ""
-
 msgid "A parent must be provided when bulk updating issuables"
 msgstr ""
 
@@ -11720,9 +11717,6 @@ msgstr ""
 msgid "ContainerRegistry|You are about to remove %{item}. Are you sure?"
 msgstr ""
 
-msgid "ContainerRegistry|You are about to remove repository %{title}. Once you confirm, this repository will be permanently deleted."
-msgstr ""
-
 msgid "ContainerRegistry|You can add an image to this registry with the following commands:"
 msgstr ""
 
@@ -15733,7 +15727,7 @@ msgstr ""
 msgid "Due to inactivity, this project is scheduled to be deleted on %{deletion_date}. %{link_start}Why is this scheduled?%{link_end}"
 msgstr ""
 
-msgid "Duplicate page: %{error_message}"
+msgid "Duplicate page: A page with that title already exists"
 msgstr ""
 
 msgid "Duration"
@@ -51242,6 +51236,9 @@ msgid "Your CSV export of %{count} from project %{project_link} has been added t
 msgstr ""
 
 msgid "Your CSV export of %{exported_objects} from project %{project_name} (%{project_url}) has been added to this email as an attachment."
+msgstr ""
+
+msgid "Your CSV export request has succeeded. The result will be emailed to %{email}."
 msgstr ""
 
 msgid "Your CSV import for project"

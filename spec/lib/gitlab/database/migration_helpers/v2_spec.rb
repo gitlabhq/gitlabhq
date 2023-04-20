@@ -416,4 +416,83 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2 do
       end
     end
   end
+
+  describe '#truncate_tables!' do
+    before do
+      ApplicationRecord.connection.execute(<<~SQL)
+        CREATE TABLE _test_gitlab_main_table (id serial primary key);
+        CREATE TABLE _test_gitlab_main_table2 (id serial primary key);
+
+        INSERT INTO _test_gitlab_main_table DEFAULT VALUES;
+        INSERT INTO _test_gitlab_main_table2 DEFAULT VALUES;
+      SQL
+
+      Ci::ApplicationRecord.connection.execute(<<~SQL)
+        CREATE TABLE _test_gitlab_ci_table (id serial primary key);
+      SQL
+    end
+
+    it 'truncates the table' do
+      expect(migration).to receive(:execute).with('TRUNCATE TABLE "_test_gitlab_main_table"').and_call_original
+
+      expect { migration.truncate_tables!('_test_gitlab_main_table') }
+        .to change { ApplicationRecord.connection.select_value('SELECT count(1) from _test_gitlab_main_table') }.to(0)
+    end
+
+    it 'truncates multiple tables' do
+      expect(migration).to receive(:execute).with('TRUNCATE TABLE "_test_gitlab_main_table", "_test_gitlab_main_table2"').and_call_original
+
+      expect { migration.truncate_tables!('_test_gitlab_main_table', '_test_gitlab_main_table2') }
+        .to change { ApplicationRecord.connection.select_value('SELECT count(1) from _test_gitlab_main_table') }.to(0)
+        .and change { ApplicationRecord.connection.select_value('SELECT count(1) from _test_gitlab_main_table2') }.to(0)
+    end
+
+    it 'raises an ArgumentError if truncating multiple gitlab_schema' do
+      expect do
+        migration.truncate_tables!('_test_gitlab_main_table', '_test_gitlab_ci_table')
+      end.to raise_error(ArgumentError, /one `gitlab_schema`/)
+    end
+
+    context 'with multiple databases' do
+      before do
+        skip_if_shared_database(:ci)
+      end
+
+      context 'for ci database' do
+        before do
+          migration.instance_variable_set :@connection, Ci::ApplicationRecord.connection
+        end
+
+        it 'skips the TRUNCATE statement tables not in schema for connection' do
+          expect(migration).not_to receive(:execute)
+
+          migration.truncate_tables!('_test_gitlab_main_table')
+        end
+      end
+
+      context 'for main database' do
+        before do
+          migration.instance_variable_set :@connection, ApplicationRecord.connection
+        end
+
+        it 'executes a TRUNCATE statement' do
+          expect(migration).to receive(:execute).with('TRUNCATE TABLE "_test_gitlab_main_table"')
+
+          migration.truncate_tables!('_test_gitlab_main_table')
+        end
+      end
+    end
+
+    context 'with single database' do
+      before do
+        skip_if_database_exists(:ci)
+      end
+
+      it 'executes a TRUNCATE statement' do
+        expect(migration).to receive(:execute).with('TRUNCATE TABLE "_test_gitlab_main_table"')
+
+        migration.truncate_tables!('_test_gitlab_main_table')
+      end
+    end
+  end
 end

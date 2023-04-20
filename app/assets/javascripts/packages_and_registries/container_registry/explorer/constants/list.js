@@ -15,9 +15,6 @@ export const LIST_DELETE_BUTTON_DISABLED_FOR_MIGRATION = s__(
   `ContainerRegistry|Image repository temporarily cannot be marked for deletion. Please try again in a few minutes. %{docLinkStart}More details%{docLinkEnd}`,
 );
 export const REMOVE_REPOSITORY_LABEL = s__('ContainerRegistry|Remove repository');
-export const REMOVE_REPOSITORY_MODAL_TEXT = s__(
-  'ContainerRegistry|You are about to remove repository %{title}. Once you confirm, this repository will be permanently deleted.',
-);
 export const ROW_SCHEDULED_FOR_DELETION = s__(
   `ContainerRegistry|This image repository is scheduled for deletion`,
 );

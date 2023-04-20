@@ -791,6 +791,21 @@ RSpec.shared_examples 'wiki model' do
       end
     end
 
+    context 'when the repository fails to update' do
+      let!(:page) { create(:wiki_page, wiki: subject, title: 'test page') }
+
+      it 'returns false and sets error message', :aggregate_failures do
+        expect(subject.repository)
+          .to receive(:update_file)
+          .and_raise(Gitlab::Git::Index::IndexError.new)
+
+        expect(subject.update_page(page.page, content: 'new content', format: :markdown))
+          .to eq(false)
+        expect(subject.error_message)
+          .to match("Duplicate page: A page with that title already exists")
+      end
+    end
+
     context 'when page path does not have a default extension' do
       let!(:page) { create(:wiki_page, wiki: subject, title: 'test page') }
 

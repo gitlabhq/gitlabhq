@@ -1,14 +1,14 @@
 import { GlSprintf, GlFormInput } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import component from '~/packages_and_registries/container_registry/explorer/components/details_page/delete_modal.vue';
+import component from '~/packages_and_registries/container_registry/explorer/components/delete_modal.vue';
 import {
   REMOVE_TAG_CONFIRMATION_TEXT,
   REMOVE_TAGS_CONFIRMATION_TEXT,
   DELETE_IMAGE_CONFIRMATION_TITLE,
   DELETE_IMAGE_CONFIRMATION_TEXT,
 } from '~/packages_and_registries/container_registry/explorer/constants';
-import { GlModal } from '../../stubs';
+import { GlModal } from '../stubs';
 
 describe('Delete Modal', () => {
   let wrapper;
@@ -75,7 +75,7 @@ describe('Delete Modal', () => {
     });
 
     describe('delete button', () => {
-      const itemsToBeDeleted = [{ project: { path: 'foo' } }];
+      let itemsToBeDeleted = [{ project: { path: 'foo' } }];
 
       it('is disabled by default', () => {
         mountComponent({ deleteImage: true });
@@ -94,6 +94,17 @@ describe('Delete Modal', () => {
       });
 
       it('if the user types the project path it is enabled', async () => {
+        mountComponent({ deleteImage: true, itemsToBeDeleted });
+
+        findInputComponent().vm.$emit('input', 'foo');
+
+        await nextTick();
+
+        expectPrimaryActionStatus(false);
+      });
+
+      it('if the user types the image name when available', async () => {
+        itemsToBeDeleted = [{ name: 'foo' }];
         mountComponent({ deleteImage: true, itemsToBeDeleted });
 
         findInputComponent().vm.$emit('input', 'foo');

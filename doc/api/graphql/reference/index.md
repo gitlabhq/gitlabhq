@@ -6751,6 +6751,7 @@ Input type: `WorkItemExportInput`
 | ---- | ---- | ----------- |
 | <a id="mutationworkitemexportclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitemexporterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationworkitemexportmessage"></a>`message` | [`String`](#string) | Export request result message. |
 
 ### `Mutation.workItemUpdate`
 

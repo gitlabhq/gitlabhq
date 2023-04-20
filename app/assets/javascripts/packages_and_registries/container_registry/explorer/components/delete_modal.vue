@@ -1,12 +1,13 @@
 <script>
 import { GlModal, GlSprintf, GlFormInput } from '@gitlab/ui';
-import { n__ } from '~/locale';
+import { __, n__ } from '~/locale';
 import {
   REMOVE_TAG_CONFIRMATION_TEXT,
   REMOVE_TAGS_CONFIRMATION_TEXT,
   DELETE_IMAGE_CONFIRMATION_TITLE,
   DELETE_IMAGE_CONFIRMATION_TEXT,
-} from '../../constants';
+} from '../constants';
+import { getImageName } from '../utils';
 
 export default {
   components: {
@@ -28,12 +29,13 @@ export default {
   },
   data() {
     return {
-      projectPath: '',
+      inputImageName: '',
     };
   },
   computed: {
-    imageProjectPath() {
-      return this.itemsToBeDeleted[0]?.project?.path;
+    imageName() {
+      const [item] = this.itemsToBeDeleted;
+      return getImageName(item);
     },
     modalTitle() {
       if (this.deleteImage) {
@@ -49,7 +51,7 @@ export default {
       if (this.deleteImage) {
         return {
           message: DELETE_IMAGE_CONFIRMATION_TEXT,
-          item: this.imageProjectPath,
+          item: this.imageName,
         };
       }
       if (this.itemsToBeDeleted.length > 1) {
@@ -66,12 +68,23 @@ export default {
       };
     },
     disablePrimaryButton() {
-      return this.deleteImage && this.projectPath !== this.imageProjectPath;
+      return this.deleteImage && this.inputImageName !== this.imageName;
+    },
+    primaryActionProps() {
+      return {
+        text: __('Delete'),
+        attributes: { variant: 'danger', disabled: this.disablePrimaryButton },
+      };
     },
   },
   methods: {
     show() {
       this.$refs.deleteModal.show();
+    },
+  },
+  modal: {
+    cancelAction: {
+      text: __('Cancel'),
     },
   },
 };
@@ -80,19 +93,14 @@ export default {
 <template>
   <gl-modal
     ref="deleteModal"
-    modal-id="delete-tag-modal"
+    modal-id="delete-modal"
     ok-variant="danger"
     size="sm"
-    :action-primary="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
-      text: __('Delete'),
-      attributes: { variant: 'danger', disabled: disablePrimaryButton },
-    } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
-    :action-cancel="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
-      text: __('Cancel'),
-    } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+    :action-primary="primaryActionProps"
+    :action-cancel="$options.modal.cancelAction"
     @primary="$emit('confirmDelete')"
     @cancel="$emit('cancelDelete')"
-    @change="projectPath = ''"
+    @change="inputImageName = ''"
   >
     <template #modal-title>{{ modalTitle }}</template>
     <p v-if="modalDescription" data-testid="description">
@@ -106,7 +114,7 @@ export default {
       </gl-sprintf>
     </p>
     <div v-if="deleteImage">
-      <gl-form-input v-model="projectPath" />
+      <gl-form-input v-model="inputImageName" />
     </div>
   </gl-modal>
 </template>

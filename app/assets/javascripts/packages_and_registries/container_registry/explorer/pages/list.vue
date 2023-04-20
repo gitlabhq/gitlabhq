@@ -2,7 +2,6 @@
 import {
   GlEmptyState,
   GlTooltipDirective,
-  GlModal,
   GlSprintf,
   GlLink,
   GlAlert,
@@ -17,14 +16,13 @@ import PersistedSearch from '~/packages_and_registries/shared/components/persist
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import DeleteImage from '../components/delete_image.vue';
 import RegistryHeader from '../components/list_page/registry_header.vue';
+import DeleteModal from '../components/delete_modal.vue';
 
 import {
   DELETE_IMAGE_SUCCESS_MESSAGE,
   DELETE_IMAGE_ERROR_MESSAGE,
   CONNECTION_ERROR_TITLE,
   CONNECTION_ERROR_MESSAGE,
-  REMOVE_REPOSITORY_MODAL_TEXT,
-  REMOVE_REPOSITORY_LABEL,
   EMPTY_RESULT_TITLE,
   EMPTY_RESULT_MESSAGE,
   GRAPHQL_PAGE_SIZE,
@@ -53,7 +51,7 @@ export default {
       import(
         /* webpackChunkName: 'container_registry_components' */ '~/packages_and_registries/shared/components/cli_commands.vue'
       ),
-    GlModal,
+    DeleteModal,
     GlSprintf,
     GlLink,
     GlAlert,
@@ -75,8 +73,6 @@ export default {
   i18n: {
     CONNECTION_ERROR_TITLE,
     CONNECTION_ERROR_MESSAGE,
-    REMOVE_REPOSITORY_MODAL_TEXT,
-    REMOVE_REPOSITORY_LABEL,
     EMPTY_RESULT_TITLE,
     EMPTY_RESULT_MESSAGE,
   },
@@ -144,6 +140,9 @@ export default {
         }));
       }
       return [];
+    },
+    itemsToBeDeleted() {
+      return this.itemToDelete?.id ? [this.itemToDelete] : [];
     },
     graphqlResource() {
       return this.config.isGroupPage ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
@@ -368,26 +367,13 @@ export default {
         @end="mutationLoading = false"
       >
         <template #default="{ doDelete }">
-          <gl-modal
+          <delete-modal
             ref="deleteModal"
-            size="sm"
-            modal-id="delete-image-modal"
-            :action-primary="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
-              text: __('Remove'),
-              attributes: { variant: 'danger' },
-            } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
-            @primary="doDelete"
+            :items-to-be-deleted="itemsToBeDeleted"
+            delete-image
+            @confirmDelete="doDelete"
             @cancel="track('cancel_delete')"
-          >
-            <template #modal-title>{{ $options.i18n.REMOVE_REPOSITORY_LABEL }}</template>
-            <p>
-              <gl-sprintf :message="$options.i18n.REMOVE_REPOSITORY_MODAL_TEXT">
-                <template #title>
-                  <b>{{ itemToDelete.path }}</b>
-                </template>
-              </gl-sprintf>
-            </p>
-          </gl-modal>
+          />
         </template>
       </delete-image>
     </template>

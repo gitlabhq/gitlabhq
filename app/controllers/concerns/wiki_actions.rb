@@ -113,7 +113,11 @@ module WikiActions
   def update
     return render('shared/wikis/empty') unless can?(current_user, :create_wiki, container)
 
-    response = WikiPages::UpdateService.new(container: container, current_user: current_user, params: wiki_params).execute(page)
+    response = WikiPages::UpdateService.new(
+      container: container,
+      current_user: current_user,
+      params: wiki_params
+    ).execute(page)
     @page = response.payload[:page]
 
     if response.success?

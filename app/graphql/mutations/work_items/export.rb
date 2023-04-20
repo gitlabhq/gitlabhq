@@ -21,6 +21,10 @@ module Mutations
         required: false,
         description: 'List of selected fields to be exported. Omit to export all available fields.'
 
+      field :message, GraphQL::Types::String,
+        null: true,
+        description: 'Export request result message.'
+
       def resolve(args)
         project_path = args.delete(:project_path)
         project = authorized_find!(project_path)
@@ -32,6 +36,8 @@ module Mutations
         # rubocop:enable CodeReuse/Worker
 
         {
+          message: format(_('Your CSV export request has succeeded. The result will be emailed to %{email}.'),
+            email: current_user.notification_email_or_default),
           errors: []
         }
       end

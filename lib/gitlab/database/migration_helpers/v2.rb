@@ -174,6 +174,28 @@ module Gitlab
           end
         end
 
+        # TRUNCATE is a DDL statement (it drops the table and re-creates it), so we want to run the
+        # migration in DDL mode, but we also don't want to execute it against all schemas because
+        # it will be prevented by the lock_writes trigger.
+        #
+        # For example,
+        # a `gitlab_main` table on `:gitlab_main` database will be truncated,
+        # and a `gitlab_main` table on `:gitlab_ci` database will be skipped.
+        #
+        # Note Rails already has a truncate_tables, see
+        # https://github.com/rails/rails/blob/6-1-stable/activerecord/lib/active_record/connection_adapters/abstract/database_statements.rb#L193
+        def truncate_tables!(*table_names, connection: self.connection)
+          table_schemas = Gitlab::Database::GitlabSchema.table_schemas(table_names)
+
+          raise ArgumentError, "`table_names` must resolve to only one `gitlab_schema`" if table_schemas.size != 1
+
+          return unless Gitlab::Database.gitlab_schemas_for_connection(connection).include?(table_schemas.first)
+
+          quoted_tables = table_names.map { |table_name| quote_table_name(table_name) }.join(', ')
+
+          execute("TRUNCATE TABLE #{quoted_tables}")
+        end
+
         private
 
         def setup_renamed_column(calling_operation, table, old_column, new_column, type, batch_column_name)
