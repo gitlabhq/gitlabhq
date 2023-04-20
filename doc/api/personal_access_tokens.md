@@ -177,7 +177,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373999) in GitLab 15.5
 
-Get a single personal access token by using passing the token in a header.
+Get a single personal access token and information about that token by passing the token in a header.
 
 ```plaintext
 GET /personal_access_tokens/self

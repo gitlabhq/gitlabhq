@@ -47,6 +47,7 @@
     = render 'layouts/startup_css_activation'
 
   = stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
+  = render 'layouts/snowplow'
 
   = Gon::Base.render_data(nonce: content_security_policy_nonce)
 
@@ -103,6 +104,5 @@
 
   = render 'layouts/google_analytics' if extra_config.has_key?('google_analytics_id')
   = render 'layouts/matomo' if extra_config.has_key?('matomo_url') && extra_config.has_key?('matomo_site_id')
-  = render 'layouts/snowplow'
   -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/gitlab/-/issues/184)
   = render_if_exists "layouts/frontend_monitor"

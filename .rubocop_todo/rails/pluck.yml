@@ -28,7 +28,6 @@ Rails/Pluck:
     - 'ee/lib/banzai/filter/references/iteration_reference_filter.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/person.rb'
     - 'ee/lib/ee/gitlab/background_migration/delete_invalid_epic_issues.rb'
-    - 'ee/lib/ee/gitlab/background_migration/populate_uuids_for_security_findings.rb'
     - 'ee/lib/ee/gitlab/checks/push_rules/file_size_check.rb'
     - 'ee/lib/elastic/latest/custom_language_analyzers.rb'
     - 'ee/lib/gitlab/search/index_curator.rb'

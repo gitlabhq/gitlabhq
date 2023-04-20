@@ -185,13 +185,13 @@ describe('Code Quality extension', () => {
     });
 
     it('displays all report list items in viewport', () => {
-      expect(findAllExtensionListItems()).toHaveLength(2);
+      expect(findAllExtensionListItems()).toHaveLength(4);
     });
 
     it('displays report list item formatted', () => {
       const text = {
         newError: trimText(findAllExtensionListItems().at(0).text().replace(/\s+/g, ' ').trim()),
-        resolvedError: findAllExtensionListItems().at(1).text().replace(/\s+/g, ' ').trim(),
+        resolvedError: findAllExtensionListItems().at(2).text().replace(/\s+/g, ' ').trim(),
       };
 
       expect(text.newError).toContain(
@@ -202,9 +202,23 @@ describe('Code Quality extension', () => {
       );
     });
 
+    it('displays report list item formatted with check_name', () => {
+      const text = {
+        newError: trimText(findAllExtensionListItems().at(1).text().replace(/\s+/g, ' ').trim()),
+        resolvedError: findAllExtensionListItems().at(3).text().replace(/\s+/g, ' ').trim(),
+      };
+
+      expect(text.newError).toContain(
+        'Minor - Rubocop/Metrics/ParameterLists - Avoid parameter lists longer than 5 parameters. [12/5] in main.rb:3',
+      );
+      expect(text.resolvedError).toContain(
+        'Minor - Rubocop/Metrics/ParameterLists - Avoid parameter lists longer than 5 parameters. [12/5] Fixed in main.rb:3',
+      );
+    });
+
     it('adds fixed indicator (badge) when error is resolved', () => {
-      expect(findAllExtensionListItems().at(1).findComponent(GlBadge).exists()).toBe(true);
-      expect(findAllExtensionListItems().at(1).findComponent(GlBadge).text()).toEqual(i18n.fixed);
+      expect(findAllExtensionListItems().at(3).findComponent(GlBadge).exists()).toBe(true);
+      expect(findAllExtensionListItems().at(3).findComponent(GlBadge).text()).toEqual(i18n.fixed);
     });
 
     it('should not add fixed indicator (badge) when error is new', () => {

@@ -69,6 +69,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['default_syntax_highlighting_theme']).to eq(1)
       expect(json_response['projects_api_rate_limit_unauthenticated']).to eq(400)
       expect(json_response['silent_mode_enabled']).to be(false)
+      expect(json_response['valid_runner_registrars']).to match_array(%w(project group))
     end
   end
 
@@ -175,7 +176,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             user_defaults_to_private_profile: true,
             default_syntax_highlighting_theme: 2,
             projects_api_rate_limit_unauthenticated: 100,
-            silent_mode_enabled: true
+            silent_mode_enabled: true,
+            valid_runner_registrars: ['group']
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -246,6 +248,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['default_syntax_highlighting_theme']).to eq(2)
         expect(json_response['projects_api_rate_limit_unauthenticated']).to be(100)
         expect(json_response['silent_mode_enabled']).to be(true)
+        expect(json_response['valid_runner_registrars']).to eq(['group'])
       end
     end
 

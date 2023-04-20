@@ -59,7 +59,7 @@ RSpec.describe "Converts a work item to a new type", feature_category: :team_pla
 
     context 'when feature flag is disabled' do
       before do
-        stub_feature_flags(work_item_conversion: false)
+        stub_feature_flags(work_items_mvc_2: false)
       end
 
       it 'does not convert the work item', :aggregate_failures do

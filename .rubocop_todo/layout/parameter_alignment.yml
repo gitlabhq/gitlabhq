@@ -3,15 +3,9 @@
 Layout/ParameterAlignment:
   Details: grace period
   Exclude:
-    - 'ee/spec/lib/ee/gitlab/background_migration/drop_invalid_remediations_spec.rb'
     - 'lib/gitlab/cross_project_access.rb'
     - 'lib/gitlab/data_builder/push.rb'
-    - 'spec/lib/gitlab/background_migration/drop_invalid_vulnerabilities_spec.rb'
-    - 'spec/lib/gitlab/background_migration/recalculate_vulnerabilities_occurrences_uuid_spec.rb'
-    - 'spec/lib/gitlab/background_migration/remove_duplicate_vulnerabilities_findings_spec.rb'
     - 'spec/lib/gitlab/background_migration/remove_occurrence_pipelines_and_duplicate_vulnerabilities_findings_spec.rb'
-    - 'spec/migrations/20211018152654_schedule_remove_duplicate_vulnerabilities_findings3_spec.rb'
-    - 'spec/migrations/20211116111644_schedule_remove_occurrence_pipelines_and_duplicate_vulnerabilities_findings_spec.rb'
     - 'spec/support/helpers/content_security_policy_helpers.rb'
     - 'spec/support/helpers/migrations_helpers/vulnerabilities_helper.rb'
     - 'spec/support/helpers/repo_helpers.rb'

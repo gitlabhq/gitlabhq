@@ -2,7 +2,7 @@
 name: remove_startup_css
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117495
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/407140
-milestone: '16.0'
+milestone: '15.11'
 type: development
 group: group::project management
 default_enabled: false

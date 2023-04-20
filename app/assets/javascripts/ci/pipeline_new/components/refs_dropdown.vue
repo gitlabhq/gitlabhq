@@ -1,86 +1,59 @@
 <script>
-import { GlCollapsibleListbox } from '@gitlab/ui';
-import { debounce } from 'lodash';
-import axios from '~/lib/utils/axios_utils';
-import { DEBOUNCE_REFS_SEARCH_MS } from '../constants';
-import { formatListBoxItems, searchByFullNameInListboxOptions } from '../utils/format_refs';
+import { __ } from '~/locale';
+import RefSelector from '~/ref/components/ref_selector.vue';
+import { BRANCH_REF_TYPE, REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
+import { formatToShortName } from '../utils/format_refs';
 
 export default {
-  components: {
-    GlCollapsibleListbox,
+  BRANCH_REF_TYPE,
+  ENABLED_TYPE_REFS: [REF_TYPE_BRANCHES, REF_TYPE_TAGS],
+  i18n: {
+    /**
+     * In order to hide ListBox header
+     * we need to explicitly provide
+     * empty string for translations
+     */
+    dropdownHeader: '',
+    searchPlaceholder: __('Search refs'),
   },
-  inject: ['projectRefsEndpoint'],
+  components: {
+    RefSelector,
+  },
   props: {
+    projectId: {
+      type: String,
+      required: true,
+    },
     value: {
       type: Object,
       required: false,
       default: () => ({}),
     },
   },
-  data() {
-    return {
-      isLoading: false,
-      searchTerm: '',
-      listBoxItems: [],
-    };
-  },
   computed: {
-    lowerCasedSearchTerm() {
-      return this.searchTerm.toLowerCase();
-    },
     refShortName() {
       return this.value.shortName;
     },
   },
   methods: {
-    loadRefs() {
-      this.isLoading = true;
-
-      axios
-        .get(this.projectRefsEndpoint, {
-          params: {
-            search: this.lowerCasedSearchTerm,
-          },
-        })
-        .then(({ data }) => {
-          // Note: These keys are uppercase in API
-          const { Branches = [], Tags = [] } = data;
-
-          this.listBoxItems = formatListBoxItems(Branches, Tags);
-        })
-        .catch((e) => {
-          this.$emit('loadingError', e);
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
-    },
-    debouncedLoadRefs: debounce(function debouncedLoadRefs() {
-      this.loadRefs();
-    }, DEBOUNCE_REFS_SEARCH_MS),
-    setRefSelected(refFullName) {
-      const ref = searchByFullNameInListboxOptions(refFullName, this.listBoxItems);
-      this.$emit('input', ref);
-    },
-    setSearchTerm(searchQuery) {
-      this.searchTerm = searchQuery?.trim();
-      this.debouncedLoadRefs();
+    setRefSelected(fullName) {
+      this.$emit('input', {
+        shortName: formatToShortName(fullName),
+        fullName,
+      });
     },
   },
 };
 </script>
 <template>
-  <gl-collapsible-listbox
-    class="gl-w-full gl-font-monospace"
-    :items="listBoxItems"
-    :searchable="true"
-    :searching="isLoading"
-    :search-placeholder="__('Search refs')"
-    :selected="value.fullName"
-    toggle-class="gl-flex-direction-column gl-align-items-stretch!"
-    :toggle-text="refShortName"
-    @search="setSearchTerm"
-    @select="setRefSelected"
-    @shown.once="loadRefs"
+  <ref-selector
+    :value="refShortName"
+    :enabled-ref-types="$options.ENABLED_TYPE_REFS"
+    :ref-type="$options.BRANCH_REF_TYPE"
+    :project-id="projectId"
+    :translations="$options.i18n"
+    :use-symbolic-ref-names="true"
+    toggle-button-class="gl-w-auto! gl-mb-0!"
+    @input="setRefSelected"
   />
 </template>

@@ -125,7 +125,6 @@ RSpec/ScatteredLet:
     - 'spec/lib/gitlab/auth/saml/auth_hash_spec.rb'
     - 'spec/lib/gitlab/background_migration/backfill_imported_issue_search_data_spec.rb'
     - 'spec/lib/gitlab/background_migration/disable_legacy_open_source_license_for_inactive_public_projects_spec.rb'
-    - 'spec/lib/gitlab/background_migration/encrypt_static_object_token_spec.rb'
     - 'spec/lib/gitlab/background_migration/legacy_uploads_migrator_spec.rb'
     - 'spec/lib/gitlab/background_migration/nullify_orphan_runner_id_on_ci_builds_spec.rb'
     - 'spec/lib/gitlab/background_migration/reset_too_many_tags_skipped_registry_imports_spec.rb'

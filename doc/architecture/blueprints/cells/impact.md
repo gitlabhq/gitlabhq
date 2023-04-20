@@ -39,11 +39,11 @@ The [organization roadmap outlines](https://gitlab.com/gitlab-org/gitlab/-/issue
 
 ## Impact on Fulfillment
 
-We synced with Fulfillment ([recording](https://youtu.be/FkQF3uF7vTY)) to discuss how Cells would impact them. Fulfillment is supportive of an entity above top-level namespaces. Their perspective is outline in [!5639](https://gitlab.com/gitlab-org/customers-gitlab-com/-/merge_requests/5639/diffs).
+We synced with Fulfillment ([recording](https://youtu.be/FkQF3uF7vTY)) to discuss how Cells would impact them. Fulfillment is supportive of an entity above top-level groups. Their perspective is outline in [!5639](https://gitlab.com/gitlab-org/customers-gitlab-com/-/merge_requests/5639/diffs).
 
 ### Goals of Fulfillment
 
-- Fulfillment has a longstanding plan to move billing from the top-level namespace to a level above. This would mean that a license applies for an organization and all its top-level namespaces.
+- Fulfillment has a longstanding plan to move billing from the top-level group to a level above. This would mean that a license applies for an organization and all its top-level groups.
 - Fulfillment uses Zuora for billing and would like to have a 1-to-1 relationship between an organization and their Zuora entity called BillingAccount. They want to move away from tying a license to a single user.
 - If a customer needs multiple organizations, the corresponding BillingAccounts can be rolled up into a consolidated billing account (similar to [AWS consolidated billing](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/consolidated-billing.html))
 - Ideally, a self-managed instance has a single Organization by default, which should be enough for most customers.

@@ -54,6 +54,7 @@ describe('Tracking', () => {
         appId: '',
         respectDoNotTrack: true,
         eventMethod: 'post',
+        plugins: [],
         contexts: { webPage: true, performanceTiming: true },
         formTracking: false,
         linkClickTracking: false,

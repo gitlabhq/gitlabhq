@@ -82,6 +82,7 @@ describe('GroupRunnerRunnerApp', () => {
       expect(findRunnerCreateForm().props()).toEqual({
         runnerType: GROUP_TYPE,
         groupId: mockGroupId,
+        projectId: null,
       });
     });
 

@@ -10,9 +10,8 @@ describe('Batch comments mutations', () => {
   });
 
   describe(types.ADD_NEW_DRAFT, () => {
+    const draft = { id: 1, note: 'test' };
     it('adds processed object into drafts array', () => {
-      const draft = { id: 1, note: 'test' };
-
       mutations[types.ADD_NEW_DRAFT](state, draft);
 
       expect(state.drafts).toEqual([
@@ -21,6 +20,19 @@ describe('Batch comments mutations', () => {
           isDraft: true,
         },
       ]);
+    });
+
+    it('sets `shouldAnimateReviewButton` to true if it is a first draft', () => {
+      mutations[types.ADD_NEW_DRAFT](state, draft);
+
+      expect(state.shouldAnimateReviewButton).toBe(true);
+    });
+
+    it('does not set `shouldAnimateReviewButton` to true if it is not a first draft', () => {
+      state.drafts.push({ id: 1 }, { id: 2 });
+      mutations[types.ADD_NEW_DRAFT](state, { id: 2, note: 'test2' });
+
+      expect(state.shouldAnimateReviewButton).toBe(false);
     });
   });
 

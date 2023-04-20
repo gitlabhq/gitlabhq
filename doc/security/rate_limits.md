@@ -154,7 +154,7 @@ The **rate limit** is 600 calls per minute per authenticated user.
 
 There is a rate limit for the GraphQL `aiAction` mutation, which is enforced to prevent from abusing this endpoint.
 
-The **rate limit** is 20 calls per hour per authenticated user.
+The **rate limit** is 160 calls per 8 hours per authenticated user.
 
 ## Troubleshooting
 

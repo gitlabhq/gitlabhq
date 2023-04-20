@@ -1,16 +1,3 @@
-export const mockBranches = {
-  Branches: ['main', 'branch-1', 'branch-2'],
-};
-
-export const mockTags = {
-  Tags: ['1.0.0', '1.1.0', '1.2.0'],
-};
-
-export const mockRefs = {
-  ...mockBranches,
-  ...mockTags,
-};
-
 export const mockFilteredRefs = {
   Branches: ['branch-1'],
   Tags: ['1.0.0', '1.1.0'],

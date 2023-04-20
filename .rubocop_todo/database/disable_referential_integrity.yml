@@ -1,4 +1,0 @@
----
-Database/DisableReferentialIntegrity:
-  Exclude:
-    - 'spec/lib/gitlab/background_migration/cleanup_orphaned_lfs_objects_projects_spec.rb'

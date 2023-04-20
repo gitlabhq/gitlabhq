@@ -6,7 +6,6 @@ Layout/TrailingWhitespace:
     - 'db/migrate/20220913082728_drop_index_cadence_create_iterations_automation.rb'
     - 'db/post_migrate/20220816163444_update_start_date_for_iterations_cadences.rb'
     - 'lib/gitlab/background_migration/fix_duplicate_project_name_and_path.rb'
-    - 'lib/gitlab/background_migration/populate_topics_non_private_projects_count.rb'
     - 'lib/gitlab/pagination/keyset/sql_type_missing_error.rb'
     - 'spec/services/suggestions/apply_service_spec.rb'
     - 'spec/support/helpers/x509_helpers.rb'

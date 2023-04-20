@@ -47,7 +47,6 @@ Style/SingleArgumentDig:
     - 'lib/gitlab/config/entry/simplifiable.rb'
     - 'lib/gitlab/config/entry/validators.rb'
     - 'lib/gitlab/database/transaction/observer.rb'
-    - 'lib/gitlab/serverless/service.rb'
     - 'qa/qa/specs/features/browser_ui/2_plan/email/trigger_email_notification_spec.rb'
     - 'qa/qa/vendor/mail_hog/api.rb'
     - 'spec/controllers/graphql_controller_spec.rb'

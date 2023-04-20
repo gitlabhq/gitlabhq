@@ -1,6 +1,6 @@
 <script>
 import { GlDropdown, GlButton, GlIcon, GlForm, GlFormGroup, GlFormCheckbox } from '@gitlab/ui';
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, mapState } from 'vuex';
 import { createAlert } from '~/alert';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
@@ -31,6 +31,7 @@ export default {
   },
   computed: {
     ...mapGetters(['getNotesData', 'getNoteableData', 'noteableType', 'getCurrentUserLastNote']),
+    ...mapState('batchComments', ['shouldAnimateReviewButton']),
   },
   watch: {
     'noteData.approve': function noteDataApproveWatch() {
@@ -101,6 +102,7 @@ export default {
     right
     dropup
     class="submit-review-dropdown"
+    :class="{ 'submit-review-dropdown-animated': shouldAnimateReviewButton }"
     data-qa-selector="submit_review_dropdown"
     variant="info"
     category="primary"

@@ -4558,14 +4558,16 @@ the default value is `when: on_success`.
 
 **Possible inputs**:
 
-- `on_success` (default): Run the job only when all jobs in earlier stages succeed
+- `on_success` (default): Run the job only when no jobs in earlier stages fail
   or have `allow_failure: true`.
-- `manual`: Run the job only when [triggered manually](../jobs/job_control.md#create-a-job-that-must-be-run-manually).
+- `on_failure`: Run the job only when at least one job in an earlier stage fails. A job in an earlier stage
+  with `allow_failure: true` is always considered successful.
+- `never`: Don't run the job regardless of the status of jobs in earlier stages.
+  Can only be used in a [`rules`](#rules) section or `workflow: rules`.
 - `always`: Run the job regardless of the status of jobs in earlier stages. Can also be used in `workflow:rules`.
-- `on_failure`: Run the job only when at least one job in an earlier stage fails. A job with `allow_failure: true` is always considered successful.
+- `manual`: Run the job only when [triggered manually](../jobs/job_control.md#create-a-job-that-must-be-run-manually).
 - `delayed`: [Delay the execution of a job](../jobs/job_control.md#run-a-job-after-a-delay)
   for a specified duration.
-- `never`: Don't run the job. Can only be used in a [`rules`](#rules) section or `workflow: rules`.
 
 **Example of `when`**:
 

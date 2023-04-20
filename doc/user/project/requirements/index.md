@@ -34,8 +34,7 @@ For more information, see [Product Stage Direction - Plan](https://about.gitlab.
 For an overview, see [GitLab 12.10 Introduces Requirements Management](https://www.youtube.com/watch?v=uSS7oUNSEoU).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a more in-depth walkthrough using a [demonstration project](https://gitlab.com/gitlab-org/requiremeents-mgmt),
-see [GitLab Requirements Traceability Walkthrough](https://youtu.be/VIiuTQYFVa0) (Feb 2021).
+For a more in-depth walkthrough see [GitLab Requirements Traceability Walkthrough](https://youtu.be/VIiuTQYFVa0) (Feb 2021).
 
 ![requirements list view](img/requirements_list_v13_5.png)
 

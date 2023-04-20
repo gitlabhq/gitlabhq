@@ -455,6 +455,7 @@ properties:
 | Name                   | Description                                                                               |
 | ---------------------- | ----------------------------------------------------------------------------------------- |
 | `description`          | A description of the code quality violation.                                              |
+| `check_name`           | A unique name representing the static analysis check that emitted this issue.             |
 | `fingerprint`          | A unique fingerprint to identify the code quality violation. For example, an MD5 hash.    |
 | `severity`             | A severity string (can be `info`, `minor`, `major`, `critical`, or `blocker`).            |
 | `location.path`        | The relative path to the file containing the code quality violation.                      |
@@ -478,6 +479,7 @@ Example:
 [
   {
     "description": "'unused' is assigned a value but never used.",
+    "check_name": "no-unused-vars",
     "fingerprint": "7815696ecbf1c96e6894b779456d330e",
     "severity": "minor",
     "location": {

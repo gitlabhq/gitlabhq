@@ -166,6 +166,7 @@ function generateEntries() {
   Note 2: If you are using web-workers, you might need to reset the public path, see:
   https://gitlab.com/gitlab-org/gitlab/-/issues/321656
    */
+
   const manualEntries = {
     default: defaultEntries,
     legacy_sentry: './sentry/legacy_index.js',
@@ -176,6 +177,7 @@ function generateEntries() {
     redirect_listbox: './entrypoints/behaviors/redirect_listbox.js',
     sandboxed_swagger: './lib/swagger.js',
     super_sidebar: './entrypoints/super_sidebar.js',
+    tracker: './entrypoints/tracker.js',
   };
 
   return Object.assign(manualEntries, incrementalCompiler.filterEntryPoints(autoEntries));

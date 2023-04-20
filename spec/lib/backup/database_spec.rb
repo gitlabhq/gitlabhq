@@ -55,41 +55,73 @@ RSpec.describe Backup::Database, feature_category: :backup_restore do
       end
     end
 
-    it 'uses snapshots' do
-      Dir.mktmpdir do |dir|
-        base_model = Gitlab::Database.database_base_models['main']
-        expect(base_model.connection).to receive(:begin_transaction).with(
-          isolation: :repeatable_read
-        ).and_call_original
-        expect(base_model.connection).to receive(:select_value).with(
-          "SELECT pg_export_snapshot()"
-        ).and_call_original
-        expect(base_model.connection).to receive(:rollback_transaction).and_call_original
+    context 'when using multiple databases' do
+      before do
+        skip_if_shared_database(:ci)
+      end
 
-        subject.dump(dir, backup_id)
+      it 'uses snapshots' do
+        Dir.mktmpdir do |dir|
+          base_model = Gitlab::Database.database_base_models['main']
+          expect(base_model.connection).to receive(:begin_transaction).with(
+            isolation: :repeatable_read
+          ).and_call_original
+          expect(base_model.connection).to receive(:select_value).with(
+            "SELECT pg_export_snapshot()"
+          ).and_call_original
+          expect(base_model.connection).to receive(:rollback_transaction).and_call_original
+
+          subject.dump(dir, backup_id)
+        end
+      end
+
+      it 'disables transaction time out' do
+        number_of_databases = base_models_for_backup.count
+        expect(Gitlab::Database::TransactionTimeoutSettings)
+          .to receive(:new).exactly(2 * number_of_databases).times.and_return(timeout_service)
+        expect(timeout_service).to receive(:disable_timeouts).exactly(number_of_databases).times
+        expect(timeout_service).to receive(:restore_timeouts).exactly(number_of_databases).times
+
+        Dir.mktmpdir do |dir|
+          subject.dump(dir, backup_id)
+        end
       end
     end
 
-    it 'disables transaction time out' do
-      number_of_databases = base_models_for_backup.count
-      expect(Gitlab::Database::TransactionTimeoutSettings)
-        .to receive(:new).exactly(2 * number_of_databases).times.and_return(timeout_service)
-      expect(timeout_service).to receive(:disable_timeouts).exactly(number_of_databases).times
-      expect(timeout_service).to receive(:restore_timeouts).exactly(number_of_databases).times
+    context 'when using a single databases' do
+      before do
+        skip_if_database_exists(:ci)
+      end
 
-      Dir.mktmpdir do |dir|
-        subject.dump(dir, backup_id)
+      it 'does not use snapshots' do
+        Dir.mktmpdir do |dir|
+          base_model = Gitlab::Database.database_base_models['main']
+          expect(base_model.connection).not_to receive(:begin_transaction).with(
+            isolation: :repeatable_read
+          ).and_call_original
+          expect(base_model.connection).not_to receive(:select_value).with(
+            "SELECT pg_export_snapshot()"
+          ).and_call_original
+          expect(base_model.connection).not_to receive(:rollback_transaction).and_call_original
+
+          subject.dump(dir, backup_id)
+        end
       end
     end
 
     describe 'pg_dump arguments' do
       let(:snapshot_id) { 'fake_id' }
       let(:pg_args) do
-        [
+        args = [
           '--clean',
-          '--if-exists',
-          "--snapshot=#{snapshot_id}"
+          '--if-exists'
         ]
+
+        if Gitlab::Database.database_mode == Gitlab::Database::MODE_MULTIPLE_DATABASES
+          args + ["--snapshot=#{snapshot_id}"]
+        else
+          args
+        end
       end
 
       let(:dumper) { double }

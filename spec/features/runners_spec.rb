@@ -14,23 +14,39 @@ RSpec.describe 'Runners', feature_category: :runner_fleet do
       stub_feature_flags(project_runners_vue_ui: false)
     end
 
-    context 'when user opens runners page' do
+    context 'when user views runners page' do
       let(:project) { create(:project) }
 
       before do
         project.add_maintainer(user)
       end
 
-      it 'user can see a link with instructions on how to install GitLab Runner' do
-        visit project_runners_path(project)
+      context 'when create_runner_workflow_for_namespace is enabled' do
+        before do
+          stub_feature_flags(create_runner_workflow_for_namespace: [project.namespace])
+        end
 
-        expect(page).to have_link('Install GitLab Runner and ensure it\'s running.', href: "https://docs.gitlab.com/runner/install/")
+        it 'user can see a link with instructions on how to install GitLab Runner' do
+          visit project_runners_path(project)
+
+          expect(page).to have_link(s_('Runners|New project runner'), href: new_project_runner_path(project))
+        end
       end
 
-      describe 'runners registration token' do
-        let!(:token) { project.runners_token }
+      context 'when create_runner_workflow_for_namespace is disabled' do
+        before do
+          stub_feature_flags(create_runner_workflow_for_namespace: false)
+        end
 
-        context 'when project_runners_vue_ui is disabled' do
+        it 'user can see a link with instructions on how to install GitLab Runner' do
+          visit project_runners_path(project)
+
+          expect(page).to have_link('Install GitLab Runner and ensure it\'s running.', href: "https://docs.gitlab.com/runner/install/")
+        end
+
+        describe 'runners registration token' do
+          let!(:token) { project.runners_token }
+
           before do
             visit project_runners_path(project)
           end

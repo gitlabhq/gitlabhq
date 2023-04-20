@@ -1,8 +1,0 @@
----
-name: work_item_conversion
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112221
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/396701
-milestone: '15.11'
-type: development
-group: group::product planning
-default_enabled: false

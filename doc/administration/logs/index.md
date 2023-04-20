@@ -797,6 +797,28 @@ This log records:
 - In GitLab versions [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/29239) and later,
   user ID and username, if available.
 
+## `auth_json.log`
+
+Depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/auth_json.log`
+- Installations from source: `/home/git/gitlab/log/auth_json.log`
+
+This file contains the JSON version of the logs in `auth.log`, for example:
+
+```json
+{
+    "severity":"ERROR",
+    "time":"2023-04-19T22:14:25.893Z",
+    "correlation_id":"01GYDSAKAN2SPZPAMJNRWW5H8S",
+    "message":"Rack_Attack",
+    "env":"blocklist",
+    "remote_ip":"x.x.x.x",
+    "request_method":"GET",
+    "path":"/group/project.git/info/refs?service=git-upload-pack"
+}
+```
+
 ## `graphql_json.log`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/59587) in GitLab 12.0.

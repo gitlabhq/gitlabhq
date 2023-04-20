@@ -10,6 +10,7 @@ export const DEFAULT_SNOWPLOW_OPTIONS = {
   contexts: { webPage: true, performanceTiming: true },
   formTracking: false,
   linkClickTracking: false,
+  plugins: window.snowplowPlugins || [],
   formTrackingConfig: {
     forms: { allow: [] },
     fields: { allow: [] },

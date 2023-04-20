@@ -12,17 +12,17 @@ We use the following terms to describe components and properties of the Cells ar
 
 > Pod was renamed to Cell in <https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/121163>
 
-A Cell is a set of infrastructure components that contains multiple top-level namespaces that belong to different organizations. The components include both datastores (PostgreSQL, Redis etc.) and stateless services (web etc.). The infrastructure components provided within a Cell are shared among organizations and their top-level namespaces but not shared with other Cells. This isolation of infrastructure components means that Cells are independent from each other.
+A Cell is a set of infrastructure components that contains multiple top-level groups that belong to different organizations. The components include both datastores (PostgreSQL, Redis etc.) and stateless services (web etc.). The infrastructure components provided within a Cell are shared among organizations and their top-level groups but not shared with other Cells. This isolation of infrastructure components means that Cells are independent from each other.
 
 <img src="images/term-cell.png" height="200">
 
 ### Cell properties
 
 - Each cell is independent from the others
-- Infrastructure components are shared by organizations and their top-level namespaces within a Cell
+- Infrastructure components are shared by organizations and their top-level groups within a Cell
 - More Cells can be provisioned to provide horizontal scalability
 - A failing Cell does not lead to failure of other Cells
-- Noisy neighbor effects are limited to a Cell
+- Noisy neighbor effects are limited to within a Cell
 - Cells are not visible to organizations; it is an implementation detail
 - Cells may be located in different geographical regions (for example, EU, US, JP, UK)
 
@@ -60,45 +60,45 @@ Organizations work under the following assumptions:
 
 ### Organization properties
 
-- Top-level namespaces belong to organizations
-- Organizations are isolated from each other by default meaning that cross-namespace features will only work for namespaces that exist within a single organization
+- Top-level groups belong to organizations
+- Organizations are isolated from each other by default meaning that cross-group features will only work for group that exist within a single organization
 - User namespaces must not belong to an organization
 
 Discouraged synonyms: Billable entities, customers
 
-## Top-Level namespace
+## Top-Level group
 
-Top-level namespace is the name given to the top most group of all other groups. Groups and projects are nested underneath the top-level namespace.
+Top-level group is the name given to the top most group of all other groups. Groups and projects are nested underneath the top-level group.
 
 Example:
 
 `https://gitlab.com/gitlab-org/gitlab/`:
 
-- `gitlab-org` is a `top-level namespace`; the root for all groups and projects of an organization
+- `gitlab-org` is a `top-level group`; the root for all groups and projects of an organization
 - `gitlab` is a `project`; a project of the organization.
 
-The top-level namespace has served as the defacto Organization entity. With the creation of Organization, top-level namespaces will be [nested underneath Organizations](https://gitlab.com/gitlab-org/gitlab/-/issues/394796).
+The top-level group has served as the defacto Organization entity. With the creation of Organization, top-level groups will be [nested underneath Organizations](https://gitlab.com/gitlab-org/gitlab/-/issues/394796).
 
-Over time there won't be a distinction between a top level namespace and a group. All features that make Top-level namespaces different from groups will move to Organization.
+Over time there won't be a distinction between a top-level group and a group. All features that make Top-level groups different from groups will move to Organization.
 
 Discouraged synonyms: Root-level namespace
 
-![Term Top-level Namespace](images/term-top-level-namespace.png)
+![Term Top-level Group](images/term-top-level-group.png)
 
-### Top-level namespace properties
+### Top-level group properties
 
-- Top-level namespaces belonging to an organization are located on the same Cell
-- Top-level namespaces can interact with other top-level namespaces that belong to the same organization
+- Top-level groups belonging to an organization are located on the same Cell
+- Top-level groups can interact with other top-level groups that belong to the same organization
 
 ## Users
 
-Users are available globally and not restricted to a single Cell. Users belong to a single organization, but can participate in many organizations through group and project membership with varying permissions. Inside organizations, users can create multiple top-level namespaces. User activity is not limited to a single organization but their contributions (for example TODOs) are only aggregated within an organization. This avoids the need for aggregating across cells.
+Users are available globally and not restricted to a single Cell. Users belong to a single organization, but can participate in many organizations through group and project membership with varying permissions. Inside organizations, users can create multiple top-level groups. User activity is not limited to a single organization but their contributions (for example TODOs) are only aggregated within an organization. This avoids the need for aggregating across cells.
 
 ### User properties
 
 - Users are shared globally across all Cells
-- Users can create multiple top-level namespaces
-- Users can be a member of multiple top-level namespaces
+- Users can create multiple top-level groups
+- Users can be a member of multiple top-level groups
 - Users belong to one organization. See [!395736](https://gitlab.com/gitlab-org/gitlab/-/issues/395736)
 - Users can be members of groups and projects in different organizations
 - Users can administer organizations

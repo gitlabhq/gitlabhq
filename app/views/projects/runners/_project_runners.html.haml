@@ -2,18 +2,25 @@
   = s_('Runners|Project runners')
 
 .bs-callout.help-callout
-  - if can?(current_user, :register_project_runners, @project)
-    = s_('Runners|These runners are assigned to this project.')
-    %hr
-    = render partial: 'ci/runner/how_to_setup_runner',
-            locals: { registration_token: @project.runners_token,
-                      type: _('project'),
-                      reset_token_url: reset_registration_token_namespace_project_settings_ci_cd_path,
-                      project_path: @project.path_with_namespace,
-                      group_path: '' }
+  %p= s_('Runners|These runners are assigned to this project.')
+  - if Feature.enabled?(:create_runner_workflow_for_namespace, @project.namespace)
+    - if can?(current_user, :create_runner, @project)
+      = render Pajamas::ButtonComponent.new(href: new_project_runner_path(@project), variant: :confirm) do
+        = s_('Runners|New project runner')
+    - else
+      = _('Please contact an admin to create runners.')
+      = link_to _('Learn more.'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'restrict-runner-registration-by-all-users-in-an-instance'), target: '_blank', rel: 'noopener noreferrer'
   - else
-    = _('Please contact an admin to register runners.')
-    = link_to _('Learn more.'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'restrict-runner-registration-by-all-users-in-an-instance'), target: '_blank', rel: 'noopener noreferrer'
+    - if can?(current_user, :register_project_runners, @project)
+      = render partial: 'ci/runner/how_to_setup_runner',
+              locals: { registration_token: @project.runners_token,
+                        type: _('project'),
+                        reset_token_url: reset_registration_token_namespace_project_settings_ci_cd_path,
+                        project_path: @project.path_with_namespace,
+                        group_path: '' }
+    - else
+      = _('Please contact an admin to register runners.')
+      = link_to _('Learn more.'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'restrict-runner-registration-by-all-users-in-an-instance'), target: '_blank', rel: 'noopener noreferrer'
 
 %hr
 

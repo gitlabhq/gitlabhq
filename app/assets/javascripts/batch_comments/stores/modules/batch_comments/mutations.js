@@ -8,6 +8,9 @@ const processDraft = (draft) => ({
 export default {
   [types.ADD_NEW_DRAFT](state, draft) {
     state.drafts.push(processDraft(draft));
+    if (state.drafts.length === 1) {
+      state.shouldAnimateReviewButton = true;
+    }
   },
 
   [types.DELETE_DRAFT](state, draftId) {

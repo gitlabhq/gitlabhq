@@ -20,6 +20,64 @@ RSpec.describe Projects::RunnersController, feature_category: :runner_fleet do
     project.add_maintainer(user)
   end
 
+  describe '#new' do
+    let(:params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project
+      }
+    end
+
+    context 'when create_runner_workflow_for_namespace is enabled' do
+      before do
+        stub_feature_flags(create_runner_workflow_for_namespace: [project.namespace])
+      end
+
+      context 'when user is maintainer' do
+        before do
+          project.add_maintainer(user)
+        end
+
+        it 'renders new with 200 status code' do
+          get :new, params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template(:new)
+        end
+      end
+
+      context 'when user is not maintainer' do
+        before do
+          project.add_developer(user)
+        end
+
+        it 'renders a 404' do
+          get :new, params: params
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'when create_runner_workflow_for_namespace is disabled' do
+      before do
+        stub_feature_flags(create_runner_workflow_for_namespace: false)
+      end
+
+      context 'when user is maintainer' do
+        before do
+          project.add_maintainer(user)
+        end
+
+        it 'renders a 404' do
+          get :new, params: params
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+  end
+
   describe '#update' do
     it 'updates the runner and ticks the queue' do
       new_desc = runner.description.swapcase

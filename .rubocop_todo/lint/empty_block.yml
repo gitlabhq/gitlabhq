@@ -137,7 +137,6 @@ Lint/EmptyBlock:
     - 'spec/lib/gitlab/patch/prependable_spec.rb'
     - 'spec/lib/gitlab/profiler_spec.rb'
     - 'spec/lib/gitlab/quick_actions/extractor_spec.rb'
-    - 'spec/lib/gitlab/rack_attack/instrumented_cache_store_spec.rb'
     - 'spec/lib/gitlab/search_context/builder_spec.rb'
     - 'spec/lib/gitlab/session_spec.rb'
     - 'spec/lib/gitlab/sidekiq_daemon/memory_killer_spec.rb'

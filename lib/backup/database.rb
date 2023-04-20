@@ -41,7 +41,7 @@ module Backup
         pg_env(config)
         pgsql_args = ["--clean"] # Pass '--clean' to include 'DROP TABLE' statements in the DB dump.
         pgsql_args << '--if-exists'
-        pgsql_args << "--snapshot=#{snapshot_id}"
+        pgsql_args << "--snapshot=#{snapshot_id}" if snapshot_id
 
         if Gitlab.config.backup.pg_schema
           pgsql_args << '-n'
@@ -55,7 +55,7 @@ module Backup
 
         success = Backup::Dump::Postgres.new.dump(pg_database, db_file_name, pgsql_args)
 
-        base_model.connection.rollback_transaction
+        base_model.connection.rollback_transaction if snapshot_id
 
         raise DatabaseBackupError.new(config, db_file_name) unless success
 
@@ -262,6 +262,10 @@ module Backup
         ::Gitlab::Database::EachDatabase.each_database_connection(
           only: base_models_for_backup.keys, include_shared: false
         ) do |connection, database_name|
+          @database_to_snapshot_id[database_name] = nil
+
+          next unless Gitlab::Database.database_mode == Gitlab::Database::MODE_MULTIPLE_DATABASES
+
           Gitlab::Database::TransactionTimeoutSettings.new(connection).disable_timeouts
 
           connection.begin_transaction(isolation: :repeatable_read)

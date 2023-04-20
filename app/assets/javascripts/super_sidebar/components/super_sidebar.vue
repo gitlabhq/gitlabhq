@@ -112,12 +112,12 @@ export default {
       </gl-button>
       <user-bar :has-collapse-button="!isPeek" :sidebar-data="sidebarData" />
       <div class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden">
+        <context-switcher-toggle
+          :context="sidebarData.current_context_header"
+          :expanded="contextSwitcherOpen"
+          data-qa-selector="context_switcher"
+        />
         <div class="gl-flex-grow-1 gl-overflow-auto">
-          <context-switcher-toggle
-            :context="sidebarData.current_context_header"
-            :expanded="contextSwitcherOpen"
-            data-qa-selector="context_switcher"
-          />
           <gl-collapse
             id="context-switcher"
             v-model="contextSwitcherOpen"

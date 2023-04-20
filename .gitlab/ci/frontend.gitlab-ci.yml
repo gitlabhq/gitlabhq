@@ -144,7 +144,7 @@ retrieve-frontend-fixtures:
       if [[ -d "tmp/tests/frontend" ]]; then
         # Remove tmp/tests/frontend/ except on the first parallelized job so that depending
         # jobs don't download the exact same artifact multiple times.
-        if [[ -n "${CI_NODE_INDEX}" ]] && [[ "${CI_NODE_INDEX}" -ne 1 ]]; then
+        if [[ -n "${CI_NODE_INDEX:-}" ]] && [[ "${CI_NODE_INDEX}" -ne 1 ]]; then
           echoinfo "INFO: Removing 'tmp/tests/frontend' as we're on node ${CI_NODE_INDEX}.";
           rm -rf "tmp/tests/frontend";
         fi

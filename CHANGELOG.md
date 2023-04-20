@@ -2090,6 +2090,12 @@ No changes.
 - [Do not use _test when not necessary](gitlab-org/gitlab@1bde73aba2bd1d7f9e833c7325cffa0c90d1c106) ([merge request](gitlab-org/gitlab!107373))
 - [Add config/redis.yml unified config file](gitlab-org/gitlab@ace8301236eecc07a511975b57f80e21ec7be3c2) ([merge request](gitlab-org/gitlab!106854))
 
+## 15.7.9 (2023-04-20)
+
+### Fixed (1 change)
+
+- [Fix automatically-retried jobs stuck in pending state](gitlab-org/gitlab@0243a8419734e5c1a2fdfc4ea607731e6c497ec5) ([merge request](gitlab-org/gitlab!117284))
+
 ## 15.7.8 (2023-03-02)
 
 ### Security (12 changes)

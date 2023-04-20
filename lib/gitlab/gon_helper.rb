@@ -66,7 +66,7 @@ module Gitlab
       push_frontend_feature_flag(:security_auto_fix)
       push_frontend_feature_flag(:source_editor_toolbar)
       push_frontend_feature_flag(:vscode_web_ide, current_user)
-      push_frontend_feature_flag(:super_sidebar_peek)
+      push_frontend_feature_flag(:super_sidebar_peek, current_user)
     end
 
     # Exposes the state of a feature flag to the frontend code.

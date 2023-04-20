@@ -12,6 +12,8 @@ module QA
         end
 
         def login
+          return unless release_variables_available?
+
           super(Runtime::Env.release_registry_url,
             user: Runtime::Env.release_registry_username,
             password: Runtime::Env.release_registry_password)
@@ -28,6 +30,14 @@ module QA
             --name #{@name}
             #{@image}
           CMD
+        end
+
+        private
+
+        def release_variables_available?
+          Runtime::Env.release_registry_url &&
+            Runtime::Env.release_registry_username &&
+            Runtime::Env.release_registry_password
         end
       end
     end

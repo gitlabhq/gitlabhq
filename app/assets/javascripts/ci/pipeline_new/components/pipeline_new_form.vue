@@ -424,7 +424,11 @@ export default {
       </details>
     </gl-alert>
     <gl-form-group :label="s__('Pipeline|Run for branch name or tag')">
-      <refs-dropdown v-model="refValue" @loadingError="onRefsLoadingError" />
+      <refs-dropdown
+        v-model="refValue"
+        :project-id="projectId"
+        @loadingError="onRefsLoadingError"
+      />
     </gl-form-group>
 
     <gl-loading-icon v-if="isLoading" class="gl-mb-5" size="lg" />

@@ -219,3 +219,10 @@
   width: calc(100% + 24px);
   margin: -28px -12px 0;
 }
+
+.ai-genie-chat-message {
+  pre,
+  code {
+    @include gl-font-sm;
+  }
+}

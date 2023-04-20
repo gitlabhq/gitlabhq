@@ -25416,6 +25416,24 @@ msgstr ""
 msgid "LDAP uid:"
 msgstr ""
 
+msgid "LDAP|Add synchronization"
+msgstr ""
+
+msgid "LDAP|LDAP access"
+msgstr ""
+
+msgid "LDAP|LDAP group cn"
+msgstr ""
+
+msgid "LDAP|LDAP server"
+msgstr ""
+
+msgid "LDAP|LDAP user filter"
+msgstr ""
+
+msgid "LDAP|Sync method"
+msgstr ""
+
 msgid "LFS"
 msgstr ""
 
@@ -32918,6 +32936,9 @@ msgstr ""
 msgid "Please confirm your email address"
 msgstr ""
 
+msgid "Please contact an admin to create runners."
+msgstr ""
+
 msgid "Please contact an admin to register runners."
 msgstr ""
 
@@ -38087,6 +38108,12 @@ msgstr ""
 msgid "Runners|Create a group runner to generate a command that registers the runner with all its configurations. %{linkStart}Prefer to use a registration token to create a runner?%{linkEnd}"
 msgstr ""
 
+msgid "Runners|Create a project runner"
+msgstr ""
+
+msgid "Runners|Create a project runner to generate a command that registers the runner with all its configurations. %{linkStart}Prefer to use a registration token to create a runner?%{linkEnd}"
+msgstr ""
+
 msgid "Runners|Create an instance runner"
 msgstr ""
 
@@ -38266,10 +38293,16 @@ msgstr ""
 msgid "Runners|New instance runner"
 msgstr ""
 
+msgid "Runners|New project runner"
+msgstr ""
+
 msgid "Runners|New project runners can be registered"
 msgstr ""
 
 msgid "Runners|New registration token generated!"
+msgstr ""
+
+msgid "Runners|New runner"
 msgstr ""
 
 msgid "Runners|No description"

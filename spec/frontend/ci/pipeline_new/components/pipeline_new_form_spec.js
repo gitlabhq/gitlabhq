@@ -4,7 +4,7 @@ import { GlForm, GlDropdownItem, GlSprintf, GlLoadingIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import CreditCardValidationRequiredAlert from 'ee_component/billings/components/cc_validation_required_alert.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
@@ -30,7 +30,6 @@ import {
   mockQueryParams,
   mockPostParams,
   mockProjectId,
-  mockRefs,
   mockYamlVariables,
   mockPipelineConfigButtonText,
 } from '../mock_data';
@@ -41,7 +40,6 @@ jest.mock('~/lib/utils/url_utility', () => ({
   redirectTo: jest.fn(),
 }));
 
-const projectRefsEndpoint = '/root/project/refs';
 const pipelinesPath = '/root/project/-/pipelines';
 const pipelinesEditorPath = '/root/project/-/ci/editor';
 const projectPath = '/root/project/-/pipelines/config_variables';
@@ -91,21 +89,18 @@ describe('Pipeline New Form', () => {
 
   const changeKeyInputValue = async (keyInputIndex, value) => {
     const input = findKeyInputs().at(keyInputIndex);
-    input.element.value = value;
-    input.trigger('change');
+    input.vm.$emit('input', value);
+    input.vm.$emit('change');
 
     await nextTick();
   };
 
-  const createComponentWithApollo = ({ method = shallowMountExtended, props = {} } = {}) => {
+  const createComponentWithApollo = ({ props = {} } = {}) => {
     const handlers = [[ciConfigVariablesQuery, mockCiConfigVariables]];
     mockApollo = createMockApollo(handlers, resolvers);
 
-    wrapper = method(PipelineNewForm, {
+    wrapper = shallowMountExtended(PipelineNewForm, {
       apolloProvider: mockApollo,
-      provide: {
-        projectRefsEndpoint,
-      },
       propsData: {
         projectId: mockProjectId,
         pipelinesPath,
@@ -124,7 +119,6 @@ describe('Pipeline New Form', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
     mockCiConfigVariables = jest.fn();
-    mock.onGet(projectRefsEndpoint).reply(HTTP_STATUS_OK, mockRefs);
 
     dummySubmitEvent = {
       preventDefault: jest.fn(),
@@ -138,7 +132,7 @@ describe('Pipeline New Form', () => {
   describe('Form', () => {
     beforeEach(async () => {
       mockCiConfigVariables.mockResolvedValue(mockEmptyCiConfigVariablesResponse);
-      createComponentWithApollo({ props: mockQueryParams, method: mountExtended });
+      createComponentWithApollo({ props: mockQueryParams });
       await waitForPromises();
     });
 
@@ -150,13 +144,13 @@ describe('Pipeline New Form', () => {
     });
 
     it('displays a variable from provided query params', () => {
-      expect(findKeyInputs().at(0).element.value).toBe('test_var');
-      expect(findValueInputs().at(0).element.value).toBe('test_var_val');
+      expect(findKeyInputs().at(0).attributes('value')).toBe('test_var');
+      expect(findValueInputs().at(0).attributes('value')).toBe('test_var_val');
     });
 
     it('displays an empty variable for the user to fill out', () => {
-      expect(findKeyInputs().at(2).element.value).toBe('');
-      expect(findValueInputs().at(2).element.value).toBe('');
+      expect(findKeyInputs().at(2).attributes('value')).toBe('');
+      expect(findValueInputs().at(2).attributes('value')).toBe('');
       expect(findVariableTypes().at(2).props('text')).toBe('Variable');
     });
 
@@ -165,7 +159,7 @@ describe('Pipeline New Form', () => {
     });
 
     it('removes ci variable row on remove icon button click', async () => {
-      findRemoveIcons().at(1).trigger('click');
+      findRemoveIcons().at(1).vm.$emit('click');
 
       await nextTick();
 
@@ -174,14 +168,15 @@ describe('Pipeline New Form', () => {
 
     it('creates blank variable on input change event', async () => {
       const input = findKeyInputs().at(2);
-      input.element.value = 'test_var_2';
-      input.trigger('change');
+
+      input.vm.$emit('input', 'test_var_2');
+      input.vm.$emit('change');
 
       await nextTick();
 
       expect(findVariableRows()).toHaveLength(4);
-      expect(findKeyInputs().at(3).element.value).toBe('');
-      expect(findValueInputs().at(3).element.value).toBe('');
+      expect(findKeyInputs().at(3).attributes('value')).toBe('');
+      expect(findValueInputs().at(3).attributes('value')).toBe('');
     });
   });
 
@@ -237,7 +232,7 @@ describe('Pipeline New Form', () => {
   describe('When the ref has been changed', () => {
     beforeEach(async () => {
       mockCiConfigVariables.mockResolvedValue(mockEmptyCiConfigVariablesResponse);
-      createComponentWithApollo({ method: mountExtended });
+      createComponentWithApollo();
 
       await waitForPromises();
     });
@@ -251,12 +246,12 @@ describe('Pipeline New Form', () => {
 
       await selectBranch('main');
 
-      expect(findKeyInputs().at(0).element.value).toBe('build_var');
+      expect(findKeyInputs().at(0).attributes('value')).toBe('build_var');
       expect(findVariableRows().length).toBe(2);
 
       await selectBranch('branch-1');
 
-      expect(findKeyInputs().at(0).element.value).toBe('deploy_var');
+      expect(findKeyInputs().at(0).attributes('value')).toBe('deploy_var');
       expect(findVariableRows().length).toBe(2);
     });
 
@@ -280,7 +275,7 @@ describe('Pipeline New Form', () => {
   describe('When there are no variables in the API cache', () => {
     beforeEach(async () => {
       mockCiConfigVariables.mockResolvedValue(mockNoCachedCiConfigVariablesResponse);
-      createComponentWithApollo({ method: mountExtended });
+      createComponentWithApollo();
       await waitForPromises();
     });
 
@@ -330,7 +325,7 @@ describe('Pipeline New Form', () => {
   const testBehaviorWhenCacheIsPopulated = (queryResponse) => {
     beforeEach(() => {
       mockCiConfigVariables.mockResolvedValue(queryResponse);
-      createComponentWithApollo({ method: mountExtended });
+      createComponentWithApollo();
     });
 
     it('does not poll for new values', async () => {
@@ -345,6 +340,9 @@ describe('Pipeline New Form', () => {
     });
 
     it('loading icon is shown when content is requested and hidden when received', async () => {
+      mockCiConfigVariables.mockResolvedValue(mockEmptyCiConfigVariablesResponse);
+      createComponentWithApollo({ props: mockQueryParams });
+
       expect(findLoadingIcon().exists()).toBe(true);
 
       await waitForPromises();
@@ -358,11 +356,11 @@ describe('Pipeline New Form', () => {
 
     it('displays an empty form', async () => {
       mockCiConfigVariables.mockResolvedValue(mockEmptyCiConfigVariablesResponse);
-      createComponentWithApollo({ method: mountExtended });
+      createComponentWithApollo();
       await waitForPromises();
 
-      expect(findKeyInputs().at(0).element.value).toBe('');
-      expect(findValueInputs().at(0).element.value).toBe('');
+      expect(findKeyInputs().at(0).attributes('value')).toBe('');
+      expect(findValueInputs().at(0).attributes('value')).toBe('');
       expect(findVariableTypes().at(0).props('text')).toBe('Variable');
     });
   });
@@ -373,12 +371,12 @@ describe('Pipeline New Form', () => {
     describe('with different predefined values', () => {
       beforeEach(async () => {
         mockCiConfigVariables.mockResolvedValue(mockCiConfigVariablesResponse);
-        createComponentWithApollo({ method: mountExtended });
+        createComponentWithApollo();
         await waitForPromises();
       });
 
       it('multi-line strings are added to the value field without removing line breaks', () => {
-        expect(findValueInputs().at(1).element.value).toBe(mockYamlVariables[1].value);
+        expect(findValueInputs().at(1).attributes('value')).toBe(mockYamlVariables[1].value);
       });
 
       it('multiple predefined values are rendered as a dropdown', () => {
@@ -402,7 +400,7 @@ describe('Pipeline New Form', () => {
     describe('with description', () => {
       beforeEach(async () => {
         mockCiConfigVariables.mockResolvedValue(mockCiConfigVariablesResponse);
-        createComponentWithApollo({ props: mockQueryParams, method: mountExtended });
+        createComponentWithApollo({ props: mockQueryParams });
         await waitForPromises();
       });
 
@@ -411,15 +409,15 @@ describe('Pipeline New Form', () => {
       });
 
       it('displays a variable from yml', () => {
-        expect(findKeyInputs().at(0).element.value).toBe(mockYamlVariables[0].key);
-        expect(findValueInputs().at(0).element.value).toBe(mockYamlVariables[0].value);
+        expect(findKeyInputs().at(0).attributes('value')).toBe(mockYamlVariables[0].key);
+        expect(findValueInputs().at(0).attributes('value')).toBe(mockYamlVariables[0].value);
       });
 
       it('displays a variable from provided query params', () => {
-        expect(findKeyInputs().at(3).element.value).toBe(
+        expect(findKeyInputs().at(3).attributes('value')).toBe(
           Object.keys(mockQueryParams.variableParams)[0],
         );
-        expect(findValueInputs().at(3).element.value).toBe(
+        expect(findValueInputs().at(3).attributes('value')).toBe(
           Object.values(mockQueryParams.fileParams)[0],
         );
       });
@@ -429,7 +427,7 @@ describe('Pipeline New Form', () => {
       });
 
       it('removes the description when a variable key changes', async () => {
-        findKeyInputs().at(0).element.value = 'yml_var_modified';
+        findKeyInputs().at(0).vm.$emit('input', 'yml_var_modified');
         findKeyInputs().at(0).trigger('change');
 
         await nextTick();
@@ -441,7 +439,7 @@ describe('Pipeline New Form', () => {
     describe('without description', () => {
       beforeEach(async () => {
         mockCiConfigVariables.mockResolvedValue(mockCiConfigVariablesResponseWithoutDesc);
-        createComponentWithApollo({ method: mountExtended });
+        createComponentWithApollo();
         await waitForPromises();
       });
 
@@ -460,7 +458,7 @@ describe('Pipeline New Form', () => {
     describe('when the refs cannot be loaded', () => {
       beforeEach(() => {
         mock
-          .onGet(projectRefsEndpoint, { params: { search: '' } })
+          .onGet('/api/v4/projects/8/repository/branches', { params: { search: '' } })
           .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
         findRefsDropdown().vm.$emit('loadingError');

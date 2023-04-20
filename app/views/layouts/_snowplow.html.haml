@@ -1,14 +1,9 @@
 - return unless Gitlab::Tracking.enabled?
 
 - namespace = @group || @project&.namespace || @namespace
-
+= webpack_bundle_tag 'tracker'
 = javascript_tag do
   :plain
-    ;(function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];
-    p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)
-    };p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;
-    n.src=w;g.parentNode.insertBefore(n,g)}}(window,document,"script","#{escaped_url(asset_url('snowplow/sp.js'))}","snowplow"));
-
     window.snowplowOptions = #{Gitlab::Tracking.options(@group).to_json}
 
     gl = window.gl || {};

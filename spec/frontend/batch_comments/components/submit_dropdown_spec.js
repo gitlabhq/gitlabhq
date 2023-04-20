@@ -1,3 +1,4 @@
+import { GlDropdown } from '@gitlab/ui';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -10,7 +11,7 @@ Vue.use(Vuex);
 let wrapper;
 let publishReview;
 
-function factory({ canApprove = true } = {}) {
+function factory({ canApprove = true, shouldAnimateReviewButton = false } = {}) {
   publishReview = jest.fn();
 
   const store = new Vuex.Store({
@@ -30,6 +31,7 @@ function factory({ canApprove = true } = {}) {
     modules: {
       batchComments: {
         namespaced: true,
+        state: { shouldAnimateReviewButton },
         actions: {
           publishReview,
         },
@@ -44,6 +46,7 @@ function factory({ canApprove = true } = {}) {
 const findCommentTextarea = () => wrapper.findByTestId('comment-textarea');
 const findSubmitButton = () => wrapper.findByTestId('submit-review-button');
 const findForm = () => wrapper.findByTestId('submit-gl-form');
+const findSubmitDropdown = () => wrapper.findComponent(GlDropdown);
 
 describe('Batch comments submit dropdown', () => {
   afterEach(() => {
@@ -98,4 +101,19 @@ describe('Batch comments submit dropdown', () => {
 
     expect(wrapper.findByTestId('approve_merge_request').exists()).toBe(exists);
   });
+
+  it.each`
+    shouldAnimateReviewButton | animationClassApplied | classText
+    ${true}                   | ${true}               | ${'applies'}
+    ${false}                  | ${false}              | ${'does not apply'}
+  `(
+    '$classText animation class to `Finish review` button if `shouldAnimateReviewButton` is $shouldAnimateReviewButton',
+    ({ shouldAnimateReviewButton, animationClassApplied }) => {
+      factory({ shouldAnimateReviewButton });
+
+      expect(findSubmitDropdown().classes('submit-review-dropdown-animated')).toBe(
+        animationClassApplied,
+      );
+    },
+  );
 });

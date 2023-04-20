@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'project integration activation' do
-  include_context 'integration activation'
+  include_context 'with integration activation'
 
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }

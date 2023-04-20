@@ -27,7 +27,7 @@ For more information about Cells, see also:
 We can't ship the entire Cells architecture in one go - it is too large. Instead, we are adopting an iteration plan that provides value along the way.
 
 1. Introduce organizations
-1. Migrate existing top-level namespaces to organizations
+1. Migrate existing top-level groups to organizations
 1. Create new organizations on `cell`
 1. Migrate existing organizations from `cell` to `cell`
 1. Add additional Cell capabilities (DR, Regions)
@@ -74,6 +74,7 @@ This is the list of known affected features with the proposed solutions.
 ## Links
 
 - [Internal Pods presentation](https://docs.google.com/presentation/d/1x1uIiN8FR9fhL7pzFh9juHOVcSxEY7d2_q4uiKKGD44/edit#slide=id.ge7acbdc97a_0_155)
+- [Internal link to all diagrams](https://drive.google.com/file/d/13NHzbTrmhUM-z_Bf0RjatUEGw5jWHSLt/view?usp=sharing)
 - [Cells Epic](https://gitlab.com/groups/gitlab-org/-/epics/7582)
 - [Database Group investigation](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/database/doc/root-namespace-sharding.html)
 - [Shopify Pods architecture](https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale)

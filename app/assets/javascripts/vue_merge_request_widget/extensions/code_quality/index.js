@@ -63,7 +63,9 @@ export default {
 
       this.collapsedData.newErrors.map((e) => {
         return fullData.push({
-          text: `${capitalizeFirstCharacter(e.severity)} - ${e.description}`,
+          text: e.check_name
+            ? `${capitalizeFirstCharacter(e.severity)} - ${e.check_name} - ${e.description}`
+            : `${capitalizeFirstCharacter(e.severity)} - ${e.description}`,
           subtext: {
             prependText: i18n.prependText,
             text: `${e.file_path}:${e.line}`,
@@ -77,7 +79,9 @@ export default {
 
       this.collapsedData.resolvedErrors.map((e) => {
         return fullData.push({
-          text: `${capitalizeFirstCharacter(e.severity)} - ${e.description}`,
+          text: e.check_name
+            ? `${capitalizeFirstCharacter(e.severity)} - ${e.check_name} - ${e.description}`
+            : `${capitalizeFirstCharacter(e.severity)} - ${e.description}`,
           subtext: {
             prependText: i18n.prependText,
             text: `${e.file_path}:${e.line}`,

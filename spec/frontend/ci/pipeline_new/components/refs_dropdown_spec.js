@@ -1,35 +1,22 @@
-import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
-import MockAdapter from 'axios-mock-adapter';
-import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import waitForPromises from 'helpers/wait_for_promises';
-import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { shallowMount } from '@vue/test-utils';
 
+import RefSelector from '~/ref/components/ref_selector.vue';
 import RefsDropdown from '~/ci/pipeline_new/components/refs_dropdown.vue';
+import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
 
-import { mockBranches, mockRefs, mockFilteredRefs, mockTags } from '../mock_data';
-
-const projectRefsEndpoint = '/root/project/refs';
+const projectId = '8';
 const refShortName = 'main';
 const refFullName = 'refs/heads/main';
 
-jest.mock('~/alert');
-
 describe('Pipeline New Form', () => {
   let wrapper;
-  let mock;
 
-  const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findRefsDropdownItems = () => wrapper.findAllComponents(GlListboxItem);
-  const findSearchBox = () => wrapper.findByTestId('listbox-search-input');
-  const findListboxGroups = () => wrapper.findAll('ul[role="group"]');
+  const findRefSelector = () => wrapper.findComponent(RefSelector);
 
-  const createComponent = (props = {}, mountFn = shallowMountExtended) => {
-    wrapper = mountFn(RefsDropdown, {
-      provide: {
-        projectRefsEndpoint,
-      },
+  const createComponent = (props = {}) => {
+    wrapper = shallowMount(RefsDropdown, {
       propsData: {
+        projectId,
         value: {
           shortName: refShortName,
           fullName: refFullName,
@@ -39,163 +26,54 @@ describe('Pipeline New Form', () => {
     });
   };
 
-  beforeEach(() => {
-    mock = new MockAdapter(axios);
-    mock.onGet(projectRefsEndpoint, { params: { search: '' } }).reply(HTTP_STATUS_OK, mockRefs);
-  });
-
-  beforeEach(() => {
-    createComponent();
-  });
-
-  it('displays empty dropdown initially', () => {
-    findDropdown().vm.$emit('shown');
-
-    expect(findRefsDropdownItems()).toHaveLength(0);
-  });
-
-  it('does not make requests immediately', () => {
-    expect(mock.history.get).toHaveLength(0);
-  });
-
   describe('when user opens dropdown', () => {
-    beforeEach(async () => {
-      createComponent({}, mountExtended);
-      findDropdown().vm.$emit('shown');
-      await waitForPromises();
+    beforeEach(() => {
+      createComponent();
     });
 
-    it('requests unfiltered tags and branches', () => {
-      expect(mock.history.get).toHaveLength(1);
-      expect(mock.history.get[0].url).toBe(projectRefsEndpoint);
-      expect(mock.history.get[0].params).toEqual({ search: '' });
+    it('has default selected branch', () => {
+      expect(findRefSelector().props('value')).toBe('main');
     });
 
-    it('displays dropdown with branches and tags', () => {
-      const refLength = mockRefs.Tags.length + mockRefs.Branches.length;
-      expect(findRefsDropdownItems()).toHaveLength(refLength);
-    });
-
-    it('displays the names of refs', () => {
-      // Branches
-      expect(findRefsDropdownItems().at(0).text()).toBe(mockRefs.Branches[0]);
-
-      // Tags (appear after branches)
-      const firstTag = mockRefs.Branches.length;
-      expect(findRefsDropdownItems().at(firstTag).text()).toBe(mockRefs.Tags[0]);
-    });
-
-    it('when user shows dropdown a second time, only one request is done', () => {
-      expect(mock.history.get).toHaveLength(1);
+    it('has ref selector for branches and tags', () => {
+      expect(findRefSelector().props('enabledRefTypes')).toEqual([
+        REF_TYPE_BRANCHES,
+        REF_TYPE_TAGS,
+      ]);
     });
 
     describe('when user selects a value', () => {
-      const selectedIndex = 1;
-
-      beforeEach(async () => {
-        findRefsDropdownItems().at(selectedIndex).vm.$emit('select', 'refs/heads/branch-1');
-        await waitForPromises();
-      });
+      const fullName = `refs/heads/conflict-contains-conflict-markers`;
 
       it('component emits @input', () => {
+        findRefSelector().vm.$emit('input', fullName);
+
         const inputs = wrapper.emitted('input');
 
         expect(inputs).toHaveLength(1);
-        expect(inputs[0]).toEqual([{ shortName: 'branch-1', fullName: 'refs/heads/branch-1' }]);
-      });
-    });
-
-    describe('when user types searches for a tag', () => {
-      const mockSearchTerm = 'my-search';
-
-      beforeEach(async () => {
-        mock
-          .onGet(projectRefsEndpoint, { params: { search: mockSearchTerm } })
-          .reply(HTTP_STATUS_OK, mockFilteredRefs);
-
-        await findSearchBox().vm.$emit('input', mockSearchTerm);
-        await waitForPromises();
-      });
-
-      it('requests filtered tags and branches', () => {
-        expect(mock.history.get).toHaveLength(2);
-        expect(mock.history.get[1].params).toEqual({
-          search: mockSearchTerm,
-        });
-      });
-
-      it('displays dropdown with branches and tags', () => {
-        const filteredRefLength = mockFilteredRefs.Tags.length + mockFilteredRefs.Branches.length;
-
-        expect(findRefsDropdownItems()).toHaveLength(filteredRefLength);
+        expect(inputs[0]).toEqual([
+          {
+            shortName: 'conflict-contains-conflict-markers',
+            fullName: 'refs/heads/conflict-contains-conflict-markers',
+          },
+        ]);
       });
     });
   });
 
   describe('when user has selected a value', () => {
-    const selectedIndex = 1;
-    const mockShortName = mockRefs.Branches[selectedIndex];
+    const mockShortName = 'conflict-contains-conflict-markers';
     const mockFullName = `refs/heads/${mockShortName}`;
 
-    beforeEach(async () => {
-      mock
-        .onGet(projectRefsEndpoint, {
-          params: { ref: mockFullName },
-        })
-        .reply(HTTP_STATUS_OK, mockRefs);
-
-      createComponent(
-        {
-          value: {
-            shortName: mockShortName,
-            fullName: mockFullName,
-          },
-        },
-        mountExtended,
-      );
-      findDropdown().vm.$emit('shown');
-      await waitForPromises();
-    });
-
     it('branch is checked', () => {
-      expect(findRefsDropdownItems().at(selectedIndex).props('isSelected')).toBe(true);
+      createComponent({
+        value: {
+          shortName: mockShortName,
+          fullName: mockFullName,
+        },
+      });
+
+      expect(findRefSelector().props('value')).toBe(mockShortName);
     });
-  });
-
-  describe('when server returns an error', () => {
-    beforeEach(async () => {
-      mock
-        .onGet(projectRefsEndpoint, { params: { search: '' } })
-        .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
-
-      findDropdown().vm.$emit('shown');
-      await waitForPromises();
-    });
-
-    it('loading error event is emitted', () => {
-      expect(wrapper.emitted('loadingError')).toHaveLength(1);
-      expect(wrapper.emitted('loadingError')[0]).toEqual([expect.any(Error)]);
-    });
-  });
-
-  describe('should display branches and tags based on its length', () => {
-    it.each`
-      mockData                                    | expectedGroupLength | expectedListboxItemsLength
-      ${{ ...mockBranches, Tags: [] }}            | ${1}                | ${mockBranches.Branches.length}
-      ${{ Branches: [], ...mockTags }}            | ${1}                | ${mockTags.Tags.length}
-      ${{ ...mockRefs }}                          | ${2}                | ${mockBranches.Branches.length + mockTags.Tags.length}
-      ${{ Branches: undefined, Tags: undefined }} | ${0}                | ${0}
-    `(
-      'should render branches and tags based on presence',
-      async ({ mockData, expectedGroupLength, expectedListboxItemsLength }) => {
-        mock.onGet(projectRefsEndpoint, { params: { search: '' } }).reply(HTTP_STATUS_OK, mockData);
-        createComponent({}, mountExtended);
-        findDropdown().vm.$emit('shown');
-        await waitForPromises();
-
-        expect(findListboxGroups()).toHaveLength(expectedGroupLength);
-        expect(findRefsDropdownItems()).toHaveLength(expectedListboxItemsLength);
-      },
-    );
   });
 });

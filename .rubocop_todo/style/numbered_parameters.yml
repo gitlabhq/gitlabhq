@@ -76,7 +76,6 @@ Style/NumberedParameters:
     - 'spec/services/web_hook_service_spec.rb'
     - 'spec/support/helpers/graphql_helpers.rb'
     - 'spec/support/matchers/exceed_query_limit.rb'
-    - 'spec/support/shared_contexts/features/integrations/integrations_shared_context.rb'
     - 'spec/support/shared_contexts/lib/sbom/package_url_shared_contexts.rb'
     - 'spec/support/shared_examples/integrations/integration_settings_form.rb'
     - 'spec/support/shared_examples/requests/api/hooks_shared_examples.rb'

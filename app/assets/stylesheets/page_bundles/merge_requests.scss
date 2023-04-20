@@ -1039,6 +1039,25 @@ $tabs-holder-z-index: 250;
   }
 }
 
+.submit-review-dropdown-animated {
+  animation: review-btn-animate 300ms ease-in;
+}
+
+@include keyframes(review-btn-animate) {
+  0% {
+    transform: scale(1);
+  }
+
+  75% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+
 .mr-widget-merge-details {
   *,
   & {

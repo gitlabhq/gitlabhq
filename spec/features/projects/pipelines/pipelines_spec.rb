@@ -686,7 +686,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
           click_button project.default_branch
           wait_for_requests
 
-          find('.gl-new-dropdown-item', text: 'master').click
+          find('.gl-new-dropdown-item', text: '2-mb-file').click
           wait_for_requests
         end
 
@@ -798,9 +798,9 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
       describe 'find pipelines' do
         it 'shows filtered pipelines', :js do
           click_button project.default_branch
-          send_keys('fix')
+          send_keys('2-mb-file')
 
-          expect_listbox_item('fix')
+          expect_listbox_item('2-mb-file')
         end
       end
     end

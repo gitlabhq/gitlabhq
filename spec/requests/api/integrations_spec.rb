@@ -10,14 +10,6 @@ RSpec.describe API::Integrations, feature_category: :integrations do
     create(:project, creator_id: user.id, namespace: user.namespace)
   end
 
-  # The API supports all integrations except the GitLab Slack Application
-  # integration; this integration must be installed via the UI.
-  def self.integration_names
-    names = Integration.available_integration_names
-    names.delete(Integrations::GitlabSlackApplication.to_param) if Gitlab.ee?
-    names
-  end
-
   %w[integrations services].each do |endpoint|
     describe "GET /projects/:id/#{endpoint}" do
       it 'returns authentication error when unauthenticated' do
@@ -51,9 +43,19 @@ RSpec.describe API::Integrations, feature_category: :integrations do
       end
     end
 
-    integration_names.each do |integration|
+    where(:integration) do
+      # The API supports all integrations except the GitLab Slack Application
+      # integration; this integration must be installed via the UI.
+      names = Integration.available_integration_names
+      names.delete(Integrations::GitlabSlackApplication.to_param) if Gitlab.ee?
+      names
+    end
+
+    with_them do
+      integration = params[:integration]
+
       describe "PUT /projects/:id/#{endpoint}/#{integration.dasherize}" do
-        include_context integration
+        include_context 'with integration'
 
         # NOTE: Some attributes are not supported for PUT requests, even though they probably should be.
         # We can fix these manually, or with a generic approach like https://gitlab.com/gitlab-org/gitlab/-/issues/348208
@@ -119,7 +121,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
       end
 
       describe "DELETE /projects/:id/#{endpoint}/#{integration.dasherize}" do
-        include_context integration
+        include_context 'with integration'
 
         before do
           initialize_integration(integration)
@@ -135,7 +137,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
       end
 
       describe "GET /projects/:id/#{endpoint}/#{integration.dasherize}" do
-        include_context integration
+        include_context 'with integration'
 
         let!(:initialized_integration) { initialize_integration(integration, active: true) }
 

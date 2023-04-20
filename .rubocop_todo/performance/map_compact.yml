@@ -69,7 +69,6 @@ Performance/MapCompact:
     - 'ee/lib/ee/api/entities/experiment.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/person.rb'
     - 'ee/lib/ee/gitlab/background_migration/populate_latest_pipeline_ids.rb'
-    - 'ee/lib/ee/gitlab/background_migration/recalculate_vulnerability_finding_signatures_for_findings.rb'
     - 'ee/lib/elastic/latest/repository_instance_proxy.rb'
     - 'ee/lib/gitlab/alert_management/alert_payload_field_extractor.rb'
     - 'ee/lib/gitlab/ci/parsers/security/dast.rb'

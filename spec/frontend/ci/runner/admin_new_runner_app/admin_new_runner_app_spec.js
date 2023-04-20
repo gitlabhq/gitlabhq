@@ -79,6 +79,7 @@ describe('AdminNewRunnerApp', () => {
       expect(findRunnerCreateForm().props()).toEqual({
         runnerType: INSTANCE_TYPE,
         groupId: null,
+        projectId: null,
       });
     });
 

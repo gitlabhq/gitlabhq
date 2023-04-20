@@ -5,10 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Code Suggestions (Beta) **(ULTIMATE SAAS)**
+# Code Suggestions (Beta) **(PREMIUM SAAS)**
 
-> - Enabled as opt-in with GitLab 15.11 as [Beta](/ee/policy/alpha-beta-support.md#beta).
 > - [Introduced](https://about.gitlab.com/releases/2023/02/22/gitlab-15-9-released/#code-suggestions-available-in-closed-beta) in GitLab 15.9 as [Beta](/ee/policy/alpha-beta-support.md#beta) for early access Ultimate customers.
+> - [Enabled] as opt-in with GitLab 15.11 as [Beta](/ee/policy/alpha-beta-support.md#beta).
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/408158) from GitLab Ultimate to GitLab Premium in 16.0.
 
 WARNING:
 This feature is in [Beta](/ee/policy/alpha-beta-support.md#beta). Code Suggestions use generative AI to suggest code while you're developing. Due to high demand, this feature will have unscheduled downtime and code suggestions in VS Code may be delayed. Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality). Beta users should read about the [known limitations](#known-limitations). We look forward to hearing your feedback.

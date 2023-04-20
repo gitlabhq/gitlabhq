@@ -14,7 +14,7 @@ Cells provide a horizontally scalable solution because additional Cells can be c
 
 ## Increased availability
 
-A major challenge for shared-infrastructure architectures is a lack of isolation between top-level namespaces. This can lead to noisy neighbor effects. A organization's behavior inside a top-level namespace can impact all other organizations. This is highly undesirable. Cells provide isolation at the cell level. A group of organizations is fully isolated from other organizations located on a different Cell. This minimizes noisy neighbor effects while still benefiting from the cost-efficiency of shared infrastructure.
+A major challenge for shared-infrastructure architectures is a lack of isolation between top-level groups. This can lead to noisy neighbor effects. A organization's behavior inside a top-level group can impact all other organizations. This is highly undesirable. Cells provide isolation at the cell level. A group of organizations is fully isolated from other organizations located on a different Cell. This minimizes noisy neighbor effects while still benefiting from the cost-efficiency of shared infrastructure.
 
 Additionally, Cells provide a way to implement disaster recovery capabilities. Entire Cells may be replicated to read-only standbys with automatic failover capabilities.
 
@@ -35,7 +35,7 @@ Larger organizations may benefit substantially from [GitLab Dedicated](../../../
 At this moment, GitLab.com has "social-network"-like capabilities that may not fit well into a more isolated organization model. Removing those features, however, possesses some challenges:
 
 1. How will existing `gitlab-org` contributors contribute to the namespace??
-1. How do we move existing top-level namespaces into the new model (effectively breaking their social features)?
+1. How do we move existing top-level groups into the new model (effectively breaking their social features)?
 
 We should evaluate if the SMB and mid market segment is interested in these features, or if not having them is acceptable in most cases.
 

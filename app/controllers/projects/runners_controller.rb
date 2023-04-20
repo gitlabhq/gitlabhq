@@ -2,6 +2,7 @@
 
 class Projects::RunnersController < Projects::ApplicationController
   before_action :authorize_admin_build!
+  before_action :authorize_create_runner!, only: [:new]
   before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show]
 
   feature_category :runner
@@ -20,6 +21,10 @@ class Projects::RunnersController < Projects::ApplicationController
     else
       render 'edit'
     end
+  end
+
+  def new
+    render_404 unless Feature.enabled?(:create_runner_workflow_for_namespace, project.namespace)
   end
 
   def destroy

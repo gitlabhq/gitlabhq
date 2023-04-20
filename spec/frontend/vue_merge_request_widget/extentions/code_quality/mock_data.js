@@ -57,6 +57,13 @@ export const codeQualityResponseResolvedAndNewErrors = {
       file_path: 'index.js',
       line: 12,
     },
+    {
+      description: 'Avoid parameter lists longer than 5 parameters. [12/5]',
+      check_name: 'Rubocop/Metrics/ParameterLists',
+      severity: 'minor',
+      file_path: 'main.rb',
+      line: 3,
+    },
   ],
   resolved_errors: [
     {
@@ -64,6 +71,13 @@ export const codeQualityResponseResolvedAndNewErrors = {
       severity: 'minor',
       file_path: 'index.js',
       line: 12,
+    },
+    {
+      description: 'Avoid parameter lists longer than 5 parameters. [12/5]',
+      check_name: 'Rubocop/Metrics/ParameterLists',
+      severity: 'minor',
+      file_path: 'main.rb',
+      line: 3,
     },
   ],
   existing_errors: [],

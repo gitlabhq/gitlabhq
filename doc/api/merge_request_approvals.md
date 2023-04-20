@@ -1140,3 +1140,23 @@ Supported attributes:
 |---------------------|-------------------|------------------------|-------------------------------------------------------------------------------|
 | `id`                | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of a project](rest/index.md#namespaced-path-encoding). |
 | `merge_request_iid` | integer           | **{check-circle}** Yes | The IID of a merge request.                                                   |
+
+## Reset approvals of a merge request
+
+Clear all approvals of merge request.
+
+Available only for [bot users](../user/project/settings/project_access_tokens.md#bot-users-for-projects)
+based on project or group tokens. Users without bot permissions receive a `401 Unauthorized` response.
+
+```plaintext
+PUT /projects/:id/merge_requests/:merge_request_iid/reset_approvals
+```
+
+| Attribute           | Type              | Required | Description                                                                                                     |
+|---------------------|-------------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer           | **{check-circle}** Yes      | The internal ID of the merge request.                                                                           |
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/76/merge_requests/1/reset_approvals"
+```

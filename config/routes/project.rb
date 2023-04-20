@@ -104,7 +104,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :runners, only: [:index, :edit, :update, :destroy, :show] do
+        resources :runners, only: [:index, :new, :edit, :update, :destroy, :show] do
           member do
             post :resume
             post :pause
