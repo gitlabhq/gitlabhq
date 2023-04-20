@@ -89,6 +89,6 @@ release-environments-deploy:
     VERSIONS: "${VERSIONS}"
     ENVIRONMENT: "${ENVIRONMENT}"
   trigger:
-    project: gl-infra/release-environments
+    project: gitlab-com/gl-infra/release-environments
     branch: main
     strategy: depend
