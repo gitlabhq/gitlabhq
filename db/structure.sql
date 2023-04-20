@@ -18763,7 +18763,7 @@ CREATE TABLE namespace_settings (
     allow_runner_registration_token boolean DEFAULT true NOT NULL,
     unique_project_download_limit_alertlist integer[] DEFAULT '{}'::integer[] NOT NULL,
     emails_enabled boolean DEFAULT true NOT NULL,
-    code_suggestions boolean DEFAULT true NOT NULL,
+    code_suggestions boolean DEFAULT false NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
     CONSTRAINT namespace_settings_unique_project_download_limit_allowlist_size CHECK ((cardinality(unique_project_download_limit_allowlist) <= 100))

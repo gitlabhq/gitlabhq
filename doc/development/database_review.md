@@ -125,7 +125,7 @@ the following preparations into account.
   test its execution using `CREATE INDEX CONCURRENTLY` in [Database Lab](database/database_lab.md) and add the execution time to the MR description:
   - Execution time largely varies between Database Lab and GitLab.com, but an elevated execution time from Database Lab
     can give a hint that the execution on GitLab.com is also considerably high.
-  - If the execution from Database Lab is longer than `1h`, the index should be moved to a [post-migration](database/post_deployment_migrations.md).
+  - If the execution from Database Lab is longer than `10 minutes`, the [index](database/adding_database_indexes.md) should be moved to a [post-migration](database/post_deployment_migrations.md).
     Keep in mind that in this case you may need to split the migration and the application changes in separate releases to ensure the index
     is in place when the code that needs it is deployed.
 - Manually trigger the [database testing](database/database_migration_pipeline.md) job (`db:gitlabcom-database-testing`) in the `test` stage.

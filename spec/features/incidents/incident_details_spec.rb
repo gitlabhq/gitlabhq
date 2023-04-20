@@ -94,7 +94,6 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
   end
 
   it 'routes the user to the incident details page when the `issue_type` is set to incident' do
-    set_cookie('new-actions-popover-viewed', 'true')
     visit project_issue_path(project, issue)
     wait_for_requests
 
@@ -114,7 +113,6 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
   end
 
   it 'routes the user to the issue details page when the `issue_type` is set to issue' do
-    set_cookie('new-actions-popover-viewed', 'true')
     visit incident_project_issues_path(project, incident)
     wait_for_requests
 

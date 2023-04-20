@@ -12,8 +12,8 @@ module IssuablesHelper
     end
   end
 
-  def sidebar_gutter_collapsed_class(is_merge_request_with_flag)
-    return "right-sidebar-expanded" if is_merge_request_with_flag
+  def sidebar_gutter_collapsed_class
+    return "right-sidebar-expanded" if moved_mr_sidebar_enabled?
 
     "right-sidebar-#{sidebar_gutter_collapsed? ? 'collapsed' : 'expanded'}"
   end

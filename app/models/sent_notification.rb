@@ -16,8 +16,6 @@ class SentNotification < ApplicationRecord
   validates :in_reply_to_discussion_id, format: { with: /\A\h{40}\z/, allow_nil: true }
   validate :note_valid
 
-  ignore_column :id_convert_to_bigint, remove_with: '16.0', remove_after: '2023-05-22'
-
   after_save :keep_around_commit, if: :for_commit?
 
   class << self

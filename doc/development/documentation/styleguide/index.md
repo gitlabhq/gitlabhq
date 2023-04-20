@@ -1555,15 +1555,6 @@ If the document resides outside of the `doc/` directory, use the full path
 instead of the relative link:
 `https://docs.gitlab.com/ee/administration/restart_gitlab.html`.
 
-### Installation guide
-
-In [step 2 of the installation guide](../../../install/installation.md#2-ruby),
-we install Ruby from source. To update the guide for a new Ruby version:
-
-- Change the version throughout the code block.
-- Replace the sha256sum. It's available on the
-  [downloads page](https://www.ruby-lang.org/en/downloads/) of the Ruby website.
-
 ### How to document different installation methods
 
 GitLab supports five official installation methods. If you're referring to

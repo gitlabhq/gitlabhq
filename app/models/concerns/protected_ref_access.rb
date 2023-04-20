@@ -27,13 +27,11 @@ module ProtectedRefAccess
     scope :for_user, -> { where.not(user_id: nil) }
     scope :for_group, -> { where.not(group_id: nil) }
 
-    validates :access_level, presence: true, if: :role?, inclusion: {
-      in: self.allowed_access_levels
-    }
+    validates :access_level, presence: true, if: :role?, inclusion: { in: allowed_access_levels }
   end
 
   def humanize
-    HUMAN_ACCESS_LEVELS[self.access_level]
+    HUMAN_ACCESS_LEVELS[access_level]
   end
 
   def type

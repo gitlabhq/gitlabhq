@@ -1,8 +1,7 @@
 - display_issuable_type = issuable_display_type(@merge_request)
 
 .btn-group.gl-md-ml-3.gl-display-flex.dropdown.gl-dropdown.gl-md-w-auto.gl-w-full
-  %span.js-sidebar-header-popover
-  = button_tag type: 'button', id: "new-actions-header-dropdown", class: "btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle btn-default-tertiary dropdown-icon-only dropdown-toggle-no-caret gl-display-none! gl-md-display-inline-flex!", title: _('Merge request actions'), 'aria-label': _('Merge request actions'), data: { toggle: 'dropdown', testid: 'merge-request-actions' } do
+  = button_tag type: 'button', class: "btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle btn-default-tertiary dropdown-icon-only dropdown-toggle-no-caret gl-display-none! gl-md-display-inline-flex!", title: _('Merge request actions'), 'aria-label': _('Merge request actions'), data: { toggle: 'dropdown', testid: 'merge-request-actions' } do
     = sprite_icon "ellipsis_v", size: 16, css_class: "dropdown-icon gl-icon"
   = button_tag type: 'button', class: "btn dropdown-toggle btn-default btn-md btn-block gl-button gl-dropdown-toggle gl-md-display-none!", data: { 'toggle' => 'dropdown' } do
     %span.gl-dropdown-button-text= _('Merge request actions')

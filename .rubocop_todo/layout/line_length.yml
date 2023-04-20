@@ -5477,7 +5477,6 @@ Layout/LineLength:
     - 'spec/tooling/danger/product_intelligence_spec.rb'
     - 'spec/tooling/danger/project_helper_spec.rb'
     - 'spec/tooling/danger/sidekiq_queues_spec.rb'
-    - 'spec/tooling/danger/specs_spec.rb'
     - 'spec/tooling/lib/tooling/kubernetes_client_spec.rb'
     - 'spec/tooling/lib/tooling/test_map_generator_spec.rb'
     - 'spec/tooling/quality/test_level_spec.rb'

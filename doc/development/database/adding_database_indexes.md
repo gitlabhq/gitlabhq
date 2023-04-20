@@ -38,6 +38,15 @@ when adding a new index:
 1. Is the overhead of maintaining the index worth the reduction in query
    timings?
 
+In some situations, an index might not be required:
+
+- The table is small (less than `1,000` records) and it's not expected to exponentially grow in size.
+- Any existing indexes filter out enough rows.
+- The reduction in query timings after the index is added is not significant.
+
+Additionally, wide indexes are not required to match all filter criteria of queries. We just need
+to cover enough columns so that the index lookup has a small enough selectivity.
+
 ## Re-using Queries
 
 The first step is to make sure your query re-uses as many existing indexes as
@@ -182,6 +191,29 @@ Without an explicit name argument, Rails can return a false positive
 for `index_exists?`, causing a required index to not be created
 properly. By always requiring a name for certain types of indexes, the
 chance of error is greatly reduced.
+
+## Testing for existence of indexes
+
+The easiest way to test for existence of an index by name is to use the `index_name_exists?` method, but the `index_exists?` method can also be used with a name option. For example:
+
+```ruby
+class MyMigration < Gitlab::Database::Migration[2.1]
+  INDEX_NAME = 'index_name'
+
+  def up
+    # an index must be conditionally created due to schema inconsistency
+    unless index_exists?(:table_name, :column_name, name: INDEX_NAME)
+      add_index :table_name, :column_name, name: INDEX_NAME
+    end
+  end
+
+  def down
+    # no op
+  end
+end
+```
+
+Keep in mind that concurrent index helpers like `add_concurrent_index`, `remove_concurrent_index`, and `remove_concurrent_index_by_name` already perform existence checks internally.
 
 ## Temporary indexes
 

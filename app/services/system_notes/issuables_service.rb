@@ -456,8 +456,10 @@ module SystemNotes
       create_resource_state_event(status: 'closed', close_auto_resolve_prometheus_alert: true)
     end
 
-    def change_issue_type
-      body = "changed issue type to #{noteable.issue_type.humanize(capitalize: false)}"
+    def change_issue_type(previous_type)
+      previous = previous_type.humanize(capitalize: false)
+      new = noteable.issue_type.humanize(capitalize: false)
+      body = "changed type from #{previous} to #{new}"
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'issue_type'))
     end

@@ -259,7 +259,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
           it 'creates system note about issue type' do
             update_issue(issue_type: 'incident')
 
-            note = find_note('changed issue type to incident')
+            note = find_note('changed type from issue to incident')
 
             expect(note).not_to eq(nil)
           end

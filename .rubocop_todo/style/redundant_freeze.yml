@@ -235,7 +235,6 @@ Style/RedundantFreeze:
     - 'tooling/danger/config_files.rb'
     - 'tooling/danger/customer_success.rb'
     - 'tooling/danger/datateam.rb'
-    - 'tooling/danger/specs.rb'
     - 'tooling/danger/stable_branch.rb'
     - 'tooling/lib/tooling/kubernetes_client.rb'
     - 'tooling/lib/tooling/mappings/view_to_js_mappings.rb'

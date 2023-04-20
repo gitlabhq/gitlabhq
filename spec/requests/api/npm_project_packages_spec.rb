@@ -415,6 +415,60 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
           end
         end
       end
+
+      context 'when the Npm-Command in headers is deprecate' do
+        let(:package_name) { "@#{group.path}/my_package_name" }
+        let(:headers) { build_token_auth_header(token.plaintext_token).merge('Npm-Command' => 'deprecate') }
+        let(:params) do
+          {
+            'id' => project.id.to_s,
+            'package_name' => package_name,
+            'versions' => {
+              '1.0.1' => {
+                'name' => package_name,
+                'deprecated' => 'This version is deprecated'
+              },
+              '1.0.2' => {
+                'name' => package_name
+              }
+            }
+          }
+        end
+
+        subject(:request) { put api("/projects/#{project.id}/packages/npm/#{package_name.sub('/', '%2f')}"), params: params, headers: headers }
+
+        context 'when the user is not authorized to destroy the package' do
+          before do
+            project.add_developer(user)
+          end
+
+          it 'does not call DeprecatePackageService' do
+            expect(::Packages::Npm::DeprecatePackageService).not_to receive(:new)
+
+            request
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
+        context 'when the user is authorized to destroy the package' do
+          before do
+            project.add_maintainer(user)
+          end
+
+          it 'calls DeprecatePackageService with the correct arguments' do
+            expect(::Packages::Npm::DeprecatePackageService).to receive(:new).with(project, params) do
+              double.tap do |service|
+                expect(service).to receive(:execute).with(async: true)
+              end
+            end
+
+            request
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+      end
     end
 
     def upload_package(package_name, params = {})

@@ -50,8 +50,8 @@ RSpec.describe JSONWebToken::HMACToken do
       context 'that was generated using a different secret' do
         let(:encoded_token) { described_class.new('some other secret').encoded }
 
-        it "raises exception saying 'Signature verification raised" do
-          expect { decoded_token }.to raise_error(JWT::VerificationError, 'Signature verification raised')
+        it "raises exception saying 'Signature verification failed" do
+          expect { decoded_token }.to raise_error(JWT::VerificationError, 'Signature verification failed')
         end
       end
 

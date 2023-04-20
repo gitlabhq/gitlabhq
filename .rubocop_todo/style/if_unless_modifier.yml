@@ -385,7 +385,6 @@ Style/IfUnlessModifier:
     - 'config/routes.rb'
     - 'danger/database/Dangerfile'
     - 'danger/pipeline/Dangerfile'
-    - 'danger/specs/Dangerfile'
     - 'danger/z_metadata/Dangerfile'
     - 'db/migrate/20210909184349_add_index_package_id_id_on_package_files.rb'
     - 'db/migrate/20220324175325_add_key_data_to_secure_files.rb'

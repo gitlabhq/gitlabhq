@@ -19,9 +19,7 @@
           %input.label-color-preview.gl-w-7.gl-h-full.gl-border-1.gl-border-solid.gl-border-gray-500.gl-border-r-0.gl-rounded-top-right-none.gl-rounded-bottom-right-none{ type: "color", placeholder: _('Select color') }
         = f.text_field :color, class: "gl-form-input form-control", data: { qa_selector: 'label_color_field' }
       .form-text.text-muted
-        = _('Choose any color.')
-        %br
-        = _("Or you can choose one of the suggested colors below")
+        = _('Select a color from the color picker or from the presets below.')
       = render_suggested_colors
   .gl-display-flex.gl-justify-content-space-between
     %div

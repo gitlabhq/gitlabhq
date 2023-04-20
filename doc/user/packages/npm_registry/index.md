@@ -205,6 +205,39 @@ To install a package from the instance level, the package must have been publish
    npm install @scope/my-package
    ```
 
+## Deprecate a package
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396763) in GitLab 16.0.
+
+You can deprecate a package so that a deprecation warning displays when the package is fetched.
+
+Pre-requisites:
+
+- The same [permissions](../../permissions.md) as deleting a package.
+- [Authenticated to the package registry](#authentication-to-the-package-registry).
+
+From the command line, run:
+
+```shell
+npm deprecate @scope/package "Deprecation message"
+```
+
+The CLI also accepts version ranges for `@scope/package`. For example:
+
+```shell
+npm deprecate @scope/package "All package versions are deprecated"
+npm deprecate @scope/package@1.0.1 "Only version 1.0.1 is deprecated"
+npm deprecate @scope/package@"< 1.0.5" "All package versions less than 1.0.5 are deprecated"
+```
+
+### Remove deprecation warning
+
+To remove a package's deprecation warning, specify `""` (an empty string) for the message. For example:
+
+```shell
+npm deprecate @scope/package ""
+```
+
 ## Helpful hints
 
 ### Package forwarding to npmjs.com
@@ -293,6 +326,8 @@ The GitLab npm repository supports the following commands for the npm CLI (`npm`
 - `npm dist-tag rm`: Delete a dist-tag.
 - `npm ci`: Install npm packages directly from your `package-lock.json` file.
 - `npm view`: Show package metadata.
+- `npm pack`: Create a tarball from a package.
+- `npm deprecate`: Deprecate a version of a package.
 
 ## Troubleshooting
 

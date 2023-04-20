@@ -78,7 +78,7 @@ Prerequisites:
 
 To create an issue from another issue:
 
-1. In an existing issue, select **Issue actions** (**{ellipsis_v}**).
+1. In an existing issue, select the vertical ellipsis (**{ellipsis_v}**).
 1. Select **New related issue**.
 1. Complete the [fields](#fields-in-the-new-issue-form).
    The new issue form has a **Relate to issue #123** checkbox, where `123` is the ID of the

@@ -438,5 +438,4 @@ Lint/UnusedBlockArgument:
     - 'spec/tooling/lib/tooling/find_codeowners_spec.rb'
     - 'spec/tooling/rspec_flaky/config_spec.rb'
     - 'spec/workers/projects/git_garbage_collect_worker_spec.rb'
-    - 'tooling/danger/specs.rb'
     - 'tooling/lib/tooling/find_codeowners.rb'

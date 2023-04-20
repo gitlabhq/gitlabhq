@@ -153,7 +153,7 @@ module IssuesHelper
     issue.moved_from.project.service_desk_enabled? && !issue.project.service_desk_enabled?
   end
 
-  def issue_header_actions_data(project, issuable, current_user, issuable_sidebar)
+  def issue_header_actions_data(project, issuable, current_user)
     new_issuable_params = { issue: {}, add_related_issue: issuable.iid }
     if issuable.incident?
       new_issuable_params[:issuable_template] = 'incident'
@@ -176,8 +176,7 @@ module IssuesHelper
       report_abuse_path: add_category_abuse_reports_path,
       reported_user_id: issuable.author.id,
       reported_from_url: issue_url(issuable),
-      submit_as_spam_path: mark_as_spam_project_issue_path(project, issuable),
-      issuable_email_address: issuable_sidebar.nil? ? '' : issuable_sidebar[:create_note_email]
+      submit_as_spam_path: mark_as_spam_project_issue_path(project, issuable)
     }
   end
 

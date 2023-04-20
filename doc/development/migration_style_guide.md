@@ -644,89 +644,14 @@ for more details.
 
 ## Adding indexes
 
-Before adding an index, consider if this one is necessary. There are situations in which an index
-might not be required, like:
-
-- The table is small (less than `1,000` records) and it's not expected to exponentially grow in size.
-- Any existing indexes filter out enough rows.
-- The reduction in query timings after the index is added is not significant.
-
-Additionally, wide indexes are not required to match all filter criteria of queries, we just need
-to cover enough columns so that the index lookup has a small enough selectivity. Please review our
-[Adding Database indexes](database/adding_database_indexes.md) guide for more details.
-
-When adding an index to a non-empty table make sure to use the method
-`add_concurrent_index` instead of the regular `add_index` method.
-The `add_concurrent_index` method automatically creates concurrent indexes
-when using PostgreSQL, removing the need for downtime.
-
-To use this method, you must disable single-transactions mode
-by calling the method `disable_ddl_transaction!` in the body of your migration
-class like so:
-
-```ruby
-class MyMigration < Gitlab::Database::Migration[2.1]
-  disable_ddl_transaction!
-
-  INDEX_NAME = 'index_name'
-
-  def up
-    add_concurrent_index :table, :column, name: INDEX_NAME
-  end
-
-  def down
-    remove_concurrent_index :table, :column, name: INDEX_NAME
-  end
-end
-```
-
-You must explicitly name indexes that are created with more complex
-definitions beyond table name, column names, and uniqueness constraint.
-Consult the [Adding Database Indexes](database/adding_database_indexes.md#requirements-for-naming-indexes)
-guide for more details.
-
-If you need to add a unique index, please keep in mind there is the possibility
-of existing duplicates being present in the database. This means that should
-always _first_ add a migration that removes any duplicates, before adding the
-unique index.
-
-For a small table (such as an empty one or one with less than `1,000` records),
-it is recommended to use `add_index` in a single-transaction migration, combining it with other
-operations that don't require `disable_ddl_transaction!`.
+Before adding an index, consider if one is necessary. The [Adding Database indexes](database/adding_database_indexes.md) guide contains more details to help you decide if an index is necessary and provides best practices for adding indexes.
 
 ## Testing for existence of indexes
 
-If a migration requires conditional logic based on the absence or
-presence of an index, you must test for existence of that index using
-its name. This helps avoids problems with how Rails compares index definitions,
-which can lead to unexpected results. For more details, review the
-[Adding Database Indexes](database/adding_database_indexes.md#why-explicit-names-are-required)
+If a migration requires conditional logic based on the absence or presence of an index, you must test for existence of that index using its name. This helps avoids problems with how Rails compares index definitions, which can lead to unexpected results.
+
+For more details, review the [Adding Database Indexes](database/adding_database_indexes.md#testing-for-existence-of-indexes)
 guide.
-
-The easiest way to test for existence of an index by name is to use the
-`index_name_exists?` method, but the `index_exists?` method can also
-be used with a name option. For example:
-
-```ruby
-class MyMigration < Gitlab::Database::Migration[2.1]
-  INDEX_NAME = 'index_name'
-
-  def up
-    # an index must be conditionally created due to schema inconsistency
-    unless index_exists?(:table_name, :column_name, name: INDEX_NAME)
-      add_index :table_name, :column_name, name: INDEX_NAME
-    end
-  end
-
-  def down
-    # no op
-  end
-end
-```
-
-Keep in mind that concurrent index helpers like `add_concurrent_index`,
-`remove_concurrent_index`, and `remove_concurrent_index_by_name` already
-perform existence checks internally.
 
 ## Adding foreign-key constraints
 

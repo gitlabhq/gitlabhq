@@ -38,7 +38,7 @@ module NavHelper
   end
 
   def page_gutter_class
-    moved_sidebar_enabled = @is_merge_request_with_flag
+    moved_sidebar_enabled = current_controller?('merge_requests') && moved_mr_sidebar_enabled?
 
     if (page_has_markdown? || current_path?('projects/merge_requests#diffs')) && !current_controller?('conflicts')
       if cookies[:collapsed_gutter] == 'true'

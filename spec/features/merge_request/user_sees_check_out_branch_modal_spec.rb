@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > User sees check out branch modal', :js, feature_category: :code_review_workflow do
-  include CookieHelper
-
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let(:merge_request) { create(:merge_request, source_project: project) }
@@ -12,7 +10,6 @@ RSpec.describe 'Merge request > User sees check out branch modal', :js, feature_
 
   before do
     sign_in(user)
-    set_cookie('new-actions-popover-viewed', 'true')
     visit project_merge_request_path(project, merge_request)
     wait_for_requests
 
