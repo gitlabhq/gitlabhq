@@ -72,9 +72,14 @@ RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, featur
 
     context 'when pipeline exists' do
       before do
-        create(:ci_pipeline, ci_status, merge_request: merge_request,
-                                        project: merge_request.project, sha: merge_request.source_branch_sha,
-                                        head_pipeline_of: merge_request)
+        create(
+          :ci_pipeline,
+          ci_status,
+          merge_request: merge_request,
+          project: merge_request.project,
+          sha: merge_request.source_branch_sha,
+          head_pipeline_of: merge_request
+        )
       end
 
       context 'when the pipeline is running' do

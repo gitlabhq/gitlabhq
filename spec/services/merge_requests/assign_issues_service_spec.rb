@@ -37,12 +37,14 @@ RSpec.describe MergeRequests::AssignIssuesService, feature_category: :code_revie
 
   it 'accepts precomputed data for closes_issues' do
     issue2 = create(:issue, project: project)
-    service2 = described_class.new(project: project,
-                                   current_user: user,
-                                   params: {
-                                     merge_request: merge_request,
-                                     closes_issues: [issue, issue2]
-                                   })
+    service2 = described_class.new(
+      project: project,
+      current_user: user,
+      params: {
+        merge_request: merge_request,
+        closes_issues: [issue, issue2]
+      }
+    )
 
     expect(service2.assignable_issues.count).to eq 2
   end

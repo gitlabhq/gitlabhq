@@ -117,6 +117,12 @@ export const HIDE_APPEARING_CONTENT = {
   defaultKeys: ['esc'],
 };
 
+export const TOGGLE_SUPER_SIDEBAR = {
+  id: 'globalShortcuts.toggleSuperSidebar',
+  description: __('Toggle the navigation sidebar'),
+  defaultKeys: ['mod+\\'], // eslint-disable-line @gitlab/require-i18n-strings
+};
+
 export const TOGGLE_CANARY = {
   id: 'globalShortcuts.toggleCanary',
   description: __('Toggle GitLab Next'),
@@ -535,6 +541,10 @@ export const GLOBAL_SHORTCUTS_GROUP = {
     HIDE_APPEARING_CONTENT,
   ],
 };
+
+if (gon.use_new_navigation) {
+  GLOBAL_SHORTCUTS_GROUP.keybindings.push(TOGGLE_SUPER_SIDEBAR);
+}
 
 export const EDITING_SHORTCUTS_GROUP = {
   id: 'editing',

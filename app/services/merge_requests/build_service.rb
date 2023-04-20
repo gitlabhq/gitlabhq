@@ -42,17 +42,17 @@ module MergeRequests
     attr_accessor :merge_request
 
     delegate :target_branch,
-             :target_branch_ref,
-             :target_project,
-             :source_branch,
-             :source_branch_ref,
-             :source_project,
-             :compare_commits,
-             :draft_title,
-             :description,
-             :first_multiline_commit,
-             :errors,
-             to: :merge_request
+      :target_branch_ref,
+      :target_project,
+      :source_branch,
+      :source_branch_ref,
+      :source_project,
+      :compare_commits,
+      :draft_title,
+      :description,
+      :first_multiline_commit,
+      :errors,
+      to: :merge_request
 
     def force_remove_source_branch
       if params.key?(:force_remove_source_branch)

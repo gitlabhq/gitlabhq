@@ -12,13 +12,17 @@ RSpec.describe MergeRequests::UpdateAssigneesService, feature_category: :code_re
   let_it_be(:user3) { create(:user) }
 
   let_it_be_with_reload(:merge_request) do
-    create(:merge_request, :simple, :unique_branches,
-           title: 'Old title',
-           description: "FYI #{user2.to_reference}",
-           assignee_ids: [user3.id],
-           source_project: project,
-           target_project: project,
-           author: create(:user))
+    create(
+      :merge_request,
+      :simple,
+      :unique_branches,
+      title: 'Old title',
+      description: "FYI #{user2.to_reference}",
+      assignee_ids: [user3.id],
+      source_project: project,
+      target_project: project,
+      author: create(:user)
+    )
   end
 
   before do
@@ -107,12 +111,16 @@ RSpec.describe MergeRequests::UpdateAssigneesService, feature_category: :code_re
             .with(merge_request, [user3], execute_hooks: true)
         end
 
-        other_mr = create(:merge_request, :simple, :unique_branches,
-                          title: merge_request.title,
-                          description: merge_request.description,
-                          assignee_ids: merge_request.assignee_ids,
-                          source_project: merge_request.project,
-                          author: merge_request.author)
+        other_mr = create(
+          :merge_request,
+          :simple,
+          :unique_branches,
+          title: merge_request.title,
+          description: merge_request.description,
+          assignee_ids: merge_request.assignee_ids,
+          source_project: merge_request.project,
+          author: merge_request.author
+        )
 
         update_service = ::MergeRequests::UpdateService.new(project: project, current_user: user, params: opts)
 

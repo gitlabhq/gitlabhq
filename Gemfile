@@ -17,9 +17,7 @@ gem 'rails', '~> 6.1.7.2'
 
 gem 'bootsnap', '~> 1.16.0', require: false
 
-# Pin openssl to match the version bundled with our supported Rubies.
-# See https://stdgems.org/openssl/#gem-version.
-gem 'openssl', '2.2.2'
+gem 'openssl', '~> 3.0'
 gem 'ipaddr', '~> 1.2.5'
 
 # Responders respond_to and respond_with

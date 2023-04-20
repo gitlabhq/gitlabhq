@@ -6,7 +6,7 @@
 
 <%= sanitize_name(author.name) -%>
 <%  if discussion.nil? -%>
- <%= 'commented' -%>:
+ <%= 'commented' -%>
 <%  else -%>
 <%    if discussion.first_note == note -%>
  <%=    'started a new discussion' -%>
@@ -16,9 +16,9 @@
 <%    if discussion.diff_discussion? -%>
  <%=    "on #{discussion.file_path}" -%>
 <%    end -%>
-<%=   ':' -%>
-<%=   " #{target_url}" -%>
 <%  end -%>
+<%= ':' -%>
+<%= " #{target_url}" -%>
 
 
 <%  if discussion&.diff_discussion? && discussion.on_text? -%>

@@ -38975,6 +38975,9 @@ msgstr ""
 msgid "ScanResultPolicy|Choose criteria type"
 msgstr ""
 
+msgid "ScanResultPolicy|License scanning allows only one criteria: Status"
+msgstr ""
+
 msgid "ScanResultPolicy|Maximum number of severity-criteria is one"
 msgstr ""
 
@@ -38999,6 +39002,9 @@ msgstr ""
 msgid "ScanResultPolicy|Status is:"
 msgstr ""
 
+msgid "ScanResultPolicy|When %{scanType} find any license %{matchType} %{licenseType} in an open merge request targeting the %{branches} and the licences match all of the following criteria"
+msgstr ""
+
 msgid "ScanResultPolicy|When %{scanners} runs against the %{branches} and find(s) more than %{vulnerabilitiesAllowed} %{boldDescription} of the following criteria:"
 msgstr ""
 
@@ -39008,10 +39014,7 @@ msgstr ""
 msgid "ScanResultPolicy|except"
 msgstr ""
 
-msgid "ScanResultPolicy|finds any license %{matchType} %{licenseType} and is %{licenseStates} in an open merge request targeting %{branches}"
-msgstr ""
-
-msgid "ScanResultPolicy|license states"
+msgid "ScanResultPolicy|license status"
 msgstr ""
 
 msgid "ScanResultPolicy|license type"
@@ -46431,6 +46434,9 @@ msgid "Toggle sidebar"
 msgstr ""
 
 msgid "Toggle the Performance Bar"
+msgstr ""
+
+msgid "Toggle the navigation sidebar"
 msgstr ""
 
 msgid "Toggled :%{name}: emoji award."

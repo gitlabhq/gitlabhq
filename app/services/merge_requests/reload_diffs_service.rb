@@ -22,9 +22,11 @@ module MergeRequests
     def update_diff_discussion_positions(old_diff_refs)
       new_diff_refs = merge_request.diff_refs
 
-      merge_request.update_diff_discussion_positions(old_diff_refs: old_diff_refs,
-                                                     new_diff_refs: new_diff_refs,
-                                                     current_user: current_user)
+      merge_request.update_diff_discussion_positions(
+        old_diff_refs: old_diff_refs,
+        new_diff_refs: new_diff_refs,
+        current_user: current_user
+      )
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

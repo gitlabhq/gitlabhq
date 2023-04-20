@@ -49,11 +49,49 @@ RSpec.describe ExclusiveLeaseGuard, :clean_gitlab_redis_shared_state, feature_ca
         subject.exclusive_lease.cancel
       end
 
-      it 'does not call internal_method but logs error', :aggregate_failures do
-        expect(subject).not_to receive(:internal_method)
-        expect(Gitlab::AppLogger).to receive(:error).with("Cannot obtain an exclusive lease for #{subject.lease_key}. There must be another instance already in execution.")
+      context 'when the class does not override lease_taken_log_level' do
+        it 'does not call internal_method but logs error', :aggregate_failures do
+          expect(subject).not_to receive(:internal_method)
+          expect(Gitlab::AppJsonLogger).to receive(:error).with({ message: "Cannot obtain an exclusive lease. There must be another instance already in execution.", lease_key: 'exclusive_lease_guard_test_class', class_name: 'ExclusiveLeaseGuardTestClass', lease_timeout: 1.second })
 
-        subject.call
+          subject.call
+        end
+      end
+
+      context 'when the class overrides lease_taken_log_level to return :info' do
+        subject :overwritten_subject_class do
+          Class.new(subject_class) do
+            def lease_taken_log_level
+              :info
+            end
+          end
+        end
+
+        let(:subject) { overwritten_subject_class.new }
+
+        it 'logs info', :aggregate_failures do
+          expect(Gitlab::AppJsonLogger).to receive(:info).with({ message: "Cannot obtain an exclusive lease. There must be another instance already in execution.", lease_key: 'exclusive_lease_guard_test_class', class_name: 'ExclusiveLeaseGuardTestClass', lease_timeout: 1.second })
+
+          subject.call
+        end
+      end
+
+      context 'when the class overrides lease_taken_log_level to return :debug' do
+        subject :overwritten_subject_class do
+          Class.new(subject_class) do
+            def lease_taken_log_level
+              :debug
+            end
+          end
+        end
+
+        let(:subject) { overwritten_subject_class.new }
+
+        it 'logs debug', :aggregate_failures do
+          expect(Gitlab::AppJsonLogger).to receive(:debug).with({ message: "Cannot obtain an exclusive lease. There must be another instance already in execution.", lease_key: 'exclusive_lease_guard_test_class', class_name: 'ExclusiveLeaseGuardTestClass', lease_timeout: 1.second })
+
+          subject.call
+        end
       end
     end
 

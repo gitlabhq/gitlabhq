@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Ci::SecureFiles::MobileProvision do
       describe '#decoded_plist' do
         it 'assigns the error message and returns nil' do
           expect(invalid_profile.decoded_plist).to be nil
-          expect(invalid_profile.error).to eq('Could not parse the PKCS7: not enough data')
+          expect(invalid_profile.error).to eq('Could not parse the PKCS7: no start line')
         end
       end
 

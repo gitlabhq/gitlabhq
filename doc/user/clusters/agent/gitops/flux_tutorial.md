@@ -59,7 +59,7 @@ Create a Git repository, install Flux, and authenticate Flux with your repo:
      --owner=gitlab-org/configure/examples/flux \
      --repository=flux-config \
      --branch=main \
-     --path=clusters/my-cluster
+     --path=clusters/my-cluster \
      --deploy-token-auth
    ```
 

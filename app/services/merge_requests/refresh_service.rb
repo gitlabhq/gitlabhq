@@ -247,9 +247,11 @@ module MergeRequests
         mr_commit_ids.include?(commit.id)
       end
 
-      SystemNoteService.add_commits(merge_request, merge_request.project,
-                                    @current_user, new_commits,
-                                    existing_commits, @push.oldrev)
+      SystemNoteService.add_commits(
+        merge_request, merge_request.project,
+        @current_user, new_commits,
+        existing_commits, @push.oldrev
+      )
 
       notification_service.push_to_merge_request(merge_request, @current_user, new_commits: new_commits, existing_commits: existing_commits)
     end

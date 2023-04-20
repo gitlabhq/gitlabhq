@@ -1,5 +1,7 @@
 <script>
 import { GlButton, GlCollapse } from '@gitlab/ui';
+import Mousetrap from 'mousetrap';
+import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
 import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
@@ -7,7 +9,7 @@ import {
   SUPER_SIDEBAR_PEEK_OPEN_DELAY,
   SUPER_SIDEBAR_PEEK_CLOSE_DELAY,
 } from '../constants';
-import { toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
+import { isCollapsed, toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
 import UserBar from './user_bar.vue';
 import SidebarPortalTarget from './sidebar_portal_target.vue';
 import ContextSwitcherToggle from './context_switcher_toggle.vue';
@@ -44,7 +46,16 @@ export default {
       return this.sidebarData.current_menu_items || [];
     },
   },
+  mounted() {
+    Mousetrap.bind(keysFor(TOGGLE_SUPER_SIDEBAR), this.toggleSidebar);
+  },
+  beforeDestroy() {
+    Mousetrap.unbind(keysFor(TOGGLE_SUPER_SIDEBAR));
+  },
   methods: {
+    toggleSidebar() {
+      toggleSuperSidebarCollapsed(!isCollapsed(), true);
+    },
     collapseSidebar() {
       toggleSuperSidebarCollapsed(true, false);
     },

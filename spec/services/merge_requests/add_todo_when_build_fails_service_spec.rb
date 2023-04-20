@@ -74,10 +74,13 @@ RSpec.describe ::MergeRequests::AddTodoWhenBuildFailsService, feature_category: 
 
     context 'when build belongs to a merge request pipeline' do
       let(:pipeline) do
-        create(:ci_pipeline, source: :merge_request_event,
-                             ref: merge_request.merge_ref_path,
-                             merge_request: merge_request,
-                             merge_requests_as_head_pipeline: [merge_request])
+        create(
+          :ci_pipeline,
+          source: :merge_request_event,
+          ref: merge_request.merge_ref_path,
+          merge_request: merge_request,
+          merge_requests_as_head_pipeline: [merge_request]
+        )
       end
 
       let(:commit_status) { create(:ci_build, ref: merge_request.merge_ref_path, pipeline: pipeline) }
@@ -119,10 +122,13 @@ RSpec.describe ::MergeRequests::AddTodoWhenBuildFailsService, feature_category: 
 
     context 'when build belongs to a merge request pipeline' do
       let(:pipeline) do
-        create(:ci_pipeline, source: :merge_request_event,
-                             ref: merge_request.merge_ref_path,
-                             merge_request: merge_request,
-                             merge_requests_as_head_pipeline: [merge_request])
+        create(
+          :ci_pipeline,
+          source: :merge_request_event,
+          ref: merge_request.merge_ref_path,
+          merge_request: merge_request,
+          merge_requests_as_head_pipeline: [merge_request]
+        )
       end
 
       let(:commit_status) { create(:ci_build, ref: merge_request.merge_ref_path, pipeline: pipeline) }

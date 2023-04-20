@@ -10,8 +10,11 @@ RSpec.describe MergeRequests::MergeOrchestrationService, feature_category: :code
   let(:service) { described_class.new(project, user, merge_params) }
 
   let!(:merge_request) do
-    create(:merge_request, source_project: project, source_branch: 'feature',
-                           target_project: project, target_branch: 'master')
+    create(
+      :merge_request,
+      source_project: project, source_branch: 'feature',
+      target_project: project, target_branch: 'master'
+    )
   end
 
   shared_context 'fresh repository' do

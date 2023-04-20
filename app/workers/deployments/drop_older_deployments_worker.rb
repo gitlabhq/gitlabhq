@@ -11,8 +11,6 @@ module Deployments
     queue_namespace :deployment
     feature_category :continuous_delivery
 
-    def perform(deployment_id)
-      Deployments::OlderDeploymentsDropService.new(deployment_id).execute
-    end
+    def perform(deployment_id); end
   end
 end

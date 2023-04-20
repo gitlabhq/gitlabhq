@@ -8,10 +8,12 @@ RSpec.describe MergeRequests::RebaseService, feature_category: :source_code_mana
   let(:user) { create(:user) }
   let(:rebase_jid) { 'fake-rebase-jid' }
   let(:merge_request) do
-    create :merge_request,
-           source_branch: 'feature_conflict',
-           target_branch: 'master',
-           rebase_jid: rebase_jid
+    create(
+      :merge_request,
+      source_branch: 'feature_conflict',
+      target_branch: 'master',
+      rebase_jid: rebase_jid
+    )
   end
 
   let(:project) { merge_request.project }
@@ -102,8 +104,9 @@ RSpec.describe MergeRequests::RebaseService, feature_category: :source_code_mana
       end
 
       it 'returns an error' do
-        expect(service.execute(merge_request)).to match(status: :error,
-                                                        message: described_class::REBASE_ERROR)
+        expect(service.execute(merge_request)).to match(
+          status: :error, message: described_class::REBASE_ERROR
+        )
       end
 
       it 'logs the error' do
@@ -154,8 +157,9 @@ RSpec.describe MergeRequests::RebaseService, feature_category: :source_code_mana
       end
 
       it 'returns an error' do
-        expect(service.execute(merge_request)).to match(status: :error,
-                                                        message: described_class::REBASE_ERROR)
+        expect(service.execute(merge_request)).to match(
+          status: :error, message: described_class::REBASE_ERROR
+        )
       end
     end
 
@@ -215,9 +219,11 @@ RSpec.describe MergeRequests::RebaseService, feature_category: :source_code_mana
               message: 'Add new file to target',
               branch_name: 'master')
 
-            create(:merge_request,
-                  source_branch: 'master', source_project: forked_project,
-                  target_branch: 'master', target_project: project)
+            create(
+              :merge_request,
+              source_branch: 'master', source_project: forked_project,
+              target_branch: 'master', target_project: project
+            )
           end
 
           it 'rebases source branch', :sidekiq_might_not_need_inline do

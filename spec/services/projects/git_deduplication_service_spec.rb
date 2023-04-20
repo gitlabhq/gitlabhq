@@ -139,7 +139,7 @@ RSpec.describe Projects::GitDeduplicationService, feature_category: :source_code
         end
 
         it 'fails when a lease is already out' do
-          expect(service).to receive(:log_error).with("Cannot obtain an exclusive lease for #{lease_key}. There must be another instance already in execution.")
+          expect(Gitlab::AppJsonLogger).to receive(:error).with({ message: "Cannot obtain an exclusive lease. There must be another instance already in execution.", lease_key: lease_key, class_name: described_class.name, lease_timeout: lease_timeout })
 
           service.execute
         end

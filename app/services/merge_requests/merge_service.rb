@@ -115,8 +115,7 @@ module MergeRequests
     def try_merge
       execute_git_merge
     rescue Gitlab::Git::PreReceiveError => e
-      raise MergeError,
-            "Something went wrong during merge pre-receive hook. #{e.message}".strip
+      raise MergeError, "Something went wrong during merge pre-receive hook. #{e.message}".strip
     rescue StandardError => e
       handle_merge_error(log_message: e.message)
       raise_error(GENERIC_ERROR_MESSAGE)
@@ -180,9 +179,7 @@ module MergeRequests
     end
 
     def log_payload(message)
-      Gitlab::ApplicationContext.current
-        .merge(merge_request_info: merge_request_info,
-               message: message)
+      Gitlab::ApplicationContext.current.merge(merge_request_info: merge_request_info, message: message)
     end
 
     def merge_request_info

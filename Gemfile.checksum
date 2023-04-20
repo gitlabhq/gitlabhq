@@ -422,7 +422,7 @@
 {"name":"omniauth_openid_connect","version":"0.6.1","platform":"ruby","checksum":"5f1318f5b19b05e339ff494def060b57a503b1e3ea83c3a0ced6cc014407d423"},
 {"name":"open4","version":"1.3.4","platform":"ruby","checksum":"a1df037310624ecc1ea1d81264b11c83e96d0c3c1c6043108d37d396dcd0f4b1"},
 {"name":"openid_connect","version":"1.3.0","platform":"ruby","checksum":"a796855096850cc01140e37ea6ae9fd14f2be818b9b5bc698418063dfe228770"},
-{"name":"openssl","version":"2.2.2","platform":"ruby","checksum":"53f72382bac046c36c37049c7ec9d5597d42628d140b5cfbcd61e0226c0ca077"},
+{"name":"openssl","version":"3.1.0","platform":"ruby","checksum":"e3a01279e918a7a5cf741db69b124864878b1a9783b1f2d34854bc1d444ac430"},
 {"name":"openssl-signature_algorithm","version":"1.3.0","platform":"ruby","checksum":"a3b40b5e8276162d4a6e50c7c97cdaf1446f9b2c3946a6fa2c14628e0c957e80"},
 {"name":"opentracing","version":"0.5.0","platform":"ruby","checksum":"deb5d7abe6b0e7631d866d8cb5ee7bb9352650a504a32f61591302bc510b9286"},
 {"name":"optimist","version":"3.0.1","platform":"ruby","checksum":"336b753676d6117cad9301fac7e91dab4228f747d4e7179891ad3a163c64e2ed"},

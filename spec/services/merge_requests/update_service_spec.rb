@@ -15,11 +15,15 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
   let(:milestone) { create(:milestone, project: project) }
 
   let(:merge_request) do
-    create(:merge_request, :simple, title: 'Old title',
-                                    description: "FYI #{user2.to_reference}",
-                                    assignee_ids: [user3.id],
-                                    source_project: project,
-                                    author: create(:user))
+    create(
+      :merge_request,
+      :simple,
+      title: 'Old title',
+      description: "FYI #{user2.to_reference}",
+      assignee_ids: [user3.id],
+      source_project: project,
+      author: create(:user)
+    )
   end
 
   before do
@@ -1187,10 +1191,12 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
       let(:source_project) { fork_project(target_project, nil, repository: true) }
       let(:user) { create(:user) }
       let(:merge_request) do
-        create(:merge_request,
-               source_project: source_project,
-               source_branch: 'fixes',
-               target_project: target_project)
+        create(
+          :merge_request,
+          source_project: source_project,
+          source_branch: 'fixes',
+          target_project: target_project
+        )
       end
 
       before do
@@ -1222,10 +1228,12 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
       let(:source_project) { fork_project(target_project, nil, repository: true) }
       let(:user) { target_project.first_owner }
       let(:merge_request) do
-        create(:merge_request,
-               source_project: source_project,
-               source_branch: 'fixes',
-               target_project: target_project)
+        create(
+          :merge_request,
+          source_project: source_project,
+          source_branch: 'fixes',
+          target_project: target_project
+        )
       end
 
       it "cannot be done by members of the target project when they don't have access" do
@@ -1243,10 +1251,12 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
     context 'updating `target_branch`' do
       let(:merge_request) do
-        create(:merge_request,
-               source_project: project,
-               source_branch: 'mr-b',
-               target_branch: 'mr-a')
+        create(
+          :merge_request,
+          source_project: project,
+          source_branch: 'mr-b',
+          target_branch: 'mr-a'
+        )
       end
 
       it 'updates to master' do

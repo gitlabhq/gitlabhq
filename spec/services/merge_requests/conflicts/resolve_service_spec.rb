@@ -12,15 +12,22 @@ RSpec.describe MergeRequests::Conflicts::ResolveService, feature_category: :code
   end
 
   let(:merge_request) do
-    create(:merge_request,
-           source_branch: 'conflict-resolvable', source_project: project,
-           target_branch: 'conflict-start')
+    create(
+      :merge_request,
+      source_branch: 'conflict-resolvable',
+      source_project: project,
+      target_branch: 'conflict-start'
+    )
   end
 
   let(:merge_request_from_fork) do
-    create(:merge_request,
-           source_branch: 'conflict-resolvable-fork', source_project: forked_project,
-           target_branch: 'conflict-start', target_project: project)
+    create(
+      :merge_request,
+      source_branch: 'conflict-resolvable-fork',
+      source_project: forked_project,
+      target_branch: 'conflict-start',
+      target_project: project
+    )
   end
 
   describe '#execute' do

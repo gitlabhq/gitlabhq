@@ -1,5 +1,6 @@
 import { nextTick } from 'vue';
 import { GlCollapse } from '@gitlab/ui';
+import Mousetrap from 'mousetrap';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SuperSidebar from '~/super_sidebar/components/super_sidebar.vue';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';
@@ -10,9 +11,14 @@ import {
   SUPER_SIDEBAR_PEEK_OPEN_DELAY,
   SUPER_SIDEBAR_PEEK_CLOSE_DELAY,
 } from '~/super_sidebar/constants';
+import {
+  toggleSuperSidebarCollapsed,
+  isCollapsed,
+} from '~/super_sidebar/super_sidebar_collapsed_state_manager';
 import { stubComponent } from 'helpers/stub_component';
 import { sidebarData } from '../mock_data';
 
+jest.mock('~/super_sidebar/super_sidebar_collapsed_state_manager');
 const focusInputMock = jest.fn();
 
 describe('SuperSidebar component', () => {
@@ -84,6 +90,28 @@ describe('SuperSidebar component', () => {
       expect(link.exists()).toBe(true);
       expect(link.attributes('href')).toBe(linkAttrs.href);
       expect(link.attributes('class')).toContain('gl-display-none');
+    });
+
+    it('sets up the sidebar toggle shortcut', () => {
+      createWrapper();
+
+      isCollapsed.mockReturnValue(false);
+      Mousetrap.trigger('mod+\\');
+
+      expect(toggleSuperSidebarCollapsed).toHaveBeenCalledTimes(1);
+      expect(toggleSuperSidebarCollapsed).toHaveBeenCalledWith(true, true);
+
+      isCollapsed.mockReturnValue(true);
+      Mousetrap.trigger('mod+\\');
+
+      expect(toggleSuperSidebarCollapsed).toHaveBeenCalledTimes(2);
+      expect(toggleSuperSidebarCollapsed).toHaveBeenCalledWith(false, true);
+
+      jest.spyOn(Mousetrap, 'unbind');
+
+      wrapper.destroy();
+
+      expect(Mousetrap.unbind).toHaveBeenCalledWith(['mod+\\']);
     });
   });
 

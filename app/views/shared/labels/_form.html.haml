@@ -10,7 +10,7 @@
   .form-group.row
     .col-12
       = f.label :description
-      = f.text_field :description, class: "gl-form-input form-control js-quick-submit", data: { qa_selector: 'label_description_field' }
+      = f.text_area :description, class: "gl-form-input form-control js-quick-submit", rows: 4, data: { qa_selector: 'label_description_field' }
   .form-group.row
     .col-12
       = f.label :color, _("Background color")

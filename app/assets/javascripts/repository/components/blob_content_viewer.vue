@@ -145,7 +145,7 @@ export default {
   },
   computed: {
     shouldRenderGenie() {
-      return this.explainCodeAvailable;
+      return this.explainCodeAvailable && this.viewer?.fileType === TEXT_FILE_TYPE;
     },
     isLoggedIn() {
       return isLoggedIn();
